@@ -20,7 +20,7 @@
         "browser-sync": "^2.27.4",
         "browser-sync-webpack-plugin": "^2.3.0",
         "eslint": "^8.2.0",
-        "eslint-plugin-vue": "^8.1.1",
+        "eslint-plugin-vue": "^9.1.0",
         "laravel-echo": "^1.11.0",
         "laravel-mix": "^6.0.25",
         "lodash": "^4.17.21",
