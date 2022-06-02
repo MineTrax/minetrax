@@ -1,0 +1,118 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import '../../node_modules/vue2-datepicker/index.css';
+@import '../../node_modules/easymde/dist/easymde.min.css';
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Let's get this party started */
+.boxscroll::-webkit-scrollbar {
+    width: 4px;
+}
+/* Track */
+.boxscroll::-webkit-scrollbar-track {
+    -webkit-box-shadow: none;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+/* Handle */
+.boxscroll::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(134, 134, 134, 0.8);
+    -webkit-box-shadow: inset 0 0 6px rgba(22, 22, 22, 0.5);
+}
+.boxscroll::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(229, 229, 229, 0.4);
+}
+
+/*Floating Field Form*/
+.floating-input>input::placeholder, .floating-input>textarea::placeholder {
+    color: transparent;
+}
+
+.floating-input>input:focus,
+.floating-input>input:not(:placeholder-shown)
+{
+    @apply pt-8
+}
+
+.floating-input>input:focus~label,
+.floating-input>input:not(:placeholder-shown)~label
+{
+    @apply scale-90 -translate-y-3 translate-x-1;
+}
+
+/* Textarea */
+.floating-input>textarea:focus,
+.floating-input>textarea:not(:placeholder-shown)
+{
+    @apply pt-7
+}
+.floating-input>textarea:focus~label,
+.floating-input>textarea:not(:placeholder-shown)~label
+{
+    @apply scale-90 -translate-y-2.5 translate-x-1;
+}
+
+@keyframes color-rotate {
+    from {
+        filter: hue-rotate(0deg);
+    }
+    to {
+        filter: hue-rotate(360deg);
+    }
+}
+.logo:hover {
+    animation: color-rotate 5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.autolink {
+    color: #39b9f1;
+}
+
+.autolink:hover {
+    text-decoration: underline;
+}
+
+/* Custom Scroll Bar */
+::-webkit-scrollbar {
+    background: none;
+    width: 16px;
+    height: 16px;
+}
+
+::-webkit-scrollbar-thumb {
+    border: solid 0 rgb(0 0 0 / 0%);
+    border-right-width: 4px;
+    border-left-width: 4px;
+    -webkit-border-radius: 9px 4px;
+    -webkit-box-shadow: inset 0 0 0 1px hsl(211, 10%, 53%), inset 0 0 0 4px hsl(209deg 18% 30%);
+}
+
+::-webkit-scrollbar-track-piece {
+    margin: 4px 0;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    border-right-width: 0;
+    border-left-width: 0;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    -webkit-border-radius: 4px 9px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    -webkit-box-shadow:
+        inset 0 0 0 1px #39b9f1,
+        inset 0 0 0 4px #39b9f1;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}

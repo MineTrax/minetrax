@@ -1,0 +1,143 @@
+<template>
+  <app-layout>
+    <app-head title="Login" />
+
+    <jet-authentication-card>
+      <template #logo>
+        <jet-authentication-card-logo />
+      </template>
+
+      <!--<jet-validation-errors class="mb-4"/>-->
+
+      <div
+        v-if="status"
+        class="mb-4 font-medium text-sm text-green-600"
+      >
+        {{ status }}
+      </div>
+
+      <form
+        class="mt-5"
+        @submit.prevent="submit"
+      >
+        <div>
+          <x-input
+            id="email"
+            v-model="form.email"
+            label="Email or Username"
+            :error="form.errors.email"
+            :autofocus="true"
+            :required="true"
+            type="text"
+            name="email"
+          />
+        </div>
+
+        <div class="mt-4">
+          <x-input
+            id="password"
+            v-model="form.password"
+            label="Password"
+            :error="form.errors.password"
+            :autofocus="true"
+            :required="true"
+            type="password"
+            name="password"
+            autocomplete="current-password"
+          />
+        </div>
+
+        <div class="mt-4 block">
+          <x-checkbox
+            id="remember"
+            v-model="form.remember"
+            label="Remember me"
+            name="remember"
+          />
+        </div>
+
+        <div class="flex items-center justify-end mt-4">
+          <inertia-link
+            v-if="canResetPassword"
+            :href="route('password.request')"
+            class="underline text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            Forgot your password?
+          </inertia-link>
+
+
+          <loading-button
+            :loading="form.processing"
+            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+          >
+            Login
+          </loading-button>
+        </div>
+
+        <social-auth-buttons />
+      </form>
+    </jet-authentication-card>
+  </app-layout>
+</template>
+
+<script>
+import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
+import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
+import JetButton from '@/Jetstream/Button';
+import JetInput from '@/Jetstream/Input';
+import JetCheckbox from '@/Jetstream/Checkbox';
+import JetLabel from '@/Jetstream/Label';
+import JetValidationErrors from '@/Jetstream/ValidationErrors';
+import LoadingButton from '@/Components/LoadingButton';
+import Icon from '@/Components/Icon';
+import AppLayout from '@/Layouts/AppLayout';
+import SocialAuthButtons from '@/Components/SocialAuthButtons';
+import XInput from '@/Components/Form/XInput';
+import XCheckbox from '@/Components/Form/XCheckbox';
+
+export default {
+    components: {
+        XCheckbox,
+        XInput,
+        SocialAuthButtons,
+        Icon,
+        LoadingButton,
+        JetAuthenticationCard,
+        JetAuthenticationCardLogo,
+        JetButton,
+        JetInput,
+        JetCheckbox,
+        JetLabel,
+        JetValidationErrors,
+        AppLayout
+    },
+
+    props: {
+        canResetPassword: Boolean,
+        status: String
+    },
+
+    data() {
+        return {
+            form: this.$inertia.form({
+                email: '',
+                password: '',
+                remember: false
+            })
+        };
+    },
+
+    methods: {
+        submit() {
+            this.form
+                .transform(data => ({
+                    ...data,
+                    remember: this.form.remember ? 'on' : ''
+                }))
+                .post(this.route('login'), {
+                    onFinish: () => this.form.reset('password'),
+                });
+        }
+    }
+};
+</script>

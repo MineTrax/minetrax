@@ -1,0 +1,187 @@
+<template>
+  <app-layout>
+    <app-head title="Add Bungee Server" />
+
+    <div class="py-12 px-10 max-w-6xl mx-auto">
+      <div class="flex justify-between mb-8">
+        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
+          Add Bungee Server
+        </h1>
+        <inertia-link
+          :href="route('admin.server.index')"
+          class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+        >
+          <span>Cancel</span>
+        </inertia-link>
+      </div>
+
+      <div class="mt-10 sm:mt-0">
+        <div class="md:grid md:grid-cols-3 md:gap-6">
+          <div class="md:col-span-1">
+            <div class="px-4 sm:px-0">
+              <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
+                Server Information
+              </h3>
+              <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
+                We only support adding one bungee server. This server will be used to show online players and server status.
+                All sensitive information will be encrypted.
+              </p>
+            </div>
+          </div>
+          <div class="mt-5 md:mt-0 md:col-span-2">
+            <form @submit.prevent="addServer">
+              <div class="shadow overflow-hidden sm:rounded-md">
+                <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
+                  <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="name"
+                        v-model="form.name"
+                        label="Server Name"
+                        :error="form.errors.name"
+                        autocomplete="name"
+                        type="text"
+                        name="name"
+                        help="Eg: My Bungee Server"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="hostname"
+                        v-model="form.hostname"
+                        label="Hostname"
+                        :error="form.errors.hostname"
+                        autocomplete="hostname"
+                        type="text"
+                        name="hostname"
+                        help="Eg: play-my-bungee-server.com"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="join_port"
+                        v-model="form.join_port"
+                        label="Join Port"
+                        :error="form.errors.join_port"
+                        autocomplete="join_port"
+                        type="text"
+                        name="join_port"
+                        help="Eg: 25565"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="query_port"
+                        v-model="form.query_port"
+                        label="Query Port"
+                        :error="form.errors.query_port"
+                        autocomplete="query_port"
+                        type="text"
+                        name="query_port"
+                        help="Eg: 25575"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="webquery_port"
+                        v-model="form.webquery_port"
+                        label="Webquery Port"
+                        :error="form.errors.webquery_port"
+                        autocomplete="webquery_port"
+                        type="text"
+                        name="webquery_port"
+                        help="Eg: 25585"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-select
+                        id="minecraft_version"
+                        v-model="form.minecraft_version"
+                        name="minecraft_version"
+                        :error="form.errors.minecraft_version"
+                        label="Server Version"
+                        :select-list="versionsArray"
+                        placeholder="Select version.."
+                        :disable-null="true"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
+                  <loading-button
+                    :loading="form.processing"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                    type="submit"
+                  >
+                    Add Bungee Server
+                  </loading-button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-layout>
+</template>
+
+<script>
+import AppLayout from '@/Layouts/AppLayout';
+import JetSectionBorder from '@/Jetstream/SectionBorder';
+import JetInputError from '@/Jetstream/InputError';
+import LoadingButton from '@/Components/LoadingButton';
+import XInput from '@/Components/Form/XInput';
+import XSelect from '@/Components/Form/XSelect';
+
+export default {
+    components: {
+        XSelect,
+        AppLayout,
+        JetSectionBorder,
+        JetInputError,
+        LoadingButton,
+        XInput
+    },
+    data() {
+        return {
+            form: this.$inertia.form({
+                name: null,
+                join_port: null,
+                query_port: null,
+                webquery_port: null,
+                minecraft_version: null,
+                hostname: null
+            }),
+            versionsArray: {
+                '1.17': '1.17',
+                '1.16': '1.16',
+                '1.15': '1.15',
+                '1.14': '1.14',
+                '1.13': '1.13',
+                '1.12': '1.12',
+            }
+        };
+    },
+
+    methods: {
+        addServer() {
+            if (this.loading) {
+                return;
+            }
+            this.form.post(route('admin.server-bungee.store'), {
+                preserveScroll: true
+            });
+        }
+    }
+};
+</script>

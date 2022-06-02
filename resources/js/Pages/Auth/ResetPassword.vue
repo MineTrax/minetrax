@@ -1,0 +1,110 @@
+<template>
+  <app-layout>
+    <app-head title="Reset Password" />
+    <jet-authentication-card>
+      <template #logo>
+        <jet-authentication-card-logo />
+      </template>
+
+      <form @submit.prevent="submit">
+        <div>
+          <x-input
+            id="email"
+            v-model="form.email"
+            label="Email"
+            :required="true"
+            :autofocus="true"
+            :error="form.errors.email"
+            type="email"
+            name="email"
+          />
+        </div>
+
+        <div class="mt-4">
+          <x-input
+            id="password"
+            v-model="form.password"
+            label="Password"
+            :required="true"
+            autocomplete="new-password"
+            :error="form.errors.password"
+            type="password"
+            name="password"
+          />
+        </div>
+
+        <div class="mt-4">
+          <x-input
+            id="password_confirmation"
+            v-model="form.password_confirmation"
+            label="Confirm Password"
+            :required="true"
+            autocomplete="new-password"
+            :error="form.errors.password_confirmation"
+            type="password"
+            name="password_confirmation"
+          />
+        </div>
+
+        <div class="flex items-center justify-end mt-4">
+          <loading-button
+            :loading="form.processing"
+            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+          >
+            Reset Password
+          </loading-button>
+        </div>
+      </form>
+    </jet-authentication-card>
+  </app-layout>
+</template>
+
+<script>
+import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
+import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
+import JetButton from '@/Jetstream/Button';
+import JetInput from '@/Jetstream/Input';
+import JetLabel from '@/Jetstream/Label';
+import JetValidationErrors from '@/Jetstream/ValidationErrors';
+import LoadingButton from '@/Components/LoadingButton';
+import AppLayout from '@/Layouts/AppLayout';
+import XInput from '@/Components/Form/XInput';
+
+export default {
+    components: {
+        XInput,
+        AppLayout,
+        LoadingButton,
+        JetAuthenticationCard,
+        JetAuthenticationCardLogo,
+        JetButton,
+        JetInput,
+        JetLabel,
+        JetValidationErrors
+    },
+
+    props: {
+        email: String,
+        token: String,
+    },
+
+    data() {
+        return {
+            form: this.$inertia.form({
+                token: this.token,
+                email: this.email,
+                password: '',
+                password_confirmation: '',
+            })
+        };
+    },
+
+    methods: {
+        submit() {
+            this.form.post(this.route('password.update'), {
+                onFinish: () => this.form.reset('password', 'password_confirmation'),
+            });
+        }
+    }
+};
+</script>

@@ -1,0 +1,47 @@
+[
+    {
+        "weight": 1500,
+        "name": "Stranger",
+        "shortname": "stranger",
+        "total_score_needed": 500,
+        "total_play_one_minute_needed": 1000,
+        "created_at": "2021-01-09 19:24:22",
+        "updated_at": "2021-01-09 19:24:22"
+    },
+    {
+        "weight": 15000,
+        "name": "Citizen",
+        "shortname": "citizen",
+        "total_score_needed": 5000,
+        "total_play_one_minute_needed": 10000,
+        "created_at": "2021-01-09 19:24:22",
+        "updated_at": "2021-01-09 19:24:22"
+    },
+    {
+        "weight": 65000,
+        "name": "Merchant",
+        "shortname": "merchant",
+        "total_score_needed": 15000,
+        "total_play_one_minute_needed": 50000,
+        "created_at": "2021-01-09 19:24:22",
+        "updated_at": "2021-01-09 19:24:22"
+    },
+    {
+        "weight": 150000,
+        "name": "Knight",
+        "shortname": "knight",
+        "total_score_needed": 50000,
+        "total_play_one_minute_needed": 100000,
+        "created_at": "2021-01-09 19:24:22",
+        "updated_at": "2021-01-09 19:24:22"
+    },
+    {
+        "weight": 600000,
+        "name": "Legend",
+        "shortname": "legend",
+        "total_score_needed": 100000,
+        "total_play_one_minute_needed": 500000,
+        "created_at": "2021-01-09 19:24:22",
+        "updated_at": "2021-01-09 19:24:22"
+    }
+]

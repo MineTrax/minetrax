@@ -1,0 +1,197 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Role;
+use App\Models\User;
+use App\Notifications\UserYouAreBanned;
+use App\Notifications\UserYouAreMuted;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+
+class UserController extends Controller
+{
+
+    public function index()
+    {
+        $this->authorize('viewAny', User::class);
+
+        $users = User::query()->paginate(10);
+
+        $users->each(function($user) {
+            $user->append('dob_string_with_year');
+        });
+
+        return Inertia::render('Admin/User/IndexUser', [
+            'users' => $users
+        ]);
+    }
+
+    // @TODO
+    public function show(User $user)
+    {
+        $this->authorize('view', $user);
+
+        return Inertia::render('Admin/User/ShowUser', [
+            'user' => $user
+        ]);
+    }
+
+    public function ban(User $user, Request $request)
+    {
+        $this->authorize('ban', $user);
+
+        if ($user->id === $request->user()->id) {
+            return redirect()->back()
+                ->with(['toast' => ['type' => 'danger', 'title' => 'You cannot ban yourself']]);
+        }
+
+        $user->banned_at = now();
+        $user->save();
+        $user->notify(new UserYouAreBanned($request->user()));
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'title' => 'User Banned Successfully']]);
+    }
+
+    public function unban(User $user, Request $request)
+    {
+        $this->authorize('ban', $user);
+
+        if ($user->id === $request->user()->id) {
+            return redirect()->back()
+                ->with(['toast' => ['type' => 'danger', 'title' => 'You cannot unban yourself']]);
+        }
+
+        $user->banned_at = null;
+        $user->save();
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'title' => 'User UnBanned Successfully']]);
+    }
+
+    public function mute(User $user, Request $request)
+    {
+        $this->authorize('mute', $user);
+
+        if ($user->id === $request->user()->id) {
+            return redirect()->back()
+                ->with(['toast' => ['type' => 'danger', 'title' => 'You cannot mute yourself']]);
+        }
+
+        $user->muted_at = now();
+        $user->save();
+        $user->notify(new UserYouAreMuted($request->user()));
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'title' => 'User Muted Successfully']]);
+    }
+
+    public function unmute(User $user, Request $request)
+    {
+        $this->authorize('mute', $user);
+
+        if ($user->id === $request->user()->id) {
+            return redirect()->back()
+                ->with(['toast' => ['type' => 'danger', 'title' => 'You cannot unmute yourself']]);
+        }
+
+        $user->muted_at = null;
+        $user->save();
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'title' => 'User UnMuted Successfully']]);
+    }
+
+    public function edit(User $user)
+    {
+        $this->authorize('update', $user);
+
+        $rolesList = Role::query()->pluck('display_name', 'name');
+
+        return Inertia::render('Admin/User/EditUser', [
+            'userData' => $user,
+            'rolesList' => $rolesList
+        ]);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $this->authorize('update', $user);
+
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'username' => ['required', 'string', 'alpha_dash', 'max:30', Rule::unique('users')->ignore($user->id)],
+            'photo' => ['nullable', 'image', 'max:1024'],
+            'dob' => ['nullable', 'date', 'before:today'],
+            'gender' => ['nullable', 'in:m,f,o'],
+            'about' => ['nullable', 'string', 'max:255'],
+            's_discord_username' => ['nullable', 'string'],
+            's_steam_profile_url' => ['nullable', 'active_url'],
+            's_twitter_url' => ['nullable', 'active_url'],
+            's_youtube_url' => ['nullable', 'active_url'],
+            's_facebook_url' => ['nullable', 'active_url'],
+            's_twitch_url' => ['nullable', 'active_url'],
+            's_website_url' => ['nullable', 'active_url'],
+            'cover_image_url' => ['nullable', 'active_url'],
+            'role' => ['required', 'string', 'exists:roles,name'],
+            'show_yob' => ['required', 'boolean'],
+            'show_gender' => ['required', 'boolean'],
+            'profile_photo_source' => ['nullable', 'in:gravatar,linked_player'],
+            'verified' => ['required', 'boolean'],
+        ]);
+
+        $social_links = [
+            's_discord_username' => $request->s_discord_username,
+            's_steam_profile_url' => $request->s_steam_profile_url,
+            's_twitter_url' => $request->s_twitter_url,
+            's_youtube_url' => $request->s_youtube_url,
+            's_facebook_url' => $request->s_facebook_url,
+            's_twitch_url' => $request->s_twitch_url,
+            's_website_url' => $request->s_website_url,
+        ];
+
+        $settings = [
+            'show_yob' => $request->show_yob,
+            'show_gender' => $request->show_gender,
+            'profile_photo_source' => $request->profile_photo_source
+        ];
+
+        // Update the User Detail
+        $user->name = $request->name;
+        $user->dob = $request->dob;
+        $user->email = $request->email;
+        $user->username = $request->username;
+        $user->gender = $request->gender;
+        $user->social_links = $social_links;
+        $user->settings = $settings;
+        $user->about = $request->about ?? null;
+
+        // if verified_at was null and now verified is true then mark it as verified & vice versa
+        if ($request->verified && !$user->verified_at) {
+            $user->verified_at = now();
+        } else if (!$request->verified && $user->verified_at) {
+            $user->verified_at = null;
+        }
+
+        $user->save();
+
+        // Sync the role only if user has ability to assign roles
+        if ($request->user()->can('assign roles')) {
+            $user->syncRoles([$request->role]);
+        }
+
+        // Redirect to listing page
+        return redirect()->route('admin.user.index')
+            ->with(['toast' => ['type' => 'success', 'title' => 'Updated Successfully', 'body' => 'User updated successfully']]);
+    }
+
+    public function destroy(User $user)
+    {
+        $this->authorize('delete', $user);
+        //
+    }
+}

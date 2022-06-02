@@ -1,0 +1,506 @@
+<template>
+  <jet-form-section @submitted="updateProfileInformation">
+    <template #title>
+      Profile Information
+    </template>
+
+    <template #description>
+      Update your account's profile information and email address.
+    </template>
+
+    <template #form>
+      <!-- Profile Photo -->
+      <div
+        v-if="$page.props.jetstream.managesProfilePhotos"
+        class="col-span-6 sm:col-span-3"
+      >
+        <!-- Profile Photo File Input -->
+        <input
+          ref="photo"
+          type="file"
+          class="hidden"
+          @change="updatePhotoPreview"
+        >
+
+        <jet-label
+          for="photo"
+          value="Avatar"
+        />
+
+        <!-- Current Profile Photo -->
+        <div
+          v-show="! photoPreview"
+          class="mt-2"
+        >
+          <img
+            :src="user.profile_photo_url"
+            :alt="user.name"
+            class="rounded-full h-28 w-28 object-cover"
+          >
+        </div>
+
+        <!-- New Profile Photo Preview -->
+        <div
+          v-show="photoPreview"
+          class="mt-2"
+        >
+          <span
+            class="block rounded-full w-28 h-28"
+            :style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'"
+          />
+        </div>
+
+        <jet-secondary-button
+          class="mt-2 mr-2"
+          type="button"
+          @click.native.prevent="selectNewPhoto"
+        >
+          New Photo
+        </jet-secondary-button>
+
+        <jet-secondary-button
+          v-if="user.profile_photo_path"
+          type="button"
+          class="mt-2"
+          @click.native.prevent="deletePhoto"
+        >
+          Remove Photo
+        </jet-secondary-button>
+
+        <jet-input-error
+          :message="form.errors.photo"
+          class="mt-2"
+        />
+      </div>
+
+      <!-- Cover Image -->
+      <div class="col-span-6 sm:col-span-3">
+        <input
+          ref="coverImage"
+          type="file"
+          class="hidden"
+          @change="updateCoverImagePreview"
+        >
+
+        <jet-label
+          for="coverImage"
+          value="Profile Cover Image"
+        />
+
+        <div
+          v-show="! coverImagePreview"
+          class="mt-2"
+        >
+          <img
+            :src="user.cover_image_url"
+            :alt="user.name"
+            class="rounded h-28 object-cover w-full"
+          >
+        </div>
+
+        <div
+          v-show="coverImagePreview"
+          class="mt-2"
+        >
+          <span
+            class="block rounded h-28"
+            :style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + coverImagePreview + '\');'"
+          />
+        </div>
+
+        <jet-secondary-button
+          class="mt-2 mr-2"
+          type="button"
+          @click.native.prevent="selectNewCoverImage"
+        >
+          New Cover
+        </jet-secondary-button>
+
+        <jet-secondary-button
+          v-if="user.cover_image_path"
+          type="button"
+          class="mt-2"
+          @click.native.prevent="deleteCoverImage"
+        >
+          Default Cover
+        </jet-secondary-button>
+
+        <jet-input-error
+          :message="form.errors.cover_image"
+          class="mt-2"
+        />
+      </div>
+
+      <!-- Username -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="username"
+          v-model="user.username"
+          label="Username"
+          :error="form.errors.username"
+          type="text"
+          name="username"
+          :disabled="true"
+        />
+      </div>
+
+      <!-- Email -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="email"
+          v-model="user.email"
+          label="Email"
+          :error="form.errors.email"
+          type="email"
+          name="email"
+          :disabled="true"
+        />
+      </div>
+
+      <!-- Name -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="name"
+          v-model="form.name"
+          label="Name"
+          :error="form.errors.name"
+          :required="true"
+          autocomplete="name"
+          type="text"
+          name="name"
+        />
+      </div>
+
+
+      <div class="col-span-6 sm:col-span-3">
+        <x-select
+          id="profile_photo_source"
+          v-model="form.profile_photo_source"
+          name="profile_photo_source"
+          :error="form.errors.profile_photo_source"
+          label="Use Avatar from"
+          :select-list="{linked_player: 'Linked Player', gravatar: 'Gravatar'}"
+          placeholder="Uploaded Photo"
+        />
+      </div>
+
+      <!-- DOB -->
+      <div class="col-span-6 sm:col-span-3 relative">
+        <date-picker
+          id="dob"
+          v-model="form.dob"
+          placeholder="Select your date of birth"
+          class="w-full"
+          value-type="format"
+          input-class="border-gray-300 h-14 p-3 text-sm pt-7 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
+        />
+
+        <label
+          for="dob"
+          class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-gray-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-gray-400"
+        >Date of Birth</label>
+        <jet-input-error
+          :message="form.errors.dob"
+          class="mt-1"
+        />
+      </div>
+
+      <div
+        v-if="form.dob"
+        class="col-span-6 sm:col-span-3"
+      >
+        <x-checkbox
+          id="show_yob"
+          v-model="form.show_yob"
+          label="Show Your of Birth"
+          help="Show Year of Birth in your public profile."
+          name="show_yob"
+          :error="form.errors.show_yob"
+        />
+      </div>
+
+      <!-- Gender -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-select
+          id="gender"
+          v-model="form.gender"
+          name="gender"
+          :error="form.errors.gender"
+          label="Gender"
+          placeholder="Prefer not to say"
+          :select-list="{m: 'Male', f: 'Female', o: 'Others'}"
+        />
+      </div>
+
+      <div
+        v-if="form.gender"
+        class="col-span-6 sm:col-span-3"
+      >
+        <x-checkbox
+          id="show_gender"
+          v-model="form.show_gender"
+          label="Show Gender"
+          help="Show Gender in your public profile."
+          name="show_gender"
+          :error="form.errors.show_gender"
+        />
+      </div>
+
+      <!-- s_discord_username -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="s_discord_username"
+          v-model="form.s_discord_username"
+          label="Discord Username"
+          :error="form.errors.s_discord_username"
+          autocomplete="s_discord_username"
+          type="text"
+          name="s_discord_username"
+          help="Eg: username#1234"
+        />
+      </div>
+
+      <!-- s_steam_profile_url -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="s_steam_profile_url"
+          v-model="form.s_steam_profile_url"
+          label="Steam Profile URL"
+          :error="form.errors.s_steam_profile_url"
+          autocomplete="s_steam_profile_url"
+          type="text"
+          name="s_steam_profile_url"
+          help="Eg: https://steamcommunity.com/id/username"
+        />
+      </div>
+
+      <!-- s_twitter_url -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="s_twitter_url"
+          v-model="form.s_twitter_url"
+          label="Twiter Profile URL"
+          :error="form.errors.s_twitter_url"
+          autocomplete="s_twitter_url"
+          type="text"
+          name="s_twitter_url"
+          help="Eg: https://twitter.com/@username"
+        />
+      </div>
+
+      <!-- s_youtube_url -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="s_youtube_url"
+          v-model="form.s_youtube_url"
+          label="YouTube URL"
+          :error="form.errors.s_youtube_url"
+          autocomplete="s_youtube_url"
+          type="text"
+          name="s_youtube_url"
+          help="Eg: https://www.youtube.com/minecraft"
+        />
+      </div>
+
+      <!-- s_facebook_url -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="s_facebook_url"
+          v-model="form.s_facebook_url"
+          label="Facebook URL"
+          :error="form.errors.s_facebook_url"
+          autocomplete="s_facebook_url"
+          type="text"
+          name="s_facebook_url"
+          help="Eg: http://facebook.com/minecraft"
+        />
+      </div>
+
+      <!-- s_twitch_url -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="s_twitch_url"
+          v-model="form.s_twitch_url"
+          label="Twitch URL"
+          :error="form.errors.s_twitch_url"
+          autocomplete="s_twitch_url"
+          type="text"
+          name="s_twitch_url"
+          help="Eg: http://twitch.tv/minecraft"
+        />
+      </div>
+
+      <!-- s_website_url -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="s_website_url"
+          v-model="form.s_website_url"
+          label="Website URL"
+          :error="form.errors.s_website_url"
+          autocomplete="s_website_url"
+          type="text"
+          name="s_website_url"
+          help="Eg: https://my-personal-blog.com"
+        />
+      </div>
+
+      <!-- about -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-textarea
+          id="about"
+          v-model="form.about"
+          label="About Yourself"
+          help="Something about yourself in 255 characters."
+          :error="form.errors.about"
+          name="about"
+        />
+      </div>
+    </template>
+
+    <template #actions>
+      <jet-action-message
+        :on="form.recentlySuccessful"
+        class="mr-3"
+      >
+        Saved.
+      </jet-action-message>
+
+      <jet-button
+        :class="{ 'opacity-25': form.processing }"
+        :disabled="form.processing"
+        :loading="form.processing"
+      >
+        Save
+      </jet-button>
+    </template>
+  </jet-form-section>
+</template>
+
+<script>
+import JetButton from '@/Jetstream/Button';
+import JetFormSection from '@/Jetstream/FormSection';
+import JetInput from '@/Jetstream/Input';
+import JetInputError from '@/Jetstream/InputError';
+import JetLabel from '@/Jetstream/Label';
+import JetActionMessage from '@/Jetstream/ActionMessage';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton';
+import DatePicker from 'vue2-datepicker';
+import XInput from '@/Components/Form/XInput';
+import XCheckbox from '@/Components/Form/XCheckbox';
+import XSelect from '@/Components/Form/XSelect';
+import XTextarea from '@/Components/Form/XTextarea';
+
+export default {
+    components: {
+        XTextarea,
+        XSelect,
+        XCheckbox,
+        XInput,
+        JetActionMessage,
+        JetButton,
+        JetFormSection,
+        JetInput,
+        JetInputError,
+        JetLabel,
+        JetSecondaryButton,
+        DatePicker
+    },
+
+    props: ['user'],
+
+    data() {
+        return {
+            form: this.$inertia.form({
+                _method: 'PUT',
+                name: this.user.name,
+                photo: null,
+                cover_image: null,
+                dob: this.user.dob,
+                gender: this.user.gender,
+                cover_image_url: this.user.cover_image_url,
+                s_discord_username: this.user.social_links ? this.user.social_links.s_discord_username : null,
+                s_steam_profile_url: this.user.social_links ? this.user.social_links.s_steam_profile_url : null,
+                s_twitter_url: this.user.social_links ? this.user.social_links.s_twitter_url : null,
+                s_youtube_url: this.user.social_links ? this.user.social_links.s_youtube_url : null,
+                s_facebook_url: this.user.social_links ? this.user.social_links.s_facebook_url : null,
+                s_twitch_url: this.user.social_links ? this.user.social_links.s_twitch_url : null,
+                s_website_url: this.user.social_links ? this.user.social_links.s_website_url : null,
+                about: this.user.about,
+
+                profile_photo_source: this.user.settings ? this.user.settings.profile_photo_source : null,
+                show_gender: this.user.settings ? this.user.settings.show_gender : false,
+                show_yob: this.user.settings ? this.user.settings.show_yob : false,
+            }),
+
+            photoPreview: null,
+            coverImagePreview: null,
+        };
+    },
+
+    methods: {
+        updateProfileInformation() {
+            if (this.$refs.photo) {
+                this.form.photo = this.$refs.photo.files[0];
+            }
+
+            if (this.$refs.coverImage) {
+                this.form.cover_image = this.$refs.coverImage.files[0];
+            }
+
+            this.form.post(route('user-profile-information.update'), {
+                errorBag: 'updateProfileInformation',
+                preserveScroll: true
+            });
+        },
+
+        selectNewPhoto() {
+            this.$refs.photo.click();
+        },
+
+        updatePhotoPreview() {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                this.photoPreview = e.target.result;
+            };
+
+            reader.readAsDataURL(this.$refs.photo.files[0]);
+        },
+
+        deletePhoto() {
+            this.$inertia.delete(route('current-user-photo.destroy'), {
+                preserveScroll: true,
+                onSuccess: () => (this.photoPreview = null),
+            });
+        },
+
+        selectNewCoverImage() {
+            this.$refs.coverImage.click();
+        },
+
+        updateCoverImagePreview() {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                this.coverImagePreview = e.target.result;
+            };
+
+            reader.readAsDataURL(this.$refs.coverImage.files[0]);
+        },
+
+        deleteCoverImage() {
+            this.$inertia.delete(route('current-user-cover.destroy'), {
+                preserveScroll: true,
+                onSuccess: () => (this.coverImagePreview = null),
+            });
+        },
+
+    },
+};
+</script>
+
+<style scoped>
+.mx-datepicker {
+    width: 100% !important;
+}
+</style>
