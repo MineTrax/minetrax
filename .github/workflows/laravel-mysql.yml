@@ -6,7 +6,6 @@ jobs:
     name: Laravel (PHP ${{ matrix.php-versions }})
     runs-on: ubuntu-latest
     env:
-      DB_HOST: mysql
       DB_DATABASE: minetrax
       DB_USERNAME: root
       DB_PASSWORD: password
@@ -14,7 +13,6 @@ jobs:
       CACHE_DRIVER: file
       QUEUE_CONNECTION: sync
       SESSION_DRIVER: database
-      REDIS_HOST: redis
       REDIS_CLIENT: predis
     services:
       mysql:
@@ -68,10 +66,14 @@ jobs:
       - name: Run Migration
         run: php artisan migrate -v
         env:
+          DB_HOST: mysql
+          REDIS_HOST: redis
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
       - name: Test with phpunit
         run: vendor/bin/phpunit
         env:
+          DB_HOST: mysql
+          REDIS_HOST: redis
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
