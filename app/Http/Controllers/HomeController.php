@@ -6,9 +6,7 @@ use App\Enums\ServerType;
 use App\Models\News;
 use App\Models\Player;
 use App\Models\Poll;
-use App\Models\Post;
 use App\Models\Server;
-use App\Models\ServerChatlog;
 use App\Models\Session;
 use App\Models\User;
 use App\Settings\GeneralSettings;
@@ -77,7 +75,7 @@ class HomeController extends Controller
         $welcomeBoxContentHtml = null;
         if($generalSettings->enable_welcomebox && $generalSettings->welcomebox_content) {
             $converter = new GithubFlavoredMarkdownConverter();
-            $welcomeBoxContentHtml = $converter->convertToHtml($generalSettings->welcomebox_content);
+            $welcomeBoxContentHtml = $converter->convertToHtml($generalSettings->welcomebox_content)->getContent();
         }
 
         // Chat Logs Section
