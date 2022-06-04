@@ -10,7 +10,7 @@ Route::get('time', function() {
     dd(\Carbon\Carbon::createFromTimestampMs($timestamp));
 });
 
-Route::get('token', function () {
+Route::middleware('auth:sanctum')->get('token', function () {
     dd(auth()->user()->createToken('test')->plainTextToken);
 });
 
