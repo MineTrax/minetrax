@@ -44,7 +44,7 @@ jobs:
           REDIS_HOST: redis
 
       - name: Run Testsuite
-        run: vendor/bin/phpunit tests/
+        run: php artisan test
         env:
           DB_HOST: mysql
           REDIS_HOST: redis
