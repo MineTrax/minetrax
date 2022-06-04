@@ -44,7 +44,7 @@ jobs:
           REDIS_HOST: redis
           APP_DEBUG: true
 
-      - name: Run Testsuite
+      - name: Run Test Suite
         run: php artisan test
         env:
           DB_HOST: mysql
