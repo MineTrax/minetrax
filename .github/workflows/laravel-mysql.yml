@@ -64,12 +64,8 @@ jobs:
       - name: Clear Config
         run: php artisan config:clear
       - name: Run Migration
-        run: php artisan migrate -v
+        run: php artisan migrate -v && php artisan test
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
-      - name: Test with phpunit
-        run: vendor/bin/phpunit --coverage-text
-        env:
-          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
-          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+
