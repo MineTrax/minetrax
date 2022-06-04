@@ -66,14 +66,14 @@ jobs:
       - name: Run Migration
         run: php artisan migrate -v
         env:
-          DB_HOST: mysql
-          REDIS_HOST: redis
+          DB_HOST: localhost
+          REDIS_HOST: localhost
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
       - name: Test with phpunit
         run: vendor/bin/phpunit
         env:
-          DB_HOST: mysql
-          REDIS_HOST: redis
+          DB_HOST: locahost
+          REDIS_HOST: localhost
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
