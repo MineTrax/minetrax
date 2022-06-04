@@ -42,10 +42,11 @@ jobs:
         env:
           DB_HOST: mysql
           REDIS_HOST: redis
+          APP_DEBUG: true
 
       - name: Run Testsuite
         run: php artisan test
         env:
           DB_HOST: mysql
           REDIS_HOST: redis
-
+          APP_DEBUG: true
