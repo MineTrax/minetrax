@@ -2,19 +2,18 @@
 
 namespace App\Jobs;
 
+use App\Models\JsonMinecraftPlayerStat;
 use App\Models\Player;
+use App\Models\Server;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
-use App\Models\JsonMinecraftPlayerStat;
-use App\Models\Server;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Yaml\Yaml;
 
 class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
@@ -45,6 +44,7 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
 
         // Decrypt the Connection Data;
         $serverLogin = decrypt($this->server->storage_login);
+        $serverLogin['port'] = (int)$serverLogin['port'];
         $serverDisk  = Storage::build($serverLogin);
 
         // Try to get UserCache
