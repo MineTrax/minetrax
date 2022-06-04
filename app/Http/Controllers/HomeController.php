@@ -42,7 +42,7 @@ class HomeController extends Controller
         foreach ($latestPinnedNews as $news) {
             $converter = new GithubFlavoredMarkdownConverter();
             $strippedBody = \Str::words($news->body, 25);
-            $news->body_md = $converter->convertToHtml($strippedBody);
+            $news->body_md = $converter->convertToHtml($strippedBody)->getContent();
         }
 
         // Newest User
