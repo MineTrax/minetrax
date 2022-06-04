@@ -31,6 +31,7 @@
         "league/commonmark": "^2.2",
         "league/flysystem-aws-s3-v3": "~3.0",
         "league/flysystem-sftp-v3": "^3.0",
+        "league/mime-type-detection": "^1.11",
         "nxp/math-executor": "^2.1",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "^7.0",

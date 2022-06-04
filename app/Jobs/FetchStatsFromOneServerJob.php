@@ -14,6 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use League\MimeTypeDetection\ExtensionMimeTypeDetector;
 use Symfony\Component\Yaml\Yaml;
 
 class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
@@ -42,6 +43,8 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
             return;
         }
 
+        $mimeDetector = new ExtensionMimeTypeDetector();
+
         // Decrypt the Connection Data;
         $serverLogin = decrypt($this->server->storage_login);
         $serverLogin['port'] = (int)$serverLogin['port'];
@@ -64,22 +67,30 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
 
         // Get list of Objects
         $fileList = $serverDisk->listContents($this->server->level_name.'/stats');
+
         // Start getting JSON and create/update the minecraft_player_stats table
         foreach ($fileList as $file) {
+            $fileType = $mimeDetector->detectMimeTypeFromPath($file['path']);
             // If this is a not file or not a json file
-            if ($file['type'] != 'file' || $file['extension'] != 'json') {
+            if ($file['type'] != 'file' || $fileType != 'application/json') {
                 continue;
             }
 
-            $playerUuid = $file['filename'];
+            /**
+             * path is: world/stats/2d9070a8-8731-40a5-bf73-052b6e55b708.json
+             * fileNameWithoutExt need to be 2d9070a8-8731-40a5-bf73-052b6e55b708
+             */
+            $fileNameWithoutExt = explode('/', $file['path']);
+            $fileNameWithoutExt = explode('.', $fileNameWithoutExt[count($fileNameWithoutExt) - 1])[0];
+            $playerUuid = $fileNameWithoutExt;
 
             // Check if we already have this player and it has not changed.
-            // Right now its kinda Jugad with size. Need to change it to modified_at of ls -lah
+            // Right now its kinda Jugad with fileSize. Need to change it to modified_at of ls -lah
             $currentPlayerObj = JsonMinecraftPlayerStat::where(['uuid' => $playerUuid, 'server_id' => $this->server->id])->first();
 
-            $lastUniqueHash = $file['size'];
-            if ($file['timestamp']) {
-                $lastUniqueHash = $file['timestamp'];
+            $lastUniqueHash = $file['fileSize'];
+            if ($file['lastModified']) {
+                $lastUniqueHash = $file['lastModified'];
             }
             if ($currentPlayerObj && $currentPlayerObj->hash == $lastUniqueHash) {
                 // Log::debug('Skip for:: ' . $playerUuid. " Server:: ". $this->server->id);
@@ -103,7 +114,7 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
             $forSaving['data_version'] = $fileContent['DataVersion'];
             $forSaving['hash'] = $lastUniqueHash;
             // $forSaving['uuid'] = $playerUuid;
-            $forSaving['last_modified'] = $file['timestamp'] ?? $currentPlayerObj->last_modified;
+            $forSaving['last_modified'] = $file['lastModified'] ?? $currentPlayerObj->last_modified;
             $forSaving['killed_by'] = $fileContent['stats'][$mcKilledBy] ?? null;
             $forSaving['used'] = $fileContent['stats'][$mcUsed] ?? null;
             $forSaving['mined'] = $fileContent['stats'][$mcMined] ?? null;
