@@ -10,7 +10,6 @@ use App\Settings\PlayerSettings;
 use App\Settings\PluginSettings;
 use App\Utils\PlayerRating\PlayerRatingCalculator;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -91,7 +90,8 @@ class CalculatePlayersRatingJob implements ShouldQueue
             }
         } else {
             // TODO: Temp to testing, change this with some good professional rating calculation
-            $rating = round(( $player->total_score - $minScore ) / ( $maxScore - $minScore ) * 10, 2);
+            $divideBy = ($maxScore - $minScore) == 0 ? 1 : $maxScore - $minScore;
+            $rating = round(( $player->total_score - $minScore ) / $divideBy * 10, 2);
         }
 
         return $rating;
