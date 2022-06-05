@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\JsonMinecraftPlayerStat;
-use App\Models\News;
 use App\Models\Player;
 use App\Models\Rank;
 use App\Models\Server;
 use DB;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Image;
+use Inertia\Inertia;
 
 class PlayerController extends Controller
 {
@@ -110,7 +109,7 @@ class PlayerController extends Controller
         try {
             $img = Image::cache(function($image) use($uuid, $size) {
                 // try getting from third party service
-                return $image->make('https://xcrafatar.com/avatars/'.$uuid.'?size='.$size);
+                return $image->make('https://crafatar.com/avatars/'.$uuid.'?size='.$size);
             }, 60, true);   // Cache lifetime is in minutes
         } catch (\Exception $exception) {
             try {
