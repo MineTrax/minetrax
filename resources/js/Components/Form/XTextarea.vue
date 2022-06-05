@@ -61,11 +61,11 @@ export default {
         },
         autofocus: {
             type: [String, Boolean],
-            default: 'true'
+            default: false
         },
         required: {
             type: [String, Boolean],
-            default: 'true'
+            default: false
         },
         disabled: {
             type: [String, Boolean],
