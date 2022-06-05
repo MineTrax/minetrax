@@ -176,6 +176,7 @@ class ApiMinecraftPlayerIntelController extends Controller
             "items_placed_xmin" => "required|numeric",
             "items_consumed_xmin" => "required|numeric",
             "afk_time_xmin" => "required|numeric",
+            "world_location" => 'sometimes|nullable|json'
         ]);
 
         $minecraftPlayerSession = MinecraftPlayerSession::where('uuid', $request->session_uuid)->firstOrFail();
@@ -213,6 +214,7 @@ class ApiMinecraftPlayerIntelController extends Controller
                 "items_crafted" => $request->items_crafted_xmin,
                 "items_placed" => $request->items_placed_xmin,
                 "items_consumed" => $request->items_consumed_xmin,
+                "world_location" => $request->world_location,
             ]);
 
             DB::commit();

@@ -32,6 +32,7 @@ class CreateMinecraftPlayerEventsTable extends Migration
             $table->integer('items_crafted')->default(0);
             $table->integer('items_placed')->default(0);
             $table->integer('items_consumed')->default(0);
+            $table->json('world_location')->nullable(); // world location during the report if player was online
 
             $table->foreignId('session_id')->constrained('minecraft_player_sessions')->onDelete('cascade');
             $table->timestamps();
