@@ -31,30 +31,35 @@ return [
     ],
 
     'github' => [
+        'oauth_enabled' => env('GITHUB_OAUTH_ENABLED'),
         'client_id' => env('GITHUB_CLIENT_ID'),
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
         'redirect' => env('GITHUB_AUTH_REDIRECT'),
     ],
 
     'google' => [
+        'oauth_enabled' => env('GOOGLE_OAUTH_ENABLED'),
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_AUTH_REDIRECT'),
     ],
 
     'twitter' => [
+        'oauth_enabled' => env('TWITTER_OAUTH_ENABLED'),
         'client_id' => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
         'redirect' => env('TWITTER_AUTH_REDIRECT'),
     ],
 
     'facebook' => [
+        'oauth_enabled' => env('FACEBOOK_OAUTH_ENABLED'),
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
         'redirect' => env('FACEBOOK_AUTH_REDIRECT'),
     ],
 
     'discord' => [
+        'oauth_enabled' => env('DISCORD_OAUTH_ENABLED'),
         'client_id' => env('DISCORD_CLIENT_ID'),
         'client_secret' => env('DISCORD_CLIENT_SECRET'),
         'redirect' => env('DISCORD_REDIRECT_URI'),

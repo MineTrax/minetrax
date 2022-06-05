@@ -63,7 +63,16 @@ class HandleInertiaRequests extends Middleware
             },
             'generalSettings' => fn(GeneralSettings $generalSettings) => $generalSettings->toArray(),
             'customPageList' => CustomPage::visible()->navbar()->select(['id', 'title', 'path', 'is_in_navbar', 'is_visible'])->get(),
-            'isImpersonating' => $request->user() && $request->user()->isImpersonating()
+            'isImpersonating' => $request->user() && $request->user()->isImpersonating(),
+            'enabledSocialAuths' => function() {
+                $enabledSocialLogins = [];
+                $enabledSocialLogins['github'] = config('services.github.oauth_enabled');
+                $enabledSocialLogins['google'] = config('services.google.oauth_enabled');
+                $enabledSocialLogins['facebook'] = config('services.facebook.oauth_enabled');
+                $enabledSocialLogins['twitter'] = config('services.twitter.oauth_enabled');
+                $enabledSocialLogins['discord'] = config('services.discord.oauth_enabled');
+                return $enabledSocialLogins;
+            }
         ]);
     }
 }
