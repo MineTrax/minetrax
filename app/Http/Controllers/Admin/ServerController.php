@@ -469,15 +469,19 @@ class ServerController extends Controller
         }
 
         // Send request to Service and return results.
-        $fetchInfo = $serverFileService->getServerPropertiesFromRemote($connectionString);
-        if ($fetchInfo) {
-            $serverStatus = $serverPingService->pingServer($storageServerHost, $fetchInfo['server-port']);
-        }
+        try {
+            $fetchInfo = $serverFileService->getServerPropertiesFromRemote($connectionString);
+            if ($fetchInfo) {
+                $serverStatus = $serverPingService->pingServer($storageServerHost, $fetchInfo['server-port']);
+            }
 
-        if ($fetchInfo) {
-            return response(['success' => 'Something found', 'data' => $fetchInfo, 'server_status' => $serverStatus]);
+            if ($fetchInfo) {
+                return response(['success' => 'Something found', 'data' => $fetchInfo, 'server_status' => $serverStatus]);
+            }
+            return response(['message' => 'No Server found at this path'], 404);
+        } catch (\Exception $exception) {
+            return response(['message' => $exception->getMessage()], 500);
         }
-        return response(['message' => 'No Server found at this path'], 404);
     }
 
     public function postSendCommandToServer(Server $server, Request $request)
