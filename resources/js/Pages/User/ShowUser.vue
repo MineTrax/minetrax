@@ -291,7 +291,7 @@
             v-if="profileUser.about"
             class="flex flex-col bg-white dark:bg-cool-gray-800 rounded w-full shadow p-4"
           >
-            <span class="whitespace-pre dark:text-gray-200">{{ profileUser.about }}</span>
+            <span class="whitespace-pre-wrap dark:text-gray-200">{{ profileUser.about }}</span>
           </div>
 
           <div class="flex flex-col bg-white dark:bg-cool-gray-800 dark:text-gray-400 rounded w-full shadow p-4 space-y-2">
@@ -353,10 +353,9 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import JetSectionBorder from '@/Jetstream/SectionBorder';
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import PostListBox from '@/Shared/PostListBox';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
 import SocialChannelBox from '@/Shared/SocialChannelBox';
 
 export default {

@@ -63,7 +63,7 @@
               :href="route('user.public.get', comment.commentator.username)"
             >
               <span
-                class="cursor-pointer font-semibold text-gray-800"
+                class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200"
                 :style="[comment.commentator.roles[0].color ? {color: comment.commentator.roles[0].color} : null]"
               >{{
                 comment.commentator.name
@@ -150,7 +150,7 @@
 
 <script>
 import Icon from '@/Components/Icon';
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     components: {Icon},
