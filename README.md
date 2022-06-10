@@ -4,14 +4,16 @@
 
 ![image](https://minetrax.github.io/img/shots/homepage.png)
 
-[![tests](https://github.com/minetrax/minetrax/actions/workflows/laravel-mysql.yml/badge.svg)](https://github.com/minetrax/minetrax/actions/workflows/laravel-mysql.yml)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/minetrax/minetrax/tests?label=Tests&style=for-the-badge)
+![Discord](https://img.shields.io/discord/508594544598712330?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
+![GitHub Releases](https://img.shields.io/github/v/release/minetrax/minetrax?include_prereleases&style=for-the-badge)
 
 ## About MineTrax
 MineTrax is a web suite & analytics tool for your minecraft servers. Using it you can improve your server engagement by providing a unified dashboard for players to visit and view their player data, or you can keep everything private and use it only for analytics, choice is yours.
 
 ## Requirements
 - PHP 8.1+
-- MySQL 8+ or MariaDB 10+
+- MySQL 5.7+ or MariaDB 10.2.7+
 - Apache2 or Nginx
 - NodeJS 12+
 - Redis Server
