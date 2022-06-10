@@ -291,7 +291,7 @@
 
                     <tr v-if="playersList.data.length === 0">
                       <td
-                        class="border-t px-6 py-4 text-center"
+                        class="border-t px-6 py-4 text-center dark:text-gray-300 text-gray-700"
                         colspan="8"
                       >
                         No players found.
@@ -314,7 +314,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import ShoutBox from '@/Shared/ShoutBox';
 import NewsBox from '@/Shared/NewsBox';
