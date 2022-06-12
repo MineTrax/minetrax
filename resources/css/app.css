@@ -8,6 +8,11 @@
     display: none;
 }
 
+.hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
 /* Let's get this party started */
 .boxscroll::-webkit-scrollbar {
     width: 4px;
