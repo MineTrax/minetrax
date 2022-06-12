@@ -54,12 +54,9 @@
           </svg>
         </div>
 
-        <div
-          v-if="error"
-          class="bg-red-50 border border-red-400 mt-2 p-1 rounded text-center text-red-400"
-        >
+        <error-message v-if="error">
           {{ error }}
-        </div>
+        </error-message>
 
         <div class="flex flex-col text-sm text-gray-700 dark:text-gray-300 mt-2 h-96 overflow-y-auto space-y-1">
           <notification
@@ -94,10 +91,12 @@ import JetDropdown from '@/Jetstream/Dropdown';
 import Icon from '@/Components/Icon';
 import InfiniteScroll from '@/Components/InfiniteScroll';
 import Notification from '@/Components/Notification';
+import ErrorMessage from '@/Components/ErrorMessage';
 
 export default {
     name: 'NotificationDropdown',
     components: {
+        ErrorMessage,
         Notification,
         InfiniteScroll,
         Icon,

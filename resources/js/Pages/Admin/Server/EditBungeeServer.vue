@@ -137,8 +137,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
-import JetInputError from '@/Jetstream/InputError';
 import LoadingButton from '@/Components/LoadingButton';
 import XInput from '@/Components/Form/XInput';
 import XSelect from '@/Components/Form/XSelect';
@@ -147,13 +145,12 @@ export default {
     components: {
         XSelect,
         AppLayout,
-        JetSectionBorder,
-        JetInputError,
         LoadingButton,
         XInput
     },
     props: {
-        server: Object
+        server: Object,
+        versionsArray: Array,
     },
     data() {
         return {
@@ -165,15 +162,6 @@ export default {
                 minecraft_version: this.server.minecraft_version,
                 hostname: this.server.hostname
             }),
-            versionsArray: {
-                '1.18': '1.18',
-                '1.17': '1.17',
-                '1.16': '1.16',
-                '1.15': '1.15',
-                '1.14': '1.14',
-                '1.13': '1.13',
-                '1.12': '1.12',
-            }
         };
     },
 

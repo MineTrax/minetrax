@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\ServerType;
+use App\Enums\ServerVersion;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateServerRequest;
 use App\Http\Requests\UpdateServerRequest;
@@ -13,6 +14,7 @@ use App\Services\GeolocationService;
 use App\Services\MinecraftServerFileService;
 use App\Services\MinecraftServerPingService;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
+use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
@@ -51,7 +53,9 @@ class ServerController extends Controller
     {
         $this->authorize('create', Server::class);
 
-        return Inertia::render('Admin/Server/CreateServer');
+        return Inertia::render('Admin/Server/CreateServer', [
+            "versionsArray" => ServerVersion::getValues()
+        ]);
     }
 
     public function createBungee()
@@ -63,7 +67,9 @@ class ServerController extends Controller
 
         $this->authorize('create', Server::class);
 
-        return Inertia::render('Admin/Server/CreateBungeeServer');
+        return Inertia::render('Admin/Server/CreateBungeeServer', [
+            "versionsArray" => ServerVersion::getValues()
+        ]);
     }
 
     public function store(CreateServerRequest $request, GeolocationService $geolocationService)
@@ -138,7 +144,7 @@ class ServerController extends Controller
             'query_port' => 'required|numeric|min:0|max:65535',
             'webquery_port' => 'required|numeric|min:0|max:65535',
             'name' => 'required',
-            'minecraft_version' => 'required',
+            'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
         ]);
 
         $ipAddress = gethostbyname($request->hostname);
@@ -290,7 +296,8 @@ class ServerController extends Controller
 
         if (ServerType::Bungee()->is($server->type)) {
             return Inertia::render('Admin/Server/EditBungeeServer', [
-                'server' => $server
+                'server' => $server,
+                "versionsArray" => ServerVersion::getValues()
             ]);
         }
 
@@ -317,7 +324,8 @@ class ServerController extends Controller
             "settings" => $server->settings,
         ];
         return Inertia::render('Admin/Server/EditServer', [
-            'server' => $serverData
+            'server' => $serverData,
+            "versionsArray" => ServerVersion::getValues()
         ]);
     }
 
@@ -331,7 +339,7 @@ class ServerController extends Controller
             'query_port' => 'required|numeric|min:0|max:65535',
             'webquery_port' => 'required|numeric|min:0|max:65535',
             'name' => 'required',
-            'minecraft_version' => 'required',
+            'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
         ]);
 
         $ipAddress = gethostbyname($request->hostname);

@@ -119,4 +119,5 @@ return [
 
     'password_timeout' => 10800,
 
+    'random_user_avatars' => env('RANDOM_USER_AVATARS', true),
 ];

@@ -38,12 +38,9 @@
         </svg>
       </div>
 
-      <div
-        v-if="error"
-        class="bg-red-50 border border-red-400 mt-2 p-1 rounded text-center text-red-400"
-      >
+      <error-message v-if="error">
         {{ error }}
-      </div>
+      </error-message>
 
       <div
         v-if="!loading && !error"
@@ -51,13 +48,14 @@
       >
         <div
           v-for="(uuid, username) of playersList"
+          :key="uuid"
           class="flex-shrink-0 mr-1 mb-1"
           :class="sizeClass"
         >
           <img
             v-tippy
             :title="username"
-            :src="`https://crafatar.com/avatars/${uuid}?size=50`"
+            :src="route('player.avatar.get', uuid, {size: 25})"
             :alt="username"
             class="focus:outline-none"
             :class="sizeClass"
@@ -66,7 +64,7 @@
       </div>
 
       <div
-        v-if="!playersList || playersList.length <= 0"
+        v-if="!error && (!playersList || playersList.length <= 0)"
         class="italic p-1 rounded text-center text-gray-400"
       >
         No players online.
@@ -77,7 +75,10 @@
 
 <script>
 
+import ErrorMessage from '@/Components/ErrorMessage';
+
 export default {
+    components: {ErrorMessage},
     props: {
         server: Object,
     },
@@ -132,7 +133,7 @@ export default {
                 this.error = err.response.data.message || err.message;
                 this.serverInfo = null;
                 this.playersList = null;
-            }).finally(e => {
+            }).finally(() => {
                 this.loading = false;
             });
         }

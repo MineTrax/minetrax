@@ -7,7 +7,7 @@
 
       <div
         v-if="users && users.length > 0"
-        class="flex justify-center"
+        class="flex justify-center flex-wrap"
       >
         <inertia-link
           v-for="user in onlineMembers"
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { formatDistanceToNowStrict } from 'date-fns';
+import {formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     props: {

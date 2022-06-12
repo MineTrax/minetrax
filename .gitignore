@@ -17,3 +17,4 @@ _ide_helper_models.php
 /.idea
 /public/css/app.css
 /public/js/app.js
+/public/mix-manifest.json

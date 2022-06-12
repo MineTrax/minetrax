@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ServerVersion;
 use App\Models\Server;
+use BenSampo\Enum\Rules\EnumValue;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -38,7 +40,7 @@ class CreateServerRequest extends FormRequest
             'query_port' => 'required|numeric|min:0|max:65535',
             'webquery_port' => 'required|numeric|min:0|max:65535',
             'name' => 'required',
-            'minecraft_version' => 'required',
+            'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
             'type' => 'required',
             'level_name' => 'required|alpha_dash',
             'settings' => 'sometimes',

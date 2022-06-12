@@ -24,7 +24,7 @@
         {{ placeholder }}
       </option>
       <option
-        v-for="(label, value) in selectList"
+        v-for="(label, value) in computedList"
         :key="value"
         :value="value"
       >
@@ -63,7 +63,7 @@
 <script>
 export default {
     props: {
-        selectList: [Object],
+        selectList: [Object, Array],
         value: [Number, String, Array, Object, Boolean, Date],
         name: String,
         placeholder: String,
@@ -100,6 +100,15 @@ export default {
     },
 
     computed: {
+        computedList() {
+            if (!Array.isArray(this.selectList)) {
+                return this.selectList;
+            }
+
+            return this.selectList.reduce((acc,value) => {
+                return {[value]: value, ...acc};
+            }, {});
+        },
         borderColor() {
             if (this.error) {
                 return 'border-red-400 dark:border-red-400';

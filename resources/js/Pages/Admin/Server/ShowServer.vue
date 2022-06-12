@@ -311,12 +311,10 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {formatDistanceToNowStrict, format} from 'date-fns';
-import { ITerminalOptions, Terminal } from 'xterm';
-import { FitAddon } from 'xterm-addon-fit';
-import { SearchAddon } from 'xterm-addon-search';
-import { SearchBarAddon } from 'xterm-addon-search-bar';
-import { WebLinksAddon } from 'xterm-addon-web-links';
+import {format, formatDistanceToNowStrict} from 'date-fns';
+import {Terminal} from 'xterm';
+import {FitAddon} from 'xterm-addon-fit';
+import {WebLinksAddon} from 'xterm-addon-web-links';
 import OverviewCard from '@/Components/Dashboard/OverviewCard';
 import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu';
 import {debounce} from 'lodash';

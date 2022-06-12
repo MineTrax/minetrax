@@ -456,7 +456,12 @@
                 Total distance walk by all players
               </p>
             </div>
-            <p>{{ aggrTotal.total_walk_one_cm }}</p>
+            <p v-if="aggrTotal.total_walk_one_cm">
+              {{ aggrTotal.total_walk_one_cm / 100 }}m
+            </p>
+            <p v-else>
+              0
+            </p>
           </div>
 
           <div class="flex flex-1 justify-between">
@@ -476,7 +481,12 @@
                 Max distance walk by one player
               </p>
             </div>
-            <p>{{ aggrMax.max_walk_one_cm.total_walk_one_cm }} ({{ aggrMax.max_walk_one_cm.username }})</p>
+            <p v-if="aggrMax.max_walk_one_cm && aggrMax.max_walk_one_cm.total_walk_one_cm">
+              {{ aggrMax.max_walk_one_cm.total_walk_one_cm/100 }}m ({{ aggrMax.max_walk_one_cm.username }})
+            </p>
+            <p v-else>
+              0
+            </p>
           </div>
         </div>
 
@@ -580,7 +590,12 @@
                 Total playtime by all players
               </p>
             </div>
-            <p>{{ aggrTotal.total_play_one_minute }}</p>
+            <p v-if="aggrTotal.total_play_one_minute">
+              {{ secondsToHMS(aggrTotal.total_play_one_minute/20, true) }}
+            </p>
+            <p v-else>
+              0s
+            </p>
           </div>
 
           <div class="flex flex-1 justify-between">
@@ -599,7 +614,15 @@
                 Max playtime by one player
               </p>
             </div>
-            <p>{{ aggrMax.max_play_one_minute.total_play_one_minute }} ({{ aggrMax.max_play_one_minute.username }})</p>
+            <p v-if="aggrMax.max_play_one_minute && aggrMax.max_play_one_minute.total_play_one_minute">
+              {{ secondsToHMS(aggrMax.max_play_one_minute.total_play_one_minute/20, true) }} ({{ aggrMax.max_play_one_minute.username }})
+            </p>
+            <p
+              v-else
+              class="italic"
+            >
+              None
+            </p>
           </div>
         </div>
 
@@ -750,7 +773,7 @@
                 Total money on server
               </p>
             </div>
-            <p>{{ aggrTotal.total_money }}</p>
+            <p>{{ aggrTotal.total_money || 0 }}</p>
           </div>
 
           <div class="flex flex-1 justify-between">
@@ -771,7 +794,15 @@
                 Max money by one player
               </p>
             </div>
-            <p>{{ aggrMax.max_money.money }} ({{ aggrMax.max_money.username }})</p>
+            <p v-if="aggrMax.max_money">
+              {{ aggrMax.max_money.money }} ({{ aggrMax.max_money.username }})
+            </p>
+            <p
+              v-else
+              class="italic"
+            >
+              None
+            </p>
           </div>
         </div>
       </div>

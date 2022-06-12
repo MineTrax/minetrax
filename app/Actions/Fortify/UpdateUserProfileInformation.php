@@ -4,7 +4,6 @@ namespace App\Actions\Fortify;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
@@ -27,12 +26,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'gender' => ['nullable', 'in:m,f,o'],
             'about' => ['nullable', 'string', 'max:255'],
             's_discord_username' => ['nullable', 'string'],
-            's_steam_profile_url' => ['nullable', 'active_url'],
-            's_twitter_url' => ['nullable', 'active_url'],
-            's_youtube_url' => ['nullable', 'active_url'],
-            's_facebook_url' => ['nullable', 'active_url'],
-            's_twitch_url' => ['nullable', 'active_url'],
-            's_website_url' => ['nullable', 'active_url'],
+            's_steam_profile_url' => ['nullable', 'url'],
+            's_twitter_url' => ['nullable', 'url'],
+            's_youtube_url' => ['nullable', 'url'],
+            's_facebook_url' => ['nullable', 'url'],
+            's_twitch_url' => ['nullable', 'url'],
+            's_website_url' => ['nullable', 'url'],
             'show_gender' => ['boolean'],
             'show_yob' => ['boolean'],
             'profile_photo_source' => ['nullable', 'in:gravatar,linked_player']

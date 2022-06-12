@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ServerType;
+use App\Enums\ServerVersion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Server extends BaseModel
@@ -12,6 +13,7 @@ class Server extends BaseModel
     protected $casts = [
         'settings' => 'json',
         'type' => ServerType::class,
+        'minecraft_version' => ServerVersion::class,
     ];
 
     protected $dates = ['last_scanned_at'];

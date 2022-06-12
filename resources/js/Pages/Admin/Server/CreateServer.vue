@@ -381,6 +381,9 @@ export default {
         LoadingButton,
         XInput
     },
+    props: {
+        versionsArray: Array
+    },
     data() {
         return {
             form: this.$inertia.form({
@@ -414,14 +417,6 @@ export default {
             prefetchError: null,
             fetchLoading: false,
             serverStatus: null,
-            versionsArray: {
-                '1.17': '1.17',
-                '1.16': '1.16',
-                '1.15': '1.15',
-                '1.14': '1.14',
-                '1.13': '1.13',
-                '1.12': '1.12',
-            },
             typeArray: {
                 0: 'Paper',
                 1: 'Spigot',
@@ -445,6 +440,7 @@ export default {
                     this.form.hostname = res.data.data['server-ip']+':'+res.data.data['server-port'];
                     this.isPrefetchSuccessful = true;
                     this.serverStatus = res.data.server_status;
+                    // TODO: Fix this is not working
                     if (this.serverStatus) {
                         let index = 0;
                         this.versionsArray.forEach(version => {

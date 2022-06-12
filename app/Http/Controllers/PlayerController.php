@@ -120,7 +120,7 @@ class PlayerController extends Controller
                     return $image->make($url);
                 }, 60, true);   // Cache lifetime is in minutes
             } catch (\Exception $exception) {
-                $img = Image::make(public_path('images/alex.png'));
+                $img = Image::make(public_path('images/alex.png'))->resize($size, $size);
             }
         }
 

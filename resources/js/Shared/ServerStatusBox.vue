@@ -33,12 +33,9 @@
       </div>
 
       <!-- Error -->
-      <div
-        v-if="error"
-        class="bg-red-50 border border-red-400 mt-2 p-1 rounded text-center text-red-400"
-      >
+      <error-message v-if="error">
         {{ error }}
-      </div>
+      </error-message>
 
       <div
         v-if="!loading && !error"
@@ -73,9 +70,10 @@
 <script>
 
 import CopyToClipboard from '@/Components/CopyToClipboard';
+import ErrorMessage from '@/Components/ErrorMessage';
 
 export default {
-    components: {CopyToClipboard},
+    components: {ErrorMessage, CopyToClipboard},
 
     props: {
         server: Object,

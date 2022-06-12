@@ -4,7 +4,8 @@ namespace App\Models;
 
 use App\Contracts\Commentator;
 use App\Traits\CanCommentTrait;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Cog\Contracts\Love\Reacterable\Models\Reacterable as ReacterableInterface;
+use Cog\Laravel\Love\Reacterable\Models\Traits\Reacterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
@@ -14,8 +15,6 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Cog\Contracts\Love\Reacterable\Models\Reacterable as ReacterableInterface;
-use Cog\Laravel\Love\Reacterable\Models\Traits\Reacterable;
 use Spatie\Searchable\Searchable;
 
 class User extends Authenticatable implements ReacterableInterface, Commentator, Searchable
@@ -111,7 +110,10 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
      */
     protected function defaultProfilePhotoUrl()
     {
-        return 'https://avatars.dicebear.com/api/bottts/' . urlencode($this->username) . '.svg';
+        if (config('auth.random_user_avatars')) {
+            return 'https://avatars.dicebear.com/api/bottts/' . urlencode($this->username) . '.svg';
+        }
+        return url('/images/steve.png');
     }
 
     /**
