@@ -196,6 +196,9 @@
                         <x-select
                           id="type"
                           v-model="form.type"
+                          placeholder="Select server type"
+                          :disable-null="true"
+                          :required="true"
                           name="type"
                           :error="form.errors.type"
                           label="Server Type"
