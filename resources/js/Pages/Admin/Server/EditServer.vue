@@ -421,6 +421,7 @@ export default {
         prefetch() {
             this.prefetchError = null;
             this.fetchLoading = true;
+            this.isPrefetchSuccessful = false;
             axios.post(route('admin.server.prefetch'), this.form)
                 .then(res => {
                     this.form.name = res.data.data['motd'];
