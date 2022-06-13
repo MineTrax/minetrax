@@ -3,6 +3,7 @@
 use App\Jobs\FetchStatsFromAllServersJob;
 use App\Services\MinecraftServerQueryService;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 
 Route::get('time', function() {
@@ -29,28 +30,79 @@ Route::get('calr', function () {
     return 'Calculating Players Rating';
 });
 
-Route::get('/servertest', function () {
+Route::get('/ftptest', function () {
+//    $data = [
+//        'host' => '',
+//        'port' => 21,
+//        'username' => '',
+//        'password' => '',
+//        'root' => '/',
+//    ];
+    $ftp_connection = ftp_connect($data['host'], $data['port']);
+    ftp_login($ftp_connection, $data['username'], $data['password']);
+//    ftp_pasv($ftp_connection, true);
+    dd(ftp_rawlist($ftp_connection, '-aln /', false));
+});
 
-    $server = \App\Models\Server::get()->where('id', 4)->first();
-    $data = decrypt($server->storage_login);
-
+Route::get('servertestb', function () {
     $data = [
-        'driver' => 'sftp',
+        'driver' => 'ftp',
         'host' => '',
-        'port' => 2022,
+        'port' => 21,
         'username' => '',
         'password' => '',
+        'root' => '/',
     ];
 
-    // make connection to server storage if required
-    Config::set('filesystems.disks.server', $data);
+    $data['port'] = (int)$data['port'];
+    $serverDisk  = Storage::build($data);
+    $userCache = $serverDisk->listContents('/')->toArray();
+    dd($userCache);
+});
 
-    $userCache = Storage::disk('server')->listContents('/world/stats');
+Route::get('/servertest', function () {
+
+//    $server = \App\Models\Server::get()->where('id', 7)->first();
+//    $data = decrypt($server->storage_login);
+
+    $data = [
+        'driver' => 'ftp',
+        'host' => '',
+        'port' => 21,
+        'username' => '',
+        'password' => '',
+        'root' => '/',
+    ];
+//    dd($data);
+
+
+
+    // The internal adapter
+    $adapter = new League\Flysystem\Ftp\FtpAdapter(
+    // Connection options
+        League\Flysystem\Ftp\FtpConnectionOptions::fromArray($data),
+        new League\Flysystem\Ftp\FtpConnectionProvider(),
+        new League\Flysystem\Ftp\NoopCommandConnectivityChecker(),
+        new League\Flysystem\UnixVisibility\PortableVisibilityConverter()
+    );
+
+// The FilesystemOperator
+    $filesystem = new League\Flysystem\Filesystem($adapter);
+
+    $contents = $filesystem->listContents('/')->toArray();
+    dd($contents);
+
+
+
+    // make connection to server storage if required
+
+    $data['port'] = (int)$data['port'];
+    $serverDisk  = Storage::build($data);
+    $userCache = $serverDisk->listContents('/wildxlgaming/stats')->toArray();
     dd($userCache);
     // $fileList = Storage::disk('server')->listContents($this->server->level_name.'/stats');
     // $userCache = Symfony\Component\Yaml\Yaml::parse($userCache);
 
-    dd($userCache);
 
     // Validate if it has stats folder to get data from.
     if (!$isExists) {
@@ -83,7 +135,7 @@ Route::get('query', function () {
     $Query = new App\Utils\MinecraftQuery\MinecraftQuery();
 
     try {
-        $Query->Connect('play.wildxlgaming.com', 25565);
+        $Query->Connect('', 25565);
 
         dump($Query->GetInfo());
         dump($Query->GetPlayers());
@@ -131,15 +183,4 @@ Route::get('webquery/{uuid}', function(\Illuminate\Http\Request $request) {
     $playerGroups = $minecraftQueryService->getPlayerGroupWithPluginWebQueryProtocol($server->ip_address, $server->webquery_port, $request->uuid);
 
     dd($playerGroups);
-});
-
-Route::get('impersonate', function() {
-    auth('web')->loginUsingId(4);
-//    session()->put('impersonate', 4);
-    return redirect()->home();
-    dump(auth()->user());
-});
-
-Route::get('me', function() {
-    dd(auth()->user()->isImpersonating());
 });

@@ -342,9 +342,16 @@
           />
         </div>
         <post-list-box
+          v-if="$page.props.generalSettings.enable_status_feed"
           :username="profileUser.username"
           :show-empty-post="true"
         />
+        <div
+          v-else
+          class="space-y-4 w-full p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow text-gray-500 text-center justify-center items-center flex"
+        >
+          <span class="italic">Posts Feed is disabled!</span>  😞
+        </div>
       </div>
     </div>
   </app-layout>

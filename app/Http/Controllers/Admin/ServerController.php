@@ -106,8 +106,20 @@ class ServerController extends Controller
         $connectionString = encrypt($connectionString);
         $countryId = $geolocationService->getCountryIdFromIP(gethostbyname($storageServerHost));
 
+        $ipAddress = gethostbyname($request->hostname);
+        // If ip address still have something like 111.111.111.111:25565 then we remove the port part
+        if(\Str::contains($ipAddress, ":")) {
+            $ipAddress = explode(":",$ipAddress);
+            $ipAddress = $ipAddress[0];
+        }
+        $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP);
+        if (!$ipAddress) {
+            return redirect()->back()
+                ->with(['toast' => ['type' => 'danger', 'title' => 'Provided Hostname is Invalid or Not Reachable!']]);
+        }
+
         Server::create([
-            'ip_address' => gethostbyname($request->hostname),
+            'ip_address' => $ipAddress,
             'join_port' => $request->join_port,
             'query_port' => $request->query_port,
             'webquery_port' => $request->webquery_port,
@@ -151,7 +163,7 @@ class ServerController extends Controller
         $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP);
         if (!$ipAddress) {
             return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'Provided Hostname in Invalid or Not Reachable!']]);
+                ->with(['toast' => ['type' => 'danger', 'title' => 'Provided Hostname is Invalid or Not Reachable!']]);
         }
 
         $countryId = $geolocationService->getCountryIdFromIP($ipAddress);
@@ -407,7 +419,20 @@ class ServerController extends Controller
         $connectionString = encrypt($connectionString);
         $countryId = $geolocationService->getCountryIdFromIP(gethostbyname($storageServerHost));
 
-        $server->ip_address = gethostbyname($request->hostname);
+
+        $ipAddress = gethostbyname($request->hostname);
+        // If ip address still have something like 111.111.111.111:25565 then we remove the port part
+        if(\Str::contains($ipAddress, ":")) {
+            $ipAddress = explode(":",$ipAddress);
+            $ipAddress = $ipAddress[0];
+        }
+        $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP);
+        if (!$ipAddress) {
+            return redirect()->back()
+                ->with(['toast' => ['type' => 'danger', 'title' => 'Provided Hostname is Invalid or Not Reachable!']]);
+        }
+
+        $server->ip_address = $ipAddress;
         $server->join_port = $request->join_port;
         $server->query_port = $request->query_port;
         $server->webquery_port = $request->webquery_port;

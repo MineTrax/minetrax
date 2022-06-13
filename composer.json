@@ -30,6 +30,7 @@
         "laravel/tinker": "^2.5",
         "league/commonmark": "^2.2",
         "league/flysystem-aws-s3-v3": "~3.0",
+        "league/flysystem-ftp": "^3.0",
         "league/flysystem-sftp-v3": "^3.0",
         "league/mime-type-detection": "^1.11",
         "nxp/math-executor": "^2.1",

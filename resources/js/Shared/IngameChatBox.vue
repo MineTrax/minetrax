@@ -13,7 +13,7 @@
           v-model="serverId"
           aria-label="serverSelector"
           name="serverSelector"
-          class="text-xs border-gray-300 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md shadow-sm"
+          class="text-xs border-gray-300 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
         >
           <option
             v-for="server in serverList"
@@ -298,7 +298,7 @@ import Icon from '@/Components/Icon';
 import JetDialogModal from '@/Jetstream/DialogModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import LoadingButton from '@/Components/LoadingButton';
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format} from 'date-fns';
 
 export default {
     components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton},
