@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'service' => 'maxmind_database',
+    'service' => env('GEOLOCATION_DRIVER', 'maxmind_database'),
 
     /*
     |--------------------------------------------------------------------------
