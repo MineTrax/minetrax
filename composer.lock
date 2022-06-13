@@ -5326,16 +5326,16 @@
         },
         {
             "name": "nxp/math-executor",
-            "version": "v2.2.1",
+            "version": "v2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neonxp/MathExecutor.git",
-                "reference": "d1b060749e58a09bc437f85152d54e40c163efb0"
+                "reference": "a944fe4e5631a6b3085ee2962e3159261f90bfcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neonxp/MathExecutor/zipball/d1b060749e58a09bc437f85152d54e40c163efb0",
-                "reference": "d1b060749e58a09bc437f85152d54e40c163efb0",
+                "url": "https://api.github.com/repos/neonxp/MathExecutor/zipball/a944fe4e5631a6b3085ee2962e3159261f90bfcd",
+                "reference": "a944fe4e5631a6b3085ee2962e3159261f90bfcd",
                 "shasum": ""
             },
             "require": {
@@ -5377,9 +5377,9 @@
             ],
             "support": {
                 "issues": "https://github.com/neonxp/MathExecutor/issues",
-                "source": "https://github.com/neonxp/MathExecutor/tree/v2.2.1"
+                "source": "https://github.com/neonxp/MathExecutor/tree/v2.3.0"
             },
-            "time": "2022-05-21T17:38:58+00:00"
+            "time": "2022-06-01T22:11:51+00:00"
         },
         {
             "name": "opis/closure",
@@ -16266,5 +16266,5 @@
         "ext-sockets": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
