@@ -4,9 +4,10 @@
 
 ![image](https://minetrax.github.io/img/shots/homepage.png)
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/minetrax/minetrax/tests?label=Tests&style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/minetrax/minetrax/tests?label=Tests&style=for-the-badge&logo=testcafe&logoColor=white)
 ![Discord](https://img.shields.io/discord/508594544598712330?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
-![GitHub Releases](https://img.shields.io/github/v/release/minetrax/minetrax?include_prereleases&style=for-the-badge)
+![Lines of code](https://img.shields.io/tokei/lines/github/minetrax/minetrax?style=for-the-badge&logo=xcode&logoColor=white)
+![GitHub Releases](https://img.shields.io/github/v/release/minetrax/minetrax?include_prereleases&style=for-the-badge&logo=github&logoColor=white)
 
 ## About MineTrax
 MineTrax is a web suite & analytics tool for your minecraft servers. Using it you can improve your server engagement by providing a unified dashboard for players to visit and view their player data, or you can keep everything private and use it only for analytics, choice is yours.
