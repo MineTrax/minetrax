@@ -42,20 +42,10 @@
                   class="ml-2 focus:outline-none"
                   @click="adminDrawer"
                 >
-                  <svg
-                    class="w-6 h-6 text-gray-300 dark:text-gray-600"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
+                  <icon
+                    name="cog"
+                    class="w-6 h-6 text-gray-400 dark:text-gray-500 hover:animate-spin"
+                  />
                 </button>
               </div>
 
@@ -292,6 +282,25 @@
                   </template>
 
                   <template #content>
+                    <div
+                      v-if="canShowAdminSidebar"
+                      class="block px-4 py-2 text-xs text-gray-400"
+                    >
+                      Staff
+                    </div>
+                    <button
+                      v-if="canShowAdminSidebar"
+                      type="button"
+                      class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-400 text-left hover:bg-cool-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-cool-gray-100 dark:focus:bg-cool-gray-900 transition duration-150 ease-in-out"
+                      @click="adminDrawer"
+                    >
+                      Admin Menu
+                    </button>
+                    <div
+                      v-if="canShowAdminSidebar"
+                      class="border-t border-gray-100 dark:border-cool-gray-700"
+                    />
+
                     <!-- Account Management -->
                     <div class="block px-4 py-2 text-xs text-gray-400">
                       Manage Account
@@ -758,8 +767,13 @@ export default {
         return {
             isAdminSidebarOpen: false,
             showingNavigationDropdown: false,
-            canShowAdminSidebar: this.isStaff(this.$page.props.user),
         };
+    },
+
+    computed: {
+        canShowAdminSidebar() {
+            return this.isStaff(this.$page.props.user);
+        }
     },
 
     mounted() {

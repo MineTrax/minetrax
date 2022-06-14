@@ -21,6 +21,7 @@
 
 <script>
 import Icon from '@/Components/Icon';
+
 export default {
     name: 'ColorThemeToggle',
     components: {Icon},
@@ -44,6 +45,7 @@ export default {
                 document.documentElement.classList.add('dark');
                 document.documentElement.classList.remove('light');
             }
+            window.location.reload();
         }
     }
 };
