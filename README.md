@@ -48,5 +48,4 @@ MineTrax has lot of features, some of them are listed below:
 Check out official docs at [https://minetrax.github.io](https://minetrax.github.io)
 
 ## License
-Creative Commons Attribution 4.0 International
-
+MIT License

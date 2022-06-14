@@ -84,8 +84,9 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
             $fileNameWithoutExt = explode('.', $fileNameWithoutExt[count($fileNameWithoutExt) - 1])[0];
             $playerUuid = $fileNameWithoutExt;
 
-            // Check if we already have this player and it has not changed.
-            // Right now its kinda Jugad with fileSize. Need to change it to modified_at of ls -lah
+            // Check if we already have this player, and it has not changed.
+            // Right now its kinda Jugad with fileSize in case of FTP since it doesn't return lastModified.
+            // SFTP does return lastModified, so we use that if file has lastModified instead of fileSize.
             $currentPlayerObj = JsonMinecraftPlayerStat::where(['uuid' => $playerUuid, 'server_id' => $this->server->id])->first();
 
             $lastUniqueHash = $file['fileSize'];
@@ -201,6 +202,11 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
         Log::debug('Completed for :: ' . $this->server->id);
     }
 
+    public function failed(\Throwable $exception)
+    {
+        Log::debug("SOMETHING WEIRD:". $exception);
+    }
+
     private function findUsernameFromCache($uuid, $cache): string|null
     {
         $userObject = $cache->firstWhere('uuid', $uuid);
@@ -213,11 +219,6 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
             return 0;
         }
         return array_sum($data);
-    }
-
-    public function failed(\Throwable $exception)
-    {
-        Log::debug("SOMETHING WEIRD:". $exception);
     }
 
     private function getFirstValidValueFromArray($array, ...$keys)

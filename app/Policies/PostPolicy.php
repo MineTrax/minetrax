@@ -41,7 +41,7 @@ class PostPolicy
      */
     public function create(User $user)
     {
-        //@TODO Check user for ban or mute
+        // Mute and Bans are checked in Middlewares already so no need to check here.
         return true;
     }
 
