@@ -174,8 +174,8 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
             if ($this->hasEssentials) {
                 try {
                     $essentialsData = $serverDisk->get('plugins/Essentials/userdata/'. $playerUuid. '.yml');
-                    $essentialsData = Yaml::parse($essentialsData);
                     if ($essentialsData) {
+                        $essentialsData = Yaml::parse($essentialsData);
                         $forSaving['essentials'] = $essentialsData;
                         $forSaving['ip_address'] = $this->getFirstValidValueFromArray($essentialsData, 'ip-address', 'ipAddress');
                         $forSaving['last_modified'] = $essentialsData['timestamps']['logout'] ?? null;
