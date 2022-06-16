@@ -2,7 +2,7 @@
  * @license MIT */
 
 /*!
- * Pusher JavaScript Library v7.0.3
+ * Pusher JavaaaasScript Library v7.0.3
  * https://pusher.com/
  *
  * Copyright 2020, Pusher
