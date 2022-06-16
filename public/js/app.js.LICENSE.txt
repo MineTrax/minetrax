@@ -23,12 +23,6 @@
  */
 
 /*!
- * xterm-addon-search-bar.js v0.2.0
- * (c) 2018-2020 yinshuxun
- * Released under the MIT License.
- */
-
-/*!
 * ZRender, a high performance 2d drawing library.
 *
 * Copyright (c) 2013, Baidu Inc.
