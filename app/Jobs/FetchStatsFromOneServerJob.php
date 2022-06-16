@@ -175,16 +175,18 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
                 try {
                     $essentialsData = $serverDisk->get('plugins/Essentials/userdata/'. $playerUuid. '.yml');
                     $essentialsData = Yaml::parse($essentialsData);
-                    $forSaving['essentials'] = $essentialsData;
-                    $forSaving['ip_address'] = $this->getFirstValidValueFromArray($essentialsData, 'ip-address', 'ipAddress');
-                    $forSaving['last_modified'] = $essentialsData['timestamps']['logout'] ?? null;
-                    $forSaving['money'] = $essentialsData['money'] ?? null;
-                    // If username is null then try fetching from essentials lastAccountName
-                    if (!$forSaving['username']) {
-                        $forSaving['username'] = $this->getFirstValidValueFromArray($essentialsData, 'last-account-name', 'lastAccountName') ?? null;
-                    }
+                    if ($essentialsData) {
+                        $forSaving['essentials'] = $essentialsData;
+                        $forSaving['ip_address'] = $this->getFirstValidValueFromArray($essentialsData, 'ip-address', 'ipAddress');
+                        $forSaving['last_modified'] = $essentialsData['timestamps']['logout'] ?? null;
+                        $forSaving['money'] = $essentialsData['money'] ?? null;
+                        // If username is null then try fetching from essentials lastAccountName
+                        if (!$forSaving['username']) {
+                            $forSaving['username'] = $this->getFirstValidValueFromArray($essentialsData, 'last-account-name', 'lastAccountName') ?? null;
+                        }
 
-                    Log::debug("Log IP: ". $forSaving['ip_address']. ' for Player: '. $playerUuid);
+                        Log::debug("Log IP: ". $forSaving['ip_address']. ' for Player: '. $playerUuid);
+                    }
                 } catch (\Exception $exception) {
                     Log::debug("Failed to get Essentials Info for: ". $playerUuid);
                 }
