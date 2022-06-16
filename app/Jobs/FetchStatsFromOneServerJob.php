@@ -47,7 +47,9 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
 
         // Decrypt the Connection Data;
         $serverLogin = decrypt($this->server->storage_login);
-        $serverLogin['port'] = (int)$serverLogin['port'];
+        if (isset($serverLogin['port'])) {
+            $serverLogin['port'] = (int)$serverLogin['port'];
+        }
         $serverDisk  = Storage::build($serverLogin);
 
         // Try to get UserCache
