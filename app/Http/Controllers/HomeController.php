@@ -15,6 +15,7 @@ use Http;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
+use Storage;
 
 class HomeController extends Controller
 {
@@ -108,7 +109,7 @@ class HomeController extends Controller
 
     public function didYouKnow(): \Illuminate\Http\JsonResponse
     {
-        $didYouKnowArray = json_decode(file_get_contents(storage_path('misc/did-you-know.json')), true);
+        $didYouKnowArray = json_decode(Storage::disk('local')->get('misc/did-you-know.json'), true);
         return response()->json(\Arr::random($didYouKnowArray));
     }
 
@@ -130,5 +131,22 @@ class HomeController extends Controller
         return Inertia::render('Extra/FeatureList', [
             'features' => $featureList
         ]);
+    }
+
+    public function version()
+    {
+        $myVersion = json_decode(Storage::disk('local')->get('misc/version.json'), true);
+        $myVersion = $myVersion['version'];
+
+        $latestVersion = Http::timeout(5)->get('https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws')->json();
+        $latestVersion = $latestVersion['web'];
+
+        $response = [
+            "my_version" => $myVersion,
+            "latest_version" => $latestVersion,
+            "is_uptodate" => $myVersion == $latestVersion
+        ];
+
+        return response()->json($response);
     }
 }

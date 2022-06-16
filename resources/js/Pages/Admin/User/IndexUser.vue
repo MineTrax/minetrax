@@ -23,55 +23,55 @@
                     </th>
                     <th
                       scope="col"
-                      class="w-6 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      class="w-6 px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
                       Name / @Username
                     </th>
                     <th
                       scope="col"
-                      class="w-6 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      class="w-6 px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
                       Role
                     </th>
                     <th
                       scope="col"
-                      class="w-6 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      class="w-6 px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
                       Email
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
                       DoB
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
                       Joined At
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
                       Muted
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
                       Banned
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
                       Verified
                     </th>
                     <th
                       scope="col"
-                      class="relative px-6 py-3"
+                      class="relative px-3 py-3"
                     >
                       <span class="sr-only">Actions</span>
                     </th>
@@ -85,7 +85,7 @@
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-400 font-semibold">
                       {{ user.id }}
                     </td>
-                    <td class="px-6 py-4 whitespace-normal w-1/2">
+                    <td class="px-3 py-4 whitespace-normal w-1/2">
                       <div class="flex items-center">
                         <div class="flex-shrink-0 h-10 w-10 mr-2">
                           <img
@@ -109,21 +109,21 @@
                         </div>
                       </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-normal w-1/2">
+                    <td class="px-3 py-4 whitespace-normal w-1/2">
                       <div class="flex items-center">
                         <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
                           {{ user.roles[0].display_name }}
                         </div>
                       </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-normal w-1/2">
+                    <td class="px-3 py-4 whitespace-normal w-1/2">
                       <div class="flex items-center">
                         <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
                           {{ user.email }}
                         </div>
                       </div>
                     </td>
-                    <td class="px-6 py-4 w-1/2">
+                    <td class="px-3 py-4 w-1/2">
                       <div class="flex items-center">
                         <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
                           <span v-if="user.dob">{{ user.dob_string_with_year }}</span>
@@ -134,7 +134,7 @@
                         </div>
                       </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       <span
                         v-tippy
                         class="focus:outline-none"
@@ -179,7 +179,7 @@
                         name="cross-circle"
                       />
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium dark:text-gray-300">
+                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium dark:text-gray-300">
                       <inertia-link
                         as="a"
                         :href="route('user.public.get', user.username)"
@@ -209,7 +209,7 @@
 
                   <tr v-if="users.data.length === 0">
                     <td
-                      class="border-t px-6 py-4 text-center"
+                      class="border-t px-3 py-4 text-center"
                       colspan="7"
                     >
                       No users found.
@@ -231,7 +231,7 @@
 import AppLayout from '@/Layouts/AppLayout';
 import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
-import { formatDistanceToNowStrict, format } from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';

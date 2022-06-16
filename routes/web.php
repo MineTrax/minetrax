@@ -44,6 +44,7 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('auth/{provider}/callback', [\App\Http\Controllers\SocialAuthController::class,'handleCallback'])->name('social.login.callback')->middleware('guest');
 
     Route::get('/features', [\App\Http\Controllers\HomeController::class, 'features'])->name('features.list');
+    Route::get('/version-check', [\App\Http\Controllers\HomeController::class, 'version'])->name('version.check');
 
     Route::get('player/avatar/{uuid}', [\App\Http\Controllers\PlayerController::class, 'getAvatarImage'])->name('player.avatar.get');
 });

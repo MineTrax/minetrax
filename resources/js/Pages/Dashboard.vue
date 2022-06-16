@@ -18,6 +18,7 @@
         <donation-box />
       </div>
       <div class="col-span-1 md:col-span-2 space-y-4 order-3 md:order-none">
+        <version-check v-if="$page.props.user && isStaff($page.props.user)" />
         <welcome-box
           v-if="generalSettings.enable_welcomebox"
           :html-data="welcomeBoxContentHtml"
@@ -71,6 +72,7 @@ import PostListBox from '@/Shared/PostListBox';
 import LatestPinnedNews from '@/Shared/LatestPinnedNews';
 import SocialChannelBox from '@/Shared/SocialChannelBox';
 import DidYouKnowBox from '@/Shared/DidYouKnowBox';
+import VersionCheck from '@/Shared/VersionCheck';
 import OnlinePlayersBox from '@/Shared/OnlinePlayersBox';
 import IngameChatBox from '@/Shared/IngameChatBox';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
@@ -89,6 +91,7 @@ export default {
         IngameChatBox,
         OnlinePlayersBox,
         DidYouKnowBox,
+        VersionCheck,
         SocialChannelBox,
         PostListBox,
         WelcomeBox,
