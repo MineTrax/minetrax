@@ -107,7 +107,7 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
              * Temp Fix for wierd JSON format which dont have DataVersion.
              * TODO: R&D on it.
              */
-            if ($fileContent["DataVersion"]) {
+            if (!array_key_exists("DataVersion", $fileContent)) {
                 continue;
             }
 
