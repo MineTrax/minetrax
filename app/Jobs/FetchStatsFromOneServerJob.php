@@ -103,6 +103,14 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
             $fileContent = $serverDisk->get($file['path']);
             $fileContent = json_decode($fileContent, true);
 
+            /**
+             * Temp Fix for wierd JSON format which dont have DataVersion.
+             * TODO: R&D on it.
+             */
+            if ($fileContent["DataVersion"]) {
+                continue;
+            }
+
             $mcKilledBy = 'minecraft:killed_by';
             $mcUsed = 'minecraft:used';
             $mcMined = 'minecraft:mined';
