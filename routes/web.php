@@ -113,6 +113,7 @@ Route::middleware(['auth:sanctum', 'verified', 'forbid-banned-user', 'staff-memb
     Route::get('server/create', [\App\Http\Controllers\Admin\ServerController::class, 'create'])->name('server.create');
     Route::get('server/create-bungee', [\App\Http\Controllers\Admin\ServerController::class, 'createBungee'])->name('server.create-bungee');
     Route::post('server/prefetch', [\App\Http\Controllers\Admin\ServerController::class, 'prefetch'])->name('server.prefetch');
+    Route::post('server/force-scan', [\App\Http\Controllers\Admin\ServerController::class, 'postForceScan'])->name('server.force-scan');
     Route::post('server', [\App\Http\Controllers\Admin\ServerController::class, 'store'])->name('server.store');
     Route::post('server-bungee', [\App\Http\Controllers\Admin\ServerController::class, 'storeBungee'])->name('server-bungee.store');
     Route::get('server/{server}', [\App\Http\Controllers\Admin\ServerController::class, 'show'])->name('server.show');

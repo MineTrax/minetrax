@@ -33,8 +33,19 @@
       </div>
 
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
+        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300 flex items-center">
           Servers
+          <inertia-link
+            v-if="can('create servers')"
+            v-tippy
+            as="button"
+            title="MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely."
+            :href="route('admin.server.force-scan')"
+            method="post"
+            class="ml-2 inline-flex items-center px-4 py-2 border border-2 border-red-600 rounded-md font-semibold text-xs text-red-600 uppercase tracking-widest focus:outline-none focus:border-red-800 transition ease-in-out duration-150 dark:text-red-500 dark:border-red-700 dark:hover:border-red-500"
+          >
+            <span>Rescan all servers</span>
+          </inertia-link>
         </h1>
         <div class="flex">
           <inertia-link

@@ -7,6 +7,7 @@ use App\Enums\ServerVersion;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateServerRequest;
 use App\Http\Requests\UpdateServerRequest;
+use App\Jobs\FetchStatsFromAllServersJob;
 use App\Models\JsonMinecraftPlayerStat;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\Server;
@@ -544,5 +545,15 @@ class ServerController extends Controller
         }
 
         return $response;
+    }
+
+    public function postForceScan(Request $request)
+    {
+        $this->authorize('create', Server::class);
+
+        FetchStatsFromAllServersJob::dispatch();
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'title' => 'Rescan Queued!', 'body' => 'Successfully queued rescanning of all servers. It may take sometime to reflect depending on number of players found.','milliseconds' => 20000]]);
     }
 }

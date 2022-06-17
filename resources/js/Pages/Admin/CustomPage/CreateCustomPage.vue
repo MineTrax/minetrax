@@ -122,7 +122,7 @@
                             <div class="ml-3 text-sm">
                               <label
                                 for="is_visible"
-                                class="font-medium text-gray-700"
+                                class="font-medium text-gray-700 dark:text-gray-400"
                               >Visible</label>
                               <!--                                                            <p class="text-gray-500">Get notified when someones posts a comment on a posting.</p>-->
                             </div>
@@ -140,7 +140,7 @@
                             <div class="ml-3 text-sm">
                               <label
                                 for="is_in_navbar"
-                                class="font-medium text-gray-700"
+                                class="font-medium text-gray-700 dark:text-gray-400"
                               >Add to Navbar</label>
                               <!--                                                            <p class="text-gray-500">Get notified when a candidate applies for a job.</p>-->
                             </div>

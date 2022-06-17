@@ -117,6 +117,7 @@ export default {
         toast: {
             deep: true,
             handler(o, n) {
+                this.milliseconds = this.toast.milliseconds ?? 3000;
                 this.show = true;
 
                 if(this.timeout) {
