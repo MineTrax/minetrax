@@ -143,7 +143,7 @@
                         }}
                       </div>
                       <div class="text-sm text-gray-500 dark:text-gray-400">
-                        WebQuery: {{ server.webquery_port }}
+                        WebQuery: {{ server.webquery_port || 'not set' }}
                       </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -257,20 +257,16 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
 import {formatDistanceToNowStrict} from 'date-fns';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import JetDangerButton from '@/Jetstream/DangerButton';
-import Icon from '@/Components/Icon';
 
 export default {
 
     components: {
-        Icon,
         AppLayout,
-        JetSectionBorder,
         Pagination,
         JetConfirmationModal,
         JetSecondaryButton,

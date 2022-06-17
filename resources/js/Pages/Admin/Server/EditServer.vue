@@ -146,6 +146,19 @@
 
                       <div class="col-span-6 sm:col-span-2">
                         <x-input
+                          id="ip_address"
+                          v-model="form.ip_address"
+                          label="IP Address"
+                          :error="form.errors.ip_address"
+                          autocomplete="ip_address"
+                          type="text"
+                          name="ip_address"
+                          help-error-flex="flex-col"
+                        />
+                      </div>
+
+                      <div class="col-span-6 sm:col-span-2">
+                        <x-input
                           id="join_port"
                           v-model="form.join_port"
                           label="Join Port"
@@ -402,6 +415,7 @@ export default {
                 minecraft_version: this.server.minecraft_version,
                 type: this.server.type,
                 hostname: this.server.hostname,
+                ip_address: this.server.ip_address,
                 is_stats_tracking_enabled: this.server.is_stats_tracking_enabled,
                 is_ingame_chat_enabled: this.server.is_ingame_chat_enabled,
                 is_online_players_query_enabled: this.server.is_online_players_query_enabled,
@@ -432,6 +446,7 @@ export default {
                     this.form.query_port = res.data.data['query.port'];
                     this.form.level_name = res.data.data['level-name'];
                     this.form.hostname = res.data.data['server-ip']+':'+res.data.data['server-port'];
+                    this.form.ip_address = res.data.data['server-ip'];
                     this.isPrefetchSuccessful = true;
                     this.serverStatus = res.data.server_status;
                     // TODO: Fix this is not working

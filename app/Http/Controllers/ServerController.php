@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ServerType;
 use App\Models\Player;
 use App\Models\Server;
 use App\Services\GeolocationService;
-use App\Services\MinecraftServerQueryService;
 use App\Services\MinecraftServerPingService;
-use Illuminate\Http\Request;
+use App\Services\MinecraftServerQueryService;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 
 class ServerController extends Controller
 {
@@ -23,7 +20,7 @@ class ServerController extends Controller
         }
 
         // Get Ping Info of the server using MinecraftPingService
-        $pingData = $pingService->pingServer($server->hostname, $server->join_port);
+        $pingData = $pingService->pingServer($server->ip_address, $server->join_port);
 
         if ($pingData) {
             Cache::put('server:ping:'.$server->id, json_encode($pingData), 60);
@@ -48,7 +45,7 @@ class ServerController extends Controller
         }
 
         // Get Query for the server using MinecraftQueryService
-        $queryData = $queryService->getServerStatusWithPlayerUuid($server->hostname, $server->query_port);
+        $queryData = $queryService->getServerStatusWithPlayerUuid($server->ip_address, $server->query_port);
 
         if ($queryData) {
             Cache::put('server:query:'.$server->id, json_encode($queryData), 60);

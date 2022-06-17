@@ -67,7 +67,7 @@ class ServerController extends Controller
 
         $this->authorize('create', Server::class);
 
-        return Inertia::render('Admin/Server/CreateBungeeServer', [
+        return Inertia::render('Admin/Server/CreateEditBungeeServer', [
             "versionsArray" => ServerVersion::getValues()
         ]);
     }
@@ -112,14 +112,9 @@ class ServerController extends Controller
             $ipAddress = explode(":",$ipAddress);
             $ipAddress = $ipAddress[0];
         }
-        $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP);
-        if (!$ipAddress) {
-            return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'Provided Hostname is Invalid or Not Reachable!']]);
-        }
 
         Server::create([
-            'ip_address' => $ipAddress,
+            'ip_address' => $request->ip_address,
             'join_port' => $request->join_port,
             'query_port' => $request->query_port,
             'webquery_port' => $request->webquery_port,
@@ -152,24 +147,18 @@ class ServerController extends Controller
 
         $request->validate([
             'hostname' => 'required',
+            'ip_address' => 'required|ip',
             'join_port' => 'required|numeric|min:0|max:65535',
             'query_port' => 'required|numeric|min:0|max:65535',
-            'webquery_port' => 'required|numeric|min:0|max:65535',
+            'webquery_port' => 'nullable|numeric|min:0|max:65535',
             'name' => 'required',
             'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
         ]);
 
-        $ipAddress = gethostbyname($request->hostname);
-        $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP);
-        if (!$ipAddress) {
-            return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'Provided Hostname is Invalid or Not Reachable!']]);
-        }
-
-        $countryId = $geolocationService->getCountryIdFromIP($ipAddress);
+        $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
 
         Server::create([
-            'ip_address' => $ipAddress,
+            'ip_address' => $request->ip_address,
             'join_port' => $request->join_port,
             'query_port' => $request->query_port,
             'webquery_port' => $request->webquery_port,
@@ -307,7 +296,7 @@ class ServerController extends Controller
         $this->authorize('update', $server);
 
         if (ServerType::Bungee()->is($server->type)) {
-            return Inertia::render('Admin/Server/EditBungeeServer', [
+            return Inertia::render('Admin/Server/CreateEditBungeeServer', [
                 'server' => $server,
                 "versionsArray" => ServerVersion::getValues()
             ]);
@@ -330,6 +319,7 @@ class ServerController extends Controller
             "minecraft_version" => $server->minecraft_version,
             "type" => $server->type->value,
             "hostname" => $server->hostname,
+            "ip_address" => $server->ip_address,
             "is_stats_tracking_enabled" => $server->is_stats_tracking_enabled,
             "is_ingame_chat_enabled" => $server->is_ingame_chat_enabled,
             "is_online_players_query_enabled" => $server->is_online_players_query_enabled,
@@ -347,21 +337,15 @@ class ServerController extends Controller
 
         $request->validate([
             'hostname' => 'required',
+            'ip_address' => 'required|ip',
             'join_port' => 'required|numeric|min:0|max:65535',
             'query_port' => 'required|numeric|min:0|max:65535',
-            'webquery_port' => 'required|numeric|min:0|max:65535',
+            'webquery_port' => 'nullable|numeric|min:0|max:65535',
             'name' => 'required',
             'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
         ]);
 
-        $ipAddress = gethostbyname($request->hostname);
-        $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP);
-        if (!$ipAddress) {
-            return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'Provided Hostname in Invalid or Not Reachable!']]);
-        }
-
-        $countryId = $geolocationService->getCountryIdFromIP($ipAddress);
+        $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
 
         $server->name = $request->name;
         $server->join_port = $request->join_port;
@@ -369,7 +353,7 @@ class ServerController extends Controller
         $server->webquery_port = $request->webquery_port;
         $server->minecraft_version = $request->minecraft_version;
         $server->hostname = $request->hostname;
-        $server->ip_address = $ipAddress;
+        $server->ip_address = $request->ip_address;
         $server->country_id = $countryId;
         $server->updated_by = $request->user()->id;
         $server->save();
@@ -417,22 +401,9 @@ class ServerController extends Controller
             ];
         }
         $connectionString = encrypt($connectionString);
-        $countryId = $geolocationService->getCountryIdFromIP(gethostbyname($storageServerHost));
+        $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
 
-
-        $ipAddress = gethostbyname($request->hostname);
-        // If ip address still have something like 111.111.111.111:25565 then we remove the port part
-        if(\Str::contains($ipAddress, ":")) {
-            $ipAddress = explode(":",$ipAddress);
-            $ipAddress = $ipAddress[0];
-        }
-        $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP);
-        if (!$ipAddress) {
-            return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'Provided Hostname is Invalid or Not Reachable!']]);
-        }
-
-        $server->ip_address = $ipAddress;
+        $server->ip_address = $request->ip_address;
         $server->join_port = $request->join_port;
         $server->query_port = $request->query_port;
         $server->webquery_port = $request->webquery_port;
@@ -471,6 +442,14 @@ class ServerController extends Controller
     public function prefetch(Request $request, MinecraftServerFileService $serverFileService, MinecraftServerPingService $serverPingService)
     {
         $this->authorize('create', Server::class);
+
+        $request->validate([
+            'storage_server_host' => 'required_if:connection_type,ftp,sftp',
+            'storage_server_port' => 'nullable|numeric|min:0|max:65535',
+            'storage_server_username' => 'nullable|required_if:connection_type,ftp,sftp|string',
+            'storage_server_password' => 'required_if:connection_type,ftp,sftp',
+            'storage_server_root' => 'sometimes|required_if:connection_type,local|nullable',
+        ]);
 
         // Make connection string
         $connectionString = [];

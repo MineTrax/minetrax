@@ -146,6 +146,19 @@
 
                       <div class="col-span-6 sm:col-span-2">
                         <x-input
+                          id="ip_address"
+                          v-model="form.ip_address"
+                          label="IP Address"
+                          :error="form.errors.ip_address"
+                          autocomplete="ip_address"
+                          type="text"
+                          name="ip_address"
+                          help-error-flex="flex-col"
+                        />
+                      </div>
+
+                      <div class="col-span-6 sm:col-span-2">
+                        <x-input
                           id="join_port"
                           v-model="form.join_port"
                           label="Join Port"
@@ -367,8 +380,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
-import JetInputError from '@/Jetstream/InputError';
 import LoadingButton from '@/Components/LoadingButton';
 import XInput from '@/Components/Form/XInput';
 import XSelect from '@/Components/Form/XSelect';
@@ -379,8 +390,6 @@ export default {
         XCheckbox,
         XSelect,
         AppLayout,
-        JetSectionBorder,
-        JetInputError,
         LoadingButton,
         XInput
     },
@@ -405,6 +414,7 @@ export default {
                 minecraft_version: null,
                 type: null,
                 hostname: null,
+                ip_address: null,
                 is_stats_tracking_enabled: true,
                 is_ingame_chat_enabled: true,
                 is_online_players_query_enabled: true,
@@ -441,6 +451,7 @@ export default {
                     this.form.query_port = res.data.data['query.port'];
                     this.form.level_name = res.data.data['level-name'];
                     this.form.hostname = res.data.data['server-ip']+':'+res.data.data['server-port'];
+                    this.form.ip_address = res.data.data['server-ip'];
                     this.isPrefetchSuccessful = true;
                     this.serverStatus = res.data.server_status;
                     // TODO: Fix this is not working

@@ -1,11 +1,18 @@
 <template>
   <app-layout>
-    <app-head title="Add Bungee Server" />
+    <app-head
+      v-if="isCreateOperation"
+      title="Add Bungee Server"
+    />
+    <app-head
+      v-else
+      :title="`Edit Bungee Server: ${server.name}`"
+    />
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Add Bungee Server
+          {{ isCreateOperation ? 'Add Bungee Server' : `Edit Bungee Server : ${server.name}` }}
         </h1>
         <inertia-link
           :href="route('admin.server.index')"
@@ -29,7 +36,7 @@
             </div>
           </div>
           <div class="mt-5 md:mt-0 md:col-span-2">
-            <form @submit.prevent="addServer">
+            <form @submit.prevent="postForm">
               <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
                   <div class="grid grid-cols-6 gap-6">
@@ -57,6 +64,20 @@
                         type="text"
                         name="hostname"
                         help="Eg: play-my-bungee-server.com"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="ip_address"
+                        v-model="form.ip_address"
+                        label="IP Address"
+                        :error="form.errors.ip_address"
+                        autocomplete="ip_address"
+                        type="text"
+                        name="ip_address"
+                        help="Eg: 78.46.130.197"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -123,7 +144,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    Add Bungee Server
+                    {{ isCreateOperation ? 'Add Bungee Server' : 'Edit Bungee Server' }}
                   </loading-button>
                 </div>
               </div>
@@ -149,30 +170,39 @@ export default {
         XInput
     },
     props: {
-        versionsArray: Array
+        server: {
+            type: [Object],
+            required: false
+        },
+        versionsArray: Array,
     },
     data() {
         return {
+            isCreateOperation: !this.server,
             form: this.$inertia.form({
-                name: null,
-                join_port: null,
-                query_port: null,
-                webquery_port: null,
-                minecraft_version: null,
-                hostname: null
+                name: this.server?.name,
+                ip_address: this.server?.ip_address,
+                join_port: this.server?.join_port,
+                query_port: this.server?.query_port,
+                webquery_port: this.server?.webquery_port,
+                minecraft_version: this.server?.minecraft_version,
+                hostname: this.server?.hostname
             }),
         };
     },
 
     methods: {
-        addServer() {
-            if (this.loading) {
-                return;
+        postForm() {
+            if (this.isCreateOperation) {
+                this.form.post(route('admin.server-bungee.store'), {
+                    preserveScroll: true
+                });
+            } else {
+                this.form.put(route('admin.server.update.bungee', this.server.id), {
+                    preserveScroll: true
+                });
             }
-            this.form.post(route('admin.server-bungee.store'), {
-                preserveScroll: true
-            });
-        }
+        },
     }
 };
 </script>
