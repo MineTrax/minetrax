@@ -18,7 +18,7 @@
         "@tailwindcss/typography": "^0.4.1",
         "autolinker": "^3.14.3",
         "autoprefixer": "^10.3.1",
-        "axios": "^0.21",
+        "axios": "^0.27",
         "browser-sync": "^2.27.4",
         "browser-sync-webpack-plugin": "^2.3.0",
         "date-fns": "^2.22.1",
