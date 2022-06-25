@@ -44,6 +44,7 @@
         "spatie/laravel-settings": "^2.0",
         "spirit55555/php-minecraft": "^1.2",
         "symfony/yaml": "^5.2",
+        "tanmuhittin/laravel-google-translate": "^2.1",
         "tightenco/ziggy": "^1.0",
         "torann/geoip": "^3.0",
         "xpaw/php-minecraft-query": "^4.0",

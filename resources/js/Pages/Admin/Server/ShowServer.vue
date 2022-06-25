@@ -304,6 +304,21 @@
           id="terminal"
           class="break-normal"
         />
+        <form @submit.prevent="sendCommandToServer">
+          <input
+            ref="inputbox"
+            v-model="commandText"
+            :disabled="sendingCommand"
+            aria-label="Commander"
+            class="mt-1 focus:ring-gray-300 dark:focus:ring-gray-700 block w-full sm:text-sm rounded border-none disabled:opacity-50 bg-gray-100 dark:bg-cool-gray-900 dark:text-gray-200 focus:bg-white"
+            type="text"
+            placeholder="Type a command and press Enter to run..."
+          >
+          <span
+            v-if="commandError"
+            class="text-red-400 text-xs"
+          >{{ commandError }}</span>
+        </form>
       </div>
     </div>
   </app-layout>
@@ -342,7 +357,11 @@ export default {
             refitTerminal: null,
             onlinePlayers: 'loading...',
             maxPlayersAllowed: 0,
-            serverPingInterval: null
+            serverPingInterval: null,
+            sendingCommand: false,
+            commandText: '',
+            commandError: null
+
         };
     },
 
@@ -428,6 +447,24 @@ export default {
                         this.onlinePlayers = 'offline';
                     });
                 });
+        },
+
+        sendCommandToServer() {
+            this.sendingCommand = true;
+
+            let formJson = {
+                type: 'custom',
+                params: this.commandText,
+                context: 'server'
+            };
+
+            axios.post(route('admin.server.command', this.server.id), formJson).then(() => {
+                this.commandText = '';
+            }).catch(e => {
+                this.commandError = e.message;
+            }).finally(() => {
+                this.sendingCommand = false;
+            });
         }
     },
 };

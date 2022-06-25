@@ -176,7 +176,8 @@ class ApiMinecraftPlayerIntelController extends Controller
             "items_placed_xmin" => "required|numeric",
             "items_consumed_xmin" => "required|numeric",
             "afk_time_xmin" => "required|numeric",
-            "world_location" => 'sometimes|nullable|json'
+            "world_location" => 'sometimes|nullable|json',
+            "world_name" => 'sometimes|nullable|string'
         ]);
 
         $minecraftPlayerSession = MinecraftPlayerSession::where('uuid', $request->session_uuid)->firstOrFail();
@@ -197,6 +198,7 @@ class ApiMinecraftPlayerIntelController extends Controller
 
             // TODO: Create PlayerWorldStats for the given session for each worlds, createOrUpdate
 
+            $minecraftServerWorld = MinecraftServerWorld::where('server_id', $minecraftPlayerSession->server_id)->where('world_name', $request->world_name)->first();
             // Report data to MinecraftPlayerEvents table
             MinecraftPlayerEvent::create([
                 "session_id" => $minecraftPlayerSession->id,
@@ -217,6 +219,7 @@ class ApiMinecraftPlayerIntelController extends Controller
                 "items_placed" => $request->items_placed_xmin,
                 "items_consumed" => $request->items_consumed_xmin,
                 "world_location" => $request->world_location,
+                'minecraft_server_world_id' => $minecraftServerWorld?->id,
             ]);
 
             DB::commit();
