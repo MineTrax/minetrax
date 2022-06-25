@@ -46,6 +46,20 @@
             <div class="mt-10 sm:mt-0">
               <div class="md:grid md:grid-cols-3 md:gap-6">
                 <div class="mt-5 md:mt-0 md:col-span-3">
+                  <div class="flex items-center justify-end col-span-6 sm:col-span-2 px-6 py-2">
+                    <inertia-link
+                      v-confirm="{message: 'Are you sure? This will regenerate new API Key and Secret and you will have to change in your Plugin config.yml'}"
+                      v-tippy
+                      title="Warning: This will Regenerate your API and Secret Key."
+                      as="button"
+                      method="post"
+                      :href="route('admin.setting.plugin.keygen')"
+                      class="inline-flex justify-center py-2 px-4 border border-2 border-red-500 shadow-sm text-sm font-bold rounded-md text-red-500 hover:bg-red-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                    >
+                      Regenerate API Credentials
+                    </inertia-link>
+                  </div>
+
                   <form
                     autocomplete="off"
                     @submit.prevent="savePluginSetting"
@@ -62,22 +76,6 @@
                               name="enable_api"
                               :error="form.errors.enable_api"
                             />
-                          </div>
-
-
-                          <div class="flex items-center justify-end col-span-6 sm:col-span-2">
-                            <inertia-link
-                              v-tippy
-                              title="Warning: This will Regenerate your API and Secret Key."
-                              as="button"
-                              :preserve-scroll="true"
-                              :preserve-state="false"
-                              method="post"
-                              :href="route('admin.setting.plugin.keygen')"
-                              class="inline-flex justify-center py-2 px-4 border border-2 border-red-500 shadow-sm text-sm font-bold rounded-md text-red-500 hover:bg-red-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
-                            >
-                              Regenerate API Credentials
-                            </inertia-link>
                           </div>
 
                           <div class="col-span-6 sm:col-span-6">

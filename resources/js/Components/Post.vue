@@ -57,6 +57,7 @@
       </div>
       <inertia-link
         v-if="$page.props.user && post.permissions.delete"
+        v-confirm="{message: 'Are you sure you want to delete this Post?'}"
         v-tippy
         content="Delete Post"
         :preserve-scroll="true"
@@ -163,12 +164,10 @@
 
 <script>
 
-import {Inertia} from '@inertiajs/inertia';
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Button from '@/Jetstream/Button';
 import Icon from '@/Components/Icon';
 import Comments from '@/Components/Comments';
-import Autolinker from 'autolinker';
 
 export default {
     components: {Comments, Icon, Button},

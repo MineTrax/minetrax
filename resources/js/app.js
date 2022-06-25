@@ -1,16 +1,24 @@
 require('./bootstrap');
 // Import modules...
 import Vue from 'vue';
-import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue';
-import { Head, Link } from '@inertiajs/inertia-vue';
+import {App as InertiaApp, Head, Link, plugin as InertiaPlugin} from '@inertiajs/inertia-vue';
 import PortalVue from 'portal-vue';
-import { InertiaProgress } from '@inertiajs/progress';
-import VueTippy, { TippyComponent } from 'vue-tippy';
+import {InertiaProgress} from '@inertiajs/progress';
+import VueTippy, {TippyComponent} from 'vue-tippy';
 import authorizable from '@/Mixins/authorizable';
 import helpers from '@/Mixins/helpers';
 import Fragment from 'vue-fragment';
+import VuejsDialog from 'vuejs-dialog';
 import AppHead from '@/Components/AppHead';
 
+Vue.use(VuejsDialog, {
+    html: true,
+    loader: false,
+    okText: 'Proceed',
+    cancelText: 'Cancel',
+    animation: 'zoom',
+    backdropClose: true,
+});
 Vue.use(Fragment.Plugin);
 Vue.use(VueTippy, {
     arrow: true

@@ -101,6 +101,7 @@
         >
         <inertia-link
           v-if="$page.props.user && comment.permissions.delete"
+          v-confirm="{message: 'Are you sure you want to delete this comment?'}"
           :preserve-scroll="true"
           :preserve-state="false"
           as="button"

@@ -74,6 +74,7 @@
             >
             <inertia-link
               v-if="$page.props.user && shout.permissions.delete"
+              v-confirm="{message:'Delete this shout permanently?'}"
               class="focus:outline-none order-3"
               :preserve-state="false"
               as="button"
@@ -95,6 +96,7 @@
           >
             <inertia-link
               v-if="$page.props.user && shout.permissions.delete"
+              v-confirm="{message:'Delete this shout permanently?'}"
               class="focus:outline-none"
               :preserve-state="false"
               as="button"
@@ -183,7 +185,7 @@
 </template>
 
 <script>
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 
 export default {

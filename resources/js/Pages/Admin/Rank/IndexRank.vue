@@ -10,6 +10,7 @@
         <div class="flex">
           <inertia-link
             v-if="can('update ranks')"
+            v-confirm="{message: 'Are you sure you want to Reset all Ranks? This will remove current rank of all players.'}"
             method="post"
             as="button"
             :href="route('admin.rank.reset')"
@@ -196,7 +197,7 @@
 import AppLayout from '@/Layouts/AppLayout';
 import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
-import { formatDistanceToNowStrict } from 'date-fns';
+import {formatDistanceToNowStrict} from 'date-fns';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import JetDangerButton from '@/Jetstream/DangerButton';
