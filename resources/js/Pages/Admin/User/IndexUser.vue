@@ -55,19 +55,7 @@
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Muted
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    >
-                      Banned
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    >
-                      Verified
+                      Flags
                     </th>
                     <th
                       scope="col"
@@ -101,6 +89,20 @@
                           >
                             <inertia-link :href="route('user.public.get', user.username)">
                               {{ user.name }}
+                              <icon
+                                v-if="user.verified_at"
+                                v-tippy
+                                name="verified-check-fill"
+                                title="Verified Account"
+                                class="mb-1 focus:outline-none h-4 w-4 fill-current inline text-light-blue-400"
+                              />
+                              <icon
+                                v-if="user.is_staff"
+                                v-tippy
+                                name="shield-check-fill"
+                                title="Staff Member"
+                                class="mb-1 focus:outline-none h-4 w-4 fill-current inline text-pink-400"
+                              />
                             </inertia-link>
                           </div>
                           <div class="text-sm text-gray-500 dark:text-gray-400">
@@ -143,41 +145,20 @@
                         {{ formatDistanceToNowStrict(new Date(user.created_at), { addSuffix: true }) }}
                       </span>
                     </td>
-                    <td class="px-9 py-4 text-sm text-gray-500 dark:text-gray-400">
-                      <icon
+                    <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                      <span
                         v-if="user.muted_at"
-                        class="text-green-500 focus:outline-none"
-                        name="check-circle"
-                      />
-                      <icon
-                        v-else
-                        class="text-red-500"
-                        name="cross-circle"
-                      />
-                    </td>
-                    <td class="px-9 py-4 whitespace-nowrap text-sm text-gray-500 align-middle text-center">
-                      <icon
+                        class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-orange-100 text-orange-800 dark:bg-orange-700 dark:bg-opacity-25 dark:text-orange-400"
+                      >Muted</span>
+                      <span
                         v-if="user.banned_at"
-                        class="text-green-500"
-                        name="check-circle"
-                      />
-                      <icon
-                        v-else
-                        class="text-red-500"
-                        name="cross-circle"
-                      />
-                    </td>
-                    <td class="px-9 py-4 whitespace-nowrap text-sm text-gray-500 align-middle text-center">
-                      <icon
-                        v-if="user.verified_at"
-                        class="text-green-500"
-                        name="check-circle"
-                      />
-                      <icon
-                        v-else
-                        class="text-red-500"
-                        name="cross-circle"
-                      />
+                        class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-red-100 text-red-800 dark:bg-red-700 dark:bg-opacity-25 dark:text-red-400"
+                      >Banned</span>
+
+                      <span
+                        v-if="!user.muted_at && !user.banned_at"
+                        class="text-xs italic"
+                      >None</span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium dark:text-gray-300">
                       <inertia-link
