@@ -85,7 +85,7 @@
                               id="custom_rating_expression"
                               v-model="form.custom_rating_expression"
                               label="Rating Algorithm"
-                              help="Eg: ( $total_kills - $total_deaths ) / 2 . Tip: For better experience Rating will be rounded from 0 to 10"
+                              help="Eg: ( $total_score - $total_deaths ) / 3 . Tip: For better experience Rating will be rounded from 0 to 10"
                               :error="form.errors.custom_rating_expression || rating_expression_validation_form.errors.get('custom_rating_expression')"
                               name="custom_rating_expression"
                             />
@@ -201,7 +201,7 @@
                               id="custom_score_expression"
                               v-model="form.custom_score_expression"
                               label="Score Algorithm"
-                              help="Eg: ( $total_kills - $total_deaths ) / 2 ."
+                              help="Eg: ( $total_player_kills - $total_deaths ) / 2 ."
                               :error="form.errors.custom_score_expression || score_expression_validation_form.errors.get('custom_score_expression')"
                               name="custom_score_expression"
                             />
