@@ -52,7 +52,7 @@ class PlayerController extends Controller
                 ->orderBy('weight')
                 ->first()?->name;
         } else {
-            $player->next_rank = Rank::select(['id', 'shortname', 'name'])->orderBy('weight')->first()->name;
+            $player->next_rank = Rank::select(['id', 'shortname', 'name'])->orderBy('weight')->first()?->name;
         }
 
         // Servers Count
