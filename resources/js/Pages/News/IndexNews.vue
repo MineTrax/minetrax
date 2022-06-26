@@ -21,6 +21,7 @@
           <infinite-scroll :load-more="loadMoreNews">
             <div
               v-for="(news, index) in newsList.data"
+              :key="index"
               class=""
             >
               <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
@@ -105,6 +106,17 @@
               </div>
             </div>
           </infinite-scroll>
+
+          <div
+            v-if="newsList.data <= 0"
+            class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8"
+          >
+            <div
+              class="shadow text-center dark:text-gray-400 italic max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-gray-200 rounded md:rounded-lg dark:bg-cool-gray-800 dark:border-none"
+            >
+              No News or Announcement Yet.
+            </div>
+          </div>
         </div>
 
         <div class="hidden md:block md:w-3/12 flex-1 space-y-4 mt-4 md:mt-0">
@@ -118,9 +130,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
-import {formatDistanceToNowStrict, format} from 'date-fns';
-import Icon from '@/Components/Icon';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 import ShoutBox from '@/Shared/ShoutBox';
 import InfiniteScroll from '@/Components/InfiniteScroll';
@@ -130,9 +140,7 @@ export default {
     components: {
         ShoutBox,
         ServerStatusBox,
-        Icon,
         AppLayout,
-        JetSectionBorder,
         InfiniteScroll
     },
     props: {

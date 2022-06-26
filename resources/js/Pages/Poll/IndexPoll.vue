@@ -2,7 +2,7 @@
   <app-layout>
     <app-head title="Polls" />
 
-    <div class="px-2 py-4 md:py-12 md:px-16 max-w-8xl mx-auto">
+    <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="hidden md:flex flex-col space-y-4 flex-none w-1/4 h-screen sticky top-5">
           <did-you-know-box :enabled="$page.props.generalSettings.enable_didyouknowbox" />
@@ -33,7 +33,7 @@
 
                 <div
                   v-if="pollList.data <= 0"
-                  class="p-3 md:px-5 bg-white rounded shadow italic text-gray-500 text-center text-sm font-semibold"
+                  class="p-3 md:px-5 bg-white dark:bg-cool-gray-800 rounded shadow italic text-gray-500 dark:text-gray-400 text-center text-sm font-semibold"
                 >
                   No Polls Found
                 </div>

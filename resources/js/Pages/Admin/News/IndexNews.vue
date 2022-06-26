@@ -181,7 +181,7 @@
 
                   <tr v-if="newslist.data.length === 0">
                     <td
-                      class="border-t px-6 py-4 text-center"
+                      class="px-6 py-4 text-center dark:text-gray-400"
                       colspan="7"
                     >
                       No news found.
@@ -231,7 +231,7 @@
 import AppLayout from '@/Layouts/AppLayout';
 import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
-import { formatDistanceToNowStrict, format } from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';

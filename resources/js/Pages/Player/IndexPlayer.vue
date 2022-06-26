@@ -114,7 +114,7 @@
 
           <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
-              <div class="shadow overflow-hidden border-b border-gray-200 dark:border-none rounded">
+              <div class="shadow overflow-hidden border-b border-gray-200 dark:border-gray-700 dark:border-none rounded">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                   <thead class="bg-gray-100 dark:bg-cool-gray-800 text-gray-700 dark:text-gray-200">
                     <tr>
@@ -291,7 +291,7 @@
 
                     <tr v-if="playersList.data.length === 0">
                       <td
-                        class="border-t px-6 py-4 text-center dark:text-gray-300 text-gray-700"
+                        class="px-6 py-4 text-center dark:text-gray-300 text-gray-700"
                         colspan="8"
                       >
                         No players found.
