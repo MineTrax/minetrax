@@ -291,7 +291,7 @@
                     <button
                       v-if="canShowAdminSidebar"
                       type="button"
-                      class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-400 text-left hover:bg-cool-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-cool-gray-100 dark:focus:bg-cool-gray-900 transition duration-150 ease-in-out"
+                      class="block font-semibold w-full px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-400 text-left hover:bg-cool-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-cool-gray-100 dark:focus:bg-cool-gray-900 transition duration-150 ease-in-out"
                       @click="adminDrawer"
                     >
                       Admin Menu
@@ -703,6 +703,11 @@
           </template>
           Settings
         </jet-sidebar-link>
+
+
+        <div class="text-gray-600 dark:text-gray-400 text-xs text-center mt-4">
+          Web Version: {{ $page.props.webVersion || 'unknown' }}
+        </div>
       </aside>
 
       <!-- Page Content -->

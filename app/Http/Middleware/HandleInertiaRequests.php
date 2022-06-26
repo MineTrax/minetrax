@@ -10,6 +10,7 @@ use App\Models\Server;
 use App\Settings\GeneralSettings;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Storage;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -72,7 +73,9 @@ class HandleInertiaRequests extends Middleware
                 $enabledSocialLogins['twitter'] = config('services.twitter.oauth_enabled');
                 $enabledSocialLogins['discord'] = config('services.discord.oauth_enabled');
                 return $enabledSocialLogins;
-            }
+            },
+
+            "webVersion" =>json_decode(Storage::disk('local')->get('misc/version.json'), true)["version"]
         ]);
     }
 }
