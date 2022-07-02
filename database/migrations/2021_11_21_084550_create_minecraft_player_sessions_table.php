@@ -25,6 +25,7 @@ class CreateMinecraftPlayerSessionsTable extends Migration
             $table->integer('player_kills')->default(0);
             $table->integer('deaths')->default(0);
             $table->integer('afk_time')->default(0);
+            $table->integer('play_time')->default(0);   // total time player online for (including afk)
             $table->string('player_ip_address')->nullable();
             $table->boolean('is_op')->default(false);
             $table->boolean('is_kicked')->default(false);
