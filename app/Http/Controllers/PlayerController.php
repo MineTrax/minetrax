@@ -60,7 +60,7 @@ class PlayerController extends Controller
 
         // Favorite Server
         $player->favorite_server = JsonMinecraftPlayerStat::where('uuid', $player->uuid)
-            ->orderByDesc('total_play_one_minute')->first()->server->only(['name', 'hostname']);
+            ->orderByDesc('total_play_one_minute')->first()?->server->only(['name', 'hostname']);
 
         // Owner if any
         $player->owner = $player->users()->first()?->only(['id', 'username']);

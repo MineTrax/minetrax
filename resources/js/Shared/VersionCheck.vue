@@ -28,7 +28,7 @@
             <a
               class="text-light-blue-500 hover:underline"
               target="_blank"
-              href="https://minetrax.github.io/docs/web/upgrade-guide"
+              href="https://minetrax.github.io/docs/upgrade"
             >Click here to know more.</a>
           </p>
 

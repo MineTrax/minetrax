@@ -465,6 +465,13 @@
                       </p>
                     </div>
                     <p
+                      v-if="!player.favorite_server"
+                      class="text-gray-400 italic"
+                    >
+                      None
+                    </p>
+                    <p
+                      v-else
                       v-tippy
                       class="focus:outline-none"
                       :title="player.favorite_server.hostname"
@@ -705,7 +712,7 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import JetSectionBorder from '@/Jetstream/SectionBorder';
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 import * as skinview3d from 'skinview3d';

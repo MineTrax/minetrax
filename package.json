@@ -14,7 +14,6 @@
         "@inertiajs/inertia-vue": "^0.7.1",
         "@inertiajs/progress": "^0.2.6",
         "@tailwindcss/forms": "^0.3.3",
-        "@tailwindcss/jit": "^0.1.18",
         "@tailwindcss/typography": "^0.4.1",
         "autolinker": "^3.14.3",
         "autoprefixer": "^10.3.1",
