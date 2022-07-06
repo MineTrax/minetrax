@@ -14,6 +14,11 @@ class CustomPageSeeder extends Seeder
      */
     public function run()
     {
+        $countriesInDb = CustomPage::exists();
+        if ($countriesInDb) {
+            return;
+        }
+
         $body = file_get_contents(resource_path('markdown/rules.md'));
         CustomPage::create([
             'title' => 'Rules',

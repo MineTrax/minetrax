@@ -14,6 +14,12 @@ class CountrySeeder extends Seeder
      */
     public function run()
     {
+        // Only run if this seeder hasn't run ie when countries table is empty.
+        $countriesInDb = DB::table('countries')->exists();
+        if ($countriesInDb) {
+            return;
+        }
+
         $data = json_decode(file_get_contents(storage_path('seed')."/countries.json"), true);
         foreach ($data as $country) {
             $c['name'] = $country['name']['common'];

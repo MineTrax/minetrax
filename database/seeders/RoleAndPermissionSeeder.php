@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RoleAndPermissionSeeder extends Seeder
 {
@@ -15,6 +16,11 @@ class RoleAndPermissionSeeder extends Seeder
      */
     public function run()
     {
+        $rolesInDb = DB::table('roles')->exists();
+        if ($rolesInDb) {
+            return;
+        }
+
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 

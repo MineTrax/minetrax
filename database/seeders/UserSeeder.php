@@ -17,6 +17,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+
+        $rolesInDb = DB::table('users')->exists();
+        if ($rolesInDb) {
+            return;
+        }
+
         $admin = User::create([
             'name' => 'Super Admin',
             'email' => 'admin@admin.com',
