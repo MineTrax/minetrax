@@ -122,6 +122,13 @@ export default {
             axios.get(route('server.query.get', serverToQuery.id)).then(data => {
                 this.serverInfo = data.data.server_info;
                 this.playersList = data.data.players_list;
+
+                for (let pl in this.playersList) {
+                    if (!this.playersList[pl]) {
+                        this.playersList[pl] = '00000000-0000-0000-0000-000000000000';
+                    }
+                }
+
                 this.error = null;
 
                 // Change avatar size according to number of people

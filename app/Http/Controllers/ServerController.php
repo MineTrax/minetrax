@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ServerType;
 use App\Models\Player;
 use App\Models\Server;
 use App\Services\GeolocationService;
@@ -19,8 +20,10 @@ class ServerController extends Controller
             return json_decode($hasCache, true);
         }
 
+        // If server is bungee then ping hostname
+        $pingAddress = $server->type->value == ServerType::Bungee ? $server->hostname : $server->ip_address;
         // Get Ping Info of the server using MinecraftPingService
-        $pingData = $pingService->pingServer($server->ip_address, $server->join_port);
+        $pingData = $pingService->pingServer($pingAddress, $server->join_port);
 
         if ($pingData) {
             Cache::put('server:ping:'.$server->id, json_encode($pingData), 60);
