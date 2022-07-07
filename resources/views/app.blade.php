@@ -28,6 +28,7 @@
     </head>
     <body class="font-sans antialiased bg-cool-gray-200 dark:bg-cool-gray-900">
         @inertia
+        <x-translations></x-translations>
 
         @if (app()->isLocal())
             <script src="http://localhost:3000/browser-sync/browser-sync-client.js"></script>

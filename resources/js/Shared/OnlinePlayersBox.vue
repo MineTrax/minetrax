@@ -2,7 +2,7 @@
   <div v-if="enabled">
     <div class="p-3 sm:px-5 bg-white dark:bg-gray-800 rounded shadow">
       <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
-        Online Players
+        {{ __("Online Players") }}
         <span
           v-if="!loading && !error"
           class="float-right text-green-500 font-semibold"

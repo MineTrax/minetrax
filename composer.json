@@ -33,7 +33,7 @@
         "league/flysystem-sftp-v3": "^3.0",
         "league/mime-type-detection": "^1.11",
         "nxp/math-executor": "^2.3",
-        "predis/predis": "^1.1",
+        "predis/predis": "^2.0",
         "pusher/pusher-php-server": "^7.0",
         "socialiteproviders/discord": "^4.1",
         "spatie/laravel-medialibrary": "^10.4",

@@ -39,5 +39,6 @@ module.exports = {
         'axios': true,
         '_': true,
         'route': true,
+        '_translations': true,
     }
 };

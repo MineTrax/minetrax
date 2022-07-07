@@ -7,6 +7,7 @@ import {InertiaProgress} from '@inertiajs/progress';
 import VueTippy, {TippyComponent} from 'vue-tippy';
 import authorizable from '@/Mixins/authorizable';
 import helpers from '@/Mixins/helpers';
+import translations from '@/Mixins/translations';
 import Fragment from 'vue-fragment';
 import VuejsDialog from 'vuejs-dialog';
 import AppHead from '@/Components/AppHead';
@@ -32,6 +33,7 @@ Vue.component('Tippy', TippyComponent);
 Vue.mixin({ methods: { route } });
 Vue.mixin(authorizable);
 Vue.mixin(helpers);
+Vue.mixin(translations);
 Vue.use(InertiaPlugin);
 Vue.use(PortalVue);
 
