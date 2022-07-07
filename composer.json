@@ -19,7 +19,7 @@
         "cybercog/laravel-love": "^8.9",
         "geoip2/geoip2": "^2.12",
         "guzzlehttp/guzzle": "^7.4",
-        "inertiajs/inertia-laravel": "^v0.5.4",
+        "inertiajs/inertia-laravel": "^v0.6.3",
         "intervention/imagecache": "^2.5",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.9",
