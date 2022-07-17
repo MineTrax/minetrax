@@ -5,13 +5,13 @@
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Create New Poll
+          {{ __("Create New Poll") }}
         </h1>
         <inertia-link
           :href="route('admin.poll.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
         >
-          <span>Cancel</span>
+          <span>{{ __("Cancel") }}</span>
         </inertia-link>
       </div>
 
@@ -20,10 +20,10 @@
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
               <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                Tips
+                {{ __("Tips") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                Adding polls in your website increase user retention by a lot.
+                {{ __("Adding polls in your website increase user retention & engagement.") }}
               </p>
             </div>
           </div>
@@ -36,8 +36,8 @@
                       <x-input
                         id="question"
                         v-model="form.question"
-                        label="Poll Question"
-                        help="Eg: Do you think minecraft is best game?"
+                        :label="__('Poll Question')"
+                        :help="__('Eg: Do you think minecraft is best game?')"
                         :error="form.errors.question"
                         type="text"
                         name="question"
@@ -65,7 +65,7 @@
                           <x-input
                             :id="`option${index}`"
                             v-model="option.name"
-                            :label="`Option ${index+1}`"
+                            :label="__('Option :number', {number: index+1})"
                             :error="form.errors[`options.${index}.name`]"
                             type="text"
                             :name="`option${index}`"
@@ -79,7 +79,7 @@
                           class="p-1.5 text-xs text-light-blue-500 rounded border border-light-blue-500 focus:outline-none"
                           @click="addMoreOption"
                         >
-                          Add More
+                          {{ __("Add More") }}
                         </button>
                       </div>
 
@@ -95,7 +95,7 @@
                       <date-picker
                         id="started_at"
                         v-model="form.started_at"
-                        placeholder="Poll Starts At"
+                        :placeholder="__('Poll Starts At')"
                         class="w-full"
                         value-type="format"
                         type="datetime"
@@ -104,7 +104,7 @@
                       <label
                         for="started_at"
                         class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-gray-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
-                      >Starts At</label>
+                      >{{ __("Starts At") }}</label>
                       <jet-input-error
                         :message="form.errors.started_at"
                         class="mt-2"
@@ -115,7 +115,7 @@
                       <date-picker
                         id="closed_at"
                         v-model="form.closed_at"
-                        placeholder="Poll Ends At"
+                        :placeholder="__('Poll Ends At')"
                         class="w-full"
                         value-type="format"
                         type="datetime"
@@ -124,7 +124,7 @@
                       <label
                         for="closed_at"
                         class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-gray-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
-                      >Ends At</label>
+                      >{{ __("Ends At") }}</label>
                       <jet-input-error
                         :message="form.errors.closed_at"
                         class="mt-2"
@@ -138,7 +138,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    Create Poll
+                    {{ __("Create Poll") }}
                   </loading-button>
                 </div>
               </div>
@@ -152,9 +152,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import JetInputError from '@/Jetstream/InputError';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import LoadingButton from '@/Components/LoadingButton';
 import XInput from '@/Components/Form/XInput';
 import Icon from '@/Components/Icon';
@@ -163,10 +161,8 @@ import DatePicker from 'vue2-datepicker';
 export default {
     components: {
         AppLayout,
-        JetSectionBorder,
         JetInputError,
         LoadingButton,
-        JetSecondaryButton,
         XInput,
         Icon,
         DatePicker

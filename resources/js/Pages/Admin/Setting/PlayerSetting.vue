@@ -1,37 +1,39 @@
 <template>
   <app-layout>
-    <app-head title="Player Settings" />
+    <app-head
+      :title="__('Player Settings')"
+    />
 
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
       <div class="w-64 flex-shrink-0 pr-10">
         <div class="flex flex-col">
           <div class="uppercase mb-2 text-xs tracking-wide text-gray-600 dark:text-gray-400 font-bold">
-            SETTINGS
+            {{ __("SETTINGS") }}
           </div>
 
           <setting-link
             :href="route('admin.setting.general.show')"
             :active="route().current('admin.setting.general.show')"
           >
-            General
+            {{ __("General") }}
           </setting-link>
           <setting-link
             :href="route('admin.setting.theme.show')"
             :active="route().current('admin.setting.theme.show')"
           >
-            Theme
+            {{ __("Theme") }}
           </setting-link>
           <setting-link
             :href="route('admin.setting.plugin.show')"
             :active="route().current('admin.setting.plugin.show')"
           >
-            Plugin
+            {{ __("Plugin") }}
           </setting-link>
           <setting-link
             :href="route('admin.setting.player.show')"
             :active="route().current('admin.setting.player.show')"
           >
-            Player
+            {{ __("Player") }}
           </setting-link>
         </div>
       </div>
@@ -40,7 +42,7 @@
         <div class="flex flex-col w-full">
           <div class="bg-white dark:bg-cool-gray-800 shadow w-full">
             <div class="px-6 py-4 border-b dark:border-gray-700 dark:text-gray-300 font-bold">
-              Player Settings
+              {{ __("Player Settings") }}
             </div>
 
             <div class="mt-10 sm:mt-0">
@@ -57,8 +59,8 @@
                             <x-checkbox
                               id="is_custom_rating_enabled"
                               v-model="form.is_custom_rating_enabled"
-                              label="Enable Custom Player Rating Algorithm"
-                              help="Use your own algorithm for rating players. Enable this only after there is at-least one player in the database."
+                              :label="__('Enable Custom Player Rating Algorithm')"
+                              :help="__('Use your own algorithm for rating players. Enable this only after there is at-least one player in the database.')"
                               name="is_custom_rating_enabled"
                               :error="form.errors.is_custom_rating_enabled"
                             />
@@ -68,8 +70,8 @@
                             <x-input
                               id="last_seen_day_for_active"
                               v-model="form.last_seen_day_for_active"
-                              help="Number of days past today for player last seen to be count as active. Non active players will not be included in rating. Enter '-1' to disable this feature."
-                              label="Last activity day for rating"
+                              :help="__('Number of days past today for player last seen to be count as active. Non active players will not be included in rating. Enter -1 to disable this feature.')"
+                              :label="__('Last activity day for rating')"
                               :error="form.errors.last_seen_day_for_active"
                               type="text"
                               name="last_seen_day_for_active"
@@ -84,8 +86,8 @@
                             <x-textarea
                               id="custom_rating_expression"
                               v-model="form.custom_rating_expression"
-                              label="Rating Algorithm"
-                              help="Eg: ( $total_score - $total_deaths ) / 3 . Tip: For better experience Rating will be rounded from 0 to 10"
+                              :label="__('Rating Algorithm')"
+                              :help="__('Eg: ( $total_score - $total_deaths ) / 3 . Tip: For better experience Rating will be rounded from 0 to 10')"
                               :error="form.errors.custom_rating_expression || rating_expression_validation_form.errors.get('custom_rating_expression')"
                               name="custom_rating_expression"
                             />
@@ -101,13 +103,13 @@
                               class="-mt-7 text-xs float-right text-light-blue-500 focus:outline-none underline hover:text-light-blue-400"
                               @click="showHelpForRating = !showHelpForRating"
                             >
-                              {{ !showHelpForRating ? 'Need help with this?' : '-hide help' }}
+                              {{ !showHelpForRating ? __('Need help with this?') : __('-hide help') }}
                             </button>
                             <div
                               v-if="showHelpForRating"
                               class="flex flex-col dark:text-gray-400"
                             >
-                              <span class="font-bold">Available Variables</span>
+                              <span class="font-bold">{{ __("Available Variables") }}</span>
                               <ul class="list-disc list px-4">
                                 <li
                                   v-for="(description, variable) in variables_for_rating_static"
@@ -125,7 +127,7 @@
                               v-if="showHelpForRating"
                               class="flex flex-col mt-2 dark:text-gray-400"
                             >
-                              <span class="font-bold">Available Functions</span>
+                              <span class="font-bold">{{ __("Available Functions") }}</span>
                               <ul class="list-disc list px-4">
                                 <li
                                   v-for="(description, func) in math_functions_for_rating"
@@ -147,13 +149,13 @@
                           >
                             <span
                               class="text-gray-500 dark:text-gray-400 text-center text-sm font-semibold mb-4 -mt-7 bg-white dark:bg-cool-gray-800 w-28"
-                            >Test Algorithm</span>
+                            >{{ __("Test Algorithm") }}</span>
                             <div class="flex">
                               <x-input
                                 id="player_username"
                                 v-model="rating_expression_validation_form.player_username"
-                                label="Player Username"
-                                help="Username of an existing player to get against"
+                                :label="__('Player Username')"
+                                :help="__('Username of an existing player to get against')"
                                 type="text"
                                 name="player_username"
                                 :error="rating_expression_validation_form.errors.get('player_username')"
@@ -165,20 +167,20 @@
                                 type="button"
                                 @click.native="validateRatingExpression"
                               >
-                                Validate
+                                {{ __("Validate") }}
                               </loading-button>
                             </div>
                             <p
                               v-if="validator_rating_value"
                               class="p-2 mt-1 text-center bg-green-500 font-semibold rounded text-white"
                             >
-                              Success! Rating for this Player will be: <span class="font-bold">{{ validator_rating_value }}</span>
+                              {{ __("Success! Rating for this Player will be:") }} <span class="font-bold">{{ validator_rating_value }}</span>
                             </p>
                             <p
                               v-if="validator_rating_exception"
                               class="p-2 mt-1 text-center bg-red-500 font-semibold rounded text-white"
                             >
-                              Oops! {{ validator_rating_exception }}
+                              {{ __("Oops!") }}&nbsp;{{ validator_rating_exception }}
                             </p>
                           </div>
 
@@ -186,8 +188,8 @@
                             <x-checkbox
                               id="is_custom_score_enabled"
                               v-model="form.is_custom_score_enabled"
-                              label="Enable Custom Player Score Algorithm"
-                              help="Use your own algorithm for player score. Enable this only after there is at-least one player in the database."
+                              :label="__('Enable Custom Player Score Algorithm')"
+                              :help="__('Use your own algorithm for player score. Enable this only after there is at-least one player in the database.')"
                               name="is_custom_score_enabled"
                               :error="form.errors.is_custom_score_enabled"
                             />
@@ -200,8 +202,8 @@
                             <x-textarea
                               id="custom_score_expression"
                               v-model="form.custom_score_expression"
-                              label="Score Algorithm"
-                              help="Eg: ( $total_player_kills - $total_deaths ) / 2 ."
+                              :label="__('Score Algorithm')"
+                              :help="__('Eg: ( $total_player_kills - $total_deaths ) / 2 .')"
                               :error="form.errors.custom_score_expression || score_expression_validation_form.errors.get('custom_score_expression')"
                               name="custom_score_expression"
                             />
@@ -223,7 +225,7 @@
                               v-if="showHelpForScore"
                               class="flex flex-col dark:text-gray-400"
                             >
-                              <span class="font-bold">Available Variables</span>
+                              <span class="font-bold">{{ __("Available Variables") }}</span>
                               <ul class="list-disc list px-4">
                                 <li
                                   v-for="(description, variable) in variables_for_score_static"
@@ -241,7 +243,7 @@
                               v-if="showHelpForScore"
                               class="flex flex-col mt-2 dark:text-gray-400"
                             >
-                              <span class="font-bold">Available Functions</span>
+                              <span class="font-bold">{{ __("Available Functions") }}</span>
                               <ul class="list-disc list px-4">
                                 <li
                                   v-for="(description, func) in math_functions_for_rating"
@@ -263,13 +265,13 @@
                           >
                             <span
                               class="text-gray-500 dark:text-gray-400 text-center text-sm font-semibold mb-4 -mt-7 bg-white dark:bg-cool-gray-800 w-28"
-                            >Test Algorithm</span>
+                            >{{ __("Test Algorithm") }}</span>
                             <div class="flex">
                               <x-input
                                 id="player_username"
                                 v-model="score_expression_validation_form.player_username"
-                                label="Player Username"
-                                help="Username of an existing player to get against"
+                                :label="__('Player Username')"
+                                :help="__('Username of an existing player to get against')"
                                 type="text"
                                 name="player_username"
                                 :error="score_expression_validation_form.errors.get('player_username')"
@@ -281,20 +283,20 @@
                                 type="button"
                                 @click.native="validateScoreExpression"
                               >
-                                Validate
+                                {{ __("Validate") }}
                               </loading-button>
                             </div>
                             <p
                               v-if="validator_score_value"
                               class="p-2 mt-1 text-center bg-green-500 font-semibold rounded text-white"
                             >
-                              Success! Score for this Player will be: <span class="font-bold">{{ validator_score_value }}</span>
+                              {{ __("Success! Score for this Player will be:") }} <span class="font-bold">{{ validator_score_value }}</span>
                             </p>
                             <p
                               v-if="validator_score_exception"
                               class="p-2 mt-1 text-center bg-red-500 font-semibold rounded text-white"
                             >
-                              Oops! {{ validator_score_exception }}
+                              {{ __("Oops!") }}&nbsp;{{ validator_score_exception }}
                             </p>
                           </div>
                         </div>
@@ -305,7 +307,7 @@
                           class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
                           type="submit"
                         >
-                          Save Player Settings
+                          {{ __("Save Player Settings") }}
                         </loading-button>
                       </div>
                     </div>

@@ -1,6 +1,6 @@
 <template>
   <app-layout>
-    <app-head :title="`Server #${server.id}`" />
+    <app-head :title="__('Server #:id', {id: server.id})" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto space-y-4">
       <h2 class="text-2xl text-gray-600 dark:text-gray-200">
@@ -16,7 +16,7 @@
         class="shadow bg-white text-gray-700 dark:text-gray-300 text-sm dark:bg-cool-gray-800 dark:text-gray-300 rounded w-full p-2 space-y-4 md:p-5"
       >
         <h2 class="text-3xl text-center animate-bounce">
-          Coming Soon!
+          {{ __('Coming Soon!') }}
         </h2>
       </div>
     </div>

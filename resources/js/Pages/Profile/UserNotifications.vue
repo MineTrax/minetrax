@@ -1,11 +1,13 @@
 <template>
   <app-layout>
-    <app-head :title="`Your Notifications`" />
+    <app-head
+      :title="__('Your Notifications')"
+    />
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Notifications
+          {{ __("Notifications") }}
         </h1>
         <div class="flex">
           <inertia-link
@@ -15,7 +17,7 @@
             :preserve-state="false"
             class="mr-1 inline-flex items-center px-4 py-2 bg-light-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-light-blue-700 active:bg-light-blue-600 focus:outline-none focus:border-light-blue-700 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Mark all as read</span>
+            <span>{{ __("Mark all as read") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -39,7 +41,7 @@
             :key="999999999"
             class="flex items-center justify-center italic text-gray-500 dark:text-gray-400"
           >
-            No notifications to show.
+            {{ __("No notifications to show.") }}
           </div>
         </div>
 
@@ -54,9 +56,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
-import {formatDistanceToNowStrict, format} from 'date-fns';
-import Icon from '@/Components/Icon';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 import ShoutBox from '@/Shared/ShoutBox';
 import InfiniteScroll from '@/Components/InfiniteScroll';
@@ -68,9 +68,7 @@ export default {
         Notification,
         ShoutBox,
         ServerStatusBox,
-        Icon,
         AppLayout,
-        JetSectionBorder,
         InfiniteScroll
     },
     props: {
@@ -99,7 +97,7 @@ export default {
                     ...response.data,
                     data: [...this.notifications.data, ...response.data.data]
                 };
-            }).finally(e => {
+            }).finally(() => {
                 this.loading = false;
             });
         }

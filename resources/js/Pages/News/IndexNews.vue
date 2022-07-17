@@ -1,18 +1,18 @@
 <template>
   <app-layout>
-    <app-head :title="`News`" />
+    <app-head :title="__('News')" />
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          News <span class="hidden md:inline">& Announcements</span>
+          {{ __("News") }} <span class="hidden md:inline">{{ __("& Announcements") }}</span>
         </h1>
         <div class="flex">
           <inertia-link
             :href="route('home')"
             class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Homepage</span>
+            <span>{{ __("Homepage") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -94,7 +94,7 @@
                       </p>
                       <p class="text-gray-500 dark:text-gray-400 text-sm">
                         {{ news.time_to_read }}
-                        read
+                        {{ __("read") }}
                       </p>
                     </div>
                   </div>
@@ -114,7 +114,7 @@
             <div
               class="shadow text-center dark:text-gray-400 italic max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-gray-200 rounded md:rounded-lg dark:bg-cool-gray-800 dark:border-none"
             >
-              No News or Announcement Yet.
+              {{ __("No News or Announcement Yet.") }}
             </div>
           </div>
         </div>

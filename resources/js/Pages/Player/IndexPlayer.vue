@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head title="Players" />
+    <app-head
+      :title="__('Players')"
+    />
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="md:flex space-x-4">
@@ -24,7 +26,7 @@
                 </div>
                 <div class="flex flex-col flex-grow ml-4">
                   <div class="text-sm text-gray-500 dark:text-gray-400">
-                    Total Players
+                    {{ __("Total Players") }}
                   </div>
                   <div class="font-bold dark:text-gray-200 text-lg">
                     {{ totalPlayersCount }}
@@ -50,7 +52,7 @@
                 </div>
                 <div class="flex flex-col flex-grow ml-4">
                   <div class="text-sm text-gray-500 dark:text-gray-400">
-                    Active Players
+                    {{ __("Active Players") }}
                   </div>
                   <div class="font-bold text-lg dark:text-gray-200">
                     {{ activePlayersCount }}
@@ -76,7 +78,7 @@
                 </div>
                 <div class="flex flex-col flex-grow ml-4">
                   <div class="text-sm text-gray-500 dark:text-gray-400">
-                    Play Time
+                    {{ __("Play Time") }}
                   </div>
                   <div class="font-bold text-lg dark:text-gray-200">
                     {{ totalPlayTime === 0 ? '0 h' : secondsToHMS(totalPlayTime/20) }}
@@ -102,7 +104,7 @@
                 </div>
                 <div class="flex flex-col flex-grow ml-4">
                   <div class="text-sm text-gray-500 dark:text-gray-400">
-                    Last Scan
+                    {{ __("Last Scan") }}
                   </div>
                   <div class="font-bold text-lg dark:text-gray-200">
                     {{ lastScanAt ? formatDistanceToNowStrict(new Date(lastScanAt), { addSuffix: false }) : 'not yet' }}
@@ -122,49 +124,49 @@
                         scope="col"
                         class="px-2 py-3 text-left text-xs font-bold text-center uppercase tracking-wider"
                       >
-                        #
+                        {{ __("#") }}
                       </th>
                       <th
                         scope="col"
                         class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider"
                       >
-                        Flag
+                        {{ __("Flag") }}
                       </th>
                       <th
                         scope="col"
                         class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider"
                       >
-                        Rank
+                        {{ __("Rank") }}
                       </th>
                       <th
                         scope="col"
                         class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
                       >
-                        Name
+                        {{ __("Name") }}
                       </th>
                       <th
                         scope="col"
                         class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
                       >
-                        Rating
+                        {{ __("Rating") }}
                       </th>
                       <th
                         scope="col"
                         class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
                       >
-                        Score
+                        {{ __("Score") }}
                       </th>
                       <th
                         scope="col"
                         class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
                       >
-                        Time Played
+                        {{ __("Time Played") }}
                       </th>
                       <th
                         scope="col"
                         class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
                       >
-                        Last Seen
+                        {{ __("Last Seen") }}
                       </th>
                     </tr>
                   </thead>
@@ -173,6 +175,7 @@
                     <infinite-scroll :load-more="loadMorePlayers">
                       <tr
                         v-for="(player, index) in playersList.data"
+                        :key="player.uuid"
                         :class="{'bg-gray-50 dark:bg-cool-gray-700 dark:bg-opacity-10': index % 2 === 1}"
                       >
                         <td class="px-2 py-4 whitespace-nowrap text-center text-sm text-light-blue-400 font-extrabold">
@@ -241,7 +244,7 @@
                                 <span
                                   v-else
                                   class="text-red-500 italic"
-                                >Unknown</span>
+                                >{{ __("Unknown") }}</span>
                               </inertia-link>
                             </div>
                           </div>
@@ -258,7 +261,7 @@
                           <span
                             v-else
                             class="text-gray-700 dark:text-gray-400 italic"
-                          >none</span>
+                          >{{ __("none") }}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                           {{ player.total_score }}
@@ -284,7 +287,7 @@
                           class="border-t dark:border-none px-6 py-4 sm:text-center text-gray-700 dark:text-gray-500 italic"
                           colspan="8"
                         >
-                          Loading more...
+                          {{ __("Loading more...") }}
                         </td>
                       </tr>
                     </infinite-scroll>
@@ -294,7 +297,7 @@
                         class="px-6 py-4 text-center dark:text-gray-300 text-gray-700"
                         colspan="8"
                       >
-                        No players found.
+                        {{ __("No players found.") }}
                       </td>
                     </tr>
                   </tbody>
@@ -317,7 +320,6 @@ import AppLayout from '@/Layouts/AppLayout';
 import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import ShoutBox from '@/Shared/ShoutBox';
-import NewsBox from '@/Shared/NewsBox';
 import InfiniteScroll from '@/Components/InfiniteScroll';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 
@@ -325,7 +327,6 @@ export default {
 
     components: {
         ServerStatusBox,
-        NewsBox,
         Icon,
         AppLayout,
         ShoutBox,

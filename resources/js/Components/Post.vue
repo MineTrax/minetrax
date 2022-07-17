@@ -29,14 +29,14 @@
               v-if="post.user.verified_at"
               v-tippy
               name="verified-check-fill"
-              title="Verified Account"
+              :title="__('Verified Account')"
               class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-light-blue-400"
             />
             <icon
               v-if="post.user.is_staff"
               v-tippy
               name="shield-check-fill"
-              title="Staff Member"
+              :title="__('Staff Member')"
               class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-pink-400"
             />
           </inertia-link>
@@ -57,9 +57,9 @@
       </div>
       <inertia-link
         v-if="$page.props.user && post.permissions.delete"
-        v-confirm="{message: 'Are you sure you want to delete this Post?'}"
+        v-confirm="{message: __('Are you sure you want to delete this Post?')}"
         v-tippy
-        content="Delete Post"
+        :title="__('Delete Post')"
         :preserve-scroll="true"
         :preserve-state="false"
         as="button"

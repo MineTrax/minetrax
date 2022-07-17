@@ -9,19 +9,19 @@
             class="mr-2 inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red transition ease-in-out duration-150"
             @click="confirmNewsDeletion(news.id)"
           >
-            Delete
+            {{ __("Delete") }}
           </button>
           <inertia-link
             :href="route('admin.news.edit', news.id)"
             class="mr-2 inline-flex items-center px-4 py-2 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-700 focus:shadow-outline-yellow transition ease-in-out duration-150"
           >
-            <span>Edit</span>
+            <span>{{ __("Edit") }}</span>
           </inertia-link>
           <inertia-link
             :href="route('admin.news.index')"
             class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Go Back</span>
+            <span>{{ __("Go Back") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -85,16 +85,16 @@
       @close="newsBeingDeleted = null"
     >
       <template #title>
-        Delete News
+        {{ __("Delete News") }}
       </template>
 
       <template #content>
-        Are you sure you would like to delete this News?
+        {{ __("Are you sure you would like to delete this News?") }}
       </template>
 
       <template #footer>
         <jet-secondary-button @click.native="newsBeingDeleted = null">
-          Nevermind
+          {{ __("Nevermind") }}
         </jet-secondary-button>
 
         <jet-danger-button
@@ -103,7 +103,7 @@
           :disabled="form.processing"
           @click.native="deleteNews"
         >
-          Delete News
+          {{ __("Delete News") }}
         </jet-danger-button>
       </template>
     </jet-confirmation-modal>
@@ -112,19 +112,15 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import JetDangerButton from '@/Jetstream/DangerButton';
-import { formatDistanceToNowStrict } from 'date-fns';
-import Icon from '@/Components/Icon';
+import {formatDistanceToNowStrict} from 'date-fns';
 
 export default {
 
     components: {
-        Icon,
         AppLayout,
-        JetSectionBorder,
         JetConfirmationModal,
         JetSecondaryButton,
         JetDangerButton

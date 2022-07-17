@@ -29,6 +29,9 @@ class Translations extends Component
     {
         $locale = App::getLocale();
 
+        // TODO: Change cache time to something like 1 day.
+        // And when adding how to work with localization doc make sure to tell to clear cache after every change.
+        // php artisan cache:clear
         $translations = Cache::remember("translations_$locale", 0, function() use($locale) {
             $phpTranslations = [];
             $jsonTranslations = [];

@@ -1,21 +1,21 @@
 <template>
   <jet-action-section>
     <template #title>
-      Delete Account
+      {{ __("Delete Account") }}
     </template>
 
     <template #description>
-      Permanently delete your account.
+      {{ __("Permanently delete your account.") }}
     </template>
 
     <template #content>
       <div class="max-w-xl text-sm text-gray-600">
-        Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.
+        {{ __("Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.") }}
       </div>
 
       <div class="mt-5">
         <jet-danger-button @click.native="confirmUserDeletion">
-          Delete Account
+          {{ __("Delete Account") }}
         </jet-danger-button>
       </div>
 
@@ -25,11 +25,11 @@
         @close="closeModal"
       >
         <template #title>
-          Delete Account
+          {{ __("Delete Account") }}
         </template>
 
         <template #content>
-          Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.
+          {{ __("Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.") }}
 
           <div class="mt-4">
             <jet-input
@@ -50,7 +50,7 @@
 
         <template #footer>
           <jet-secondary-button @click.native="closeModal">
-            Nevermind
+            {{ __("Nevermind") }}
           </jet-secondary-button>
 
           <jet-danger-button
@@ -59,7 +59,7 @@
             :disabled="form.processing"
             @click.native="deleteUser"
           >
-            Delete Account
+            {{ __("Delete Account") }}
           </jet-danger-button>
         </template>
       </jet-dialog-modal>

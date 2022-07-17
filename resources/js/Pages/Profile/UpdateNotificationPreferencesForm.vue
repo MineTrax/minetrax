@@ -1,11 +1,11 @@
 <template>
   <jet-form-section @submitted="updateNotificationPreference">
     <template #title>
-      Notification Preferences
+      {{ __("Notification Preferences") }}
     </template>
 
     <template #description>
-      Check what you want to receive notifications for.
+      {{ __("Check what you want to receive notifications for.") }}
     </template>
 
     <template #form>
@@ -17,16 +17,16 @@
                 scope="col"
                 class="text-lg text-left font-semibold text-gray-600 dark:text-gray-300"
               >
-                Notify me when
+                {{ __("Notify me when") }}
               </th>
               <th class="font-semibold text-gray-600 dark:text-gray-300">
-                via Email
+                {{ __("via Email") }}
               </th>
             </tr>
           </thead>
           <tbody class="text-gray-700 dark:text-gray-400">
             <tr class="mt-5">
-              <td>Someone commented on my Post</td>
+              <td>{{ __("Someone commented on my Post") }}</td>
               <td>
                 <x-checkbox
                   v-model="form.comment_on_post__email"
@@ -36,7 +36,7 @@
               </td>
             </tr>
             <tr>
-              <td>Someone liked my Post</td>
+              <td>{{ __("Someone liked my Post") }}</td>
               <td>
                 <x-checkbox
                   v-model="form.like_on_post__email"
@@ -46,7 +46,7 @@
               </td>
             </tr>
             <tr>
-              <td>I am muted by Staff</td>
+              <td>{{ __("I am muted by Staff") }}</td>
               <td>
                 <x-checkbox
                   v-model="form.you_are_muted__email"
@@ -56,7 +56,7 @@
               </td>
             </tr>
             <tr>
-              <td>I am banned by Staff</td>
+              <td>{{ __("I am banned by Staff") }}</td>
               <td class="text-center">
                 <x-checkbox
                   v-model="form.you_are_banned__email"
@@ -75,7 +75,7 @@
         :on="form.recentlySuccessful"
         class="mr-3"
       >
-        Saved.
+        {{ __("Saved.") }}
       </jet-action-message>
 
       <jet-button
@@ -83,7 +83,7 @@
         :disabled="form.processing"
         :loading="form.processing"
       >
-        Save
+        {{ __("Save") }}
       </jet-button>
     </template>
   </jet-form-section>
@@ -93,24 +93,14 @@
 import JetActionMessage from '@/Jetstream/ActionMessage';
 import JetButton from '@/Jetstream/Button';
 import JetFormSection from '@/Jetstream/FormSection';
-import JetInput from '@/Jetstream/Input';
-import JetInputError from '@/Jetstream/InputError';
-import JetLabel from '@/Jetstream/Label';
-import Password from 'vue-password-strength-meter';
-import XInput from '@/Components/Form/XInput';
 import XCheckbox from '@/Components/Form/XCheckbox';
 
 export default {
     components: {
         XCheckbox,
-        XInput,
         JetActionMessage,
         JetButton,
         JetFormSection,
-        JetInput,
-        JetInputError,
-        JetLabel,
-        Password
     },
 
     props: ['user'],

@@ -14,7 +14,7 @@
       <div class="container p-3 pb-2 w-80">
         <div class="flex justify-between">
           <div class="block text-xs text-gray-400">
-            Notifications
+            {{ __("Notifications") }}
           </div>
           <inertia-link
             as="button"
@@ -23,7 +23,7 @@
             :preserve-state="false"
             class="block text-xs text-light-blue-400 hover:underline"
           >
-            Mark all as read
+            {{ __("Mark all as read") }}
           </inertia-link>
         </div>
 
@@ -69,7 +69,7 @@
             :key="999999999"
             class="flex items-center justify-center italic text-gray-500 dark:text-gray-400 p-4"
           >
-            No notifications to show.
+            {{ __("No notifications to show.") }}
           </div>
         </div>
 
@@ -78,7 +78,7 @@
             as="a"
             :href="route('notification.index')"
           >
-            View All
+            {{ __("View All") }}
           </inertia-link>
         </div>
       </div>
@@ -89,7 +89,6 @@
 <script>
 import JetDropdown from '@/Jetstream/Dropdown';
 import Icon from '@/Components/Icon';
-import InfiniteScroll from '@/Components/InfiniteScroll';
 import Notification from '@/Components/Notification';
 import ErrorMessage from '@/Components/ErrorMessage';
 
@@ -98,7 +97,6 @@ export default {
     components: {
         ErrorMessage,
         Notification,
-        InfiniteScroll,
         Icon,
         JetDropdown,
     },
@@ -113,7 +111,7 @@ export default {
         let routeToHit = route('notification.index');
         axios.get(routeToHit).then(response => {
             this.notifications = response.data;
-        }).finally(e => {
+        }).finally(() => {
             this.loading = false;
         });
     }

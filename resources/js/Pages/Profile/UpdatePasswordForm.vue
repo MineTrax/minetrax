@@ -1,11 +1,11 @@
 <template>
   <jet-form-section @submitted="updatePassword">
     <template #title>
-      Update Password
+      {{ __("Update Password") }}
     </template>
 
     <template #description>
-      Ensure your account is using a long, random password to stay secure.
+      {{ __("Ensure your account is using a long, random password to stay secure.") }}
     </template>
 
     <template #form>
@@ -13,7 +13,7 @@
         <x-input
           id="current_password"
           v-model="form.current_password"
-          label="Current Password"
+          :label="__('Current Password')"
           :error="form.errors.current_password"
           :required="true"
           autocomplete="current-password"
@@ -26,7 +26,7 @@
         <x-input
           id="password"
           v-model="form.password"
-          label="New Password"
+          :label="__('New Password')"
           :error="form.errors.password"
           :required="true"
           autocomplete="new-password"
@@ -39,7 +39,7 @@
         <x-input
           id="password_confirmation"
           v-model="form.password_confirmation"
-          label="Confirm Password"
+          :label="__('Confirm Password')"
           :error="form.errors.password_confirmation"
           :required="true"
           autocomplete="new-password"
@@ -62,7 +62,7 @@
         :on="form.recentlySuccessful"
         class="mr-3"
       >
-        Saved.
+        {{ __("Saved.") }}
       </jet-action-message>
 
       <jet-button
@@ -70,7 +70,7 @@
         :disabled="form.processing"
         :loading="form.processing"
       >
-        Save
+        {{ __("Save") }}
       </jet-button>
     </template>
   </jet-form-section>
@@ -80,9 +80,6 @@
 import JetActionMessage from '@/Jetstream/ActionMessage';
 import JetButton from '@/Jetstream/Button';
 import JetFormSection from '@/Jetstream/FormSection';
-import JetInput from '@/Jetstream/Input';
-import JetInputError from '@/Jetstream/InputError';
-import JetLabel from '@/Jetstream/Label';
 import Password from 'vue-password-strength-meter';
 import XInput from '@/Components/Form/XInput';
 
@@ -92,9 +89,6 @@ export default {
         JetActionMessage,
         JetButton,
         JetFormSection,
-        JetInput,
-        JetInputError,
-        JetLabel,
         Password
     },
 

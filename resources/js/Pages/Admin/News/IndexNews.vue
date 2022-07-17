@@ -5,7 +5,7 @@
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-400">
-          News
+          {{ __("News") }}
         </h1>
         <div class="flex">
           <inertia-link
@@ -13,8 +13,8 @@
             :href="route('admin.news.create')"
             class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Create</span>
-            <span class="hidden md:inline">&nbsp;News</span>
+            <span>{{ __("Create") }}</span>
+            <span class="hidden md:inline">&nbsp;{{ __("News") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -29,43 +29,43 @@
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      #
+                      {{ __("#") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Type
+                      {{ __("Type") }}
                     </th>
                     <th
                       scope="col"
                       class="w-6 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Title
+                      {{ __("Title") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Published
+                      {{ __("Published") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Pinned
+                      {{ __("Pinned") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Created
+                      {{ __("Created") }}
                     </th>
                     <th
                       scope="col"
                       class="relative px-6 py-3"
                     >
-                      <span class="sr-only">Edit</span>
+                      <span class="sr-only">{{ __("Edit") }}</span>
                     </th>
                   </tr>
                 </thead>
@@ -157,7 +157,7 @@
                         :href="route('news.show', news.slug)"
                         class="text-blue-600 hover:text-blue-900"
                       >
-                        View
+                        {{ __("View") }}
                       </inertia-link>
                       /
                       <inertia-link
@@ -166,7 +166,7 @@
                         :href="route('admin.news.edit', news.id)"
                         class="text-yellow-600 hover:text-yellow-900"
                       >
-                        Edit
+                        {{ __("Edit") }}
                       </inertia-link>
                       /
                       <button
@@ -174,7 +174,7 @@
                         class="text-red-600 hover:text-red-900 focus:outline-none"
                         @click="confirmNewsDeletion(news.id)"
                       >
-                        Delete
+                        {{ __("Delete") }}
                       </button>
                     </td>
                   </tr>
@@ -184,7 +184,7 @@
                       class="px-6 py-4 text-center dark:text-gray-400"
                       colspan="7"
                     >
-                      No news found.
+                      {{ __("No news found.") }}
                     </td>
                   </tr>
                 </tbody>
@@ -202,16 +202,16 @@
       @close="newsBeingDeleted = null"
     >
       <template #title>
-        Delete News
+        {{ __("Delete News") }}
       </template>
 
       <template #content>
-        Are you sure you would like to delete this News?
+        {{ __("Are you sure you would like to delete this News?") }}
       </template>
 
       <template #footer>
         <jet-secondary-button @click.native="newsBeingDeleted = null">
-          Nevermind
+          {{ __("Nevermind") }}
         </jet-secondary-button>
 
         <jet-danger-button
@@ -220,7 +220,7 @@
           :disabled="deleteNewsForm.processing"
           @click.native="deleteNews"
         >
-          Delete News
+          {{ __("Delete News") }}
         </jet-danger-button>
       </template>
     </jet-confirmation-modal>
@@ -229,7 +229,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
 import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
@@ -242,7 +241,6 @@ export default {
     components: {
         Icon,
         AppLayout,
-        JetSectionBorder,
         Pagination,
         JetConfirmationModal,
         JetSecondaryButton,

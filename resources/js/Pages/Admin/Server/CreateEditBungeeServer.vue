@@ -2,23 +2,23 @@
   <app-layout>
     <app-head
       v-if="isCreateOperation"
-      title="Add Bungee Server"
+      :title="__('Add Bungee Server')"
     />
     <app-head
       v-else
-      :title="`Edit Bungee Server: ${server.name}`"
+      :title="__('Edit Bungee Server: :name', {name: server.name})"
     />
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ isCreateOperation ? 'Add Bungee Server' : `Edit Bungee Server : ${server.name}` }}
+          {{ isCreateOperation ? __('Add Bungee Server') : __('Edit Bungee Server: :name', {name: server.name}) }}
         </h1>
         <inertia-link
           :href="route('admin.server.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
         >
-          <span>Cancel</span>
+          <span>{{ __("Cancel") }}</span>
         </inertia-link>
       </div>
 
@@ -27,11 +27,12 @@
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
               <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                Server Information
+                {{ __("Overview") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                We only support adding one bungee server. This server will be used to show online players and server status.
-                All sensitive information will be encrypted.
+                {{ __("Minetrax only support adding one bungee server. This server will be used to show online players and server status. All sensitive information will be encrypted.") }}
+                <br>
+                {{ __("Please note Proxy servers don't need Minetrax.jar plugin. Only install them on actual servers like spigot, bukkit etc.") }}
               </p>
             </div>
           </div>
@@ -44,12 +45,12 @@
                       <x-input
                         id="name"
                         v-model="form.name"
-                        label="Server Name"
+                        :label="__('Server Name')"
                         :error="form.errors.name"
                         autocomplete="name"
                         type="text"
                         name="name"
-                        help="Eg: My Bungee Server"
+                        :help="__('Eg: My Bungee Server')"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -58,12 +59,12 @@
                       <x-input
                         id="hostname"
                         v-model="form.hostname"
-                        label="Hostname"
+                        :label="__('Hostname')"
                         :error="form.errors.hostname"
                         autocomplete="hostname"
                         type="text"
                         name="hostname"
-                        help="Eg: play-my-bungee-server.com"
+                        :help="__('Eg: play-my-bungee-server.com')"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -72,12 +73,12 @@
                       <x-input
                         id="ip_address"
                         v-model="form.ip_address"
-                        label="IP Address"
+                        :label="__('IP Address')"
                         :error="form.errors.ip_address"
                         autocomplete="ip_address"
                         type="text"
                         name="ip_address"
-                        help="Eg: 78.46.130.197"
+                        :help="__('Eg: 78.46.130.197')"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -86,12 +87,12 @@
                       <x-input
                         id="join_port"
                         v-model="form.join_port"
-                        label="Join Port"
+                        :label="__('Join Port')"
                         :error="form.errors.join_port"
                         autocomplete="join_port"
                         type="text"
                         name="join_port"
-                        help="Eg: 25565"
+                        :help="__('Eg: 25565')"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -100,12 +101,12 @@
                       <x-input
                         id="query_port"
                         v-model="form.query_port"
-                        label="Query Port"
+                        :label="__('Query Port')"
                         :error="form.errors.query_port"
                         autocomplete="query_port"
                         type="text"
                         name="query_port"
-                        help="Eg: 25575"
+                        :help="__('Eg: 25575')"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -114,12 +115,12 @@
                       <x-input
                         id="webquery_port"
                         v-model="form.webquery_port"
-                        label="Webquery Port"
+                        :label="__('Webquery Port')"
                         :error="form.errors.webquery_port"
                         autocomplete="webquery_port"
                         type="text"
                         name="webquery_port"
-                        help="Eg: 25585"
+                        :help="__('Eg: 25585')"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -130,9 +131,9 @@
                         v-model="form.minecraft_version"
                         name="minecraft_version"
                         :error="form.errors.minecraft_version"
-                        label="Server Version"
+                        :label="__('Server Version')"
                         :select-list="versionsArray"
-                        placeholder="Select version.."
+                        :placeholder="__('Select version..')"
                         :disable-null="true"
                       />
                     </div>
@@ -144,7 +145,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    {{ isCreateOperation ? 'Add Bungee Server' : 'Edit Bungee Server' }}
+                    {{ isCreateOperation ? __("Add Bungee Server") : __("Edit Bungee Server") }}
                   </loading-button>
                 </div>
               </div>

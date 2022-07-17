@@ -75,7 +75,7 @@ class ServerController extends Controller
 
         try {
             // Check if we got cache
-            $hasCache = Cache::get('server:webquery:'.$server->id) && true == false;
+            $hasCache = Cache::get('server:webquery:'.$server->id);
             if ($hasCache) {
                 return json_decode($hasCache, true);
             }

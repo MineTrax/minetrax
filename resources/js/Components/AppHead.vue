@@ -1,5 +1,5 @@
 <template>
-  <inertia-head :title="title ? `${title} - ${$page.props.appName}` : `${$page.props.appName} - Minecraft Servers & Players Tracking`">
+  <inertia-head :title="title ? `${title} - ${$page.props.appName}` : `${$page.props.appName} - ${__('Minecraft Servers & Players Tracking')}`">
     <slot />
   </inertia-head>
 </template>

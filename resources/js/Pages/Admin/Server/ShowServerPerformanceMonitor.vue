@@ -1,6 +1,6 @@
 <template>
   <app-layout>
-    <app-head :title="`Server #${server.id}`" />
+    <app-head :title="__('Server #:id', {id: server.id})" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto space-y-4">
       <div class="flex justify-between">
@@ -47,7 +47,7 @@
               name="calculator"
               class="w-6 mr-1"
             />
-            Numbers
+            {{ __("Numbers") }}
           </h3>
 
           <div class="">
@@ -62,25 +62,25 @@
                     scope="col"
                     class="text-left p-2"
                   >
-                    Last 24 hours
+                    {{ __("Last 24 hours") }}
                   </th>
                   <th
                     scope="col"
                     class="text-left p-2"
                   >
-                    Last week
+                    {{ __("Last week") }}
                   </th>
                   <th
                     scope="col"
                     class="text-left p-2"
                   >
-                    Last month
+                    {{ __("Last month") }}
                   </th>
                   <th
                     scope="col"
                     class="text-left p-2"
                   >
-                    All time
+                    {{ __("All time") }}
                   </th>
                 </tr>
               </thead>
@@ -91,7 +91,7 @@
                       name="users"
                       class="w-5 text-green-500 mr-1"
                     />
-                    Max Online Players
+                    {{ __("Max Online Players") }}
                   </td>
                   <td class="p-2">
                     {{ numbers.max_players.last_24h }}
@@ -113,7 +113,7 @@
                       name="joystick"
                       class="w-5 text-pink-500 mr-1"
                     />
-                    Lowest TPS
+                    {{ __("Lowest TPS") }}
                   </td>
                   <td class="p-2">
                     {{ numbers.low_tps.last_24h }}
@@ -135,7 +135,7 @@
                       name="cpu"
                       class="w-5 text-blue-500 mr-1"
                     />
-                    Avg CPU Usage
+                    {{ __("Avg CPU Usage") }}
                   </td>
                   <td class="p-2">
                     {{ numbers.avg_cpu.last_24h.toFixed(2) }}%
@@ -157,7 +157,7 @@
                       name="ram"
                       class="w-5 text-orange-500 mr-1"
                     />
-                    Avg RAM Usage
+                    {{ __("Avg RAM Usage") }}
                   </td>
                   <td class="p-2">
                     {{ Math.round(numbers.avg_memory.last_24h / 1024) }} MB
@@ -179,7 +179,7 @@
                       name="grid"
                       class="w-5 text-purple-500 mr-1"
                     />
-                    Avg Chunks Loaded
+                    {{ __("Avg Chunks Loaded") }}
                   </td>
                   <td class="p-2">
                     {{ Math.round(numbers.avg_chunks.last_24h) }}
@@ -201,7 +201,7 @@
                       name="server"
                       class="w-5 text-light-blue-500 mr-1"
                     />
-                    Min Free Disk
+                    {{ __("Min Free Disk") }}
                   </td>
                   <td class="p-2">
                     {{ Math.round(numbers.min_free_disk.last_24h / 1048576) }} GB
@@ -223,7 +223,7 @@
                       name="toggle-off"
                       class="w-5 text-red-500 mr-1"
                     />
-                    Total Restarts
+                    {{ __("Total Restarts") }}
                   </td>
                   <td class="p-2">
                     {{ numbers.total_restarts.last_24h }}
@@ -249,7 +249,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu';
 import ServerCpuMetricBox from '@/Shared/ServerCpuMetricBox';
 import ServerRamMetricBox from '@/Shared/ServerRamMetricBox';

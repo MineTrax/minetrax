@@ -1,17 +1,19 @@
 <template>
   <app-layout>
-    <app-head title="Features & Todo List" />
+    <app-head
+      :title="__('Features & Todo List')"
+    />
 
     <div class="py-3 px-2 sm:py-12 sm:px-10 max-w-7xl mx-auto">
       <h1 class="text-center text-xl sm:text-2xl md:text-4xl font-extrabold text-gray-700 dark:text-gray-200 mb-3">
-        Features & Known Bugs
+        {{ __("Features & Known Bugs") }}
       </h1>
 
       <span class="text-lg font-extrabold text-green-500 mb-4 flex items-center">
         <icon
           name="verified-check-fill"
           class="h-8 w-8 animate-bounce"
-        /> Completed
+        /> {{ __("Completed") }}
       </span>
       <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
         <feature-card
@@ -27,7 +29,7 @@
         <icon
           name="spin-loader"
           class="h-7 w-7 animate-spin mr-1"
-        /> In Progress
+        /> {{ __("In Progress") }}
       </span>
       <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
         <feature-card
@@ -48,7 +50,7 @@
           class="w-7 h-7 relative inline-flex mr-1"
           name="heart-fill"
         />
-        Draft
+        {{ __("Draft") }}
       </span>
       <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
         <feature-card
@@ -67,8 +69,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
-import { formatDistanceToNowStrict } from 'date-fns';
+import {formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import FeatureCard from '@/Components/FeatureCard';
 
@@ -78,7 +79,6 @@ export default {
         FeatureCard,
         Icon,
         AppLayout,
-        JetSectionBorder,
     },
     props: {
         features: Array

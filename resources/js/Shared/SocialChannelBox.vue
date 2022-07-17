@@ -7,14 +7,14 @@
       v-if="showTitle"
       class="text-gray-800 dark:text-gray-200 font-extrabold"
     >
-      Socials
+      {{ __("Socials") }}
     </h3>
 
     <div class="flex items-center justify-center space-x-6">
       <a
         v-if="youtube"
         v-tippy
-        title="Youtube"
+        :title="__('Youtube')"
         :href="youtube"
         target="_blank"
         class="inline-block p-1 hover:bg-red-600 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
@@ -38,7 +38,7 @@
       <a
         v-if="twitter"
         v-tippy
-        title="Twitter"
+        :title="__('Twitter')"
         :href="twitter"
         target="_blank"
         class="inline-block p-1 hover:bg-light-blue-600 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
@@ -52,7 +52,7 @@
       <a
         v-if="twitch"
         v-tippy
-        title="Twitch"
+        :title="__('Twitch')"
         :href="twitch"
         target="_blank"
         class="inline-block p-1 hover:bg-purple-600 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
@@ -74,7 +74,7 @@
       <a
         v-if="facebook"
         v-tippy
-        title="Facebook"
+        :title="__('Facebook')"
         :href="facebook"
         target="_blank"
         class="inline-block p-1 hover:bg-blue-700 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
@@ -93,7 +93,7 @@
       <a
         v-if="steam"
         v-tippy
-        title="Steam"
+        :title="__('Steam')"
         :href="steam"
         target="_blank"
         class="inline-block p-1 hover:bg-gray-800 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
@@ -117,7 +117,7 @@
       <a
         v-if="website"
         v-tippy
-        title="Website"
+        :title="__('Website')"
         :href="website"
         target="_blank"
         class="inline-block p-1 hover:bg-green-600 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
@@ -140,6 +140,7 @@
 
 <script>
 import Icon from '@/Components/Icon';
+
 export default {
     components: {Icon},
     props: {

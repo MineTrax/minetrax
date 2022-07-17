@@ -58,7 +58,7 @@
           >
           <button
             v-tippy
-            title="Add Media"
+            :title="__('Add Media')"
             type="button"
             class="inline-flex items-center justify-center h-10 w-10 hover:bg-light-blue-100 dark:hover:bg-cool-gray-900 rounded-full focus:outline-none"
             @click="openImageSelector"
@@ -77,7 +77,7 @@
             :loading="postsubmitting"
             type="submit"
           >
-            Post
+            {{ __("Post") }}
           </loading-button>
         </div>
       </form>
@@ -129,7 +129,7 @@
           :key="999999999"
           class="flex bg-white dark:bg-cool-gray-800 items-center justify-center italic text-gray-500 dark:text-gray-400 p-4 rounded shadow"
         >
-          {{ username }} hasn't posted anything yet.
+          {{ __(":username hasn't posted anything yet.", {username: username}) }}
         </div>
       </transition-group>
     </infinite-scroll>
@@ -138,7 +138,6 @@
 
 <script>
 
-import {Inertia} from '@inertiajs/inertia';
 import InfiniteScroll from '@/Components/InfiniteScroll';
 import JetInputError from '@/Jetstream/InputError';
 import LoadingButton from '@/Components/LoadingButton';
@@ -168,11 +167,11 @@ export default {
             bodyerror: null,
             postsubmitting: false,
             bodyPlaceholderText: sample([
-                '🎉 What\'s up?',
-                '✨ What\'s happening?',
-                '🍕 Having fun? Tell us about it.',
-                '🎃 Are you alex or steve?',
-                '👽 Have you seen Herobrine?'
+                this.__('What\'s up'),
+                this.__('What\'s happening?'),
+                this.__('Having fun? Tell us about it.'),
+                this.__('Are you alex or steve?'),
+                this.__('Have you seen Herobrine?')
             ]),
             imagesDisplay: []
         };

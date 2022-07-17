@@ -1,6 +1,6 @@
 <template>
   <app-layout>
-    <app-head :title="`${player.username} - Player Details`" />
+    <app-head :title="__(':username - Player Details', {username: player.username})" />
 
     <div class="px-2 py-4 md:py-12 md:px-10 max-w-6xl mx-auto space-y-4">
       <div
@@ -14,7 +14,7 @@
             <span
               v-if="player.position"
               v-tippy
-              :title="`Position: ${player.position}`"
+              :title="__('Position: :position', {position: player.position})"
               class="
                 border-2
                 rounded
@@ -32,8 +32,8 @@
               v-else
               v-tippy
               class="italic text-sm text-gray-500 dark:text-gray-400"
-              title="Position: None"
-            >None</span>
+              :title="__('Position: None')"
+            >{{ __("None") }}</span>
           </div>
 
           <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> Position </span>
@@ -48,16 +48,16 @@
               v-if="player.rating != null"
               v-tippy
               :name="`rating-${player.rating}`"
-              :title="`Rating: ${player.rating}`"
+              :title="__('Rating: :rating',{rating: player.rating})"
               class="w-12 h-12 focus:outline-none"
             />
             <p
               v-else
               v-tippy
               class="italic text-sm text-gray-500 dark:text-gray-400"
-              title="Rating: None"
+              :title="__('Rating: None')"
             >
-              None
+              {{ __("None") }}
             </p>
           </div>
 
@@ -74,16 +74,16 @@
               v-tippy
               :alt="player.rank.name"
               :src="player.rank.photo_url"
-              :title="`Rank: ${player.rank.name}`"
+              :title="__('Rank: :rank', {rank: player.rank.name})"
               class="h-12 w-12 focus:outline-none"
             >
             <p
               v-else
               v-tippy
               class="italic text-sm text-gray-500 dark:text-gray-400"
-              title="Rank: None"
+              :title="__('Rank: None')"
             >
-              None
+              {{ __("None") }}
             </p>
           </div>
 
@@ -99,16 +99,16 @@
             v-tippy
             :alt="player.country.name"
             :src="player.country.photo_path"
-            :title="`Country: ${player.country.name}`"
+            :title="__('Country: :country', {country: player.country.name})"
             class="h-12 w-12 -mt-0.5 focus:outline-none"
           >
           <p
             v-else
             v-tippy
             class="italic text-sm text-gray-500 dark:text-gray-400"
-            title="Country: None"
+            :title="__('Country: None')"
           >
-            Unknown
+            {{ __("Unknown") }}
           </p>
 
           <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> Country </span>
@@ -140,7 +140,7 @@
             v-if="!player.is_active"
             class="shadow bg-white dark:bg-cool-gray-800 rounded w-full p-2 md:p-5 text-red-400 dark:text-red-500 italic text-center"
           >
-            Player is inactive and will not be considered for rating.
+            {{ __("Player is inactive and will not be considered for rating.") }}
           </div>
           <div class="shadow bg-white dark:bg-cool-gray-800 rounded w-full p-2 md:p-5">
             <div class="flex justify-between space-x-2 items-center mb-2">
@@ -177,7 +177,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Position
+                        {{ __("Position") }}
                       </p>
                     </div>
                     <p class="font-bold">
@@ -196,7 +196,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Score
+                        {{ __("Score") }}
                       </p>
                     </div>
                     <p class="font-bold">
@@ -217,7 +217,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Rating
+                        {{ __("Rating") }}
                       </p>
                     </div>
                     <p>
@@ -228,7 +228,7 @@
                       <span
                         v-else
                         class="italic text-gray-500"
-                      >None</span>
+                      >{{ __("None") }}</span>
                     </p>
                   </div>
                 </div>
@@ -255,7 +255,7 @@
                         clip-rule="evenodd"
                       /></svg>
                       <p class="ml-1">
-                        Mob Kills
+                        {{ __("Mob Kills") }}
                       </p>
                     </div>
                     <p class="font-bold">
@@ -275,7 +275,7 @@
                         clip-rule="evenodd"
                       /></svg>
                       <p class="ml-1">
-                        Player Kills
+                        {{ __("Player Kills") }}
                       </p>
                     </div>
                     <p class="font-bold">
@@ -295,7 +295,7 @@
                         clip-rule="evenodd"
                       /></svg>
                       <p class="ml-1">
-                        Deaths
+                        {{ __("Deaths") }}
                       </p>
                     </div>
                     <p class="font-bold">
@@ -329,7 +329,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Rank
+                        {{ __("Rank") }}
                       </p>
                     </div>
                     <p>
@@ -337,7 +337,7 @@
                       <span
                         v-else
                         class="italic text-gray-500"
-                      >None</span>
+                      >{{ __("None") }}</span>
                     </p>
                   </div>
                   <div class="flex justify-between">
@@ -355,7 +355,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Country
+                        {{ __("Country") }}
                       </p>
                     </div>
                     <p>{{ player.country.name }}</p>
@@ -375,7 +375,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Total Playtime
+                        {{ __("Total Playtime") }}
                       </p>
                     </div>
                     <p>
@@ -395,7 +395,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Times Slept
+                        {{ __("Times Slept") }}
                       </p>
                     </div>
                     <p>{{ player.total_sleep_in_bed }}</p>
@@ -415,7 +415,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Next Rank
+                        {{ __("Next Rank") }}
                       </p>
                     </div>
                     <p>
@@ -423,7 +423,7 @@
                       <span
                         v-else
                         class="italic text-gray-500"
-                      >None</span>
+                      >{{ __("None") }}</span>
                     </p>
                   </div>
                   <div class="flex justify-between">
@@ -441,7 +441,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Sessions
+                        {{ __("Sessions") }}
                       </p>
                     </div>
                     <p>{{ player.total_leave_game }}</p>
@@ -461,14 +461,14 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Favorite Server
+                        {{ __("Favorite Server") }}
                       </p>
                     </div>
                     <p
                       v-if="!player.favorite_server"
                       class="text-gray-400 italic"
                     >
-                      None
+                      {{ __("None") }}
                     </p>
                     <p
                       v-else
@@ -494,7 +494,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Servers Played
+                        {{ __("Servers Played") }}
                       </p>
                     </div>
                     <p>{{ player.servers_count }}</p>
@@ -522,7 +522,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Items Mined
+                        {{ __("Items Mined") }}
                       </p>
                     </div>
                     <p>{{ player.total_mined }}</p>
@@ -542,7 +542,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Items Crafted
+                        {{ __("Items Crafted") }}
                       </p>
                     </div>
                     <p>{{ player.total_crafted }}</p>
@@ -562,7 +562,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Items Broken
+                        {{ __("Items Broken") }}
                       </p>
                     </div>
                     <p>{{ player.total_broken }}</p>
@@ -578,7 +578,7 @@
                         xmlns="http://www.w3.org/2000/svg"
                       ><path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z" /></svg>
                       <p class="ml-1">
-                        Items Used
+                        {{ __("Items Used") }}
                       </p>
                     </div>
                     <p>{{ player.total_used }}</p>
@@ -596,7 +596,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Distance Walked
+                        {{ __("Distance Walked") }}
                       </p>
                     </div>
                     <p>{{ (player.total_walk_one_cm)/100 }}m</p>
@@ -616,7 +616,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Owner
+                        {{ __("Owner") }}
                       </p>
                     </div>
                     <p>
@@ -631,7 +631,7 @@
                       <span
                         v-else
                         class="italic text-gray-500"
-                      >None</span>
+                      >{{ __("None") }}</span>
                     </p>
                   </div>
                 </div>
@@ -655,7 +655,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Joined
+                        {{ __("Joined") }}
                       </p>
                     </div>
                     <p
@@ -686,7 +686,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        Last Seen
+                        {{ __("Last Seen") }}
                       </p>
                     </div>
                     <p
@@ -711,19 +711,15 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
 import * as skinview3d from 'skinview3d';
 
 export default {
 
     components: {
-        ServerStatusBox,
         Icon,
         AppLayout,
-        JetSectionBorder,
     },
     props: {
         player: Object

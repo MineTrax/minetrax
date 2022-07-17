@@ -21,19 +21,19 @@
         </div>
         <div>
           <p class="font-bold">
-            Your MineTrax Version is Outdated!
+            {{ __("Your MineTrax Version is Outdated!") }}
           </p>
           <p class="text-sm text-gray-700 dark:text-gray-200">
-            Your current MineTrax version is <span class="text-red-500">{{ response.my_version }}</span> while the latest version is <span class="text-green-500">{{ response.latest_version }}</span>. Please upgrade to enjoy latest features. <br>
+            {{ __("Your current MineTrax version is") }}&nbsp;<span class="text-red-500">{{ response.my_version }}</span>&nbsp;{{ __("while the latest version is") }}&nbsp;<span class="text-green-500">{{ response.latest_version }}</span>. {{ __("Please upgrade to enjoy latest features.") }} <br>
             <a
               class="text-light-blue-500 hover:underline"
               target="_blank"
               href="https://minetrax.github.io/docs/upgrade"
-            >Click here to know more.</a>
+            >{{ __("Click here to know more.") }}</a>
           </p>
 
           <p class="text-xs text-gray-500 italic mt-2">
-            Note: This box is only visible to Staff Member
+            {{ __("Note: This box is only visible to Staff Member") }}
           </p>
         </div>
       </div>

@@ -67,7 +67,7 @@
         v-if="!error && (!playersList || playersList.length <= 0)"
         class="italic p-1 rounded text-center text-gray-400"
       >
-        No players online.
+        {{ __("No players online.") }}
       </div>
     </div>
   </div>

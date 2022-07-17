@@ -1,6 +1,6 @@
 <template>
   <app-layout>
-    <app-head :title="`Server #${server.id}`" />
+    <app-head :title="__('Server #:id', {id: server.id})" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto space-y-4">
       <h2 class="text-2xl text-gray-600 dark:text-gray-200">
@@ -16,7 +16,7 @@
         class="shadow bg-white text-gray-700 dark:text-gray-300 text-sm dark:bg-cool-gray-800 dark:text-gray-300 rounded w-full p-2 space-y-4 md:p-5"
       >
         <h3 class="text-red-400 text-center">
-          No data captured yet for this server! Please try visiting later.
+          {{ __("No data captured yet for this server! Please try visiting later.") }}
         </h3>
       </div>
       <div
@@ -28,7 +28,7 @@
             name="calculator"
             class="w-6 mr-1"
           />
-          Aggregated Numbers
+          {{ __("Aggregated Numbers") }}
         </h3>
 
         <!-- items used -->
@@ -46,7 +46,7 @@
                 <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1v4.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 13.5V9a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1.217L5.07 1.243a.5.5 0 0 1 .686-.172zM2 9v4.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9H2zM1 7v1h14V7H1zm3 3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 4 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 6 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 8 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5z" />
               </svg>
               <p class="ml-1">
-                Total items used by all players
+                {{ __("Total items used by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_used }}</p>
@@ -65,7 +65,7 @@
                 <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1v4.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 13.5V9a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1.217L5.07 1.243a.5.5 0 0 1 .686-.172zM2 9v4.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9H2zM1 7v1h14V7H1zm3 3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 4 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 6 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 8 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5z" />
               </svg>
               <p class="ml-1">
-                Max items used by one player
+                {{ __("Max items used by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_used.total_used }} ({{ aggrMax.max_used.username }})</p>
@@ -87,7 +87,7 @@
                 <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z" />
               </svg>
               <p class="ml-1">
-                Total blocks mined by all players
+                {{ __("Total blocks mined by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_mined }}</p>
@@ -106,7 +106,7 @@
                 <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z" />
               </svg>
               <p class="ml-1">
-                Max blocks mined by one player
+                {{ __("Max blocks mined by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_mined.total_mined }} ({{ aggrMax.max_mined.username }})</p>
@@ -131,7 +131,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Total items picked up by all players
+                {{ __("Total items picked up by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_picked_up }}</p>
@@ -153,7 +153,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Max items picked up by one player
+                {{ __("Max items picked up by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_picked_up.total_picked_up }} ({{ aggrMax.max_picked_up.username }})</p>
@@ -179,7 +179,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Total items dropped by all players
+                {{ __("Total items dropped by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_dropped }}</p>
@@ -201,7 +201,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Max items dropped by one player
+                {{ __("Max items dropped by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_dropped.total_dropped }} ({{ aggrMax.max_dropped.username }})</p>
@@ -231,7 +231,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Total items broken by all players
+                {{ __("Total items broken by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_broken }}</p>
@@ -257,7 +257,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Max items broken by one player
+                {{ __("Max items broken by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_broken.total_broken }} ({{ aggrMax.max_broken.username }})</p>
@@ -280,7 +280,7 @@
                 <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13zM1.5 1a.5.5 0 0 0-.5.5V5h4V1H1.5zM5 6H1v4h4V6zm1 4h4V6H6v4zm-1 1H1v3.5a.5.5 0 0 0 .5.5H5v-4zm1 0v4h4v-4H6zm5 0v4h3.5a.5.5 0 0 0 .5-.5V11h-4zm0-1h4V6h-4v4zm0-5h4V1.5a.5.5 0 0 0-.5-.5H11v4zm-1 0V1H6v4h4z" />
               </svg>
               <p class="ml-1">
-                Total items crafted by all players
+                {{ __("Total items crafted by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_crafted }}</p>
@@ -299,7 +299,7 @@
                 <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13zM1.5 1a.5.5 0 0 0-.5.5V5h4V1H1.5zM5 6H1v4h4V6zm1 4h4V6H6v4zm-1 1H1v3.5a.5.5 0 0 0 .5.5H5v-4zm1 0v4h4v-4H6zm5 0v4h3.5a.5.5 0 0 0 .5-.5V11h-4zm0-1h4V6h-4v4zm0-5h4V1.5a.5.5 0 0 0-.5-.5H11v4zm-1 0V1H6v4h4z" />
               </svg>
               <p class="ml-1">
-                Max items crafted by one player
+                {{ __("Max items crafted by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_crafted.total_crafted }} ({{ aggrMax.max_crafted.username }})</p>
@@ -321,7 +321,7 @@
                 <path d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6a3.989 3.989 0 0 0-1.334-2.982A3.983 3.983 0 0 0 8 2a3.983 3.983 0 0 0-2.667 1.018A3.989 3.989 0 0 0 4 6h8z" />
               </svg>
               <p class="ml-1">
-                Total mob kills by all players
+                {{ __("Total mob kills by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_mob_kills }}</p>
@@ -340,7 +340,7 @@
                 <path d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6a3.989 3.989 0 0 0-1.334-2.982A3.983 3.983 0 0 0 8 2a3.983 3.983 0 0 0-2.667 1.018A3.989 3.989 0 0 0 4 6h8z" />
               </svg>
               <p class="ml-1">
-                Max mob kills by one player
+                {{ __("Max mob kills by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_mob_kills.total_mob_kills }} ({{ aggrMax.max_mob_kills.username }})</p>
@@ -362,7 +362,7 @@
                 <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
               </svg>
               <p class="ml-1">
-                Total player kills by all players
+                {{ __("Total player kills by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_player_kills }}</p>
@@ -381,7 +381,7 @@
                 <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
               </svg>
               <p class="ml-1">
-                Max player kills by one player
+                {{ __("Max player kills by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_player_kills.total_player_kills }} ({{ aggrMax.max_player_kills.username }})</p>
@@ -407,7 +407,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Total deaths by all players
+                {{ __("Total deaths by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_deaths }}</p>
@@ -430,7 +430,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Max deaths by one player
+                {{ __("Max deaths by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_deaths.total_deaths }} ({{ aggrMax.max_deaths.username }})</p>
@@ -453,7 +453,7 @@
                 <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
               </svg>
               <p class="ml-1">
-                Total distance walk by all players
+                {{ __("Total distance walk by all players") }}
               </p>
             </div>
             <p v-if="aggrTotal.total_walk_one_cm">
@@ -478,7 +478,7 @@
                 <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
               </svg>
               <p class="ml-1">
-                Max distance walk by one player
+                {{ __("Max distance walk by one player") }}
               </p>
             </div>
             <p v-if="aggrMax.max_walk_one_cm && aggrMax.max_walk_one_cm.total_walk_one_cm">
@@ -505,7 +505,7 @@
                 <path d="M2.522 5H2a.5.5 0 0 0-.494.574l1.372 9.149A1.5 1.5 0 0 0 4.36 16h7.278a1.5 1.5 0 0 0 1.483-1.277l1.373-9.149A.5.5 0 0 0 14 5h-.522A5.5 5.5 0 0 0 2.522 5zm1.005 0a4.5 4.5 0 0 1 8.945 0H3.527zm9.892 1-1.286 8.574a.5.5 0 0 1-.494.426H4.36a.5.5 0 0 1-.494-.426L2.58 6h10.838z" />
               </svg>
               <p class="ml-1">
-                Total fish caught by all players
+                {{ __("Total fish caught by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_fish_caught }}</p>
@@ -524,7 +524,7 @@
                 <path d="M2.522 5H2a.5.5 0 0 0-.494.574l1.372 9.149A1.5 1.5 0 0 0 4.36 16h7.278a1.5 1.5 0 0 0 1.483-1.277l1.373-9.149A.5.5 0 0 0 14 5h-.522A5.5 5.5 0 0 0 2.522 5zm1.005 0a4.5 4.5 0 0 1 8.945 0H3.527zm9.892 1-1.286 8.574a.5.5 0 0 1-.494.426H4.36a.5.5 0 0 1-.494-.426L2.58 6h10.838z" />
               </svg>
               <p class="ml-1">
-                Max fish caught by one player
+                {{ __("Max fish caught by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_fish_caught.total_fish_caught }} ({{ aggrMax.max_fish_caught.username }})</p>
@@ -546,7 +546,7 @@
                 <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828l.645-1.937zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.734 1.734 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.734 1.734 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.734 1.734 0 0 0 3.407 2.31l.387-1.162zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L10.863.1z" />
               </svg>
               <p class="ml-1">
-                Total items enchanted by all players
+                {{ __("Total items enchanted by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_enchant_item }}</p>
@@ -565,7 +565,7 @@
                 <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828l.645-1.937zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.734 1.734 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.734 1.734 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.734 1.734 0 0 0 3.407 2.31l.387-1.162zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L10.863.1z" />
               </svg>
               <p class="ml-1">
-                Max items enchanted by one player
+                {{ __("Max items enchanted by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_enchant_item.total_enchant_item }} ({{ aggrMax.max_enchant_item.username }})</p>
@@ -587,7 +587,7 @@
                 <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2h-7zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48V8.35zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z" />
               </svg>
               <p class="ml-1">
-                Total playtime by all players
+                {{ __("Total playtime by all players") }}
               </p>
             </div>
             <p v-if="aggrTotal.total_play_one_minute">
@@ -611,7 +611,7 @@
                 <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2h-7zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48V8.35zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z" />
               </svg>
               <p class="ml-1">
-                Max playtime by one player
+                {{ __("Max playtime by one player") }}
               </p>
             </div>
             <p v-if="aggrMax.max_play_one_minute && aggrMax.max_play_one_minute.total_play_one_minute">
@@ -621,7 +621,7 @@
               v-else
               class="italic"
             >
-              None
+              {{ __("None") }}
             </p>
           </div>
         </div>
@@ -635,7 +635,7 @@
                 class="w-5 h-5 text-light-blue-500"
               />
               <p class="ml-1">
-                Total sleeps by all players
+                {{ __("Total sleeps by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_sleep_in_bed }}</p>
@@ -648,7 +648,7 @@
                 class="w-5 h-5 text-orange-500"
               />
               <p class="ml-1">
-                Max sleeps by one player
+                {{ __("Max sleeps by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_sleep_in_bed.total_sleep_in_bed }} ({{ aggrMax.max_sleep_in_bed.username }})</p>
@@ -677,7 +677,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Total jumps by all players
+                {{ __("Total jumps by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_jumps }}</p>
@@ -703,7 +703,7 @@
                 />
               </svg>
               <p class="ml-1">
-                Max jumps by one player
+                {{ __("Max jumps by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_jumps.total_jumps }} ({{ aggrMax.max_jumps.username }})</p>
@@ -726,7 +726,7 @@
                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
               </svg>
               <p class="ml-1">
-                Total game leaves by all players
+                {{ __("Total game leaves by all players") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_leave_game }}</p>
@@ -746,7 +746,7 @@
                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
               </svg>
               <p class="ml-1">
-                Max game leaves by one player
+                {{ __("Max game leaves by one player") }}
               </p>
             </div>
             <p>{{ aggrMax.max_leave_game.total_leave_game }} ({{ aggrMax.max_leave_game.username }})</p>
@@ -770,7 +770,7 @@
                 <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12z" />
               </svg>
               <p class="ml-1">
-                Total money on server
+                {{ __("Total money on server") }}
               </p>
             </div>
             <p>{{ aggrTotal.total_money || 0 }}</p>
@@ -791,7 +791,7 @@
                 <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12z" />
               </svg>
               <p class="ml-1">
-                Max money by one player
+                {{ __("Max money by one player") }}
               </p>
             </div>
             <p v-if="aggrMax.max_money">
@@ -801,7 +801,7 @@
               v-else
               class="italic"
             >
-              None
+              {{ __("None") }}
             </p>
           </div>
         </div>

@@ -3,7 +3,7 @@
     <div class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow">
       <div class="flex justify-between">
         <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
-          Server In-Game Chat
+          {{ __("Server In-Game Chat") }}
         </h3>
 
         <!-- Server Selector Dropdown-->
@@ -89,7 +89,7 @@
               v-if="!chatLogs || chatLogs.length <= 0"
               class="flex italic text-sm w-full h-full items-center justify-center text-gray-500"
             >
-              No chat recorded yet!
+              {{ __("No chat recorded yet!") }}
             </div>
           </div>
 
@@ -101,7 +101,7 @@
             <div class="flex flex-col w-full space-y-1">
               <div class="flex bg-cool-gray-600 bg-opacity-25 p-2 items-center justify-center relative">
                 <h3 class="font-bold mr-5 ml-4">
-                  Players ({{ playersList.length }})
+                  {{ __("Players") }}&nbsp;({{ playersList.length }})
                 </h3>
                 <button
                   class="text-red-400 font-semibold absolute mr-2 right-0"
@@ -177,11 +177,11 @@
               v-if="!loading"
               ref="inputbox"
               v-model="message"
-              :disabled="sending"
+              :disabled="sending || !isWebQuerySuccess"
               aria-label="Shout"
               class="mt-1 focus:ring-gray-300 dark:focus:ring-gray-700 block w-full sm:text-sm rounded-md border-none disabled:opacity-50 bg-gray-100 dark:bg-cool-gray-900 dark:text-gray-200 focus:bg-white"
               type="text"
-              placeholder="Say something.."
+              :placeholder="isWebQuerySuccess ? __('Say something..'): __('Server webquery is offline')"
             >
             <span
               v-if="error"
@@ -190,7 +190,7 @@
             <span
               v-if="!loading && can('send server_custom_commands')"
               class="flex mt-2 justify-end text-gray-500 dark:text-gray-400 text-xs"
-            >Start with / to send a console command</span>
+            >{{ __("Start with / to send a console command") }}</span>
           </form>
         </div>
         <div
@@ -201,16 +201,16 @@
             class="font-semibold text-light-blue-500"
             :href="route('login')"
           >
-            Login
+            {{ __("Login") }}
           </inertia-link>
-          or
+          {{ __("or") }}
           <inertia-link
             class="font-semibold text-light-blue-500"
             :href="route('register')"
           >
-            Register
+            {{ __("Register") }}
           </inertia-link>
-          to chat with In-Game Players
+          {{ __("to chat with In-Game Players") }}
         </div>
       </div>
     </div>
@@ -224,7 +224,7 @@
           v-if="actionModelCurrentPlayer"
           class="flex flex-col items-center font-bold"
         >
-          <span class="underline text-gray-800">Manage Player</span>
+          <span class="underline text-gray-800">{{ __("Manage Player") }}</span>
           <img
             class="h-24 rounded"
             :src="route('player.avatar.get',{uuid: actionModelCurrentPlayer.id})"
@@ -244,7 +244,7 @@
             type="button"
             @click.native="sendCommandToServer('kill')"
           >
-            Kill
+            {{ __("Kill") }}
           </loading-button>
           <loading-button
             v-if="can('mute players')"
@@ -253,7 +253,7 @@
             type="button"
             @click.native="sendCommandToServer('mute')"
           >
-            Mute / Unmute
+            {{ __("Mute") }} / {{ __("UnMute") }}
           </loading-button>
           <loading-button
             v-if="can('kick players')"
@@ -262,7 +262,7 @@
             type="button"
             @click.native="sendCommandToServer('kick')"
           >
-            Kick
+            {{ __("Kick") }}
           </loading-button>
           <loading-button
             v-if="can('ban players')"
@@ -271,7 +271,7 @@
             type="button"
             @click.native="sendCommandToServer('ban')"
           >
-            Ban
+            {{ __("Ban") }}
           </loading-button>
         </div>
 
@@ -285,7 +285,7 @@
 
       <template #footer>
         <jet-secondary-button @click.native="closeAdminPlayerActionModel">
-          Cancel
+          {{ __("Cancel") }}
         </jet-secondary-button>
       </template>
     </jet-dialog-modal>
@@ -324,6 +324,7 @@ export default {
             adminPlayerActionLoading: false,
             adminPlayerActionError: null,
             format: format,
+            isWebQuerySuccess: false,
         };
     },
 
@@ -411,8 +412,10 @@ export default {
         getPlayerListForServer(sId) {
             axios.get(route('server.webquery.get', sId)).then(data => {
                 this.playersList = data.data;
+                this.isWebQuerySuccess = true;
             }).catch(e => {
                 this.shouldDisplayPlayerList = false;
+                this.isWebQuerySuccess = false;
             }).finally(e => {
                 this.playersListLoading = false;
             });
@@ -444,7 +447,7 @@ export default {
                 formJson.context = 'player';
                 break;
             case 'mute':
-                reason = prompt('Give any reason if muting? Note: ALWAYS LEAVE IT BLANK IF UN-MUTING');
+                reason = prompt(this.__('Give any reason if muting? Note: ALWAYS LEAVE IT BLANK IF UN-MUTING'));
                 if (reason === null) break;
                 formJson.type = 'mute';
                 if (reason) {
@@ -455,14 +458,14 @@ export default {
                 formJson.context = 'player';
                 break;
             case 'kick':
-                reason = prompt('Any reason for kicking this player?');
+                reason = prompt(this.__('Any reason for kicking this player?'));
                 if (reason === null) break;
                 formJson.type = 'kick';
                 formJson.params = this.actionModelCurrentPlayer.username + ' ' + reason;
                 formJson.context = 'player';
                 break;
             case 'ban':
-                reason = prompt('Any reason for banning this player?');
+                reason = prompt(this.__('Any reason for banning this player?'));
                 if (reason === null) break;
                 formJson.type = 'ban';
                 formJson.params = this.actionModelCurrentPlayer.username + ' ' + reason;

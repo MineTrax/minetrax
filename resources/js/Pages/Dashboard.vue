@@ -30,7 +30,7 @@
         <top-players-list-box
           :enabled="true"
           :players="top10Players"
-          title="Top 10 Players"
+          :title="__('Top 10 Players')"
         />
         <latest-pinned-news :newslist="pinnedNewsList" />
         <post-list-box v-if="generalSettings.enable_status_feed" />

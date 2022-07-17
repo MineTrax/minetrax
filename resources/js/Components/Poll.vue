@@ -66,7 +66,7 @@
       v-if="isComingSoon"
       class="text-gray-400 text-xs italic"
     >
-      Poll starting {{ formatDistanceToNowStrict(new Date(started_at), { addSuffix: true }) }}
+      {{ __("Poll starting") }}&nbsp;{{ formatDistanceToNowStrict(new Date(started_at), { addSuffix: true }) }}
     </div>
 
     <div class="flex justify-between items-baseline">
@@ -79,7 +79,7 @@
         v-if="!isComingSoon && closed_at && !finalResults"
         class="text-gray-400 text-xs italic"
       >
-        Poll closing {{ formatDistanceToNowStrict(new Date(closed_at), { addSuffix: true }) }}
+        {{ __("Poll closing") }}&nbsp;{{ formatDistanceToNowStrict(new Date(closed_at), { addSuffix: true }) }}
       </div>
     </div>
 

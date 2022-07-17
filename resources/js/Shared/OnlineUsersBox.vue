@@ -2,7 +2,7 @@
   <div v-if="enabled && users">
     <div class="p-3 bg-white dark:bg-cool-gray-800 rounded shadow space-y-2">
       <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
-        Online Users
+        {{ __("Online Users") }}
       </h3>
 
       <div
@@ -30,11 +30,11 @@
         v-else
         class="text-gray-500 dark:text-gray-400 italic font-light flex justify-center"
       >
-        No member online.
+        {{ __("No member online.") }}
       </div>
 
       <div class="flex justify-center text-xs text-gray-700 dark:text-gray-300 font-semibold">
-        Total: {{ guestCount + onlineMembers.length }} (members: {{ onlineMembers.length }}, guests: {{ guestCount }})
+        {{ __("Total") }}: {{ guestCount + onlineMembers.length }} ({{ __("members") }}: {{ onlineMembers.length }}, {{ __("guests") }}: {{ guestCount }})
       </div>
     </div>
   </div>

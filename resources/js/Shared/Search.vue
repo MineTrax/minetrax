@@ -8,7 +8,7 @@
         :class="{'w-80': showResults}"
         type="search"
         name="search"
-        placeholder="Search.."
+        :placeholder="__('Search..')"
         autocomplete="off"
         @input="performSearch"
       >
@@ -45,13 +45,13 @@
         id="loading"
         class="text-center p-2"
       >
-        Loading...
+        {{ __("Loading...") }}
       </div>
       <div
         v-if="!loading"
         id="users"
       >
-        <span class="text-xs text-gray-400 dark:text-gray-300 font-extrabold">USERS</span>
+        <span class="text-xs text-gray-400 dark:text-gray-300 font-extrabold">{{ __("USERS") }}</span>
 
         <div class="flex flex-col">
           <inertia-link
@@ -95,7 +95,7 @@
           id="emptyusers"
           class="italic"
         >
-          No users found.
+          {{ __("No users found.") }}
         </div>
       </div>
       <div
@@ -103,7 +103,7 @@
         id="players"
         class="mt-5 pb-4"
       >
-        <span class="text-xs text-gray-400 dark:text-gray-300 font-extrabold">PLAYERS</span>
+        <span class="text-xs text-gray-400 dark:text-gray-300 font-extrabold">{{ __("PLAYERS") }}</span>
 
         <div class="flex flex-col">
           <inertia-link
@@ -159,7 +159,7 @@
           id="emptyplayers"
           class="italic"
         >
-          No players found.
+          {{ __("No players found.") }}
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@
         name="server"
         class="w-6 mr-1"
       />
-      Server Performance
+      {{ __("Server Performance") }}
     </h3>
     <e-chart
       :options="options"
@@ -47,27 +47,27 @@ export default {
             legend: {},
             series: [
                 {
-                    name: 'Online Players',
+                    name: this.__('Online Players'),
                     type: 'line',
                     symbol: 'none',
                 },
                 {
-                    name: 'CPU Load',
+                    name: this.__('CPU Load'),
                     type: 'line',
                     symbol: 'none',
                 },
                 {
-                    name: 'Memory Usage',
+                    name: this.__('Memory Usage'),
                     type: 'line',
                     symbol: 'none',
                 },
                 {
-                    name: 'TPS',
+                    name: this.__('TPS'),
                     type: 'line',
                     symbol: 'none',
                 },
                 {
-                    name: 'Chunks Loaded',
+                    name: this.__('Chunks Loaded'),
                     type: 'line',
                     symbol: 'none',
                 }
@@ -75,12 +75,12 @@ export default {
             dataset: {
                 source: this.liveInfo.map(data => {
                     return {
-                        'Date': format(new Date(data.created_at), 'do MMM yyyy, h:mm aaa'),
-                        'Online Players': data.online_players,
-                        'Cpu Load': data.cpu_load,
-                        'Memory Usage': Math.round(data.used_memory / (1024)),
-                        'TPS': data.tps,
-                        'Chunks Loaded': data.chunks_loaded,
+                        [this.__('Date')]: format(new Date(data.created_at), 'do MMM yyyy, h:mm aaa'),
+                        [this.__('Online Players')]: data.online_players,
+                        [this.__('Cpu Load')]: data.cpu_load,
+                        [this.__('Memory Usage')]: Math.round(data.used_memory / (1024)),
+                        [this.__('TPS')]: data.tps,
+                        [this.__('Chunks Loaded')]: data.chunks_loaded,
                     };
                 })
             },

@@ -5,7 +5,7 @@
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-400">
-          Polls
+          {{ __("Polls") }}
         </h1>
         <div class="flex">
           <inertia-link
@@ -13,8 +13,8 @@
             :href="route('admin.poll.create')"
             class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Create New</span>
-            <span class="hidden md:inline">&nbsp;Poll</span>
+            <span>{{ __("Create New") }}</span>
+            <span class="hidden md:inline">&nbsp;{{ __("Poll") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -29,55 +29,55 @@
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      #
+                      {{ __("#") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Question
+                      {{ __("Question") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Options
+                      {{ __("Options") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Started At
+                      {{ __("Started At") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      End At
+                      {{ __("End At") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Created At
+                      {{ __("Created At") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Created By
+                      {{ __("Created By") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Locked
+                      {{ __("Locked") }}
                     </th>
                     <th
                       scope="col"
                       class="relative px-6 py-3"
                     >
-                      <span class="sr-only">Actions</span>
+                      <span class="sr-only">{{ __("Actions") }}</span>
                     </th>
                   </tr>
                 </thead>
@@ -106,7 +106,7 @@
                       <span
                         v-else
                         class="italic text-gray-500"
-                      >No options.</span>
+                      >{{ __("No options.") }}</span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       <span
@@ -129,7 +129,7 @@
                       <span
                         v-else
                         class="italic"
-                      >None</span>
+                      >{{ __("None") }}</span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       <span
@@ -145,7 +145,7 @@
                       <span
                         v-else
                         class="italic text-red-600"
-                      >None</span>
+                      >{{ __("None") }}</span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 align-middle text-center">
                       <icon
@@ -167,7 +167,7 @@
                         :href="route('admin.poll.lock', poll.id)"
                         class="text-yellow-600 hover:text-yellow-900"
                       >
-                        Lock
+                        {{ __("Lock") }}
                       </inertia-link>
                       <inertia-link
                         v-if="can('update polls') && poll.is_closed"
@@ -176,7 +176,7 @@
                         :href="route('admin.poll.unlock', poll.id)"
                         class="text-green-600 hover:text-green-900"
                       >
-                        Unlock
+                        {{ __("Unlock") }}
                       </inertia-link>
                       /
                       <button
@@ -184,7 +184,7 @@
                         class="text-red-600 hover:text-red-900 focus:outline-none"
                         @click="confirmRoleDeletion(poll.id)"
                       >
-                        Delete
+                        {{ __("Delete") }}
                       </button>
                     </td>
                   </tr>
@@ -194,7 +194,7 @@
                       class="px-6 py-4 text-center dark:text-gray-400"
                       colspan="9"
                     >
-                      No polls found.
+                      {{ __("No polls found.") }}
                     </td>
                   </tr>
                 </tbody>
@@ -212,16 +212,16 @@
       @close="pollIsBeingDeleted = null"
     >
       <template #title>
-        Delete Poll
+        {{ __("Delete Poll") }}
       </template>
 
       <template #content>
-        Are you sure you would like to delete this Poll? It is not reversible.
+        {{ __("Are you sure you would like to delete this Poll? It is not reversible.") }}
       </template>
 
       <template #footer>
         <jet-secondary-button @click.native="pollIsBeingDeleted = null">
-          Nevermind
+          {{ __("Nevermind") }}
         </jet-secondary-button>
 
         <jet-danger-button
@@ -230,7 +230,7 @@
           :disabled="deletePollForm.processing"
           @click.native="deletePoll"
         >
-          Delete Poll
+          {{ __("Delete Poll") }}
         </jet-danger-button>
       </template>
     </jet-confirmation-modal>
@@ -239,7 +239,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
 import Icon from '@/Components/Icon';
 import {format, formatDistanceToNowStrict} from 'date-fns';
@@ -251,7 +250,6 @@ export default {
 
     components: {
         AppLayout,
-        JetSectionBorder,
         Pagination,
         Icon,
         JetConfirmationModal,

@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head title="Polls" />
+    <app-head
+      :title="__('Polls')"
+    />
 
     <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
@@ -35,7 +37,7 @@
                   v-if="pollList.data <= 0"
                   class="p-3 md:px-5 bg-white dark:bg-cool-gray-800 rounded shadow italic text-gray-500 dark:text-gray-400 text-center text-sm font-semibold"
                 >
-                  No Polls Found
+                  {{ __("No Polls Found") }}
                 </div>
               </div>
             </div>
@@ -54,14 +56,10 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import {formatDistanceToNowStrict} from 'date-fns';
-import Icon from '@/Components/Icon';
 import ShoutBox from '@/Shared/ShoutBox';
-import NewsBox from '@/Shared/NewsBox';
 import InfiniteScroll from '@/Components/InfiniteScroll';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
-import Poll from '@/Components/Poll';
 import PollBox from '@/Shared/PollBox';
-import VotingSitesBox from '@/Shared/VotingSitesBox';
 import DidYouKnowBox from '@/Shared/DidYouKnowBox';
 import DiscordServerBox from '@/Shared/DiscordServerBox';
 
@@ -70,14 +68,10 @@ export default {
     components: {
         DiscordServerBox,
         DidYouKnowBox,
-        VotingSitesBox,
         ServerStatusBox,
-        NewsBox,
-        Icon,
         AppLayout,
         ShoutBox,
         InfiniteScroll,
-        Poll,
         PollBox
     },
     props: {

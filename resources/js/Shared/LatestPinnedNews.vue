@@ -12,7 +12,7 @@
           <p class="mb-1">
             <icon
               v-tippy
-              content="Pinned News"
+              :title="__('Pinned News')"
               class="inline text-gray-400 focus:outline-none"
               name="paper-clip"
             />
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 
 export default {

@@ -1,11 +1,11 @@
 <template>
   <app-layout>
-    <app-head title="Player Ranks Administration" />
+    <app-head :title="__('Player Ranks Administration')" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Player Ranks
+          {{ __("Player Ranks") }}
         </h1>
         <div class="flex">
           <inertia-link
@@ -16,15 +16,15 @@
             :href="route('admin.rank.reset')"
             class="mr-2 inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red transition ease-in-out duration-150"
           >
-            Reset to Default Ranks
+            {{ __("Reset to Default Ranks") }}
           </inertia-link>
           <inertia-link
             v-if="can('create ranks')"
             :href="route('admin.rank.create')"
             class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Add New</span>
-            <span class="hidden md:inline">&nbsp;Rank</span>
+            <span>{{ __("Create New") }}</span>
+            <span class="hidden md:inline">&nbsp;{{ __("Rank") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -39,43 +39,43 @@
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      #
+                      {{ __("#") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Name
+                      {{ __("Name") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      PlayTime Needed
+                      {{ __("Play Time Needed") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Score Needed
+                      {{ __("Score Needed") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Player Count
+                      {{ __("Player Count") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Created
+                      {{ __("Created") }}
                     </th>
                     <th
                       scope="col"
                       class="relative px-6 py-3"
                     >
-                      <span class="sr-only">Edit</span>
+                      <span class="sr-only">{{ __("Edit") }}</span>
                     </th>
                   </tr>
                 </thead>
@@ -124,7 +124,7 @@
                       <a
                         href="#"
                         class="text-blue-600 hover:text-blue-900"
-                      >View</a>
+                      >{{ __("View") }}</a>
                       /
                       <inertia-link
                         v-if="can('update ranks')"
@@ -132,7 +132,7 @@
                         :href="route('admin.rank.edit', rank.id)"
                         class="text-yellow-600 hover:text-yellow-900"
                       >
-                        Edit
+                        {{ __("Edit") }}
                       </inertia-link>
                       /
                       <button
@@ -140,7 +140,7 @@
                         class="text-red-600 hover:text-red-900 focus:outline-none"
                         @click="confirmRankDeletion(rank.id)"
                       >
-                        Delete
+                        {{ __("Delete") }}
                       </button>
                     </td>
                   </tr>
@@ -150,7 +150,7 @@
                       class="border-t dark:border-gray-700 px-6 py-4 text-center"
                       colspan="7"
                     >
-                      No ranks found.
+                      {{ __("No ranks found.") }}
                     </td>
                   </tr>
                 </tbody>
@@ -168,16 +168,16 @@
       @close="rankBeingDeleted = null"
     >
       <template #title>
-        Delete Rank
+        {{ __("Delete Rank") }}
       </template>
 
       <template #content>
-        Are you sure you would like to delete this Rank?
+        {{ __("Are you sure you would like to delete this Rank?") }}
       </template>
 
       <template #footer>
         <jet-secondary-button @click.native="rankBeingDeleted = null">
-          Nevermind
+          {{ __("Nevermind") }}
         </jet-secondary-button>
 
         <jet-danger-button
@@ -186,7 +186,7 @@
           :disabled="deleteRankForm.processing"
           @click.native="deleteNews"
         >
-          Delete Rank
+          {{ __("Delete Rank") }}
         </jet-danger-button>
       </template>
     </jet-confirmation-modal>
@@ -195,7 +195,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
 import {formatDistanceToNowStrict} from 'date-fns';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
@@ -206,7 +205,6 @@ export default {
 
     components: {
         AppLayout,
-        JetSectionBorder,
         Pagination,
         JetConfirmationModal,
         JetSecondaryButton,

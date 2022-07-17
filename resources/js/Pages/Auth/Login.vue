@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head title="Login" />
+    <app-head
+      :title="__('Login')"
+    />
 
     <jet-authentication-card>
       <template #logo>
@@ -24,7 +26,7 @@
           <x-input
             id="email"
             v-model="form.email"
-            label="Email or Username"
+            :label="__('Email or Username')"
             :error="form.errors.email"
             :autofocus="true"
             :required="true"
@@ -37,7 +39,7 @@
           <x-input
             id="password"
             v-model="form.password"
-            label="Password"
+            :label="__('Password')"
             :error="form.errors.password"
             :autofocus="true"
             :required="true"
@@ -51,7 +53,7 @@
           <x-checkbox
             id="remember"
             v-model="form.remember"
-            label="Remember me"
+            :label="__('Remember me')"
             name="remember"
           />
         </div>
@@ -62,7 +64,7 @@
             :href="route('password.request')"
             class="underline text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
           >
-            Forgot your password?
+            {{ __("Forgot your password?") }}
           </inertia-link>
 
 
@@ -70,7 +72,7 @@
             :loading="form.processing"
             class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
           >
-            Login
+            {{ __("Login") }}
           </loading-button>
         </div>
 
@@ -83,13 +85,7 @@
 <script>
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import JetButton from '@/Jetstream/Button';
-import JetInput from '@/Jetstream/Input';
-import JetCheckbox from '@/Jetstream/Checkbox';
-import JetLabel from '@/Jetstream/Label';
-import JetValidationErrors from '@/Jetstream/ValidationErrors';
 import LoadingButton from '@/Components/LoadingButton';
-import Icon from '@/Components/Icon';
 import AppLayout from '@/Layouts/AppLayout';
 import SocialAuthButtons from '@/Components/SocialAuthButtons';
 import XInput from '@/Components/Form/XInput';
@@ -100,15 +96,9 @@ export default {
         XCheckbox,
         XInput,
         SocialAuthButtons,
-        Icon,
         LoadingButton,
         JetAuthenticationCard,
         JetAuthenticationCardLogo,
-        JetButton,
-        JetInput,
-        JetCheckbox,
-        JetLabel,
-        JetValidationErrors,
         AppLayout
     },
 

@@ -9,7 +9,7 @@
     <inertia-link
       v-if="$page.props.isImpersonating"
       v-tippy
-      title="Leave Impersonation"
+      :title="__('Leave Impersonation')"
       as="a"
       :href="route('admin.impersonate.leave')"
       class="flex fixed bottom-4 right-4 rounded-full bg-red-500 text-white p-2 hover:bg-red-700"
@@ -37,7 +37,7 @@
                 <button
                   v-if="canShowAdminSidebar"
                   v-tippy
-                  content="Administration Section"
+                  :title="__('Administration Section')"
                   aria-label="Open Menu"
                   class="ml-2 focus:outline-none"
                   @click="adminDrawer"
@@ -55,19 +55,19 @@
                   :href="route('home')"
                   :active="route().current('home')"
                 >
-                  Home
+                  {{ __("Home") }}
                 </jet-nav-link>
                 <jet-nav-link
                   :href="route('player.index')"
                   :active="route().current('player.index')"
                 >
-                  Statistics
+                  {{ __("Statistics") }}
                 </jet-nav-link>
                 <jet-nav-link
                   :href="route('poll.index')"
                   :active="route().current('poll.index')"
                 >
-                  Polls
+                  {{ __("Polls") }}
                 </jet-nav-link>
 
                 <div
@@ -83,7 +83,7 @@
                           type="button"
                           class="inline-flex font-semibold items-center py-2 border border-transparent text-sm leading-4 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none transition ease-in-out duration-150"
                         >
-                          Others
+                          {{ __("Others") }}
                           <svg
                             class="ml-2 -mr-0.5 h-4 w-4"
                             xmlns="http://www.w3.org/2000/svg"
@@ -105,14 +105,14 @@
                         class="text-sm"
                         :href="route('news.index')"
                       >
-                        News
+                        {{ __("News") }}
                       </jet-dropdown-link>
 
                       <jet-dropdown-link
                         class="text-sm"
                         :href="route('staff.index')"
                       >
-                        Staff Members
+                        {{ __("Staff Members") }}
                       </jet-dropdown-link>
 
                       <jet-dropdown-link
@@ -128,7 +128,7 @@
                         class="text-sm"
                         :href="route('features.list')"
                       >
-                        Features
+                        {{ __("Features") }}
                       </jet-dropdown-link>
                     </template>
                   </jet-dropdown>
@@ -286,7 +286,7 @@
                       v-if="canShowAdminSidebar"
                       class="block px-4 py-2 text-xs text-gray-400"
                     >
-                      Staff
+                      {{ __("Staff") }}
                     </div>
                     <button
                       v-if="canShowAdminSidebar"
@@ -294,7 +294,7 @@
                       class="block font-semibold w-full px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-400 text-left hover:bg-cool-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-cool-gray-100 dark:focus:bg-cool-gray-900 transition duration-150 ease-in-out"
                       @click="adminDrawer"
                     >
-                      Admin Menu
+                      {{ __("Admin Menu") }}
                     </button>
                     <div
                       v-if="canShowAdminSidebar"
@@ -303,22 +303,22 @@
 
                     <!-- Account Management -->
                     <div class="block px-4 py-2 text-xs text-gray-400">
-                      Manage Account
+                      {{ __("Manage Account") }}
                     </div>
 
                     <jet-dropdown-link
                       class="text-sm"
                       :href="route('user.public.get', $page.props.user.username)"
                     >
-                      Public Profile
+                      {{ __("Public Profile") }}
                     </jet-dropdown-link>
 
                     <jet-dropdown-link :href="route('profile.show')">
-                      Edit Profile
+                      {{ __("Edit Profile") }}
                     </jet-dropdown-link>
 
                     <jet-dropdown-link :href="route('linked-player.list')">
-                      Linked Players
+                      {{ __("Linked Players") }}
                     </jet-dropdown-link>
 
                     <jet-dropdown-link
@@ -336,7 +336,7 @@
                         as="button"
                         btn-class="font-semibold"
                       >
-                        Logout
+                        {{ __("Logout") }}
                       </jet-dropdown-link>
                     </form>
                   </template>
@@ -363,7 +363,7 @@
                   :href="route('login')"
                   :active="route().current('login')"
                 >
-                  Login
+                  {{ __("Login") }}
                 </jet-nav-link>
               </div>
               <div class="hidden space-x-8 md:-my-px md:ml-8 md:flex">
@@ -371,7 +371,7 @@
                   :href="route('register')"
                   :active="route().current('register')"
                 >
-                  Register
+                  {{ __("Register") }}
                 </jet-nav-link>
               </div>
               <color-theme-toggle class="hidden md:flex space-x-8 md:ml-8 justify-center items-center" />
@@ -421,35 +421,35 @@
               :href="route('home')"
               :active="route().current('home')"
             >
-              Home
+              {{ __("Home") }}
             </jet-responsive-nav-link>
 
             <jet-responsive-nav-link
               :href="route('player.index')"
               :active="route().current('player.index')"
             >
-              Statistics
+              {{ __("Statistics") }}
             </jet-responsive-nav-link>
 
             <jet-responsive-nav-link
               :href="route('poll.index')"
               :active="route().current('poll.index')"
             >
-              Polls
+              {{ __("Polls") }}
             </jet-responsive-nav-link>
 
             <jet-responsive-nav-link
               :href="route('news.index')"
               :active="route().current('news.index')"
             >
-              News
+              {{ __("News") }}
             </jet-responsive-nav-link>
 
             <jet-responsive-nav-link
               :href="route('staff.index')"
               :active="route().current('staff.index')"
             >
-              Staff Members
+              {{ __("Staff Members") }}
             </jet-responsive-nav-link>
 
             <jet-responsive-nav-link
@@ -465,7 +465,7 @@
               :href="route('features.list')"
               :active="route().current('features.list')"
             >
-              Features
+              {{ __("Features") }}
             </jet-responsive-nav-link>
 
 
@@ -474,13 +474,13 @@
                 :href="route('login')"
                 :active="route().current('login')"
               >
-                Login
+                {{ __("Login") }}
               </jet-responsive-nav-link>
               <jet-responsive-nav-link
                 :href="route('register')"
                 :active="route().current('register')"
               >
-                Register
+                {{ __("Register") }}
               </jet-responsive-nav-link>
             </template>
           </div>
@@ -517,28 +517,28 @@
                 :href="route('user.public.get', $page.props.user.username)"
                 :active="route().current('user.public.get')"
               >
-                Public Profile
+                {{ __("Public Profile") }}
               </jet-responsive-nav-link>
 
               <jet-responsive-nav-link
                 :href="route('profile.show')"
                 :active="route().current('profile.show')"
               >
-                Edit Profile
+                {{ __("Edit Profile") }}
               </jet-responsive-nav-link>
 
               <jet-responsive-nav-link
                 :href="route('linked-player.list')"
                 :active="route().current('linked-player.list')"
               >
-                Linked Players
+                {{ __("Linked Players") }}
               </jet-responsive-nav-link>
 
               <jet-responsive-nav-link
                 :href="route('notification.index')"
                 :active="route().current('notification.index')"
               >
-                Notifications
+                {{ __("Notifications") }}
               </jet-responsive-nav-link>
 
               <jet-responsive-nav-link
@@ -555,7 +555,7 @@
                 @submit.prevent="logout"
               >
                 <jet-responsive-nav-link as="button">
-                  Logout
+                  {{ __("Logout") }}
                 </jet-responsive-nav-link>
               </form>
             </div>
@@ -601,7 +601,7 @@
           <template slot="icon">
             <icon name="server" />
           </template>
-          Servers
+          {{ __("Servers") }}
         </jet-sidebar-link>
 
         <jet-sidebar-link
@@ -615,7 +615,7 @@
               class="w-5 h-5"
             />
           </template>
-          Users
+          {{ __("Users") }}
         </jet-sidebar-link>
 
         <jet-sidebar-link
@@ -626,7 +626,7 @@
           <template slot="icon">
             <icon name="shield-check" />
           </template>
-          User Roles
+          {{ __("User Roles") }}
         </jet-sidebar-link>
 
         <jet-sidebar-link
@@ -637,7 +637,7 @@
           <template slot="icon">
             <icon name="degree-hat" />
           </template>
-          Player Ranks
+          {{ __("Player Ranks") }}
         </jet-sidebar-link>
 
         <jet-sidebar-link
@@ -648,7 +648,7 @@
           <template slot="icon">
             <icon name="newspaper" />
           </template>
-          News
+          {{ __("News") }}
         </jet-sidebar-link>
 
         <jet-sidebar-link
@@ -662,7 +662,7 @@
               name="chart-pie"
             />
           </template>
-          Polls
+          {{ __("Polls") }}
         </jet-sidebar-link>
 
         <jet-sidebar-link
@@ -676,7 +676,7 @@
               name="collection"
             />
           </template>
-          Custom Pages
+          {{ __("Custom Pages") }}
         </jet-sidebar-link>
 
         <jet-sidebar-link
@@ -690,7 +690,7 @@
               name="finger-print"
             />
           </template>
-          User Sessions
+          {{ __("User Sessions") }}
         </jet-sidebar-link>
 
         <jet-sidebar-link
@@ -701,12 +701,12 @@
           <template slot="icon">
             <icon name="cog" />
           </template>
-          Settings
+          {{ __("Settings") }}
         </jet-sidebar-link>
 
 
         <div class="text-gray-600 dark:text-gray-400 text-xs text-center mt-4">
-          Web Version: {{ $page.props.webVersion || 'unknown' }}
+          {{ __("Web Version:") }}&nbsp;{{ $page.props.webVersion || 'unknown' }}
         </div>
       </aside>
 

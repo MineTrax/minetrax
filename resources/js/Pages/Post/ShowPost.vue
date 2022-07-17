@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head :title="`Post #${post.id} by ${post.user.name}`" />
+    <app-head
+      :title="__('Post #:id by :name', {id: post.id, name: post.user.name})"
+    />
 
     <div class="px-2 py-4 md:py-12 md:px-16 max-w-8xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
@@ -37,36 +39,24 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import {formatDistanceToNowStrict} from 'date-fns';
-import Icon from '@/Components/Icon';
 import ShoutBox from '@/Shared/ShoutBox';
-import NewsBox from '@/Shared/NewsBox';
-import InfiniteScroll from '@/Components/InfiniteScroll';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
-import PollBox from '@/Shared/PollBox';
-import VotingSitesBox from '@/Shared/VotingSitesBox';
 import DidYouKnowBox from '@/Shared/DidYouKnowBox';
 import DiscordServerBox from '@/Shared/DiscordServerBox';
 import Post from '@/Components/Post';
 
 export default {
-
     components: {
         DiscordServerBox,
         DidYouKnowBox,
-        VotingSitesBox,
         ServerStatusBox,
-        NewsBox,
-        Icon,
         AppLayout,
         ShoutBox,
-        InfiniteScroll,
-        PollBox,
         Post
     },
     props: {
         post: Object,
     },
-
     data() {
         return {
             formatDistanceToNowStrict: formatDistanceToNowStrict

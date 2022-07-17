@@ -5,7 +5,7 @@
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          User Roles & Permissions
+          {{ __("User Roles & Permissions") }}
         </h1>
         <div class="flex">
           <inertia-link
@@ -13,8 +13,8 @@
             :href="route('admin.role.create')"
             class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Add New</span>
-            <span class="hidden md:inline">&nbsp;Role</span>
+            <span>{{ __("Create New") }}</span>
+            <span class="hidden md:inline">&nbsp;{{ __("Role") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -29,49 +29,49 @@
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      #
+                      {{ __("#") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Image
+                      {{ __("Image") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Name
+                      {{ __("Name") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Permissions
+                      {{ __("Permissions") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Users
+                      {{ __("Users") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Staff
+                      {{ __("Staff") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Created
+                      {{ __("Created") }}
                     </th>
                     <th
                       scope="col"
                       class="relative px-6 py-3"
                     >
-                      <span class="sr-only">Edit</span>
+                      <span class="sr-only">{{ __("Edit") }}</span>
                     </th>
                   </tr>
                 </thead>
@@ -88,7 +88,7 @@
                         <img
                           class=""
                           :src="role.photo_url"
-                          alt="Role Image"
+                          :alt="__('Role Image')"
                         >
                       </div>
                     </td>
@@ -109,18 +109,19 @@
                       <template v-if="role.permissions.length > 0">
                         <span
                           v-for="permission in role.permissions"
+                          :key="permission.id"
                           class="px-2 mr-1 mb-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-opacity-10 dark:text-light-blue-400"
                         >{{ permission.name }}</span>
                       </template>
                       <span
                         v-else
                         class="italic text-gray-500"
-                      >No administration permissions for this role.</span>
+                      >{{ __("No administration permissions for this role.") }}</span>
 
                       <span
                         v-if="role.name === 'superadmin'"
                         class="px-2 mr-1 mb-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-opacity-10 dark:text-green-400"
-                      >All Permissions</span>
+                      >{{ __("All Permissions") }}</span>
                     </td>
                     <td class="px-8 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 align-middle text-center">
                       {{ role.users_count }}
@@ -153,7 +154,7 @@
                         :href="route('admin.role.edit', role.id)"
                         class="text-yellow-600 hover:text-yellow-900"
                       >
-                        Edit
+                        {{ __("Edit") }}
                       </inertia-link>
                       /
                       <button
@@ -161,7 +162,7 @@
                         class="text-red-600 hover:text-red-900 focus:outline-none"
                         @click="confirmRoleDeletion(role.id)"
                       >
-                        Delete
+                        {{ __("Delete") }}
                       </button>
                     </td>
                   </tr>
@@ -171,7 +172,7 @@
                       class="border-t px-6 py-4 text-center dark:text-gray-400"
                       colspan="7"
                     >
-                      No roles found.
+                      {{ __("No roles found.") }}
                     </td>
                   </tr>
                 </tbody>
@@ -189,16 +190,16 @@
       @close="roleBeingDeleted = null"
     >
       <template #title>
-        Delete Role
+        {{ __("Delete Role") }}
       </template>
 
       <template #content>
-        Are you sure you would like to delete this Role? It is not reversible.
+        {{ __("Are you sure you would like to delete this Role? It is not reversible.") }}
       </template>
 
       <template #footer>
         <jet-secondary-button @click.native="roleBeingDeleted = null">
-          Nevermind
+          {{ __("Nevermind") }}
         </jet-secondary-button>
 
         <jet-danger-button
@@ -207,7 +208,7 @@
           :disabled="deleteRoleForm.processing"
           @click.native="deleteRole"
         >
-          Delete Role
+          {{ __("Delete Role") }}
         </jet-danger-button>
       </template>
     </jet-confirmation-modal>
@@ -216,10 +217,9 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
 import Icon from '@/Components/Icon';
-import { formatDistanceToNowStrict, format } from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import JetDangerButton from '@/Jetstream/DangerButton';
@@ -228,7 +228,6 @@ export default {
 
     components: {
         AppLayout,
-        JetSectionBorder,
         Pagination,
         Icon,
         JetConfirmationModal,

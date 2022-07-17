@@ -1,17 +1,19 @@
 <template>
   <app-layout>
-    <app-head title="Add New Server" />
+    <app-head
+      :title="__('Add New Server')"
+    />
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Add Server
+          {{ __("Add Server") }}
         </h1>
         <inertia-link
           :href="route('admin.server.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
         >
-          <span>Cancel</span>
+          <span>{{ __("Cancel") }}</span>
         </inertia-link>
       </div>
 
@@ -20,11 +22,10 @@
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
               <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                Server Information
+                {{ __("Overview") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                Just enter FTP / SFTP Information and Check FETCH. Manually fill the part which are not able to be fetch.
-                All sensitive information will be encrypted.
+                {{ __("Just enter FTP / SFTP Information and Check FETCH. Manually fill the part which are not able to be fetch.  All sensitive information will be encrypted.") }}
               </p>
             </div>
           </div>
@@ -39,8 +40,8 @@
                         v-model="form.connection_type"
                         name="connection_type"
                         :error="form.errors.connection_type"
-                        label="Connection Type"
-                        :select-list="{sftp: 'SFTP - Secure File Transfer Protocol', ftp: 'FTP - File Transfer Protocol', local: 'Local - Locally stored at server location'}"
+                        :label="__('Connection Type')"
+                        :select-list="{sftp: __('SFTP - Secure File Transfer Protocol'), ftp: __('FTP - File Transfer Protocol'), local: __('Local - Locally stored at server location')}"
                       />
                     </div>
 
@@ -51,7 +52,7 @@
                       <x-input
                         id="storage_server_host"
                         v-model="form.storage_server_host"
-                        :label="`${form.connection_type.toUpperCase()} Server Host`"
+                        :label="__(':connection_type Server Host', {connection_type: form.connection_type.toUpperCase()})"
                         :error="form.errors.storage_server_host"
                         type="text"
                         name="storage_server_host"
@@ -66,7 +67,7 @@
                       <x-input
                         id="storage_server_port"
                         v-model="form.storage_server_port"
-                        :label="`${form.connection_type.toUpperCase()} Port`"
+                        :label="__(':connection_type Port', {connection_type: form.connection_type.toUpperCase()})"
                         :error="form.errors.storage_server_port"
                         type="text"
                         name="storage_server_port"
@@ -81,7 +82,7 @@
                       <x-input
                         id="storage_server_username"
                         v-model="form.storage_server_username"
-                        label="Username"
+                        :label="__('Username')"
                         :error="form.errors.storage_server_username"
                         type="text"
                         name="storage_server_username"
@@ -96,7 +97,7 @@
                       <x-input
                         id="storage_server_password"
                         v-model="form.storage_server_password"
-                        label="Password"
+                        :label="__('Password')"
                         :error="form.errors.storage_server_password"
                         type="text"
                         name="storage_server_password"
@@ -111,7 +112,7 @@
                       <x-input
                         id="storage_server_root"
                         v-model="form.storage_server_root"
-                        label="Server Root Path"
+                        :label="__('Server Root Path')"
                         :error="form.errors.storage_server_root"
                         type="text"
                         name="storage_server_root"
@@ -124,7 +125,7 @@
                         <x-input
                           id="name"
                           v-model="form.name"
-                          label="Server Name"
+                          :label="__('Server Name')"
                           :error="form.errors.name"
                           type="text"
                           name="name"
@@ -136,7 +137,7 @@
                         <x-input
                           id="hostname"
                           v-model="form.hostname"
-                          label="Hostname"
+                          :label="__('Hostname')"
                           :error="form.errors.hostname"
                           type="text"
                           name="hostname"
@@ -148,7 +149,7 @@
                         <x-input
                           id="ip_address"
                           v-model="form.ip_address"
-                          label="IP Address"
+                          :label="__('IP Address')"
                           :error="form.errors.ip_address"
                           autocomplete="ip_address"
                           type="text"
@@ -161,7 +162,7 @@
                         <x-input
                           id="join_port"
                           v-model="form.join_port"
-                          label="Join Port"
+                          :label="__('Join Port')"
                           :error="form.errors.join_port"
                           type="text"
                           name="join_port"
@@ -173,7 +174,7 @@
                         <x-input
                           id="query_port"
                           v-model="form.query_port"
-                          label="Query Port"
+                          :label="__('Query Port')"
                           :error="form.errors.query_port"
                           type="text"
                           name="query_port"
@@ -185,7 +186,7 @@
                         <x-input
                           id="webquery_port"
                           v-model="form.webquery_port"
-                          label="WebQuery Port"
+                          :label="__('Webquery Port')"
                           :error="form.errors.webquery_port"
                           type="text"
                           name="webquery_port"
@@ -197,7 +198,7 @@
                         <x-input
                           id="level_name"
                           v-model="form.level_name"
-                          label="Level/World Name"
+                          :label="__('Level/World Name')"
                           :error="form.errors.level_name"
                           type="text"
                           name="level_name"
@@ -209,12 +210,12 @@
                         <x-select
                           id="type"
                           v-model="form.type"
-                          placeholder="Select server type"
+                          :placeholder="__('Select server type')"
                           :disable-null="true"
                           :required="true"
                           name="type"
                           :error="form.errors.type"
-                          label="Server Type"
+                          :label="__('Server Type')"
                           :select-list="typeArray"
                         />
                       </div>
@@ -225,7 +226,7 @@
                           v-model="form.minecraft_version"
                           name="minecraft_version"
                           :error="form.errors.minecraft_version"
-                          label="Version"
+                          :label="__('Version')"
                           :select-list="versionsArray"
                         />
                       </div>
@@ -234,8 +235,8 @@
                         <x-checkbox
                           id="settings_plugin_essentials"
                           v-model="form.settings.plugins.essentials"
-                          label="Plugin: Essentials"
-                          help="Tick if there is Essentials/EssentialsX installed in your server."
+                          :label="__('Plugin: Essentials')"
+                          :help="__('Tick if there is Essentials/EssentialsX installed in your server.')"
                           name="settings_plugin_essentials"
                         />
 
@@ -279,8 +280,8 @@
                         <x-checkbox
                           id="is_stats_tracking_enabled"
                           v-model="form.is_stats_tracking_enabled"
-                          label="Track User Stats of this Server"
-                          help="Fetch user stats and use it for calculation of ranks and other stuffs. Uncheck if this you don't want to track this server."
+                          :label="__('Track Player Stats of this Server')"
+                          :help="__('Fetch user stats and use it for calculation of ranks and other stuffs. Uncheck if this you dont want to track this server.')"
                           name="is_stats_tracking_enabled"
                         />
                       </div>
@@ -289,8 +290,8 @@
                         <x-checkbox
                           id="is_ingame_chat_enabled"
                           v-model="form.is_ingame_chat_enabled"
-                          label="Enable In-Game Chat of this Server"
-                          help="Let user from website see and send chat to server."
+                          :label="__('Enable In-Game Chat of this Server')"
+                          :help="__('Let user from website see and send chat to server.')"
                           name="is_ingame_chat_enabled"
                         />
                       </div>
@@ -299,8 +300,8 @@
                         <x-checkbox
                           id="is_online_players_query_enabled"
                           v-model="form.is_online_players_query_enabled"
-                          label="Show online player list of this Server"
-                          help="If enabled show list of online players on this server near ingamechat."
+                          :label="__('Show online player list of this Server')"
+                          :help="__('If enabled show list of online players on this server near ingamechat.')"
                           name="is_online_players_query_enabled"
                         />
                       </div>
@@ -312,13 +313,13 @@
                     v-if="isPrefetchSuccessful && serverStatus"
                     class="text-green-600 bg-green-100 px-4 rounded flex items-center"
                   >
-                    {{ form.connection_type.toUpperCase() }} connection successful & Server is Online.
+                    {{ __(":connection_type connection successful & Server is Online.", {connection_type: form.connection_type.toUpperCase()}) }}
                   </div>
                   <div
                     v-if="isPrefetchSuccessful && !serverStatus"
                     class="text-yellow-600 bg-yellow-100 px-4 rounded flex items-center"
                   >
-                    {{ form.connection_type.toUpperCase() }} connection successful but Server is offline.
+                    {{ __(":connection_type connection successful but Server is offline.", {connection_type: form.connection_type.toUpperCase()}) }}
                   </div>
 
                   <button
@@ -350,7 +351,7 @@
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
                     </svg>
-                    Test Connection
+                    {{ __("Test Connection") }}
                   </button>
                   <div
                     v-if="prefetchError"
@@ -366,7 +367,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    Add Server
+                    {{ __("Add Server") }}
                   </loading-button>
                 </div>
               </div>

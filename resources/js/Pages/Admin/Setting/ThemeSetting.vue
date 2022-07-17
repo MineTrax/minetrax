@@ -1,37 +1,39 @@
 <template>
   <app-layout>
-    <app-head title="Theme Settings" />
+    <app-head
+      :title="__('Theme Settings')"
+    />
 
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
       <div class="w-64 flex-shrink-0 pr-10">
         <div class="flex flex-col">
           <div class="uppercase mb-2 text-xs tracking-wide text-gray-600 dark:text-gray-400 font-bold">
-            SETTINGS
+            {{ __("SETTINGS") }}
           </div>
 
           <setting-link
             :href="route('admin.setting.general.show')"
             :active="route().current('admin.setting.general.show')"
           >
-            General
+            {{ __("General") }}
           </setting-link>
           <setting-link
             :href="route('admin.setting.theme.show')"
             :active="route().current('admin.setting.theme.show')"
           >
-            Theme
+            {{ __("Theme") }}
           </setting-link>
           <setting-link
             :href="route('admin.setting.plugin.show')"
             :active="route().current('admin.setting.plugin.show')"
           >
-            Plugin
+            {{ __("Plugin") }}
           </setting-link>
           <setting-link
             :href="route('admin.setting.player.show')"
             :active="route().current('admin.setting.player.show')"
           >
-            Player
+            {{ __("Player") }}
           </setting-link>
         </div>
       </div>
@@ -40,7 +42,7 @@
         <div class="flex flex-col w-full">
           <div class="bg-white dark:bg-cool-gray-800 shadow w-full">
             <div class="px-6 py-4 border-b dark:border-gray-700 dark:text-gray-300 font-bold">
-              Theme Settings
+              {{ __("Theme Settings") }}
             </div>
 
             <div class="mt-10 sm:mt-0">
@@ -60,10 +62,10 @@
                               v-model="form.color_mode"
                               name="color_mode"
                               :error="form.errors.color_mode"
-                              label="Default Color Mode"
-                              placeholder="Select default color mode.."
+                              :label="__('Default Color Mode')"
+                              :placeholder="__('Select default color mode..')"
                               :disable-null="true"
-                              :select-list="{dark: 'Dark', light: 'Light'}"
+                              :select-list="{dark: __('Dark'), light: __('Light')}"
                             />
                           </div>
 
@@ -77,8 +79,8 @@
                               v-model="form.theme_name"
                               name="theme_name"
                               :error="form.errors.theme_name"
-                              label="Color Theme"
-                              placeholder="Select theme.."
+                              :label="__('Color Theme')"
+                              :placeholder="__('Select theme..')"
                               :disable-null="true"
                               :select-list="themeList"
                             />
@@ -95,8 +97,8 @@
                               v-model="form.primary_font"
                               name="primary_font"
                               :error="form.errors.primary_font"
-                              label="Primary Font"
-                              placeholder="Select primary font.."
+                              :label="__('Primary Font')"
+                              :placeholder="__('Select primary font..')"
                               :disable-null="true"
                               :select-list="fontList"
                             />
@@ -112,8 +114,8 @@
                               v-model="form.secondary_font"
                               name="secondary_font"
                               :error="form.errors.secondary_font"
-                              label="Secondary Font"
-                              placeholder="Select secondary font.."
+                              :label="__('Secondary Font')"
+                              :placeholder="__('Select secondary font..')"
                               :disable-null="true"
                               :select-list="fontList"
                             />
@@ -126,7 +128,7 @@
                           class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
                           type="submit"
                         >
-                          Save Theme Settings
+                          {{ __("Save Theme Settings") }}
                         </loading-button>
                       </div>
                     </div>
@@ -136,7 +138,7 @@
                     v-if="false"
                     class="flex p-5 justify-center items-center text-red-500 italic"
                   >
-                    Not implemented from here! Theme can be be customized by accessing "resources" folder.
+                    {{ __("Not implemented from here! Theme can be be customized by accessing 'resources' folder.") }}
                   </div>
                 </div>
               </div>
@@ -150,14 +152,8 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
-import JetInputError from '@/Jetstream/InputError';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import LoadingButton from '@/Components/LoadingButton';
-import XInput from '@/Components/Input';
-import Icon from '@/Components/Icon';
 import SettingLink from '@/Jetstream/SettingLink';
-import JetLabel from '@/Jetstream/Label';
 import XSelect from '@/Components/Form/XSelect';
 
 export default {
@@ -165,13 +161,7 @@ export default {
         XSelect,
         SettingLink,
         AppLayout,
-        JetSectionBorder,
-        JetInputError,
         LoadingButton,
-        JetSecondaryButton,
-        JetLabel,
-        Icon,
-        XInput
     },
     props: {
         settings: Object,

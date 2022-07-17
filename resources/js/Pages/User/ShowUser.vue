@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head :title="`${profileUser.name} profile`" />
+    <app-head
+      :title="__(':name profile', {name: profileUser.name})"
+    />
 
     <div class="px-2 py-3 md:py-12 md:px-10 max-w-6xl mx-auto space-y-4">
       <div
@@ -17,14 +19,14 @@
           </div>
           <div>
             <p class="font-bold text-red-600 dark:text-red-400">
-              This User is Banned!
+              {{ __("This User is Banned!") }}
             </p>
             <p class="text-sm dark:text-red-400">
-              If you think it is a mistake. Please contact a <inertia-link
+              {{ __("If you think it is a mistake.") }}  <inertia-link
                 :href="route('staff.index')"
                 class="hover:underline font-semibold"
               >
-                Staff
+                {{ __("Please contact a Staff") }}
               </inertia-link>.
             </p>
           </div>
@@ -72,7 +74,7 @@
                   :href="route('profile.show')"
                   class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-light-blue-500 text-light-blue-500 hover:bg-light-blue-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
                 >
-                  Edit<span class="hidden md:block">&nbsp;Profile</span>
+                  {{ __("Edit") }}<span class="hidden md:block">&nbsp;{{ __("Profile") }}</span>
                 </inertia-link>
                 <inertia-link
                   v-if="can('mute users') && !profileUser.muted_at"
@@ -81,7 +83,7 @@
                   :href="route('admin.user.mute', profileUser.id)"
                   class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-yellow-500 text-yellow-500 hover:bg-yellow-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
                 >
-                  Mute<span class="hidden md:block">&nbsp;User</span>
+                  {{ __("Mute") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
                 <inertia-link
                   v-if="can('mute users') && profileUser.muted_at"
@@ -90,7 +92,7 @@
                   :href="route('admin.user.unmute', profileUser.id)"
                   class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-green-500 text-green-500 hover:bg-green-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
                 >
-                  UnMute<span class="hidden md:block">&nbsp;User</span>
+                  {{ __("UnMute") }}<span class="hidden md:block">&nbsp;User</span>
                 </inertia-link>
                 <inertia-link
                   v-if="can('ban users') && !profileUser.banned_at"
@@ -99,7 +101,7 @@
                   :href="route('admin.user.ban', profileUser.id)"
                   class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-red-500 text-red-500 hover:bg-red-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
                 >
-                  Ban<span class="hidden md:block">&nbsp;User</span>
+                  {{ __("Ban") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
                 <inertia-link
                   v-if="can('ban users') && profileUser.banned_at"
@@ -108,7 +110,7 @@
                   :href="route('admin.user.unban', profileUser.id)"
                   class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-green-500 text-green-500 hover:bg-green-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
                 >
-                  UnBan<span class="hidden md:block">&nbsp;User</span>
+                  {{ __("UnBan") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
               </div>
             </div>
@@ -126,21 +128,21 @@
                     v-if="profileUser.verified_at"
                     v-tippy
                     name="verified-check-fill"
-                    title="Verified Account"
+                    :title="__('Verified Account')"
                     class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-light-blue-400"
                   />
                   <icon
                     v-if="profileUser.is_staff"
                     v-tippy
                     name="shield-check-fill"
-                    title="Staff Member"
+                    :title="__('Staff Member')"
                     class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-pink-400"
                   />
                   <icon
                     v-if="profileUser.muted_at"
                     v-tippy
                     name="volume-off-fill"
-                    title="Muted User"
+                    :title="__('Muted User')"
                     class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-red-500"
                   />
                 </h2>
@@ -166,7 +168,7 @@
                   class="text-sm leading-5 font-medium text-gray-600 focus:outline-none"
                   :title="format(new Date(profileUser.created_at), 'E, do MMM yyyy, h:mm aaa')"
                 >
-                  Joined: {{
+                  {{ __("Joined") }}: {{
                     formatDistanceToNowStrict(new Date(profileUser.created_at), {addSuffix: true})
                   }}
                 </p>
@@ -205,7 +207,7 @@
 
                 <div class="flex items-center justify-between">
                   <p class="font-bold dark:text-gray-400">
-                    Position:
+                    {{ __("Position") }}:
                   </p>
                   <div class="flex items-center space-x-2 text-center text-sm text-light-blue-400 font-extrabold">
                     <span
@@ -217,13 +219,13 @@
                     <span
                       v-else
                       class="italic text-sm text-gray-500 dark:text-gray-400"
-                    >None</span>
+                    >{{ __("None") }}</span>
                   </div>
                 </div>
 
                 <div class="flex items-center justify-between">
                   <p class="font-bold dark:text-gray-400">
-                    Rating:
+                    {{ __("Rating") }}:
                   </p>
                   <icon
                     v-if="player.rating != null"
@@ -236,12 +238,12 @@
                     v-else
                     class="italic text-sm text-gray-500 dark:text-gray-400"
                   >
-                    None
+                    {{ __("None") }}
                   </p>
                 </div>
                 <div class="flex items-center justify-between">
                   <p class="font-bold dark:text-gray-400">
-                    Rank:
+                    {{ __("Rank") }}:
                   </p>
                   <div class="flex items-center space-x-2">
                     <p
@@ -254,7 +256,7 @@
                       v-else
                       class="italic text-sm text-gray-500 dark:text-gray-400"
                     >
-                      None
+                      {{ __("None") }}
                     </p>
                     <img
                       v-if="player.rank && player.rank.photo_url"
@@ -269,7 +271,7 @@
 
                 <div class="flex items-center justify-between">
                   <p class="font-bold dark:text-gray-400">
-                    Last Seen:
+                    {{ __("Last Seen") }}:
                   </p>
                   <div class="flex items-center space-x-2">
                     <p
@@ -296,7 +298,7 @@
 
           <div class="flex flex-col bg-white dark:bg-cool-gray-800 dark:text-gray-400 rounded w-full shadow p-4 space-y-2">
             <div class="flex justify-between">
-              <span>Country</span>
+              <span>{{ __("Country") }}</span>
               <span class="text-gray-800 dark:text-gray-200 font-semibold">
                 {{ profileUser.country.name }}
                 <img
@@ -307,22 +309,22 @@
               </span>
             </div>
             <div class="flex justify-between">
-              <span>Day of Birth</span>
-              <span class="text-gray-800 dark:text-gray-200 font-semibold">{{ profileUser.dob_string || 'unknown' }}</span>
+              <span>{{ __("Day of Birth") }}</span>
+              <span class="text-gray-800 dark:text-gray-200 font-semibold">{{ profileUser.dob_string || __('unknown') }}</span>
             </div>
             <div class="flex justify-between">
-              <span>Gender</span>
-              <span class="text-gray-800 dark:text-gray-200 font-semibold">{{ profileUser.gender_string || 'unknown' }}</span>
+              <span>{{ __("Gender") }}</span>
+              <span class="text-gray-800 dark:text-gray-200 font-semibold">{{ profileUser.gender_string || __('unknown') }}</span>
             </div>
             <div class="flex justify-between">
-              <span>Total Posts</span>
+              <span>{{ __("Total Posts") }}</span>
               <span class="text-gray-800 dark:text-gray-200 font-semibold">{{ profileUser.posts_count }}</span>
             </div>
             <div
               v-if="profileUser.social_links && profileUser.social_links.s_discord_username"
               class="flex justify-between"
             >
-              <span>Discord</span>
+              <span>{{ __("Discord") }}</span>
               <span class="text-gray-800 dark:text-gray-200 font-semibold">{{
                 profileUser.social_links.s_discord_username
               }}</span>
@@ -350,7 +352,7 @@
           v-else
           class="space-y-4 w-full p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow text-gray-500 text-center justify-center items-center flex"
         >
-          <span class="italic">Posts Feed is disabled!</span>  😞
+          <span class="italic">{{ __("Posts Feed is disabled!") }}</span>
         </div>
       </div>
     </div>
@@ -359,19 +361,16 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import PostListBox from '@/Shared/PostListBox';
 import SocialChannelBox from '@/Shared/SocialChannelBox';
 
 export default {
-
     components: {
         SocialChannelBox,
         Icon,
         AppLayout,
-        JetSectionBorder,
         PostListBox
     },
     props: {

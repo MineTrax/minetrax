@@ -5,13 +5,13 @@
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Create Custom Page
+          {{ __("Create Custom Page") }}
         </h1>
         <inertia-link
           :href="route('admin.custom-page.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
         >
-          <span>Cancel</span>
+          <span>{{ __("Cancel") }}</span>
         </inertia-link>
       </div>
 
@@ -20,10 +20,10 @@
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
               <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                Custom Page Info
+                {{ __("Overview") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                Custom pages are bla bla bla
+                {{ __("Using custom pages you can create a page based on markdown to show information like privacy, rules etc.") }} <br> {{ __("Using custom pages you can also redirect to some external links.") }}
               </p>
             </div>
           </div>
@@ -36,8 +36,8 @@
                       <x-input
                         id="title"
                         v-model="form.title"
-                        label="Title of Page"
-                        help="Eg: Privacy & Policy"
+                        :label="__('Title of Page')"
+                        :help="__('Eg: Privacy & Policy')"
                         :error="form.errors.title"
                         type="text"
                         name="title"
@@ -49,8 +49,8 @@
                       <x-input
                         id="path"
                         v-model="form.path"
-                        label="URL Path"
-                        help="Eg: privacy-policy"
+                        :label="__('URL Path')"
+                        :help="__('Eg: privacy-policy')"
                         :error="form.errors.path"
                         type="text"
                         name="path"
@@ -62,8 +62,8 @@
                       <x-checkbox
                         id="is_redirect"
                         v-model="form.is_redirect"
-                        label="External Redirect"
-                        help="Tick if visiting this page should redirect to an external url."
+                        :label="__('External Redirect')"
+                        :help="__('Tick if visiting this page should redirect to an external url.')"
                         name="is_redirect"
                         :error="form.errors.is_redirect"
                       />
@@ -77,8 +77,8 @@
                       <x-input
                         id="redirect_url"
                         v-model="form.redirect_url"
-                        label="Redirect URL"
-                        help="Eg: https://my-custom-shop.com"
+                        :label="__('Redirect URL')"
+                        :help="__('Eg: https://my-custom-shop.com')"
                         :error="form.errors.redirect_url"
                         type="text"
                         name="redirect_url"
@@ -106,7 +106,7 @@
                     <div class="flex items-center col-span-6 sm:col-span-3">
                       <fieldset>
                         <legend class="text-base font-medium text-gray-900 dark:text-gray-300">
-                          Options
+                          {{ __("Options") }}
                         </legend>
                         <div class="mt-4 flex space-x-4">
                           <div class="flex items-start">
@@ -123,7 +123,7 @@
                               <label
                                 for="is_visible"
                                 class="font-medium text-gray-700 dark:text-gray-400"
-                              >Visible</label>
+                              >{{ __("Visible") }}</label>
                               <!--                                                            <p class="text-gray-500">Get notified when someones posts a comment on a posting.</p>-->
                             </div>
                           </div>
@@ -141,7 +141,7 @@
                               <label
                                 for="is_in_navbar"
                                 class="font-medium text-gray-700 dark:text-gray-400"
-                              >Add to Navbar</label>
+                              >{{ __("Add to Navbar") }}</label>
                               <!--                                                            <p class="text-gray-500">Get notified when a candidate applies for a job.</p>-->
                             </div>
                           </div>
@@ -164,7 +164,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    Create Page
+                    {{ __("Create Page") }}
                   </loading-button>
                 </div>
               </div>
@@ -178,9 +178,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import JetInputError from '@/Jetstream/InputError';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import LoadingButton from '@/Components/LoadingButton';
 import XInput from '@/Components/Form/XInput';
 import * as EasyMDE from 'easymde';
@@ -190,10 +188,8 @@ export default {
     components: {
         XCheckbox,
         AppLayout,
-        JetSectionBorder,
         JetInputError,
         LoadingButton,
-        JetSecondaryButton,
         XInput
     },
     data() {

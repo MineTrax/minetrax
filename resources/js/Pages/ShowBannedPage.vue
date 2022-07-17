@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head title="Oops! You are Banned" />
+    <app-head
+      :title="__('Oops! You are Banned.')"
+    />
 
     <div class="py-12 px-10 max-w-4xl mx-auto">
       <div class="flex space-x-4">
@@ -13,7 +15,7 @@
                   class="h-40 w-40 text-red-600 inline-flex"
                 />
                 <h3 class="text-3xl font-extrabold text-red-900">
-                  Oops! You are Banned.
+                  {{ __("Oops! You are Banned.") }}
                 </h3>
               </div>
             </div>
@@ -28,10 +30,6 @@
 import AppLayout from '@/Layouts/AppLayout';
 import {formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
-import ShoutBox from '@/Shared/ShoutBox';
-import NewsBox from '@/Shared/NewsBox';
-import InfiniteScroll from '@/Components/InfiniteScroll';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
 
 export default {
 

@@ -2,7 +2,7 @@
   <div>
     <div class="p-3 bg-white dark:bg-cool-gray-800 rounded shadow space-y-4">
       <h3 class="text-gray-800 font-extrabold dark:text-gray-200">
-        Shout Box
+        {{ __("Shout Box") }}
       </h3>
 
       <div class="flex-col space-y-4 max-h-96 overflow-auto hide-scrollbar">
@@ -74,7 +74,7 @@
             >
             <inertia-link
               v-if="$page.props.user && shout.permissions.delete"
-              v-confirm="{message:'Delete this shout permanently?'}"
+              v-confirm="{message:__('Delete this shout permanently?')}"
               class="focus:outline-none order-3"
               :preserve-state="false"
               as="button"
@@ -96,7 +96,7 @@
           >
             <inertia-link
               v-if="$page.props.user && shout.permissions.delete"
-              v-confirm="{message:'Delete this shout permanently?'}"
+              v-confirm="{message:__('Delete this shout permanently?')}"
               class="focus:outline-none"
               :preserve-state="false"
               as="button"
@@ -153,7 +153,7 @@
           aria-label="Shout"
           class="mt-1 focus:ring-gray-300 block w-full sm:text-sm rounded-md border-none disabled:opacity-50 bg-gray-100 focus:bg-white dark:bg-cool-gray-900 dark:text-gray-200 dark:focus:ring-gray-700"
           type="text"
-          placeholder="Say something.."
+          :placeholder="__('Say something..')"
           @keypress.enter="sendShout"
         >
         <span
@@ -169,16 +169,16 @@
           class="font-semibold text-light-blue-500"
           :href="route('login')"
         >
-          Login
+          {{ __("Login") }}
         </inertia-link>
-        or
+        {{ __("or") }}
         <inertia-link
           class="font-semibold text-light-blue-500"
           :href="route('register')"
         >
-          Register
+          {{ __("Register") }}
         </inertia-link>
-        to Shout
+        {{ __("to Shout") }}
       </div>
     </div>
   </div>
@@ -205,7 +205,7 @@ export default {
     created() {
         axios.get(route('shout.index')).then(data => {
             this.shouts = data.data;
-        }).finally(e => {
+        }).finally(() => {
             this.loading = false;
         });
 
@@ -230,8 +230,8 @@ export default {
                 else if (e.response.status === 403)
                     this.error = e.response.data.message;
                 else
-                    this.error = 'Something went wrong';
-            }).finally(e => {
+                    this.error = this.__('Something went wrong. Try again.');
+            }).finally(() => {
                 this.message = '';
                 this.sending = false;
                 this.$nextTick(() => {

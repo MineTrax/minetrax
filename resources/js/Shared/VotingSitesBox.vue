@@ -2,11 +2,11 @@
   <div v-if="enabled && votingsites && votingsites.length > 0">
     <div class="p-3 bg-white dark:bg-cool-gray-800 rounded shadow space-y-2">
       <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
-        Vote for Server
+        {{ __("Vote for Server") }}
       </h3>
 
       <p class="rounded text-sm text-gray-600 dark:text-gray-400 text-center p-1">
-        Vote on these sites and win rewards!
+        {{ __("Vote on these sites and win rewards!") }}
       </p>
 
       <div class="flex flex-col space-y-2">
@@ -27,7 +27,7 @@
               target="_blank"
               class="rounded tracking-wider text-sm px-2 py-1 text-gray-500 dark:text-gray-300 bg-white dark:bg-cool-gray-800 shadow hover:shadow-md"
               :href="votingsite.url"
-            >Vote</a>
+            >{{ __("Vote") }}</a>
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { formatDistanceToNowStrict } from 'date-fns';
+import {formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     props: {

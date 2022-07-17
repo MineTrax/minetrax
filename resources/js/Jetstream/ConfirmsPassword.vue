@@ -21,7 +21,7 @@
             v-model="form.password"
             type="password"
             class="mt-1 block w-3/4"
-            placeholder="Password"
+            :placeholder="__('Password')"
             @keyup.enter.native="confirmPassword"
           />
 
@@ -34,7 +34,7 @@
 
       <template #footer>
         <jet-secondary-button @click.native="closeModal">
-          Nevermind
+          {{ __("Nevermind") }}
         </jet-secondary-button>
 
         <jet-button

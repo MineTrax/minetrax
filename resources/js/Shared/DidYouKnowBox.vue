@@ -5,7 +5,7 @@
   >
     <div class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow">
       <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
-        Did You Know?
+        {{ __("Did You Know?") }}
       </h3>
 
       <!--Loading-->
@@ -63,7 +63,7 @@ export default {
         axios.get(route('didyouknow.get')).then(data => {
             this.text = data.data.text;
             this.imageUrl = data.data.image;
-        }).finally(e => {
+        }).finally(() => {
             this.loading = false;
         });
     },
@@ -78,7 +78,7 @@ export default {
             axios.get(route('didyouknow.get')).then(data => {
                 this.text = data.data.text;
                 this.imageUrl = data.data.image;
-            }).finally(e => {
+            }).finally(() => {
                 this.loading = false;
             });
         }, 30000);

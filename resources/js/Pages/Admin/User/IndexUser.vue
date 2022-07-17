@@ -1,11 +1,13 @@
 <template>
   <app-layout>
-    <app-head title="Users Administration" />
+    <app-head
+      :title="__('Users Administration')"
+    />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Users
+          {{ __("Users") }}
         </h1>
       </div>
       <div class="flex flex-col">
@@ -19,49 +21,49 @@
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      #
+                      {{ __("#") }}
                     </th>
                     <th
                       scope="col"
                       class="w-6 px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Name / @Username
+                      {{ __("Name / @Username") }}
                     </th>
                     <th
                       scope="col"
                       class="w-6 px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Role
+                      {{ __("Role") }}
                     </th>
                     <th
                       scope="col"
                       class="w-6 px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Email
+                      {{ __("Email") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      DoB
+                      {{ __("DoB") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Joined At
+                      {{ __("Joined At") }}
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Flags
+                      {{ __("Flags") }}
                     </th>
                     <th
                       scope="col"
                       class="relative px-3 py-3"
                     >
-                      <span class="sr-only">Actions</span>
+                      <span class="sr-only">{{ __("Actions") }}</span>
                     </th>
                   </tr>
                 </thead>
@@ -93,14 +95,14 @@
                                 v-if="user.verified_at"
                                 v-tippy
                                 name="verified-check-fill"
-                                title="Verified Account"
+                                :title="__('Verified Account')"
                                 class="mb-1 focus:outline-none h-4 w-4 fill-current inline text-light-blue-400"
                               />
                               <icon
                                 v-if="user.is_staff"
                                 v-tippy
                                 name="shield-check-fill"
-                                title="Staff Member"
+                                :title="__('Staff Member')"
                                 class="mb-1 focus:outline-none h-4 w-4 fill-current inline text-pink-400"
                               />
                             </inertia-link>
@@ -132,7 +134,7 @@
                           <span
                             v-else
                             class="italic text-gray-500 dark:text-gray-400"
-                          >None</span>
+                          >{{ __("None") }}</span>
                         </div>
                       </div>
                     </td>
@@ -149,16 +151,16 @@
                       <span
                         v-if="user.muted_at"
                         class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-orange-100 text-orange-800 dark:bg-orange-700 dark:bg-opacity-25 dark:text-orange-400"
-                      >Muted</span>
+                      >{{ __("Muted") }}</span>
                       <span
                         v-if="user.banned_at"
                         class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-red-100 text-red-800 dark:bg-red-700 dark:bg-opacity-25 dark:text-red-400"
-                      >Banned</span>
+                      >{{ __("Banned") }}</span>
 
                       <span
                         v-if="!user.muted_at && !user.banned_at"
                         class="text-xs italic"
-                      >None</span>
+                      >{{ __("None") }}</span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium dark:text-gray-300">
                       <inertia-link
@@ -166,7 +168,7 @@
                         :href="route('user.public.get', user.username)"
                         class="text-blue-500 hover:text-blue-800"
                       >
-                        View
+                        {{ __("View") }}
                       </inertia-link>
                       /
                       <inertia-link
@@ -174,7 +176,7 @@
                         :href="route('admin.impersonate.take', user.id)"
                         class="text-orange-500 hover:text-orange-800"
                       >
-                        Impersonate
+                        {{ __("Impersonate") }}
                       </inertia-link>
                       /
                       <inertia-link
@@ -183,7 +185,7 @@
                         :href="route('admin.user.edit', user.id)"
                         class="text-yellow-500 hover:text-yellow-800"
                       >
-                        Edit
+                        {{ __("Edit") }}
                       </inertia-link>
                     </td>
                   </tr>
@@ -193,7 +195,7 @@
                       class="border-t px-3 py-4 text-center"
                       colspan="7"
                     >
-                      No users found.
+                      {{ __("No users found.") }}
                     </td>
                   </tr>
                 </tbody>
@@ -210,24 +212,16 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
 import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import JetDangerButton from '@/Jetstream/DangerButton';
 
 export default {
 
     components: {
         Icon,
         AppLayout,
-        JetSectionBorder,
         Pagination,
-        JetConfirmationModal,
-        JetSecondaryButton,
-        JetDangerButton
     },
     props: {
         users: Object

@@ -5,13 +5,13 @@
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Create News
+          {{ __("Create News") }}
         </h1>
         <inertia-link
           :href="route('admin.news.index')"
           class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
         >
-          <span>Cancel</span>
+          <span>{{ __("Cancel") }}</span>
         </inertia-link>
       </div>
 
@@ -20,10 +20,10 @@
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
               <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                News Information
+                {{ __("Overview") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                Add a New News which Bla Bla Bla
+                {{ __("In news you can do announcements or other generic news about your server.") }}
               </p>
             </div>
           </div>
@@ -38,8 +38,8 @@
                         v-model="form.type"
                         name="type"
                         :error="form.errors.type"
-                        label="News Category"
-                        :select-list="{0: 'General', 1: 'Announcement', 2: 'Event'}"
+                        :label="__('News Category')"
+                        :select-list="{0: __('General'), 1: __('Announcement'), 2: __('Event')}"
                       />
                     </div>
 
@@ -47,7 +47,7 @@
                       <x-input
                         id="title"
                         v-model="form.title"
-                        label="Title"
+                        :label="__('Title')"
                         :error="form.errors.title"
                         type="text"
                         name="title"
@@ -82,7 +82,7 @@
                       <label
                         for="photo"
                         class="block text-sm font-medium text-gray-700 dark:text-gray-400"
-                      >Image</label>
+                      >{{ __("Image") }}</label>
 
                       <!-- New Profile Photo Preview -->
                       <div
@@ -100,7 +100,7 @@
                         type="button"
                         @click.native.prevent="selectNewPhoto"
                       >
-                        Select A New Image
+                        {{ __("Select A New Image") }}
                       </jet-secondary-button>
 
                       <jet-input-error
@@ -112,7 +112,7 @@
                     <div class="flex items-center col-span-6 sm:col-span-3">
                       <fieldset>
                         <legend class="text-base font-medium text-gray-900 dark:text-gray-400">
-                          Options
+                          {{ __("Options") }}
                         </legend>
                         <div class="mt-4 flex space-x-4">
                           <div class="flex items-start">
@@ -129,7 +129,7 @@
                               <label
                                 for="is_published"
                                 class="font-medium text-gray-700 dark:text-gray-300"
-                              >Published</label>
+                              >{{ __("Published") }}</label>
                               <!--                                                            <p class="text-gray-500">Get notified when someones posts a comment on a posting.</p>-->
                             </div>
                           </div>
@@ -147,7 +147,7 @@
                               <label
                                 for="is_pinned"
                                 class="font-medium text-gray-700 dark:text-gray-300"
-                              >Pinned</label>
+                              >{{ __("Pinned") }}</label>
                               <!--                                                            <p class="text-gray-500">Get notified when a candidate applies for a job.</p>-->
                             </div>
                           </div>
@@ -170,7 +170,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    Add News
+                    {{ __("Add News") }}
                   </loading-button>
                 </div>
               </div>
@@ -184,7 +184,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import JetInputError from '@/Jetstream/InputError';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import LoadingButton from '@/Components/LoadingButton';
@@ -196,7 +195,6 @@ export default {
     components: {
         XSelect,
         AppLayout,
-        JetSectionBorder,
         JetInputError,
         LoadingButton,
         JetSecondaryButton,

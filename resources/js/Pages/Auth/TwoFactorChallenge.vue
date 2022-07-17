@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head title="2FA Challenge confirmation" />
+    <app-head
+      :title="__('2FA Challenge confirmation')"
+    />
     <jet-authentication-card>
       <template #logo>
         <jet-authentication-card-logo />
@@ -8,11 +10,11 @@
 
       <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
         <template v-if="! recovery">
-          Please confirm access to your account by entering the authentication code provided by your authenticator application.
+          {{ __("Please confirm access to your account by entering the authentication code provided by your authenticator application.") }}
         </template>
 
         <template v-else>
-          Please confirm access to your account by entering one of your emergency recovery codes.
+          {{ __("Please confirm access to your account by entering one of your emergency recovery codes.") }}
         </template>
       </div>
 
@@ -22,7 +24,7 @@
         <div v-if="! recovery">
           <jet-label
             for="code"
-            value="Code"
+            :value="__('Code')"
           />
           <jet-input
             id="code"
@@ -39,7 +41,7 @@
         <div v-else>
           <jet-label
             for="recovery_code"
-            value="Recovery Code"
+            :value="__('Recovery Code')"
           />
           <jet-input
             id="recovery_code"
@@ -58,11 +60,11 @@
             @click.prevent="toggleRecovery"
           >
             <template v-if="! recovery">
-              Use a recovery code
+              {{ __("Use a recovery code") }}
             </template>
 
             <template v-else>
-              Use an authentication code
+              {{ __("Use an authentication code") }}
             </template>
           </button>
 
@@ -70,7 +72,7 @@
             :loading="form.processing"
             class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
           >
-            Login
+            {{ __("Login") }}
           </loading-button>
         </div>
       </form>
@@ -81,7 +83,6 @@
 <script>
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import JetButton from '@/Jetstream/Button';
 import JetInput from '@/Jetstream/Input';
 import JetLabel from '@/Jetstream/Label';
 import JetValidationErrors from '@/Jetstream/ValidationErrors';
@@ -94,7 +95,6 @@ export default {
         LoadingButton,
         JetAuthenticationCard,
         JetAuthenticationCardLogo,
-        JetButton,
         JetInput,
         JetLabel,
         JetValidationErrors,

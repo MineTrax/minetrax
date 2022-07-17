@@ -2,7 +2,7 @@
   <div v-if="newslist.length > 0">
     <div class="p-3 bg-white dark:bg-cool-gray-800 rounded shadow space-y-4">
       <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
-        Latest News
+        {{ __("Latest News") }}
       </h3>
 
       <div
@@ -41,7 +41,7 @@
             class="text-gray-500 dark:text-gray-400 text-xs focus:outline-none"
             :title="format(new Date(news.published_at), 'E, do MMM yyyy, h:mm aaa')"
           >{{ formatDistanceToNowStrict(new Date(news.published_at), { addSuffix: true }) }}</span>
-          <span class="text-gray-500 dark:text-gray-400 text-xs"> - {{ news.time_to_read }} read</span>
+          <span class="text-gray-500 dark:text-gray-400 text-xs"> - {{ news.time_to_read }}&nbsp;{{ __("read") }}</span>
         </div>
         <img
           v-if="news.photo_url"
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { formatDistanceToNowStrict, format } from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     props: {

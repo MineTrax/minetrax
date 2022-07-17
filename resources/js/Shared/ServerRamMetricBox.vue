@@ -5,7 +5,7 @@
         name="ram"
         class="w-6 mr-1"
       />
-      Memory Usage
+      {{ __("Memory Usage") }}
     </h3>
     <e-chart
       :options="options"
@@ -54,8 +54,8 @@ export default {
             dataset: {
                 source: this.liveInfo.map(data => {
                     return {
-                        'Date': format(new Date(data.created_at), 'do MMM yyyy, h:mm aaa'),
-                        'Used Memory (MB)': Math.round(data.used_memory / 1024),
+                        [this.__('Date')]: format(new Date(data.created_at), 'do MMM yyyy, h:mm aaa'),
+                        [this.__('Used Memory (MB)')]: Math.round(data.used_memory / 1024),
                     };
                 })
             },

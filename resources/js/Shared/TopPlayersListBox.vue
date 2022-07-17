@@ -13,37 +13,37 @@
                 scope="col"
                 class="p-1 text-left text-xs font-bold text-center uppercase tracking-wider"
               >
-                #
+                {{ __("#") }}
               </th>
               <th
                 scope="col"
                 class="p-1 text-left text-xs font-bold uppercase tracking-wider"
               >
-                Flag
+                {{ __("Flag") }}
               </th>
               <th
                 scope="col"
                 class="p-1 text-left text-xs font-bold uppercase tracking-wider"
               >
-                Rank
+                {{ __("Rank") }}
               </th>
               <th
                 scope="col"
                 class="p-1 text-left text-xs font-bold uppercase tracking-wider"
               >
-                Name
+                {{ __("Name") }}
               </th>
               <th
                 scope="col"
                 class="p-1 text-left text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
               >
-                Rating
+                {{ __("Rating") }}
               </th>
               <th
                 scope="col"
                 class="p-1 text-left text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
               >
-                Last Seen
+                {{ __("Last Seen") }}
               </th>
             </tr>
           </thead>
@@ -119,7 +119,7 @@
                       <span
                         v-else
                         class="text-red-500 dark:text-red-400 italic"
-                      >Unknown</span>
+                      >{{ __("Unknown") }}</span>
                     </inertia-link>
                   </div>
                 </div>
@@ -136,7 +136,7 @@
                 <span
                   v-else
                   class="text-gray-700 dark:text-gray-500 italic"
-                >none</span>
+                >{{ __("none") }}</span>
               </td>
               <td class="p-1 text-xs text-gray-700 dark:text-gray-300 hidden sm:table-cell">
                 <span
@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import { formatDistanceToNowStrict, format } from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 
 export default {

@@ -1,17 +1,17 @@
 <template>
   <app-layout>
-    <app-head :title="`Edit User @${userData.username}`" />
+    <app-head :title="__('Edit User @:username', {username: userData.username})" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Edit User '{{ userData.name }}'
+          {{ __("Edit User ':username'", {username: userData.name}) }}
         </h1>
         <inertia-link
           :href="route('admin.user.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
         >
-          <span>Cancel</span>
+          <span>{{ __("Cancel") }}</span>
         </inertia-link>
       </div>
 
@@ -21,10 +21,10 @@
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
               <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                Tips!
+                {{ __("Tips!") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                You can change role of a user in this section
+                {{ __("You can change role of a user in this section") }}
               </p>
             </div>
           </div>
@@ -79,7 +79,7 @@
                         type="button"
                         @click.native.prevent="selectNewPhoto"
                       >
-                        Select A New Photo
+                        {{ __("Select A New Photo") }}
                       </jet-secondary-button>
 
                       <jet-input-error
@@ -93,7 +93,7 @@
                       <x-input
                         id="username"
                         v-model="form.username"
-                        label="Username"
+                        :label="__('Username')"
                         :error="form.errors.username"
                         type="text"
                         name="username"
@@ -105,7 +105,7 @@
                       <x-input
                         id="email"
                         v-model="form.email"
-                        label="Email Address"
+                        :label="__('Email Address')"
                         :error="form.errors.email"
                         type="email"
                         name="email"
@@ -117,7 +117,7 @@
                       <x-input
                         id="name"
                         v-model="form.name"
-                        label="Full Name"
+                        :label="__('Full Name')"
                         :error="form.errors.name"
                         type="text"
                         name="name"
@@ -130,9 +130,9 @@
                         v-model="form.profile_photo_source"
                         name="profile_photo_source"
                         :error="form.errors.profile_photo_source"
-                        label="Use Avatar from"
-                        :select-list="{linked_player: 'Linked Player', gravatar: 'Gravatar'}"
-                        placeholder="Uploaded Photo"
+                        :label="__('Use Avatar from')"
+                        :select-list="{linked_player: __('Linked Player'), gravatar: __('Gravatar')}"
+                        :placeholder="__('Uploaded Photo')"
                       />
                     </div>
 
@@ -141,7 +141,7 @@
                       <date-picker
                         id="dob"
                         v-model="form.dob"
-                        placeholder="Select your date of birth"
+                        :placeholder="__('Select your date of birth')"
                         class="w-full"
                         value-type="format"
                         input-class="border-gray-300 h-14 p-3 text-sm pt-7 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
@@ -150,7 +150,7 @@
                       <label
                         for="dob"
                         class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-gray-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out "
-                      >Date of Birth</label>
+                      >{{ __("Date of Birth") }}</label>
                       <jet-input-error
                         :message="form.errors.dob"
                         class="mt-1"
@@ -164,8 +164,8 @@
                       <x-checkbox
                         id="show_yob"
                         v-model="form.show_yob"
-                        label="Show Your of Birth"
-                        help="Show Year of Birth in your public profile."
+                        :label="__('Show Your of Birth')"
+                        :help="__('Show Year of Birth in your public profile.')"
                         name="show_yob"
                         :error="form.errors.show_yob"
                       />
@@ -178,9 +178,9 @@
                         v-model="form.gender"
                         name="gender"
                         :error="form.errors.gender"
-                        label="Gender"
+                        :label="__('Gender')"
                         placeholder="Prefer not to say"
-                        :select-list="{m: 'Male', f: 'Female', o: 'Others'}"
+                        :select-list="{m: __('Male'), f: __('Female'), o: __('Others')}"
                       />
                     </div>
 
@@ -191,8 +191,8 @@
                       <x-checkbox
                         id="show_gender"
                         v-model="form.show_gender"
-                        label="Show Gender"
-                        help="Show Gender in your public profile."
+                        :label="__('Show Gender')"
+                        :help="__('Show Gender in your public profile.')"
                         name="show_gender"
                         :error="form.errors.show_gender"
                       />
@@ -203,12 +203,12 @@
                       <x-input
                         id="s_discord_username"
                         v-model="form.s_discord_username"
-                        label="Discord Username"
+                        :label="__('Discord Username')"
                         :error="form.errors.s_discord_username"
                         autocomplete="s_discord_username"
                         type="text"
                         name="s_discord_username"
-                        help="Eg: username#1234"
+                        :help="__('Eg: username#1234')"
                       />
                     </div>
 
@@ -217,12 +217,12 @@
                       <x-input
                         id="s_steam_profile_url"
                         v-model="form.s_steam_profile_url"
-                        label="Steam Profile URL"
+                        :label="__('Steam Profile URL')"
                         :error="form.errors.s_steam_profile_url"
                         autocomplete="s_steam_profile_url"
                         type="text"
                         name="s_steam_profile_url"
-                        help="Eg: https://steamcommunity.com/id/username"
+                        :help="__('Eg: https://steamcommunity.com/id/username')"
                       />
                     </div>
 
@@ -231,12 +231,12 @@
                       <x-input
                         id="s_twitter_url"
                         v-model="form.s_twitter_url"
-                        label="Twiter Profile URL"
+                        :label="__('Twitter Profile URL')"
                         :error="form.errors.s_twitter_url"
                         autocomplete="s_twitter_url"
                         type="text"
                         name="s_twitter_url"
-                        help="Eg: https://twitter.com/@username"
+                        :help="__('Eg: https://twitter.com/@username')"
                       />
                     </div>
 
@@ -245,12 +245,12 @@
                       <x-input
                         id="s_youtube_url"
                         v-model="form.s_youtube_url"
-                        label="YouTube URL"
+                        :label="__('YouTube URL')"
                         :error="form.errors.s_youtube_url"
                         autocomplete="s_youtube_url"
                         type="text"
                         name="s_youtube_url"
-                        help="Eg: https://www.youtube.com/minecraft"
+                        :help="__('Eg: https://www.youtube.com/minecraft')"
                       />
                     </div>
 
@@ -259,12 +259,12 @@
                       <x-input
                         id="s_facebook_url"
                         v-model="form.s_facebook_url"
-                        label="Facebook URL"
+                        :label="__('Facebook URL')"
                         :error="form.errors.s_facebook_url"
                         autocomplete="s_facebook_url"
                         type="text"
                         name="s_facebook_url"
-                        help="Eg: http://facebook.com/minecraft"
+                        :help="__('Eg: https://www.facebook.com/minecraft')"
                       />
                     </div>
 
@@ -273,12 +273,12 @@
                       <x-input
                         id="s_twitch_url"
                         v-model="form.s_twitch_url"
-                        label="Twitch URL"
+                        :label="__('Twitch URL')"
                         :error="form.errors.s_twitch_url"
                         autocomplete="s_twitch_url"
                         type="text"
                         name="s_twitch_url"
-                        help="Eg: http://twitch.tv/minecraft"
+                        :help="__('Eg: https://www.twitch.tv/minecraft')"
                       />
                     </div>
 
@@ -287,12 +287,12 @@
                       <x-input
                         id="s_website_url"
                         v-model="form.s_website_url"
-                        label="Website URL"
+                        :label="__('Website URL')"
                         :error="form.errors.s_website_url"
                         autocomplete="s_website_url"
                         type="text"
                         name="s_website_url"
-                        help="Eg: https://my-personal-blog.com"
+                        :help="__('Eg: https://my-personal-blog.com')"
                       />
                     </div>
 
@@ -304,7 +304,7 @@
                         name="role"
                         :error="form.errors.role"
                         label="Role"
-                        placeholder="Select role"
+                        :placeholder="__('Select role')"
                         :select-list="rolesList"
                       />
                       <!--                                        <jet-label for="role" value="Role"/>-->
@@ -318,8 +318,8 @@
                         id="about"
                         v-model="form.about"
                         :rows="10"
-                        label="About Yourself"
-                        help="Something about yourself in 255 characters."
+                        :label="__('About Yourself')"
+                        :help="__('Something about yourself in 255 characters.')"
                         :error="form.errors.about"
                         name="about"
                       />
@@ -329,8 +329,8 @@
                       <x-checkbox
                         id="verified"
                         v-model="form.verified"
-                        label="Verified User"
-                        help="Show a blue verified tick after username."
+                        :label="__('Verified User')"
+                        :help="__('Show a blue verified tick after username.')"
                         name="verified"
                         :error="form.errors.verified"
                       />
@@ -343,7 +343,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    Update User
+                    {{ __("Update User") }}
                   </loading-button>
                 </div>
               </div>
@@ -357,16 +357,10 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import JetInputError from '@/Jetstream/InputError';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import LoadingButton from '@/Components/LoadingButton';
 import XInput from '@/Components/Form/XInput';
-import Multiselect from 'vue-multiselect';
-import JetActionMessage from '@/Jetstream/ActionMessage';
-import JetButton from '@/Jetstream/Button';
-import JetFormSection from '@/Jetstream/FormSection';
-import JetInput from '@/Jetstream/Input';
 import JetLabel from '@/Jetstream/Label';
 import DatePicker from 'vue2-datepicker';
 import XCheckbox from '@/Components/Form/XCheckbox';
@@ -380,16 +374,10 @@ export default {
         XSelect,
         XCheckbox,
         AppLayout,
-        JetSectionBorder,
         JetInputError,
         LoadingButton,
         JetSecondaryButton,
-        Multiselect,
         XInput,
-        JetActionMessage,
-        JetButton,
-        JetFormSection,
-        JetInput,
         JetLabel,
         DatePicker
     },

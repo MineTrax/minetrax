@@ -1,10 +1,12 @@
 <template>
   <app-layout>
-    <app-head title="Your Profile Settings" />
+    <app-head
+      :title="__('Your Profile Settings')"
+    />
 
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Profile
+        {{ __("Profile") }}
       </h2>
     </template>
 

@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head title="Your Linked Players" />
+    <app-head
+      :title="__('Your Linked Players')"
+    />
 
     <div class="py-3 px-2 md:py-12 md:px-10 max-w-6xl mx-auto space-y-4">
       <div
@@ -21,14 +23,14 @@
           </div>
           <div>
             <p class="font-bold">
-              You can link upto {{ maxPlayerPerUser }}
-              {{ maxPlayerPerUser === 1 ? 'player' : 'players' }} to your account! (
-              {{ maxPlayerPerUser - linkedPlayers.length }} available )
+              {{ __("You can link upto :count :player to your account! ( :left available )", {
+                count: maxPlayerPerUser,
+                player: maxPlayerPerUser === 1 ? __('player'): __('players'),
+                left: maxPlayerPerUser - linkedPlayers.length
+              }) }}
             </p>
             <p class="text-sm">
-              Initiate the process by joining the server and typing <b>/account-link</b> in
-              chat. A link will be generated, click on that link and your player will added to your
-              account.
+              {{ __("Initiate the process by joining the server and typing /account-link in chat. A link will be generated, click on that link and your player will added to your account.") }}
             </p>
           </div>
         </div>
@@ -44,7 +46,7 @@
           class="pt-5 pb-5 pr-10 flex justify-center"
         >
           <p class="text-red-500 italic">
-            No players linked to your account right now.
+            {{ __("No players linked to your account right now.") }}
           </p>
         </div>
 
@@ -71,7 +73,7 @@
 
             <div class="flex items-center justify-between">
               <p class="font-bold dark:text-gray-400">
-                Position:
+                {{ __("Position") }}:
               </p>
               <div class="flex items-center space-x-2 text-center text-sm text-light-blue-400 font-extrabold">
                 <span
@@ -83,13 +85,13 @@
                 <span
                   v-else
                   class="italic text-sm text-gray-500 dark:text-gray-400"
-                >None</span>
+                >{{ __("None") }}</span>
               </div>
             </div>
 
             <div class="flex items-center justify-between">
               <p class="font-bold dark:text-gray-400">
-                Rating:
+                {{ __("Rating") }}:
               </p>
               <icon
                 v-if="player.rating != null"
@@ -102,12 +104,12 @@
                 v-else
                 class="italic text-sm text-gray-500 dark:text-gray-400"
               >
-                None
+                {{ __("None") }}
               </p>
             </div>
             <div class="flex items-center justify-between">
               <p class="font-bold dark:text-gray-400">
-                Rank:
+                {{ __("Rank") }}:
               </p>
               <div class="flex items-center space-x-2">
                 <p
@@ -120,7 +122,7 @@
                   v-else
                   class="italic text-sm text-gray-500 dark:text-gray-400"
                 >
-                  None
+                  {{ __("None") }}
                 </p>
                 <img
                   v-if="player.rank && player.rank.photo_url"
@@ -134,7 +136,7 @@
             </div>
             <div class="flex items-center justify-between">
               <p class="font-bold dark:text-gray-400">
-                Country:
+                {{ __("Country") }}:
               </p>
               <div class="flex items-center space-x-2">
                 <p class="dark:text-gray-200">
@@ -152,7 +154,7 @@
 
             <div class="flex items-center justify-between">
               <p class="font-bold dark:text-gray-400">
-                Last Seen:
+                {{ __("Last Seen") }}:
               </p>
               <div class="flex items-center space-x-2">
                 <p
@@ -176,7 +178,7 @@
                 :href="route('account-link.delete', player.uuid)"
                 class="mt-5 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
               >
-                Unlink <span class="hidden md:block">&nbsp;{{ player.username }}</span>
+                {{ __("Unlink") }}&nbsp;<span class="hidden md:block">&nbsp;{{ player.username }}</span>
               </inertia-link>
             </div>
           </div>
@@ -188,8 +190,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
-import {formatDistanceToNowStrict, format} from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import * as skinview3d from 'skinview3d';
 
@@ -198,7 +199,6 @@ export default {
     components: {
         Icon,
         AppLayout,
-        JetSectionBorder,
     },
     props: {
         linkedPlayers: Array,

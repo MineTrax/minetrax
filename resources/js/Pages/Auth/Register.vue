@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head title="Register" />
+    <app-head
+      :title="__('Register')"
+    />
 
     <jet-authentication-card>
       <template #logo>
@@ -17,7 +19,7 @@
           <x-input
             id="name"
             v-model="form.name"
-            label="Full Name"
+            :label="__('Full Name')"
             :error="form.errors.name"
             autocomplete="name"
             :autofocus="true"
@@ -31,7 +33,7 @@
           <x-input
             id="email"
             v-model="form.email"
-            label="Email Address"
+            :label="__('Email Address')"
             :error="form.errors.email"
             :required="true"
             type="email"
@@ -43,7 +45,7 @@
           <x-input
             id="username"
             v-model="form.username"
-            label="Username"
+            :label="__('Username')"
             :error="form.errors.username"
             :required="true"
             type="text"
@@ -55,7 +57,7 @@
           <x-input
             id="password"
             v-model="form.password"
-            label="Password"
+            :label="__('Password')"
             :error="form.errors.password"
             :required="true"
             autocomplete="new-password"
@@ -68,7 +70,7 @@
           <x-input
             id="password_confirmation"
             v-model="form.password_confirmation"
-            label="Confirm Password"
+            :label="__('Confirm Password')"
             :error="form.errors.password_confirmation"
             :required="true"
             autocomplete="new-password"
@@ -96,17 +98,15 @@
               />
 
               <div class="ml-2">
-                I agree to the <a
+                {{ __("I agree to the ") }} <a
                   target="_blank"
                   :href="route('terms.show')"
                   class="underline text-sm text-gray-600 hover:text-gray-900"
-                >Terms of
-                  Service</a> and <a
+                >{{ __("Terms of Service") }}</a>&nbsp;{{ __("and") }}&nbsp;<a
                   target="_blank"
                   :href="route('policy.show')"
                   class="underline text-sm text-gray-600 hover:text-gray-900"
-                >Privacy
-                  Policy</a>
+                >{{ __("Privacy Policy") }}</a>
               </div>
             </div>
           </jet-label>
@@ -117,14 +117,14 @@
             :href="route('login')"
             class="underline text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
           >
-            Already registered?
+            {{ __("Already registered?") }}
           </inertia-link>
 
           <loading-button
             :loading="form.processing"
             class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
           >
-            Register
+            {{ __("Register") }}
           </loading-button>
         </div>
 
@@ -138,11 +138,8 @@
 import Password from 'vue-password-strength-meter';
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import JetButton from '@/Jetstream/Button';
-import JetInput from '@/Jetstream/Input';
 import JetCheckbox from '@/Jetstream/Checkbox';
 import JetLabel from '@/Jetstream/Label';
-import JetValidationErrors from '@/Jetstream/ValidationErrors';
 import LoadingButton from '@/Components/LoadingButton';
 import AppLayout from '@/Layouts/AppLayout';
 import SocialAuthButtons from '@/Components/SocialAuthButtons';
@@ -156,11 +153,8 @@ export default {
         LoadingButton,
         JetAuthenticationCard,
         JetAuthenticationCardLogo,
-        JetButton,
-        JetInput,
         JetCheckbox,
         JetLabel,
-        JetValidationErrors,
         Password
     },
 

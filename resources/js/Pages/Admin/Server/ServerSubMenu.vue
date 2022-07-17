@@ -6,7 +6,7 @@
         :class="{ 'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900' : route().current('admin.server.show') }"
         :href="route('admin.server.show', id)"
       >
-        Overview
+        {{ __("Overview") }}
       </inertia-link>
     </li>
     <li class="mr-6">
@@ -15,7 +15,7 @@
         class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
         :class="{ 'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900' : route().current('admin.server.show.stats') }"
       >
-        Statistics
+        {{ __("Statistics") }}
       </inertia-link>
     </li>
     <li class="mr-6">
@@ -24,7 +24,7 @@
         class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
         :class="{ 'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900' : route().current('admin.server.show.perfmon') }"
       >
-        Performance
+        {{ __("Performance") }}
       </inertia-link>
     </li>
     <li class="mr-6">
@@ -33,7 +33,7 @@
         class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
         :class="{ 'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900' : route().current('admin.server.show.insights') }"
       >
-        Insights
+        {{ __("Insights") }}
       </inertia-link>
     </li>
   </ul>

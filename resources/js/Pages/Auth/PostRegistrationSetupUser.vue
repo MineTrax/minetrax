@@ -1,13 +1,15 @@
 <template>
   <app-layout>
-    <app-head title="Choose a username" />
+    <app-head
+      :title="__('Choose a username')"
+    />
     <jet-authentication-card>
       <template #logo>
         <jet-authentication-card-logo />
       </template>
 
       <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        Choose a cool Username for yourself!
+        {{ __("Choose a cool Username for yourself!") }}
       </div>
 
       <div
@@ -22,7 +24,7 @@
           <x-input
             id="username"
             v-model="form.username"
-            label="Username"
+            :label="__('Username')"
             :required="true"
             :autofocus="true"
             :error="form.errors.username"
@@ -36,7 +38,7 @@
             :loading="form.processing"
             class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
           >
-            Continue
+            {{ __("Continue") }}
           </loading-button>
         </div>
       </form>
@@ -47,12 +49,7 @@
 <script>
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import JetButton from '@/Jetstream/Button';
-import JetInput from '@/Jetstream/Input';
-import JetLabel from '@/Jetstream/Label';
-import JetValidationErrors from '@/Jetstream/ValidationErrors';
 import LoadingButton from '@/Components/LoadingButton';
-import InputError from '@/Jetstream/InputError';
 import AppLayout from '@/Layouts/AppLayout';
 import XInput from '@/Components/Form/XInput';
 
@@ -60,14 +57,9 @@ export default {
     components: {
         XInput,
         AppLayout,
-        InputError,
         LoadingButton,
         JetAuthenticationCard,
         JetAuthenticationCardLogo,
-        JetButton,
-        JetInput,
-        JetLabel,
-        JetValidationErrors
     },
 
     props: {

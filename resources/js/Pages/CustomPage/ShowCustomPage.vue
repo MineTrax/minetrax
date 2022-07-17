@@ -18,10 +18,10 @@
           </div>
           <div>
             <p class="font-bold">
-              Page is hidden!
+              {{ __("Page is hidden!") }}
             </p>
             <p class="text-sm">
-              This page is not visible to public. Please change it's visibility by editing to make it visible to public.
+              {{ __("This page is not visible to public. Please change it's visibility by editing to make it visible to public.") }}
             </p>
           </div>
         </div>
@@ -36,7 +36,7 @@
             :href="route('home')"
             class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Homepage</span>
+            <span>{{ __("Homepage") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -63,9 +63,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
-import { formatDistanceToNowStrict } from 'date-fns';
-import Icon from '@/Components/Icon';
+import {formatDistanceToNowStrict} from 'date-fns';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 import ShoutBox from '@/Shared/ShoutBox';
 
@@ -73,9 +71,7 @@ export default {
 
     components: {
         ServerStatusBox,
-        Icon,
         AppLayout,
-        JetSectionBorder,
         ShoutBox
     },
     props: {

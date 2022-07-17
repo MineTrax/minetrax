@@ -3,7 +3,6 @@
     <select
       :id="id"
       ref="input"
-      name="gender"
       class="border-gray-300 pt-6 text-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full p-3 h-14 dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
       :class="borderColor"
       :value="value"

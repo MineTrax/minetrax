@@ -5,7 +5,7 @@
         name="cpu"
         class="w-6 mr-1"
       />
-      CPU Load
+      {{ __("CPU Load") }}
     </h3>
     <e-chart
       :options="options"
@@ -54,8 +54,8 @@ export default {
             dataset: {
                 source: this.liveInfo.map(data => {
                     return {
-                        'Date': format(new Date(data.created_at), 'do MMM yyyy, h:mm aaa'),
-                        'Cpu Load': data.cpu_load,
+                        [this.__('Date')]: format(new Date(data.created_at), 'do MMM yyyy, h:mm aaa'),
+                        [this.__('Cpu Load')]: data.cpu_load,
                     };
                 })
             },

@@ -5,7 +5,7 @@
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-400">
-          Custom Pages
+          {{ __("Custom Pages") }}
         </h1>
         <div class="flex">
           <inertia-link
@@ -13,8 +13,8 @@
             :href="route('admin.custom-page.create')"
             class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Create</span>
-            <span class="hidden md:inline">&nbsp;Custom Page</span>
+            <span>{{ __("Create") }}</span>
+            <span class="hidden md:inline">&nbsp;{{ __("Custom Page") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -29,49 +29,49 @@
                       scope="col"
                       class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      #
+                      {{ __("#") }}
                     </th>
                     <th
                       scope="col"
                       class="w-6 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Title
+                      {{ __("Title") }}
                     </th>
                     <th
                       scope="col"
                       class="w-6 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Path
+                      {{ __("Path") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Visible
+                      {{ __("Visible") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 whitespace-nowrap text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      In Navbar
+                      {{ __("In Navbar") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 whitespace-nowrap text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Is Redirect
+                      {{ __("Is Redirect") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Created
+                      {{ __("Created") }}
                     </th>
                     <th
                       scope="col"
                       class="relative px-6 py-3"
                     >
-                      <span class="sr-only">Actions</span>
+                      <span class="sr-only">{{ __("Actions") }}</span>
                     </th>
                   </tr>
                 </thead>
@@ -150,7 +150,7 @@
                         :href="route('custom-page.show', customPage.path)"
                         class="text-blue-600 hover:text-blue-900"
                       >
-                        View
+                        {{ __("View") }}
                       </inertia-link>
                       /
                       <inertia-link
@@ -159,7 +159,7 @@
                         :href="route('admin.custom-page.edit', customPage.id)"
                         class="text-yellow-600 hover:text-yellow-900"
                       >
-                        Edit
+                        {{ __("Edit") }}
                       </inertia-link>
                       /
                       <button
@@ -167,7 +167,7 @@
                         class="text-red-600 hover:text-red-900 focus:outline-none"
                         @click="confirmCustomPageDeletion(customPage.id)"
                       >
-                        Delete
+                        {{ __("Delete") }}
                       </button>
                     </td>
                   </tr>
@@ -177,7 +177,7 @@
                       class="border-t px-6 py-4 text-center"
                       colspan="7"
                     >
-                      No custom pages found.
+                      {{ __("No custom pages found.") }}
                     </td>
                   </tr>
                 </tbody>
@@ -195,16 +195,16 @@
       @close="customPageBeingDeleted = null"
     >
       <template #title>
-        Delete Page
+        {{ __("Delete Page") }}
       </template>
 
       <template #content>
-        Are you sure you would like to delete this Page?
+        {{ __("Are you sure you would like to delete this Page?") }}
       </template>
 
       <template #footer>
         <jet-secondary-button @click.native="customPageBeingDeleted = null">
-          Nevermind
+          {{ __("Nevermind") }}
         </jet-secondary-button>
 
         <jet-danger-button
@@ -213,7 +213,7 @@
           :disabled="deleteCustomPageForm.processing"
           @click.native="deleteNews"
         >
-          Delete Page
+          {{ __("Delete Page") }}
         </jet-danger-button>
       </template>
     </jet-confirmation-modal>
@@ -222,9 +222,8 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import Pagination from '@/Components/Pagination';
-import { formatDistanceToNowStrict, format } from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
@@ -235,7 +234,6 @@ export default {
     components: {
         Icon,
         AppLayout,
-        JetSectionBorder,
         Pagination,
         JetConfirmationModal,
         JetSecondaryButton,

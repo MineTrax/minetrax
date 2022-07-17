@@ -4,14 +4,14 @@
       <icon
         v-if="colorMode === 'dark'"
         v-tippy
-        title="Use Light Theme"
+        :title="__('Use Light Theme')"
         name="moon-full"
         class="w-6 h-6 text-gray-400 focus:outline-none"
       />
       <icon
         v-else
         v-tippy
-        title="Use Dark Theme"
+        :title="__('Use Dark Theme')"
         name="moon-outline"
         class="w-6 h-6 text-gray-400 focus:outline-none"
       />

@@ -1,17 +1,17 @@
 <template>
   <app-layout>
-    <app-head :title="`Edit Rank - ${rank.name}`" />
+    <app-head :title="__('Edit Rank - :name', {name: rank.name})" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Edit Rank
+          {{ __("Edit Rank") }}
         </h1>
         <inertia-link
           :href="route('admin.rank.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
         >
-          <span>Cancel</span>
+          <span>{{ __("Cancel") }}</span>
         </inertia-link>
       </div>
 
@@ -20,10 +20,16 @@
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
               <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                Rank Information
+                {{ __("Overview") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                Add a New Rank which Bla Bla Bla
+                {{ __("Ranks are assigned to players when a given criteria is matched, eg: play time, score etc.") }}<br>{{ __("Play Time Need should be provided in Ticks. 20 Ticks = 1 seconds. So if you want to add criteria to give rank if player played at-least 1 minute then you write 1200") }}
+              </p>
+              <p class="mt-3 text-sm text-gray-600 dark:text-gray-500">
+                {{ __("Each rank is sorted according to its weight. More the score and time is more the weight.") }}
+              </p>
+              <p class="mt-3 text-sm text-gray-600 dark:text-gray-500">
+                {{ __("If you instead want to sync player rank from server to web, you can do that too from Settings -> Player Settings. Currently Luckperms is supported. Make sure to have same Short Name for rank name what you have chosen in Luckperms. While rank sync is enabled the criteria like score and time will be ignored but while adding ranks it is recommended to enter something in them so web know which rank has more weight.") }}
               </p>
             </div>
           </div>
@@ -39,8 +45,8 @@
                       <x-input
                         id="name"
                         v-model="form.name"
-                        label="Rank Name"
-                        help="Eg: Apex Legend"
+                        :label="__('Rank Name')"
+                        :help="__('Eg: Knight')"
                         :error="form.errors.name"
                         type="text"
                         name="name"
@@ -51,8 +57,8 @@
                       <x-input
                         id="shortname"
                         v-model="form.shortname"
-                        label="Short Name"
-                        help="Eg: apexlegend"
+                        :label="__('Short Name')"
+                        :help="__('Eg: knight')"
                         :error="form.errors.shortname"
                         type="text"
                         name="shortname"
@@ -63,7 +69,7 @@
                       <x-input
                         id="total_score_needed"
                         v-model="form.total_score_needed"
-                        label="Score Needed"
+                        :label="__('Score Needed')"
                         :error="form.errors.total_score_needed"
                         type="number"
                         name="total_score_needed"
@@ -74,7 +80,7 @@
                       <x-input
                         id="total_play_one_minute_needed"
                         v-model="form.total_play_one_minute_needed"
-                        label="Play Time Needed"
+                        :label="__('Play Time Needed')"
                         :error="form.errors.total_play_one_minute_needed"
                         type="number"
                         name="total_play_one_minute_needed"
@@ -95,7 +101,7 @@
                       <label
                         for="photo"
                         class="block text-sm font-medium text-gray-700 dark:text-gray-400"
-                      >Rank Image</label>
+                      >{{ __("Rank Image") }}</label>
 
 
                       <!-- New Profile Photo Preview -->
@@ -114,7 +120,7 @@
                         type="button"
                         @click.native.prevent="selectNewPhoto"
                       >
-                        Select A New Image
+                        {{ __("Select A New Image") }}
                       </jet-secondary-button>
 
 
@@ -129,7 +135,7 @@
                         id="description"
                         v-model="form.description"
                         :rows="10"
-                        label="Description"
+                        :label="__('Description')"
                         :error="form.errors.description"
                         name="description"
                       />
@@ -142,7 +148,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    Edit Rank
+                    {{ __("Edit Rank") }}
                   </loading-button>
                 </div>
               </div>
@@ -156,7 +162,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import JetInputError from '@/Jetstream/InputError';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import LoadingButton from '@/Components/LoadingButton';
@@ -167,7 +172,6 @@ export default {
     components: {
         XTextarea,
         AppLayout,
-        JetSectionBorder,
         JetInputError,
         LoadingButton,
         JetSecondaryButton,

@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head title="Reset Password" />
+    <app-head
+      :title="__('Reset Password')"
+    />
     <jet-authentication-card>
       <template #logo>
         <jet-authentication-card-logo />
@@ -11,7 +13,7 @@
           <x-input
             id="email"
             v-model="form.email"
-            label="Email"
+            :label="__('Email')"
             :required="true"
             :autofocus="true"
             :error="form.errors.email"
@@ -24,7 +26,7 @@
           <x-input
             id="password"
             v-model="form.password"
-            label="Password"
+            :label="__('Password')"
             :required="true"
             autocomplete="new-password"
             :error="form.errors.password"
@@ -37,7 +39,7 @@
           <x-input
             id="password_confirmation"
             v-model="form.password_confirmation"
-            label="Confirm Password"
+            :label="__('Confirm Password')"
             :required="true"
             autocomplete="new-password"
             :error="form.errors.password_confirmation"
@@ -51,7 +53,7 @@
             :loading="form.processing"
             class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
           >
-            Reset Password
+            {{ __("Reset Password") }}
           </loading-button>
         </div>
       </form>
@@ -62,10 +64,6 @@
 <script>
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import JetButton from '@/Jetstream/Button';
-import JetInput from '@/Jetstream/Input';
-import JetLabel from '@/Jetstream/Label';
-import JetValidationErrors from '@/Jetstream/ValidationErrors';
 import LoadingButton from '@/Components/LoadingButton';
 import AppLayout from '@/Layouts/AppLayout';
 import XInput from '@/Components/Form/XInput';
@@ -77,10 +75,6 @@ export default {
         LoadingButton,
         JetAuthenticationCard,
         JetAuthenticationCardLogo,
-        JetButton,
-        JetInput,
-        JetLabel,
-        JetValidationErrors
     },
 
     props: {

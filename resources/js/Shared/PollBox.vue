@@ -5,13 +5,13 @@
         v-if="!isListing"
         class="font-extrabold text-gray-800 dark:text-gray-200"
       >
-        Latest Poll
+        {{ __("Latest Poll") }}
       </h3>
       <h3
         v-if="isListing"
         class="font-extrabold text-gray-800 dark:text-gray-200"
       >
-        Poll {{ poll.id }}
+        {{ __("Poll") }} {{ poll.id }}
       </h3>
       <div class="mt-3 text-gray-500 dark:text-gray-300">
         <poll
@@ -25,6 +25,7 @@
 
 <script>
 import Poll from '@/Components/Poll';
+
 export default {
     components: {
         Poll

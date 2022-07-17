@@ -1,11 +1,11 @@
 <template>
   <app-layout>
-    <app-head title="Active User Sessions" />
+    <app-head :title="__('Active User Sessions')" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-400">
-          Active Sessions
+          {{ __("Active Sessions") }}
         </h1>
       </div>
       <div class="flex flex-col">
@@ -19,43 +19,43 @@
                       scope="col"
                       class="w-6 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Country
+                      {{ __("Country") }}
                     </th>
                     <th
                       scope="col"
                       class="w-6 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      User
+                      {{ __("User") }}
                     </th>
                     <th
                       scope="col"
                       class="w-6 px-6 py-3 text-left text-xs font-medium uppercase whitespace-nowrap tracking-wider"
                     >
-                      IP Address
+                      {{ __("IP Address") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Device
+                      {{ __("Device") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Platform
+                      {{ __("Platform") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Browser
+                      {{ __("Browser") }}
                     </th>
                     <th
                       scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Last Activity
+                      {{ __("Last Activity") }}
                     </th>
                   </tr>
                 </thead>
@@ -108,7 +108,7 @@
                         v-else
                         class="flex items-center italic text-sm text-gray-500 dark:text-gray-400"
                       >
-                        Anonymous
+                        {{ __("Anonymous") }}
                       </div>
                     </td>
                     <td class="px-6 py-4 whitespace-normal">
@@ -157,7 +157,7 @@
                       class="border-t px-6 py-4 text-center dark:text-gray-400"
                       colspan="7"
                     >
-                      No active sessions found.
+                      {{ __("No active sessions found.") }}
                     </td>
                   </tr>
                 </tbody>
@@ -175,7 +175,7 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import { formatDistanceToNowStrict, format } from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 
 export default {
 

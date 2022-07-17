@@ -38,8 +38,7 @@
         class="text-sm text-gray-500 dark:text-gray-400 font-semibold focus:outline-none hover:underline"
         @click="loadMoreComments"
       >
-        View previous
-        comments
+        {{ __("View previous comments") }}
       </button>
     </div>
 
@@ -80,14 +79,14 @@
                 v-if="comment.commentator.verified_at"
                 v-tippy
                 name="verified-check-fill"
-                title="Verified Account"
+                :title="__('Verified Account')"
                 class="mb-1 focus:outline-none h-5 w-5 fill-current inline text-light-blue-400"
               />
               <icon
                 v-if="comment.commentator.is_staff"
                 v-tippy
                 name="shield-check-fill"
-                title="Staff Member"
+                :title="__('Staff Member')"
                 class="mb-1 focus:outline-none h-5 w-5 fill-current inline text-pink-400"
               />
             </inertia-link>
@@ -101,7 +100,7 @@
         >
         <inertia-link
           v-if="$page.props.user && comment.permissions.delete"
-          v-confirm="{message: 'Are you sure you want to delete this comment?'}"
+          v-confirm="{message: __('Are you sure you want to delete this comment?')}"
           :preserve-scroll="true"
           :preserve-state="false"
           as="button"
@@ -133,7 +132,7 @@
             ref="comment"
             v-model="commentBody"
             :disabled="submitting"
-            placeholder="Write a comment..."
+            :placeholder="__('Write a comment...')"
             aria-label="comment"
             type="text"
             class="mt-1 border border-gray-100 bg-gray-100 dark:bg-cool-gray-900 focus:border-gray-300 dark:border-gray-800 dark:focus:border-gray-700 dark:text-gray-200 focus:ring-0 block w-full sm:text-sm rounded-full disabled:opacity-50"

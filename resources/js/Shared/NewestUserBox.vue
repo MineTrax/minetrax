@@ -2,7 +2,7 @@
   <div v-if="enabled && user">
     <div class="p-3 bg-white dark:bg-cool-gray-800 rounded shadow space-y-2">
       <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
-        Newest User
+        {{ __("Newest User") }}
       </h3>
       <inertia-link
         as="div"
@@ -25,8 +25,8 @@
           <span
             v-tippy
             class="text-sm text-gray-700 dark:text-gray-500 focus:outline-none"
-            :content="format(new Date(user.created_at), 'E, do MMM yyyy, h:mm aaa')"
-          >Joined {{ formatDistanceToNowStrict(new Date(user.created_at), { addSuffix: true }) }}</span>
+            :title="format(new Date(user.created_at), 'E, do MMM yyyy, h:mm aaa')"
+          >{{ __("Joined") }}&nbsp;{{ formatDistanceToNowStrict(new Date(user.created_at), { addSuffix: true }) }}</span>
         </div>
       </inertia-link>
     </div>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { formatDistanceToNowStrict, format } from 'date-fns';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     props: {

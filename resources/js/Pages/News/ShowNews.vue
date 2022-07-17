@@ -1,6 +1,6 @@
 <template>
   <app-layout>
-    <app-head :title="`${news.title} - News`" />
+    <app-head :title="__(':title - News', {title: news.title})" />
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-end mb-8">
@@ -9,7 +9,7 @@
             :href="route('home')"
             class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
-            <span>Homepage</span>
+            <span>{{ __("Homepage") }}</span>
           </inertia-link>
         </div>
       </div>
@@ -66,7 +66,7 @@
                     {{ format(new Date(news.published_at), 'E, do MMM yyyy, h:mm aaa') }}
                   </p>
                   <p class="text-gray-500 dark:text-gray-400 text-sm">
-                    {{ news.time_to_read }} read
+                    {{ news.time_to_read }} {{ __("read") }}
                   </p>
                 </div>
               </div>
@@ -89,9 +89,7 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
-import { formatDistanceToNowStrict, format } from 'date-fns';
-import Icon from '@/Components/Icon';
+import {format, formatDistanceToNowStrict} from 'date-fns';
 import NewsBox from '@/Shared/NewsBox';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 
@@ -100,9 +98,7 @@ export default {
     components: {
         ServerStatusBox,
         NewsBox,
-        Icon,
         AppLayout,
-        JetSectionBorder
     },
     props: {
         news: Object,

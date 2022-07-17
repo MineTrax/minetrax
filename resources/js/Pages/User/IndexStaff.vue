@@ -1,6 +1,8 @@
 <template>
   <app-layout>
-    <app-head title="Staff Members" />
+    <app-head
+      :title="__('Staff Members')"
+    />
 
     <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex flex-col md:space-x-4 md:flex-row">
@@ -54,7 +56,7 @@
                     v-else
                     class="flex text-gray-600 dark:text-gray-400 italic justify-center"
                   >
-                    No {{ role.display_name }} yet.
+                    {{ __("No :role yet.", {role: role.display_name}) }}
                   </div>
                 </div>
               </div>
@@ -73,21 +75,15 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import {formatDistanceToNowStrict} from 'date-fns';
-import Icon from '@/Components/Icon';
 import ShoutBox from '@/Shared/ShoutBox';
-import NewsBox from '@/Shared/NewsBox';
-import InfiniteScroll from '@/Components/InfiniteScroll';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 
 export default {
 
     components: {
         ServerStatusBox,
-        NewsBox,
-        Icon,
         AppLayout,
         ShoutBox,
-        InfiniteScroll
     },
     props: {
         rolesWithUsers: Array

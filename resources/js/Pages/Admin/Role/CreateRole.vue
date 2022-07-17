@@ -1,17 +1,17 @@
 <template>
   <app-layout>
-    <app-head title="Add User Role" />
+    <app-head :title="__('Add User Role')" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          Add User Role
+          {{ __("Add User Role") }}
         </h1>
         <inertia-link
           :href="route('admin.role.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
         >
-          <span>Cancel</span>
+          <span>{{ __("Cancel") }}</span>
         </inertia-link>
       </div>
 
@@ -20,10 +20,12 @@
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
               <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                Role Information
+                {{ __("Overview") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                Add a New Rank which Bla Bla Bla
+                {{ __("Roles are used to authorize registered users of your website to perform actions on web like ban, mute users etc.") }}
+                <br>
+                {{ __("For each role you can customize 'Web Message Format' which is the in-game chat format.") }}
               </p>
             </div>
           </div>
@@ -45,7 +47,7 @@
                       <label
                         for="photo"
                         class="block text-sm font-medium text-gray-700 dark:text-gray-400"
-                      >Role Image</label>
+                      >{{ __("Role Image") }}</label>
 
                       <!-- New Profile Photo Preview -->
                       <div
@@ -63,7 +65,7 @@
                         type="button"
                         @click.native.prevent="selectNewPhoto"
                       >
-                        Select A New Image
+                        {{ __("Select A New Image") }}
                       </jet-secondary-button>
 
 
@@ -77,8 +79,8 @@
                       <x-input
                         id="name"
                         v-model="form.name"
-                        label="Role Name"
-                        help="Eg: superadmin"
+                        :label="__('Role Name')"
+                        :help="__('Eg: superadmin')"
                         :error="form.errors.name"
                         type="text"
                         name="name"
@@ -89,8 +91,8 @@
                       <x-input
                         id="display_name"
                         v-model="form.display_name"
-                        label="Display Name"
-                        help="Eg: Super Administrator"
+                        :label="__('Display Name')"
+                        :help="__('Eg: Super Administrator')"
                         :error="form.errors.display_name"
                         type="text"
                         name="display_name"
@@ -101,8 +103,8 @@
                       <x-input
                         id="web_message_format"
                         v-model="form.web_message_format"
-                        label="Web Message Format"
-                        help="Eg: &4&b{USERNAME}&r&7"
+                        :label="__('Web Message Format')"
+                        :help="__('Eg: &4&b{USERNAME}&r&7')"
                         :error="form.errors.web_message_format"
                         type="text"
                         name="web_message_format"
@@ -113,8 +115,8 @@
                       <x-input
                         id="color"
                         v-model="form.color"
-                        label="Color"
-                        help="Eg: #ff00ff"
+                        :label="__('Color')"
+                        :help="__('Eg: #ff00ff')"
                         :error="form.errors.color"
                         type="text"
                         name="color"
@@ -127,8 +129,8 @@
                       <x-input
                         id="weight"
                         v-model="form.weight"
-                        label="Weight"
-                        help="More important the role more the weight"
+                        :label="__('Weight')"
+                        :help="__('More important the role more the weight')"
                         :error="form.errors.weight"
                         type="number"
                         name="weight"
@@ -139,8 +141,8 @@
                       <x-checkbox
                         id="is_staff"
                         v-model="form.is_staff"
-                        label="Is Staff"
-                        help="This role is a staff member. This flag is used to let other know staff and show admin panel."
+                        :label="__('Is Staff')"
+                        :help="__('This role is a staff member. This flag is used to let other know staff and show admin panel.')"
                         name="is_staff"
                         :error="form.errors.is_staff"
                       />
@@ -150,8 +152,8 @@
                       <x-checkbox
                         id="is_hidden_from_staff_list"
                         v-model="form.is_hidden_from_staff_list"
-                        label="Is Hidden from List"
-                        help="Hide this role from staff list."
+                        :label="__('Is Hidden from List')"
+                        :help="__('Hide this role from staff list.')"
                         name="is_hidden_from_staff_list"
                         :error="form.errors.is_hidden_from_staff_list"
                       />
@@ -164,7 +166,7 @@
                       <label
                         for="permissions"
                         class="block text-sm font-medium text-gray-700 dark:text-gray-400"
-                      >Administrative Permissions</label>
+                      >{{ __("Administrative Permissions") }}</label>
                       <multiselect
                         id="permissions"
                         v-model="form.permissions"
@@ -174,7 +176,7 @@
                         :close-on-select="true"
                         :clear-on-select="false"
                         :preserve-search="true"
-                        placeholder="Search..."
+                        :placeholder="__('Search...')"
                       />
                       <jet-input-error
                         :message="form.errors.permissions"
@@ -189,7 +191,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    Add Role
+                    {{ __("Add Role") }}
                   </loading-button>
                 </div>
               </div>
@@ -203,7 +205,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import JetSectionBorder from '@/Jetstream/SectionBorder';
 import JetInputError from '@/Jetstream/InputError';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import LoadingButton from '@/Components/LoadingButton';
@@ -216,7 +217,6 @@ export default {
     components: {
         XCheckbox,
         AppLayout,
-        JetSectionBorder,
         JetInputError,
         LoadingButton,
         JetSecondaryButton,

@@ -2,7 +2,7 @@
   <div v-if="enabled">
     <div class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow break-words">
       <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
-        Server Status
+        {{ __("Server Status") }}
       </h3>
 
       <!-- Loading Spinner -->
@@ -42,14 +42,13 @@
         class="flex flex-col"
       >
         <div class="mt-3 text-gray-700 dark:text-gray-300 text-center font-semibold">
-          Join <span class="font-bold text-light-blue-500 dark:text-light-blue-400">{{ serverInfo.players.online }}</span> Online
-          Players!
+          {{ __("Join") }} <span class="font-bold text-light-blue-500 dark:text-light-blue-400">{{ serverInfo.players.online }}</span> {{ __("Online Players") }}!
         </div>
 
         <copy-to-clipboard v-slot="props">
           <button
             v-tippy
-            content="Click to Copy"
+            :title="__('Click to Copy')"
             type="button"
             class="text-center font-extrabold mt-3 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded p-2 hover:text-light-blue-500 dark:hover:text-light-blue-400 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900 hover:border-light-blue-500 dark:hover:border-cool-gray-800 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 transition duration-150 ease-in-out focus:outline-none"
             @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer.hostname)"
@@ -58,7 +57,7 @@
               {{ server ? server.hostname : $page.props.defaultQueryServer.hostname }}
             </span>
             <span v-else>
-              Copied!
+              {{ __("Copied!") }}
             </span>
           </button>
         </copy-to-clipboard>
