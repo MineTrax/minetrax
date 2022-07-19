@@ -47,7 +47,7 @@ class PollController extends Controller
         // Commit transaction
 
         return redirect()->route('admin.poll.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Created Successfully', 'body' => 'Poll is created successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Poll is created successfully')]]);
     }
 
     public function lock(Request $request, Poll $poll)
@@ -58,7 +58,7 @@ class PollController extends Controller
         $poll->save();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Locked Successfully', 'body' => 'Poll is locked successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Locked Successfully'), 'body' => __('Poll is locked successfully')]]);
     }
 
     public function unlock(Request $request, Poll $poll)
@@ -69,7 +69,7 @@ class PollController extends Controller
         $poll->save();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Unlock Successfully', 'body' => 'Poll is unlocked successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Unlock Successfully'), 'body' => __('Poll is unlocked successfully')]]);
     }
 
     public function destroy(Poll $poll)
@@ -78,6 +78,6 @@ class PollController extends Controller
 
         $poll->delete();
         return redirect()->route('admin.poll.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Deleted Successfully', 'body' => 'Poll has been deleted permanently']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Poll has been deleted permanently')]]);
     }
 }

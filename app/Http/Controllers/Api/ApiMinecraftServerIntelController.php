@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\MinecraftServerWorld;
 use App\Models\MinecraftWorldLiveInfo;
-use Illuminate\Http\Request;
 use DB;
+use Illuminate\Http\Request;
 
 class ApiMinecraftServerIntelController extends Controller
 {
@@ -78,13 +78,13 @@ class ApiMinecraftServerIntelController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Server Intel successfully reported.',
+                'message' => __('Server Intel successfully reported.'),
             ], 201);
         } catch(\Exception $e) {
             \Log::error($e);
             return response()->json([
                 'status' => 'error',
-                'message' => 'Server Intel failed to report.',
+                'message' => __('Server Intel failed to report.'),
                 'debug' => $e->getMessage(),
             ], 500);
         }

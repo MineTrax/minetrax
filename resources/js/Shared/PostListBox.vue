@@ -167,8 +167,8 @@ export default {
             bodyerror: null,
             postsubmitting: false,
             bodyPlaceholderText: sample([
-                this.__('What\'s up'),
-                this.__('What\'s happening?'),
+                this.__('Whats up'),
+                this.__('Whats happening?'),
                 this.__('Having fun? Tell us about it.'),
                 this.__('Are you alex or steve?'),
                 this.__('Have you seen Herobrine?')

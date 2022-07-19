@@ -8,7 +8,7 @@
         :class="{'w-80': showResults}"
         type="search"
         name="search"
-        :placeholder="__('Search..')"
+        :placeholder="__('Search')+'..'"
         autocomplete="off"
         @input="performSearch"
       >
@@ -45,7 +45,7 @@
         id="loading"
         class="text-center p-2"
       >
-        {{ __("Loading...") }}
+        {{ __("Loading") }}...
       </div>
       <div
         v-if="!loading"

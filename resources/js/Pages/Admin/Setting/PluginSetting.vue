@@ -174,7 +174,7 @@
                               id="enable_sync_player_ranks_from_server"
                               v-model="form.enable_sync_player_ranks_from_server"
                               :label="__('Enable Player Rank Sync')"
-                              :help="__('enable this if you want to sync your player rank from server instead of website calculated rank. you must create a rank for each group you have in server making sure rank shortname matches the name of your player group in server.')"
+                              :help="__('Enable this if you want to sync your player rank from server instead of website calculated rank. you must create a rank for each group you have in server making sure rank shortname matches the name of your player group in server.')"
                               name="enable_sync_player_ranks_from_server"
                               :error="form.errors.enable_sync_player_ranks_from_server"
                             />

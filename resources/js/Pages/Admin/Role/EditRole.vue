@@ -182,7 +182,7 @@
                         :close-on-select="true"
                         :clear-on-select="false"
                         :preserve-search="true"
-                        :placeholder="__('Search...')"
+                        :placeholder="__('Search')+'...'"
                       />
                       <jet-input-error
                         :message="form.errors.permissions"

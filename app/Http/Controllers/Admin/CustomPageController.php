@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCustomPageRequest;
 use App\Http\Requests\UpdateCustomPageRequest;
 use App\Models\CustomPage;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CustomPageController extends Controller
@@ -43,7 +42,7 @@ class CustomPageController extends Controller
         ]);
 
         return redirect()->route('admin.custom-page.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Created Successfully', 'body' => 'Custom Page is created successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Custom Page is created successfully')]]);
     }
 
     public function edit(CustomPage $customPage)
@@ -70,7 +69,7 @@ class CustomPageController extends Controller
         $customPage->save();
 
         return redirect()->route('admin.custom-page.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Updated Successfully', 'body' => 'Custom Page updated successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Custom Page updated successfully')]]);
     }
 
     public function destroy(CustomPage $customPage)
@@ -79,6 +78,6 @@ class CustomPageController extends Controller
 
         $customPage->delete();
         return redirect()->route('admin.custom-page.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Deleted Successfully', 'body' => 'Custom Page has been deleted permanently']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Custom Page has been deleted permanently')]]);
     }
 }

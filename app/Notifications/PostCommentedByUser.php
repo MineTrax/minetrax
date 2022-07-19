@@ -28,7 +28,7 @@ class PostCommentedByUser extends Notification implements ShouldQueue
             'postId' => $this->postId,
             'name' => $notifiable->name
         ])
-            ->subject('[Notification] Someone commented on your post');
+            ->subject(__('[Notification] Someone commented on your post'));
     }
 
     public function toArray($notifiable)

@@ -45,7 +45,7 @@ class UserController extends Controller
 
         if ($user->id === $request->user()->id) {
             return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'You cannot ban yourself']]);
+                ->with(['toast' => ['type' => 'danger', 'title' => __('You cannot ban yourself')]]);
         }
 
         $user->banned_at = now();
@@ -53,7 +53,7 @@ class UserController extends Controller
         $user->notify(new UserYouAreBanned($request->user()));
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'User Banned Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('User Banned Successfully')]]);
     }
 
     public function unban(User $user, Request $request)
@@ -62,14 +62,14 @@ class UserController extends Controller
 
         if ($user->id === $request->user()->id) {
             return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'You cannot unban yourself']]);
+                ->with(['toast' => ['type' => 'danger', 'title' => __('You cannot unban yourself')]]);
         }
 
         $user->banned_at = null;
         $user->save();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'User UnBanned Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('User UnBanned Successfully')]]);
     }
 
     public function mute(User $user, Request $request)
@@ -78,7 +78,7 @@ class UserController extends Controller
 
         if ($user->id === $request->user()->id) {
             return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'You cannot mute yourself']]);
+                ->with(['toast' => ['type' => 'danger', 'title' => __('You cannot mute yourself')]]);
         }
 
         $user->muted_at = now();
@@ -86,7 +86,7 @@ class UserController extends Controller
         $user->notify(new UserYouAreMuted($request->user()));
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'User Muted Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('User Muted Successfully')]]);
     }
 
     public function unmute(User $user, Request $request)
@@ -95,14 +95,14 @@ class UserController extends Controller
 
         if ($user->id === $request->user()->id) {
             return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'You cannot unmute yourself']]);
+                ->with(['toast' => ['type' => 'danger', 'title' => __('You cannot unmute yourself')]]);
         }
 
         $user->muted_at = null;
         $user->save();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'User UnMuted Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('User UnMuted Successfully')]]);
     }
 
     public function edit(User $user)
@@ -186,7 +186,7 @@ class UserController extends Controller
 
         // Redirect to listing page
         return redirect()->route('admin.user.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Updated Successfully', 'body' => 'User updated successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('User updated successfully')]]);
     }
 
     public function destroy(User $user)

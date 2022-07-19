@@ -75,6 +75,6 @@ class ShoutController extends Controller
 
         $shout->delete();
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Deleted Successfully', 'body' => 'Shout Deleted Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Shout Deleted Successfully')]]);
     }
 }

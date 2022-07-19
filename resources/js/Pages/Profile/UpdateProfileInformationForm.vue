@@ -326,7 +326,7 @@
           autocomplete="s_twitch_url"
           type="text"
           name="s_twitch_url"
-          :help="__('Eg: https://twitch.tv/minecraft')"
+          :help="__('Eg: https://www.twitch.tv/minecraft')"
         />
       </div>
 

@@ -175,7 +175,7 @@
                         <span
                           v-else
                           class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-opacity-25 dark:text-gray-400"
-                        >{{ __("Loading...") }}</span>
+                        >{{ __("Loading") }}...</span>
                       </div>
                       <div class="flex">
                         <span
@@ -192,7 +192,7 @@
                         <span
                           v-else
                           class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-opacity-25 dark:text-gray-400"
-                        >{{ __("Loading...") }}</span>
+                        >{{ __("Loading") }}...</span>
                       </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

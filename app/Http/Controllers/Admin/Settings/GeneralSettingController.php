@@ -97,6 +97,6 @@ class GeneralSettingController extends Controller
         $settings->save();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'General Settings Updated Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('General Settings Updated Successfully')]]);
     }
 }

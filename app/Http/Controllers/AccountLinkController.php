@@ -15,20 +15,20 @@ class AccountLinkController extends Controller
     {
         if (!$request->hasValidSignature()) {
             return redirect()->home()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'Link expired or invalid!', 'body' => 'Please request a fresh link and try again.', 'milliseconds' => 10000]]);
+                ->with(['toast' => ['type' => 'danger', 'title' => __('Link expired or invalid!'), 'body' => __('Please request a fresh link and try again.'), 'milliseconds' => 10000]]);
         }
 
         // Find player with UUID if not found then tell user to wait for sometime till his player become visible in website
         $player = Player::where('uuid', $uuid)->first();
         if (!$player) {
             return redirect()->home()
-                ->with(['toast' => ['type' => 'warning', 'title' => 'Player not found in database!', 'body' => 'Please wait for sometime for server to update its player database.', 'milliseconds' => 10000]]);
+                ->with(['toast' => ['type' => 'warning', 'title' => __('Player not found in database!'), 'body' => __('Please wait for sometime for server to update its player database.'), 'milliseconds' => 10000]]);
         }
 
         // Player found. check if this player is already linked with a user.
         if ($player->users()->count() > 0) {
             return redirect()->home()
-                ->with(['toast' => ['type' => 'danger', 'title' => 'Player already linked to a user!', 'body' => 'If you own this user please unlink it from your another account or contact administrator.', 'milliseconds' => 10000]]);
+                ->with(['toast' => ['type' => 'danger', 'title' => __('Player already linked to a user!'), 'body' => __('If you own this user please unlink it from your another account or contact administrator.'), 'milliseconds' => 10000]]);
         }
 
         // Check if current user has enough available slot to link the player.
@@ -36,7 +36,7 @@ class AccountLinkController extends Controller
         $max_slots = $pluginSettings->max_players_link_per_account; // Total number of players that can be linked to account
         if($user->players()->count() >= $max_slots) {
             return redirect()->home()
-                ->with(['toast' => ['type' => 'danger', 'title' => "User already have max {$max_slots} players linked!", 'body' => 'If you want to link this player please unlink a player.', 'milliseconds' => 10000]]);
+                ->with(['toast' => ['type' => 'danger', 'title' => __('User already have max :max_slots players linked!', ['max_slots' => $max_slots]), 'body' => __('If you want to link this player please unlink a player.'), 'milliseconds' => 10000]]);
         }
 
         // @TODO: All good. return a view to confirm the link.
@@ -54,7 +54,7 @@ class AccountLinkController extends Controller
         AccountLinkAfterSuccessCommandJob::dispatch($player, $server);
 
         return redirect()->home()
-            ->with(['toast' => ['type' => 'success', 'title' => "Played linked successfully!", 'body' => 'This player is now linked to your account.', 'milliseconds' => 10000]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Played linked successfully!'), 'body' => __('This player is now linked to your account.'), 'milliseconds' => 10000]]);
     }
 
     public function listMyPlayers(Request $request, PluginSettings $pluginSettings)
@@ -72,7 +72,7 @@ class AccountLinkController extends Controller
         $userHasPlayer = $request->user()->players()->where('player_id', $player->id)->exists();
         if(!$userHasPlayer) {
             return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => "Player not found!", 'body' => 'No player with that ID found linked to your account.', 'milliseconds' => 10000]]);
+                ->with(['toast' => ['type' => 'danger', 'title' => __('Player not found!'), 'body' => __('No player with that ID found linked to your account.'), 'milliseconds' => 10000]]);
         }
 
         // Unlink the player
@@ -80,6 +80,6 @@ class AccountLinkController extends Controller
 
         // Return redirect back with flash
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => "Played unlinked successfully!", 'body' => 'Player has been removed from your account.', 'milliseconds' => 10000]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Played unlinked successfully!'), 'body' => __('Player has been removed from your account.'), 'milliseconds' => 10000]]);
     }
 }

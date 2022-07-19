@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\StatefulGuard as StatefulGuardContract;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ForbidBannedUser
@@ -26,7 +26,7 @@ class ForbidBannedUser
             }
 
             $errors = [
-                'login' => 'This account is banned.',
+                'login' => __('This account is banned.'),
             ];
             return Inertia::render('ShowBannedPage', $errors);
         }

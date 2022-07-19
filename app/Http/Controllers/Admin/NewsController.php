@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class NewsController extends Controller
@@ -56,7 +55,7 @@ class NewsController extends Controller
         }
 
         return redirect()->route('admin.news.show', $news->id)
-            ->with(['toast' => ['type' => 'success', 'title' => 'Created Successfully', 'body' => 'News is created successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('News is created successfully')]]);
     }
 
     public function show(News $news): \Inertia\Response
@@ -102,7 +101,7 @@ class NewsController extends Controller
 
         // Redirect to listing page
         return redirect()->route('news.show', $news->slug)
-            ->with(['toast' => ['type' => 'success', 'title' => 'Updated Successfully', 'body' => 'News updated successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('News updated successfully')]]);
     }
 
     public function destroy(News $news): \Illuminate\Http\RedirectResponse
@@ -111,6 +110,6 @@ class NewsController extends Controller
 
         $news->delete();
         return redirect()->route('admin.news.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Deleted Successfully', 'body' => 'News has been deleted permanently']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('News has been deleted permanently')]]);
     }
 }

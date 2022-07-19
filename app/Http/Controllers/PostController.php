@@ -125,7 +125,7 @@ class PostController extends Controller
         }
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Post Successful', 'body' => 'Post has been created successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Post Successful'), 'body' => __('Post has been created successfully')]]);
     }
 
     public function destroy(Request $request, Post $post)
@@ -134,7 +134,7 @@ class PostController extends Controller
 
         $post->delete();
         return redirect()->home()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Deleted Successfully', 'body' => 'Post has been deleted successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Post has been deleted successfully')]]);
     }
 
     public function likePost(Request $request, Post $post): \Illuminate\Http\JsonResponse
@@ -206,6 +206,6 @@ class PostController extends Controller
 
         $comment->delete();
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Deleted Successfully', 'body' => 'Comment has been deleted successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Comment has been deleted successfully')]]);
     }
 }

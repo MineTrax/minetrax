@@ -134,7 +134,7 @@ class ServerController extends Controller
         ]);
 
         return redirect()->route('admin.server.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Created Successfully', 'body' => 'New server added successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('New server added successfully')]]);
     }
 
     public function storeBungee(Request $request, GeolocationService $geolocationService)
@@ -172,7 +172,7 @@ class ServerController extends Controller
         ]);
 
         return redirect()->route('admin.server.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Created Successfully', 'body' => 'Bungee server added successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Bungee server added successfully')]]);
     }
 
     public function show(Server $server)
@@ -365,7 +365,7 @@ class ServerController extends Controller
         Cache::forget('server:webquery:'.$server->id);
 
         return redirect()->route('admin.server.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Updated Successfully', 'body' => 'Bungee server updated successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Bungee server updated successfully')]]);
     }
 
     public function update(UpdateServerRequest $request, Server $server, GeolocationService $geolocationService)
@@ -428,7 +428,7 @@ class ServerController extends Controller
         Cache::forget('server:webquery:'.$server->id);
 
         return redirect()->route('admin.server.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Updated Successfully', 'body' => 'Server updated successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Server updated successfully')]]);
     }
 
     public function destroy(Server $server)
@@ -437,7 +437,7 @@ class ServerController extends Controller
 
         $server->delete();
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Deleted Successfully', 'body' => 'Server has been deleted permanently']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Server has been deleted permanently')]]);
     }
 
     public function prefetch(Request $request, MinecraftServerFileService $serverFileService, MinecraftServerPingService $serverPingService)
@@ -489,9 +489,9 @@ class ServerController extends Controller
             }
 
             if ($fetchInfo) {
-                return response(['success' => 'Something found', 'data' => $fetchInfo, 'server_status' => $serverStatus]);
+                return response(['success' => __('Something found'), 'data' => $fetchInfo, 'server_status' => $serverStatus]);
             }
-            return response(['message' => 'No Server found at this path'], 404);
+            return response(['message' => __('No Server found at this path')], 404);
         } catch (\Exception $exception) {
             return response(['message' => $exception->getMessage()], 500);
         }
@@ -554,6 +554,6 @@ class ServerController extends Controller
         FetchStatsFromAllServersJob::dispatch();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Rescan Queued!', 'body' => 'Successfully queued rescanning of all servers. It may take sometime to reflect depending on number of players found.','milliseconds' => 20000]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Rescan Queued!'), 'body' => __('Successfully queued rescanning of all servers. It may take sometime to reflect depending on number of players found.'),'milliseconds' => 20000]]);
     }
 }

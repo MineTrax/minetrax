@@ -28,7 +28,7 @@ class PostLikedByUser extends Notification implements ShouldQueue
             'postId' => $this->postId,
             'name' => $notifiable->name
         ])
-            ->subject('[Notification] Someone liked your post');
+            ->subject(__('[Notification] Someone liked your post'));
     }
 
     public function toArray($notifiable)

@@ -8,7 +8,7 @@ return [
         'no_requests_per_batch' => env('NO_REQUESTS_PER_BATCH', 5),
         'sleep_time_between_batches' => env('SLEEP_TIME_BETWEEN_BATCHES', 1)
     ],
-    'default_target_locales'=>'tr,it',
+    'default_target_locales'=>'es,fr,ru,sk,de,pl,uk,hi,it',
     'trans_functions' => [
         'trans',
         'trans_choice',

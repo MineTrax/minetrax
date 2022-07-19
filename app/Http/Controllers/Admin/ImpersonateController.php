@@ -19,7 +19,7 @@ class ImpersonateController extends Controller
         $currentUser = $request->user();
         // Only if user is not already impersonating
         if ($currentUser->isImpersonating()) {
-            return redirect()->back()->with(['toast' => ['type' => 'danger', 'title' => 'Already Impersonating!', 'body' => 'You are already impersonating a user. Please leave current impersonation first.']]);
+            return redirect()->back()->with(['toast' => ['type' => 'danger', 'title' => __('Already Impersonating!'), 'body' => __('You are already impersonating a user. Please leave current impersonation first.')]]);
         }
 
         $userObject = User::where('id', $user)->firstOrFail();

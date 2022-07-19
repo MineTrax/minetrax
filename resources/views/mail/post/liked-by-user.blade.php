@@ -1,12 +1,12 @@
 @component('mail::message')
-# Hey {{ $name }}
+# {{ __("Hey :name", ['name' => $name]) }}
 
-<b>{{ $causer->name  }}</b> liked your post. Click below for more information.
+<b>{{ $causer->name  }}</b> {{ __("liked your post. Click below for more information.") }}
 
 @component('mail::button', ['url' => route('post.show', $postId)])
-View Post
+{{ __("View Post") }}
 @endcomponent
 
-Thanks,<br>
+{{ __("Thanks") }},<br>
 {{ config('app.name') }}
 @endcomponent

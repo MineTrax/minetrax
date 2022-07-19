@@ -44,6 +44,6 @@ class ThemeSettingController extends Controller
         $themeSettings->save();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Theme Settings Updated Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Theme Settings Updated Successfully')]]);
     }
 }

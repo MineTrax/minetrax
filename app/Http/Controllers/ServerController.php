@@ -32,7 +32,7 @@ class ServerController extends Controller
         if (!$pingData) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to ping server',
+                'message' => __('Failed to ping server'),
             ], 500);
         }
 
@@ -57,7 +57,7 @@ class ServerController extends Controller
         if (!$queryData) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to query server',
+                'message' => __('Failed to query server'),
             ], 500);
         }
 
@@ -95,7 +95,7 @@ class ServerController extends Controller
 
             return ($queryData);
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Web Query Failed'], 500);
+            return response()->json(['message' => __('Web Query Failed')], 500);
         }
     }
 }

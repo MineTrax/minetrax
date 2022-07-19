@@ -27,7 +27,7 @@ class ApiAccountLinkController extends Controller
             return response()->json([
                 'status' => 'error',
                 'type' => 'not-found',
-                'message' => 'Player not found',
+                'message' => __('Player not found'),
             ], 200);
         }
 
@@ -36,7 +36,7 @@ class ApiAccountLinkController extends Controller
             return response()->json([
                 'status' => 'error',
                 'type' => 'player-already-linked',
-                'message' => 'Player already linked to a user',
+                'message' => __('Player already linked to a user'),
             ], 200);
         }
 

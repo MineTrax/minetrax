@@ -44,7 +44,7 @@ class PlayerSettingController extends Controller
                 $playerRatingCalculator = new PlayerRatingCalculator();
                 $playerRatingCalculator->calculate($request->custom_rating_expression, $player);
             } catch (\Exception $e) {
-                return back()->withErrors(['custom_rating_expression' => 'Something wrong with your custom rating expression. Try validating it again.']);
+                return back()->withErrors(['custom_rating_expression' => __('Something wrong with your custom rating expression. Try validating it again.')]);
             }
             $settings->custom_rating_expression = $request->custom_rating_expression;
         }
@@ -55,7 +55,7 @@ class PlayerSettingController extends Controller
                 $playerScoreCalculator = new PlayerScoreCalculator();
                 $playerScoreCalculator->calculate($request->custom_score_expression, $player);
             } catch (\Exception $e) {
-                return back()->withErrors(['custom_rating_expression' => 'Something wrong with your custom score expression. Try validating it again.']);
+                return back()->withErrors(['custom_rating_expression' => __('Something wrong with your custom score expression. Try validating it again.')]);
             }
             $settings->custom_score_expression = $request->custom_score_expression;
         }
@@ -66,7 +66,7 @@ class PlayerSettingController extends Controller
         $settings->save();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Player Settings Updated Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Player Settings Updated Successfully')]]);
     }
 
     public function validateRatingExpression(Request $request, PlayerSettings $settings): \Illuminate\Http\JsonResponse
@@ -81,15 +81,15 @@ class PlayerSettingController extends Controller
             $playerRatingCalculator = new PlayerRatingCalculator();
             $result = $playerRatingCalculator->calculate($request->custom_rating_expression, $player);
         } catch (\NXP\Exception\DivisionByZeroException $e) {
-            return response()->json(['message' => 'Divide by 0 not supported.'], 400);
+            return response()->json(['message' => __('Divide by 0 not supported.')], 400);
         } catch (\NXP\Exception\UnknownFunctionException $e) {
-            return response()->json(['message' => 'Unknown function in your algorithm.'], 400);
+            return response()->json(['message' => __('Unknown function in your algorithm.')], 400);
         } catch (\NXP\Exception\UnknownOperatorException $e) {
-            return response()->json(['message' => 'Unknown operator in your algorithm.'], 400);
+            return response()->json(['message' => __('Unknown operator in your algorithm.')], 400);
         } catch (\NXP\Exception\UnknownVariableException $e) {
-            return response()->json(['message' => 'Unknown variable in your algorithm.'], 400);
+            return response()->json(['message' => __('Unknown variable in your algorithm.')], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Something went wrong.'], 500);
+            return response()->json(['message' => __('Something went wrong.')], 500);
         }
 
         return response()->json(['rating' => strval($result)]);
@@ -107,15 +107,15 @@ class PlayerSettingController extends Controller
             $playerScoreCalculator = new PlayerScoreCalculator();
             $result = $playerScoreCalculator->calculate($request->custom_score_expression, $player);
         } catch (\NXP\Exception\DivisionByZeroException $e) {
-            return response()->json(['message' => 'Divide by 0 not supported.'], 400);
+            return response()->json(['message' => __('Divide by 0 not supported.')], 400);
         } catch (\NXP\Exception\UnknownFunctionException $e) {
-            return response()->json(['message' => 'Unknown function in your algorithm.'], 400);
+            return response()->json(['message' => __('Unknown function in your algorithm.')], 400);
         } catch (\NXP\Exception\UnknownOperatorException $e) {
-            return response()->json(['message' => 'Unknown operator in your algorithm.'], 400);
+            return response()->json(['message' => __('Unknown operator in your algorithm.')], 400);
         } catch (\NXP\Exception\UnknownVariableException $e) {
-            return response()->json(['message' => 'Unknown variable in your algorithm.'], 400);
+            return response()->json(['message' => __('Unknown variable in your algorithm.')], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Something went wrong.'], 500);
+            return response()->json(['message' => __('Something went wrong.')], 500);
         }
 
         return response()->json(['score' => strval($result)]);

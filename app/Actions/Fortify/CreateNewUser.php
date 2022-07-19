@@ -2,7 +2,6 @@
 
 namespace App\Actions\Fortify;
 
-use App\Models\Country;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\GeolocationService;
@@ -35,7 +34,6 @@ class CreateNewUser implements CreatesNewUsers
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'username' => ['required', 'string', 'max:30', 'alpha_dash', 'unique:users'],
-            // 'password' => $this->passwordRules(),
             'password' => ['required', 'string', 'confirmed', Password::min(8)->uncompromised()],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
         ])->validate();

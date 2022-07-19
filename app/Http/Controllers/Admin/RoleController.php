@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Permission;
 use App\Models\Role;
+use Inertia\Inertia;
 
 class RoleController extends Controller
 {
@@ -55,7 +53,7 @@ class RoleController extends Controller
         $role->addMediaFromRequest('photo')->toMediaCollection('role');
 
         return redirect()->route('admin.role.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Created Successfully', 'body' => 'New Role is created successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('New Role is created successfully')]]);
     }
 
     public function show(Role $role)
@@ -96,7 +94,7 @@ class RoleController extends Controller
 
         // Redirect to listing page
         return redirect()->route('admin.role.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Updated Successfully', 'body' => 'Role updated successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Role updated successfully')]]);
     }
 
     public function destroy(Role $role)
@@ -104,16 +102,16 @@ class RoleController extends Controller
         $this->authorize('delete', $role);
 
         if ($role->name == Role::SUPER_ADMIN_ROLE_NAME || $role->name == Role::DEFAULT_ROLE_NAME) {
-            return redirect()->back()->with(['toast' => ['type' => 'danger', 'title' => 'Action Failed', 'body' => $role->display_name.' role cannot be deleted!']]);
+            return redirect()->back()->with(['toast' => ['type' => 'danger', 'title' => __('Action Failed'), 'body' => __(':role role cannot be deleted!', ['role' => $role->display_name])]]);
         }
 
-        // Dont delete if there is any user attached to this role
+        // Don't delete if there is any user attached to this role
         if ($role->users()->count() > 0) {
-            return redirect()->back()->with(['toast' => ['type' => 'danger', 'title' => 'Action Failed', 'body' => $role->display_name.' cannot be deleted because there are users on this role.!']]);
+            return redirect()->back()->with(['toast' => ['type' => 'danger', 'title' => __('Action Failed'), 'body' => __(':role cannot be deleted because there are users on this role.!', ['role' => $role->display_name])]]);
         }
 
         $role->delete();
         return redirect()->route('admin.role.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Deleted Successfully', 'body' => 'Role has been deleted!']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Role has been deleted!')]]);
     }
 }

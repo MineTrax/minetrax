@@ -5,8 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Auth\StatefulGuard as StatefulGuardContract;
-use Inertia\Inertia;
 
 class StaffMember
 {
@@ -24,7 +22,7 @@ class StaffMember
         if (!$user || !$user->isStaffMember()) {
             if ($request->wantsJson()) {
                 return response()->json([
-                    'message' => 'Not Authorized to view content.'
+                    'message' => __('Not Authorized to view content.')
                 ], 403);
             }
             return redirect()->back();

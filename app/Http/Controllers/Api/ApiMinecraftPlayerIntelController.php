@@ -68,7 +68,7 @@ class ApiMinecraftPlayerIntelController extends Controller
             \Log::error($e);
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to start player session.',
+                'message' => __('Failed to start player session.'),
                 'debug' => $e->getMessage(),
             ], 500);
         }
@@ -110,7 +110,7 @@ class ApiMinecraftPlayerIntelController extends Controller
             \Log::error($e);
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed reporting player pvp kill.',
+                'message' => __('Failed reporting player pvp kill.'),
                 'debug' => $e->getMessage(),
             ], 500);
         }
@@ -156,7 +156,7 @@ class ApiMinecraftPlayerIntelController extends Controller
             \Log::error($e);
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed reporting player pvp kill.',
+                'message' => __('Failed reporting player pvp kill.'),
                 'debug' => $e->getMessage(),
             ], 500);
         }
@@ -264,14 +264,14 @@ class ApiMinecraftPlayerIntelController extends Controller
             // Return response
             return response()->json([
                 'status' => 'success',
-                'message' => 'PlayerIntel event for ' . $request->username . ' reported successfully.',
+                'message' => __('PlayerIntel event for :username reported successfully.', ['username' => $request->username]),
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error($e);
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to report Event data.',
+                'message' => __('Failed to report Event data.'),
                 'debug' => $e->getMessage(),
             ], 500);
         }

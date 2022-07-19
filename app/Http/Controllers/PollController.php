@@ -28,7 +28,7 @@ class PollController extends Controller
         // Check if option_id is of this poll
         if ($poll->id != $option->poll_id) {
             return response()->json([
-                'message' => 'Invalid option'
+                'message' => __('Invalid option')
             ], 422);
         }
 
@@ -38,7 +38,7 @@ class PollController extends Controller
         // return
         if ($request->wantsJson()) {
             return response()->json([
-                'message' => 'Vote Successful'
+                'message' => __('Vote Successful')
             ]);
         }
 

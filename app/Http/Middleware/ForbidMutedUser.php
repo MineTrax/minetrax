@@ -22,7 +22,7 @@ class ForbidMutedUser
 
             if ($request->wantsJson()) {
                 return response()->json([
-                    'message' => 'Oops! You are Muted.'
+                    'message' => __('Oops! You are Muted.')
                 ], 403);
             }
             return redirect()->back();

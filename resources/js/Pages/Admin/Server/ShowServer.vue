@@ -355,7 +355,7 @@ export default {
             format: format,
             millify: millify,
             refitTerminal: null,
-            onlinePlayers: this.__('Loading...'),
+            onlinePlayers: this.__('Loading')+'...',
             maxPlayersAllowed: 0,
             serverPingInterval: null,
             sendingCommand: false,

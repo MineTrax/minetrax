@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateRankRequest;
 use App\Http\Requests\UpdateRankRequest;
 use App\Models\Rank;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class RankController extends Controller
@@ -72,7 +71,7 @@ class RankController extends Controller
         $rank->addMediaFromRequest('photo')->toMediaCollection('rank');
 
         return redirect()->route('admin.rank.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Created Successfully', 'body' => 'New Rank is created successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('New Rank is created successfully')]]);
     }
 
     /**
@@ -133,7 +132,7 @@ class RankController extends Controller
 
         // Redirect to listing page
         return redirect()->route('admin.rank.index')
-            ->with(['toast' => ['type' => 'success', 'title' => 'Updated Successfully', 'body' => 'Rank updated successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Rank updated successfully')]]);
     }
 
     /**
@@ -148,7 +147,7 @@ class RankController extends Controller
 
         $rank->delete();
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Deleted Successfully', 'body' => 'Rank has been deleted permanently']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Rank has been deleted permanently')]]);
     }
 
     public function resetRanks()
@@ -160,6 +159,6 @@ class RankController extends Controller
         \DB::table('ranks')->insert($data);
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Rank Reset Successful']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Rank Reset Successful')]]);
     }
 }

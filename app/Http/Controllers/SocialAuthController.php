@@ -9,7 +9,6 @@ use App\Utils\Helpers\Helper;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialAuthController extends Controller
@@ -39,7 +38,7 @@ class SocialAuthController extends Controller
         // If there is no email or name address then error
         if (!$socialUser->getEmail() && !$socialUser->getName()) {
             return redirect()->route('login')
-                ->with(['toast' => ['type' => 'danger', 'title' => 'Unable to fetch your email address or name.', 'milliseconds' => 7000]]);
+                ->with(['toast' => ['type' => 'danger', 'title' => __('Unable to fetch your email address or name.'), 'milliseconds' => 7000]]);
         }
 
         // Check if user already exists
@@ -49,10 +48,10 @@ class SocialAuthController extends Controller
         if ($user && ($socialUser->getId() != $user->provider_id || $provider != $user->provider_name)) {
             $providerHelper = $user->provider_name ? ucfirst($user->provider_name) : " with password";
             if ($request->wantsJson()) {
-                return response()->json(['message' => 'Provider mismatch. You used a different provider while registration. Maybe try '. $providerHelper.'?'], 422);
+                return response()->json(['message' => __('Provider mismatch. You used a different provider while registration. Maybe try :provider?', ['provider' => $providerHelper])], 422);
             }
             return redirect()->route('login')
-            ->with(['toast' => ['type' => 'danger', 'title' => 'You used a different provider during registration. Maybe try '. $providerHelper.'?', 'milliseconds' => 7000]]);
+            ->with(['toast' => ['type' => 'danger', 'title' => __('Provider mismatch. You used a different provider while registration. Maybe try :provider?', ['provider' => $providerHelper]), 'milliseconds' => 7000]]);
         }
 
         // else generate and token if wants json else login with session
@@ -89,7 +88,7 @@ class SocialAuthController extends Controller
         if ($request->wantsJson()) {
             $token = $user->createToken('default');
             return response()->json([
-                'message'      => 'Registration Successful',
+                'message'      => __('Registration Successful'),
                 'data'         => $user,
                 'access_token' => $token->plainTextToken,
             ]);

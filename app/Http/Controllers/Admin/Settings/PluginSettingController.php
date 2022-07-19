@@ -38,7 +38,7 @@ class PluginSettingController extends Controller
         $settings->save();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Keys Regenerated Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Keys Regenerated Successfully')]]);
     }
 
     public function update(Request $request, PluginSettings $settings): \Illuminate\Http\RedirectResponse
@@ -65,6 +65,6 @@ class PluginSettingController extends Controller
         $settings->save();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => 'Plugin Settings Updated Successfully']]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Plugin Settings Updated Successfully')]]);
     }
 }

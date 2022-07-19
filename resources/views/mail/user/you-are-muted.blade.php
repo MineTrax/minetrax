@@ -1,13 +1,13 @@
 @component('mail::message')
-# Hey {{ $name }}
+# {{ __("Hey :name", ['name' => $name]) }}
 
-You are muted by <b>{{ $causer->name }}</b>.
-Please contact any staff member if you think this was a mistake.
+{{ __("You are muted by") }} <b>{{ $causer->name }}</b>.
+{{ __("Please contact any staff member if you think this was a mistake.") }}
 
 @component('mail::button', ['url' => route('staff.index')])
-Contact Staff
+{{ __("Contact Staff") }}
 @endcomponent
 
-Thanks,<br>
+{{ __("Thanks") }},<br>
 {{ config('app.name') }}
 @endcomponent

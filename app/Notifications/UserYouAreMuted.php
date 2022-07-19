@@ -27,7 +27,7 @@ class UserYouAreMuted extends Notification implements ShouldQueue
             'causer' => $this->causer,
             'name' => $notifiable->name
         ])
-            ->subject('[Notification] You are muted by a staff member');
+            ->subject(__('[Notification] You are muted by a staff member'));
     }
 
     public function toArray($notifiable)
