@@ -57,9 +57,9 @@
                   <span
                     v-tippy
                     class="ml-1 text-gray-500 dark:text-gray-400 text-xs focus:outline-none"
-                    :title="format(new Date(shout.created_at), 'E, do MMM yyyy, h:mm aaa')"
+                    :title="formatToDayDateString(shout.created_at)"
                   >
-                    {{ formatDistanceToNowStrict(new Date(shout.created_at)) }}
+                    {{ formatTimeAgoToNow(shout.created_at, false) }}
                   </span>
                 </div>
                 <span class="text-justify">
@@ -116,9 +116,9 @@
                   <span
                     v-tippy
                     class="mr-1 text-gray-500 dark:text-gray-400 text-xs focus:outline-none"
-                    :title="format(new Date(shout.created_at), 'E, do MMM yyyy, h:mm aaa')"
+                    :title="formatToDayDateString(shout.created_at)"
                   >
-                    {{ formatDistanceToNowStrict(new Date(shout.created_at)) }}
+                    {{ formatTimeAgoToNow(shout.created_at, false) }}
                   </span>
                   <inertia-link
                     as="span"
@@ -185,15 +185,12 @@
 </template>
 
 <script>
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 
 export default {
     components: {Icon},
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             shouts: [],
             message: '',
             error: null,

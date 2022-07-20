@@ -112,9 +112,9 @@
                       <span
                         v-tippy
                         class="focus:outline-none"
-                        :content="format(new Date(poll.started_at), 'E, do MMM yyyy, h:mm aaa')"
+                        :content="formatToDayDateString(poll.started_at)"
                       >
-                        {{ formatDistanceToNowStrict(new Date(poll.started_at), { addSuffix: true }) }}
+                        {{ formatTimeAgoToNow(poll.started_at) }}
                       </span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -122,9 +122,9 @@
                         v-if="poll.closed_at"
                         v-tippy
                         class="focus:outline-none"
-                        :content="format(new Date(poll.closed_at), 'E, do MMM yyyy, h:mm aaa')"
+                        :content="formatToDayDateString(poll.closed_at)"
                       >
-                        {{ formatDistanceToNowStrict(new Date(poll.closed_at), { addSuffix: true }) }}
+                        {{ formatTimeAgoToNow(poll.closed_at) }}
                       </span>
                       <span
                         v-else
@@ -135,9 +135,9 @@
                       <span
                         v-tippy
                         class="focus:outline-none"
-                        :content="format(new Date(poll.created_at), 'E, do MMM yyyy, h:mm aaa')"
+                        :content="formatToDayDateString(poll.created_at)"
                       >
-                        {{ formatDistanceToNowStrict(new Date(poll.created_at), { addSuffix: true }) }}
+                        {{ formatTimeAgoToNow(poll.created_at) }}
                       </span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -241,7 +241,6 @@
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
 import Icon from '@/Components/Icon';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import JetDangerButton from '@/Jetstream/DangerButton';
@@ -262,8 +261,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             deletePollForm: this.$inertia.form(),
             pollIsBeingDeleted: null
         };

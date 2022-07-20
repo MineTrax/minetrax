@@ -329,6 +329,7 @@
     "Servers Administration": "Správa serverov",
     "You don't have Bungee\/Proxy Server Added!": "Nemáte pridaný Bungee\/Proxy Server!",
     "When a bungee server is not added. Player List Box and Player Status Box (if enabled from settings), use first added server as default query server.": "Keď nie je pridaný bungee server. Pole zoznamu hráčov a pole stavu hráča (ak je povolené v nastaveniach), použite prvý pridaný server ako predvolený server dotazov.",
+    "MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely.": "MineTrax každú hodinu automaticky skenuje všetky servery a hľadá nových hráčov a aktualizácie štatistík. Kliknutím sem vynútite kontrolu. Používajte ho zriedka.",
     "Rescan all servers": "Znova skontrolujte všetky servery",
     "Add": "Pridať",
     "Server": "Server",

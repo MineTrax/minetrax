@@ -118,7 +118,7 @@
                       {{ rank.players_count }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {{ formatDistanceToNowStrict(new Date(rank.created_at), { addSuffix: true }) }}
+                      {{ formatTimeAgoToNow(rank.created_at) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium dark:text-gray-400">
                       <a
@@ -196,7 +196,6 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import {formatDistanceToNowStrict} from 'date-fns';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import JetDangerButton from '@/Jetstream/DangerButton';
@@ -216,7 +215,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
             deleteRankForm: this.$inertia.form(),
             rankBeingDeleted: null
         };

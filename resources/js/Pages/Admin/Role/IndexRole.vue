@@ -142,9 +142,9 @@
                       <span
                         v-tippy
                         class="focus:outline-none"
-                        :content="format(new Date(role.created_at), 'E, do MMM yyyy, h:mm aaa')"
+                        :content="formatToDayDateString(role.created_at)"
                       >
-                        {{ formatDistanceToNowStrict(new Date(role.created_at), { addSuffix: true }) }}
+                        {{ formatTimeAgoToNow(role.created_at) }}
                       </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right dark:text-gray-300 text-sm font-medium">
@@ -219,7 +219,6 @@
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
 import Icon from '@/Components/Icon';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import JetDangerButton from '@/Jetstream/DangerButton';
@@ -240,8 +239,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             deleteRoleForm: this.$inertia.form(),
             roleBeingDeleted: null
         };

@@ -823,5 +823,7 @@
     "Please contact any staff member if you think this was a mistake.": "Please contact any staff member if you think this was a mistake.",
     "Go Back": "Go Back",
     "The provided password does not match your current password.": "The provided password does not match your current password.",
-    "Cpu Load": "Cpu Load"
+    "Cpu Load": "Cpu Load",
+    "MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely.": "MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely.",
+    "not scanned yet": "not scanned yet"
 }

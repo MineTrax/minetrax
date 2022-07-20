@@ -56,7 +56,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 import ShoutBox from '@/Shared/ShoutBox';
 import InfiniteScroll from '@/Components/InfiniteScroll';
@@ -77,8 +76,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             notifications: this.notificationsList,
             loading: false,
             error: null

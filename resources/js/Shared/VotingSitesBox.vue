@@ -36,17 +36,11 @@
 </template>
 
 <script>
-import {formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     props: {
         votingsites: Array,
         enabled: Boolean
     },
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict
-        };
-    }
 };
 </script>

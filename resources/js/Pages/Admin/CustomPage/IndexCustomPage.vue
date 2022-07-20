@@ -139,9 +139,9 @@
                       <span
                         v-tippy
                         class="focus:outline-none"
-                        :content="format(new Date(customPage.created_at), 'E, do MMM yyyy, h:mm aaa')"
+                        :content="formatToDayDateString(customPage.created_at)"
                       >
-                        {{ formatDistanceToNowStrict(new Date(customPage.created_at), { addSuffix: true }) }}
+                        {{ formatTimeAgoToNow(customPage.created_at) }}
                       </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap dark:text-gray-400 text-right text-sm font-medium">
@@ -223,7 +223,6 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
@@ -245,8 +244,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             deleteCustomPageForm: this.$inertia.form(),
             customPageBeingDeleted: null
         };

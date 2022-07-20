@@ -28,7 +28,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 
 export default {
@@ -36,11 +35,6 @@ export default {
     components: {
         Icon,
         AppLayout,
-    },
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict
-        };
-    },
+    }
 };
 </script>

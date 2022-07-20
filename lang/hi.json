@@ -329,6 +329,7 @@
     "Servers Administration": "सर्वर प्रशासन",
     "You don't have Bungee\/Proxy Server Added!": "आपने बंजी\/प्रॉक्सी सर्वर नहीं जोड़ा है!",
     "When a bungee server is not added. Player List Box and Player Status Box (if enabled from settings), use first added server as default query server.": "जब बंजी सर्वर नहीं जोड़ा जाता है। प्लेयर लिस्ट बॉक्स और प्लेयर स्टेटस बॉक्स (यदि सेटिंग्स से सक्षम है), पहले जोड़े गए सर्वर को डिफ़ॉल्ट क्वेरी सर्वर के रूप में उपयोग करें।",
+    "MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely.": "माइनट्रैक्स नए खिलाड़ियों और सांख्यिकी अपडेट के लिए हर घंटे सभी सर्वरों को स्वचालित रूप से स्कैन करता है। अभी स्कैन करने के लिए यहां क्लिक करें। इसका प्रयोग कम ही करें।",
     "Rescan all servers": "सभी सर्वरों को फिर से स्कैन करें",
     "Add": "जोड़ें",
     "Server": "सर्वर",

@@ -25,8 +25,8 @@
           <span
             v-tippy
             class="text-sm text-gray-700 dark:text-gray-500 focus:outline-none"
-            :title="format(new Date(user.created_at), 'E, do MMM yyyy, h:mm aaa')"
-          >{{ __("Joined") }}&nbsp;{{ formatDistanceToNowStrict(new Date(user.created_at), { addSuffix: true }) }}</span>
+            :title="formatToDayDateString(user.created_at)"
+          >{{ __("Joined") }}&nbsp;{{ formatTimeAgoToNow(user.created_at) }}</span>
         </div>
       </inertia-link>
     </div>
@@ -34,18 +34,11 @@
 </template>
 
 <script>
-import {format, formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     props: {
         user: Object,
         enabled: Boolean
     },
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format
-        };
-    }
 };
 </script>

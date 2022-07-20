@@ -45,11 +45,11 @@
               v-tippy
               as="a"
               :href="route('post.show', post.id)"
-              :content="format(new Date(post.created_at), 'E, do MMM yyyy, h:mm aaa')"
+              :content="formatToDayDateString(post.created_at)"
               class="focus:outline-none hover:text-light-blue-500 text-sm text-gray-500 dark:text-gray-300 font-light leading-snug"
             >
               {{
-                formatDistanceToNowStrict(new Date(post.created_at), {addSuffix: true})
+                formatTimeAgoToNow(post.created_at)
               }}
             </inertia-link>
           </div>
@@ -164,13 +164,11 @@
 
 <script>
 
-import {format, formatDistanceToNowStrict} from 'date-fns';
-import Button from '@/Jetstream/Button';
 import Icon from '@/Components/Icon';
 import Comments from '@/Components/Comments';
 
 export default {
-    components: {Comments, Icon, Button},
+    components: {Comments, Icon},
     props: {
         post: Object,
         commentsSectionOpened: {
@@ -180,8 +178,6 @@ export default {
     },
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             liked: this.post.love_reactant?.reactions?.length > 0,
             likes_count: this.post?.love_reactant?.reaction_total?.count ?? 0,
             showComments: this.commentsSectionOpened

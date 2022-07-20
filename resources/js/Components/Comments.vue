@@ -71,9 +71,9 @@
               <span
                 v-tippy
                 class="ml-1 text-gray-500 dark:text-gray-400 text-xs focus:outline-none"
-                :title="format(new Date(comment.created_at), 'E, do MMM yyyy, h:mm aaa')"
+                :title="formatToDayDateString(comment.created_at)"
               >
-                {{ formatDistanceToNowStrict(new Date(comment.created_at), {addSuffix: true}) }}
+                {{ formatTimeAgoToNow(comment.created_at) }}
               </span>
               <icon
                 v-if="comment.commentator.verified_at"
@@ -150,7 +150,6 @@
 
 <script>
 import Icon from '@/Components/Icon';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     components: {Icon},
@@ -161,8 +160,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             comments: null,
             loading: true,
             loadingMore: false,

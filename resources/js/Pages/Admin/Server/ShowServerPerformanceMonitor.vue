@@ -249,7 +249,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu';
 import ServerCpuMetricBox from '@/Shared/ServerCpuMetricBox';
 import ServerRamMetricBox from '@/Shared/ServerRamMetricBox';
@@ -278,8 +277,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             dateRange: [
                 this.queryParams.dateFrom ? new Date(this.queryParams.dateFrom) : null,
                 this.queryParams.dateTo ?  new Date(this.queryParams.dateTo) : null

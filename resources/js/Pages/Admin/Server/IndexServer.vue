@@ -38,7 +38,7 @@
             v-if="can('create servers')"
             v-tippy
             as="button"
-            title="MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely."
+            :title="__('MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely.')"
             :href="route('admin.server.force-scan')"
             method="post"
             class="ml-2 inline-flex items-center px-4 py-2 border border-2 border-red-600 rounded-md font-semibold text-xs text-red-600 uppercase tracking-widest focus:outline-none focus:border-red-800 transition ease-in-out duration-150 dark:text-red-500 dark:border-red-700 dark:hover:border-red-500"
@@ -207,7 +207,7 @@
                       </span>
                       <span v-else>
                         {{
-                          server.last_scanned_at ? formatDistanceToNowStrict(new Date(server.last_scanned_at), {addSuffix: true}) : "not scanned yet"
+                          server.last_scanned_at ? formatTimeAgoToNow(server.last_scanned_at) : __("not scanned yet")
                         }}
                       </span>
                     </td>
@@ -290,7 +290,6 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import {formatDistanceToNowStrict} from 'date-fns';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import JetDangerButton from '@/Jetstream/DangerButton';
@@ -310,7 +309,6 @@ export default {
     },
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
             deleteServerForm: this.$inertia.form(),
             serverBeingDeleted: null,
             serverStatus: {},

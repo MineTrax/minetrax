@@ -166,10 +166,10 @@
                 <p
                   v-tippy
                   class="text-sm leading-5 font-medium text-gray-600 focus:outline-none"
-                  :title="format(new Date(profileUser.created_at), 'E, do MMM yyyy, h:mm aaa')"
+                  :title="formatToDayDateString(profileUser.created_at)"
                 >
                   {{ __("Joined") }}: {{
-                    formatDistanceToNowStrict(new Date(profileUser.created_at), {addSuffix: true})
+                    formatTimeAgoToNow(profileUser.created_at)
                   }}
                 </p>
               </div>
@@ -277,10 +277,10 @@
                     <p
                       v-tippy
                       class="focus:outline-none dark:text-gray-200"
-                      :title="format(new Date(player.last_seen_at), 'E, do MMM yyyy, h:mm aaa')"
+                      :title="formatToDayDateString(player.last_seen_at)"
                     >
                       {{
-                        formatDistanceToNowStrict(new Date(player.last_seen_at), {addSuffix: true})
+                        formatTimeAgoToNow(player.last_seen_at)
                       }}
                     </p>
                   </div>
@@ -361,7 +361,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import PostListBox from '@/Shared/PostListBox';
 import SocialChannelBox from '@/Shared/SocialChannelBox';
@@ -375,13 +374,6 @@ export default {
     },
     props: {
         profileUser: Object,
-    },
-
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format
-        };
     },
 };
 </script>

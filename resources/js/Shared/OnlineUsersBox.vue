@@ -41,17 +41,11 @@
 </template>
 
 <script>
-import {formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     props: {
         users: Array,
         enabled: Boolean
-    },
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-        };
     },
     computed: {
         guestCount() {

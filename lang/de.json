@@ -329,6 +329,7 @@
     "Servers Administration": "Serververwaltung",
     "You don't have Bungee\/Proxy Server Added!": "Sie haben keinen Bungee\/Proxy-Server hinzugefügt!",
     "When a bungee server is not added. Player List Box and Player Status Box (if enabled from settings), use first added server as default query server.": "Wenn kein Bungee-Server hinzugefügt wird. Player-Listenfeld und Player-Statusfeld (falls in den Einstellungen aktiviert), verwenden Sie den zuerst hinzugefügten Server als Standard-Abfrageserver.",
+    "MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely.": "MineTrax scannt automatisch stündlich alle Server nach neuen Spielern und Statistikaktualisierungen. Klicken Sie hier, um jetzt einen Scan zu erzwingen. Verwenden Sie es selten.",
     "Rescan all servers": "Scannen Sie alle Server erneut",
     "Add": "Hinzufügen",
     "Server": "Server",

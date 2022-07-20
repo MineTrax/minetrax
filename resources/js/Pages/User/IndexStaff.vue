@@ -74,7 +74,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {formatDistanceToNowStrict} from 'date-fns';
 import ShoutBox from '@/Shared/ShoutBox';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 
@@ -87,12 +86,6 @@ export default {
     },
     props: {
         rolesWithUsers: Array
-    },
-
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-        };
     },
 };
 </script>

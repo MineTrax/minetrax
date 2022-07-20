@@ -63,7 +63,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {formatDistanceToNowStrict} from 'date-fns';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 import ShoutBox from '@/Shared/ShoutBox';
 
@@ -76,12 +75,6 @@ export default {
     },
     props: {
         customPage: Object
-    },
-
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict
-        };
     },
 };
 </script>

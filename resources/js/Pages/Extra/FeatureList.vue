@@ -69,7 +69,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import FeatureCard from '@/Components/FeatureCard';
 
@@ -82,12 +81,6 @@ export default {
     },
     props: {
         features: Array
-    },
-
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict
-        };
     },
 };
 </script>

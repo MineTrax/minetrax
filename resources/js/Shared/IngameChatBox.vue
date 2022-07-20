@@ -80,7 +80,7 @@
               v-for="chat in chatLogs"
               :key="chat.id"
               v-tippy
-              :title="format(new Date(chat.created_at), 'E, do MMM yyyy, h:mm aaa')"
+              :title="formatToDayDateString(chat.created_at)"
               class="focus:outline-none"
               v-html="chat.data"
             />

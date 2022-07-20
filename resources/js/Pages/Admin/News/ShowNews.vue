@@ -66,7 +66,7 @@
                     {{ news.creator.name }}
                   </p>
                   <p class="text-gray-500 text-sm">
-                    {{ formatDistanceToNowStrict(new Date(news.created_at), { addSuffix: true }) }}
+                    {{ formatTimeAgoToNow(news.created_at) }}
                   </p>
                 </div>
               </div>
@@ -115,7 +115,6 @@ import AppLayout from '@/Layouts/AppLayout';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
 import JetDangerButton from '@/Jetstream/DangerButton';
-import {formatDistanceToNowStrict} from 'date-fns';
 
 export default {
 
@@ -131,7 +130,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
             form: this.$inertia.form(),
             newsBeingDeleted: null
         };

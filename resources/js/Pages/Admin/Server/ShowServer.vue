@@ -202,7 +202,7 @@
                   {{ __("Last Scanned") }}
                 </p>
               </div>
-              <p> {{ server.last_scanned_at ? format(new Date(server.last_scanned_at), 'E, do MMM yyyy, h:mm aaa') : 'not yet' }}</p>
+              <p> {{ server.last_scanned_at ? formatToDayDateString(server.last_scanned_at) : 'not yet' }}</p>
             </div>
           </div>
         </div>
@@ -281,9 +281,9 @@
               </div>
               <p
                 v-tippy
-                :title="formatDistanceToNowStrict(new Date(server.updated_at), {addSuffix: true})"
+                :title="formatTimeAgoToNow(server.updated_at)"
               >
-                {{ format(new Date(server.updated_at), 'E, do MMM yyyy, h:mm aaa') }}
+                {{ formatToDayDateString(server.updated_at) }}
               </p>
             </div>
           </div>
@@ -326,7 +326,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import {Terminal} from 'xterm';
 import {FitAddon} from 'xterm-addon-fit';
 import {WebLinksAddon} from 'xterm-addon-web-links';
@@ -351,8 +350,6 @@ export default {
     data() {
         return {
             consolelogs: this.serverConsoleLogs.slice().reverse(),
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             millify: millify,
             refitTerminal: null,
             onlinePlayers: this.__('Loading')+'...',

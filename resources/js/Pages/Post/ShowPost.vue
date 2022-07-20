@@ -38,7 +38,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {formatDistanceToNowStrict} from 'date-fns';
 import ShoutBox from '@/Shared/ShoutBox';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 import DidYouKnowBox from '@/Shared/DidYouKnowBox';
@@ -56,11 +55,6 @@ export default {
     },
     props: {
         post: Object,
-    },
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict
-        };
     },
 };
 </script>

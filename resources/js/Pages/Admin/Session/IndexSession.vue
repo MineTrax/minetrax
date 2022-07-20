@@ -175,7 +175,6 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 
 export default {
 
@@ -189,8 +188,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            formatDate: format,
             customPageBeingDeleted: null
         };
     },

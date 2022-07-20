@@ -16,7 +16,6 @@
 
 <script>
 import EChart from '@/Components/Dashboard/EChart';
-import {format} from 'date-fns';
 import Icon from '@/Components/Icon';
 
 export default {
@@ -54,7 +53,7 @@ export default {
             dataset: {
                 source: this.liveInfo.map(data => {
                     return {
-                        [this.__('Date')]: format(new Date(data.created_at), 'do MMM yyyy, h:mm aaa'),
+                        [this.__('Date')]: this.formatToDayDateString(data.created_at),
                         [this.__('Cpu Load')]: data.cpu_load,
                     };
                 })

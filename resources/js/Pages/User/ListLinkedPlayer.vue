@@ -160,10 +160,10 @@
                 <p
                   v-tippy
                   class="focus:outline-none dark:text-gray-200"
-                  :title="format(new Date(player.last_seen_at), 'E, do MMM yyyy, h:mm aaa')"
+                  :title="formatToDayDateString(player.last_seen_at)"
                 >
                   {{
-                    formatDistanceToNowStrict(new Date(player.last_seen_at), {addSuffix: true})
+                    formatTimeAgoToNow(player.last_seen_at)
                   }}
                 </p>
               </div>
@@ -190,7 +190,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import * as skinview3d from 'skinview3d';
 
@@ -203,13 +202,6 @@ export default {
     props: {
         linkedPlayers: Array,
         maxPlayerPerUser: Number
-    },
-
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format
-        };
     },
 
     mounted() {

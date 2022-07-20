@@ -39,8 +39,8 @@
           <span
             v-tippy
             class="text-gray-500 dark:text-gray-400 text-xs focus:outline-none"
-            :title="format(new Date(news.published_at), 'E, do MMM yyyy, h:mm aaa')"
-          >{{ formatDistanceToNowStrict(new Date(news.published_at), { addSuffix: true }) }}</span>
+            :title="formatToDayDateString(news.published_at)"
+          >{{ formatTimeAgoToNow(news.published_at) }}</span>
           <span class="text-gray-500 dark:text-gray-400 text-xs"> - {{ news.time_to_read }}&nbsp;{{ __("read") }}</span>
         </div>
         <img
@@ -55,17 +55,10 @@
 </template>
 
 <script>
-import {format, formatDistanceToNowStrict} from 'date-fns';
 
 export default {
     props: {
         newslist: Array
     },
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format
-        };
-    }
 };
 </script>

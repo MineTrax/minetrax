@@ -85,11 +85,11 @@
                       </inertia-link>
                       <p
                         v-tippy
-                        :title="formatDistanceToNowStrict(new Date(news.created_at), { addSuffix: true })"
+                        :title="formatTimeAgoToNow(news.created_at)"
                         class="text-gray-500 dark:text-gray-400 text-sm focus:outline-none"
                       >
                         {{
-                          format(new Date(news.published_at), 'E, do MMM yyyy, h:mm aaa')
+                          formatToDayDateString(news.published_at)
                         }}
                       </p>
                       <p class="text-gray-500 dark:text-gray-400 text-sm">
@@ -130,7 +130,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
 import ShoutBox from '@/Shared/ShoutBox';
 import InfiniteScroll from '@/Components/InfiniteScroll';
@@ -149,8 +148,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             newsList: this.newses
         };
     },

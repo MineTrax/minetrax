@@ -142,10 +142,10 @@
                 <span
                   v-tippy
                   class="focus:outline-none"
-                  :content="format(new Date(player.last_seen_at), 'E, do MMM yyyy, h:mm aaa')"
+                  :content="formatToDayDateString(player.last_seen_at)"
                 >
                   {{
-                    player.last_seen_at ? formatDistanceToNowStrict(new Date(player.last_seen_at), {addSuffix: true}) : "unknown"
+                    player.last_seen_at ? formatTimeAgoToNow(player.last_seen_at) : "unknown"
                   }}
                 </span>
               </td>
@@ -158,7 +158,6 @@
 </template>
 
 <script>
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 
 export default {
@@ -168,11 +167,5 @@ export default {
         players: Array,
         enabled: Boolean
     },
-    data() {
-        return {
-            format: format,
-            formatDistanceToNowStrict: formatDistanceToNowStrict
-        };
-    }
 };
 </script>

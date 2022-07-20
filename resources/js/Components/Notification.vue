@@ -14,7 +14,7 @@
       <div class="m-1">
         <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) commented on your post.</p>
         <p class="text-xs">
-          {{ formatDistanceToNowStrict(new Date(notification.created_at), {addSuffix: true}) }}
+          {{ formatTimeAgoToNow(notification.created_at) }}
         </p>
       </div>
     </inertia-link>
@@ -33,7 +33,7 @@
       <div class="m-1">
         <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) liked your post.</p>
         <p class="text-xs">
-          {{ formatDistanceToNowStrict(new Date(notification.created_at), {addSuffix: true}) }}
+          {{ formatTimeAgoToNow(notification.created_at) }}
         </p>
       </div>
     </inertia-link>
@@ -52,7 +52,7 @@
       <div class="m-1">
         <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) muted you.</p>
         <p class="text-xs">
-          {{ formatDistanceToNowStrict(new Date(notification.created_at), {addSuffix: true}) }}
+          {{ formatTimeAgoToNow(notification.created_at) }}
         </p>
       </div>
     </inertia-link>
@@ -71,7 +71,7 @@
       <div class="m-1">
         <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) banned you.</p>
         <p class="text-xs">
-          {{ formatDistanceToNowStrict(new Date(notification.created_at), {addSuffix: true}) }}
+          {{ formatTimeAgoToNow(notification.created_at) }}
         </p>
       </div>
     </inertia-link>
@@ -79,16 +79,9 @@
 </template>
 
 <script>
-import { formatDistanceToNowStrict, format } from 'date-fns';
 
 export default {
     name: 'Notification',
     props: ['notification'],
-    data() {
-        return {
-            format: format,
-            formatDistanceToNowStrict: formatDistanceToNowStrict
-        };
-    }
 };
 </script>

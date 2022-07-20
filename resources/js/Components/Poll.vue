@@ -66,7 +66,7 @@
       v-if="isComingSoon"
       class="text-gray-400 text-xs italic"
     >
-      {{ __("Poll starting") }}&nbsp;{{ formatDistanceToNowStrict(new Date(started_at), { addSuffix: true }) }}
+      {{ __("Poll starting") }}&nbsp;{{ formatTimeAgoToNow(started_at) }}
     </div>
 
     <div class="flex justify-between items-baseline">
@@ -79,7 +79,7 @@
         v-if="!isComingSoon && closed_at && !finalResults"
         class="text-gray-400 text-xs italic"
       >
-        {{ __("Poll closing") }}&nbsp;{{ formatDistanceToNowStrict(new Date(closed_at), { addSuffix: true }) }}
+        {{ __("Poll closing") }}&nbsp;{{ formatTimeAgoToNow(closed_at) }}
       </div>
     </div>
 
@@ -95,7 +95,6 @@
 </template>
 
 <script>
-import {formatDistanceToNowStrict} from 'date-fns';
 
 export default{
     name: 'Poll',
@@ -148,7 +147,6 @@ export default{
     data(){
         return{
             visibleResults: JSON.parse(this.showResults),
-            formatDistanceToNowStrict: formatDistanceToNowStrict
         };
     },
     computed: {

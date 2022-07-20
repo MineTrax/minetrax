@@ -120,7 +120,7 @@
                       <icon
                         v-if="news.published_at"
                         v-tippy
-                        :content="formatDistanceToNowStrict(new Date(news.published_at), { addSuffix: true })"
+                        :content="formatTimeAgoToNow(news.published_at)"
                         class="text-green-500 focus:outline-none"
                         name="check-circle"
                       />
@@ -146,9 +146,9 @@
                       <span
                         v-tippy
                         class="focus:outline-none"
-                        :content="format(new Date(news.created_at), 'E, do MMM yyyy, h:mm aaa')"
+                        :content="formatToDayDateString(news.created_at)"
                       >
-                        {{ formatDistanceToNowStrict(new Date(news.created_at), { addSuffix: true }) }}
+                        {{ formatTimeAgoToNow(news.created_at) }}
                       </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right dark:text-gray-300 text-sm font-medium">
@@ -230,7 +230,6 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton';
@@ -252,8 +251,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             deleteNewsForm: this.$inertia.form(),
             newsBeingDeleted: null
         };

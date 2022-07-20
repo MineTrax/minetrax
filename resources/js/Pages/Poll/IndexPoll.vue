@@ -55,7 +55,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {formatDistanceToNowStrict} from 'date-fns';
 import ShoutBox from '@/Shared/ShoutBox';
 import InfiniteScroll from '@/Components/InfiniteScroll';
 import ServerStatusBox from '@/Shared/ServerStatusBox';
@@ -80,7 +79,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
             pollList: this.polls
         };
     },

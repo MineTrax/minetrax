@@ -142,9 +142,9 @@
                       <span
                         v-tippy
                         class="focus:outline-none"
-                        :content="formatDate(new Date(user.created_at), 'E, do MMM yyyy, h:mm aaa')"
+                        :content="formatToDayDateString(user.created_at)"
                       >
-                        {{ formatDistanceToNowStrict(new Date(user.created_at), { addSuffix: true }) }}
+                        {{ formatTimeAgoToNow(user.created_at) }}
                       </span>
                     </td>
                     <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
@@ -213,7 +213,6 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 
 export default {
@@ -225,14 +224,6 @@ export default {
     },
     props: {
         users: Object
-    },
-
-    data() {
-        return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            formatDate: format,
-            customPageBeingDeleted: null
-        };
     },
 };
 </script>

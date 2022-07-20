@@ -661,10 +661,10 @@
                     <p
                       v-tippy
                       class="ml-1 focus:outline-none"
-                      :content="format(new Date(player.first_seen_at), 'E, do MMM yyyy, h:mm aaa')"
+                      :content="formatToDayDateString(player.first_seen_at)"
                     >
                       {{
-                        player.first_seen_at ? formatDistanceToNowStrict(new Date(player.first_seen_at), {addSuffix: true}) : "unknown"
+                        player.first_seen_at ? formatTimeAgoToNow(player.first_seen_at) : "unknown"
                       }}
                     </p>
                   </div>
@@ -692,10 +692,10 @@
                     <p
                       v-tippy
                       class="ml-1 focus:outline-none"
-                      :content="format(new Date(player.last_seen_at), 'E, do MMM yyyy, h:mm aaa')"
+                      :content="formatToDayDateString(player.last_seen_at)"
                     >
                       {{
-                        player.last_seen_at ? formatDistanceToNowStrict(new Date(player.last_seen_at), {addSuffix: true}) : "unknown"
+                        player.last_seen_at ? formatTimeAgoToNow(player.last_seen_at) : "unknown"
                       }}
                     </p>
                   </div>
@@ -711,7 +711,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import * as skinview3d from 'skinview3d';
 
@@ -727,8 +726,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             playerAnimationEnabled: true,
             skinViewer: null,
         };

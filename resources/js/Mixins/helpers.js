@@ -1,5 +1,7 @@
 import Autolinker from 'autolinker';
 import DOMPurify from 'dompurify';
+import {format, formatDistanceToNowStrict} from 'date-fns';
+import * as locale from 'date-fns/locale';
 
 export default {
     methods: {
@@ -54,6 +56,26 @@ export default {
                 }
             });
             return autoLinker.link(purifiedText);
+        },
+        formatTimeAgoToNow(dateString, addSuffix = true) {
+            let myLocale = locale[this.$page.props.locale] || locale['enUS'];
+            let formattedDate = null;
+            try {
+                formattedDate = formatDistanceToNowStrict(new Date(dateString), {addSuffix: addSuffix, locale: myLocale});
+            } catch (e) {
+                console.log('[formatTimeAgoToNow] Failed!');
+            }
+            return formattedDate;
+        },
+        formatToDayDateString(dateString) {
+            let formattedDate = null;
+            let myLocale = locale[this.$page.props.locale] || locale['enUS'];
+            try {
+                formattedDate = format(new Date(dateString), 'E, do MMM yyyy, h:mm aaa', {locale: myLocale});
+            }catch (e) {
+                console.log('[formatToDayDateString] Failed!');
+            }
+            return formattedDate;
         }
     }
 };

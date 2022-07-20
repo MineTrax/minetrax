@@ -107,7 +107,7 @@
                     {{ __("Last Scan") }}
                   </div>
                   <div class="font-bold text-lg dark:text-gray-200">
-                    {{ lastScanAt ? formatDistanceToNowStrict(new Date(lastScanAt), { addSuffix: false }) : 'not yet' }}
+                    {{ lastScanAt ? formatTimeAgoToNow(lastScanAt) : 'not yet' }}
                   </div>
                 </div>
               </div>
@@ -273,10 +273,10 @@
                           <span
                             v-tippy
                             class="focus:outline-none"
-                            :content="format(new Date(player.last_seen_at), 'E, do MMM yyyy, h:mm aaa')"
+                            :content="formatToDayDateString(player.last_seen_at)"
                           >
                             {{
-                              player.last_seen_at ? formatDistanceToNowStrict(new Date(player.last_seen_at), {addSuffix: true}) : "unknown"
+                              player.last_seen_at ? formatTimeAgoToNow(player.last_seen_at) : "unknown"
                             }}
                           </span>
                         </td>
@@ -317,7 +317,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout';
-import {format, formatDistanceToNowStrict} from 'date-fns';
 import Icon from '@/Components/Icon';
 import ShoutBox from '@/Shared/ShoutBox';
 import InfiniteScroll from '@/Components/InfiniteScroll';
@@ -342,8 +341,6 @@ export default {
 
     data() {
         return {
-            formatDistanceToNowStrict: formatDistanceToNowStrict,
-            format: format,
             playersList: this.players
         };
     },

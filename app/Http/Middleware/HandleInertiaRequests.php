@@ -45,6 +45,7 @@ class HandleInertiaRequests extends Middleware
     {
         return array_merge(parent::share($request), [
             'appName' => config('app.name'),
+            'locale' => fn () => app()->getLocale(),
             'toast' => fn () => $request->session()->get('toast'),
             'popstate' => false,
             'permissions' => function() use($request) {
