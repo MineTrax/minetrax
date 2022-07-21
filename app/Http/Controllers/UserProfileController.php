@@ -54,7 +54,8 @@ class UserProfileController extends Controller
 
         $user = $request->user();
 
-        $user->settings = array_merge($user->settings, $notificationSettings);
+        $userSettings = $user->settings ?? [];
+        $user->settings = array_merge($userSettings, $notificationSettings);
         $user->save();
 
         return redirect()->back();
