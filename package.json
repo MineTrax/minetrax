@@ -27,7 +27,6 @@
         "eslint": "^8.2.0",
         "eslint-plugin-vue": "^8.1.1",
         "laravel-echo": "^1.11.0",
-        "laravel-mix": "^6.0.25",
         "lodash": "^4.17.21",
         "millify": "^4.0.0",
         "portal-vue": "^2.1.7",
@@ -51,6 +50,9 @@
         "xterm-addon-attach": "^0.6.0",
         "xterm-addon-fit": "^0.5.0",
         "xterm-addon-web-links": "^0.4.0",
-        "zxcvbn": "^4.4.2"
+        "zxcvbn": "^4.4.2",
+        "vite": "^3.0.2",
+        "laravel-vite-plugin": "^0.5.0",
+        "@vitejs/plugin-vue": "^3.0.1"
     }
 }
