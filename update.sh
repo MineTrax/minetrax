@@ -8,4 +8,4 @@ php artisan migrate --force
 php artisan queue:restart
 
 npm install
-npm run prod
+npm run build

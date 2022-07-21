@@ -43,7 +43,7 @@ jobs:
           cp .env.example .env
           php artisan key:generate
           php artisan migrate -v
-          npm run prod
+          npm run build
         env:
           DB_HOST: mysql
           REDIS_HOST: redis
