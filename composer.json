@@ -21,8 +21,8 @@
         "guzzlehttp/guzzle": "^7.4",
         "inertiajs/inertia-laravel": "^v0.6.3",
         "intervention/imagecache": "^2.5",
-        "laravel/framework": "^9.19",
-        "laravel/jetstream": "^2.9",
+        "laravel/framework": "^9.21",
+        "laravel/jetstream": "^2.10",
         "laravel/sanctum": "^2.15",
         "laravel/socialite": "^5.5",
         "laravel/telescope": "^4.9",
@@ -50,9 +50,9 @@
         "xpaw/php-source-query-class": "^2.1"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.5",
+        "barryvdh/laravel-debugbar": "^3.7",
         "barryvdh/laravel-ide-helper": "^2.9",
-        "brianium/paratest": "^6.2",
+        "brianium/paratest": "^6.6",
         "spatie/laravel-ignition": "^1.0",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
