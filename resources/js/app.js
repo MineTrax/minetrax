@@ -1,4 +1,4 @@
-require('./bootstrap');
+import './bootstrap';
 // Import modules...
 import Vue from 'vue';
 import {App as InertiaApp, Head, Link, plugin as InertiaPlugin} from '@inertiajs/inertia-vue';
