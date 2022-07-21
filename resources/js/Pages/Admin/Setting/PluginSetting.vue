@@ -219,13 +219,13 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import LoadingButton from '@/Components/LoadingButton';
-import CopyToClipboard from '@/Components/CopyToClipboard';
-import XInput from '@/Components/Form/XInput';
-import SettingLink from '@/Jetstream/SettingLink';
-import XCheckbox from '@/Components/Form/XCheckbox';
-import XSelect from '@/Components/Form/XSelect';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import CopyToClipboard from '@/Components/CopyToClipboard.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import SettingLink from '@/Jetstream/SettingLink.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
 
 export default {
     components: {

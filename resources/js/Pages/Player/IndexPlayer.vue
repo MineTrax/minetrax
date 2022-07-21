@@ -316,11 +316,11 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Icon from '@/Components/Icon';
-import ShoutBox from '@/Shared/ShoutBox';
-import InfiniteScroll from '@/Components/InfiniteScroll';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Icon from '@/Components/Icon.vue';
+import ShoutBox from '@/Shared/ShoutBox.vue';
+import InfiniteScroll from '@/Components/InfiniteScroll.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 
 export default {
 

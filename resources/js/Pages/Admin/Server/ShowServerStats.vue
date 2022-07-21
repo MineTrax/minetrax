@@ -811,9 +811,9 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu';
-import Icon from '@/Components/Icon';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu.vue';
+import Icon from '@/Components/Icon.vue';
 import _ from 'lodash';
 
 export default {

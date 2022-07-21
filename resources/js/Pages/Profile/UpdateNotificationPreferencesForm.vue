@@ -90,10 +90,10 @@
 </template>
 
 <script>
-import JetActionMessage from '@/Jetstream/ActionMessage';
-import JetButton from '@/Jetstream/Button';
-import JetFormSection from '@/Jetstream/FormSection';
-import XCheckbox from '@/Components/Form/XCheckbox';
+import JetActionMessage from '@/Jetstream/ActionMessage.vue';
+import JetButton from '@/Jetstream/Button.vue';
+import JetFormSection from '@/Jetstream/FormSection.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
 
 export default {
     components: {

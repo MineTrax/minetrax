@@ -323,12 +323,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import LoadingButton from '@/Components/LoadingButton';
-import XInput from '@/Components/Form/XInput';
-import SettingLink from '@/Jetstream/SettingLink';
-import XCheckbox from '@/Components/Form/XCheckbox';
-import XTextarea from '@/Components/Form/XTextarea';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import SettingLink from '@/Jetstream/SettingLink.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
 import Form from 'vform';
 
 export default {

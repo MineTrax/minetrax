@@ -737,19 +737,19 @@
 </template>
 
 <script>
-import JetApplicationMark from '@/Jetstream/ApplicationMark';
-import JetBanner from '@/Jetstream/Banner';
-import JetDropdown from '@/Jetstream/Dropdown';
-import JetDropdownLink from '@/Jetstream/DropdownLink';
-import JetNavLink from '@/Jetstream/NavLink';
-import JetSidebarLink from '@/Jetstream/SidebarLink';
-import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink';
-import Toast from '@/Components/Toast';
-import Icon from '@/Components/Icon';
-import Search from '@/Shared/Search';
-import AppHead from '@/Components/AppHead';
-import ColorThemeToggle from '@/Components/ColorThemeToggle';
-import NotificationDropdown from '@/Shared/NotificationDropdown';
+import JetApplicationMark from '@/Jetstream/ApplicationMark.vue';
+import JetBanner from '@/Jetstream/Banner.vue';
+import JetDropdown from '@/Jetstream/Dropdown.vue';
+import JetDropdownLink from '@/Jetstream/DropdownLink.vue';
+import JetNavLink from '@/Jetstream/NavLink.vue';
+import JetSidebarLink from '@/Jetstream/SidebarLink.vue';
+import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue';
+import Toast from '@/Components/Toast.vue';
+import Icon from '@/Components/Icon.vue';
+import Search from '@/Shared/Search.vue';
+import AppHead from '@/Components/AppHead.vue';
+import ColorThemeToggle from '@/Components/ColorThemeToggle.vue';
+import NotificationDropdown from '@/Shared/NotificationDropdown.vue';
 
 export default {
     components: {

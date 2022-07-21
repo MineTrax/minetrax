@@ -360,10 +360,10 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Icon from '@/Components/Icon';
-import PostListBox from '@/Shared/PostListBox';
-import SocialChannelBox from '@/Shared/SocialChannelBox';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Icon from '@/Components/Icon.vue';
+import PostListBox from '@/Shared/PostListBox.vue';
+import SocialChannelBox from '@/Shared/SocialChannelBox.vue';
 
 export default {
     components: {

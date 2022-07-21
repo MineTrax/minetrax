@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu.vue';
 
 export default {
 

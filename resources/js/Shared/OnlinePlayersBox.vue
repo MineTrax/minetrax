@@ -75,7 +75,7 @@
 
 <script>
 
-import ErrorMessage from '@/Components/ErrorMessage';
+import ErrorMessage from '@/Components/ErrorMessage.vue';
 
 export default {
     components: {ErrorMessage},

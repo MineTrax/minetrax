@@ -161,12 +161,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import JetInputError from '@/Jetstream/InputError';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import LoadingButton from '@/Components/LoadingButton';
-import XInput from '@/Components/Form/XInput';
-import XTextarea from '@/Components/Form/XTextarea';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
 
 export default {
     components: {

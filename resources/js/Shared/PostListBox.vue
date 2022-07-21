@@ -138,12 +138,12 @@
 
 <script>
 
-import InfiniteScroll from '@/Components/InfiniteScroll';
-import JetInputError from '@/Jetstream/InputError';
-import LoadingButton from '@/Components/LoadingButton';
-import Post from '@/Components/Post';
+import InfiniteScroll from '@/Components/InfiniteScroll.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import Post from '@/Components/Post.vue';
 import {sample} from 'lodash/collection';
-import Icon from '@/Components/Icon';
+import Icon from '@/Components/Icon.vue';
 
 export default {
     components: {Icon, LoadingButton, InfiniteScroll, JetInputError, Post},

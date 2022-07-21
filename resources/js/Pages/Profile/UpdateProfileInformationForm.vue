@@ -377,17 +377,17 @@
 </template>
 
 <script>
-import JetButton from '@/Jetstream/Button';
-import JetFormSection from '@/Jetstream/FormSection';
-import JetInputError from '@/Jetstream/InputError';
-import JetLabel from '@/Jetstream/Label';
-import JetActionMessage from '@/Jetstream/ActionMessage';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
+import JetButton from '@/Jetstream/Button.vue';
+import JetFormSection from '@/Jetstream/FormSection.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import JetLabel from '@/Jetstream/Label.vue';
+import JetActionMessage from '@/Jetstream/ActionMessage.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import DatePicker from 'vue2-datepicker';
-import XInput from '@/Components/Form/XInput';
-import XCheckbox from '@/Components/Form/XCheckbox';
-import XSelect from '@/Components/Form/XSelect';
-import XTextarea from '@/Components/Form/XTextarea';
+import XInput from '@/Components/Form/XInput.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
 
 export default {
     components: {

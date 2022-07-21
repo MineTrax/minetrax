@@ -167,7 +167,7 @@
 </template>
 
 <script>
-import Icon from '@/Components/Icon';
+import Icon from '@/Components/Icon.vue';
 import {debounce} from 'lodash/function';
 
 export default {

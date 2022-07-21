@@ -54,13 +54,13 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import ShoutBox from '@/Shared/ShoutBox';
-import InfiniteScroll from '@/Components/InfiniteScroll';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
-import PollBox from '@/Shared/PollBox';
-import DidYouKnowBox from '@/Shared/DidYouKnowBox';
-import DiscordServerBox from '@/Shared/DiscordServerBox';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ShoutBox from '@/Shared/ShoutBox.vue';
+import InfiniteScroll from '@/Components/InfiniteScroll.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
+import PollBox from '@/Shared/PollBox.vue';
+import DidYouKnowBox from '@/Shared/DidYouKnowBox.vue';
+import DiscordServerBox from '@/Shared/DiscordServerBox.vue';
 
 export default {
 

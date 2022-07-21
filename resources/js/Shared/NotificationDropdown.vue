@@ -87,10 +87,10 @@
 </template>
 
 <script>
-import JetDropdown from '@/Jetstream/Dropdown';
-import Icon from '@/Components/Icon';
-import Notification from '@/Components/Notification';
-import ErrorMessage from '@/Components/ErrorMessage';
+import JetDropdown from '@/Jetstream/Dropdown.vue';
+import Icon from '@/Components/Icon.vue';
+import Notification from '@/Components/Notification.vue';
+import ErrorMessage from '@/Components/ErrorMessage.vue';
 
 export default {
     name: 'NotificationDropdown',

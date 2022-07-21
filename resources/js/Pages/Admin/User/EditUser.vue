@@ -356,16 +356,16 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import JetInputError from '@/Jetstream/InputError';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import LoadingButton from '@/Components/LoadingButton';
-import XInput from '@/Components/Form/XInput';
-import JetLabel from '@/Jetstream/Label';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import JetLabel from '@/Jetstream/Label.vue';
 import DatePicker from 'vue2-datepicker';
-import XCheckbox from '@/Components/Form/XCheckbox';
-import XSelect from '@/Components/Form/XSelect';
-import XTextarea from '@/Components/Form/XTextarea';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
 
 export default {
 

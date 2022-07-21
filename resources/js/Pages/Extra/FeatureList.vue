@@ -68,9 +68,9 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Icon from '@/Components/Icon';
-import FeatureCard from '@/Components/FeatureCard';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Icon from '@/Components/Icon.vue';
+import FeatureCard from '@/Components/FeatureCard.vue';
 
 export default {
 
