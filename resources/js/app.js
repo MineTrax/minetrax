@@ -9,17 +9,10 @@ import authorizable from '@/Mixins/authorizable';
 import helpers from '@/Mixins/helpers';
 import translations from '@/Mixins/translations';
 import Fragment from 'vue-fragment';
-import VuejsDialog from 'vuejs-dialog';
 import AppHead from '@/Components/AppHead';
+import confirmDirective from './Directives/confirm';
 
-Vue.use(VuejsDialog, {
-    html: true,
-    loader: false,
-    okText: 'Proceed',
-    cancelText: 'Cancel',
-    animation: 'zoom',
-    backdropClose: true,
-});
+Vue.directive('confirm', confirmDirective);
 Vue.use(Fragment.Plugin);
 Vue.use(VueTippy, {
     arrow: true
