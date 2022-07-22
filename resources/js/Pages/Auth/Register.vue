@@ -79,10 +79,9 @@
           />
         </div>
 
-        <password
-          v-model="form.password"
-          :strength-meter-only="true"
-          strength-meter-class="Password__strength-meter dark:bg-cool-gray-700"
+        <password-strength-meter
+          class="mt-2"
+          :value="form.password"
         />
 
         <div
@@ -135,7 +134,6 @@
 </template>
 
 <script>
-import Password from 'vue-password-strength-meter';
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
 import JetCheckbox from '@/Jetstream/Checkbox';
@@ -144,9 +142,11 @@ import LoadingButton from '@/Components/LoadingButton';
 import AppLayout from '@/Layouts/AppLayout';
 import SocialAuthButtons from '@/Components/SocialAuthButtons';
 import XInput from '@/Components/Form/XInput';
+import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter';
 
 export default {
     components: {
+        PasswordStrengthMeter,
         XInput,
         SocialAuthButtons,
         AppLayout,
@@ -155,7 +155,6 @@ export default {
         JetAuthenticationCardLogo,
         JetCheckbox,
         JetLabel,
-        Password
     },
 
     data() {

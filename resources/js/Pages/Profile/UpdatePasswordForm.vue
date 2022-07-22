@@ -12,6 +12,7 @@
       <div class="col-span-6 sm:col-span-4">
         <x-input
           id="current_password"
+          ref="current_password"
           v-model="form.current_password"
           :label="__('Current Password')"
           :error="form.errors.current_password"
@@ -25,6 +26,7 @@
       <div class="col-span-6 sm:col-span-4">
         <x-input
           id="password"
+          ref="password"
           v-model="form.password"
           :label="__('New Password')"
           :error="form.errors.password"
@@ -49,10 +51,8 @@
       </div>
 
       <div class="col-span-6 sm:col-span-4">
-        <password
-          v-model="form.password"
-          :strength-meter-only="true"
-          strength-meter-class="Password__strength-meter dark:bg-cool-gray-700"
+        <password-strength-meter
+          :value="form.password"
         />
       </div>
     </template>
@@ -80,16 +80,16 @@
 import JetActionMessage from '@/Jetstream/ActionMessage';
 import JetButton from '@/Jetstream/Button';
 import JetFormSection from '@/Jetstream/FormSection';
-import Password from 'vue-password-strength-meter';
 import XInput from '@/Components/Form/XInput';
+import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter';
 
 export default {
     components: {
+        PasswordStrengthMeter,
         XInput,
         JetActionMessage,
         JetButton,
         JetFormSection,
-        Password
     },
 
     data() {
