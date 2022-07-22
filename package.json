@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@inertiajs/inertia": "^0.10.0",
-        "@inertiajs/inertia-vue": "^0.7.1",
+        "@inertiajs/inertia-vue": "^0.7.2",
         "@inertiajs/progress": "^0.2.6",
         "@tailwindcss/forms": "^0.3.3",
         "@tailwindcss/typography": "^0.4.1",
