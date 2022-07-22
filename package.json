@@ -44,7 +44,7 @@
         "vue-loader": "^15.9.7",
         "vue-multiselect": "^2.1.6",
         "vue-template-compiler": "^2.6.14",
-        "vue-tippy": "^4.10.2",
+        "vue-tippy": "^4.14.0",
         "vue2-datepicker": "^3.9.1",
         "xterm": "^4.13.0",
         "xterm-addon-attach": "^0.6.0",
