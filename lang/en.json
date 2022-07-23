@@ -825,5 +825,9 @@
     "The provided password does not match your current password.": "The provided password does not match your current password.",
     "Cpu Load": "Cpu Load",
     "MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely.": "MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely.",
-    "not scanned yet": "not scanned yet"
+    "not scanned yet": "not scanned yet",
+    "__1.0.4-alpha__": "__1.0.4-alpha__",
+    "not yet": "not yet",
+    "Confirm!": "Confirm!",
+    "Are you sure you want to perform this action?": "Are you sure you want to perform this action?"
 }

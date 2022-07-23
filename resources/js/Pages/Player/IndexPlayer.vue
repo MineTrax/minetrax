@@ -107,7 +107,7 @@
                     {{ __("Last Scan") }}
                   </div>
                   <div class="font-bold text-lg dark:text-gray-200">
-                    {{ lastScanAt ? formatTimeAgoToNow(lastScanAt) : 'not yet' }}
+                    {{ lastScanAt ? formatTimeAgoToNow(lastScanAt, false) : __('not yet') }}
                   </div>
                 </div>
               </div>
