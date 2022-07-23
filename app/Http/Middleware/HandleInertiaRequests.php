@@ -47,7 +47,7 @@ class HandleInertiaRequests extends Middleware
             'appName' => config('app.name'),
             'locale' => fn () => app()->getLocale(),
             'toast' => fn () => $request->session()->get('toast'),
-            'popstate' => false,
+            'popstate' => \Str::uuid(),
             'permissions' => function() use($request) {
                 if (!$request->user()) return [];
 

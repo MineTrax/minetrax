@@ -60,12 +60,12 @@
 
         <div class="flex flex-col text-sm text-gray-700 dark:text-gray-300 mt-2 h-96 overflow-y-auto space-y-1">
           <notification
-            v-for="notification in notifications.data"
+            v-for="notification in notifications"
             :key="notification.id"
             :notification="notification"
           />
           <div
-            v-if="!loading && notifications.data.length <= 0"
+            v-if="!loading && notifications.length <= 0"
             :key="999999999"
             class="flex items-center justify-center italic text-gray-500 dark:text-gray-400 p-4"
           >
@@ -104,13 +104,16 @@ export default {
         return {
             loading: true,
             error: null,
-            notifications: {}
+            notifications: []
         };
     },
     mounted() {
         let routeToHit = route('notification.index');
         axios.get(routeToHit).then(response => {
-            this.notifications = response.data;
+            this.notifications = response.data.data;
+        }).catch(e => {
+            console.log('Error fetching notifications: ', e);
+            this.notifications = [];
         }).finally(() => {
             this.loading = false;
         });

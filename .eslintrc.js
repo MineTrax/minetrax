@@ -40,5 +40,6 @@ module.exports = {
         '_': true,
         'route': true,
         '_translations': true,
+        'Toast': true,
     }
 };

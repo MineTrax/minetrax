@@ -11,6 +11,7 @@ import translations from '@/Mixins/translations';
 import Fragment from 'vue-fragment';
 import AppHead from '@/Components/AppHead';
 import confirmDirective from './Directives/confirm';
+import Swal from 'sweetalert2';
 
 Vue.directive('confirm', confirmDirective);
 Vue.use(Fragment.Plugin);
@@ -37,14 +38,23 @@ InertiaProgress.init({
 // eslint-disable-next-line no-undef
 Vue.prototype.$route = route;
 
+
+window.Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    showCloseButton: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+    }
+});
+
 const app = document.getElementById('app');
 
 new Vue({
-    mounted() {
-        window.addEventListener('popstate', () => {
-            this.$page.props.popstate = true;
-        });
-    },
     render: (h) =>
         h(InertiaApp, {
             props: {
