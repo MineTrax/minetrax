@@ -508,7 +508,7 @@ import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import Icon from '@/Components/Icon.vue';
 import SettingLink from '@/Jetstream/SettingLink.vue';
-import * as EasyMDE from 'easymde';
+import EasyMDE from 'easymde';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 
 export default {

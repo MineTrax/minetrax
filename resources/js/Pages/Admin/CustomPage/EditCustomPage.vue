@@ -182,7 +182,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
-import * as EasyMDE from 'easymde';
+import EasyMDE from 'easymde';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 
 export default {

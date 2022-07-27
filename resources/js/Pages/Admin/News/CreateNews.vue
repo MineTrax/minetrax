@@ -188,7 +188,7 @@ import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
-import * as EasyMDE from 'easymde';
+import EasyMDE from 'easymde';
 import XSelect from '@/Components/Form/XSelect.vue';
 
 export default {
