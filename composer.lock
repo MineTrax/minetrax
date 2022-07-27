@@ -4432,16 +4432,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.1.1",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "1a941703dfb649f9b821e7bc425e782f576a805e"
+                "reference": "ed0ecc7f9b5c2f4a9872185846974a808a3b052a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/1a941703dfb649f9b821e7bc425e782f576a805e",
-                "reference": "1a941703dfb649f9b821e7bc425e782f576a805e",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/ed0ecc7f9b5c2f4a9872185846974a808a3b052a",
+                "reference": "ed0ecc7f9b5c2f4a9872185846974a808a3b052a",
                 "shasum": ""
             },
             "require": {
@@ -4502,7 +4502,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.1.1"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.2.0"
             },
             "funding": [
                 {
@@ -4518,7 +4518,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-18T09:59:40+00:00"
+            "time": "2022-07-26T07:26:36+00:00"
         },
         {
             "name": "league/flysystem-aws-s3-v3",
@@ -4656,20 +4656,20 @@
         },
         {
             "name": "league/flysystem-sftp-v3",
-            "version": "3.1.1",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem-sftp-v3.git",
-                "reference": "5cde338d4a9205393b385a9d69de3cce62befa2b"
+                "reference": "e7d0d30a886d6aaa89a33e45b45718629ba434e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem-sftp-v3/zipball/5cde338d4a9205393b385a9d69de3cce62befa2b",
-                "reference": "5cde338d4a9205393b385a9d69de3cce62befa2b",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-sftp-v3/zipball/e7d0d30a886d6aaa89a33e45b45718629ba434e6",
+                "reference": "e7d0d30a886d6aaa89a33e45b45718629ba434e6",
                 "shasum": ""
             },
             "require": {
-                "league/flysystem": "^3.0.0",
+                "league/flysystem": "^3.0.14",
                 "league/mime-type-detection": "^1.0.0",
                 "php": "^8.0.2",
                 "phpseclib/phpseclib": "^3.0"
@@ -4700,7 +4700,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem-sftp-v3/issues",
-                "source": "https://github.com/thephpleague/flysystem-sftp-v3/tree/3.1.1"
+                "source": "https://github.com/thephpleague/flysystem-sftp-v3/tree/3.2.0"
             },
             "funding": [
                 {
@@ -4716,7 +4716,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-13T10:31:43+00:00"
+            "time": "2022-07-26T06:58:38+00:00"
         },
         {
             "name": "league/glide",
@@ -16960,5 +16960,5 @@
         "ext-sockets": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
