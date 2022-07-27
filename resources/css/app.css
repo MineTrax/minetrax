@@ -1,8 +1,10 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import '../../node_modules/vue2-datepicker/index.css';
+@import '../../node_modules/vue-datepicker-next/index.css';
 @import '../../node_modules/easymde/dist/easymde.min.css';
+@import '../../node_modules/tippy.js/dist/tippy.css';
+@import '../../node_modules/tippy.js/animations/perspective.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .hide-scrollbar::-webkit-scrollbar {
     display: none;

@@ -11,7 +11,7 @@
         </h2>
 
         <date-picker
-          v-model="dateRange"
+          v-model:value="dateRange"
           type="date"
           range
           placeholder="View graph for range"
@@ -248,14 +248,14 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu';
-import ServerCpuMetricBox from '@/Shared/ServerCpuMetricBox';
-import ServerRamMetricBox from '@/Shared/ServerRamMetricBox';
-import ServerAllLiveStatsBox from '@/Shared/ServerAllLiveStatsBox';
-import DatePicker from 'vue2-datepicker';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu.vue';
+import ServerCpuMetricBox from '@/Shared/ServerCpuMetricBox.vue';
+import ServerRamMetricBox from '@/Shared/ServerRamMetricBox.vue';
+import ServerAllLiveStatsBox from '@/Shared/ServerAllLiveStatsBox.vue';
+import DatePicker from 'vue-datepicker-next';
 import {pickBy} from 'lodash';
-import Icon from '@/Components/Icon';
+import Icon from '@/Components/Icon.vue';
 
 export default {
 

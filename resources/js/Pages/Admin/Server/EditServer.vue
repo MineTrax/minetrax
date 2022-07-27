@@ -118,128 +118,127 @@
                       />
                     </div>
 
-                    <template>
-                      <div class="col-span-6 sm:col-span-3">
-                        <x-input
-                          id="name"
-                          v-model="form.name"
-                          :label="__('Server Name')"
-                          :error="form.errors.name"
-                          type="text"
-                          name="name"
-                          help-error-flex="flex-col"
-                        />
-                      </div>
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="name"
+                        v-model="form.name"
+                        :label="__('Server Name')"
+                        :error="form.errors.name"
+                        type="text"
+                        name="name"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
 
-                      <div class="col-span-6 sm:col-span-3">
-                        <x-input
-                          id="hostname"
-                          v-model="form.hostname"
-                          :label="__('Hostname')"
-                          :error="form.errors.hostname"
-                          type="text"
-                          name="hostname"
-                          help-error-flex="flex-col"
-                        />
-                      </div>
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="hostname"
+                        v-model="form.hostname"
+                        :label="__('Hostname')"
+                        :error="form.errors.hostname"
+                        type="text"
+                        name="hostname"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
 
-                      <div class="col-span-6 sm:col-span-2">
-                        <x-input
-                          id="ip_address"
-                          v-model="form.ip_address"
-                          :label="__('IP Address')"
-                          :error="form.errors.ip_address"
-                          autocomplete="ip_address"
-                          type="text"
-                          name="ip_address"
-                          help-error-flex="flex-col"
-                        />
-                      </div>
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="ip_address"
+                        v-model="form.ip_address"
+                        :label="__('IP Address')"
+                        :error="form.errors.ip_address"
+                        autocomplete="ip_address"
+                        type="text"
+                        name="ip_address"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
 
-                      <div class="col-span-6 sm:col-span-2">
-                        <x-input
-                          id="join_port"
-                          v-model="form.join_port"
-                          :label="__('Join Port')"
-                          :error="form.errors.join_port"
-                          type="text"
-                          name="join_port"
-                          help-error-flex="flex-col"
-                        />
-                      </div>
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="join_port"
+                        v-model="form.join_port"
+                        :label="__('Join Port')"
+                        :error="form.errors.join_port"
+                        type="text"
+                        name="join_port"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
 
-                      <div class="col-span-6 sm:col-span-2">
-                        <x-input
-                          id="query_port"
-                          v-model="form.query_port"
-                          :label="__('Query Port')"
-                          :error="form.errors.query_port"
-                          type="text"
-                          name="query_port"
-                          help-error-flex="flex-col"
-                        />
-                      </div>
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="query_port"
+                        v-model="form.query_port"
+                        :label="__('Query Port')"
+                        :error="form.errors.query_port"
+                        type="text"
+                        name="query_port"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
 
-                      <div class="col-span-6 sm:col-span-2">
-                        <x-input
-                          id="webquery_port"
-                          v-model="form.webquery_port"
-                          :label="__('Webquery Port')"
-                          :error="form.errors.webquery_port"
-                          type="text"
-                          name="webquery_port"
-                          help-error-flex="flex-col"
-                        />
-                      </div>
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="webquery_port"
+                        v-model="form.webquery_port"
+                        :label="__('Webquery Port')"
+                        :error="form.errors.webquery_port"
+                        type="text"
+                        name="webquery_port"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
 
-                      <div class="col-span-6 sm:col-span-2">
-                        <x-input
-                          id="level_name"
-                          v-model="form.level_name"
-                          :label="__('Level/World Name')"
-                          :error="form.errors.level_name"
-                          type="text"
-                          name="level_name"
-                          help-error-flex="flex-col"
-                        />
-                      </div>
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="level_name"
+                        v-model="form.level_name"
+                        :label="__('Level/World Name')"
+                        :error="form.errors.level_name"
+                        type="text"
+                        name="level_name"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
 
-                      <div class="col-span-6 sm:col-span-2">
-                        <x-select
-                          id="type"
-                          v-model="form.type"
-                          name="type"
-                          :placeholder="__('Select server type')"
-                          :disable-null="true"
-                          :required="true"
-                          :error="form.errors.type"
-                          :label="__('Server Type')"
-                          :select-list="typeArray"
-                        />
-                      </div>
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-select
+                        id="type"
+                        v-model="form.type"
+                        name="type"
+                        :placeholder="__('Select server type')"
+                        :disable-null="true"
+                        :required="true"
+                        :error="form.errors.type"
+                        :label="__('Server Type')"
+                        :select-list="typeArray"
+                      />
+                    </div>
 
-                      <div class="col-span-6 sm:col-span-2">
-                        <x-select
-                          id="minecraft_version"
-                          v-model="form.minecraft_version"
-                          name="minecraft_version"
-                          :error="form.errors.minecraft_version"
-                          :label="__('Version')"
-                          :select-list="versionsArray"
-                        />
-                      </div>
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-select
+                        id="minecraft_version"
+                        v-model="form.minecraft_version"
+                        name="minecraft_version"
+                        :error="form.errors.minecraft_version"
+                        :label="__('Version')"
+                        :select-list="versionsArray"
+                      />
+                    </div>
 
-                      <div class="flex items-center col-span-6 sm:col-span-4">
-                        <x-checkbox
-                          id="settings_plugin_essentials"
-                          v-model="form.settings.plugins.essentials"
-                          :label="__('Plugin: Essentials')"
-                          :help="__('Tick if there is Essentials/EssentialsX installed in your server.')"
-                          name="settings_plugin_essentials"
-                        />
+                    <div class="flex items-center col-span-6 sm:col-span-4">
+                      <x-checkbox
+                        id="settings_plugin_essentials"
+                        v-model="form.settings.plugins.essentials"
+                        :label="__('Plugin: Essentials')"
+                        :help="__('Tick if there is Essentials/EssentialsX installed in your server.')"
+                        name="settings_plugin_essentials"
+                      />
 
 
-                        <!--
+                      <!--
                                                 <fieldset>
                                                     <legend class="text-base font-medium text-gray-900">Plugins</legend>
                                                     <div class="mt-4 flex space-x-4">
@@ -271,39 +270,38 @@
                                                     <jet-input-error :message="form.errors.settings" class="mt-2" />
                                                 </fieldset>
                                                 -->
-                      </div>
+                    </div>
 
 
-                      <div class="flex items-center col-span-6 sm:col-span-4">
-                        <x-checkbox
-                          id="is_stats_tracking_enabled"
-                          v-model="form.is_stats_tracking_enabled"
-                          :label="__('Track Player Stats of this Server')"
-                          :help="__('Fetch player stats and use it for calculation of ranks and other stuffs. Uncheck if this you dont want to track this server.')"
-                          name="is_stats_tracking_enabled"
-                        />
-                      </div>
+                    <div class="flex items-center col-span-6 sm:col-span-4">
+                      <x-checkbox
+                        id="is_stats_tracking_enabled"
+                        v-model="form.is_stats_tracking_enabled"
+                        :label="__('Track Player Stats of this Server')"
+                        :help="__('Fetch player stats and use it for calculation of ranks and other stuffs. Uncheck if this you dont want to track this server.')"
+                        name="is_stats_tracking_enabled"
+                      />
+                    </div>
 
-                      <div class="flex items-center col-span-6 sm:col-span-4">
-                        <x-checkbox
-                          id="is_ingame_chat_enabled"
-                          v-model="form.is_ingame_chat_enabled"
-                          :label="__('Enable In-Game Chat of this Server')"
-                          :help="__('Let user from website see and send chat to server.')"
-                          name="is_ingame_chat_enabled"
-                        />
-                      </div>
+                    <div class="flex items-center col-span-6 sm:col-span-4">
+                      <x-checkbox
+                        id="is_ingame_chat_enabled"
+                        v-model="form.is_ingame_chat_enabled"
+                        :label="__('Enable In-Game Chat of this Server')"
+                        :help="__('Let user from website see and send chat to server.')"
+                        name="is_ingame_chat_enabled"
+                      />
+                    </div>
 
-                      <div class="flex items-center col-span-6 sm:col-span-4">
-                        <x-checkbox
-                          id="is_online_players_query_enabled"
-                          v-model="form.is_online_players_query_enabled"
-                          :label="__('Show online player list of this Server')"
-                          :help="__('If enabled show list of online players on this server near ingamechat.')"
-                          name="is_online_players_query_enabled"
-                        />
-                      </div>
-                    </template>
+                    <div class="flex items-center col-span-6 sm:col-span-4">
+                      <x-checkbox
+                        id="is_online_players_query_enabled"
+                        v-model="form.is_online_players_query_enabled"
+                        :label="__('Show online player list of this Server')"
+                        :help="__('If enabled show list of online players on this server near ingamechat.')"
+                        name="is_online_players_query_enabled"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-between">
@@ -375,11 +373,11 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import LoadingButton from '@/Components/LoadingButton';
-import XInput from '@/Components/Form/XInput';
-import XSelect from '@/Components/Form/XSelect';
-import XCheckbox from '@/Components/Form/XCheckbox';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
 
 export default {
     components: {

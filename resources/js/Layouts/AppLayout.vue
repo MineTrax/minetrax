@@ -1,4 +1,81 @@
+<script>
+// import { Inertia } from '@inertiajs/inertia';
+import { Head } from '@inertiajs/inertia-vue3';
+import JetApplicationMark from '@/Jetstream/ApplicationMark.vue';
+import JetBanner from '@/Jetstream/Banner.vue';
+import JetDropdown from '@/Jetstream/Dropdown.vue';
+import JetDropdownLink from '@/Jetstream/DropdownLink.vue';
+import JetNavLink from '@/Jetstream/NavLink.vue';
+import JetSidebarLink from '@/Jetstream/SidebarLink.vue';
+import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue';
+import Toast from '@/Components/Toast.vue';
+import Icon from '@/Components/Icon.vue';
+import Search from '@/Shared/Search.vue';
+import AppHead from '@/Components/AppHead.vue';
+import ColorThemeToggle from '@/Components/ColorThemeToggle.vue';
+import NotificationDropdown from '@/Shared/NotificationDropdown.vue';
+
+export default {
+    components: {
+        NotificationDropdown,
+        ColorThemeToggle,
+        AppHead,
+        Search,
+        Icon,
+        Toast,
+        JetApplicationMark,
+        JetBanner,
+        JetDropdown,
+        JetDropdownLink,
+        JetNavLink,
+        JetResponsiveNavLink,
+        JetSidebarLink,
+        Head
+    },
+
+    data() {
+        return {
+            isAdminSidebarOpen: false,
+            showingNavigationDropdown: false,
+            title: 'MineTrax'
+        };
+    },
+
+    computed: {
+        canShowAdminSidebar() {
+            return this.isStaff(this.$page.props.user);
+        }
+    },
+
+    mounted() {
+        document.addEventListener('keydown', e => {
+            if (e.keyCode == 27 && this.isAdminSidebarOpen) this.isAdminSidebarOpen = false;
+        });
+    },
+
+    methods: {
+        switchToTeam(team) {
+            this.$inertia.put(route('current-team.update'), {
+                'team_id': team.id
+            }, {
+                preserveState: false
+            });
+        },
+
+        logout() {
+            this.$inertia.post(route('logout'));
+        },
+
+        adminDrawer() {
+            this.isAdminSidebarOpen = !this.isAdminSidebarOpen;
+        },
+    }
+};
+</script>
+
 <template>
+  <Head :title="title" />
+
   <div>
     <jet-banner />
     <toast
@@ -201,9 +278,8 @@
                           Switch Teams
                         </div>
 
-                        <template v-for="team in $page.props.user.all_teams">
+                        <template v-for="team in $page.props.user.all_teams"  :key="team.id">
                           <form
-                            :key="team.id"
                             @submit.prevent="switchToTeam(team)"
                           >
                             <jet-dropdown-link as="button">
@@ -727,82 +803,6 @@
         <!--                </div>-->
       </footer>
 
-      <!-- Modal Portal -->
-      <portal-target
-        name="modal"
-        multiple
-      />
     </div>
   </div>
 </template>
-
-<script>
-import JetApplicationMark from '@/Jetstream/ApplicationMark';
-import JetBanner from '@/Jetstream/Banner';
-import JetDropdown from '@/Jetstream/Dropdown';
-import JetDropdownLink from '@/Jetstream/DropdownLink';
-import JetNavLink from '@/Jetstream/NavLink';
-import JetSidebarLink from '@/Jetstream/SidebarLink';
-import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink';
-import Toast from '@/Components/Toast';
-import Icon from '@/Components/Icon';
-import Search from '@/Shared/Search';
-import AppHead from '@/Components/AppHead';
-import ColorThemeToggle from '@/Components/ColorThemeToggle';
-import NotificationDropdown from '@/Shared/NotificationDropdown';
-
-export default {
-    components: {
-        NotificationDropdown,
-        ColorThemeToggle,
-        AppHead,
-        Search,
-        Icon,
-        Toast,
-        JetApplicationMark,
-        JetBanner,
-        JetDropdown,
-        JetDropdownLink,
-        JetNavLink,
-        JetResponsiveNavLink,
-        JetSidebarLink
-    },
-
-    data() {
-        return {
-            isAdminSidebarOpen: false,
-            showingNavigationDropdown: false,
-        };
-    },
-
-    computed: {
-        canShowAdminSidebar() {
-            return this.isStaff(this.$page.props.user);
-        }
-    },
-
-    mounted() {
-        document.addEventListener('keydown', e => {
-            if (e.keyCode == 27 && this.isAdminSidebarOpen) this.isAdminSidebarOpen = false;
-        });
-    },
-
-    methods: {
-        switchToTeam(team) {
-            this.$inertia.put(route('current-team.update'), {
-                'team_id': team.id
-            }, {
-                preserveState: false
-            });
-        },
-
-        logout() {
-            this.$inertia.post(route('logout'));
-        },
-
-        adminDrawer() {
-            this.isAdminSidebarOpen = !this.isAdminSidebarOpen;
-        },
-    }
-};
-</script>

@@ -77,11 +77,11 @@
 </template>
 
 <script>
-import JetActionMessage from '@/Jetstream/ActionMessage';
-import JetButton from '@/Jetstream/Button';
-import JetFormSection from '@/Jetstream/FormSection';
-import XInput from '@/Components/Form/XInput';
-import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter';
+import JetActionMessage from '@/Jetstream/ActionMessage.vue';
+import JetButton from '@/Jetstream/Button.vue';
+import JetFormSection from '@/Jetstream/FormSection.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter.vue';
 
 export default {
     components: {

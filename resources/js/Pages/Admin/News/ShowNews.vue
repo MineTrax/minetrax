@@ -81,7 +81,7 @@
     </div>
 
     <jet-confirmation-modal
-      :show="newsBeingDeleted"
+      :show="!!newsBeingDeleted"
       @close="newsBeingDeleted = null"
     >
       <template #title>
@@ -111,10 +111,10 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import JetDangerButton from '@/Jetstream/DangerButton';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import JetDangerButton from '@/Jetstream/DangerButton.vue';
 
 export default {
 

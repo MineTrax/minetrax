@@ -191,7 +191,7 @@
     </div>
 
     <jet-confirmation-modal
-      :show="customPageBeingDeleted"
+      :show="!!customPageBeingDeleted"
       @close="customPageBeingDeleted = null"
     >
       <template #title>
@@ -221,12 +221,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Pagination from '@/Components/Pagination';
-import Icon from '@/Components/Icon';
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import JetDangerButton from '@/Jetstream/DangerButton';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import Icon from '@/Components/Icon.vue';
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import JetDangerButton from '@/Jetstream/DangerButton.vue';
 
 export default {
 

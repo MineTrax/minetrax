@@ -9,11 +9,11 @@
       :class="borderColor + ' ' + inputClass"
       :placeholder="label"
       :autocomplete="autocomplete"
-      :value="value"
+      :value="modelValue"
       :autofocus="autofocus"
       :required="required"
       :disabled="disabled"
-      @input="$emit('input', $event.target.value)"
+      @input="$emit('update:modelValue', $event.target.value)"
       @focus="hasFocus = true"
       @blur="hasFocus = false"
     >
@@ -48,7 +48,7 @@
 <script>
 export default {
     props: {
-        value: [Number, String, Array, Object, Boolean, Date],
+        modelValue: [Number, String, Array, Object, Boolean, Date],
         name: String,
         help: String,
         label: String,

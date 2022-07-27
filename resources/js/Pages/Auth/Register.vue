@@ -134,15 +134,15 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import JetCheckbox from '@/Jetstream/Checkbox';
-import JetLabel from '@/Jetstream/Label';
-import LoadingButton from '@/Components/LoadingButton';
-import AppLayout from '@/Layouts/AppLayout';
-import SocialAuthButtons from '@/Components/SocialAuthButtons';
-import XInput from '@/Components/Form/XInput';
-import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter';
+import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
+import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue';
+import JetCheckbox from '@/Jetstream/Checkbox.vue';
+import JetLabel from '@/Jetstream/Label.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import SocialAuthButtons from '@/Components/SocialAuthButtons.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter.vue';
 
 export default {
     components: {

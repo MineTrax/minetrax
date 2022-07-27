@@ -162,7 +162,7 @@
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium dark:text-gray-400">
                       <inertia-link
                         v-if="can('update polls') && !poll.is_closed"
-                        as="a"
+                        as="button"
                         method="put"
                         :href="route('admin.poll.lock', poll.id)"
                         class="text-yellow-600 hover:text-yellow-900"
@@ -171,7 +171,7 @@
                       </inertia-link>
                       <inertia-link
                         v-if="can('update polls') && poll.is_closed"
-                        as="a"
+                        as="button"
                         method="put"
                         :href="route('admin.poll.unlock', poll.id)"
                         class="text-green-600 hover:text-green-900"
@@ -208,7 +208,7 @@
     </div>
 
     <jet-confirmation-modal
-      :show="pollIsBeingDeleted"
+      :show="!!pollIsBeingDeleted"
       @close="pollIsBeingDeleted = null"
     >
       <template #title>
@@ -238,12 +238,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Pagination from '@/Components/Pagination';
-import Icon from '@/Components/Icon';
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import JetDangerButton from '@/Jetstream/DangerButton';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import Icon from '@/Components/Icon.vue';
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import JetDangerButton from '@/Jetstream/DangerButton.vue';
 
 export default {
 

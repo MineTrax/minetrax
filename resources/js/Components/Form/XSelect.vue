@@ -5,19 +5,19 @@
       ref="input"
       class="border-gray-300 pt-6 text-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full p-3 h-14 dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
       :class="borderColor"
-      :value="value"
+      :value="modelValue"
       :autofocus="autofocus"
       :required="required"
       :disabled="disabled"
       :name="name"
-      @change="$emit('input', $event.target.value)"
+      @change="$emit('update:modelValue', $event.target.value)"
       @focus="hasFocus = true"
       @blur="hasFocus = false"
     >
       <option
         v-if="placeholder"
         class="text-gray-500 dark:text-gray-400"
-        :value="null"
+        value=""
         :disabled="disableNull"
       >
         {{ placeholder }}
@@ -63,7 +63,7 @@
 export default {
     props: {
         selectList: [Object, Array],
-        value: [Number, String, Array, Object, Boolean, Date],
+        modelValue: [Number, String, Array, Object, Boolean, Date],
         name: String,
         placeholder: String,
         help: String,

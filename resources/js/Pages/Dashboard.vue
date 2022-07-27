@@ -61,25 +61,25 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import NewsBox from '@/Shared/NewsBox';
-import ShoutBox from '@/Shared/ShoutBox';
-import DiscordServerBox from '@/Shared/DiscordServerBox';
-import NewestUserBox from '@/Shared/NewestUserBox';
-import VotingSitesBox from '@/Shared/VotingSitesBox';
-import WelcomeBox from '@/Shared/WelcomeBox';
-import PostListBox from '@/Shared/PostListBox';
-import LatestPinnedNews from '@/Shared/LatestPinnedNews';
-import SocialChannelBox from '@/Shared/SocialChannelBox';
-import DidYouKnowBox from '@/Shared/DidYouKnowBox';
-import VersionCheck from '@/Shared/VersionCheck';
-import OnlinePlayersBox from '@/Shared/OnlinePlayersBox';
-import IngameChatBox from '@/Shared/IngameChatBox';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
-import PollBox from '@/Shared/PollBox';
-import DonationBox from '@/Shared/DonationBox';
-import OnlineUsersBox from '@/Shared/OnlineUsersBox';
-import TopPlayersListBox from '@/Shared/TopPlayersListBox';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import NewsBox from '@/Shared/NewsBox.vue';
+import ShoutBox from '@/Shared/ShoutBox.vue';
+import DiscordServerBox from '@/Shared/DiscordServerBox.vue';
+import NewestUserBox from '@/Shared/NewestUserBox.vue';
+import VotingSitesBox from '@/Shared/VotingSitesBox.vue';
+import WelcomeBox from '@/Shared/WelcomeBox.vue';
+import PostListBox from '@/Shared/PostListBox.vue';
+import LatestPinnedNews from '@/Shared/LatestPinnedNews.vue';
+import SocialChannelBox from '@/Shared/SocialChannelBox.vue';
+import DidYouKnowBox from '@/Shared/DidYouKnowBox.vue';
+import VersionCheck from '@/Shared/VersionCheck.vue';
+import OnlinePlayersBox from '@/Shared/OnlinePlayersBox.vue';
+import IngameChatBox from '@/Shared/IngameChatBox.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
+import PollBox from '@/Shared/PollBox.vue';
+import DonationBox from '@/Shared/DonationBox.vue';
+import OnlineUsersBox from '@/Shared/OnlineUsersBox.vue';
+import TopPlayersListBox from '@/Shared/TopPlayersListBox.vue';
 
 export default {
     components: {

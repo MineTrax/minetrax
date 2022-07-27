@@ -1,16 +1,14 @@
 <template>
-  <fragment>
-    <slot />
+  <slot />
 
-    <slot
-      v-if="loading"
-      name="loading"
-    >
-      <div class="p-5 text-center text-gray-600 dark:text-gray-300 text-sm">
-        {{ loadingText }}
-      </div>
-    </slot>
-  </fragment>
+  <slot
+    v-if="loading"
+    name="loading"
+  >
+    <div class="p-5 text-center text-gray-600 dark:text-gray-300 text-sm">
+      {{ loadingText }}
+    </div>
+  </slot>
 </template>
 
 <script>
@@ -46,7 +44,7 @@ export default {
         }, 100));
     },
 
-    destroyed() {
+    unmounted() {
         window.removeEventListener('scroll', this.eventListener);
     }
 };

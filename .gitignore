@@ -19,3 +19,7 @@ _ide_helper_models.php
 /public/js/app.js
 /public/mix-manifest.json
 /public/js/app.js.LICENSE.txt
+/.vscode
+auth.json
+/public/build
+/bootstrap/ssr

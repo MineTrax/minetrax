@@ -282,14 +282,16 @@
                         </td>
                       </tr>
 
-                      <tr slot="loading">
-                        <td
-                          class="border-t dark:border-none px-6 py-4 sm:text-center text-gray-700 dark:text-gray-500 italic"
-                          colspan="8"
-                        >
-                          {{ __("Loading more...") }}
-                        </td>
-                      </tr>
+                      <template #loading>
+                        <tr>
+                          <td
+                            class="border-t dark:border-none px-6 py-4 sm:text-center text-gray-700 dark:text-gray-500 italic"
+                            colspan="8"
+                          >
+                            {{ __("Loading more...") }}
+                          </td>
+                        </tr>
+                      </template>
                     </infinite-scroll>
 
                     <tr v-if="playersList.data.length === 0">
@@ -316,11 +318,11 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Icon from '@/Components/Icon';
-import ShoutBox from '@/Shared/ShoutBox';
-import InfiniteScroll from '@/Components/InfiniteScroll';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Icon from '@/Components/Icon.vue';
+import ShoutBox from '@/Shared/ShoutBox.vue';
+import InfiniteScroll from '@/Components/InfiniteScroll.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 
 export default {
 
@@ -335,7 +337,9 @@ export default {
         players: Object,
         totalPlayersCount: Number,
         activePlayersCount: Number,
-        totalPlayTime: String|Number,
+        totalPlayTime: {
+            type: [String, Number]
+        },
         lastScanAt: String,
     },
 

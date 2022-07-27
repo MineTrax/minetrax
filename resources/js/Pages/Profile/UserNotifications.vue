@@ -55,11 +55,11 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
-import ShoutBox from '@/Shared/ShoutBox';
-import InfiniteScroll from '@/Components/InfiniteScroll';
-import Notification from '@/Components/Notification';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
+import ShoutBox from '@/Shared/ShoutBox.vue';
+import InfiniteScroll from '@/Components/InfiniteScroll.vue';
+import Notification from '@/Components/Notification.vue';
 
 export default {
 

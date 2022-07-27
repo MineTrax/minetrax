@@ -258,7 +258,7 @@
     </div>
 
     <jet-confirmation-modal
-      :show="serverBeingDeleted"
+      :show="!!serverBeingDeleted"
       @close="serverBeingDeleted = null"
     >
       <template #title>
@@ -288,11 +288,11 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Pagination from '@/Components/Pagination';
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import JetDangerButton from '@/Jetstream/DangerButton';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import JetDangerButton from '@/Jetstream/DangerButton.vue';
 
 export default {
 
@@ -319,9 +319,6 @@ export default {
     mounted() {
         // Check ping for each server for online status
         this.servers.data.forEach(server => {
-            this.$set(this.serverStatus, server.id, null);
-            this.$set(this.serverWebQueryStatus, server.id, null);
-
             axios.get(route('server.ping.get', server.id))
                 .then(() => {
                     this.$nextTick(() => this.serverStatus[server.id] = 1);

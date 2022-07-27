@@ -294,10 +294,10 @@
 
 <script>
 
-import Icon from '@/Components/Icon';
-import JetDialogModal from '@/Jetstream/DialogModal';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import LoadingButton from '@/Components/LoadingButton';
+import Icon from '@/Components/Icon.vue';
+import JetDialogModal from '@/Jetstream/DialogModal.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
 import {format} from 'date-fns';
 
 export default {
@@ -357,7 +357,7 @@ export default {
         this.playerListQueryInterval = setInterval(() => this.getPlayerListForServer(this.serverId), 10000);
     },
 
-    destroyed() {
+    unmounted() {
         Echo.leave('chatlogs.' + this.serverId);
         clearInterval(this.playerListQueryInterval);
     },

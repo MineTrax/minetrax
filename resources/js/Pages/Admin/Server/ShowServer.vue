@@ -325,12 +325,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import {Terminal} from 'xterm';
 import {FitAddon} from 'xterm-addon-fit';
 import {WebLinksAddon} from 'xterm-addon-web-links';
-import OverviewCard from '@/Components/Dashboard/OverviewCard';
-import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu';
+import OverviewCard from '@/Components/Dashboard/OverviewCard.vue';
+import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu.vue';
 import {debounce} from 'lodash';
 import millify from 'millify';
 
@@ -421,7 +421,7 @@ export default {
         this.serverPingInterval = setInterval(() => this.pingServer(), 10000);
     },
 
-    destroyed() {
+    unmounted() {
         Echo.leave(`consolelogs.${this.server.id}`);
         removeEventListener('resize', this.refitTerminal);
         clearInterval(this.serverPingInterval);

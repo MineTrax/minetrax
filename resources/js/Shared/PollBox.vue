@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import Poll from '@/Components/Poll';
+import Poll from '@/Components/Poll.vue';
 
 export default {
     components: {

@@ -1,43 +1,58 @@
-require('./bootstrap');
-// Import modules...
-import Vue from 'vue';
-import {App as InertiaApp, Head, Link, plugin as InertiaPlugin} from '@inertiajs/inertia-vue';
-import PortalVue from 'portal-vue';
+import './bootstrap';
+import '../css/app.css';
+
+import {createApp, h} from 'vue';
+import {createInertiaApp, Head, Link} from '@inertiajs/inertia-vue3';
 import {InertiaProgress} from '@inertiajs/progress';
-import VueTippy, {TippyComponent} from 'vue-tippy';
-import authorizable from '@/Mixins/authorizable';
-import helpers from '@/Mixins/helpers';
-import translations from '@/Mixins/translations';
-import Fragment from 'vue-fragment';
-import AppHead from '@/Components/AppHead';
-import confirmDirective from './Directives/confirm';
+import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
+import {ZiggyVue} from '../../vendor/tightenco/ziggy/dist/vue.m';
+
+import VueTippy from 'vue-tippy';
+import authorizable from '@/Mixins/authorizable.js';
+import helpers from '@/Mixins/helpers.js';
+import translations from '@/Mixins/translations.js';
+import confirmDirective from './Directives/confirm.js';
 import Swal from 'sweetalert2';
+import AppHead from '@/Components/AppHead.vue';
 
-Vue.directive('confirm', confirmDirective);
-Vue.use(Fragment.Plugin);
-Vue.use(VueTippy, {
-    arrow: true
+createInertiaApp({
+    title: (title) => `${title}`,
+    resolve: (name) =>
+        resolvePageComponent(
+            `./Pages/${name}.vue`,
+            import.meta.glob('./Pages/**/*.vue')
+        ),
+    setup({ el, app, props, plugin }) {
+        const VueApp = createApp({ render: () => h(app, props) })
+            .use(plugin)
+            .use(ZiggyVue, Ziggy);
+
+        VueApp.use(VueTippy, {
+            defaultProps: {
+                arrow: true,
+                animation: 'perspective',
+            },
+        });
+
+        VueApp.component('InertiaHead', Head);
+        VueApp.component('InertiaLink', Link);
+        VueApp.component('AppHead', AppHead);
+
+        // eslint-disable-next-line no-undef
+        VueApp.mixin(authorizable);
+        VueApp.mixin(helpers);
+        VueApp.mixin(translations);
+
+        VueApp.directive('confirm', confirmDirective);
+
+        return VueApp.mount(el);
+    },
 });
-Vue.component('InertiaHead', Head);
-Vue.component('InertiaLink', Link);
-Vue.component('AppHead', AppHead);
-Vue.component('Tippy', TippyComponent);
-
-// eslint-disable-next-line no-undef
-Vue.mixin({ methods: { route } });
-Vue.mixin(authorizable);
-Vue.mixin(helpers);
-Vue.mixin(translations);
-Vue.use(InertiaPlugin);
-Vue.use(PortalVue);
 
 InertiaProgress.init({
     showSpinner: true,
     color: '#29d',
 });
-// eslint-disable-next-line no-undef
-Vue.prototype.$route = route;
-
 
 window.Toast = Swal.mixin({
     toast: true,
@@ -49,17 +64,5 @@ window.Toast = Swal.mixin({
     didOpen: (toast) => {
         toast.addEventListener('mouseenter', Swal.stopTimer);
         toast.addEventListener('mouseleave', Swal.resumeTimer);
-    }
+    },
 });
-
-const app = document.getElementById('app');
-
-new Vue({
-    render: (h) =>
-        h(InertiaApp, {
-            props: {
-                initialPage: JSON.parse(app.dataset.page),
-                resolveComponent: (name) => require(`./Pages/${name}`).default,
-            },
-        }),
-}).$mount(app);

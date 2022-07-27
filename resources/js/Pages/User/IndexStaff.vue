@@ -73,9 +73,9 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import ShoutBox from '@/Shared/ShoutBox';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ShoutBox from '@/Shared/ShoutBox.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 
 export default {
 
