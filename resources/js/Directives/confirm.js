@@ -53,7 +53,7 @@ const clickHandler = function (event, el, binding) {
 };
 
 export default {
-    mounted(el, binding) {
+    beforeMount(el, binding) {
         el.ConfirmDialog = el.ConfirmDialog || {};
         el.ConfirmDialog.clickHandler = event => clickHandler(event, el, binding);
         el.addEventListener('click', el.ConfirmDialog.clickHandler, true);

@@ -91,7 +91,7 @@
                             <jet-secondary-button
                               class="mt-2 mr-2"
                               type="button"
-                              @click.native.prevent="selectNewPhoto"
+                              @click.prevent="selectNewPhoto"
                             >
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>
@@ -139,7 +139,7 @@
                             <jet-secondary-button
                               class="mt-2 mr-2"
                               type="button"
-                              @click.native.prevent="selectNewPhotoDark"
+                              @click.prevent="selectNewPhotoDark"
                             >
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>

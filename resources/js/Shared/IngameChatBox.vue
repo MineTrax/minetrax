@@ -242,7 +242,7 @@
             :loading="adminPlayerActionLoading"
             class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
             type="button"
-            @click.native="sendCommandToServer('kill')"
+            @click="sendCommandToServer('kill')"
           >
             {{ __("Kill") }}
           </loading-button>
@@ -251,7 +251,7 @@
             :loading="adminPlayerActionLoading"
             class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-200 disabled:opacity-50"
             type="button"
-            @click.native="sendCommandToServer('mute')"
+            @click="sendCommandToServer('mute')"
           >
             {{ __("Mute") }} / {{ __("UnMute") }}
           </loading-button>
@@ -260,7 +260,7 @@
             :loading="adminPlayerActionLoading"
             class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
             type="button"
-            @click.native="sendCommandToServer('kick')"
+            @click="sendCommandToServer('kick')"
           >
             {{ __("Kick") }}
           </loading-button>
@@ -269,7 +269,7 @@
             :loading="adminPlayerActionLoading"
             class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50"
             type="button"
-            @click.native="sendCommandToServer('ban')"
+            @click="sendCommandToServer('ban')"
           >
             {{ __("Ban") }}
           </loading-button>
@@ -284,7 +284,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="closeAdminPlayerActionModel">
+        <jet-secondary-button @click="closeAdminPlayerActionModel">
           {{ __("Cancel") }}
         </jet-secondary-button>
       </template>

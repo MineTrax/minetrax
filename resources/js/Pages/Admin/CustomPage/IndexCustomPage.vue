@@ -203,7 +203,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="customPageBeingDeleted = null">
+        <jet-secondary-button @click="customPageBeingDeleted = null">
           {{ __("Nevermind") }}
         </jet-secondary-button>
 
@@ -211,7 +211,7 @@
           class="ml-2"
           :class="{ 'opacity-25': deleteCustomPageForm.processing }"
           :disabled="deleteCustomPageForm.processing"
-          @click.native="deleteNews"
+          @click="deleteNews"
         >
           {{ __("Delete Page") }}
         </jet-danger-button>

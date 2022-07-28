@@ -14,7 +14,7 @@
       </div>
 
       <div class="mt-5">
-        <jet-danger-button @click.native="confirmUserDeletion">
+        <jet-danger-button @click="confirmUserDeletion">
           {{ __("Delete Account") }}
         </jet-danger-button>
       </div>
@@ -49,7 +49,7 @@
         </template>
 
         <template #footer>
-          <jet-secondary-button @click.native="closeModal">
+          <jet-secondary-button @click="closeModal">
             {{ __("Nevermind") }}
           </jet-secondary-button>
 
@@ -57,7 +57,7 @@
             class="ml-2"
             :class="{ 'opacity-25': form.processing }"
             :disabled="form.processing"
-            @click.native="deleteUser"
+            @click="deleteUser"
           >
             {{ __("Delete Account") }}
           </jet-danger-button>

@@ -25,6 +25,7 @@ createInertiaApp({
     setup({ el, app, props, plugin }) {
         const VueApp = createApp({ render: () => h(app, props) })
             .use(plugin)
+            // eslint-disable-next-line no-undef
             .use(ZiggyVue, Ziggy);
 
         VueApp.use(VueTippy, {

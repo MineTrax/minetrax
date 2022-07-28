@@ -220,7 +220,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="pollIsBeingDeleted = null">
+        <jet-secondary-button @click="pollIsBeingDeleted = null">
           {{ __("Nevermind") }}
         </jet-secondary-button>
 
@@ -228,7 +228,7 @@
           class="ml-2"
           :class="{ 'opacity-25': deletePollForm.processing }"
           :disabled="deletePollForm.processing"
-          @click.native="deletePoll"
+          @click="deletePoll"
         >
           {{ __("Delete Poll") }}
         </jet-danger-button>

@@ -270,7 +270,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="serverBeingDeleted = null">
+        <jet-secondary-button @click="serverBeingDeleted = null">
           {{ __("Nevermind") }}
         </jet-secondary-button>
 
@@ -278,7 +278,7 @@
           class="ml-2"
           :class="{ 'opacity-25': deleteServerForm.processing }"
           :disabled="deleteServerForm.processing"
-          @click.native="deleteServer"
+          @click="deleteServer"
         >
           {{ __("Delete Server") }}
         </jet-danger-button>

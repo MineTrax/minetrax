@@ -82,7 +82,7 @@
       </div>
 
       <div class="flex items-center mt-5">
-        <jet-button @click.native="confirmLogout">
+        <jet-button @click="confirmLogout">
           {{ __("Logout Other Browser Sessions") }}
         </jet-button>
 
@@ -124,7 +124,7 @@
         </template>
 
         <template #footer>
-          <jet-secondary-button @click.native="closeModal">
+          <jet-secondary-button @click="closeModal">
             {{ __("Nevermind") }}
           </jet-secondary-button>
 
@@ -132,7 +132,7 @@
             class="ml-2"
             :class="{ 'opacity-25': form.processing }"
             :disabled="form.processing"
-            @click.native="logoutOtherBrowserSessions"
+            @click="logoutOtherBrowserSessions"
           >
             {{ __("Logout Other Browser Sessions") }}
           </jet-button>

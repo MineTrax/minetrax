@@ -198,7 +198,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="roleBeingDeleted = null">
+        <jet-secondary-button @click="roleBeingDeleted = null">
           {{ __("Nevermind") }}
         </jet-secondary-button>
 
@@ -206,7 +206,7 @@
           class="ml-2"
           :class="{ 'opacity-25': deleteRoleForm.processing }"
           :disabled="deleteRoleForm.processing"
-          @click.native="deleteRole"
+          @click="deleteRole"
         >
           {{ __("Delete Role") }}
         </jet-danger-button>

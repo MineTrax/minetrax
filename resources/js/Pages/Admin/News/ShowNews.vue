@@ -93,7 +93,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="newsBeingDeleted = null">
+        <jet-secondary-button @click="newsBeingDeleted = null">
           {{ __("Nevermind") }}
         </jet-secondary-button>
 
@@ -101,7 +101,7 @@
           class="ml-2"
           :class="{ 'opacity-25': form.processing }"
           :disabled="form.processing"
-          @click.native="deleteNews"
+          @click="deleteNews"
         >
           {{ __("Delete News") }}
         </jet-danger-button>

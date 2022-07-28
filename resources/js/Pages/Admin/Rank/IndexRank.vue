@@ -176,7 +176,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="rankBeingDeleted = null">
+        <jet-secondary-button @click="rankBeingDeleted = null">
           {{ __("Nevermind") }}
         </jet-secondary-button>
 
@@ -184,7 +184,7 @@
           class="ml-2"
           :class="{ 'opacity-25': deleteRankForm.processing }"
           :disabled="deleteRankForm.processing"
-          @click.native="deleteNews"
+          @click="deleteNews"
         >
           {{ __("Delete Rank") }}
         </jet-danger-button>

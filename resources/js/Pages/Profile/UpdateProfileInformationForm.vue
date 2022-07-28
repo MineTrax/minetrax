@@ -53,7 +53,7 @@
         <jet-secondary-button
           class="mt-2 mr-2"
           type="button"
-          @click.native.prevent="selectNewPhoto"
+          @click.prevent="selectNewPhoto"
         >
           {{ __("New Photo") }}
         </jet-secondary-button>
@@ -62,7 +62,7 @@
           v-if="user.profile_photo_path"
           type="button"
           class="mt-2"
-          @click.native.prevent="deletePhoto"
+          @click.prevent="deletePhoto"
         >
           {{ __("Remove Photo") }}
         </jet-secondary-button>
@@ -111,7 +111,7 @@
         <jet-secondary-button
           class="mt-2 mr-2"
           type="button"
-          @click.native.prevent="selectNewCoverImage"
+          @click.prevent="selectNewCoverImage"
         >
           {{ __("New Cover") }}
         </jet-secondary-button>
@@ -120,7 +120,7 @@
           v-if="user.cover_image_path"
           type="button"
           class="mt-2"
-          @click.native.prevent="deleteCoverImage"
+          @click.prevent="deleteCoverImage"
         >
           {{ __("Default Cover") }}
         </jet-secondary-button>

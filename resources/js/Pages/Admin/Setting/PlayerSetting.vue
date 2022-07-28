@@ -165,7 +165,7 @@
                                 :loading="rating_expression_validation_form.busy"
                                 class="ml-2 h-14 inline-flex justify-center py-2 px-4 border border-2 border-light-blue-500 shadow-sm text-sm font-bold rounded-md text-light-blue-500 hover:bg-light-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                                 type="button"
-                                @click.native="validateRatingExpression"
+                                @click="validateRatingExpression"
                               >
                                 {{ __("Validate") }}
                               </loading-button>
@@ -281,7 +281,7 @@
                                 :loading="score_expression_validation_form.busy"
                                 class="ml-2 h-14 inline-flex justify-center py-2 px-4 border border-2 border-light-blue-500 shadow-sm text-sm font-bold rounded-md text-light-blue-500 hover:bg-light-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                                 type="button"
-                                @click.native="validateScoreExpression"
+                                @click="validateScoreExpression"
                               >
                                 {{ __("Validate") }}
                               </loading-button>

@@ -335,7 +335,6 @@ import {debounce} from 'lodash';
 import millify from 'millify';
 
 export default {
-
     components: {
         ServerSubMenu,
         OverviewCard,
@@ -357,7 +356,8 @@ export default {
             serverPingInterval: null,
             sendingCommand: false,
             commandText: '',
-            commandError: null
+            commandError: null,
+            termx: null
         };
     },
 
@@ -416,12 +416,18 @@ export default {
             term.writeln(data.data.data);
         });
 
+
         // Load Server Online Status
         this.pingServer();
         this.serverPingInterval = setInterval(() => this.pingServer(), 10000);
+
+        // @WorkAround for 'Could not dispose an addon that has not been loaded'
+        // Not able to assign termx directly above because of Proxy, it give above error
+        this.termx = term;
     },
 
     unmounted() {
+        this.termx.dispose();
         Echo.leave(`consolelogs.${this.server.id}`);
         removeEventListener('resize', this.refitTerminal);
         clearInterval(this.serverPingInterval);
