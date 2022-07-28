@@ -279,7 +279,7 @@ export default {
     transition: all 1s;
 }
 
-.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */
+.list-enter-from, .list-leave-to /* .list-leave-active below version 2.1.8 */
 {
     opacity: 0;
     transform: translateY(30px);
