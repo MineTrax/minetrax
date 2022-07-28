@@ -63,14 +63,14 @@ class MinecraftWebQuery
     {
         $pluginSettings = app(PluginSettings::class);
         $string = [
-            "api_key" => $pluginSettings->plugin_api_key,
+            "secret" => $pluginSettings->plugin_api_secret,
             "type" => $type,
             "params" => $params
         ];
         $string = json_encode($string);
 
-        $apiSecret = $pluginSettings->plugin_api_secret;
-        $newEncrypter = new Encrypter( ($apiSecret), "AES-256-CBC" );
+        $apiKey = $pluginSettings->plugin_api_key;
+        $newEncrypter = new Encrypter( ($apiKey), "AES-256-CBC" );
         return $newEncrypter->encrypt( $string );
     }
 }
