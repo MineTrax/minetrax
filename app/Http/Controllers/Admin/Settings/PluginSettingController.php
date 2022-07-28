@@ -34,7 +34,7 @@ class PluginSettingController extends Controller
     public function regeneratePluginApiKeys(PluginSettings $settings): \Illuminate\Http\RedirectResponse
     {
         $settings->plugin_api_key = Str::random(32);
-        $settings->plugin_api_secret = Str::random(64);
+        $settings->plugin_api_secret = Str::random(32);
         $settings->save();
 
         return redirect()->back()
