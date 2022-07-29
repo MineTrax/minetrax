@@ -15,7 +15,20 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'MineTrax'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | This value is the current version of your application. This value is used
+    | to check if current version is latest or not and will show alert to 
+    | staff members to upgrade.
+    |
+    */
+
+    'version' => '1.0.4-alpha',
 
     /*
     |--------------------------------------------------------------------------

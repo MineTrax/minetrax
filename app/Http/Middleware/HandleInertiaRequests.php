@@ -77,7 +77,7 @@ class HandleInertiaRequests extends Middleware
                 return $enabledSocialLogins;
             },
 
-            "webVersion" =>json_decode(Storage::disk('local')->get('misc/version.json'), true)["version"],
+            "webVersion" => config("app.version"),
             "hasRegistrationFeature" => Route::has("register"),
         ]);
     }

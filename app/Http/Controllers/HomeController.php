@@ -135,8 +135,7 @@ class HomeController extends Controller
 
     public function version()
     {
-        $myVersion = json_decode(Storage::disk('local')->get('misc/version.json'), true);
-        $myVersion = $myVersion['version'];
+        $myVersion = config("app.version");
 
         $latestVersion = Http::timeout(5)->get('https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws')->json();
         $latestVersion = $latestVersion['web'];
