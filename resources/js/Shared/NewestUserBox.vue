@@ -15,7 +15,7 @@
           alt="Avatar"
         >
         <div class="flex flex-col">
-          <div>
+          <div class="break-all">
             <span
               class="text-gray-800 dark:text-gray-300 font-semibold"
               :style="[user.roles[0].color ? {color: user.roles[0].color} : null]"

@@ -4,10 +4,6 @@
       :title="__('Reset Password')"
     />
     <jet-authentication-card>
-      <template #logo>
-        <jet-authentication-card-logo />
-      </template>
-
       <form @submit.prevent="submit">
         <div>
           <x-input

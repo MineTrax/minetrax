@@ -5,7 +5,7 @@
     />
     <jet-authentication-card>
       <template #logo>
-        <jet-authentication-card-logo />
+        <Icon name="person-badge" class="text-light-blue-500 fill-current w-16 h-16" />
       </template>
 
       <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -52,6 +52,7 @@ import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import XInput from '@/Components/Form/XInput.vue';
+import Icon from '@/Components/Icon.vue';
 
 export default {
     components: {
@@ -60,6 +61,7 @@ export default {
         LoadingButton,
         JetAuthenticationCard,
         JetAuthenticationCardLogo,
+        Icon,
     },
 
     props: {
