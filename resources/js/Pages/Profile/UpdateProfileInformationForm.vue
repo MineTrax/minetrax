@@ -53,7 +53,7 @@
         <jet-secondary-button
           class="mt-2 mr-2"
           type="button"
-          @click.native.prevent="selectNewPhoto"
+          @click.prevent="selectNewPhoto"
         >
           {{ __("New Photo") }}
         </jet-secondary-button>
@@ -62,7 +62,7 @@
           v-if="user.profile_photo_path"
           type="button"
           class="mt-2"
-          @click.native.prevent="deletePhoto"
+          @click.prevent="deletePhoto"
         >
           {{ __("Remove Photo") }}
         </jet-secondary-button>
@@ -111,7 +111,7 @@
         <jet-secondary-button
           class="mt-2 mr-2"
           type="button"
-          @click.native.prevent="selectNewCoverImage"
+          @click.prevent="selectNewCoverImage"
         >
           {{ __("New Cover") }}
         </jet-secondary-button>
@@ -120,7 +120,7 @@
           v-if="user.cover_image_path"
           type="button"
           class="mt-2"
-          @click.native.prevent="deleteCoverImage"
+          @click.prevent="deleteCoverImage"
         >
           {{ __("Default Cover") }}
         </jet-secondary-button>
@@ -135,7 +135,7 @@
       <div class="col-span-6 sm:col-span-3">
         <x-input
           id="username"
-          v-model="user.username"
+          :model-value="user.username"
           :label="__('Username')"
           :error="form.errors.username"
           type="text"
@@ -148,7 +148,7 @@
       <div class="col-span-6 sm:col-span-3">
         <x-input
           id="email"
-          v-model="user.email"
+          :model-value="user.email"
           :label="__('Email')"
           :error="form.errors.email"
           type="email"
@@ -188,7 +188,7 @@
       <div class="col-span-6 sm:col-span-3 relative">
         <date-picker
           id="dob"
-          v-model="form.dob"
+          v-model:value="form.dob"
           :placeholder="__('Select your date of birth')"
           class="w-full"
           value-type="format"
@@ -377,17 +377,17 @@
 </template>
 
 <script>
-import JetButton from '@/Jetstream/Button';
-import JetFormSection from '@/Jetstream/FormSection';
-import JetInputError from '@/Jetstream/InputError';
-import JetLabel from '@/Jetstream/Label';
-import JetActionMessage from '@/Jetstream/ActionMessage';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import DatePicker from 'vue2-datepicker';
-import XInput from '@/Components/Form/XInput';
-import XCheckbox from '@/Components/Form/XCheckbox';
-import XSelect from '@/Components/Form/XSelect';
-import XTextarea from '@/Components/Form/XTextarea';
+import JetButton from '@/Jetstream/Button.vue';
+import JetFormSection from '@/Jetstream/FormSection.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import JetLabel from '@/Jetstream/Label.vue';
+import JetActionMessage from '@/Jetstream/ActionMessage.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import DatePicker from 'vue-datepicker-next';
+import XInput from '@/Components/Form/XInput.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
 
 export default {
     components: {
@@ -426,8 +426,8 @@ export default {
                 about: this.user.about,
 
                 profile_photo_source: this.user.settings ? this.user.settings.profile_photo_source : null,
-                show_gender: this.user.settings ? this.user.settings.show_gender : false,
-                show_yob: this.user.settings ? this.user.settings.show_yob : false,
+                show_gender: this.user.settings ? !!+this.user.settings.show_gender : false,            // coz in old version, data store as string 1,0
+                show_yob: this.user.settings ? !!+this.user.settings.show_yob : false,                  // coz in old version, data store as string 1,0
             }),
 
             photoPreview: null,

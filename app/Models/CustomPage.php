@@ -12,6 +12,7 @@ class CustomPage extends BaseModel
     protected $casts = [
         'is_visible' => 'boolean',
         'is_in_navbar' => 'boolean',
+        'is_redirect' => 'boolean',
     ];
 
     public function scopeVisible($query)

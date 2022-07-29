@@ -198,7 +198,7 @@
     </div>
 
     <jet-confirmation-modal
-      :show="newsBeingDeleted"
+      :show="!!newsBeingDeleted"
       @close="newsBeingDeleted = null"
     >
       <template #title>
@@ -210,7 +210,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="newsBeingDeleted = null">
+        <jet-secondary-button @click="newsBeingDeleted = null">
           {{ __("Nevermind") }}
         </jet-secondary-button>
 
@@ -218,7 +218,7 @@
           class="ml-2"
           :class="{ 'opacity-25': deleteNewsForm.processing }"
           :disabled="deleteNewsForm.processing"
-          @click.native="deleteNews"
+          @click="deleteNews"
         >
           {{ __("Delete News") }}
         </jet-danger-button>
@@ -228,12 +228,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Pagination from '@/Components/Pagination';
-import Icon from '@/Components/Icon';
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import JetDangerButton from '@/Jetstream/DangerButton';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import Icon from '@/Components/Icon.vue';
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import JetDangerButton from '@/Jetstream/DangerButton.vue';
 
 export default {
 

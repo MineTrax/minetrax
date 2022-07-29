@@ -164,8 +164,8 @@
 
 <script>
 
-import Icon from '@/Components/Icon';
-import Comments from '@/Components/Comments';
+import Icon from '@/Components/Icon.vue';
+import Comments from '@/Components/Comments.vue';
 
 export default {
     components: {Comments, Icon},

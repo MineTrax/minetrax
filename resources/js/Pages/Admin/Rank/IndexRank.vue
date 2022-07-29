@@ -164,7 +164,7 @@
     </div>
 
     <jet-confirmation-modal
-      :show="rankBeingDeleted"
+      :show="!!rankBeingDeleted"
       @close="rankBeingDeleted = null"
     >
       <template #title>
@@ -176,7 +176,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="rankBeingDeleted = null">
+        <jet-secondary-button @click="rankBeingDeleted = null">
           {{ __("Nevermind") }}
         </jet-secondary-button>
 
@@ -184,7 +184,7 @@
           class="ml-2"
           :class="{ 'opacity-25': deleteRankForm.processing }"
           :disabled="deleteRankForm.processing"
-          @click.native="deleteNews"
+          @click="deleteNews"
         >
           {{ __("Delete Rank") }}
         </jet-danger-button>
@@ -194,11 +194,11 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Pagination from '@/Components/Pagination';
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import JetDangerButton from '@/Jetstream/DangerButton';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import JetDangerButton from '@/Jetstream/DangerButton.vue';
 
 export default {
 

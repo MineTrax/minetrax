@@ -4,10 +4,6 @@
       :title="__('Reset Password')"
     />
     <jet-authentication-card>
-      <template #logo>
-        <jet-authentication-card-logo />
-      </template>
-
       <form @submit.prevent="submit">
         <div>
           <x-input
@@ -62,11 +58,10 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import LoadingButton from '@/Components/LoadingButton';
-import AppLayout from '@/Layouts/AppLayout';
-import XInput from '@/Components/Form/XInput';
+import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import XInput from '@/Components/Form/XInput.vue';
 
 export default {
     components: {
@@ -74,7 +69,6 @@ export default {
         AppLayout,
         LoadingButton,
         JetAuthenticationCard,
-        JetAuthenticationCardLogo,
     },
 
     props: {

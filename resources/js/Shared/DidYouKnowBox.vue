@@ -84,7 +84,7 @@ export default {
         }, 30000);
     },
 
-    destroyed() {
+    unmounted() {
         clearInterval(this.interval);
     },
 

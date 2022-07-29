@@ -189,8 +189,8 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Icon from '@/Components/Icon';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Icon from '@/Components/Icon.vue';
 import * as skinview3d from 'skinview3d';
 
 export default {

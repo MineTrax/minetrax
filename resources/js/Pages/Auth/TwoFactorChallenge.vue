@@ -4,10 +4,6 @@
       :title="__('2FA Challenge confirmation')"
     />
     <jet-authentication-card>
-      <template #logo>
-        <jet-authentication-card-logo />
-      </template>
-
       <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
         <template v-if="! recovery">
           {{ __("Please confirm access to your account by entering the authentication code provided by your authenticator application.") }}
@@ -81,20 +77,18 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import JetInput from '@/Jetstream/Input';
-import JetLabel from '@/Jetstream/Label';
-import JetValidationErrors from '@/Jetstream/ValidationErrors';
-import LoadingButton from '@/Components/LoadingButton';
-import AppLayout from '@/Layouts/AppLayout';
+import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
+import JetInput from '@/Jetstream/Input.vue';
+import JetLabel from '@/Jetstream/Label.vue';
+import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 
 export default {
     components: {
         AppLayout,
         LoadingButton,
         JetAuthenticationCard,
-        JetAuthenticationCardLogo,
         JetInput,
         JetLabel,
         JetValidationErrors,

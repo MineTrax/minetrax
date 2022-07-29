@@ -84,12 +84,14 @@
                             <copy-to-clipboard v-slot="props">
                               <x-input
                                 id="plugin_api_key"
-                                v-model="props.status === 'copied' ? __('Copied to Clipboard!') : settings.plugin_api_key"
+                                v-tippy
+                                :title="__('Click to Copy')"
+                                :model-value="props.status === 'copied' ? __('Copied to Clipboard!') : settings.plugin_api_key"
                                 :label="__('API Key')"
                                 type="text"
                                 name="plugin_api_key"
                                 input-class="disabled:opacity-100 hover:cursor-pointer"
-                                @click.native="props.copy(settings.plugin_api_key)"
+                                @click="props.copy(settings.plugin_api_key)"
                               />
                             </copy-to-clipboard>
                           </div>
@@ -98,13 +100,15 @@
                             <copy-to-clipboard v-slot="props">
                               <x-input
                                 id="plugin_api_secret"
-                                v-model="props.status === 'copied' ? __('Copied to Clipboard!') : settings.plugin_api_secret"
+                                v-tippy
+                                :title="__('Click to Copy')"
+                                :model-value="props.status === 'copied' ? __('Copied to Clipboard!') : settings.plugin_api_secret"
                                 :label="__('API Secret')"
                                 type="text"
                                 name="plugin_api_secret"
                                 :disabled="true"
                                 input-class="disabled:opacity-100 hover:cursor-pointer"
-                                @click.native="props.copy(settings.plugin_api_secret)"
+                                @click="props.copy(settings.plugin_api_secret)"
                               />
                             </copy-to-clipboard>
                           </div>
@@ -219,13 +223,13 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import LoadingButton from '@/Components/LoadingButton';
-import CopyToClipboard from '@/Components/CopyToClipboard';
-import XInput from '@/Components/Form/XInput';
-import SettingLink from '@/Jetstream/SettingLink';
-import XCheckbox from '@/Components/Form/XCheckbox';
-import XSelect from '@/Components/Form/XSelect';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import CopyToClipboard from '@/Components/CopyToClipboard.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import SettingLink from '@/Jetstream/SettingLink.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
 
 export default {
     components: {

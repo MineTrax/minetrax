@@ -88,9 +88,9 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import NewsBox from '@/Shared/NewsBox';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import NewsBox from '@/Shared/NewsBox.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 
 export default {
 

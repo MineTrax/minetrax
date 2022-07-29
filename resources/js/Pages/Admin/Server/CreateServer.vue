@@ -380,11 +380,11 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import LoadingButton from '@/Components/LoadingButton';
-import XInput from '@/Components/Form/XInput';
-import XSelect from '@/Components/Form/XSelect';
-import XCheckbox from '@/Components/Form/XCheckbox';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
 
 export default {
     components: {

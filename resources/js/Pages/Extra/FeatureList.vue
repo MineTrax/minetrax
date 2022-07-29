@@ -17,9 +17,8 @@
       </span>
       <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
         <feature-card
-          v-for="(feature, index) in features"
-          v-if="feature.status === 'completed'"
-          :key="feature.todoId"
+          v-for="(feature, index) in completed"
+          :key="feature.featureId"
           :feature="feature"
           :index="index+2"
         />
@@ -33,9 +32,8 @@
       </span>
       <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
         <feature-card
-          v-for="(feature, index) in features"
-          v-if="feature.status === 'in-progress'"
-          :key="feature.todoId"
+          v-for="(feature, index) in inprogress"
+          :key="feature.featureId"
           :feature="feature"
           :index="index+4"
         />
@@ -54,9 +52,8 @@
       </span>
       <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
         <feature-card
-          v-for="(feature, index) in features"
-          v-if="feature.status === 'draft'"
-          :key="feature.todoId"
+          v-for="(feature, index) in draft"
+          :key="feature.featureId"
           :feature="feature"
           :index="index+2"
         />
@@ -68,9 +65,9 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Icon from '@/Components/Icon';
-import FeatureCard from '@/Components/FeatureCard';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Icon from '@/Components/Icon.vue';
+import FeatureCard from '@/Components/FeatureCard.vue';
 
 export default {
 
@@ -82,5 +79,17 @@ export default {
     props: {
         features: Array
     },
+
+    computed: {
+        completed() {
+            return this.features.filter(f => f.status === 'completed');
+        },
+        inprogress() {
+            return this.features.filter(f => f.status === 'in-progress');
+        },
+        draft() {
+            return this.features.filter(f => f.status === 'draft');
+        }
+    }
 };
 </script>

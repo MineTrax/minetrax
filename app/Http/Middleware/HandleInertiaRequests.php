@@ -10,6 +10,7 @@ use App\Models\Server;
 use App\Settings\GeneralSettings;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Route;
 use Storage;
 
 class HandleInertiaRequests extends Middleware
@@ -76,7 +77,8 @@ class HandleInertiaRequests extends Middleware
                 return $enabledSocialLogins;
             },
 
-            "webVersion" =>json_decode(Storage::disk('local')->get('misc/version.json'), true)["version"]
+            "webVersion" =>json_decode(Storage::disk('local')->get('misc/version.json'), true)["version"],
+            "hasRegistrationFeature" => Route::has("register"),
         ]);
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Route;
 
 class SocialAuthController extends Controller
 {
@@ -67,6 +68,13 @@ class SocialAuthController extends Controller
                 Auth::login($user);
                 return redirect()->home();
             }
+        }
+
+        // Before creating new user check if registration feature is disabled.
+        if (!Route::has("register"))
+        {
+            return redirect()->route('login')
+            ->with(['toast' => ['type' => 'danger', 'title' => __('New user registration is disabled!'), 'milliseconds' => 5000]]);
         }
 
         $countryId = $this->geolocationService->getCountryIdFromIP(request()->ip());

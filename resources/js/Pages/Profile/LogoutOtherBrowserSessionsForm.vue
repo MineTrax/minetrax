@@ -82,7 +82,7 @@
       </div>
 
       <div class="flex items-center mt-5">
-        <jet-button @click.native="confirmLogout">
+        <jet-button @click="confirmLogout">
           {{ __("Logout Other Browser Sessions") }}
         </jet-button>
 
@@ -124,7 +124,7 @@
         </template>
 
         <template #footer>
-          <jet-secondary-button @click.native="closeModal">
+          <jet-secondary-button @click="closeModal">
             {{ __("Nevermind") }}
           </jet-secondary-button>
 
@@ -132,7 +132,7 @@
             class="ml-2"
             :class="{ 'opacity-25': form.processing }"
             :disabled="form.processing"
-            @click.native="logoutOtherBrowserSessions"
+            @click="logoutOtherBrowserSessions"
           >
             {{ __("Logout Other Browser Sessions") }}
           </jet-button>
@@ -143,13 +143,13 @@
 </template>
 
 <script>
-import JetActionMessage from '@/Jetstream/ActionMessage';
-import JetActionSection from '@/Jetstream/ActionSection';
-import JetButton from '@/Jetstream/Button';
-import JetDialogModal from '@/Jetstream/DialogModal';
-import JetInput from '@/Jetstream/Input';
-import JetInputError from '@/Jetstream/InputError';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
+import JetActionMessage from '@/Jetstream/ActionMessage.vue';
+import JetActionSection from '@/Jetstream/ActionSection.vue';
+import JetButton from '@/Jetstream/Button.vue';
+import JetDialogModal from '@/Jetstream/DialogModal.vue';
+import JetInput from '@/Jetstream/Input.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 
 export default {
 

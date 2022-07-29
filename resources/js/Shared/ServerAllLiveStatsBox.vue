@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import EChart from '@/Components/Dashboard/EChart';
-import Icon from '@/Components/Icon';
+import EChart from '@/Components/Dashboard/EChart.vue';
+import Icon from '@/Components/Icon.vue';
 
 export default {
     name: 'ServerAllLiveStatsBox',

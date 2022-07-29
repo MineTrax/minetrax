@@ -173,8 +173,8 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Pagination from '@/Components/Pagination';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 export default {
 

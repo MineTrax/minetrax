@@ -14,10 +14,10 @@ $maxWidth = [
 
 <div
     x-data="{
-        show: @entangle($attributes->wire('model')),
+        show: @entangle($attributes->wire('model')).defer,
         focusables() {
             // All focusable element types...
-            let selector = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
+            let selector = 'a, button, input:not([type=\'hidden\']), textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
 
             return [...$el.querySelectorAll(selector)]
                 // All non-disabled elements...
@@ -33,6 +33,7 @@ $maxWidth = [
     x-init="$watch('show', value => {
         if (value) {
             document.body.classList.add('overflow-y-hidden');
+            {{ $attributes->has('focusable') ? 'setTimeout(() => firstFocusable().focus(), 100)' : '' }}
         } else {
             document.body.classList.remove('overflow-y-hidden');
         }

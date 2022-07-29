@@ -151,10 +151,10 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import LoadingButton from '@/Components/LoadingButton';
-import SettingLink from '@/Jetstream/SettingLink';
-import XSelect from '@/Components/Form/XSelect';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import SettingLink from '@/Jetstream/SettingLink.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
 
 export default {
     components: {

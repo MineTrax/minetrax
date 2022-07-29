@@ -8,7 +8,7 @@
       :class="borderColor"
       :placeholder="label"
       :autocomplete="autocomplete"
-      :value="value"
+      :value="modelValue"
       :autofocus="autofocus"
       :required="required"
       :disabled="disabled"
@@ -48,7 +48,7 @@
 <script>
 export default {
     props: {
-        value: [Number, String, Array, Object, Boolean, Date],
+        modelValue: [Number, String, Array, Object, Boolean, Date],
         name: String,
         help: String,
         label: String,
@@ -109,7 +109,7 @@ export default {
             this.$refs.input.focus();
         },
         handleInputEvent($event) {
-            this.$emit('input', $event.target.value);
+            this.$emit('update:modelValue', $event.target.value);
             const textarea = this.$refs['input'];
             textarea.style.height = 'initial';
             textarea.style.height = `${textarea.scrollHeight}px`;

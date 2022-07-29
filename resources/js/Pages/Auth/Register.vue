@@ -5,12 +5,6 @@
     />
 
     <jet-authentication-card>
-      <template #logo>
-        <jet-authentication-card-logo />
-      </template>
-
-      <!--<jet-validation-errors class="mb-4" />-->
-
       <form
         class="mt-5"
         @submit.prevent="submit"
@@ -134,15 +128,14 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import JetCheckbox from '@/Jetstream/Checkbox';
-import JetLabel from '@/Jetstream/Label';
-import LoadingButton from '@/Components/LoadingButton';
-import AppLayout from '@/Layouts/AppLayout';
-import SocialAuthButtons from '@/Components/SocialAuthButtons';
-import XInput from '@/Components/Form/XInput';
-import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter';
+import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
+import JetCheckbox from '@/Jetstream/Checkbox.vue';
+import JetLabel from '@/Jetstream/Label.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import SocialAuthButtons from '@/Components/SocialAuthButtons.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter.vue';
 
 export default {
     components: {
@@ -152,7 +145,6 @@ export default {
         AppLayout,
         LoadingButton,
         JetAuthenticationCard,
-        JetAuthenticationCardLogo,
         JetCheckbox,
         JetLabel,
     },

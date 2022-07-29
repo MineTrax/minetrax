@@ -5,10 +5,6 @@
     />
 
     <jet-authentication-card>
-      <template #logo>
-        <jet-authentication-card-logo />
-      </template>
-
       <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
         {{ __("Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.") }}
       </div>
@@ -50,11 +46,10 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import LoadingButton from '@/Components/LoadingButton';
-import AppLayout from '@/Layouts/AppLayout';
-import XInput from '@/Components/Form/XInput';
+import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import XInput from '@/Components/Form/XInput.vue';
 
 export default {
     components: {
@@ -62,7 +57,6 @@ export default {
         AppLayout,
         LoadingButton,
         JetAuthenticationCard,
-        JetAuthenticationCardLogo,
     },
 
     props: {
