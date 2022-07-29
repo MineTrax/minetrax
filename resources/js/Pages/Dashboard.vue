@@ -18,6 +18,7 @@
         <donation-box />
       </div>
       <div class="col-span-1 md:col-span-2 space-y-4 order-3 md:order-none">
+        <VerifyYourEmailBox v-if="$page.props.jetstream.hasEmailVerification && $page.props.user && $page.props.user.email_verified_at === null" />
         <version-check v-if="$page.props.user && isStaff($page.props.user)" />
         <welcome-box
           v-if="generalSettings.enable_welcomebox"
@@ -80,9 +81,11 @@ import PollBox from '@/Shared/PollBox.vue';
 import DonationBox from '@/Shared/DonationBox.vue';
 import OnlineUsersBox from '@/Shared/OnlineUsersBox.vue';
 import TopPlayersListBox from '@/Shared/TopPlayersListBox.vue';
+import VerifyYourEmailBox from '@/Shared/VerifyYourEmailBox.vue';
 
 export default {
     components: {
+        VerifyYourEmailBox,
         TopPlayersListBox,
         OnlineUsersBox,
         DonationBox,

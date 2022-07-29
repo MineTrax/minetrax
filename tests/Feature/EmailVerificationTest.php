@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\URL;
 use Laravel\Fortify\Features;
 
 test('email verification screen can be rendered', function () {
-    $user = User::factory()->withPersonalTeam()->create([
+    $user = User::factory()->create([
         'email_verified_at' => null,
     ]);
 

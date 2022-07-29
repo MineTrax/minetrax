@@ -171,13 +171,15 @@
         >
           {{ __("Login") }}
         </inertia-link>
-        {{ __("or") }}
-        <inertia-link
-          class="font-semibold text-light-blue-500"
-          :href="route('register')"
-        >
+        <template v-if="$page.props.hasRegistrationFeature">
+          {{ " " + __("or") }}
+          <inertia-link
+            class="font-semibold text-light-blue-500"
+            :href="route('register')"
+          >
           {{ __("Register") }}
-        </inertia-link>
+          </inertia-link>
+        </template>
         {{ __("to Shout") }}
       </div>
     </div>

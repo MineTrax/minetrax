@@ -3,33 +3,16 @@
     <app-head :title="__('Servers Administration')" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
-      <div
+      <AlertCard
         v-if="canCreateBungeeServer"
-        class="mb-4 bg-white dark:bg-cool-gray-800 border-t-4 border-orange-500 rounded-b text-orange-900 dark:text-orange-500 px-4 py-3 shadow"
-        role="alert"
+        text-color="text-orange-800 dark:text-orange-500"
+        border-color="border-orange-500"
       >
-        <div class="flex">
-          <div class="py-1">
-            <svg
-              class="fill-current h-6 w-6 text-orange-500 mr-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path
-                d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"
-              />
-            </svg>
-          </div>
-          <div>
-            <p class="font-bold">
-              {{ __("You don't have Bungee/Proxy Server Added!") }}
-            </p>
-            <p class="text-sm">
-              {{ __("When a bungee server is not added. Player List Box and Player Status Box (if enabled from settings), use first added server as default query server.") }}
-            </p>
-          </div>
-        </div>
-      </div>
+        {{ __("You don't have Bungee/Proxy Server Added!") }}
+        <template #body>
+          {{ __("When a bungee server is not added. Player List Box and Player Status Box (if enabled from settings), use first added server as default query server.") }}
+        </template>
+      </AlertCard>
 
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300 flex items-center">
@@ -293,15 +276,17 @@ import Pagination from '@/Components/Pagination.vue';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
+import AlertCard from '@/Components/AlertCard.vue';
 
 export default {
 
     components: {
+        AlertCard,
         AppLayout,
         Pagination,
         JetConfirmationModal,
         JetSecondaryButton,
-        JetDangerButton
+        JetDangerButton,
     },
     props: {
         servers: Object,

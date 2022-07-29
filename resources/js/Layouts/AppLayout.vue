@@ -278,7 +278,10 @@ export default {
                           Switch Teams
                         </div>
 
-                        <template v-for="team in $page.props.user.all_teams"  :key="team.id">
+                        <template
+                          v-for="team in $page.props.user.all_teams"
+                          :key="team.id"
+                        >
                           <form
                             @submit.prevent="switchToTeam(team)"
                           >
@@ -444,6 +447,7 @@ export default {
               </div>
               <div class="hidden space-x-8 md:-my-px md:ml-8 md:flex">
                 <jet-nav-link
+                  v-if="$page.props.hasRegistrationFeature"
                   :href="route('register')"
                   :active="route().current('register')"
                 >
@@ -553,6 +557,7 @@ export default {
                 {{ __("Login") }}
               </jet-responsive-nav-link>
               <jet-responsive-nav-link
+                v-if="$page.props.hasRegistrationFeature"
                 :href="route('register')"
                 :active="route().current('register')"
               >
@@ -674,7 +679,7 @@ export default {
           :href="route('admin.server.index')"
           :active="route().current('admin.server.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="server" />
           </template>
           {{ __("Servers") }}
@@ -685,7 +690,7 @@ export default {
           :href="route('admin.user.index')"
           :active="route().current('admin.user.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon
               name="users"
               class="w-5 h-5"
@@ -699,7 +704,7 @@ export default {
           :href="route('admin.role.index')"
           :active="route().current('admin.role.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="shield-check" />
           </template>
           {{ __("User Roles") }}
@@ -710,7 +715,7 @@ export default {
           :href="route('admin.rank.index')"
           :active="route().current('admin.rank.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="degree-hat" />
           </template>
           {{ __("Player Ranks") }}
@@ -721,7 +726,7 @@ export default {
           :href="route('admin.news.index')"
           :active="route().current('admin.news.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="newspaper" />
           </template>
           {{ __("News") }}
@@ -732,7 +737,7 @@ export default {
           :href="route('admin.poll.index')"
           :active="route().current('admin.poll.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon
               class="h-5 w-5"
               name="chart-pie"
@@ -746,7 +751,7 @@ export default {
           :href="route('admin.custom-page.index')"
           :active="route().current('admin.custom-page.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon
               class="h-5 w-5"
               name="collection"
@@ -760,7 +765,7 @@ export default {
           :href="route('admin.session.index')"
           :active="route().current('admin.session.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon
               class="h-5 w-5"
               name="finger-print"
@@ -774,7 +779,7 @@ export default {
           :href="route('admin.setting.general.show')"
           :active="route().current('admin.setting.general.show')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="cog" />
           </template>
           {{ __("Settings") }}
@@ -802,7 +807,6 @@ export default {
         <!--                    by MineTrax-->
         <!--                </div>-->
       </footer>
-
     </div>
   </div>
 </template>

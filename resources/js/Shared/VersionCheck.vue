@@ -3,47 +3,38 @@
     v-if="!loading && response && response.is_uptodate === false"
     ref="box"
   >
-    <div
-      class="mb-4 bg-white dark:bg-cool-gray-800 border-t-4 border-red-500 rounded-b text-red-900 dark:text-red-500 px-4 py-3 shadow"
-      role="alert"
+    <AlertCard
+      text-color="text-red-800 dark:text-red-500"
+      border-color="border-red-500"
     >
-      <div class="flex">
-        <div class="py-1">
-          <svg
-            class="fill-current h-6 w-6 text-red-500 mr-4"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"
-            />
-          </svg>
-        </div>
-        <div>
-          <p class="font-bold">
-            {{ __("Your MineTrax Version is Outdated!") }}
-          </p>
-          <p class="text-sm text-gray-700 dark:text-gray-200">
-            {{ __("Your current MineTrax version is") }}&nbsp;<span class="text-red-500">{{ response.my_version }}</span>&nbsp;{{ __("while the latest version is") }}&nbsp;<span class="text-green-500">{{ response.latest_version }}</span>. {{ __("Please upgrade to enjoy latest features.") }} <br>
-            <a
-              class="text-light-blue-500 hover:underline"
-              target="_blank"
-              href="https://minetrax.github.io/docs/upgrade"
-            >{{ __("Click here to know more.") }}</a>
-          </p>
+      {{ __("Your MineTrax Version is Outdated!") }}
+      <template
+        #body
+      >
+        <div class="text-gray-700 dark:text-gray-200">
+          {{ __("Your current MineTrax version is") }}&nbsp;<span class="text-red-500">{{ response.my_version }}</span>&nbsp;{{ __("while the latest version is") }}&nbsp;<span class="text-green-500">{{ response.latest_version }}</span>. {{ __("Please upgrade to enjoy latest features.") }} <br>
+          <a
+            class="text-light-blue-500 hover:underline"
+            target="_blank"
+            href="https://minetrax.github.io/docs/upgrade"
+          >{{ __("Click here to know more.") }}</a>
 
           <p class="text-xs text-gray-500 italic mt-2">
             {{ __("Note: This box is only visible to Staff Member") }}
           </p>
         </div>
-      </div>
-    </div>
+      </template>
+    </AlertCard>
   </div>
 </template>
 
 <script>
+import AlertCard from '@/Components/AlertCard.vue';
 
 export default {
+    components: {
+        AlertCard
+    },
     data() {
         return {
             response: {},

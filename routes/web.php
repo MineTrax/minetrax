@@ -52,9 +52,9 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
 /**
  * USER SECTION/LOGGED IN
  */
-Route::middleware(['auth:sanctum', 'verified', 'forbid-banned-user', 'redirect-uncompleted-user'])->group(function () {
+Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-user', 'verified-if-enabled'])->group(function () {
     // Shouts
-    Route::get('shout', [\App\Http\Controllers\ShoutController::class, 'index'])->name('shout.index')->withoutMiddleware(['auth:sanctum', 'verified']);
+    Route::get('shout', [\App\Http\Controllers\ShoutController::class, 'index'])->name('shout.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);
     Route::post('shout', [\App\Http\Controllers\ShoutController::class, 'store'])->name('shout.store')->middleware('forbid-muted-user');
     Route::delete('shout/{shout}', [\App\Http\Controllers\ShoutController::class, 'destroy'])->name('shout.delete');
 
@@ -70,25 +70,25 @@ Route::middleware(['auth:sanctum', 'verified', 'forbid-banned-user', 'redirect-u
     Route::post('reaction/post/{post}/unlike', [\App\Http\Controllers\PostController::class, 'unlikePost'])->name('reaction.post.unlike');
 
     // Polls
-    Route::get('poll', [\App\Http\Controllers\PollController::class, 'index'])->name('poll.index')->withoutMiddleware(['auth:sanctum', 'verified']);
+    Route::get('poll', [\App\Http\Controllers\PollController::class, 'index'])->name('poll.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);
     Route::post('poll/{poll}/option/{option}/vote', [\App\Http\Controllers\PollController::class, 'vote'])->name('poll.vote');
 
     // User
-    Route::post('auth/user/post-registration-setup', [\App\Http\Controllers\UserProfileController::class, 'postRegistrationSetup'])->name('auth.post-reg-setup')->withoutMiddleware('redirect-uncompleted-user');
+    Route::post('auth/user/post-registration-setup', [\App\Http\Controllers\UserProfileController::class, 'postRegistrationSetup'])->name('auth.post-reg-setup')->withoutMiddleware(['redirect-uncompleted-user', 'verified-if-enabled']);
     Route::delete('auth/user/remove-cover', [\App\Http\Controllers\UserProfileController::class, 'deleteCoverImage'])->name('current-user-cover.destroy');
     Route::put('auth/user/notification-preferences', [\App\Http\Controllers\UserProfileController::class, 'putUpdateNotificationPreference'])->name('auth.put-notification-preferences');
 
     // Notifications
-    Route::get('user/notification', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notification.index');
+    Route::get('user/notification', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notification.index')->withoutMiddleware(['redirect-uncompleted-user', 'verified-if-enabled']);
     Route::post('user/notification/read', [\App\Http\Controllers\NotificationController::class, 'postMarkAsRead'])->name('notification.mark-as-read');
 
     // Account Linker
     Route::get('account-link/verify/{uuid}/{server}', [\App\Http\Controllers\AccountLinkController::class, 'verify'])->name('account-link.verify');
     Route::delete('account-link/remove/{player:uuid}', [\App\Http\Controllers\AccountLinkController::class, 'unlink'])->name('account-link.delete')->middleware('password.confirm');
-    Route::get('user/linked-players', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('linked-player.list');
+    Route::get('user/linked-players', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('linked-player.list')->withoutMiddleware(['verified-if-enabled']);
 
     // Server Chatlog
-    Route::get('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'index'])->name('chatlog.index')->withoutMiddleware(['auth:sanctum', 'verified']);
+    Route::get('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'index'])->name('chatlog.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);
     Route::post('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'sendToServer'])->name('chatlog.send')->middleware(['forbid-muted-user', 'throttle:chat']);
     Route::delete('chatlog/{chatlog}', [\App\Http\Controllers\ServerChatlogController::class, 'destroy'])->name('chatlog.delete');
 });
@@ -96,7 +96,7 @@ Route::middleware(['auth:sanctum', 'verified', 'forbid-banned-user', 'redirect-u
 /**
  * ADMIN SECTION
  */
-Route::middleware(['auth:sanctum', 'verified', 'forbid-banned-user', 'staff-member', 'redirect-uncompleted-user'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 'staff-member', 'redirect-uncompleted-user'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('user.index');
     //  Route::get('user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('user.show');
     Route::get('user/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('user.edit');

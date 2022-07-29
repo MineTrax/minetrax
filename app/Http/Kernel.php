@@ -69,6 +69,7 @@ class Kernel extends HttpKernel
         'forbid-banned-user' => \App\Http\Middleware\ForbidBannedUser::class,
         'forbid-muted-user' => \App\Http\Middleware\ForbidMutedUser::class,
         'redirect-uncompleted-user' => \App\Http\Middleware\RedirectUncompletedUser::class,
+        'verified-if-enabled' => \App\Http\Middleware\EnsureEmailIsVerifiedWhenFeatureEnabled::class,
 
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,

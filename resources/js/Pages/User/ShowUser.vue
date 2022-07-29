@@ -5,33 +5,35 @@
     />
 
     <div class="px-2 py-3 md:py-12 md:px-10 max-w-6xl mx-auto space-y-4">
-      <div
+      <AlertCard
         v-if="profileUser.banned_at"
-        role="alert"
-        class="mb-4 bg-white dark:bg-cool-gray-800 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow"
+        text-color="text-red-600 dark:text-red-400"
+        border-color="border-red-500"
       >
-        <div class="flex">
-          <div class="py-1">
-            <icon
-              name="ban"
-              class="h-6 w-6 text-red-500 mr-4"
-            />
-          </div>
-          <div>
-            <p class="font-bold text-red-600 dark:text-red-400">
-              {{ __("This User is Banned!") }}
-            </p>
-            <p class="text-sm dark:text-red-400">
-              {{ __("If you think it is a mistake.") }}  <inertia-link
-                :href="route('staff.index')"
-                class="hover:underline font-semibold"
-              >
-                {{ __("Please contact a Staff") }}
-              </inertia-link>.
-            </p>
-          </div>
-        </div>
-      </div>
+        {{ __("This User is Banned!") }}
+        <template #icon>
+          <icon
+            name="ban"
+            class="h-6 w-6 text-red-500 mr-4"
+          />
+        </template>
+        <template #body>
+          {{ __("If you think it is a mistake.") }}  <inertia-link
+            :href="route('staff.index')"
+            class="hover:underline font-semibold"
+          >
+            {{ __("Please contact a Staff") }}
+          </inertia-link>.
+        </template>
+      </AlertCard>
+
+      <AlertCard
+        v-if="$page.props.jetstream.hasEmailVerification && profileUser.email_verified_at === null"
+        text-color="text-orange-800 dark:text-orange-500"
+        border-color="border-orange-500"
+      >
+        {{ __("This user hasn't verified his email yet!") }}
+      </AlertCard>
 
       <div class="shadow max-w-none bg-white dark:bg-cool-gray-800 overflow-hidden border-b border-gray-200 dark:border-cool-gray-800 md:rounded">
         <div>
@@ -364,13 +366,15 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Icon from '@/Components/Icon.vue';
 import PostListBox from '@/Shared/PostListBox.vue';
 import SocialChannelBox from '@/Shared/SocialChannelBox.vue';
+import AlertCard from '@/Components/AlertCard.vue';
 
 export default {
     components: {
         SocialChannelBox,
         Icon,
         AppLayout,
-        PostListBox
+        PostListBox,
+        AlertCard
     },
     props: {
         profileUser: Object,

@@ -56,14 +56,14 @@ class HomeController extends Controller
         $timestamp5MinutesBefore = now()->subtract(5, 'minute')->timestamp;
         $onlineUsers = collect();
         Session::with('user:id,name,username,profile_photo_path,verified_at,settings')
-            ->where('last_activity', '>=' , $timestamp5MinutesBefore)
+            ->where('last_activity', '>=', $timestamp5MinutesBefore)
             ->select(['id', 'user_id', 'last_activity'])
             ->orderByDesc('last_activity')
             ->limit(10)
             ->get()
             // Filter out duplicate user sessions but don't filter guest session with null user_id
-            ->filter(function ($user) use($onlineUsers) {
-                if(!$user->user) {
+            ->filter(function ($user) use ($onlineUsers) {
+                if (!$user->user) {
                     $onlineUsers->push($user);
                 } else {
                     if (!$onlineUsers->firstWhere('user_id', $user->user_id)) {
@@ -74,7 +74,7 @@ class HomeController extends Controller
 
         // Welcome box content is in markdown so need to converted before displaying.
         $welcomeBoxContentHtml = null;
-        if($generalSettings->enable_welcomebox && $generalSettings->welcomebox_content) {
+        if ($generalSettings->enable_welcomebox && $generalSettings->welcomebox_content) {
             $converter = new GithubFlavoredMarkdownConverter();
             $welcomeBoxContentHtml = $converter->convertToHtml($generalSettings->welcomebox_content)->getContent();
         }
@@ -120,7 +120,7 @@ class HomeController extends Controller
 
         // Cache it for 1 hours
         $oneHour = 3600;
-        $featureList = Cache::remember('feature:list',  $oneHour, function () {
+        $featureList = Cache::remember('feature:list', $oneHour, function () {
             $features = Http::timeout(5)->get('https://q0rmzst113.execute-api.eu-central-1.amazonaws.com/v1/features')->json();
             if (!$features['body']) {
                 throw new \Exception('Failed to get data');
@@ -129,7 +129,7 @@ class HomeController extends Controller
         });
 
         return Inertia::render('Extra/FeatureList', [
-            'features' => $featureList
+            'features' => $featureList,
         ]);
     }
 
@@ -144,7 +144,7 @@ class HomeController extends Controller
         $response = [
             "my_version" => $myVersion,
             "latest_version" => $latestVersion,
-            "is_uptodate" => $myVersion == $latestVersion
+            "is_uptodate" => $myVersion == $latestVersion,
         ];
 
         return response()->json($response);
