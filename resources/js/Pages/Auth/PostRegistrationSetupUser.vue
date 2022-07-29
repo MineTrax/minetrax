@@ -48,7 +48,6 @@
 
 <script>
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import XInput from '@/Components/Form/XInput.vue';
@@ -60,7 +59,6 @@ export default {
         AppLayout,
         LoadingButton,
         JetAuthenticationCard,
-        JetAuthenticationCardLogo,
         Icon,
     },
 

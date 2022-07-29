@@ -1,11 +1,11 @@
 import './bootstrap';
 import '../css/app.css';
 
-import {createApp, h} from 'vue';
-import {createInertiaApp, Head, Link} from '@inertiajs/inertia-vue3';
-import {InertiaProgress} from '@inertiajs/progress';
-import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
-import {ZiggyVue} from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { createApp, h } from 'vue';
+import { createInertiaApp, Head, Link } from '@inertiajs/inertia-vue3';
+import { InertiaProgress } from '@inertiajs/progress';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 import VueTippy from 'vue-tippy';
 import authorizable from '@/Mixins/authorizable.js';

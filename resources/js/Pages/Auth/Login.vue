@@ -78,7 +78,6 @@
 
 <script>
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import SocialAuthButtons from '@/Components/SocialAuthButtons.vue';
@@ -92,7 +91,6 @@ export default {
         SocialAuthButtons,
         LoadingButton,
         JetAuthenticationCard,
-        JetAuthenticationCardLogo,
         AppLayout
     },
 
