@@ -1,13 +1,13 @@
 <template>
   <div
-    :id="_uid"
+    :id="uid"
   />
 </template>
 
 <script>
 import * as echarts from 'echarts';
-import {debounce} from 'lodash';
-import darkmineTheme from '@/Components/Dashboard/darkmineTheme';
+import {debounce, uniqueId} from 'lodash';
+import darkmineTheme from '@/Components/Dashboard/darkmineTheme.js';
 
 export default {
     name: 'EChart',
@@ -20,7 +20,8 @@ export default {
     },
     data() {
         return {
-            resizeChart: null
+            resizeChart: null,
+            uid: uniqueId()
         };
     },
     mounted() {
@@ -28,7 +29,7 @@ export default {
 
         let theme = window.colorMode === 'dark' ? 'darkmine' : null;
         // Initialize the echarts instance based on the prepared dom
-        const chart = echarts.init(document.getElementById(this._uid), theme, {
+        const chart = echarts.init(document.getElementById(this.uid), theme, {
             height: this.height
         });
 
@@ -73,7 +74,7 @@ export default {
         // Display the chart using the configuration items and data just specified.
         chart.setOption(chartOptions);
     },
-    destroyed() {
+    unmounted() {
         window.removeEventListener('resize', this.resizeChart);
     }
 };

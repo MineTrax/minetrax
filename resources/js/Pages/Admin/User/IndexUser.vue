@@ -211,9 +211,9 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Pagination from '@/Components/Pagination';
-import Icon from '@/Components/Icon';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import Icon from '@/Components/Icon.vue';
 
 export default {
 

@@ -1,127 +1,117 @@
-<template>
-  <span>
-    <span @click="startConfirmingPassword">
-      <slot />
-    </span>
+<script setup>
+import { ref, reactive, nextTick } from 'vue';
+import JetButton from './Button.vue';
+import JetDialogModal from './DialogModal.vue';
+import JetInput from './Input.vue';
+import JetInputError from './InputError.vue';
+import JetSecondaryButton from './SecondaryButton.vue';
 
-    <jet-dialog-modal
-      :show="confirmingPassword"
-      @close="closeModal"
-    >
-      <template #title>
-        {{ title }}
-      </template>
+const emit = defineEmits(['confirmed']);
 
-      <template #content>
-        {{ content }}
-
-        <div class="mt-4">
-          <jet-input
-            ref="password"
-            v-model="form.password"
-            type="password"
-            class="mt-1 block w-3/4"
-            :placeholder="__('Password')"
-            @keyup.enter.native="confirmPassword"
-          />
-
-          <jet-input-error
-            :message="form.error"
-            class="mt-2"
-          />
-        </div>
-      </template>
-
-      <template #footer>
-        <jet-secondary-button @click.native="closeModal">
-          {{ __("Nevermind") }}
-        </jet-secondary-button>
-
-        <jet-button
-          class="ml-2"
-          :class="{ 'opacity-25': form.processing }"
-          :disabled="form.processing"
-          @click.native="confirmPassword"
-        >
-          {{ button }}
-        </jet-button>
-      </template>
-    </jet-dialog-modal>
-  </span>
-</template>
-
-<script>
-import JetButton from './Button';
-import JetDialogModal from './DialogModal';
-import JetInput from './Input';
-import JetInputError from './InputError';
-import JetSecondaryButton from './SecondaryButton';
-
-export default {
-
-    components: {
-        JetButton,
-        JetDialogModal,
-        JetInput,
-        JetInputError,
-        JetSecondaryButton,
+defineProps({
+    title: {
+        type: String,
+        default: 'Confirm Password',
     },
-    props: {
-        title: {
-            default: 'Confirm Password',
-        },
-        content: {
-            default: 'For your security, please confirm your password to continue.',
-        },
-        button: {
-            default: 'Confirm',
+    content: {
+        type: String,
+        default: 'For your security, please confirm your password to continue.',
+    },
+    button: {
+        type: String,
+        default: 'Confirm',
+    },
+});
+
+const confirmingPassword = ref(false);
+
+const form = reactive({
+    password: '',
+    error: '',
+    processing: false,
+});
+
+const passwordInput = ref(null);
+
+const startConfirmingPassword = () => {
+    axios.get(route('password.confirmation')).then(response => {
+        if (response.data.confirmed) {
+            emit('confirmed');
+        } else {
+            confirmingPassword.value = true;
+
+            setTimeout(() => passwordInput.value.focus(), 250);
         }
-    },
+    });
+};
 
-    data() {
-        return {
-            confirmingPassword: false,
-            form: {
-                password: '',
-                error: '',
-            },
-        };
-    },
+const confirmPassword = () => {
+    form.processing = true;
 
-    methods: {
-        startConfirmingPassword() {
-            axios.get(route('password.confirmation')).then(response => {
-                if (response.data.confirmed) {
-                    this.$emit('confirmed');
-                } else {
-                    this.confirmingPassword = true;
+    axios.post(route('password.confirm'), {
+        password: form.password,
+    }).then(() => {
+        form.processing = false;
 
-                    setTimeout(() => this.$refs.password.focus(), 250);
-                }
-            });
-        },
+        closeModal();
+        nextTick().then(() => emit('confirmed'));
 
-        confirmPassword() {
-            this.form.processing = true;
+    }).catch(error => {
+        form.processing = false;
+        form.error = error.response.data.errors.password[0];
+        passwordInput.value.focus();
+    });
+};
 
-            axios.post(route('password.confirm'), {
-                password: this.form.password,
-            }).then(() => {
-                this.form.processing = false;
-                this.closeModal();
-                this.$nextTick(() => this.$emit('confirmed'));
-            }).catch(error => {
-                this.form.processing = false;
-                this.form.error = error.response.data.errors.password[0];
-                this.$refs.password.focus();
-            });
-        },
-
-        closeModal() {
-            this.confirmingPassword = false;
-            this.form.password = '';
-            this.form.error = '';
-        },
-    }
+const closeModal = () => {
+    confirmingPassword.value = false;
+    form.password = '';
+    form.error = '';
 };
 </script>
+
+<template>
+    <span>
+        <span @click="startConfirmingPassword">
+            <slot />
+        </span>
+
+        <JetDialogModal :show="confirmingPassword" @close="closeModal">
+            <template #title>
+                {{ title }}
+            </template>
+
+            <template #content>
+                {{ content }}
+
+                <div class="mt-4">
+                    <JetInput
+                        ref="passwordInput"
+                        v-model="form.password"
+                        type="password"
+                        class="mt-1 block w-3/4"
+                        :placeholder="__('Password')"
+                        @keyup.enter="confirmPassword"
+                    />
+
+                    <JetInputError :message="form.error" class="mt-2" />
+                </div>
+            </template>
+
+            <template #footer>
+                <JetSecondaryButton @click="closeModal">
+                    {{ __("Cancel") }}
+                </JetSecondaryButton>
+
+                <JetButton
+                    class="ml-3"
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                    @click="confirmPassword"
+                >
+                    {{ button }}
+                </JetButton>
+            </template>
+        </JetDialogModal>
+    </span>
+</template>

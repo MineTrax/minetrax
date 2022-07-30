@@ -1,3 +1,16 @@
+<script setup>
+defineProps({
+    type: {
+        type: String,
+        default: 'button',
+    },
+    loading: {
+        type: Boolean,
+        default: false,
+    },
+});
+</script>
+
 <template>
   <button
     :type="type"
@@ -27,18 +40,3 @@
     <slot />
   </button>
 </template>
-
-<script>
-export default {
-    props: {
-        loading: {
-            type: Boolean,
-            default: false
-        },
-        type: {
-            type: String,
-            default: 'button',
-        },
-    }
-};
-</script>

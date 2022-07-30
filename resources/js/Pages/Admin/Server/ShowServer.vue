@@ -325,17 +325,16 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import {Terminal} from 'xterm';
 import {FitAddon} from 'xterm-addon-fit';
 import {WebLinksAddon} from 'xterm-addon-web-links';
-import OverviewCard from '@/Components/Dashboard/OverviewCard';
-import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu';
+import OverviewCard from '@/Components/Dashboard/OverviewCard.vue';
+import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu.vue';
 import {debounce} from 'lodash';
 import millify from 'millify';
 
 export default {
-
     components: {
         ServerSubMenu,
         OverviewCard,
@@ -357,7 +356,8 @@ export default {
             serverPingInterval: null,
             sendingCommand: false,
             commandText: '',
-            commandError: null
+            commandError: null,
+            termx: null
         };
     },
 
@@ -416,12 +416,18 @@ export default {
             term.writeln(data.data.data);
         });
 
+
         // Load Server Online Status
         this.pingServer();
         this.serverPingInterval = setInterval(() => this.pingServer(), 10000);
+
+        // @WorkAround for 'Could not dispose an addon that has not been loaded'
+        // Not able to assign termx directly above because of Proxy, it give above error
+        this.termx = term;
     },
 
-    destroyed() {
+    unmounted() {
+        this.termx.dispose();
         Echo.leave(`consolelogs.${this.server.id}`);
         removeEventListener('resize', this.refitTerminal);
         clearInterval(this.serverPingInterval);

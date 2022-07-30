@@ -11,13 +11,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Fortify\Features;
+use Laravel\Fortify\Fortify;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Searchable\Searchable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\Notifications\VerifyEmail;
 
-class User extends Authenticatable implements ReacterableInterface, Commentator, Searchable
+class User extends Authenticatable implements ReacterableInterface, Commentator, Searchable, MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
@@ -86,6 +91,18 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
     protected $with = [
         'roles:id,name,display_name,is_staff,color,web_message_format,weight'
     ];
+
+    /**
+     * Override default email verification in Trait to check if feature is enabled before sending mail.
+     */
+    public function sendEmailVerificationNotification()
+    {
+        // Only send verification email if Feature is enabled.
+        if (Features::enabled(Features::emailVerification()) && !$this->hasVerifiedEmail())
+        {
+            $this->notify(new VerifyEmail);
+        }
+    }
 
     public function isImpersonating(): bool
     {

@@ -8,7 +8,7 @@ class CreatePluginSettings extends SettingsMigration
     {
         $this->migrator->add('plugin.enable_api', true);
         $this->migrator->addEncrypted('plugin.plugin_api_key', Str::random(32));
-        $this->migrator->addEncrypted('plugin.plugin_api_secret', Str::random(64));
+        $this->migrator->addEncrypted('plugin.plugin_api_secret', Str::random(32));
 
         $this->migrator->add('plugin.enable_account_link', true);
         $this->migrator->add('plugin.max_players_link_per_account', 1);

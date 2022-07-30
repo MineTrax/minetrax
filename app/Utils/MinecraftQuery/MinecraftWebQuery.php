@@ -4,6 +4,7 @@ namespace App\Utils\MinecraftQuery;
 
 use App\Settings\PluginSettings;
 use Illuminate\Encryption\Encrypter;
+use Str;
 
 class MinecraftWebQuery
 {
@@ -59,18 +60,29 @@ class MinecraftWebQuery
         ];
     }
 
-    private function makeEncryptedString(string $type, string $params = null): string
+    public function makeEncryptedString(string $type, string $params = null): string
     {
         $pluginSettings = app(PluginSettings::class);
+        $apiKey = $pluginSettings->plugin_api_key;
+        $apiSecret = Str::substr($pluginSettings->plugin_api_secret, 0, 32);
+
         $string = [
-            "secret" => $pluginSettings->plugin_api_secret,
+            "api_key" => $apiKey,
             "type" => $type,
             "params" => $params
         ];
         $string = json_encode($string);
 
-        $apiKey = $pluginSettings->plugin_api_key;
-        $newEncrypter = new Encrypter( ($apiKey), "AES-256-CBC" );
+        $newEncrypter = new Encrypter( ($apiSecret), "AES-256-CBC" );
         return $newEncrypter->encrypt( $string );
+    }
+
+    public function decryptEncryptedString(string $string): string
+    {
+        $pluginSettings = app(PluginSettings::class);
+
+        $apiSecret = Str::substr($pluginSettings->plugin_api_secret, 0, 32);
+        $newEncrypter = new Encrypter( ($apiSecret), "AES-256-CBC" );
+        return $newEncrypter->decrypt( $string );
     }
 }

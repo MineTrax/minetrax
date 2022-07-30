@@ -37,12 +37,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import ShoutBox from '@/Shared/ShoutBox';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
-import DidYouKnowBox from '@/Shared/DidYouKnowBox';
-import DiscordServerBox from '@/Shared/DiscordServerBox';
-import Post from '@/Components/Post';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ShoutBox from '@/Shared/ShoutBox.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
+import DidYouKnowBox from '@/Shared/DidYouKnowBox.vue';
+import DiscordServerBox from '@/Shared/DiscordServerBox.vue';
+import Post from '@/Components/Post.vue';
 
 export default {
     components: {

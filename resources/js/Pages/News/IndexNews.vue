@@ -129,10 +129,10 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import ServerStatusBox from '@/Shared/ServerStatusBox';
-import ShoutBox from '@/Shared/ShoutBox';
-import InfiniteScroll from '@/Components/InfiniteScroll';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
+import ShoutBox from '@/Shared/ShoutBox.vue';
+import InfiniteScroll from '@/Components/InfiniteScroll.vue';
 
 export default {
 

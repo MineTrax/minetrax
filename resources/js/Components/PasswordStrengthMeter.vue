@@ -2,9 +2,9 @@
   <div class="flex -mx-1">
     <template
       v-for="(v,i) in 5"
+      :key="i"
     >
       <div
-        :key="i"
         class="w-1/5 px-1"
       >
         <div

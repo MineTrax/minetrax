@@ -68,8 +68,8 @@
 
 <script>
 
-import CopyToClipboard from '@/Components/CopyToClipboard';
-import ErrorMessage from '@/Components/ErrorMessage';
+import CopyToClipboard from '@/Components/CopyToClipboard.vue';
+import ErrorMessage from '@/Components/ErrorMessage.vue';
 
 export default {
     components: {ErrorMessage, CopyToClipboard},
@@ -102,7 +102,7 @@ export default {
         this.interval = setInterval(() => this.getServerQuery(), 10000);
     },
 
-    destroyed() {
+    unmounted() {
         clearInterval(this.interval);
     },
 

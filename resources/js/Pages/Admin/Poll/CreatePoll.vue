@@ -94,7 +94,7 @@
                     <div class="col-span-6 sm:col-span-3 relative">
                       <date-picker
                         id="started_at"
-                        v-model="form.started_at"
+                        v-model:value="form.started_at"
                         :placeholder="__('Poll Starts At')"
                         class="w-full"
                         value-type="format"
@@ -114,7 +114,7 @@
                     <div class="col-span-6 sm:col-span-3 relative">
                       <date-picker
                         id="closed_at"
-                        v-model="form.closed_at"
+                        v-model:value="form.closed_at"
                         :placeholder="__('Poll Ends At')"
                         class="w-full"
                         value-type="format"
@@ -151,12 +151,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import JetInputError from '@/Jetstream/InputError';
-import LoadingButton from '@/Components/LoadingButton';
-import XInput from '@/Components/Form/XInput';
-import Icon from '@/Components/Icon';
-import DatePicker from 'vue2-datepicker';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import Icon from '@/Components/Icon.vue';
+import DatePicker from 'vue-datepicker-next';
 
 export default {
     components: {

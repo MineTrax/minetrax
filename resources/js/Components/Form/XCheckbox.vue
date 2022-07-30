@@ -8,7 +8,6 @@
       :name="name"
       class="rounded border-gray-300 dark:bg-cool-gray-900 dark:border-gray-900 text-light-blue-500 shadow-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50"
       :class="checkboxSizeClass"
-      :value="value"
       :required="required"
       @input="$emit('input', $event.target.value)"
     >
@@ -37,11 +36,10 @@ export default {
         event: 'change',
     },
     props: {
-        checked: {
+        modelValue: {
             type: [Array, Boolean, Number],
-            default: null
+            default: false
         },
-        value: [Number, String, Array, Object, Boolean, Date],
         name: String,
         help: String,
         label: String,
@@ -57,10 +55,10 @@ export default {
     computed: {
         proxyChecked: {
             get() {
-                return this.checked;
+                return this.modelValue;
             },
             set(val) {
-                this.$emit('change', val);
+                this.$emit('update:modelValue', val);
             },
         },
 

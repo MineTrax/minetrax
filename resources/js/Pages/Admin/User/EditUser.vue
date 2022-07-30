@@ -77,7 +77,7 @@
                       <jet-secondary-button
                         class="mt-2 mr-2"
                         type="button"
-                        @click.native.prevent="selectNewPhoto"
+                        @click.prevent="selectNewPhoto"
                       >
                         {{ __("Select A New Photo") }}
                       </jet-secondary-button>
@@ -140,7 +140,7 @@
                     <div class="col-span-6 sm:col-span-3 relative">
                       <date-picker
                         id="dob"
-                        v-model="form.dob"
+                        v-model:value="form.dob"
                         :placeholder="__('Select your date of birth')"
                         class="w-full"
                         value-type="format"
@@ -356,16 +356,16 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import JetInputError from '@/Jetstream/InputError';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import LoadingButton from '@/Components/LoadingButton';
-import XInput from '@/Components/Form/XInput';
-import JetLabel from '@/Jetstream/Label';
-import DatePicker from 'vue2-datepicker';
-import XCheckbox from '@/Components/Form/XCheckbox';
-import XSelect from '@/Components/Form/XSelect';
-import XTextarea from '@/Components/Form/XTextarea';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import JetLabel from '@/Jetstream/Label.vue';
+import DatePicker from 'vue-datepicker-next';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
 
 export default {
 
@@ -405,8 +405,8 @@ export default {
                 s_website_url: this.userData.social_links ? this.userData.social_links.s_website_url : null,
                 about: this.userData.about,
                 profile_photo_source: this.userData.settings ? this.userData.settings.profile_photo_source : null,
-                show_gender: this.userData.settings ? this.userData.settings.show_gender : false,
-                show_yob: this.userData.settings ? this.userData.settings.show_yob : false,
+                show_gender: this.userData.settings ? !!+this.userData.settings.show_gender : false,                     // coz in old version, data store as string 1,0
+                show_yob: this.userData.settings ? !!+this.userData.settings.show_yob : false,                            // coz in old version, data store as string 1,0
                 verified: !!this.userData.verified_at,
                 role: this.userData.roles[0].name
             }),

@@ -4,10 +4,6 @@
       :title="__('Verify your Email')"
     />
     <jet-authentication-card>
-      <template #logo>
-        <jet-authentication-card-logo />
-      </template>
-
       <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
         {{ __("Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.") }}
       </div>
@@ -43,17 +39,15 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import LoadingButton from '@/Components/LoadingButton';
-import AppLayout from '@/Layouts/AppLayout';
+import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 
 export default {
     components: {
         AppLayout,
         LoadingButton,
         JetAuthenticationCard,
-        JetAuthenticationCardLogo,
     },
 
     props: {

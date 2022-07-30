@@ -98,7 +98,7 @@
                       <jet-secondary-button
                         class="mt-2 mr-2"
                         type="button"
-                        @click.native.prevent="selectNewPhoto"
+                        @click.prevent="selectNewPhoto"
                       >
                         {{ __("Select A New Image") }}
                       </jet-secondary-button>
@@ -183,13 +183,13 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import JetInputError from '@/Jetstream/InputError';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import LoadingButton from '@/Components/LoadingButton';
-import XInput from '@/Components/Form/XInput';
-import * as EasyMDE from 'easymde';
-import XSelect from '@/Components/Form/XSelect';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import EasyMDE from 'easymde';
+import XSelect from '@/Components/Form/XSelect.vue';
 
 export default {
     components: {

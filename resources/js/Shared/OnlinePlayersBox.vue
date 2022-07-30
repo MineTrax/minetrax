@@ -75,7 +75,7 @@
 
 <script>
 
-import ErrorMessage from '@/Components/ErrorMessage';
+import ErrorMessage from '@/Components/ErrorMessage.vue';
 
 export default {
     components: {ErrorMessage},
@@ -108,7 +108,7 @@ export default {
         this.interval = setInterval(() => this.getServerQuery(), 10000);
     },
 
-    destroyed() {
+    unmounted() {
         clearInterval(this.interval);
     },
 

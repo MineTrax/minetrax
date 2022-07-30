@@ -32,7 +32,7 @@ export default {
         },
     },
     render() {
-        return this.$scopedSlots.default({
+        return this.$slots.default({
             status: this.status,
             copy: this.copy
         });

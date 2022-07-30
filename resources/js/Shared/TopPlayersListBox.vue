@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import Icon from '@/Components/Icon';
+import Icon from '@/Components/Icon.vue';
 
 export default {
     components: {Icon},

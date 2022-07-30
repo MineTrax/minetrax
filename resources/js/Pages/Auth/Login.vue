@@ -5,12 +5,6 @@
     />
 
     <jet-authentication-card>
-      <template #logo>
-        <jet-authentication-card-logo />
-      </template>
-
-      <!--<jet-validation-errors class="mb-4"/>-->
-
       <div
         v-if="status"
         class="mb-4 font-medium text-sm text-green-600"
@@ -83,13 +77,12 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo';
-import LoadingButton from '@/Components/LoadingButton';
-import AppLayout from '@/Layouts/AppLayout';
-import SocialAuthButtons from '@/Components/SocialAuthButtons';
-import XInput from '@/Components/Form/XInput';
-import XCheckbox from '@/Components/Form/XCheckbox';
+import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import SocialAuthButtons from '@/Components/SocialAuthButtons.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
 
 export default {
     components: {
@@ -98,7 +91,6 @@ export default {
         SocialAuthButtons,
         LoadingButton,
         JetAuthenticationCard,
-        JetAuthenticationCardLogo,
         AppLayout
     },
 

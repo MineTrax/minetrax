@@ -1,4 +1,81 @@
+<script>
+// import { Inertia } from '@inertiajs/inertia';
+import { Head } from '@inertiajs/inertia-vue3';
+import JetApplicationMark from '@/Jetstream/ApplicationMark.vue';
+import JetBanner from '@/Jetstream/Banner.vue';
+import JetDropdown from '@/Jetstream/Dropdown.vue';
+import JetDropdownLink from '@/Jetstream/DropdownLink.vue';
+import JetNavLink from '@/Jetstream/NavLink.vue';
+import JetSidebarLink from '@/Jetstream/SidebarLink.vue';
+import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue';
+import Toast from '@/Components/Toast.vue';
+import Icon from '@/Components/Icon.vue';
+import Search from '@/Shared/Search.vue';
+import AppHead from '@/Components/AppHead.vue';
+import ColorThemeToggle from '@/Components/ColorThemeToggle.vue';
+import NotificationDropdown from '@/Shared/NotificationDropdown.vue';
+
+export default {
+    components: {
+        NotificationDropdown,
+        ColorThemeToggle,
+        AppHead,
+        Search,
+        Icon,
+        Toast,
+        JetApplicationMark,
+        JetBanner,
+        JetDropdown,
+        JetDropdownLink,
+        JetNavLink,
+        JetResponsiveNavLink,
+        JetSidebarLink,
+        Head
+    },
+
+    data() {
+        return {
+            isAdminSidebarOpen: false,
+            showingNavigationDropdown: false,
+            title: 'MineTrax'
+        };
+    },
+
+    computed: {
+        canShowAdminSidebar() {
+            return this.isStaff(this.$page.props.user);
+        }
+    },
+
+    mounted() {
+        document.addEventListener('keydown', e => {
+            if (e.keyCode == 27 && this.isAdminSidebarOpen) this.isAdminSidebarOpen = false;
+        });
+    },
+
+    methods: {
+        switchToTeam(team) {
+            this.$inertia.put(route('current-team.update'), {
+                'team_id': team.id
+            }, {
+                preserveState: false
+            });
+        },
+
+        logout() {
+            this.$inertia.post(route('logout'));
+        },
+
+        adminDrawer() {
+            this.isAdminSidebarOpen = !this.isAdminSidebarOpen;
+        },
+    }
+};
+</script>
+
 <template>
+  <Head :title="title" />
+
   <div>
     <jet-banner />
     <toast
@@ -201,9 +278,11 @@
                           Switch Teams
                         </div>
 
-                        <template v-for="team in $page.props.user.all_teams">
+                        <template
+                          v-for="team in $page.props.user.all_teams"
+                          :key="team.id"
+                        >
                           <form
-                            :key="team.id"
                             @submit.prevent="switchToTeam(team)"
                           >
                             <jet-dropdown-link as="button">
@@ -368,6 +447,7 @@
               </div>
               <div class="hidden space-x-8 md:-my-px md:ml-8 md:flex">
                 <jet-nav-link
+                  v-if="$page.props.hasRegistrationFeature"
                   :href="route('register')"
                   :active="route().current('register')"
                 >
@@ -477,6 +557,7 @@
                 {{ __("Login") }}
               </jet-responsive-nav-link>
               <jet-responsive-nav-link
+                v-if="$page.props.hasRegistrationFeature"
                 :href="route('register')"
                 :active="route().current('register')"
               >
@@ -598,7 +679,7 @@
           :href="route('admin.server.index')"
           :active="route().current('admin.server.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="server" />
           </template>
           {{ __("Servers") }}
@@ -609,7 +690,7 @@
           :href="route('admin.user.index')"
           :active="route().current('admin.user.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon
               name="users"
               class="w-5 h-5"
@@ -623,7 +704,7 @@
           :href="route('admin.role.index')"
           :active="route().current('admin.role.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="shield-check" />
           </template>
           {{ __("User Roles") }}
@@ -634,7 +715,7 @@
           :href="route('admin.rank.index')"
           :active="route().current('admin.rank.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="degree-hat" />
           </template>
           {{ __("Player Ranks") }}
@@ -645,7 +726,7 @@
           :href="route('admin.news.index')"
           :active="route().current('admin.news.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="newspaper" />
           </template>
           {{ __("News") }}
@@ -656,7 +737,7 @@
           :href="route('admin.poll.index')"
           :active="route().current('admin.poll.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon
               class="h-5 w-5"
               name="chart-pie"
@@ -670,7 +751,7 @@
           :href="route('admin.custom-page.index')"
           :active="route().current('admin.custom-page.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon
               class="h-5 w-5"
               name="collection"
@@ -684,7 +765,7 @@
           :href="route('admin.session.index')"
           :active="route().current('admin.session.index')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon
               class="h-5 w-5"
               name="finger-print"
@@ -698,7 +779,7 @@
           :href="route('admin.setting.general.show')"
           :active="route().current('admin.setting.general.show')"
         >
-          <template slot="icon">
+          <template #icon>
             <icon name="cog" />
           </template>
           {{ __("Settings") }}
@@ -726,83 +807,6 @@
         <!--                    by MineTrax-->
         <!--                </div>-->
       </footer>
-
-      <!-- Modal Portal -->
-      <portal-target
-        name="modal"
-        multiple
-      />
     </div>
   </div>
 </template>
-
-<script>
-import JetApplicationMark from '@/Jetstream/ApplicationMark';
-import JetBanner from '@/Jetstream/Banner';
-import JetDropdown from '@/Jetstream/Dropdown';
-import JetDropdownLink from '@/Jetstream/DropdownLink';
-import JetNavLink from '@/Jetstream/NavLink';
-import JetSidebarLink from '@/Jetstream/SidebarLink';
-import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink';
-import Toast from '@/Components/Toast';
-import Icon from '@/Components/Icon';
-import Search from '@/Shared/Search';
-import AppHead from '@/Components/AppHead';
-import ColorThemeToggle from '@/Components/ColorThemeToggle';
-import NotificationDropdown from '@/Shared/NotificationDropdown';
-
-export default {
-    components: {
-        NotificationDropdown,
-        ColorThemeToggle,
-        AppHead,
-        Search,
-        Icon,
-        Toast,
-        JetApplicationMark,
-        JetBanner,
-        JetDropdown,
-        JetDropdownLink,
-        JetNavLink,
-        JetResponsiveNavLink,
-        JetSidebarLink
-    },
-
-    data() {
-        return {
-            isAdminSidebarOpen: false,
-            showingNavigationDropdown: false,
-        };
-    },
-
-    computed: {
-        canShowAdminSidebar() {
-            return this.isStaff(this.$page.props.user);
-        }
-    },
-
-    mounted() {
-        document.addEventListener('keydown', e => {
-            if (e.keyCode == 27 && this.isAdminSidebarOpen) this.isAdminSidebarOpen = false;
-        });
-    },
-
-    methods: {
-        switchToTeam(team) {
-            this.$inertia.put(route('current-team.update'), {
-                'team_id': team.id
-            }, {
-                preserveState: false
-            });
-        },
-
-        logout() {
-            this.$inertia.post(route('logout'));
-        },
-
-        adminDrawer() {
-            this.isAdminSidebarOpen = !this.isAdminSidebarOpen;
-        },
-    }
-};
-</script>

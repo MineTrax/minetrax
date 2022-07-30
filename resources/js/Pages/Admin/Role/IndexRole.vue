@@ -186,7 +186,7 @@
     </div>
 
     <jet-confirmation-modal
-      :show="roleBeingDeleted"
+      :show="!!roleBeingDeleted"
       @close="roleBeingDeleted = null"
     >
       <template #title>
@@ -198,7 +198,7 @@
       </template>
 
       <template #footer>
-        <jet-secondary-button @click.native="roleBeingDeleted = null">
+        <jet-secondary-button @click="roleBeingDeleted = null">
           {{ __("Nevermind") }}
         </jet-secondary-button>
 
@@ -206,7 +206,7 @@
           class="ml-2"
           :class="{ 'opacity-25': deleteRoleForm.processing }"
           :disabled="deleteRoleForm.processing"
-          @click.native="deleteRole"
+          @click="deleteRole"
         >
           {{ __("Delete Role") }}
         </jet-danger-button>
@@ -216,12 +216,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout';
-import Pagination from '@/Components/Pagination';
-import Icon from '@/Components/Icon';
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton';
-import JetDangerButton from '@/Jetstream/DangerButton';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import Icon from '@/Components/Icon.vue';
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import JetDangerButton from '@/Jetstream/DangerButton.vue';
 
 export default {
 

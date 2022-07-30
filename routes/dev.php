@@ -184,3 +184,14 @@ Route::get('webquery/{uuid}', function(\Illuminate\Http\Request $request) {
 
     dd($playerGroups);
 });
+
+Route::get('/encryptstring', function() {
+    $query = new \App\Utils\MinecraftQuery\MinecraftWebQuery("127.0.0.1", 1123);
+    $string = $query->makeEncryptedString("console_cmd", "Xinecraft");
+
+    dump($string);
+
+    $dyc = $query->decryptEncryptedString($string);
+
+    dump($dyc);
+});

@@ -829,5 +829,11 @@
     "__1.0.4-alpha__": "__1.0.4-alpha__",
     "not yet": "not yet",
     "Confirm!": "Confirm!",
-    "Are you sure you want to perform this action?": "Are you sure you want to perform this action?"
+    "Are you sure you want to perform this action?": "Are you sure you want to perform this action?",
+    "Your email address is not verified.": "Your email address is not verified.",
+    "Email verification is required to perform any action on the site. Please check your email inbox or ": "Please verify your email address before performing any action on site.",
+    "Click here to re-send the verification email": "Click here to re-send the verification email",
+    "A new verification link has been sent to your email address.": "A new verification link has been sent to your email address.",
+    "This user hasn't verified his email yet!": "This user hasn't verified his email yet!",
+    "New user registration is disabled!": "New user registration is disabled!"
 }
