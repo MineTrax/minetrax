@@ -98,8 +98,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
     public function sendEmailVerificationNotification()
     {
         // Only send verification email if Feature is enabled.
-        if (Features::enabled(Features::emailVerification()) && !$this->hasVerifiedEmail())
-        {
+        if (Features::enabled(Features::emailVerification()) && !$this->hasVerifiedEmail()) {
             $this->notify(new VerifyEmail);
         }
     }
@@ -146,7 +145,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
             $settings = $this->refresh()->getOriginal('settings');
         }
 
-        if ($settings && $settings['profile_photo_source']) {
+        if ($settings && array_key_exists('profile_photo_source', $settings) && $settings['profile_photo_source']) {
             switch ($settings['profile_photo_source']) {
                 case 'gravatar':
                     $email = $this->email;
@@ -154,7 +153,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
                     if (!$email) $email = $this->refresh()->getOriginal('email');
                     $hashedEmail = md5($email);
                     return "https://www.gravatar.com/avatar/{$hashedEmail}?size=150&d=mp";
-                // minecraft head using his first linked player username
+                    // minecraft head using his first linked player username
                 case 'linked_player':
                     if (!$this?->players()?->first()) {
                         break;
@@ -191,7 +190,8 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         tap($this->cover_image_path, function ($previous) use ($image) {
             $this->forceFill([
                 'cover_image_path' => $image->storePublicly(
-                    'cover-images', ['disk' => $this->profilePhotoDisk()]
+                    'cover-images',
+                    ['disk' => $this->profilePhotoDisk()]
                 ),
             ])->save();
 
@@ -271,7 +271,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
 
     public function isStaffMember(): bool
     {
-        return $this->roles->contains(fn($value) => $value->is_staff == true);
+        return $this->roles->contains(fn ($value) => $value->is_staff == true);
     }
 
     public function getIsStaffAttribute()
