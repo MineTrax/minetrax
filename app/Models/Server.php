@@ -14,6 +14,9 @@ class Server extends BaseModel
         'settings' => 'json',
         'type' => ServerType::class,
         'minecraft_version' => ServerVersion::class,
+        'is_stats_tracking_enabled' => 'boolean',
+        'is_ingame_chat_enabled' => 'boolean',
+        'is_online_players_query_enabled' => 'boolean'
     ];
 
     protected $dates = ['last_scanned_at'];
