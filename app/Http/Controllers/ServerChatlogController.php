@@ -51,9 +51,4 @@ class ServerChatlogController extends Controller
             return $webQuery->sendChat($userDisplayName, $request->message);
         }
     }
-
-    public function destroy()
-    {
-
-    }
 }

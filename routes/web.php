@@ -76,11 +76,11 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     // User
     Route::post('auth/user/post-registration-setup', [\App\Http\Controllers\UserProfileController::class, 'postRegistrationSetup'])->name('auth.post-reg-setup')->withoutMiddleware(['redirect-uncompleted-user', 'verified-if-enabled']);
     Route::delete('auth/user/remove-cover', [\App\Http\Controllers\UserProfileController::class, 'deleteCoverImage'])->name('current-user-cover.destroy');
-    Route::put('auth/user/notification-preferences', [\App\Http\Controllers\UserProfileController::class, 'putUpdateNotificationPreference'])->name('auth.put-notification-preferences');
+    Route::put('auth/user/notification-preferences', [\App\Http\Controllers\UserProfileController::class, 'putUpdateNotificationPreference'])->name('auth.put-notification-preferences')->withoutMiddleware('verified-if-enabled');
 
     // Notifications
     Route::get('user/notification', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notification.index')->withoutMiddleware(['redirect-uncompleted-user', 'verified-if-enabled']);
-    Route::post('user/notification/read', [\App\Http\Controllers\NotificationController::class, 'postMarkAsRead'])->name('notification.mark-as-read');
+    Route::post('user/notification/read', [\App\Http\Controllers\NotificationController::class, 'postMarkAsRead'])->name('notification.mark-as-read')->withoutMiddleware('verified-if-enabled');
 
     // Account Linker
     Route::get('account-link/verify/{uuid}/{server}', [\App\Http\Controllers\AccountLinkController::class, 'verify'])->name('account-link.verify');
@@ -90,7 +90,6 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     // Server Chatlog
     Route::get('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'index'])->name('chatlog.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);
     Route::post('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'sendToServer'])->name('chatlog.send')->middleware(['forbid-muted-user', 'throttle:chat']);
-    Route::delete('chatlog/{chatlog}', [\App\Http\Controllers\ServerChatlogController::class, 'destroy'])->name('chatlog.delete');
 });
 
 /**
