@@ -49,25 +49,25 @@ class HandleInertiaRequests extends Middleware
             'locale' => fn () => app()->getLocale(),
             'toast' => fn () => $request->session()->get('toast'),
             'popstate' => \Str::uuid(),
-            'permissions' => function() use($request) {
+            'permissions' => function () use ($request) {
                 if (!$request->user()) return [];
 
-                if($request->user()->hasRole(Role::SUPER_ADMIN_ROLE_NAME)) {
+                if ($request->user()->hasRole(Role::SUPER_ADMIN_ROLE_NAME)) {
                     return Permission::all()->pluck('name');
                 }
                 return $request->user()->getAllPermissions()->pluck('name');
             },
-            'defaultQueryServer' => function() {
+            'defaultQueryServer' => function () {
                 $defaultQueryServer = Server::where('type', ServerType::Bungee)->select('hostname', 'id')->latest()->first();
-                if(!$defaultQueryServer) {
+                if (!$defaultQueryServer) {
                     $defaultQueryServer = Server::select('id', 'hostname')->first();
                 }
                 return $defaultQueryServer;
             },
-            'generalSettings' => fn(GeneralSettings $generalSettings) => $generalSettings->toArray(),
+            'generalSettings' => fn (GeneralSettings $generalSettings) => $generalSettings->toArray(),
             'customPageList' => CustomPage::visible()->navbar()->select(['id', 'title', 'path', 'is_in_navbar', 'is_visible'])->get(),
             'isImpersonating' => $request->user() && $request->user()->isImpersonating(),
-            'enabledSocialAuths' => function() {
+            'enabledSocialAuths' => function () {
                 $enabledSocialLogins = [];
                 $enabledSocialLogins['github'] = config('services.github.oauth_enabled');
                 $enabledSocialLogins['google'] = config('services.google.oauth_enabled');
@@ -79,6 +79,8 @@ class HandleInertiaRequests extends Middleware
 
             "webVersion" => config("app.version"),
             "hasRegistrationFeature" => Route::has("register"),
+            "showPoweredBy" => config("minetrax.show_powered_by"),
+            "showHomeButton" => config("minetrax.show_home_button"),
         ]);
     }
 }

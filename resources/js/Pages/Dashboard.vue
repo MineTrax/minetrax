@@ -2,8 +2,8 @@
   <app-layout>
     <app-head />
 
-    <div class="grid gap-4 grid-cols-none md:grid-cols-4 md:gap-6 py-4 px-2 md:py-12 md:px-10 md:px-6 lg:px-16 mx-auto max-w-screen-2xl">
-      <div class="col-span-1 space-y-4 order-1 md:order-none">
+    <div class="grid grid-cols-none gap-4 px-2 py-4 mx-auto md:grid-cols-4 md:gap-6 md:py-12 md:px-10 md:px-6 lg:px-16 max-w-screen-2xl">
+      <div class="order-1 col-span-1 space-y-4 md:order-none">
         <online-players-box v-if="generalSettings.enable_mcserver_onlineplayersbox" />
         <voting-sites-box
           :votingsites="generalSettings.voteforserverbox_content"
@@ -17,7 +17,7 @@
         />
         <donation-box />
       </div>
-      <div class="col-span-1 md:col-span-2 space-y-4 order-3 md:order-none">
+      <div class="order-3 col-span-1 space-y-4 md:col-span-2 md:order-none">
         <VerifyYourEmailBox v-if="$page.props.jetstream.hasEmailVerification && $page.props.user && $page.props.user.email_verified_at === null" />
         <version-check v-if="$page.props.user && isStaff($page.props.user)" />
         <welcome-box
@@ -36,7 +36,7 @@
         <latest-pinned-news :newslist="pinnedNewsList" />
         <post-list-box v-if="generalSettings.enable_status_feed" />
       </div>
-      <div class="col-span-1 space-y-4 order-2 md:order-none">
+      <div class="order-2 col-span-1 space-y-4 md:order-none">
         <server-status-box />
         <shout-box />
         <news-box :newslist="newslist" />
@@ -112,7 +112,9 @@ export default {
         newestUser: Object,
         latestPoll: Object,
         onlineUsers: Array,
-        welcomeBoxContentHtml: String|null,
+        welcomeBoxContentHtml: {
+            type: [String,null]
+        },
         chatDefaultServerId: Number,
         chatServerList: Array,
         top10Players: Array
