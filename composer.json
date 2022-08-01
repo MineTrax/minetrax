@@ -45,7 +45,7 @@
         "guzzlehttp/guzzle": "^7.4",
         "inertiajs/inertia-laravel": "^0.5.2",
         "laravel/jetstream": "^2.10",
-        "laravel/sanctum": "^2.14.1",
+        "laravel/sanctum": "^3.0.0",
         "laravel/tinker": "^2.7",
         "tightenco/ziggy": "^1.0"
     },
