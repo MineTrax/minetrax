@@ -1,0 +1,15 @@
+{
+	"include": [
+		"resources/js/**/*"
+	],
+	"compilerOptions": {
+		"allowJs": true,
+		"jsx": "preserve",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": [
+				"resources/js/*"
+			]
+		}
+	}
+}
