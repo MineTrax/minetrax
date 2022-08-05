@@ -121,7 +121,7 @@ class HomeController extends Controller
         // Cache it for 1 hours
         $oneHour = 3600;
         $featureList = Cache::remember('feature:list', $oneHour, function () {
-            $features = Http::timeout(5)->get('https://q0rmzst113.execute-api.eu-central-1.amazonaws.com/v1/features')->json();
+            $features = Http::withoutVerifying()->timeout(5)->get('https://q0rmzst113.execute-api.eu-central-1.amazonaws.com/v1/features')->json();
             if (!$features['body']) {
                 throw new \Exception('Failed to get data');
             }
@@ -137,7 +137,7 @@ class HomeController extends Controller
     {
         $myVersion = config("app.version");
 
-        $latestVersion = Http::timeout(5)->get('https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws')->json();
+        $latestVersion = Http::withoutVerifying()->timeout(5)->get('https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws')->json();
         $latestVersion = $latestVersion['web'];
 
         $response = [
