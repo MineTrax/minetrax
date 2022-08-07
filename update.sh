@@ -24,7 +24,7 @@ else
 	echo "${Yellow}Warning! You have local changes which will get lost. Type Y to continue, N to cancel update."
 	read continueUpdate
 
-	if continueUpdate != "Y"; then
+	if [ continueUpdate != 'Y' ]; then
 		php artisan up
 		echo "${Red}Update cancelled!"
 		exit 1
