@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\JsonMinecraftPlayerStat;
 use App\Models\Player;
 use App\Models\Server;
+use App\Utils\Helpers\LegacyFtpStorage;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -60,7 +61,7 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
             $userCache = collect($userCache);
         }
 
-        $isExists = $serverDisk->exists($this->server->level_name.'/stats');
+        $isExists = $serverDisk->exists($this->server->level_name . '/stats');
         // Validate if it has stats folder to get data from.
         if (!$isExists) {
             // Logger Log Invalid Path or Path not found
@@ -68,7 +69,13 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
         }
 
         // Get list of Objects
-        $fileList = $serverDisk->listContents($this->server->level_name.'/stats');
+        $fileList = [];
+        if ($serverLogin['driver'] == 'ftp' && config('minetrax.use_legacy_ftp_driver')) {
+            $legacyServerDisk  = new LegacyFtpStorage($serverLogin);
+            $fileList = $legacyServerDisk->listContents('world/stats');
+        } else {
+            $fileList = $serverDisk->listContents($this->server->level_name . '/stats');
+        }
 
         // Start getting JSON and create/update the minecraft_player_stats table
         foreach ($fileList as $file) {
@@ -150,7 +157,7 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
                 $forSaving['total_mob_kills'] = $this->getFirstValidValueFromArray($fileContent['stats'][$mcCustom], 'minecraft:mob_kills') ?? 0;
                 $forSaving['total_player_kills'] = $this->getFirstValidValueFromArray($fileContent['stats'][$mcCustom], 'minecraft:player_kills') ?? 0;
                 $forSaving['total_deaths'] = $this->getFirstValidValueFromArray($fileContent['stats'][$mcCustom], 'minecraft:deaths') ?? 0;
-                $forSaving['total_damage_dealt'] = $this->getFirstValidValueFromArray($fileContent['stats'][$mcCustom],'minecraft:damage_dealt' ) ?? 0;
+                $forSaving['total_damage_dealt'] = $this->getFirstValidValueFromArray($fileContent['stats'][$mcCustom], 'minecraft:damage_dealt') ?? 0;
                 $forSaving['total_damage_dealt_absorbed'] = $this->getFirstValidValueFromArray($fileContent['stats'][$mcCustom], 'minecraft:damage_dealt_absorbed') ?? 0;
                 $forSaving['total_damage_dealt_resisted'] = $this->getFirstValidValueFromArray($fileContent['stats'][$mcCustom], 'minecraft:damage_dealt_resisted') ?? 0;
                 $forSaving['total_damage_absorbed'] = $this->getFirstValidValueFromArray($fileContent['stats'][$mcCustom], 'minecraft:damage_absorbed') ?? 0;
@@ -181,7 +188,7 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
             // Eg: Get IP and Nickname from Essentials if Installed and Enabled.
             if ($this->hasEssentials) {
                 try {
-                    $essentialsData = $serverDisk->get('plugins/Essentials/userdata/'. $playerUuid. '.yml');
+                    $essentialsData = $serverDisk->get('plugins/Essentials/userdata/' . $playerUuid . '.yml');
                     if ($essentialsData) {
                         $essentialsData = Yaml::parse($essentialsData);
                         $forSaving['essentials'] = $essentialsData;
@@ -193,10 +200,10 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
                             $forSaving['username'] = $this->getFirstValidValueFromArray($essentialsData, 'last-account-name', 'lastAccountName') ?? null;
                         }
 
-                        Log::debug("Log IP: ". $forSaving['ip_address']. ' for Player: '. $playerUuid);
+                        Log::debug("Log IP: " . $forSaving['ip_address'] . ' for Player: ' . $playerUuid);
                     }
                 } catch (\Exception $exception) {
-                    Log::debug("Failed to get Essentials Info for: ". $playerUuid);
+                    Log::debug("Failed to get Essentials Info for: " . $playerUuid);
                 }
             }
 
@@ -205,7 +212,7 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
                 $forSaving
             );
 
-            Log::debug('Logged for:: ' . $playerUuid. " Server:: ". $this->server->id);
+            Log::debug('Logged for:: ' . $playerUuid . " Server:: " . $this->server->id);
         }
 
         // Update scanned time for this server
@@ -216,7 +223,7 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
 
     public function failed(\Throwable $exception)
     {
-        Log::debug("SOMETHING WEIRD:". $exception);
+        Log::debug("SOMETHING WEIRD:" . $exception);
     }
 
     private function findUsernameFromCache($uuid, $cache): string|null
