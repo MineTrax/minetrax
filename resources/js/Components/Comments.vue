@@ -5,10 +5,10 @@
     <!-- Loading Spinner -->
     <div
       v-if="loading || loadingMore"
-      class="flex p-4 justify-center"
+      class="flex justify-center p-4"
     >
       <svg
-        class="animate-spin -ml-1 mr-3 h-5 w-5 text-light-blue-600 dark:text-light-blue-400"
+        class="w-5 h-5 mr-3 -ml-1 animate-spin text-light-blue-600 dark:text-light-blue-400"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -35,7 +35,7 @@
       class="flex mt-3"
     >
       <button
-        class="text-sm text-gray-500 dark:text-gray-400 font-semibold focus:outline-none hover:underline"
+        class="text-sm font-semibold text-gray-500 dark:text-gray-400 focus:outline-none hover:underline"
         @click="loadMoreComments"
       >
         {{ __("View previous comments") }}
@@ -45,49 +45,27 @@
     <!-- User Comments -->
     <div
       v-if="!loading && comments"
-      class="flex mt-3 flex-col space-y-2"
+      class="flex flex-col mt-3 space-y-2"
     >
       <div
         v-for="comment in comments.data"
         :key="comment.id"
         class="flex"
       >
-        <div class="space-y-2 text-sm max-w-lg mx-2 order-2 items-start">
+        <div class="items-start order-2 max-w-lg mx-2 space-y-2 text-sm">
           <div
-            class="px-4 py-2 flex flex-col rounded-2xl inline-block rounded-tl-lg bg-gray-100 text-gray-700 dark:bg-cool-gray-600 dark:bg-opacity-25 dark:text-gray-200"
+            class="flex flex-col inline-block px-4 py-2 text-gray-700 bg-gray-100 rounded-tl-lg rounded-2xl dark:bg-cool-gray-600 dark:bg-opacity-25 dark:text-gray-200"
             :class="{'border border-gray-300 dark:border-gray-700': $page.props.user && $page.props.user.id === comment.user_id}"
           >
             <inertia-link
               as="div"
+              class="hover:cursor-pointer hover:underline"
               :href="route('user.public.get', comment.commentator.username)"
             >
-              <span
-                class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200"
-                :style="[comment.commentator.roles[0].color ? {color: comment.commentator.roles[0].color} : null]"
-              >{{
-                comment.commentator.name
-              }} </span>
-              <span class="cursor-pointer text-sm">@{{ comment.commentator.username }}</span>
-              <span
-                v-tippy
-                class="ml-1 text-gray-500 dark:text-gray-400 text-xs focus:outline-none"
-                :title="formatToDayDateString(comment.created_at)"
-              >
-                {{ formatTimeAgoToNow(comment.created_at) }}
-              </span>
-              <icon
-                v-if="comment.commentator.verified_at"
-                v-tippy
-                name="verified-check-fill"
-                :title="__('Verified Account')"
-                class="mb-1 focus:outline-none h-5 w-5 fill-current inline text-light-blue-400"
-              />
-              <icon
-                v-if="comment.commentator.is_staff"
-                v-tippy
-                name="shield-check-fill"
-                :title="__('Staff Member')"
-                class="mb-1 focus:outline-none h-5 w-5 fill-current inline text-pink-400"
+              <user-displayname
+                :user="comment.commentator"
+                :show-username="true"
+                text-class="font-sm"
               />
             </inertia-link>
             <span v-html="purifyAndLinkifyText(comment.comment)" />
@@ -96,7 +74,7 @@
         <img
           :src="comment.commentator.profile_photo_url"
           alt="My profile"
-          class="w-8 h-8 rounded-full order-1 mt-2"
+          class="order-1 w-8 h-8 mt-2 rounded-full"
         >
         <inertia-link
           v-if="$page.props.user && comment.permissions.delete"
@@ -106,11 +84,11 @@
           as="button"
           method="delete"
           :href="route('post.comment.delete', [post.id, comment.id])"
-          class="focus:outline-none order-3"
+          class="order-3 focus:outline-none"
         >
           <icon
             name="trash"
-            class="text-gray-200 hover:text-red-400 dark:text-gray-500 dark:hover:text-red-500 w-4 h-4"
+            class="w-4 h-4 text-gray-200 hover:text-red-400 dark:text-gray-500 dark:hover:text-red-500"
           />
         </inertia-link>
       </div>
@@ -124,9 +102,9 @@
       <img
         :src="$page.props.user.profile_photo_url"
         alt="My profile"
-        class="w-8 h-8 rounded-full order-1 mt-2"
+        class="order-1 w-8 h-8 mt-2 rounded-full"
       >
-      <div class="text-sm mx-2 order-2 flex-grow">
+      <div class="flex-grow order-2 mx-2 text-sm">
         <form @submit.prevent="submitComment">
           <input
             ref="comment"
@@ -135,13 +113,13 @@
             :placeholder="__('Write a comment...')"
             aria-label="comment"
             type="text"
-            class="mt-1 border border-gray-100 bg-gray-100 dark:bg-cool-gray-900 focus:border-gray-300 dark:border-gray-800 dark:focus:border-gray-700 dark:text-gray-200 focus:ring-0 block w-full sm:text-sm rounded-full disabled:opacity-50"
+            class="block w-full mt-1 bg-gray-100 border border-gray-100 rounded-full dark:bg-cool-gray-900 focus:border-gray-300 dark:border-gray-800 dark:focus:border-gray-700 dark:text-gray-200 focus:ring-0 sm:text-sm disabled:opacity-50"
             @keypress.enter="submitComment"
           >
         </form>
         <span
           v-if="bodyerror"
-          class="text-xs ml-2 text-red-500"
+          class="ml-2 text-xs text-red-500"
         >{{ bodyerror }}</span>
       </div>
     </div>
@@ -150,9 +128,10 @@
 
 <script>
 import Icon from '@/Components/Icon.vue';
+import UserDisplayname from '@/Components/UserDisplayname.vue';
 
 export default {
-    components: {Icon},
+    components: {Icon, UserDisplayname},
 
     props: {
         post: Object

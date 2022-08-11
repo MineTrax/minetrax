@@ -89,7 +89,8 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
     ];
 
     protected $with = [
-        'roles:id,name,display_name,is_staff,color,web_message_format,weight'
+        'roles:id,name,display_name,is_staff,color,web_message_format,weight',
+        'stickyBadges:id,name,shortname,sort_order'
     ];
 
     /**
@@ -332,5 +333,15 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
             $data = $notificationPreferences;
         }
         return $data;
+    }
+
+    public function badges()
+    {
+        return $this->morphToMany(Badge::class, 'badgeable')->orderBy('sort_order')->withTimestamps();
+    }
+
+    public function stickyBadges()
+    {
+        return $this->morphToMany(Badge::class, 'badgeable')->orderBy('sort_order')->where('is_sticky', true)->withTimestamps();
     }
 }

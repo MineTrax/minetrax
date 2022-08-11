@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Badge;
 use App\Models\Role;
 use App\Models\User;
 use App\Notifications\UserYouAreBanned;
@@ -20,7 +21,7 @@ class UserController extends Controller
 
         $users = User::query()->paginate(10);
 
-        $users->each(function($user) {
+        $users->each(function ($user) {
             $user->append('dob_string_with_year');
         });
 
@@ -35,7 +36,7 @@ class UserController extends Controller
         $this->authorize('view', $user);
 
         return Inertia::render('Admin/User/ShowUser', [
-            'user' => $user
+            'user' => $user->load('badges')
         ]);
     }
 
@@ -110,10 +111,12 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         $rolesList = Role::query()->pluck('display_name', 'name');
+        $badgesList = Badge::query()->get(['name', 'id']);
 
         return Inertia::render('Admin/User/EditUser', [
-            'userData' => $user,
-            'rolesList' => $rolesList
+            'userData' => $user->load('badges'),
+            'rolesList' => $rolesList,
+            'badgesList' => $badgesList,
         ]);
     }
 
@@ -142,6 +145,7 @@ class UserController extends Controller
             'show_gender' => ['required', 'boolean'],
             'profile_photo_source' => ['nullable', 'in:gravatar,linked_player'],
             'verified' => ['required', 'boolean'],
+            'badges' => ['sometimes', 'nullable', 'array', 'exists:badges,id']
         ]);
 
         $social_links = [
@@ -182,6 +186,11 @@ class UserController extends Controller
         // Sync the role only if user has ability to assign roles
         if ($request->user()->can('assign roles')) {
             $user->syncRoles([$request->role]);
+        }
+
+        // Sync Badges
+        if ($request->user()->can('assign badges')) {
+            $user->badges()->sync($request->badges);
         }
 
         // Redirect to listing page

@@ -2,14 +2,14 @@
   <app-layout>
     <app-head :title="__('Edit User @:username', {username: userData.username})" />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto">
+    <div class="max-w-6xl px-10 py-12 mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
           {{ __("Edit User ':username'", {username: userData.name}) }}
         </h1>
         <inertia-link
           :href="route('admin.user.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-400 border border-transparent rounded-md dark:bg-gray-600 hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray"
         >
           <span>{{ __("Cancel") }}</span>
         </inertia-link>
@@ -59,7 +59,7 @@
                         <img
                           :src="userData.profile_photo_url"
                           :alt="userData.name"
-                          class="rounded-full h-20 w-20 object-cover"
+                          class="object-cover w-20 h-20 rounded-full"
                         >
                       </div>
 
@@ -69,7 +69,7 @@
                         class="mt-2"
                       >
                         <span
-                          class="block rounded-full w-20 h-20"
+                          class="block w-20 h-20 rounded-full"
                           :style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'"
                         />
                       </div>
@@ -137,14 +137,14 @@
                     </div>
 
                     <!-- DOB -->
-                    <div class="col-span-6 sm:col-span-3 relative">
+                    <div class="relative col-span-6 sm:col-span-3">
                       <date-picker
                         id="dob"
                         v-model:value="form.dob"
                         :placeholder="__('Select your date of birth')"
                         class="w-full"
                         value-type="format"
-                        input-class="border-gray-300 h-14 p-3 text-sm pt-7 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
+                        input-class="block w-full p-3 text-sm border-gray-300 rounded-md h-14 pt-7 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
                       />
 
                       <label
@@ -335,12 +335,40 @@
                         :error="form.errors.verified"
                       />
                     </div>
+
+
+                    <div
+                      v-if="can('assign badges')"
+                      class="col-span-6 sm:col-span-6"
+                    >
+                      <label
+                        for="badges"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                      >{{ __("User Badges") }}</label>
+                      <multiselect
+                        id="badges"
+                        v-model="form.badges"
+                        class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                        :options="badgesList"
+                        :multiple="true"
+                        :close-on-select="false"
+                        :clear-on-select="false"
+                        :preserve-search="true"
+                        :placeholder="__('Search')+'...'"
+                        label="name"
+                        track-by="id"
+                      />
+                      <jet-input-error
+                        :message="form.errors.permissions"
+                        class="mt-2"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
+                <div class="flex justify-end px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6">
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Update User") }}
@@ -366,6 +394,7 @@ import DatePicker from 'vue-datepicker-next';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
+import Multiselect from 'vue-multiselect';
 
 export default {
 
@@ -379,11 +408,13 @@ export default {
         JetSecondaryButton,
         XInput,
         JetLabel,
-        DatePicker
+        DatePicker,
+        Multiselect
     },
     props: {
         userData: Object,
-        rolesList: Object
+        rolesList: Object,
+        badgesList: Object,
     },
     data() {
         return {
@@ -408,7 +439,8 @@ export default {
                 show_gender: this.userData.settings ? !!+this.userData.settings.show_gender : false,                     // coz in old version, data store as string 1,0
                 show_yob: this.userData.settings ? !!+this.userData.settings.show_yob : false,                            // coz in old version, data store as string 1,0
                 verified: !!this.userData.verified_at,
-                role: this.userData.roles[0].name
+                role: this.userData.roles[0].name,
+                badges: this.userData.badges
             }),
 
             photoPreview: null,
@@ -421,12 +453,12 @@ export default {
                 this.form.photo = this.$refs.photo.files[0];
             }
 
-            // const tempRole = this.form.role
-            // this.form.role = this.form.role.name
+            const tempBadges = this.form.badges;
+            this.form.badges = this.form.badges.map(b => b.id);
             this.form.post(route('admin.user.update', this.userData.id), {
                 preserveScroll: true
             });
-            // this.form.role = tempRole
+            this.form.badges = tempBadges;
         },
 
         selectNewPhoto() {
@@ -452,4 +484,4 @@ export default {
     width: 100% !important;
 }
 </style>
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

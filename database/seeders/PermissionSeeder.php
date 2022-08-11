@@ -1,0 +1,86 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Permission;
+use App\Models\Role;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class PermissionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        Permission::findOrCreate('create servers');
+        Permission::findOrCreate('read servers');
+        Permission::findOrCreate('update servers');
+        Permission::findOrCreate('delete servers');
+
+        Permission::findOrCreate('create roles');
+        Permission::findOrCreate('read roles');
+        Permission::findOrCreate('update roles');
+        Permission::findOrCreate('delete roles');
+        Permission::findOrCreate('assign roles'); // Let user to assign roles which weight less than his own to other users
+
+        Permission::findOrCreate('create ranks');
+        Permission::findOrCreate('read ranks');
+        Permission::findOrCreate('update ranks');
+        Permission::findOrCreate('delete ranks');
+
+        Permission::findOrCreate('read users');
+        Permission::findOrCreate('update users');
+        Permission::findOrCreate('delete users');
+        Permission::findOrCreate('ban users');
+        Permission::findOrCreate('impersonate users');
+        Permission::findOrCreate('mute users');
+        Permission::findOrCreate('warn users');
+
+        Permission::findOrCreate('create news');
+        Permission::findOrCreate('read news');
+        Permission::findOrCreate('update news');
+        Permission::findOrCreate('delete news');
+
+        Permission::findOrCreate('create polls');
+        Permission::findOrCreate('read polls');
+        Permission::findOrCreate('update polls');
+        Permission::findOrCreate('delete polls');
+
+        Permission::findOrCreate('create custom_pages');
+        Permission::findOrCreate('read custom_pages');
+        Permission::findOrCreate('update custom_pages');
+        Permission::findOrCreate('delete custom_pages');
+
+        Permission::findOrCreate('read sessions');
+        Permission::findOrCreate('delete sessions');
+
+        Permission::findOrCreate('delete shouts');
+        Permission::findOrCreate('delete posts');
+        Permission::findOrCreate('delete comments');
+
+        Permission::findOrCreate('update settings');
+
+        Permission::findOrCreate('view server_consolelogs');
+
+        // Player & Server Administration
+        Permission::findOrCreate('kick players');
+        Permission::findOrCreate('ban players');
+        Permission::findOrCreate('kill players');
+        Permission::findOrCreate('mute players');
+        Permission::findOrCreate('send server_custom_commands');
+        Permission::findOrCreate('send server_broadcasts');
+
+        Permission::findOrCreate('create badges');
+        Permission::findOrCreate('read badges');
+        Permission::findOrCreate('update badges');
+        Permission::findOrCreate('delete badges');
+        Permission::findOrCreate('assign badges');
+    }
+}

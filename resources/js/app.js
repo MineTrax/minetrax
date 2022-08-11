@@ -20,7 +20,7 @@ createInertiaApp({
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,
-            import.meta.glob('./Pages/**/*.vue')
+            import.meta.glob('./Pages/**/*.vue')    // Note: use import.meta.globEager to disable chunking behavior
         ),
     setup({ el, app, props, plugin }) {
         const VueApp = createApp({ render: () => h(app, props) })

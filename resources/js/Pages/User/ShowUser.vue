@@ -4,7 +4,7 @@
       :title="__(':name profile', {name: profileUser.name})"
     />
 
-    <div class="px-2 py-3 md:py-12 md:px-10 max-w-6xl mx-auto space-y-4">
+    <div class="max-w-6xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
       <AlertCard
         v-if="profileUser.banned_at"
         text-color="text-red-600 dark:text-red-400"
@@ -14,13 +14,13 @@
         <template #icon>
           <icon
             name="ban"
-            class="h-6 w-6 text-red-500 mr-4"
+            class="w-6 h-6 mr-4 text-red-500"
           />
         </template>
         <template #body>
           {{ __("If you think it is a mistake.") }}  <inertia-link
             :href="route('staff.index')"
-            class="hover:underline font-semibold"
+            class="font-semibold hover:underline"
           >
             {{ __("Please contact a Staff") }}
           </inertia-link>.
@@ -35,14 +35,14 @@
         {{ __("This user hasn't verified his email yet!") }}
       </AlertCard>
 
-      <div class="shadow max-w-none bg-white dark:bg-cool-gray-800 overflow-hidden border-b border-gray-200 dark:border-cool-gray-800 md:rounded">
+      <div class="overflow-hidden bg-white border-b border-gray-200 shadow max-w-none dark:bg-cool-gray-800 dark:border-cool-gray-800 md:rounded">
         <div>
           <div
-            class="w-full bg-cover bg-no-repeat bg-center"
+            class="w-full bg-center bg-no-repeat bg-cover"
             :style="`height: 300px; background-image: url('${profileUser.cover_image_url}');`"
           >
             <img
-              class="opacity-0 w-full h-full"
+              class="w-full h-full opacity-0"
               :src="`${profileUser.cover_image_url}`"
               alt="Cover Image"
             >
@@ -54,11 +54,11 @@
                 <div style="margin-top: -6rem;">
                   <div
                     style="height:9rem; width:9rem;"
-                    class="md rounded-full relative avatar"
+                    class="relative rounded-full md avatar"
                   >
                     <img
                       style="height:9rem; width:9rem;"
-                      class="md rounded-full bg-white dark:bg-cool-gray-800 transition hover:bg-gray-200 relative border-4 border-white dark:border-gray-600"
+                      class="relative transition bg-white border-4 border-white rounded-full md dark:bg-cool-gray-800 hover:bg-gray-200 dark:border-gray-600"
                       :src="profileUser.profile_photo_url"
                       alt=""
                     >
@@ -69,12 +69,12 @@
               <!-- Follow Button -->
               <div
                 v-if="$page.props.user"
-                class="flex space-x-2 text-right text-xs md:text-medium"
+                class="flex space-x-2 text-xs text-right md:text-medium"
               >
                 <inertia-link
                   v-if="profileUser.id === $page.props.user.id"
                   :href="route('profile.show')"
-                  class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-light-blue-500 text-light-blue-500 hover:bg-light-blue-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold bg-transparent border rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max border-light-blue-500 text-light-blue-500 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("Edit") }}<span class="hidden md:block">&nbsp;{{ __("Profile") }}</span>
                 </inertia-link>
@@ -83,7 +83,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.mute', profileUser.id)"
-                  class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-yellow-500 text-yellow-500 hover:bg-yellow-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-yellow-500 bg-transparent border border-yellow-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-yellow-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("Mute") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
@@ -92,7 +92,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.unmute', profileUser.id)"
-                  class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-green-500 text-green-500 hover:bg-green-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("UnMute") }}<span class="hidden md:block">&nbsp;User</span>
                 </inertia-link>
@@ -101,7 +101,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.ban', profileUser.id)"
-                  class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-red-500 text-red-500 hover:bg-red-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-red-500 bg-transparent border border-red-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-red-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("Ban") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
@@ -110,7 +110,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.unban', profileUser.id)"
-                  class="flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-transparent border-green-500 text-green-500 hover:bg-green-50 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("UnBan") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
@@ -118,37 +118,15 @@
             </div>
 
             <!-- Profile info -->
-            <div class="space-y-2 justify-center w-full mt-3 ml-3">
+            <div class="justify-center w-full mt-3 ml-3 space-y-2">
               <!-- User basic-->
               <div>
-                <h2
-                  class="text-xl leading-6 font-bold text-black dark:text-gray-200"
-                  :style="[profileUser.roles[0].color ? {color: profileUser.roles[0].color} : null]"
-                >
-                  {{ profileUser.name }}
-                  <icon
-                    v-if="profileUser.verified_at"
-                    v-tippy
-                    name="verified-check-fill"
-                    :title="__('Verified Account')"
-                    class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-light-blue-400"
-                  />
-                  <icon
-                    v-if="profileUser.is_staff"
-                    v-tippy
-                    name="shield-check-fill"
-                    :title="__('Staff Member')"
-                    class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-pink-400"
-                  />
-                  <icon
-                    v-if="profileUser.muted_at"
-                    v-tippy
-                    name="volume-off-fill"
-                    :title="__('Muted User')"
-                    class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-red-500"
-                  />
-                </h2>
-                <p class="leading-5 font-medium text-gray-600 dark:text-gray-400">
+                <user-displayname
+                  :user="profileUser"
+                  icon-class="w-6 h-6"
+                  text-class="text-xl"
+                />
+                <p class="font-medium leading-5 text-gray-600 dark:text-gray-400">
                   @{{ profileUser.username }}
                 </p>
               </div>
@@ -167,7 +145,7 @@
               <div class="flex justify-end mr-4">
                 <p
                   v-tippy
-                  class="text-sm leading-5 font-medium text-gray-600 focus:outline-none"
+                  class="text-sm font-medium leading-5 text-gray-600 focus:outline-none"
                   :title="formatToDayDateString(profileUser.created_at)"
                 >
                   {{ __("Joined") }}: {{
@@ -181,10 +159,10 @@
       </div>
 
       <div class="flex flex-col md:space-x-4 md:flex-row">
-        <div class="flex mb-4 md:mb-0 md:w-1/2 flex-col space-y-4">
+        <div class="flex flex-col mb-4 space-y-4 md:mb-0 md:w-1/2">
           <div
             v-if="profileUser.players.length > 0"
-            class="flex flex-col bg-white dark:bg-cool-gray-800 rounded w-full shadow space-y-2"
+            class="flex flex-col w-full space-y-2 bg-white rounded shadow dark:bg-cool-gray-800"
           >
             <div
               v-for="player in profileUser.players"
@@ -201,7 +179,7 @@
                   <inertia-link
                     as="a"
                     :href="route('player.show', player.uuid)"
-                    class="font-bold text-lg text-light-blue-400 hover:text-light-blue-500"
+                    class="text-lg font-bold text-light-blue-400 hover:text-light-blue-500"
                   >
                     {{ player.username }}
                   </inertia-link>
@@ -211,16 +189,16 @@
                   <p class="font-bold dark:text-gray-400">
                     {{ __("Position") }}:
                   </p>
-                  <div class="flex items-center space-x-2 text-center text-sm text-light-blue-400 font-extrabold">
+                  <div class="flex items-center space-x-2 text-sm font-extrabold text-center text-light-blue-400">
                     <span
                       v-if="player.position"
-                      class="border-2 rounded text-lg px-2 border-light-blue-300 bg-light-blue-50 dark:bg-cool-gray-800"
+                      class="px-2 text-lg border-2 rounded border-light-blue-300 bg-light-blue-50 dark:bg-cool-gray-800"
                     >
                       {{ player.position }}
                     </span>
                     <span
                       v-else
-                      class="italic text-sm text-gray-500 dark:text-gray-400"
+                      class="text-sm italic text-gray-500 dark:text-gray-400"
                     >{{ __("None") }}</span>
                   </div>
                 </div>
@@ -238,7 +216,7 @@
                   />
                   <p
                     v-else
-                    class="italic text-sm text-gray-500 dark:text-gray-400"
+                    class="text-sm italic text-gray-500 dark:text-gray-400"
                   >
                     {{ __("None") }}
                   </p>
@@ -256,7 +234,7 @@
                     </p>
                     <p
                       v-else
-                      class="italic text-sm text-gray-500 dark:text-gray-400"
+                      class="text-sm italic text-gray-500 dark:text-gray-400"
                     >
                       {{ __("None") }}
                     </p>
@@ -266,7 +244,7 @@
                       :src="player.rank.photo_url"
                       :alt="player.rank.name"
                       :title="player.rank.name"
-                      class="h-8 w-8 focus:outline-none"
+                      class="w-8 h-8 focus:outline-none"
                     >
                   </div>
                 </div>
@@ -291,17 +269,43 @@
             </div>
           </div>
 
+
+          <div
+            v-if="profileUser.badges && profileUser.badges.length > 0"
+            class="p-4 bg-white rounded shadow dark:bg-cool-gray-800"
+          >
+            <h3 class="font-bold text-gray-700 dark:text-gray-200">
+              Badges
+            </h3>
+            <div
+              class="flex flex-row justify-center space-x-2"
+            >
+              <div
+                v-for="badge in profileUser.badges"
+                :key="badge.id"
+                v-tippy
+                :title="badge.name"
+              >
+                <img
+                  class="w-12 h-12"
+                  :src="badge.photo_url"
+                  :alt="badge.name"
+                >
+              </div>
+            </div>
+          </div>
+
           <div
             v-if="profileUser.about"
-            class="flex flex-col bg-white dark:bg-cool-gray-800 rounded w-full shadow p-4"
+            class="flex flex-col w-full p-4 bg-white rounded shadow dark:bg-cool-gray-800"
           >
             <span class="whitespace-pre-wrap dark:text-gray-200">{{ profileUser.about }}</span>
           </div>
 
-          <div class="flex flex-col bg-white dark:bg-cool-gray-800 dark:text-gray-400 rounded w-full shadow p-4 space-y-2">
+          <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded shadow dark:bg-cool-gray-800 dark:text-gray-400">
             <div class="flex justify-between">
               <span>{{ __("Country") }}</span>
-              <span class="text-gray-800 dark:text-gray-200 font-semibold">
+              <span class="font-semibold text-gray-800 dark:text-gray-200">
                 {{ profileUser.country.name }}
                 <img
                   class="inline h-6 mb-1"
@@ -312,22 +316,22 @@
             </div>
             <div class="flex justify-between">
               <span>{{ __("Day of Birth") }}</span>
-              <span class="text-gray-800 dark:text-gray-200 font-semibold">{{ profileUser.dob_string || __('unknown') }}</span>
+              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ profileUser.dob_string || __('unknown') }}</span>
             </div>
             <div class="flex justify-between">
               <span>{{ __("Gender") }}</span>
-              <span class="text-gray-800 dark:text-gray-200 font-semibold">{{ profileUser.gender_string || __('unknown') }}</span>
+              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ profileUser.gender_string || __('unknown') }}</span>
             </div>
             <div class="flex justify-between">
               <span>{{ __("Total Posts") }}</span>
-              <span class="text-gray-800 dark:text-gray-200 font-semibold">{{ profileUser.posts_count }}</span>
+              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ profileUser.posts_count }}</span>
             </div>
             <div
               v-if="profileUser.social_links && profileUser.social_links.s_discord_username"
               class="flex justify-between"
             >
               <span>{{ __("Discord") }}</span>
-              <span class="text-gray-800 dark:text-gray-200 font-semibold">{{
+              <span class="font-semibold text-gray-800 dark:text-gray-200">{{
                 profileUser.social_links.s_discord_username
               }}</span>
             </div>
@@ -352,7 +356,7 @@
         />
         <div
           v-else
-          class="space-y-4 w-full p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow text-gray-500 text-center justify-center items-center flex"
+          class="flex items-center justify-center w-full p-3 space-y-4 text-center text-gray-500 bg-white rounded shadow sm:px-5 dark:bg-cool-gray-800"
         >
           <span class="italic">{{ __("Posts Feed is disabled!") }}</span>
         </div>
@@ -367,6 +371,7 @@ import Icon from '@/Components/Icon.vue';
 import PostListBox from '@/Shared/PostListBox.vue';
 import SocialChannelBox from '@/Shared/SocialChannelBox.vue';
 import AlertCard from '@/Components/AlertCard.vue';
+import UserDisplayname from '@/Components/UserDisplayname.vue';
 
 export default {
     components: {
@@ -374,7 +379,8 @@ export default {
         Icon,
         AppLayout,
         PostListBox,
-        AlertCard
+        AlertCard,
+        UserDisplayname
     },
     props: {
         profileUser: Object,

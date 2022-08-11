@@ -176,4 +176,11 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::delete('custom-page/{customPage}', [\App\Http\Controllers\Admin\CustomPageController::class, 'destroy'])->name('custom-page.delete');
 
     Route::get('session', [\App\Http\Controllers\Admin\SessionController::class, 'index'])->name('session.index');
+
+    Route::get('badge', [\App\Http\Controllers\Admin\BadgeController::class, 'index'])->name('badge.index');
+    Route::get('badge/create', [\App\Http\Controllers\Admin\BadgeController::class, 'create'])->name('badge.create');
+    Route::post('badge', [\App\Http\Controllers\Admin\BadgeController::class, 'store'])->name('badge.store');
+    Route::get('badge/{badge}/edit', [\App\Http\Controllers\Admin\BadgeController::class, 'edit'])->name('badge.edit');
+    Route::put('badge/{badge}', [\App\Http\Controllers\Admin\BadgeController::class, 'update'])->name('badge.update');
+    Route::delete('badge/{badge}', [\App\Http\Controllers\Admin\BadgeController::class, 'destroy'])->name('badge.delete');
 });

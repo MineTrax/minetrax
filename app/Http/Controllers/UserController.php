@@ -15,7 +15,7 @@ class UserController extends Controller
             ->makeHidden(['email', 'dob', 'gender', 'updated_at', 'provider_id', 'provider_name', 'two_factor_confirmed_at', 'settings']);
 
         return Inertia::render('User/ShowUser', [
-            'profileUser' => $user
+            'profileUser' => $user->load('badges:id,name,shortname,sort_order')
         ]);
     }
 

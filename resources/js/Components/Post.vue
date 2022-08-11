@@ -1,6 +1,6 @@
 <template>
   <div
-    class="px-5 py-4 bg-white dark:bg-cool-gray-800 shadow rounded"
+    class="px-5 py-4 bg-white rounded shadow dark:bg-cool-gray-800"
     :class="{ 'rounded-l-none border-l-4 border-light-blue-500': $page.props.user && $page.props.user.id === post.user.id }"
   >
     <!-- Header -->
@@ -17,27 +17,9 @@
             as="div"
             :href="route('user.public.get', post.user.username)"
           >
-            <span
-              class="text-black font-bold leading-snug text-black dark:text-gray-100"
-              :style="[post.user.roles[0].color ? {color: post.user.roles[0].color} : null]"
-            > {{
-              post.user.name
-            }}
-
-            </span> <span class="text-gray-500 dark:text-gray-300"> @{{ post.user.username }}</span>
-            <icon
-              v-if="post.user.verified_at"
-              v-tippy
-              name="verified-check-fill"
-              :title="__('Verified Account')"
-              class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-light-blue-400"
-            />
-            <icon
-              v-if="post.user.is_staff"
-              v-tippy
-              name="shield-check-fill"
-              :title="__('Staff Member')"
-              class="mb-1 focus:outline-none h-6 w-6 fill-current inline text-pink-400"
+            <user-displayname
+              :user="post.user"
+              :show-username="true"
             />
           </inertia-link>
           <div class="flex">
@@ -46,7 +28,7 @@
               as="a"
               :href="route('post.show', post.id)"
               :content="formatToDayDateString(post.created_at)"
-              class="focus:outline-none hover:text-light-blue-500 text-sm text-gray-500 dark:text-gray-300 font-light leading-snug"
+              class="text-sm font-light leading-snug text-gray-500 focus:outline-none hover:text-light-blue-500 dark:text-gray-300"
             >
               {{
                 formatTimeAgoToNow(post.created_at)
@@ -65,7 +47,7 @@
         as="button"
         method="delete"
         :href="route('post.delete', post.id)"
-        class="text-gray-500 hover:text-red-500 rounded-full flex items-start focus:outline-none"
+        class="flex items-start text-gray-500 rounded-full hover:text-red-500 focus:outline-none"
       >
         <icon
           name="trash"
@@ -75,7 +57,7 @@
     </div>
     <!-- Body -->
     <p
-      class="text-gray-800 dark:text-gray-200 mt-2 leading-snug md:leading-normal whitespace-pre-line break-words"
+      class="mt-2 leading-snug text-gray-800 break-words whitespace-pre-line dark:text-gray-200 md:leading-normal"
       v-html="purifyAndLinkifyText(post.body)"
     />
 
@@ -91,17 +73,17 @@
         <img
           :src="url"
           alt="Attachment"
-          class="object-cover rounded-xl h-full w-full"
+          class="object-cover w-full h-full rounded-xl"
           :class="post.media_url_array.length > 1 ? 'max-h-56': 'max-h-96'"
         >
       </div>
     </div>
 
     <!-- Footer Buttons -->
-    <div class="flex space-x-10 justify-end items-center mt-5 text-gray-500">
+    <div class="flex items-center justify-end mt-5 space-x-10 text-gray-500">
       <button
         v-if="!liked"
-        class="flex group cursor-pointer focus:outline-none"
+        class="flex cursor-pointer group focus:outline-none"
         @click="likePost"
       >
         <span
@@ -120,7 +102,7 @@
       </button>
       <button
         v-else
-        class="flex text-pink-500 group cursor-pointer focus:outline-none"
+        class="flex text-pink-500 cursor-pointer group focus:outline-none"
         @click="unlikePost"
       >
         <span
@@ -138,7 +120,7 @@
         }}</span>
       </button>
       <button
-        class="flex group cursor-pointer focus:outline-none"
+        class="flex cursor-pointer group focus:outline-none"
         @click="showComments=!showComments"
       >
         <span
@@ -166,9 +148,10 @@
 
 import Icon from '@/Components/Icon.vue';
 import Comments from '@/Components/Comments.vue';
+import UserDisplayname from '@/Components/UserDisplayname.vue';
 
 export default {
-    components: {Comments, Icon},
+    components: {Comments, Icon, UserDisplayname},
     props: {
         post: Object,
         commentsSectionOpened: {

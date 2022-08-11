@@ -26,6 +26,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Poll::class => \App\Policies\PollPolicy::class,
         \App\Models\CustomPage::class => \App\Policies\CustomPagePolicy::class,
         \App\Models\Session::class => \App\Policies\SessionPolicy::class,
+        \App\Models\Badge::class => \App\Policies\BadgePolicy::class,
     ];
 
     /**
