@@ -54,7 +54,7 @@
       >
         <div class="items-start order-2 max-w-lg mx-2 space-y-2 text-sm">
           <div
-            class="flex flex-col inline-block px-4 py-2 text-gray-700 bg-gray-100 rounded-tl-lg rounded-2xl dark:bg-cool-gray-600 dark:bg-opacity-25 dark:text-gray-200"
+            class="flex flex-col px-4 py-2 text-gray-700 bg-gray-100 rounded-tl-lg rounded-2xl dark:bg-cool-gray-600 dark:bg-opacity-25 dark:text-gray-200"
             :class="{'border border-gray-300 dark:border-gray-700': $page.props.user && $page.props.user.id === comment.user_id}"
           >
             <inertia-link
@@ -66,7 +66,15 @@
                 :user="comment.commentator"
                 :show-username="true"
                 text-class="font-sm"
-              />
+              >
+                <span
+                  v-tippy
+                  class="inline ml-1 text-xs text-gray-500 dark:text-gray-400 focus:outline-none"
+                  :title="formatToDayDateString(comment.created_at)"
+                >
+                  {{ formatTimeAgoToNow(comment.created_at) }}
+                </span>
+              </user-displayname>
             </inertia-link>
             <span v-html="purifyAndLinkifyText(comment.comment)" />
           </div>
@@ -153,7 +161,7 @@ export default {
         axios.get(route('post.comment.index', this.post.id)).then(response => {
             this.comments = response.data;
             this.comments.data.reverse();
-        }).finally(e => {
+        }).finally(() => {
             this.loading = false;
         });
     },
@@ -171,7 +179,7 @@ export default {
                     ...response.data,
                     data: [...response.data.data.reverse(), ...this.comments.data]
                 };
-            }).finally(x => this.loadingMore = false);
+            }).finally(() => this.loadingMore = false);
         },
 
         submitComment() {

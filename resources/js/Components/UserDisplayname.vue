@@ -34,6 +34,7 @@ defineProps({
       v-if="showUsername"
       class="text-gray-500 dark:text-gray-300"
     > @{{ user.username }}</span>
+
     <Icon
       v-if="user.verified_at"
       v-tippy
@@ -71,5 +72,7 @@ defineProps({
         :alt="badge.name"
       >
     </template>
+
+    <slot />
   </div>
 </template>

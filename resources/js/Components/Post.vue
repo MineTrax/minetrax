@@ -28,7 +28,7 @@
               as="a"
               :href="route('post.show', post.id)"
               :content="formatToDayDateString(post.created_at)"
-              class="text-sm font-light leading-snug text-gray-500 focus:outline-none hover:text-light-blue-500 dark:text-gray-300"
+              class="text-sm font-light leading-snug text-gray-500 dark:hover:text-light-blue-500 focus:outline-none hover:text-light-blue-500 dark:text-gray-300"
             >
               {{
                 formatTimeAgoToNow(post.created_at)
@@ -68,6 +68,7 @@
     >
       <div
         v-for="(url) in post.media_url_array"
+        :key="url"
         class="relative"
       >
         <img
@@ -175,8 +176,8 @@ export default {
 
             this.liked = true;
             this.likes_count++;
-            axios.post(route('reaction.post.like', this.post.id)).then(response => {
-            }).catch(err => {
+            axios.post(route('reaction.post.like', this.post.id)).then(() => {
+            }).catch(() => {
                 this.liked = false;
                 this.likes_count--;
             });
@@ -189,8 +190,8 @@ export default {
 
             this.liked = false;
             this.likes_count--;
-            axios.post(route('reaction.post.unlike', this.post.id)).then(response => {
-            }).catch(err => {
+            axios.post(route('reaction.post.unlike', this.post.id)).then(() => {
+            }).catch(() => {
                 this.liked = true;
                 this.likes_count++;
             });
