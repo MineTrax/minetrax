@@ -33,4 +33,16 @@ return [
     |
     */
     "use_legacy_ftp_driver" => env("USE_LEGACY_FTP_DRIVER", false),
+
+	/*
+    |--------------------------------------------------------------------------
+    | Mark user verified when a player account is linked
+    |--------------------------------------------------------------------------
+    |
+    | If true, this feature automatically mark user's verified_at field when a user link some
+    | player account to their profile. This will also automatically mark user not verified when
+    | he removes linked player.
+    |
+    */
+	"mark_user_verified_on_account_link" => env("MARK_USER_VERIFYED_ON_ACCOUNT_LINK", true),
 ];

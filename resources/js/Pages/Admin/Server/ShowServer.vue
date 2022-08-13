@@ -2,7 +2,7 @@
   <app-layout>
     <app-head :title="__('Server #:id', {id: server.id})" />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto space-y-4">
+    <div class="max-w-6xl px-10 py-12 mx-auto space-y-4">
       <h2 class="text-2xl text-gray-600 dark:text-gray-200">
         <span class="font-bold">#{{ server.id }}</span>
         -
@@ -11,7 +11,7 @@
 
       <server-sub-menu :id="server.id" />
 
-      <div class="flex space-x-2 justify-between">
+      <div class="flex justify-between space-x-2">
         <overview-card
           :title="__('Online Players')"
           :value="onlinePlayers"
@@ -48,9 +48,9 @@
 
       <div
         id="server-general-data"
-        class="shadow bg-white text-gray-700 dark:text-gray-300 text-sm dark:bg-cool-gray-800 dark:text-gray-300 rounded w-full p-2 space-y-4 md:p-5"
+        class="w-full p-2 space-y-4 text-sm text-gray-700 bg-white rounded shadow dark:text-gray-300 dark:bg-cool-gray-800 md:p-5"
       >
-        <div class="flex justify-between space-x-8 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex justify-between pb-4 space-x-8 border-b border-gray-200 dark:border-gray-700">
           <div class="flex-1 space-y-4">
             <div class="flex justify-between">
               <div class="flex">
@@ -207,7 +207,7 @@
           </div>
         </div>
 
-        <div class="flex justify-between dark:border-gray-700 space-x-8">
+        <div class="flex justify-between space-x-8 dark:border-gray-700">
           <div class="flex-1 space-y-4">
             <div class="flex justify-between">
               <div class="flex">
@@ -293,10 +293,10 @@
 
       <div
         id="terminal-container"
-        class="p-3 bg-white dark:bg-cool-gray-800 rounded shadow"
+        class="p-3 bg-white rounded shadow dark:bg-cool-gray-800"
       >
         <div class="flex justify-between">
-          <h3 class="font-extrabold text-gray-800 dark:text-gray-200 mb-1">
+          <h3 class="mb-1 font-extrabold text-gray-800 dark:text-gray-200">
             {{ __("Server Logs") }}
           </h3>
         </div>
@@ -310,13 +310,13 @@
             v-model="commandText"
             :disabled="sendingCommand"
             aria-label="Commander"
-            class="mt-1 focus:ring-gray-300 dark:focus:ring-gray-700 block w-full sm:text-sm rounded border-none disabled:opacity-50 bg-gray-100 dark:bg-cool-gray-900 dark:text-gray-200 focus:bg-white"
+            class="block w-full mt-1 bg-gray-100 border-none rounded focus:ring-gray-300 dark:focus:ring-gray-700 sm:text-sm disabled:opacity-50 dark:bg-cool-gray-900 dark:text-gray-200 focus:bg-white"
             type="text"
             :placeholder="__('Type a command and press Enter to run...')"
           >
           <span
             v-if="commandError"
-            class="text-red-400 text-xs"
+            class="text-xs text-red-400"
           >{{ commandError }}</span>
         </form>
       </div>
@@ -444,7 +444,7 @@ export default {
                         }
                     });
                 })
-                .catch(e => {
+                .catch(() => {
                     this.$nextTick(() => {
                         this.onlinePlayers = 'offline';
                     });
