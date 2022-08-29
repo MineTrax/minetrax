@@ -26,7 +26,7 @@
         "date-fns": "^2.29.1",
         "easymde": "^2.16.1",
         "echarts": "^5.3.3",
-        "eslint": "^8.21.0",
+        "eslint": "^8.23.0",
         "eslint-plugin-vue": "^9.3.0",
         "millify": "^5.0.0",
         "pusher-js": "^7.3.0",
