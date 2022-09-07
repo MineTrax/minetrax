@@ -31,7 +31,7 @@
         "millify": "^5.0.0",
         "pusher-js": "^7.3.0",
         "skinview3d": "^2.3.0-alpha.2",
-        "sweetalert2": "^11.4.25",
+        "sweetalert2": "^11.4.32",
         "v-calendar": "next",
         "vform": "^2.1.2",
         "vue-datepicker-next": "^1.0.2",
