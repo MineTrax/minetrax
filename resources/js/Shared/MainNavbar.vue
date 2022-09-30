@@ -671,6 +671,20 @@ export default {
     </jet-sidebar-link>
 
     <jet-sidebar-link
+      v-if="canWild('badges')"
+      :href="route('admin.badge.index')"
+      :active="route().current('admin.badge.index')"
+    >
+      <template #icon>
+        <icon
+          name="question-badge"
+          class="w-5 h-5"
+        />
+      </template>
+      {{ __("User Badges") }}
+    </jet-sidebar-link>
+
+    <jet-sidebar-link
       v-if="canWild('ranks')"
       :href="route('admin.rank.index')"
       :active="route().current('admin.rank.index')"

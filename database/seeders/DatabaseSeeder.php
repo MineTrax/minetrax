@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ReactionTypeInitSeeder::class,
             CountrySeeder::class,
-            RoleAndPermissionSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
             UserSeeder::class,
             RankSeeder::class,
             CustomPageSeeder::class

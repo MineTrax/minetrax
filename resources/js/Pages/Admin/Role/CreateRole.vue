@@ -2,14 +2,14 @@
   <app-layout>
     <app-head :title="__('Add User Role')" />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto">
+    <div class="max-w-6xl px-10 py-12 mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
           {{ __("Add User Role") }}
         </h1>
         <inertia-link
           :href="route('admin.role.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-400 border border-transparent rounded-md dark:bg-gray-600 hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray"
         >
           <span>{{ __("Cancel") }}</span>
         </inertia-link>
@@ -55,7 +55,7 @@
                         class="mt-2"
                       >
                         <span
-                          class="block h-12 w-2/5"
+                          class="block w-2/5 h-12"
                           :style="'background-size: fill; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'"
                         />
                       </div>
@@ -170,10 +170,10 @@
                       <multiselect
                         id="permissions"
                         v-model="form.permissions"
-                        class="mt-1 focus:ring-light-blue-500 focus:border-light-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
                         :options="permissions"
                         :multiple="true"
-                        :close-on-select="true"
+                        :close-on-select="false"
                         :clear-on-select="false"
                         :preserve-search="true"
                         :placeholder="__('Search')+'...'"
@@ -185,10 +185,10 @@
                     </div>
                   </div>
                 </div>
-                <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
+                <div class="flex justify-end px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6">
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Add Role") }}
@@ -269,4 +269,4 @@ export default {
 };
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

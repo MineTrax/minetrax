@@ -34,7 +34,7 @@ class AccountLinkController extends Controller
         // Check if current user has enough available slot to link the player.
         $user = $request->user();
         $max_slots = $pluginSettings->max_players_link_per_account; // Total number of players that can be linked to account
-        if($user->players()->count() >= $max_slots) {
+        if ($user->players()->count() >= $max_slots) {
             return redirect()->home()
                 ->with(['toast' => ['type' => 'danger', 'title' => __('User already have max :max_slots players linked!', ['max_slots' => $max_slots]), 'body' => __('If you want to link this player please unlink a player.'), 'milliseconds' => 10000]]);
         }
@@ -44,8 +44,8 @@ class AccountLinkController extends Controller
 
         $user->players()->attach($player);
 
-        // If player username and user's username are same then mark user as verified
-        if($user->username == $player->username && $user->email_verified_at != null) {
+        // If MARK_USER_VERIFYED_ON_ACCOUNT_LINK is enabled then mark user as verified.
+        if (config('minetrax.mark_user_verified_on_account_link') && $user->verified_at == null) {
             $user->verified_at = now();
             $user->save();
         }
@@ -69,14 +69,22 @@ class AccountLinkController extends Controller
     public function unlink(Player $player, Request $request)
     {
         // Make sure the player is linked to current user who is running to unlink
-        $userHasPlayer = $request->user()->players()->where('player_id', $player->id)->exists();
-        if(!$userHasPlayer) {
+        $user = $request->user();
+        $userHasPlayer = $user->players()->where('player_id', $player->id)->exists();
+        if (!$userHasPlayer) {
             return redirect()->back()
                 ->with(['toast' => ['type' => 'danger', 'title' => __('Player not found!'), 'body' => __('No player with that ID found linked to your account.'), 'milliseconds' => 10000]]);
         }
 
         // Unlink the player
-        $request->user()->players()->detach($player->id);
+        $user->players()->detach($player->id);
+
+        // If MARK_USER_VERIFYED_ON_ACCOUNT_LINK is enabled then mark user as unverified when he unlink all players.
+        $linkedPlayersExist = $user->players()->exists();
+        if (config('minetrax.mark_user_verified_on_account_link') && $user->verified_at && !$linkedPlayersExist) {
+            $user->verified_at = null;
+            $user->save();
+        }
 
         // Return redirect back with flash
         return redirect()->back()
