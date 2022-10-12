@@ -74,7 +74,7 @@
                 <inertia-link
                   v-if="profileUser.id === $page.props.user.id"
                   :href="route('profile.show')"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold bg-transparent border rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max border-light-blue-500 text-light-blue-500 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold bg-transparent border rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max border-light-blue-500 text-light-blue-500 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("Edit") }}<span class="hidden md:block">&nbsp;{{ __("Profile") }}</span>
                 </inertia-link>
@@ -83,7 +83,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.mute', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-yellow-500 bg-transparent border border-yellow-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-yellow-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-yellow-500 bg-transparent border border-yellow-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-yellow-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("Mute") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
@@ -92,7 +92,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.unmute', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("UnMute") }}<span class="hidden md:block">&nbsp;User</span>
                 </inertia-link>
