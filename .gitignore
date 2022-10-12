@@ -21,6 +21,4 @@ _ide_helper_models.php
 /public/js/app.js.LICENSE.txt
 /.vscode
 auth.json
-/public/build
 /bootstrap/ssr
-/public/build/manifest.json

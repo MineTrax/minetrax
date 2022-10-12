@@ -31,5 +31,6 @@
     <body class="font-sans antialiased bg-cool-gray-200 dark:bg-cool-gray-900">
         @inertia
         <x-translations></x-translations>
+        <x-php-vars-to-js-transformer></x-php-vars-to-js-transformer>
     </body>
 </html>

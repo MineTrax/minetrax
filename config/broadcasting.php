@@ -45,6 +45,10 @@ return [
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
             ],
+            '_pusher_host' => env("PUSHER_HOST"),
+            "_pusher_app_cluster" => env("PUSHER_APP_CLUSTER"),
+            "_pusher_port" => env("PUSHER_PORT"),
+            "_pusher_scheme" => env("PUSHER_SCHEME"),
         ],
 
         'ably' => [
