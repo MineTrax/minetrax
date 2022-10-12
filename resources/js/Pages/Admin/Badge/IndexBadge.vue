@@ -144,7 +144,7 @@
 
                   <tr v-if="badges.data.length === 0">
                     <td
-                      class="px-6 py-4 text-center border-t dark:border-gray-700"
+                      class="px-6 py-4 text-center border-t dark:border-gray-700 dark:text-gray-300"
                       colspan="7"
                     >
                       {{ __("No badges found.") }}

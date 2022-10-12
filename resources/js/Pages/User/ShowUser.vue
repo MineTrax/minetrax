@@ -101,7 +101,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.ban', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-red-500 bg-transparent border border-red-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-red-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-red-500 bg-transparent border border-red-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-red-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("Ban") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
@@ -110,9 +110,16 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.unban', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("UnBan") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
+                </inertia-link>
+                <inertia-link
+                  v-if="can('update users')"
+                  :href="route('admin.user.edit', profileUser.id)"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-light-blue-500 bg-transparent border border-light-blue-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
+                >
+                  {{ __("Edit") }}
                 </inertia-link>
               </div>
             </div>
