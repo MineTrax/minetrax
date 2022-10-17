@@ -177,7 +177,7 @@
               class="flex justify-around p-4 space-x-4 border-b border-gray-200 dark:border-none"
             >
               <img
-                :src="`https://crafatar.com/renders/body/${player.uuid}?scale=4`"
+                :src="route('player.render.get', {uuid: player.uuid, username: player.username, scale: 4})"
                 :alt="player.username"
               >
 

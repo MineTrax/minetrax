@@ -46,7 +46,9 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('/features', [\App\Http\Controllers\HomeController::class, 'features'])->name('features.list');
     Route::get('/version-check', [\App\Http\Controllers\HomeController::class, 'version'])->name('version.check');
 
-    Route::get('player/avatar/{uuid}', [\App\Http\Controllers\PlayerController::class, 'getAvatarImage'])->name('player.avatar.get');
+    Route::get('player/avatar/{uuid}/{username}', [\App\Http\Controllers\PlayerController::class, 'getAvatarImage'])->name('player.avatar.get');
+    Route::get('player/skin/{uuid}/{username}', [\App\Http\Controllers\PlayerController::class, 'getSkinImage'])->name('player.skin.get');
+    Route::get('player/render/{uuid}/{username}', [\App\Http\Controllers\PlayerController::class, 'getRenderImage'])->name('player.render.get');
 });
 
 /**

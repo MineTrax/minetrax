@@ -6,7 +6,9 @@ use App\Models\JsonMinecraftPlayerStat;
 use App\Models\Player;
 use App\Models\Rank;
 use App\Models\Server;
+use App\Services\MinecraftApiService;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 use Image;
 use Inertia\Inertia;
@@ -102,28 +104,90 @@ class PlayerController extends Controller
         ]);
     }
 
-    public function getAvatarImage($uuid, Request $request)
+    public function getAvatarImage($uuid, $username, Request $request)
     {
+        $useUsernameForSkins = config("minetrax.use_username_for_skins");
+        $param = $useUsernameForSkins ? $username : $uuid;
         $size = $request->size;
 
         try {
-            $img = Image::cache(function($image) use($uuid, $size) {
+            $img = Image::cache(function ($image) use ($param, $size) {
                 // try getting from third party service
-                return $image->make('https://crafatar.com/avatars/'.$uuid.'?size='.$size);
+                $url = "https://minotar.net/avatar/$param";
+                if ($size) $url = "https://minotar.net/avatar/{$param}/{$size}";
+                return $image->make($url);
             }, 60, true);   // Cache lifetime is in minutes
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             try {
-                $img = Image::cache(function($image) use($uuid, $size) {
+                $img = Image::cache(function ($image) use ($param, $size, $useUsernameForSkins) {
                     // try getting from third party service
-                    $url = "https://minotar.net/avatar/$uuid";
-                    if($size) $url = "https://minotar.net/avatar/{$uuid}/{$size}";
-                    return $image->make($url);
+                    if ($useUsernameForSkins) {
+                        $uuid = MinecraftApiService::playerUsernameToUuid($param);
+                    } else {
+                        $uuid = $param;
+                    }
+                    return $image->make('https://crafatar.com/avatars/' . $uuid . '?size=' . $size);
                 }, 60, true);   // Cache lifetime is in minutes
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $img = Image::make(public_path('images/alex.png'))->resize($size, $size);
             }
         }
 
         return $img->response('jpg');
+    }
+
+
+    public function getSkinImage($uuid, $username, Request $request)
+    {
+        $useUsernameForSkins = config("minetrax.use_username_for_skins");
+        $param = $useUsernameForSkins ? $username : $uuid;
+
+        try {
+            $img = Image::cache(function ($image) use ($param) {
+                // try getting from third party service
+                $url = "https://minotar.net/skin/$param";
+                return $image->make($url);
+            }, 60, true);   // Cache lifetime is in minutes
+        } catch (Exception $exception) {
+            try {
+                $img = Image::cache(function ($image) use ($param, $useUsernameForSkins) {
+                    // try getting from third party service
+                    if ($useUsernameForSkins) {
+                        $uuid = MinecraftApiService::playerUsernameToUuid($param);
+                    } else {
+                        $uuid = $param;
+                    }
+                    return $image->make('https://crafatar.com/skins/' . $uuid);
+                }, 60, true);   // Cache lifetime is in minutes
+            } catch (Exception $exception) {
+                $img = Image::make(public_path('images/alex_skin.png'));
+            }
+        }
+
+        return $img->response('png');
+    }
+
+
+    public function getRenderImage($uuid, $username, Request $request)
+    {
+        $useUsernameForSkins = config("minetrax.use_username_for_skins");
+        $param = $useUsernameForSkins ? $username : $uuid;
+        $scale = $request->scale;
+
+        try {
+            $img = Image::cache(function ($image) use ($param, $scale, $useUsernameForSkins) {
+                // try getting from third party service
+                if ($useUsernameForSkins) {
+                    $uuid = MinecraftApiService::playerUsernameToUuid($param);
+                } else {
+                    $uuid = $param;
+                }
+                return $image->make('https://crafatar.com/renders/body/' . $uuid . '?scale=' . $scale);
+            }, 60, true);   // Cache lifetime is in minutes
+        } catch (Exception $exception) {
+            $img = Image::make(public_path('images/alex_render.png'));
+        }
+
+        return $img->response('png');
     }
 }

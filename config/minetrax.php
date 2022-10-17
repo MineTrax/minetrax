@@ -45,4 +45,15 @@ return [
     |
     */
 	"mark_user_verified_on_account_link" => env("MARK_USER_VERIFYED_ON_ACCOUNT_LINK", true),
+
+	/*
+    |--------------------------------------------------------------------------
+    | Use player's username for skin instead of uuid
+    |--------------------------------------------------------------------------
+    |
+    | If set to true, minetrax will use player's username to fetch avatar and skins from avatar
+    | services like minotar etc instead of uuid.
+    |
+    */
+    "use_username_for_skins" => env("USE_USERNAME_FOR_SKINS", false),
 ];
