@@ -25,7 +25,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-		$schedule->job(new FetchStatsFromAllServersJob)->hourly(); // hourlyAt(random)
+        $playerFetcherInterval = config('minetrax.players_fetcher_cron_interval') ?? 'hourly';
+        $schedule->job(new FetchStatsFromAllServersJob)->{$playerFetcherInterval}();
 
         $schedule->command('telescope:prune --hours=48')->daily();
         $schedule->command('queue:prune-batches --hours=48 --unfinished=72')->daily();
@@ -39,7 +40,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
