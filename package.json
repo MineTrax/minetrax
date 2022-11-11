@@ -27,7 +27,7 @@
         "laravel-vite-plugin": "^0.5.3",
         "lodash": "^4.17.21",
         "millify": "^5.0.0",
-        "postcss": "^8.4.14",
+        "postcss": "^8.4.19",
         "pusher-js": "^7.3.0",
         "skinview3d": "^2.3.0-alpha.2",
         "sweetalert2": "^11.4.25",
