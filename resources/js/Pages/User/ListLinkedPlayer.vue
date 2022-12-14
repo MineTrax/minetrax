@@ -210,7 +210,7 @@ export default {
                 canvas: document.getElementById(`skin_container_${player.uuid}`),
                 width: 200,
                 height: 300,
-                skin: `https://crafatar.com/skins/${player.uuid}`
+                skin: route('player.skin.get', {uuid: player.uuid, username: player.username}),
             });
             let control = skinview3d.createOrbitControls(skinViewer);
             control.enableRotate = true;

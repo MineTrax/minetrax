@@ -55,7 +55,7 @@
           <img
             v-tippy
             :title="username"
-            :src="route('player.avatar.get', uuid, {size: 25})"
+            :src="route('player.avatar.get', { uuid, username, size: 25 })"
             :alt="username"
             class="focus:outline-none"
             :class="sizeClass"

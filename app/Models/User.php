@@ -159,8 +159,8 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
                     if (!$this?->players()?->first()) {
                         break;
                     }
-                    $playerUuid = $this->players()->first()->uuid;
-                    return route('player.avatar.get', [$playerUuid, 'size' => 150]);
+                    $player = $this->players()->first();
+                    return route('player.avatar.get', [$player->uuid, $player->username, 'size' => 150]);
                 default:
                     break;
             }

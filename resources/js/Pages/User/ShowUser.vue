@@ -74,7 +74,7 @@
                 <inertia-link
                   v-if="profileUser.id === $page.props.user.id"
                   :href="route('profile.show')"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold bg-transparent border rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max border-light-blue-500 text-light-blue-500 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold bg-transparent border rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max border-light-blue-500 text-light-blue-500 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("Edit") }}<span class="hidden md:block">&nbsp;{{ __("Profile") }}</span>
                 </inertia-link>
@@ -83,7 +83,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.mute', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-yellow-500 bg-transparent border border-yellow-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-yellow-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-yellow-500 bg-transparent border border-yellow-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-yellow-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("Mute") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
@@ -92,7 +92,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.unmute', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("UnMute") }}<span class="hidden md:block">&nbsp;User</span>
                 </inertia-link>
@@ -101,7 +101,7 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.ban', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-red-500 bg-transparent border border-red-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-red-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-red-500 bg-transparent border border-red-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-red-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("Ban") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
                 </inertia-link>
@@ -110,9 +110,16 @@
                   method="post"
                   as="button"
                   :href="route('admin.user.unban', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
                 >
                   {{ __("UnBan") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
+                </inertia-link>
+                <inertia-link
+                  v-if="can('update users')"
+                  :href="route('admin.user.edit', profileUser.id)"
+                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-light-blue-500 bg-transparent border border-light-blue-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
+                >
+                  {{ __("Edit") }}
                 </inertia-link>
               </div>
             </div>
@@ -170,7 +177,7 @@
               class="flex justify-around p-4 space-x-4 border-b border-gray-200 dark:border-none"
             >
               <img
-                :src="`https://crafatar.com/renders/body/${player.uuid}?scale=4`"
+                :src="route('player.render.get', {uuid: player.uuid, username: player.username, scale: 4})"
                 :alt="player.username"
               >
 

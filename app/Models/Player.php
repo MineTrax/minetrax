@@ -60,7 +60,7 @@ class Player extends BaseModel implements Searchable
 
     public function getAvatarUrlAttribute(): string
     {
-        return route('player.avatar.get', [$this->uuid, 'size' => 100]);
+        return route('player.avatar.get', [$this->uuid, $this->username, 'size' => 100]);
     }
 
     public function getIsActiveAttribute(): bool
@@ -71,7 +71,7 @@ class Player extends BaseModel implements Searchable
 
     public function getRatingAttribute($value)
     {
-        if($value === 0 || $value != null)
+        if ($value === 0 || $value != null)
             return  (int)round($value);
 
         return null;

@@ -114,12 +114,13 @@
 
               <div
                 v-for="player in playersList"
+                :key="player.id"
                 class="flex justify-between mx-1"
               >
                 <div class="flex space-x-1 truncate">
                   <img
                     class="h-5"
-                    :src="route('player.avatar.get',{uuid: player.id, size:50})"
+                    :src="route('player.avatar.get',{uuid: player.id, username: player.username, size:50})"
                     alt="Player Avatar"
                   >
                   <inertia-link
@@ -203,14 +204,14 @@
           >
             {{ __("Login") }}
           </inertia-link>
-        <template v-if="$page.props.hasRegistrationFeature">
-          {{ " " + __("or") }}
-          <inertia-link
-            class="font-semibold text-light-blue-500"
-            :href="route('register')"
-          >
-            {{ __("Register") }}
-          </inertia-link>
+          <template v-if="$page.props.hasRegistrationFeature">
+            {{ " " + __("or") }}
+            <inertia-link
+              class="font-semibold text-light-blue-500"
+              :href="route('register')"
+            >
+              {{ __("Register") }}
+            </inertia-link>
           </template>
           {{ __("to chat with In-Game Players") }}
         </div>
@@ -229,7 +230,7 @@
           <span class="underline text-gray-800">{{ __("Manage Player") }}</span>
           <img
             class="h-24 rounded"
-            :src="route('player.avatar.get',{uuid: actionModelCurrentPlayer.id})"
+            :src="route('player.avatar.get',{uuid: actionModelCurrentPlayer.id, username: actionModelCurrentPlayer.username})"
             alt="Player Avatar"
           >
           <span class="text-light-blue-600">{{ actionModelCurrentPlayer.username }}</span>
