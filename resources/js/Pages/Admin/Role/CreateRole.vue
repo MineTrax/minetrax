@@ -204,13 +204,13 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import XInput from '@/Components/Form/XInput.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import Multiselect from 'vue-multiselect';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
 
 export default {
 
@@ -268,5 +268,3 @@ export default {
     }
 };
 </script>
-
-<style src="vue-multiselect/dist/vue-multiselect.css"></style>

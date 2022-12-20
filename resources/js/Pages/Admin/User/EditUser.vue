@@ -484,4 +484,3 @@ export default {
     width: 100% !important;
 }
 </style>
-<style src="vue-multiselect/dist/vue-multiselect.css"></style>

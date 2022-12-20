@@ -2,6 +2,8 @@
 @import '../../node_modules/easymde/dist/easymde.min.css';
 @import '../../node_modules/tippy.js/dist/tippy.css';
 @import '../../node_modules/tippy.js/animations/perspective.css';
+@import '../../node_modules/vue-multiselect/dist/vue-multiselect.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
