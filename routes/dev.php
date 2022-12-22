@@ -6,6 +6,7 @@ use App\Services\MinecraftServerQueryService;
 use App\Utils\Helpers\LegacyFtpStorage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 
 Route::get('time', function () {
@@ -110,4 +111,10 @@ Route::get('/encryptstring', function () {
     $dyc = $query->decryptEncryptedString($string);
 
     dump($dyc);
+});
+
+
+Route::get('test-log', function () {
+    Log::info('test');
+    return 'test';
 });
