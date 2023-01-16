@@ -21,7 +21,7 @@
         "dompurify": "^2.3.10",
         "easymde": "^2.16.1",
         "echarts": "^5.3.3",
-        "eslint": "^8.25.0",
+        "eslint": "^8.32.0",
         "eslint-plugin-vue": "^9.3.0",
         "laravel-echo": "^1.13.1",
         "laravel-vite-plugin": "^0.5.3",
