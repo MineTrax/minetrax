@@ -86,7 +86,8 @@ class ServerController extends Controller
                 'username' => $request->storage_server_username,
                 'password' => $request->storage_server_password,
                 'port' => $request->storage_server_port ?? 21,
-                'root' => $request->storage_server_root ?? ''
+                'root' => $request->storage_server_root ?? '',
+                'ssl' => $request->storage_server_ssl ?? false,
             ];
         } elseif ($request->connection_type == 'sftp') {
             $connectionString = [
@@ -312,6 +313,7 @@ class ServerController extends Controller
             "storage_server_username" => $decryptedStorageLoginData['username'] ?? null,
             "storage_server_password" => $decryptedStorageLoginData['password'] ?? null,
             "storage_server_root" => $decryptedStorageLoginData['root'] ?? null,
+            "storage_server_ssl" => $decryptedStorageLoginData['ssl'] ?? null,
             "name" => $server->name,
             "join_port" => $server->join_port,
             "query_port" => $server->query_port,
@@ -383,7 +385,8 @@ class ServerController extends Controller
                 'username' => $request->storage_server_username,
                 'password' => $request->storage_server_password,
                 'port' => $request->storage_server_port ?? 21,
-                'root' => $request->storage_server_root ?? ''
+                'root' => $request->storage_server_root ?? '',
+                'ssl' => $request->storage_server_ssl ?? false
             ];
         } elseif ($request->connection_type == 'sftp') {
             $connectionString = [
@@ -450,6 +453,7 @@ class ServerController extends Controller
             'storage_server_username' => 'nullable|required_if:connection_type,ftp,sftp|string',
             'storage_server_password' => 'required_if:connection_type,ftp,sftp',
             'storage_server_root' => 'sometimes|required_if:connection_type,local|nullable',
+            'storage_server_ssl'=> 'sometimes|nullable|required_if:connection_type,ftp|boolean',
         ]);
 
         // Make connection string
@@ -462,7 +466,8 @@ class ServerController extends Controller
                 'username' => $request->storage_server_username,
                 'password' => $request->storage_server_password,
                 'port' => $request->storage_server_port ?? 21,
-                'root' => $request->storage_server_root ?? ''
+                'root' => $request->storage_server_root ?? '',
+                'ssl' =>  $request->storage_server_ssl ?? false,
             ];
         } elseif ($request->connection_type == 'sftp') {
             $connectionString = [

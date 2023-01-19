@@ -120,6 +120,17 @@
                       />
                     </div>
 
+                    <div class="flex items-center col-span-6 sm:col-span-4">
+                      <x-checkbox
+                        v-if="form.connection_type === 'ftp'"
+                        id="storage_server_ssl"
+                        v-model="form.storage_server_ssl"
+                        :label="__('SSL')"
+                        :help="__('Check if FTP connection should be made using SSL')"
+                        name="is_ingame_chat_enabled"
+                      />
+                    </div>
+
                     <template v-if="isPrefetchSuccessful">
                       <div class="col-span-6 sm:col-span-3">
                         <x-input
@@ -407,6 +418,7 @@ export default {
                 storage_server_password: '',
                 storage_server_root: '',
                 storage_server_key: '',
+                storage_server_ssl: false,
                 name: null,
                 join_port: null,
                 query_port: null,

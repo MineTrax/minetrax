@@ -34,6 +34,7 @@ class CreateServerRequest extends FormRequest
             'storage_server_username' => 'nullable|required_if:connection_type,ftp,sftp|string',
             'storage_server_password' => 'required_if:connection_type,ftp,sftp',
             'storage_server_root' => 'sometimes|required_if:connection_type,local|nullable',
+            'storage_server_ssl'=> 'sometimes|nullable|required_if:connection_type,ftp|boolean',
             'storage_server_key' => 'sometimes|nullable',
             'hostname' => 'required|string',
             'ip_address' => 'required|ip',
