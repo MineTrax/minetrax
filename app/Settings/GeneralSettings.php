@@ -36,6 +36,7 @@ class GeneralSettings extends Settings
 
     public bool $enable_donation_box;
     public ?string $donation_box_url;
+    public bool $enable_sticky_header_menu;
 
     public static function group(): string
     {

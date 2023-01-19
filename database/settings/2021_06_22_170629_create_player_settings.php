@@ -6,6 +6,7 @@ class CreatePlayerSettings extends SettingsMigration
 {
     public function up(): void
     {
+        // NOTE of INTEL changes: Cant do in this migration, CREATE NEW ONE...
         /**
          * General Setting or Player Setting????
          * Show Player Intel To:
@@ -14,6 +15,10 @@ class CreatePlayerSettings extends SettingsMigration
          * self -> only the user who linked the player, can view intel for that player (staff will be able to view too)
          * login -> any authenticated user can view player intel.
          * all -> public, anyone visiting website can view anyone Player Intel
+         *
+         * or
+         *
+         * Can we move this to PERMISSIONS module? In that case Intel will become login only thing though...
          */
          //  $this->migrator->add('show_player_intel_to', 'all');
 

@@ -2,6 +2,11 @@
   <app-layout>
     <app-head />
 
+    <hero-section
+      v-if="themeSettings.enable_home_hero_section"
+      :settings="themeSettings"
+    />
+
     <div class="grid grid-cols-none gap-4 px-2 py-4 mx-auto md:grid-cols-4 md:gap-6 md:py-12 md:px-10 md:px-6 lg:px-16 max-w-screen-2xl">
       <div class="order-1 col-span-1 space-y-4 md:order-none">
         <online-players-box v-if="generalSettings.enable_mcserver_onlineplayersbox" />
@@ -82,9 +87,11 @@ import DonationBox from '@/Shared/DonationBox.vue';
 import OnlineUsersBox from '@/Shared/OnlineUsersBox.vue';
 import TopPlayersListBox from '@/Shared/TopPlayersListBox.vue';
 import VerifyYourEmailBox from '@/Shared/VerifyYourEmailBox.vue';
+import HeroSection from '@/Shared/HeroSection.vue';
 
 export default {
     components: {
+        HeroSection,
         VerifyYourEmailBox,
         TopPlayersListBox,
         OnlineUsersBox,
@@ -117,7 +124,8 @@ export default {
         },
         chatDefaultServerId: Number,
         chatServerList: Array,
-        top10Players: Array
+        top10Players: Array,
+        themeSettings: Object,
     },
 
     data() {

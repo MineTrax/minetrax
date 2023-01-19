@@ -10,6 +10,7 @@ use App\Models\Server;
 use App\Models\Session;
 use App\Models\User;
 use App\Settings\GeneralSettings;
+use App\Settings\ThemeSettings;
 use Cache;
 use Http;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ use Storage;
 
 class HomeController extends Controller
 {
-    public function home(Request $request, GeneralSettings $generalSettings)
+    public function home(Request $request, GeneralSettings $generalSettings, ThemeSettings $themeSettings)
     {
         // Latest news-list
         $newslist = News::orderBy('published_at', 'desc')
@@ -104,6 +105,17 @@ class HomeController extends Controller
             'chatDefaultServerId' => $chatDefaultServerId,
             'chatServerList' => $chatServerList,
             'top10Players' => $top10Players,
+            'themeSettings' => [
+                'enable_home_hero_section' => $themeSettings->enable_home_hero_section,
+                'home_hero_bg_image_path_dark' => $themeSettings->home_hero_bg_image_path_dark,
+                'home_hero_bg_image_path_light' => $themeSettings->home_hero_bg_image_path_light,
+                'home_hero_bg_size_css' => $themeSettings->home_hero_bg_size_css,
+                'home_hero_bg_height_css' => $themeSettings->home_hero_bg_height_css,
+                'home_hero_bg_position_css' => $themeSettings->home_hero_bg_position_css,
+                'home_hero_bg_repeat_css' => $themeSettings->home_hero_bg_repeat_css,
+                'home_hero_bg_attachment_css' => $themeSettings->home_hero_bg_attachment_css,
+                'show_join_box_in_home_hero' => $themeSettings->show_join_box_in_home_hero,
+            ],
         ]);
     }
 

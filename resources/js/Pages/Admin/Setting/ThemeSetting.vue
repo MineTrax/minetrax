@@ -56,7 +56,7 @@
                       <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
                           <!-- ColorMode -->
-                          <div class="col-span-6 sm:col-span-3">
+                          <div class="col-span-6 sm:col-span-6">
                             <x-select
                               id="color_mode"
                               v-model="form.color_mode"
@@ -120,6 +120,221 @@
                               :select-list="fontList"
                             />
                           </div>
+
+                          <!-- Home Hero Section -->
+                          <div class="flex items-center col-span-6 sm:col-span-6 border-t border-gray-300 dark:border-gray-700 pt-4">
+                            <x-checkbox
+                              id="enable_home_hero_section"
+                              v-model="form.enable_home_hero_section"
+                              :label="__('Hero Section at Homepage')"
+                              :help="__('Enable hero image section on home page.')"
+                              name="enable_home_hero_section"
+                              :error="form.errors.enable_home_hero_section"
+                            />
+                          </div>
+
+                          <!-- Hero Image Light -->
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <input
+                              id="home_hero_bg_image_light"
+                              ref="home_hero_bg_image_light"
+                              type="file"
+                              class="hidden"
+                              @change="updateHomeHeroBgImageLightPreview"
+                            >
+
+                            <label
+                              for="home_hero_bg_image_light"
+                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            >{{ __("Hero Background Image Light") }}</label>
+
+                            <div
+                              v-show="!homeHeroBgImageLightPreview"
+                              class="mt-2"
+                            >
+                              <img
+                                :src="settings.home_hero_bg_image_path_light"
+                                alt="home_hero_bg_image_light"
+                                class="rounded h-40 object-cover w-full"
+                              >
+                            </div>
+
+                            <div
+                              v-show="homeHeroBgImageLightPreview"
+                              class="mt-2"
+                            >
+                              <span
+                                class="block rounded h-40"
+                                :style="`background-size: ${form.home_hero_bg_size_css}; background-repeat: ${form.home_hero_bg_repeat_css}; background-position: ${form.home_hero_bg_position_css}; background-image: url(${homeHeroBgImageLightPreview});`"
+                              />
+                            </div>
+
+                            <jet-secondary-button
+                              class="mt-2 mr-2"
+                              type="button"
+                              @click.prevent="selectHomeHeroBgImageLight"
+                            >
+                              {{ __("Select A New Image") }}
+                            </jet-secondary-button>
+
+
+                            <jet-input-error
+                              :message="form.errors.home_hero_bg_image_light"
+                              class="mt-2"
+                            />
+                          </div>
+
+
+                          <!-- Hero Image Dark -->
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <input
+                              id="home_hero_bg_image_dark"
+                              ref="home_hero_bg_image_dark"
+                              type="file"
+                              class="hidden"
+                              @change="updateHomeHeroBgImageDarkPreview"
+                            >
+
+                            <label
+                              for="home_hero_bg_image_dark"
+                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            >{{ __("Hero Background Image Dark") }}</label>
+
+                            <div
+                              v-show="!homeHeroBgImageDarkPreview"
+                              class="mt-2"
+                            >
+                              <img
+                                :src="settings.home_hero_bg_image_path_dark"
+                                alt="home_hero_bg_image_dark"
+                                class="rounded h-40 object-cover w-full"
+                              >
+                            </div>
+
+                            <div
+                              v-show="homeHeroBgImageDarkPreview"
+                              class="mt-2"
+                            >
+                              <span
+                                class="block rounded h-40"
+                                :style="`background-size: ${form.home_hero_bg_size_css}; background-repeat: ${form.home_hero_bg_repeat_css}; background-position: ${form.home_hero_bg_position_css}; background-image: url(${homeHeroBgImageDarkPreview});`"
+                              />
+                            </div>
+
+                            <jet-secondary-button
+                              class="mt-2 mr-2"
+                              type="button"
+                              @click.prevent="selectHomeHeroBgImageDark"
+                            >
+                              {{ __("Select A New Image") }}
+                            </jet-secondary-button>
+
+
+                            <jet-input-error
+                              :message="form.errors.home_hero_bg_image_dark"
+                              class="mt-2"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-select
+                              id="home_hero_bg_size_css"
+                              v-model="form.home_hero_bg_size_css"
+                              name="home_hero_bg_size_css"
+                              :error="form.errors.home_hero_bg_size_css"
+                              :label="__('Hero background size')"
+                              :placeholder="__('Select background size..')"
+                              :disable-null="true"
+                              :select-list="backgroundSizeList"
+                            />
+                          </div>
+
+
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-select
+                              id="home_hero_bg_position_css"
+                              v-model="form.home_hero_bg_position_css"
+                              name="home_hero_bg_position_css"
+                              :error="form.errors.home_hero_bg_position_css"
+                              :label="__('Hero background position')"
+                              :placeholder="__('Select background position..')"
+                              :disable-null="true"
+                              :select-list="backgroundPositionList"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-select
+                              id="home_hero_bg_repeat_css"
+                              v-model="form.home_hero_bg_repeat_css"
+                              name="home_hero_bg_repeat_css"
+                              :error="form.errors.home_hero_bg_repeat_css"
+                              :label="__('Hero background repeat')"
+                              :placeholder="__('Select background repeat..')"
+                              :disable-null="true"
+                              :select-list="backgroundRepeatList"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-select
+                              id="home_hero_bg_attachment_css"
+                              v-model="form.home_hero_bg_attachment_css"
+                              name="home_hero_bg_attachment_css"
+                              :error="form.errors.home_hero_bg_attachment_css"
+                              :label="__('Hero background attachment')"
+                              :placeholder="__('Select background attachment type..')"
+                              :disable-null="true"
+                              :select-list="backgroundAttachmentList"
+                            />
+                          </div>
+
+
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-3 sm:col-span-3"
+                          >
+                            <x-input
+                              id="home_hero_bg_height_css"
+                              v-model="form.home_hero_bg_height_css"
+                              :label="__('Hero background height')"
+                              :error="form.errors.home_hero_bg_height_css"
+                              type="text"
+                              name="home_hero_bg_height_css"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="flex items-center col-span-3 sm:col-span-3"
+                          >
+                            <x-checkbox
+                              id="show_join_box_in_home_hero"
+                              v-model="form.show_join_box_in_home_hero"
+                              :label="__('Show Join Box in Hero Section')"
+                              :help="__('If enabled, will show server join details like player count & join hostname in hero section.')"
+                              name="show_join_box_in_home_hero"
+                              :error="form.errors.show_join_box_in_home_hero"
+                            />
+                          </div>
                         </div>
                       </div>
                       <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
@@ -155,13 +370,21 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import SettingLink from '@/Jetstream/SettingLink.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 
 export default {
     components: {
+        XCheckbox,
         XSelect,
         SettingLink,
         AppLayout,
         LoadingButton,
+        XInput,
+        JetInputError,
+        JetSecondaryButton,
     },
     props: {
         settings: Object,
@@ -175,13 +398,87 @@ export default {
                 color_mode: this.settings.color_mode,
                 theme_name: this.settings.theme_name,
                 primary_font: this.settings.primary_font,
-                secondary_font: this.settings.secondary_font
+                secondary_font: this.settings.secondary_font,
+                enable_home_hero_section: this.settings.enable_home_hero_section,
+                home_hero_bg_size_css: this.settings.home_hero_bg_size_css,
+                home_hero_bg_position_css: this.settings.home_hero_bg_position_css,
+                home_hero_bg_repeat_css: this.settings.home_hero_bg_repeat_css,
+                home_hero_bg_attachment_css: this.settings.home_hero_bg_attachment_css,
+                home_hero_bg_height_css: this.settings.home_hero_bg_height_css,
+                show_join_box_in_home_hero: this.settings.show_join_box_in_home_hero,
+                home_hero_bg_image_light: null,
+                home_hero_bg_image_dark: null,
             }),
+            homeHeroBgImageLightPreview: null,
+            homeHeroBgImageDarkPreview: null,
+            backgroundPositionList: [
+                'left top',
+                'left center',
+                'left bottom',
+                'right top',
+                'right center',
+                'right bottom',
+                'center top',
+                'center center',
+                'center bottom',
+            ],
+            backgroundRepeatList: [
+                'no-repeat',
+                'repeat',
+                'repeat-x',
+                'repeat-y',
+                'space',
+                'round',
+            ],
+            backgroundSizeList: [
+                'auto',
+                'cover',
+                'contain',
+            ],
+            backgroundAttachmentList: [
+                'scroll',
+                'fixed',
+                'local',
+            ],
         };
     },
 
     methods: {
+        updateHomeHeroBgImageLightPreview() {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                this.homeHeroBgImageLightPreview = e.target.result;
+            };
+
+            reader.readAsDataURL(this.$refs.home_hero_bg_image_light.files[0]);
+        },
+        selectHomeHeroBgImageLight() {
+            this.$refs.home_hero_bg_image_light.click();
+        },
+
+        updateHomeHeroBgImageDarkPreview() {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                this.homeHeroBgImageDarkPreview = e.target.result;
+            };
+
+            reader.readAsDataURL(this.$refs.home_hero_bg_image_dark.files[0]);
+        },
+        selectHomeHeroBgImageDark() {
+            this.$refs.home_hero_bg_image_dark.click();
+        },
+
         saveThemeSetting() {
+            if (this.$refs.home_hero_bg_image_light) {
+                this.form.home_hero_bg_image_light = this.$refs.home_hero_bg_image_light.files[0];
+            }
+
+            if (this.$refs.home_hero_bg_image_dark) {
+                this.form.home_hero_bg_image_dark = this.$refs.home_hero_bg_image_dark.files[0];
+            }
+
             this.form.post(route('admin.setting.theme.update'), {
                 preserveScroll: true,
             });
