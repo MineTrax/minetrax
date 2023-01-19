@@ -52,7 +52,7 @@ export default {
     >
       <!-- NavBar -->
       <MainNavbar />
-
+        
       <!-- Page Content -->
       <main>
         <slot />
