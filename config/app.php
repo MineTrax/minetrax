@@ -23,12 +23,12 @@ return [
     |--------------------------------------------------------------------------
     |
     | This value is the current version of your application. This value is used
-    | to check if current version is latest or not and will show alert to 
+    | to check if current version is latest or not and will show alert to
     | staff members to upgrade.
     |
     */
 
-    'version' => '1.0.7-alpha',
+    'version' => '1.0.8-alpha',
 
     /*
     |--------------------------------------------------------------------------
