@@ -36,7 +36,6 @@ fi
 
 yes | composer install
 yes | npm install
-yes | npm run prod
 
 php artisan migrate --force
 php artisan queue:restart
