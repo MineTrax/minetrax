@@ -34,7 +34,10 @@ export default {
     computed: {
         canShowAdminSidebar() {
             return this.isStaff(this.$page.props.user);
-        }
+        },
+        isStickyHeader() {
+            return this.$page.props.generalSettings.enable_sticky_header_menu;
+        },
     },
 
     mounted() {
@@ -64,7 +67,10 @@ export default {
 </script>
 
 <template>
-  <nav class="bg-white shadow dark:bg-cool-gray-800">
+  <nav
+    class="bg-white shadow dark:bg-cool-gray-800 z-50 w-full"
+    :class="{'sticky top-0': isStickyHeader}"
+  >
     <!-- Primary Navigation Menu -->
     <div class="px-4 mx-auto max-w-11xl md:px-6 lg:px-8">
       <div class="flex justify-between font-semibold h-14">
@@ -620,7 +626,7 @@ export default {
     :class="isAdminSidebarOpen ? 'translate-x-0' : '-translate-x-full'"
   >
     <span class="flex items-center w-full p-4 border-b border-gray-200 px-7 dark:border-gray-700 h-14">
-      <inertia-link 
+      <inertia-link
         :href="route('home')"
       >
         <jet-application-mark class="block w-auto h-9" />
