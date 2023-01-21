@@ -19,7 +19,7 @@
             <span
               class="font-semibold uppercase text-sm tracking-wider"
               :class="{ 'text-light-blue-400': news.type.value === 0, 'text-orange-500': news.type.value === 1, 'text-green-500': news.type.value === 2 }"
-            >{{ news.type.key }}</span>
+            >&nbsp;{{ news.type.key }}&nbsp;</span>
             <span
               v-tippy
               :content="formatToDayDateString(news.published_at)"
