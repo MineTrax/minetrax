@@ -3,7 +3,7 @@
     v-if="settings.enable_home_hero_section"
     class="flex justify-center items-center"
     :style="`
-                background: url('${bgImageUrl}');
+                background: url('${isBgImageVideo ? '' : bgImageUrl}');
                 background-size: ${settings.home_hero_bg_size_css};
                 background-repeat: ${settings.home_hero_bg_repeat_css};
                 background-position: ${settings.home_hero_bg_position_css};
@@ -11,6 +11,25 @@
                 height: ${settings.home_hero_bg_height_css};
               `"
   >
+    <video
+      v-if="isBgImageVideo"
+      id="home_hero_bg_image_light_video"
+      class="-z-10 absolute w-full"
+      autoplay
+      loop
+      muted
+      :style="`
+                object-fit: ${settings.home_hero_bg_size_css};
+                object-position: ${settings.home_hero_bg_position_css};
+                height: ${settings.home_hero_bg_height_css};
+      `"
+    >
+      <source
+        :src="bgImageUrl"
+        type="video/webm"
+      >
+    </video>
+
     <copy-to-clipboard
       v-if="joinBoxEnabled"
       v-slot="props"
@@ -69,6 +88,9 @@ export default {
     computed: {
         bgImageUrl() {
             return window.colorMode === 'dark' ? this.settings.home_hero_bg_image_path_dark : this.settings.home_hero_bg_image_path_light;
+        },
+        isBgImageVideo() {
+            return this.bgImageUrl.includes('.webm');
         },
         joinBoxEnabled() {
             if (!this.settings.show_join_box_in_home_hero) return false;

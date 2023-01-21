@@ -156,10 +156,24 @@
                               class="mt-2"
                             >
                               <img
+                                v-if="!isVideoHomeHeroBgImagePathLight"
                                 :src="settings.home_hero_bg_image_path_light"
                                 alt="home_hero_bg_image_light"
                                 class="rounded h-40 object-cover w-full"
                               >
+                              <video
+                                v-else
+                                id="home_hero_bg_image_light_video"
+                                class="rounded h-40 object-cover w-full"
+                                autoplay
+                                loop
+                                muted
+                              >
+                                <source
+                                  :src="settings.home_hero_bg_image_path_light"
+                                  type="video/webm"
+                                >
+                              </video>
                             </div>
 
                             <div
@@ -167,9 +181,17 @@
                               class="mt-2"
                             >
                               <span
+                                v-if="!homeHeroBgImageLightPreviewIsVideo"
                                 class="block rounded h-40"
                                 :style="`background-size: ${form.home_hero_bg_size_css}; background-repeat: ${form.home_hero_bg_repeat_css}; background-position: ${form.home_hero_bg_position_css}; background-image: url(${homeHeroBgImageLightPreview});`"
                               />
+
+                              <div
+                                v-else
+                                class="h-40 flex items-center justify-center text-gray-400 text-sm italic"
+                              >
+                                {{ __("Upload preview not available for this type. Please save to see the changes.") }}
+                              </div>
                             </div>
 
                             <jet-secondary-button
@@ -180,6 +202,9 @@
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>
 
+                            <div class="mt-2 text-xs text-gray-400">
+                              {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp, webm
+                            </div>
 
                             <jet-input-error
                               :message="form.errors.home_hero_bg_image_light"
@@ -211,10 +236,24 @@
                               class="mt-2"
                             >
                               <img
+                                v-if="!isVideoHomeHeroBgImagePathDark"
                                 :src="settings.home_hero_bg_image_path_dark"
                                 alt="home_hero_bg_image_dark"
                                 class="rounded h-40 object-cover w-full"
                               >
+                              <video
+                                v-else
+                                id="home_hero_bg_image_light_video"
+                                class="rounded h-40 object-cover w-full"
+                                autoplay
+                                loop
+                                muted
+                              >
+                                <source
+                                  :src="settings.home_hero_bg_image_path_dark"
+                                  type="video/webm"
+                                >
+                              </video>
                             </div>
 
                             <div
@@ -222,9 +261,17 @@
                               class="mt-2"
                             >
                               <span
+                                v-if="!homeHeroBgImageDarkPreviewIsVideo"
                                 class="block rounded h-40"
                                 :style="`background-size: ${form.home_hero_bg_size_css}; background-repeat: ${form.home_hero_bg_repeat_css}; background-position: ${form.home_hero_bg_position_css}; background-image: url(${homeHeroBgImageDarkPreview});`"
                               />
+
+                              <div
+                                v-else
+                                class="h-40 flex items-center justify-center text-gray-400 text-sm italic"
+                              >
+                                {{ __("Upload preview not available for this type. Please save to see the changes.") }}
+                              </div>
                             </div>
 
                             <jet-secondary-button
@@ -235,6 +282,10 @@
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>
 
+
+                            <div class="mt-2 text-xs text-gray-400">
+                              {{ __("Max Size") }}: 2 MB
+                            </div>
 
                             <jet-input-error
                               :message="form.errors.home_hero_bg_image_dark"
@@ -389,7 +440,9 @@ export default {
     props: {
         settings: Object,
         themeList: Object,
-        fontList: Object
+        fontList: Object,
+        isVideoHomeHeroBgImagePathLight: Boolean,
+        isVideoHomeHeroBgImagePathDark: Boolean,
     },
 
     data() {
@@ -410,7 +463,9 @@ export default {
                 home_hero_bg_image_dark: null,
             }),
             homeHeroBgImageLightPreview: null,
+            homeHeroBgImageLightPreviewIsVideo: false,
             homeHeroBgImageDarkPreview: null,
+            homeHeroBgImageDarkPreviewIsVideo: false,
             backgroundPositionList: [
                 'left top',
                 'left center',
@@ -431,9 +486,11 @@ export default {
                 'round',
             ],
             backgroundSizeList: [
+                'none',
+                'fill',
                 'auto',
-                'cover',
                 'contain',
+                'cover',
             ],
             backgroundAttachmentList: [
                 'scroll',
@@ -449,6 +506,12 @@ export default {
 
             reader.onload = (e) => {
                 this.homeHeroBgImageLightPreview = e.target.result;
+
+                if (this.$refs.home_hero_bg_image_light.files[0].type.includes('video')) {
+                    this.homeHeroBgImageLightPreviewIsVideo = true;
+                } else {
+                    this.homeHeroBgImageLightPreviewIsVideo = false;
+                }
             };
 
             reader.readAsDataURL(this.$refs.home_hero_bg_image_light.files[0]);
@@ -462,6 +525,12 @@ export default {
 
             reader.onload = (e) => {
                 this.homeHeroBgImageDarkPreview = e.target.result;
+
+                if (this.$refs.home_hero_bg_image_dark.files[0].type.includes('video')) {
+                    this.homeHeroBgImageDarkPreviewIsVideo = true;
+                } else {
+                    this.homeHeroBgImageDarkPreviewIsVideo = false;
+                }
             };
 
             reader.readAsDataURL(this.$refs.home_hero_bg_image_dark.files[0]);
@@ -481,6 +550,12 @@ export default {
 
             this.form.post(route('admin.setting.theme.update'), {
                 preserveScroll: true,
+                onSuccess: () => {
+                    this.$inertia.replace(route('admin.setting.theme.show'), {
+                        preserveState: false,
+                        preserveScroll: true,
+                    });
+                }
             });
         }
     }

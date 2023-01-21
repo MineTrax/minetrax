@@ -10,6 +10,7 @@ use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Storage;
+use Illuminate\Support\Str;
 
 class ThemeSettingController extends Controller
 {
@@ -21,10 +22,15 @@ class ThemeSettingController extends Controller
 
     public function show(ThemeSettings $settings): \Inertia\Response
     {
+        $isVideoHomeHeroBgImagePathLight = Str::contains($settings->home_hero_bg_image_path_light, '.webm');
+        $isVideoHomeHeroBgImagePathDark = Str::contains($settings->home_hero_bg_image_path_dark, '.webm');
+
         return Inertia::render('Admin/Setting/ThemeSetting', [
             'settings' => $settings->toArray(),
             'themeList' => ThemeType::asSelectArray(),
             'fontList' => FontType::asSelectArray(),
+            'isVideoHomeHeroBgImagePathLight' => $isVideoHomeHeroBgImagePathLight,
+            'isVideoHomeHeroBgImagePathDark' => $isVideoHomeHeroBgImagePathDark,
         ]);
     }
 
@@ -36,9 +42,9 @@ class ThemeSettingController extends Controller
             'primary_font' => ['required', new EnumValue(FontType::class)],
             'secondary_font' => ['required', new EnumValue(FontType::class)],
             'enable_home_hero_section' => ['required', 'boolean'],
-            'home_hero_bg_image_light' => ['sometimes', 'nullable', 'image', 'max:2048'],
-            'home_hero_bg_image_dark' => ['sometimes', 'nullable', 'image', 'max:2048'],
-            'home_hero_bg_size_css' => ['nullable', 'in:contain,cover,auto'],
+            'home_hero_bg_image_light' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp,webm', 'max:2048'],
+            'home_hero_bg_image_dark' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp,webm', 'max:2048'],
+            'home_hero_bg_size_css' => ['nullable', 'in:contain,cover,auto,fill,none'],
             'home_hero_bg_height_css' => ['nullable', 'string'],
             'home_hero_bg_position_css' => ['nullable', 'in:left top,left center,left bottom,right top,right center,right bottom,center top,center center,center bottom'],
             'home_hero_bg_repeat_css' => ['nullable', 'in:repeat,repeat-x,repeat-y,no-repeat,round,space'],
@@ -62,16 +68,16 @@ class ThemeSettingController extends Controller
 
         if ($request->hasFile('home_hero_bg_image_light')) {
             $path = Storage::putFileAs(
-                'public', $request->file('home_hero_bg_image_light'), 'home_hero_bg_image_light.'.$request->file('home_hero_bg_image_light')->getClientOriginalExtension()
+                'public', $request->file('home_hero_bg_image_light'), 'home_hero_bg_image_light.' . $request->file('home_hero_bg_image_light')->getClientOriginalExtension()
             );
-            $themeSettings->home_hero_bg_image_path_light = Storage::url($path) . '?hash='. \Str::random(8);
+            $themeSettings->home_hero_bg_image_path_light = Storage::url($path) . '?hash=' . \Str::random(8);
         }
 
         if ($request->hasFile('home_hero_bg_image_dark')) {
             $path = Storage::putFileAs(
-                'public', $request->file('home_hero_bg_image_dark'), 'home_hero_bg_image_dark.'.$request->file('home_hero_bg_image_dark')->getClientOriginalExtension()
+                'public', $request->file('home_hero_bg_image_dark'), 'home_hero_bg_image_dark.' . $request->file('home_hero_bg_image_dark')->getClientOriginalExtension()
             );
-            $themeSettings->home_hero_bg_image_path_dark = Storage::url($path) . '?hash='. \Str::random(8);
+            $themeSettings->home_hero_bg_image_path_dark = Storage::url($path) . '?hash=' . \Str::random(8);
         }
 
         $themeSettings->save();
