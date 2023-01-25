@@ -53,7 +53,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily', 'discord'],
+            'channels' => env('LOG_DISCORD_WEBHOOK_URL') ? ['daily', 'discord'] : ['daily'],
             'ignore_exceptions' => false,
         ],
 

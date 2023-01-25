@@ -8,11 +8,13 @@ use Str;
 
 class MinecraftWebQuery
 {
-    public function __construct(public $HOST, public $PORT) {}
+    public function __construct(public $HOST, public $PORT)
+    {
+    }
 
     public function sendChat($username, $message)
     {
-        $param = $username.'½½½½'.$message;
+        $param = $username . '½½½½' . $message;
         $status = $this->sendQuery('user-say', $param);
         return $status;
     }
@@ -26,7 +28,7 @@ class MinecraftWebQuery
     public function runCommand($command, $params = null)
     {
         if ($params) {
-            $status = $this->sendQuery('command', $command.' '.$params);
+            $status = $this->sendQuery('command', $command . ' ' . $params);
         } else {
             $status = $this->sendQuery('command', $command);
         }
@@ -52,6 +54,8 @@ class MinecraftWebQuery
         $encryptedCommand = $this->makeEncryptedString($type, $params);
         $text = $encryptedCommand . "\n";
         $socket->write($text);
+        // Timeout after 5 seconds for webquery in case of no response
+        socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, array("sec" => 5, "usec" => 0));
         $buf = $socket->read(102400);
         $socket->close();
 
@@ -73,8 +77,8 @@ class MinecraftWebQuery
         ];
         $string = json_encode($string);
 
-        $newEncrypter = new Encrypter( ($apiSecret), "AES-256-CBC" );
-        return $newEncrypter->encrypt( $string );
+        $newEncrypter = new Encrypter(($apiSecret), "AES-256-CBC");
+        return $newEncrypter->encrypt($string);
     }
 
     public function decryptEncryptedString(string $string): string
@@ -82,7 +86,7 @@ class MinecraftWebQuery
         $pluginSettings = app(PluginSettings::class);
 
         $apiSecret = Str::substr($pluginSettings->plugin_api_secret, 0, 32);
-        $newEncrypter = new Encrypter( ($apiSecret), "AES-256-CBC" );
-        return $newEncrypter->decrypt( $string );
+        $newEncrypter = new Encrypter(($apiSecret), "AES-256-CBC");
+        return $newEncrypter->decrypt($string);
     }
 }
