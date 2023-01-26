@@ -2,6 +2,7 @@
 
 use App\Jobs\FetchStatsFromAllServersJob;
 use App\Models\Server;
+use App\Services\MinecraftApiService;
 use App\Services\MinecraftServerQueryService;
 use App\Utils\Helpers\LegacyFtpStorage;
 use Illuminate\Support\Facades\Route;
@@ -117,4 +118,8 @@ Route::get('/encryptstring', function () {
 Route::get('test-log', function () {
     Log::info('test');
     return 'test';
+});
+
+Route::get('username-to-uuid', function() {
+   return MinecraftApiService::playerUsernameToUuid('xinecraft');
 });
