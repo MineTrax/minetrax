@@ -40,7 +40,7 @@ yes | npm install
 php artisan migrate --force
 php artisan queue:restart
 
-chmod -R 755 storage/* bootstrap/cache
+chmod -R 775 storage/* bootstrap/cache
 chown -R $USER:www-data .
 
 php artisan up
