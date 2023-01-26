@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Image;
 use Inertia\Inertia;
+use Http;
 
 class PlayerController extends Controller
 {
@@ -121,7 +122,8 @@ class PlayerController extends Controller
                 // try getting from third party service
                 $url = "https://minotar.net/avatar/$param";
                 if ($size) $url = "https://minotar.net/avatar/{$param}/{$size}";
-                return $image->make($url);
+                $data = Http::get($url)->body();
+                return $image->make($data);
             }, 60, true);   // Cache lifetime is in minutes
         } catch (Exception $exception) {
             try {
@@ -132,7 +134,8 @@ class PlayerController extends Controller
                     } else {
                         $uuid = $param;
                     }
-                    return $image->make('https://crafatar.com/avatars/' . $uuid . '?size=' . $size);
+                    $data = Http::get('https://crafatar.com/avatars/' . $uuid . '?size=' . $size)->body();
+                    return $image->make($data);
                 }, 60, true);   // Cache lifetime is in minutes
             } catch (Exception $exception) {
                 $img = Image::make(public_path('images/alex.png'))->resize($size, $size);
@@ -158,7 +161,8 @@ class PlayerController extends Controller
             $img = Image::cache(function ($image) use ($param) {
                 // try getting from third party service
                 $url = "https://minotar.net/skin/$param";
-                return $image->make($url);
+                $data = Http::get($url)->body();
+                return $image->make($data);
             }, 60, true);   // Cache lifetime is in minutes
         } catch (Exception $exception) {
             try {
@@ -169,7 +173,8 @@ class PlayerController extends Controller
                     } else {
                         $uuid = $param;
                     }
-                    return $image->make('https://crafatar.com/skins/' . $uuid);
+                    $data = Http::get('https://crafatar.com/skins/' . $uuid)->body();
+                    return $image->make($data);
                 }, 60, true);   // Cache lifetime is in minutes
             } catch (Exception $exception) {
                 $img = Image::make(public_path('images/alex_skin.png'));
@@ -200,7 +205,9 @@ class PlayerController extends Controller
                 } else {
                     $uuid = $param;
                 }
-                return $image->make('https://crafatar.com/renders/body/' . $uuid . '?scale=' . $scale);
+
+                $data = Http::get('https://crafatar.com/renders/body/' . $uuid . '?scale=' . $scale)->body();
+                return $image->make($data);
             }, 60, true);   // Cache lifetime is in minutes
         } catch (Exception $exception) {
             $img = Image::make(public_path('images/alex_render.png'));
