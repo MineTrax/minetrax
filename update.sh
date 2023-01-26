@@ -41,6 +41,7 @@ php artisan migrate --force
 php artisan queue:restart
 
 chmod -R 755 storage/* bootstrap/cache
+chown -R www-data:www-data .
 
 php artisan up
 
