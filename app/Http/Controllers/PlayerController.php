@@ -110,23 +110,29 @@ class PlayerController extends Controller
         $param = $useUsernameForSkins ? $username : $uuid;
         $size = $request->size;
 
+        // If we got invalid uuid, and we are not using username for skins, return alex
+        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+            $img = Image::make(public_path('images/alex.png'))->resize($size, $size);
+            return $img->response('jpg');
+        }
+
         try {
-            $img = Image::cache(function ($image) use ($param, $size, $useUsernameForSkins) {
+            $img = Image::cache(function ($image) use ($param, $size) {
                 // try getting from third party service
-                if ($useUsernameForSkins) {
-                    $uuid = MinecraftApiService::playerUsernameToUuid($param);
-                } else {
-                    $uuid = $param;
-                }
-                return $image->make('https://crafatar.com/avatars/' . $uuid . '?size=' . $size);
+                $url = "https://minotar.net/avatar/$param";
+                if ($size) $url = "https://minotar.net/avatar/{$param}/{$size}";
+                return $image->make($url);
             }, 60, true);   // Cache lifetime is in minutes
         } catch (Exception $exception) {
             try {
-                $img = Image::cache(function ($image) use ($param, $size) {
+                $img = Image::cache(function ($image) use ($param, $size, $useUsernameForSkins) {
                     // try getting from third party service
-                    $url = "https://minotar.net/avatar/$param";
-                    if ($size) $url = "https://minotar.net/avatar/{$param}/{$size}";
-                    return $image->make($url);
+                    if ($useUsernameForSkins) {
+                        $uuid = MinecraftApiService::playerUsernameToUuid($param);
+                    } else {
+                        $uuid = $param;
+                    }
+                    return $image->make('https://crafatar.com/avatars/' . $uuid . '?size=' . $size);
                 }, 60, true);   // Cache lifetime is in minutes
             } catch (Exception $exception) {
                 $img = Image::make(public_path('images/alex.png'))->resize($size, $size);
@@ -141,6 +147,12 @@ class PlayerController extends Controller
     {
         $useUsernameForSkins = config("minetrax.use_username_for_skins");
         $param = $useUsernameForSkins ? $username : $uuid;
+
+        // If we got invalid uuid, and we are not using username for skins, return alex
+        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+            $img = Image::make(public_path('images/alex_skin.png'));
+            return $img->response('jpg');
+        }
 
         try {
             $img = Image::cache(function ($image) use ($param) {
@@ -173,6 +185,12 @@ class PlayerController extends Controller
         $useUsernameForSkins = config("minetrax.use_username_for_skins");
         $param = $useUsernameForSkins ? $username : $uuid;
         $scale = $request->scale;
+
+        // If we got invalid uuid, and we are not using username for skins, return alex
+        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+            $img = Image::make(public_path('images/alex_render.png'));
+            return $img->response('jpg');
+        }
 
         try {
             $img = Image::cache(function ($image) use ($param, $scale, $useUsernameForSkins) {
