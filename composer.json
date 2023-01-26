@@ -17,6 +17,7 @@
         "beyondcode/laravel-websockets": "^1.13",
         "clue/socket-raw": "^1.6",
         "cybercog/laravel-love": "^8.9",
+        "doctrine/dbal": "^3.5",
         "geoip2/geoip2": "^2.12",
         "guzzlehttp/guzzle": "^7.4",
         "inertiajs/inertia-laravel": "^0.5.2",

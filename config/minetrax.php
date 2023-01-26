@@ -72,4 +72,6 @@ return [
     |
     */
     "players_fetcher_cron_interval" => env("PLAYER_FETCHER_CRON_INTERVAL", "hourly"),
+
+    "fetch_avatar_from_url_using_curl" => env("FETCH_AVATAR_FROM_URL_USING_CURL", false),
 ];
