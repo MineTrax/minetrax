@@ -111,22 +111,22 @@ class PlayerController extends Controller
         $size = $request->size;
 
         try {
-            $img = Image::cache(function ($image) use ($param, $size) {
+            $img = Image::cache(function ($image) use ($param, $size, $useUsernameForSkins) {
                 // try getting from third party service
-                $url = "https://minotar.net/avatar/$param";
-                if ($size) $url = "https://minotar.net/avatar/{$param}/{$size}";
-                return $image->make($url);
+                if ($useUsernameForSkins) {
+                    $uuid = MinecraftApiService::playerUsernameToUuid($param);
+                } else {
+                    $uuid = $param;
+                }
+                return $image->make('https://crafatar.com/avatars/' . $uuid . '?size=' . $size);
             }, 60, true);   // Cache lifetime is in minutes
         } catch (Exception $exception) {
             try {
-                $img = Image::cache(function ($image) use ($param, $size, $useUsernameForSkins) {
+                $img = Image::cache(function ($image) use ($param, $size) {
                     // try getting from third party service
-                    if ($useUsernameForSkins) {
-                        $uuid = MinecraftApiService::playerUsernameToUuid($param);
-                    } else {
-                        $uuid = $param;
-                    }
-                    return $image->make('https://crafatar.com/avatars/' . $uuid . '?size=' . $size);
+                    $url = "https://minotar.net/avatar/$param";
+                    if ($size) $url = "https://minotar.net/avatar/{$param}/{$size}";
+                    return $image->make($url);
                 }, 60, true);   // Cache lifetime is in minutes
             } catch (Exception $exception) {
                 $img = Image::make(public_path('images/alex.png'))->resize($size, $size);
