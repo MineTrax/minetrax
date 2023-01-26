@@ -13,7 +13,7 @@
         "php": "^8.1",
         "ext-json": "*",
         "ext-sockets": "*",
-        "bensampo/laravel-enum": "^5.3",
+        "bensampo/laravel-enum": "^6.2",
         "beyondcode/laravel-websockets": "^1.13",
         "clue/socket-raw": "^1.6",
         "cybercog/laravel-love": "^8.9",
