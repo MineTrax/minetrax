@@ -45,8 +45,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
         $minScore = Player::min('total_score');
         $maxScore = Player::max('total_score');
 
-        foreach ($playersList as $player)
-        {
+        foreach ($playersList as $player) {
             $player->rating = $this->calculatePlayerRating($player, $minScore, $maxScore, $playerSettings);
             if ($pluginSettings->enable_sync_player_ranks_from_server && $server) {
                 $player->rank_id = $this->calculatePlayerRankIdFromServerWebQuery($server->ip_address, $server->webquery_port, $player);

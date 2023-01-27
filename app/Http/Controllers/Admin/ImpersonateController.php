@@ -11,7 +11,7 @@ class ImpersonateController extends Controller
     public function __construct()
     {
         // because if we apply auth:sanctum then impersonation not working
-        $this->middleware(['auth', 'verified', 'forbid-banned-user', 'redirect-uncompleted-user']);
+        $this->middleware(['auth', 'verified-if-enabled', 'forbid-banned-user', 'redirect-uncompleted-user']);
     }
 
     public function take($user, Request $request)
@@ -23,10 +23,16 @@ class ImpersonateController extends Controller
         }
 
         $userObject = User::where('id', $user)->firstOrFail();
+        if ($currentUser->id === $userObject->id) {
+            return redirect()->back()->with(['toast' => ['type' => 'danger', 'title' => __('Impersonation Failed!'), 'body' => __('You cannot impersonate yourself.')]]);
+        }
+
         $this->authorize('impersonate', $userObject);
 
         auth('web')->loginUsingId($user);
         session()->put('impersonated_by', $currentUser->id);
+        session()->put('password_hash_web', $userObject->getAuthPassword());
+        session()->put('password_hash_sanctum', $userObject->getAuthPassword());
 
         return redirect()->route('home');
     }
@@ -40,7 +46,11 @@ class ImpersonateController extends Controller
         }
 
         $impersonatedBy = session()->get('impersonated_by');
+        $admin = User::where('id', $impersonatedBy)->firstOrFail();
+
         session()->remove('impersonated_by');
+        session()->put('password_hash_web', $admin->getAuthPassword());
+        session()->put('password_hash_sanctum', $admin->getAuthPassword());
 
         auth()->loginUsingId($impersonatedBy);
 

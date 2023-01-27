@@ -38,7 +38,7 @@ export default {
       :title="__('Leave Impersonation')"
       as="a"
       :href="route('admin.impersonate.leave')"
-      class="fixed flex p-2 text-white bg-red-500 rounded-full bottom-4 right-4 hover:bg-red-700"
+      class="fixed flex p-2 text-white bg-red-500 rounded-full bottom-4 right-4 hover:bg-red-700 z-50"
     >
       <icon
         name="ban"

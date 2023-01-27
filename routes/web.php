@@ -108,7 +108,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::post('user/{user}/unmute', [\App\Http\Controllers\Admin\UserController::class, 'unmute'])->name('user.unmute');
 
     Route::get('impersonate/{user}/take', [\App\Http\Controllers\Admin\ImpersonateController::class, 'take'])->name('impersonate.take')->withoutMiddleware(['auth:sanctum']);
-    Route::get('impersonate/leave', [\App\Http\Controllers\Admin\ImpersonateController::class, 'leave'])->name('impersonate.leave')->withoutMiddleware('auth:sanctum');
+    Route::get('impersonate/leave', [\App\Http\Controllers\Admin\ImpersonateController::class, 'leave'])->name('impersonate.leave')->withoutMiddleware(['auth:sanctum', 'staff-member']);
 
     Route::get('server', [\App\Http\Controllers\Admin\ServerController::class, 'index'])->name('server.index');
     Route::get('server/create', [\App\Http\Controllers\Admin\ServerController::class, 'create'])->name('server.create');
