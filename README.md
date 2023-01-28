@@ -4,7 +4,7 @@
 
 ![image](https://minetrax.github.io/img/shots/homepage.png)
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/minetrax/minetrax/tests?label=Tests&style=for-the-badge&logo=testcafe&logoColor=white)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/minetrax/minetrax/laravel-mysql.yml?label=Tests&style=for-the-badge&logo=circleci&logoColor=white)
 ![Discord](https://img.shields.io/discord/508594544598712330?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
 ![Lines of code](https://img.shields.io/tokei/lines/github/minetrax/minetrax?style=for-the-badge&logo=xcode&logoColor=white)
 ![GitHub Releases](https://img.shields.io/github/v/release/minetrax/minetrax?include_prereleases&style=for-the-badge&logo=github&logoColor=white)
