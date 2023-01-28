@@ -8,7 +8,11 @@ class PhpVarsToJsTransformer extends Component
 {
     public function render()
     {
+        $useWebsockets = config("broadcasting.default") == "pusher" || config("broadcasting.default") == "ably";
+        $useWebsockets = $useWebsockets && config("broadcasting.connections." . config("broadcasting.default") . ".key");
+
         $pusher = [
+            "USE_WEBSOCKETS" => $useWebsockets,
             "VITE_PUSHER_APP_KEY" => config("broadcasting.connections.pusher.key"),
             "VITE_PUSHER_HOST" => config("broadcasting.connections.pusher._pusher_host"),
             "VITE_PUSHER_PORT" => config("broadcasting.connections.pusher._pusher_port"),

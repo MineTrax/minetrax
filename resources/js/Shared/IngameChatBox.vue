@@ -302,6 +302,7 @@ import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import {format} from 'date-fns';
+import {USE_WEBSOCKETS} from '@/constants';
 
 export default {
     components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton},
@@ -328,6 +329,7 @@ export default {
             adminPlayerActionError: null,
             format: format,
             isWebQuerySuccess: false,
+            chatListQueryInterval: null,
         };
     },
 
@@ -341,7 +343,11 @@ export default {
 
     watch: {
         serverId: function (newId, oldId) {
-            Echo.leaveChannel('chatlogs.' + oldId);
+            if (USE_WEBSOCKETS) {
+                Echo.leaveChannel('chatlogs.' + oldId);
+            } else {
+                clearInterval(this.chatListQueryInterval);
+            }
             this.serverId = newId;
             this.getChatListForServer(newId);
 
@@ -361,7 +367,11 @@ export default {
     },
 
     unmounted() {
-        Echo.leave('chatlogs.' + this.serverId);
+        if (USE_WEBSOCKETS) {
+            Echo.leave('chatlogs.' + this.serverId);
+        } else {
+            clearInterval(this.chatListQueryInterval);
+        }
         clearInterval(this.playerListQueryInterval);
     },
 
@@ -385,6 +395,7 @@ export default {
                 this.sending = false;
                 this.$nextTick(() => {
                     this.$refs.inputbox.focus();
+                    this.pollServerForNewChat(this.serverId);
                 });
             });
         },
@@ -402,13 +413,33 @@ export default {
                 });
             });
 
-            Echo.channel('chatlogs.' + sId).listen('ServerChatlogCreated', data => {
-                this.chatLogs.push(data.data);
+            if (USE_WEBSOCKETS) {
+                Echo.channel('chatlogs.' + sId).listen('ServerChatlogCreated', data => {
+                    this.chatLogs.push(data.data);
 
-                this.$nextTick(() => {
-                    let scrollHeight = this.$el.querySelector('#chatbox').scrollHeight;
-                    this.$el.querySelector('#chatbox').scrollTo(0, scrollHeight);
+                    this.$nextTick(() => {
+                        let scrollHeight = this.$el.querySelector('#chatbox').scrollHeight;
+                        this.$el.querySelector('#chatbox').scrollTo(0, scrollHeight);
+                    });
                 });
+            } else {
+                this.chatListQueryInterval = setInterval(() => this.pollServerForNewChat(this.serverId), 6000);
+            }
+        },
+
+        pollServerForNewChat(sId) {
+            if (USE_WEBSOCKETS) return;
+
+            let afterId = this.chatLogs.length > 0 ? this.chatLogs[this.chatLogs.length - 1].id : 0;
+            axios.get(route('chatlog.index', {server: sId, after: afterId})).then(data => {
+                const newChat = data.data.reverse();
+                if (newChat.length > 0) {
+                    this.chatLogs = this.chatLogs.concat(newChat);
+                    this.$nextTick(() => {
+                        let scrollHeight = this.$el.querySelector('#chatbox').scrollHeight;
+                        this.$el.querySelector('#chatbox').scrollTo(0, scrollHeight);
+                    });
+                }
             });
         },
 

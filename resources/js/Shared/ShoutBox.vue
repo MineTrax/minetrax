@@ -177,7 +177,7 @@
             class="font-semibold text-light-blue-500"
             :href="route('register')"
           >
-          {{ __("Register") }}
+            {{ __("Register") }}
           </inertia-link>
         </template>
         {{ __("to Shout") }}
@@ -188,6 +188,7 @@
 
 <script>
 import Icon from '@/Components/Icon.vue';
+import {USE_WEBSOCKETS} from '@/constants';
 
 export default {
     components: {Icon},
@@ -197,7 +198,8 @@ export default {
             message: '',
             error: null,
             loading: true,
-            sending: false
+            sending: false,
+            shoutQueryInterval: null,
         };
     },
 
@@ -208,9 +210,19 @@ export default {
             this.loading = false;
         });
 
-        Echo.channel('shouts').listen('ShoutCreated', data => {
-            this.shouts.unshift(data.data);
-        });
+        if (USE_WEBSOCKETS) {
+            Echo.channel('shouts').listen('ShoutCreated', data => {
+                this.shouts.unshift(data.data);
+            });
+        } else {
+            this.shoutQueryInterval = setInterval(() => this.pollServerForNewShouts(), 5000);
+        }
+    },
+
+    unmounted() {
+        if (this.shoutQueryInterval) {
+            clearInterval(this.shoutQueryInterval);
+        }
     },
 
     methods: {
@@ -237,8 +249,19 @@ export default {
                     this.$refs.inputbox.focus();
                 });
             });
-        }
-    }
+        },
 
+        pollServerForNewShouts() {
+            if (USE_WEBSOCKETS) return;
+
+            const afterId = this.shouts.length > 0 ? this.shouts[0].id : 0;
+            axios.get(route('shout.index', {after: afterId})).then(data => {
+                const newShouts = data.data;
+                if (newShouts.length > 0) {
+                    this.shouts = [...newShouts, ...this.shouts];
+                }
+            });
+        },
+    }
 };
 </script>

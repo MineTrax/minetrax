@@ -118,6 +118,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::post('server', [\App\Http\Controllers\Admin\ServerController::class, 'store'])->name('server.store');
     Route::post('server-bungee', [\App\Http\Controllers\Admin\ServerController::class, 'storeBungee'])->name('server-bungee.store');
     Route::get('server/{server}', [\App\Http\Controllers\Admin\ServerController::class, 'show'])->name('server.show');
+    Route::get('server/{server}/consolelogs', [\App\Http\Controllers\Admin\ServerController::class, 'getServerConsoleLogs'])->name('server.consolelogs.index');
     Route::get('server/{server}/edit', [\App\Http\Controllers\Admin\ServerController::class, 'edit'])->name('server.edit')->middleware('password.confirm');
     Route::put('server/{server}', [\App\Http\Controllers\Admin\ServerController::class, 'update'])->name('server.update');
     Route::put('server/{server}/bungee', [\App\Http\Controllers\Admin\ServerController::class, 'updateBungee'])->name('server.update.bungee');
