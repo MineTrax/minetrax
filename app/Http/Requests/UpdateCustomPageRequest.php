@@ -35,7 +35,7 @@ class UpdateCustomPageRequest extends FormRequest
             'is_visible' => 'required|boolean',
             'is_in_navbar' => 'required|boolean',
             'is_redirect' => 'required|boolean',
-            'redirect_url' => 'nullable|required_if:is_redirect,true|active_url',
+            'redirect_url' => 'nullable|required_if:is_redirect,true|url',
             'body' => 'nullable|required_if:is_redirect,false|string',
         ];
     }
