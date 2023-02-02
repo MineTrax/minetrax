@@ -45,6 +45,12 @@
                     </th>
                     <th
                       scope="col"
+                      class="px-6 py-3 whitespace-nowrap text-left text-xs font-medium uppercase tracking-wider"
+                    >
+                      {{ __("Page Type") }}
+                    </th>
+                    <th
+                      scope="col"
                       class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
                       {{ __("Visible") }}
@@ -59,7 +65,7 @@
                       scope="col"
                       class="px-6 py-3 whitespace-nowrap text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      {{ __("Is Redirect") }}
+                      {{ __("Sidebar") }}
                     </th>
                     <th
                       scope="col"
@@ -97,6 +103,13 @@
                         </div>
                       </div>
                     </td>
+                    <td class="px-6 py-4 whitespace-normal w-1/2">
+                      <div class="flex items-center">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                          {{ customPage.is_redirect ? 'redirect' : customPage.is_html_page ? 'html' : 'markdown' }}
+                        </div>
+                      </div>
+                    </td>
                     <td class="px-9 py-4 text-sm text-gray-500">
                       <icon
                         v-if="customPage.is_visible"
@@ -123,11 +136,9 @@
                     </td>
                     <td class="px-9 py-4 whitespace-nowrap text-sm text-gray-500 align-middle text-center">
                       <icon
-                        v-if="customPage.is_redirect"
-                        v-tippy
+                        v-if="customPage.is_sidebar_visible"
                         class="text-green-500 focus:outline-none"
                         name="check-circle"
-                        :title="customPage.redirect_url"
                       />
                       <icon
                         v-else
