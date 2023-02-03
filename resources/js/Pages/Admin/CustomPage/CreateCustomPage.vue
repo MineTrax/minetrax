@@ -23,7 +23,9 @@
                 {{ __("Overview") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                {{ __("Using custom pages you can create a page based on markdown to show information like privacy, rules etc.") }} <br> {{ __("Using custom pages you can also redirect to some external links.") }}
+                {{
+                  __("Using custom pages you can create a page based on markdown to show information like privacy, rules etc.")
+                }} <br> {{ __("Using custom pages you can also redirect to some external links.") }}
               </p>
             </div>
           </div>
@@ -76,7 +78,9 @@
                         v-if="pageType === 'html'"
                         class="text-sm mt-4 p-4 border border-orange-700 rounded bg-orange-200 text-orange-700 dark:bg-orange-700 dark:bg-opacity-25 dark:text-orange-400"
                       >
-                        {{ __("Please be careful with this option, adding malicious code can expose your website to security risks. Make sure you know what you are doing.") }}
+                        {{
+                          __("Please be careful with this option, adding malicious code can expose your website to security risks. Make sure you know what you are doing.")
+                        }}
                       </div>
                     </div>
 
@@ -199,7 +203,9 @@
                                 class="font-medium text-gray-700 dark:text-gray-400"
                               >{{ __("Sidebar Visible") }}</label>
                               <p class="text-gray-500 text-xs">
-                                {{ __("Should right sidebar be visible when user open this page") }}
+                                {{
+                                  __("Should right sidebar be visible when user open this page")
+                                }}
                               </p>
                             </div>
                           </div>
@@ -246,12 +252,12 @@ import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import EasyMDE from 'easymde';
-import {onMounted, ref, shallowRef } from 'vue';
-import { useForm } from '@inertiajs/inertia-vue3';
-import { Codemirror } from 'vue-codemirror';
+import {onMounted, ref, shallowRef} from 'vue';
+import {useForm} from '@inertiajs/inertia-vue3';
+import {Codemirror} from 'vue-codemirror';
 import {basicSetup} from 'codemirror';
-import { html } from '@codemirror/lang-html';
-import { oneDark } from '@codemirror/theme-one-dark';
+import {html} from '@codemirror/lang-html';
+import {oneDark} from '@/Data/CodeMirror/darkTheme.js';
 
 const pageType = ref('markdown');
 const bodyMarkdown = ref('');
@@ -274,7 +280,7 @@ const form = useForm({
 
 // Codemirror EditorView instance ref
 const view = shallowRef();
-const extensions = [basicSetup,  html()];
+const extensions = [basicSetup, html()];
 if (window.colorMode === 'dark') {
     extensions.push(oneDark);
 }

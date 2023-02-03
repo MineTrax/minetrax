@@ -7,7 +7,6 @@
     },
     "devDependencies": {
         "@codemirror/lang-html": "^6.4.1",
-        "@codemirror/theme-one-dark": "^6.1.0",
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-vue3": "^0.6.0",
         "@inertiajs/progress": "^0.2.7",
