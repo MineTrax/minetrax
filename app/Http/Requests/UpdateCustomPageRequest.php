@@ -33,8 +33,10 @@ class UpdateCustomPageRequest extends FormRequest
                 Rule::unique('custom_pages')->ignore($this->route('customPage')),
             ],
             'is_visible' => 'required|boolean',
+            'is_sidebar_visible' => 'required|boolean',
             'is_in_navbar' => 'required|boolean',
             'is_redirect' => 'required|boolean',
+            'is_html_page' => 'required|boolean',
             'redirect_url' => 'nullable|required_if:is_redirect,true|url',
             'body' => 'nullable|required_if:is_redirect,false|string',
         ];

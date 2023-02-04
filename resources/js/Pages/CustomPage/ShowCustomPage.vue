@@ -28,7 +28,7 @@
       </div>
 
       <div class="flex justify-between md:mb-4">
-        <h1 class="text-center font-bold text-2xl md:text-4xl text-gray-900 mb-5">
+        <h1 class="text-center font-bold text-2xl md:text-4xl text-gray-900 dark:text-gray-200 mb-5">
           {{ customPage.title }}
         </h1>
         <div class="">
@@ -41,9 +41,18 @@
         </div>
       </div>
       <div class="flex flex-col md:flex-row md:space-x-4">
-        <div class="-my-2 md:w-9/12 overflow-x-auto md:-mx-6 lg:-mx-8">
-          <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
-            <div class="shadow max-w-none bg-white dark:bg-cool-gray-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden md:rounded-lg">
+        <div
+          v-if="customPage.is_html_page"
+          :class="customPage.is_sidebar_visible ? 'md:w-9/12' : 'md:w-full'"
+          v-html="customPage.body_html"
+        />
+        <div
+          v-else
+          class="overflow-x-auto"
+          :class="customPage.is_sidebar_visible ? 'md:w-9/12' : 'md:w-full'"
+        >
+          <div class="min-w-full">
+            <div class="shadow max-w-none bg-white dark:bg-cool-gray-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded">
               <div
                 class="prose max-w-none dark:prose-dark"
                 v-html="customPage.body_html"
@@ -52,7 +61,10 @@
           </div>
         </div>
 
-        <div class="md:w-3/12 flex-1 space-y-4 mt-4 md:mt-0">
+        <div
+          v-if="customPage.is_sidebar_visible"
+          class="md:w-3/12 flex-1 space-y-4 mt-4 md:mt-0"
+        >
           <server-status-box />
           <shout-box />
         </div>

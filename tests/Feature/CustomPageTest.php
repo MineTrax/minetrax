@@ -35,7 +35,9 @@ class CustomPageTest extends TestCase
             'is_visible' => true,
             'is_in_navbar' => true,
             'is_redirect' => false,
-            'redirect_url' => null
+            'redirect_url' => null,
+            'is_html_page' => false,
+            'is_sidebar_visible' => true,
         ];
         $response = $this->post(route('admin.custom-page.store'), $data);
         $this->assertDatabaseHas('custom_pages', $data);
@@ -52,7 +54,9 @@ class CustomPageTest extends TestCase
             'is_visible' => false,
             'is_in_navbar' => false,
             'is_redirect' => false,
-            'redirect_url' => null
+            'redirect_url' => null,
+            'is_html_page' => false,
+            'is_sidebar_visible' => false,
         ]);
 
         $this->assertEquals('New Title', $customPage->fresh()->title);
@@ -60,6 +64,8 @@ class CustomPageTest extends TestCase
         $this->assertEquals('New Body', $customPage->fresh()->body);
         $this->assertEquals(false, $customPage->fresh()->is_visible);
         $this->assertEquals(false, $customPage->fresh()->is_in_navbar);
+        $this->assertEquals(false, $customPage->fresh()->is_sidebar_visible);
+        $this->assertEquals(false, $customPage->fresh()->is_html_page);
     }
 
     public function test_admin_can_delete_custom_page()

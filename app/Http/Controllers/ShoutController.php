@@ -8,10 +8,20 @@ use Illuminate\Http\Request;
 
 class ShoutController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $shouts = Shout::with('user:id,username,name,profile_photo_path,settings')->latest()->limit(5)->get();
-        return $shouts;
+        // AfterId for polling API.
+        $afterId = $request->after;
+        $shouts = Shout::with('user:id,username,name,profile_photo_path,settings')->latest();
+
+        if ($afterId) {
+            // What? Can we expect to get 100 chatlog within 6 seconds polling interval? No I guess...
+            $shouts->where('id', '>', $afterId)->limit(50);
+        } else {
+            $shouts->limit(5);
+        }
+
+        return $shouts->get();
     }
 
     /**

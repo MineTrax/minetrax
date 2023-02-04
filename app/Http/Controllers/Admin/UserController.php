@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Badge;
+use App\Models\Country;
 use App\Models\Role;
 use App\Models\User;
 use App\Notifications\UserYouAreBanned;
@@ -19,7 +20,7 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $users = User::query()->paginate(10);
+        $users = User::with('country:id,name,iso_code')->paginate(10);
 
         $users->each(function ($user) {
             $user->append('dob_string_with_year');
@@ -112,11 +113,13 @@ class UserController extends Controller
 
         $rolesList = Role::query()->pluck('display_name', 'name');
         $badgesList = Badge::query()->get(['name', 'id']);
+        $countryList = Country::get(['name', 'id']);
 
         return Inertia::render('Admin/User/EditUser', [
-            'userData' => $user->load('badges'),
+            'userData' => $user->load(['badges', 'country:id,name']),
             'rolesList' => $rolesList,
             'badgesList' => $badgesList,
+            'countryList' => $countryList
         ]);
     }
 
@@ -145,7 +148,8 @@ class UserController extends Controller
             'show_gender' => ['required', 'boolean'],
             'profile_photo_source' => ['nullable', 'in:gravatar,linked_player'],
             'verified' => ['required', 'boolean'],
-            'badges' => ['sometimes', 'nullable', 'array', 'exists:badges,id']
+            'badges' => ['sometimes', 'nullable', 'array', 'exists:badges,id'],
+            'country_id' => ['required', 'exists:countries,id']
         ]);
 
         $social_links = [
@@ -173,6 +177,7 @@ class UserController extends Controller
         $user->social_links = $social_links;
         $user->settings = $settings;
         $user->about = $request->about ?? null;
+        $user->country_id = $request->country_id;
 
         // if verified_at was null and now verified is true then mark it as verified & vice versa
         if ($request->verified && !$user->verified_at) {

@@ -192,8 +192,20 @@ class ServerController extends Controller
         return Inertia::render('Admin/Server/ShowServer', [
             'server' => $server->load(['country']),
             'serverAggrData' => $serverAggrData,
-            'serverConsoleLogs' => $server->serverConsolelog()->limit(100)->orderByDesc('id')->get()
         ]);
+    }
+
+    public function getServerConsoleLogs(Server $server, Request $request)
+    {
+        $afterId = $request->after;
+        $this->authorize('view', $server);
+
+        $query = $server->serverConsolelog()->orderByDesc('id')->limit(100);
+        if ($afterId) {
+            $query->where('id', '>', $afterId);
+        }
+
+        return $query->get();
     }
 
     public function showPerformanceMonitor(Server $server, Request $request)

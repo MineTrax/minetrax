@@ -11,12 +11,24 @@ use Illuminate\Support\Str;
 
 class ServerChatlogController extends Controller
 {
-    public function index($server)
+    public function index($server, Request $request)
     {
-        return ServerChatlog::orderByDesc('id')
+        // AfterId for polling API.
+        $afterId = $request->after;
+
+        $query = ServerChatlog::orderByDesc('id')
             ->where('server_id', $server)
-            ->whereNull('channel')->limit(50)->get()
-            ->map(function($data) {
+            ->whereNull('channel');
+
+        if ($afterId) {
+            // What? Can we expect to get 100 chatlog within 6 seconds polling interval? No I guess...
+            $query->where('id', '>', $afterId)->limit(100);
+        } else {
+            $query->limit(50);
+        }
+
+        return $query->get()
+            ->map(function ($data) {
                 $data->data = MinecraftColorUtils::convertToHTML($data->data);
                 return $data;
             });
@@ -28,8 +40,6 @@ class ServerChatlogController extends Controller
             'message' => 'required|string|min:1|max:255'
         ]);
 
-
-
         $user = $request->user();
         $userDisplayName = $user->username;
         $webMessageFormat = $user->role_web_message_format;
@@ -37,7 +47,7 @@ class ServerChatlogController extends Controller
         if ($webMessageFormat) {
             $userDisplayName = str_replace("{USERNAME}", $userDisplayName, $webMessageFormat);
         } else {
-            $userDisplayName = $userDisplayName.'&r';
+            $userDisplayName = $userDisplayName . '&r';
         }
 
         $webQuery = new MinecraftWebQuery($server->ip_address, $server->webquery_port);

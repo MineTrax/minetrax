@@ -13,6 +13,8 @@ class CustomPage extends BaseModel
         'is_visible' => 'boolean',
         'is_in_navbar' => 'boolean',
         'is_redirect' => 'boolean',
+        'is_sidebar_visible' => 'boolean',
+        'is_html_page' => 'boolean',
     ];
 
     public function scopeVisible($query)
@@ -27,6 +29,9 @@ class CustomPage extends BaseModel
 
     public function getBodyHtmlAttribute(): string
     {
+        if ($this->is_html_page) {
+            return $this->body;
+        }
         $converter = new GithubFlavoredMarkdownConverter();
         return $converter->convertToHtml($this->body);
     }

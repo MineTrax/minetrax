@@ -339,7 +339,7 @@
 
                     <div
                       v-if="can('assign badges')"
-                      class="col-span-6 sm:col-span-6"
+                      class="col-span-6 sm:col-span-3"
                     >
                       <label
                         for="badges"
@@ -360,6 +360,29 @@
                       />
                       <jet-input-error
                         :message="form.errors.permissions"
+                        class="mt-2"
+                      />
+                    </div>
+
+                    <div
+                      class="col-span-6 sm:col-span-3"
+                    >
+                      <label
+                        for="badges"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                      >{{ __("Country") }}</label>
+                      <multiselect
+                        id="country"
+                        v-model="form.country"
+                        class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                        :options="countryList"
+                        :multiple="false"
+                        :placeholder="__('Search')+'...'"
+                        label="name"
+                        track-by="id"
+                      />
+                      <jet-input-error
+                        :message="form.errors.country_id"
                         class="mt-2"
                       />
                     </div>
@@ -415,6 +438,7 @@ export default {
         userData: Object,
         rolesList: Object,
         badgesList: Object,
+        countryList: Object,
     },
     data() {
         return {
@@ -440,7 +464,9 @@ export default {
                 show_yob: this.userData.settings ? !!+this.userData.settings.show_yob : false,                            // coz in old version, data store as string 1,0
                 verified: !!this.userData.verified_at,
                 role: this.userData.roles[0].name,
-                badges: this.userData.badges
+                badges: this.userData.badges,
+                country: this.userData.country,
+                country_id: this.userData.country_id,
             }),
 
             photoPreview: null,
@@ -455,6 +481,7 @@ export default {
 
             const tempBadges = this.form.badges;
             this.form.badges = this.form.badges.map(b => b.id);
+            this.form.country_id = this.form.country?.id;
             this.form.post(route('admin.user.update', this.userData.id), {
                 preserveScroll: true
             });

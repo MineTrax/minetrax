@@ -25,6 +25,12 @@
                     </th>
                     <th
                       scope="col"
+                      class="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase"
+                    >
+                      {{ __("Flag") }}
+                    </th>
+                    <th
+                      scope="col"
                       class="w-6 px-3 py-3 text-xs font-medium tracking-wider text-left uppercase"
                     >
                       {{ __("Name / @Username") }}
@@ -74,6 +80,15 @@
                   >
                     <td class="px-3 py-4 text-sm font-semibold text-gray-800 whitespace-nowrap dark:text-gray-400">
                       {{ user.id }}
+                    </td>
+                    <td class="">
+                      <img
+                        v-tippy
+                        class="w-10 h-10 mx-auto"
+                        :src="user.country.photo_path"
+                        alt="Avatar"
+                        :title="user.country.name"
+                      >
                     </td>
                     <td class="w-1/2 px-3 py-4 whitespace-normal">
                       <div class="flex items-center">

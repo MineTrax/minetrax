@@ -23,7 +23,9 @@
                 {{ __("Overview") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                {{ __("Using custom pages you can create a page based on markdown to show information like privacy, rules etc.") }} <br> {{ __("Using custom pages you can also redirect to some external links.") }}
+                {{
+                  __("Using custom pages you can create a page based on markdown to show information like privacy, rules etc.")
+                }} <br> {{ __("Using custom pages you can also redirect to some external links.") }}
               </p>
             </div>
           </div>
@@ -59,20 +61,32 @@
                       />
                     </div>
 
-                    <div class="flex items-center col-span-6 sm:col-span-3">
-                      <x-checkbox
-                        id="is_redirect"
-                        v-model="form.is_redirect"
-                        :label="__('External Redirect')"
-                        :help="__('Tick if visiting this page should redirect to an external url.')"
-                        name="is_redirect"
-                        :error="form.errors.is_redirect"
+                    <div
+                      class="col-span-6 sm:col-span-6"
+                    >
+                      <x-select
+                        id="page_type"
+                        v-model="pageType"
+                        name="page_type"
+                        :label="__('Page Type')"
+                        :placeholder="__('Select a type of page..')"
+                        :disable-null="true"
+                        :select-list="pageTypeList"
                       />
+
+                      <div
+                        v-if="pageType === 'html'"
+                        class="text-sm mt-4 p-4 border border-orange-700 rounded bg-orange-200 text-orange-700 dark:bg-orange-700 dark:bg-opacity-25 dark:text-orange-400"
+                      >
+                        {{
+                          __("Please be careful with this option, adding malicious code can expose your website to security risks. Make sure you know what you are doing.")
+                        }}
+                      </div>
                     </div>
 
 
                     <div
-                      v-show="form.is_redirect"
+                      v-show="pageType === 'redirect'"
                       class="col-span-6 sm:col-span-6"
                     >
                       <x-input
@@ -88,12 +102,32 @@
                     </div>
 
                     <div
-                      v-show="!form.is_redirect"
+                      v-show="pageType === 'html'"
+                      class="col-span-6 sm:col-span-6"
+                    >
+                      <codemirror
+                        v-model="code"
+                        placeholder="Paste your HTML/CSS code here..."
+                        :style="{ height: '400px'}"
+                        :indent-with-tab="true"
+                        :tab-size="2"
+                        :extensions="extensions"
+                        @ready="handleReady"
+                      />
+
+                      <jet-input-error
+                        :message="form.errors.body"
+                        class="mt-2 text-right"
+                      />
+                    </div>
+
+                    <div
+                      v-show="pageType === 'markdown'"
                       class="col-span-6 sm:col-span-6"
                     >
                       <textarea
                         id="body"
-                        v-model="form.body"
+                        v-model="bodyMarkdown"
                         aria-label="body"
                         name="body"
                         class="mt-1 focus:ring-light-blue-500 focus:border-light-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
@@ -104,9 +138,9 @@
                       />
                     </div>
 
-                    <div class="flex items-center col-span-6 sm:col-span-3">
+                    <div class="flex items-center col-span-6 sm:col-span-6">
                       <fieldset>
-                        <legend class="text-base font-medium text-gray-900 dark:text-gray-400">
+                        <legend class="text-base font-medium text-gray-900 dark:text-gray-300">
                           {{ __("Options") }}
                         </legend>
                         <div class="mt-4 flex space-x-4">
@@ -125,7 +159,9 @@
                                 for="is_visible"
                                 class="font-medium text-gray-700 dark:text-gray-400"
                               >{{ __("Visible") }}</label>
-                              <!--                                                            <p class="text-gray-500">Get notified when someones posts a comment on a posting.</p>-->
+                              <p class="text-gray-500 text-xs">
+                                {{ __("General public can access this URL via link") }}
+                              </p>
                             </div>
                           </div>
                           <div class="flex items-start">
@@ -143,7 +179,34 @@
                                 for="is_in_navbar"
                                 class="font-medium text-gray-700 dark:text-gray-400"
                               >{{ __("Add to Navbar") }}</label>
-                              <!--                                                            <p class="text-gray-500">Get notified when a candidate applies for a job.</p>-->
+                              <p class="text-gray-500 text-xs">
+                                {{ __("Add this page link to the top Navigation bar") }}
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            v-show="pageType !== 'redirect'"
+                            class="flex items-start"
+                          >
+                            <div class="flex items-center h-5">
+                              <input
+                                id="is_sidebar_visible"
+                                v-model="form.is_sidebar_visible"
+                                name="is_sidebar_visible"
+                                type="checkbox"
+                                class="focus:ring-light-blue-400 h-4 w-4 text-light-blue-500 border-gray-300 dark:border-gray-900 rounded dark:bg-cool-gray-900"
+                              >
+                            </div>
+                            <div class="ml-3 text-sm">
+                              <label
+                                for="is_sidebar_visible"
+                                class="font-medium text-gray-700 dark:text-gray-400"
+                              >{{ __("Sidebar Visible") }}</label>
+                              <p class="text-gray-500 text-xs">
+                                {{
+                                  __("Should right sidebar be visible when user open this page")
+                                }}
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -153,6 +216,10 @@
                         />
                         <jet-input-error
                           :message="form.errors.is_visible"
+                          class="mt-2"
+                        />
+                        <jet-input-error
+                          :message="form.errors.is_sidebar_visible"
                           class="mt-2"
                         />
                       </fieldset>
@@ -177,52 +244,71 @@
   </app-layout>
 </template>
 
-<script>
+<script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import EasyMDE from 'easymde';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import {defineProps, onMounted, ref, shallowRef} from 'vue';
+import {useForm} from '@inertiajs/inertia-vue3';
+import {Codemirror} from 'vue-codemirror';
+import {basicSetup} from 'codemirror';
+import {html} from '@codemirror/lang-html';
+import {oneDark} from '@/Data/CodeMirror/darkTheme.js';
 
-export default {
-    components: {
-        XCheckbox,
-        AppLayout,
-        JetInputError,
-        LoadingButton,
-        XInput
-    },
-    props: {
-        customPage: Object
-    },
-    data() {
-        return {
-            form: this.$inertia.form({
-                title: this.customPage.title,
-                body: this.customPage.body,
-                path: this.customPage.path,
-                is_visible: this.customPage.is_visible,
-                is_in_navbar: this.customPage.is_in_navbar,
-                is_redirect: this.customPage.is_redirect,
-                redirect_url: this.customPage.redirect_url,
-                '_method': 'PUT'
-            }),
-            easyMDE: null
-        };
-    },
+const props = defineProps({
+    customPage: Object
+});
 
-    mounted() {
-        this.easyMDE = new EasyMDE({
-            previewClass: 'editor-preview prose max-w-none'
-        });
-    },
-
-    methods: {
-        updateCustomPage() {
-            this.form.body = this.easyMDE.value();
-            this.form.post(route('admin.custom-page.update', this.customPage.id), {});
-        },
-    }
+const pageType = ref(props.customPage.is_redirect ? 'redirect' : props.customPage.is_html_page ? 'html' : 'markdown');
+const bodyMarkdown = ref(props.customPage.body);
+const pageTypeList = {
+    markdown: 'Markdown - Add your content in markdown format',
+    html: 'HTML - Add your content in code using HTML/CSS',
+    redirect: 'Redirect - This page will redirect to another URL',
 };
+const form = useForm({
+    title: props.customPage.title,
+    body: props.customPage.body,
+    path: props.customPage.path,
+    is_visible: props.customPage.is_visible,
+    is_in_navbar: props.customPage.is_in_navbar,
+    is_redirect: props.customPage.is_redirect,
+    redirect_url: props.customPage.redirect_url,
+    is_html_page: props.customPage.is_html_page,
+    is_sidebar_visible: props.customPage.is_sidebar_visible,
+    '_method': 'PUT'
+});
+
+// Codemirror EditorView instance ref
+const view = shallowRef();
+const extensions = [basicSetup, html()];
+if (window.colorMode === 'dark') {
+    extensions.push(oneDark);
+}
+const code = ref(props.customPage.body);
+const handleReady = (payload) => {
+    view.value = payload.view;
+};
+
+let easyMDE = null;
+
+const updateCustomPage = () => {
+    if (pageType.value === 'markdown') {
+        form.body = easyMDE.value();
+    } else if (pageType.value === 'html') {
+        form.body = view.value.state.doc.toString();
+    }
+    form.is_redirect = pageType.value === 'redirect';
+    form.is_html_page = pageType.value === 'html';
+    form.post(route('admin.custom-page.update', props.customPage.id), {});
+};
+
+onMounted(() => {
+    easyMDE = new EasyMDE({
+        previewClass: 'editor-preview prose max-w-none',
+    });
+});
 </script>
