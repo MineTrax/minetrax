@@ -132,7 +132,7 @@ class FetchStatsFromOneServerJob implements ShouldQueue, ShouldBeUnique
             $forSaving['data_version'] = $fileContent['DataVersion'];
             $forSaving['hash'] = $lastUniqueHash;
             // $forSaving['uuid'] = $playerUuid;
-            $forSaving['last_modified'] = $file['lastModified'] ?? $currentPlayerObj->last_modified;
+            $forSaving['last_modified'] = $file['lastModified'] ?? $currentPlayerObj?->last_modified;
             $forSaving['killed_by'] = $fileContent['stats'][$mcKilledBy] ?? null;
             $forSaving['used'] = $fileContent['stats'][$mcUsed] ?? null;
             $forSaving['mined'] = $fileContent['stats'][$mcMined] ?? null;
