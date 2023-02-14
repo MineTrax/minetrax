@@ -1,36 +1,45 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <meta name="msapplication-TileColor" content="#da532c">
-        <meta name="theme-color" content="#38bdf8">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#38bdf8">
 
-        <title inertia>{{ config('app.name', 'MineTrax') }}</title>
+    <title inertia>{{ config('app.name', 'MineTrax') }}</title>
 
-        <!-- Fonts -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
-        <!-- Scripts -->
-        @routes
-        @vite('resources/js/app.js')
-        @inertiaHead
+    <!-- Scripts -->
+    @routes
+    @vite('resources/js/app.js')
+    @inertiaHead
 
-        <script>
-            let defaultTheme = '{{ app(\App\Settings\ThemeSettings::class)->color_mode }}'
-            window.colorMode = localStorage.theme || defaultTheme
-            if (window.colorMode === 'dark') {
-                document.documentElement.classList.add('dark')
-            } else {
-                document.documentElement.classList.remove('dark')
-            }
-        </script>
+    <script>
+        let defaultTheme = '{{ app(\App\Settings\ThemeSettings::class)->color_mode }}'
+        window.colorMode = localStorage.theme || defaultTheme
+        if (window.colorMode === 'dark') {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
 
-    </head>
-    <body class="font-sans antialiased bg-cool-gray-200 dark:bg-cool-gray-900">
-        @inertia
-        <x-translations></x-translations>
-        <x-php-vars-to-js-transformer></x-php-vars-to-js-transformer>
-    </body>
+</head>
+<body class="font-sans antialiased bg-cool-gray-200 dark:bg-cool-gray-900">
+
+{{--Show global loading indication till Vue take over--}}
+<div id="site-global-loader" class="flex h-screen justify-center items-center">
+    <div class="lds-ripple">
+        <div></div>
+        <div></div>
+    </div>
+</div>
+
+@inertia
+<x-translations></x-translations>
+<x-php-vars-to-js-transformer></x-php-vars-to-js-transformer>
+</body>
 </html>

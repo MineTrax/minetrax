@@ -170,13 +170,6 @@ export default {
                   >
                     {{ customPage.title }}
                   </jet-dropdown-link>
-
-                  <jet-dropdown-link
-                    class="text-sm"
-                    :href="route('features.list')"
-                  >
-                    {{ __("Features") }}
-                  </jet-dropdown-link>
                 </template>
               </jet-dropdown>
             </div>
