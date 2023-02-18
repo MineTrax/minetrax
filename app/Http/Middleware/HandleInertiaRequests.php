@@ -65,7 +65,6 @@ class HandleInertiaRequests extends Middleware
                 return $defaultQueryServer;
             },
             'generalSettings' => fn (GeneralSettings $generalSettings) => $generalSettings->toArray(),
-            'customPageList' => CustomPage::visible()->navbar()->select(['id', 'title', 'path', 'is_in_navbar', 'is_visible'])->get(),
             'isImpersonating' => $request->user() && $request->user()->isImpersonating(),
             'enabledSocialAuths' => function () {
                 $enabledSocialLogins = [];

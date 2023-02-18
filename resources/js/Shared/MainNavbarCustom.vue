@@ -1,44 +1,30 @@
 <script>
 import JetApplicationMark from '@/Jetstream/ApplicationMark.vue';
-import JetDropdown from '@/Jetstream/Dropdown.vue';
-import JetDropdownLink from '@/Jetstream/DropdownLink.vue';
-import JetNavLink from '@/Jetstream/NavLink.vue';
 import JetSidebarLink from '@/Jetstream/SidebarLink.vue';
 import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue';
 import Search from '@/Shared/Search.vue';
 import ColorThemeToggle from '@/Components/ColorThemeToggle.vue';
-import NotificationDropdown from '@/Shared/NotificationDropdown.vue';
 import Icon from '@/Components/Icon.vue';
-import AppLogoMark from '@/Components/Navigation/AppLogoMark.vue';
-import NavDropdown from '@/Components/Navigation/NavDropdown.vue';
-import ProfileDropdown from '@/Components/Navigation/ProfileDropdown.vue';
-import LightDarkSelector from '@/Components/Navigation/LightDarkSelector.vue';
 import NavDynamicItem from '@/Components/Navigation/NavDynamicItem.vue';
+import NavDynamicItemResponsive from '@/Components/Navigation/NavDynamicItemResponsive.vue';
 
 export default {
     components: {
+        NavDynamicItemResponsive,
         NavDynamicItem,
-        LightDarkSelector,
-        ProfileDropdown,
-        NavDropdown,
-        AppLogoMark,
         JetApplicationMark,
         Icon,
-        JetDropdown,
-        JetNavLink,
-        JetDropdownLink,
         JetResponsiveNavLink,
         Search,
         ColorThemeToggle,
         JetSidebarLink,
-        NotificationDropdown,
     },
 
     data() {
         return {
-            leftItems: window._customnav.data.left,
-            middleItems: window._customnav.data.middle,
-            rightItems: window._customnav.data.right,
+            leftItems: window._customnav.data?.left ?? [],
+            middleItems: window._customnav.data?.middle ?? [],
+            rightItems: window._customnav.data?.right ?? [],
             isAdminSidebarOpen: false,
             showingNavigationDropdown: false,
         };
@@ -60,14 +46,6 @@ export default {
     },
 
     methods: {
-        switchToTeam(team) {
-            this.$inertia.put(route('current-team.update'), {
-                'team_id': team.id
-            }, {
-                preserveState: false
-            });
-        },
-
         logout() {
             this.$inertia.post(route('logout'));
         },
@@ -82,7 +60,7 @@ export default {
 <template>
   <nav
     class="bg-white shadow dark:bg-cool-gray-800 z-40 w-full"
-    :class="{'sticky top-0': isStickyHeader}"
+    :class="{'sticky top-0': isStickyHeader, 'overflow-y-auto': isStickyHeader && showingNavigationDropdown}"
   >
     <!-- Primary Navigation Menu -->
     <div class="px-4 mx-auto max-w-11xl md:px-6 lg:px-8">
@@ -94,6 +72,7 @@ export default {
             :can-show-admin-sidebar="canShowAdminSidebar"
             :item="item"
             @open-admin-sidebar="adminDrawer"
+            @logout="logout"
           />
         </div>
 
@@ -105,6 +84,7 @@ export default {
             :can-show-admin-sidebar="canShowAdminSidebar"
             :item="item"
             @open-admin-sidebar="adminDrawer"
+            @logout="logout"
           />
         </div>
 
@@ -115,6 +95,7 @@ export default {
             :can-show-admin-sidebar="canShowAdminSidebar"
             :item="item"
             @open-admin-sidebar="adminDrawer"
+            @logout="logout"
           />
         </div>
 
@@ -158,82 +139,44 @@ export default {
       class="md:hidden"
     >
       <div class="pt-2 pb-3 space-y-1">
-        <jet-responsive-nav-link
-          v-if="$page.props.showHomeButton"
-          :href="route('home')"
-          :active="route().current('home')"
-        >
-          {{ __("Home") }}
-        </jet-responsive-nav-link>
+        <NavDynamicItemResponsive
+          v-for="item in leftItems"
+          :key="item.key"
+          :can-show-admin-sidebar="canShowAdminSidebar"
+          :item="item"
+          @open-admin-sidebar="adminDrawer"
+          @logout="logout"
+        />
 
-        <jet-responsive-nav-link
-          :href="route('player.index')"
-          :active="route().current('player.index')"
-        >
-          {{ __("Statistics") }}
-        </jet-responsive-nav-link>
+        <NavDynamicItemResponsive
+          v-for="item in middleItems"
+          :key="item.key"
+          :can-show-admin-sidebar="canShowAdminSidebar"
+          :item="item"
+          @open-admin-sidebar="adminDrawer"
+          @logout="logout"
+        />
 
-        <jet-responsive-nav-link
-          :href="route('poll.index')"
-          :active="route().current('poll.index')"
-        >
-          {{ __("Polls") }}
-        </jet-responsive-nav-link>
-
-        <jet-responsive-nav-link
-          :href="route('news.index')"
-          :active="route().current('news.index')"
-        >
-          {{ __("News") }}
-        </jet-responsive-nav-link>
-
-        <jet-responsive-nav-link
-          :href="route('staff.index')"
-          :active="route().current('staff.index')"
-        >
-          {{ __("Staff Members") }}
-        </jet-responsive-nav-link>
-
-        <jet-responsive-nav-link
-          v-for="customPage in $page.props.customPageList"
-          v-if="$page.props.customPageList"
-          :key="customPage.id"
-          :href="route('custom-page.show', customPage.path)"
-        >
-          {{ customPage.title }}
-        </jet-responsive-nav-link>
-
-        <jet-responsive-nav-link
-          :href="route('features.list')"
-          :active="route().current('features.list')"
-        >
-          {{ __("Features") }}
-        </jet-responsive-nav-link>
-
-
-        <template v-if="!$page.props.user">
-          <jet-responsive-nav-link
-            :href="route('login')"
-            :active="route().current('login')"
-          >
-            {{ __("Login") }}
-          </jet-responsive-nav-link>
-          <jet-responsive-nav-link
-            v-if="$page.props.hasRegistrationFeature"
-            :href="route('register')"
-            :active="route().current('register')"
-          >
-            {{ __("Register") }}
-          </jet-responsive-nav-link>
-        </template>
+        <NavDynamicItemResponsive
+          v-for="item in rightItems"
+          :key="item.key"
+          :can-show-admin-sidebar="canShowAdminSidebar"
+          :item="item"
+          @open-admin-sidebar="adminDrawer"
+          @logout="logout"
+        />
       </div>
 
-      <!-- Responsive Settings Options -->
+      <!-- Responsive Settings Options / Not configurable by CustomNav -->
       <div
         v-if="$page.props.user"
         class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700"
       >
-        <div class="flex items-center px-4">
+        <inertia-link
+          as="div"
+          :href="route('user.public.get', $page.props.user.username)"
+          class="flex items-center px-4"
+        >
           <div
             v-if="$page.props.jetstream.managesProfilePhotos"
             class="flex-shrink-0 mr-3"
@@ -253,16 +196,9 @@ export default {
               {{ $page.props.user.email }}
             </div>
           </div>
-        </div>
+        </inertia-link>
 
         <div class="mt-3 space-y-1">
-          <jet-responsive-nav-link
-            :href="route('user.public.get', $page.props.user.username)"
-            :active="route().current('user.public.get')"
-          >
-            {{ __("Public Profile") }}
-          </jet-responsive-nav-link>
-
           <jet-responsive-nav-link
             :href="route('profile.show')"
             :active="route().current('profile.show')"

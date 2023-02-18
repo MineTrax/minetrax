@@ -275,6 +275,10 @@
                               </Draggable>
                             </div>
                           </div>
+
+                          <div class="flex col-span-6 text-gray-500 text-sm justify-center italic">
+                            {{ __("Tip: Start by dragging items from above 'Available Items' to down here.") }}
+                          </div>
                         </div>
                       </div>
                       <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
@@ -351,6 +355,9 @@ export default {
             };
             this.form.post(route('admin.setting.navigation.update'), {
                 preserveScroll: true,
+                onSuccess: () => {
+                    location.reload();
+                },
             });
         },
         cloneNavItem(item) {

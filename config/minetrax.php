@@ -74,4 +74,147 @@ return [
     "players_fetcher_cron_interval" => env("PLAYER_FETCHER_CRON_INTERVAL", "hourly"),
 
     "fetch_avatar_from_url_using_curl" => env("FETCH_AVATAR_FROM_URL_USING_CURL", false),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Items which can be chosen to add to navbar
+    |--------------------------------------------------------------------------
+    |
+    | These items can be chosen and added to custom navbar by user from drag and drop interface.
+    | Setting > Navigation
+    |
+    */
+    "custom_nav_available_items_array" => [
+        [
+            'type' => 'dropdown',
+            'name' => 'Dropdown',
+            'title' => 'Dropdown',
+            'key' => 'dropdown',
+            'children' => [],
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'component',
+            'name' => 'App Logo',
+            'title' => 'App Logo',
+            'component' => 'AppLogoMark',
+            'key' => 'component-app-icon',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'component',
+            'name' => 'Profile Dropdown',
+            'title' => 'Profile Dropdown',
+            'component' => 'ProfileDropdown',
+            'key' => 'component-user-profile',
+            'authenticated' => true,
+        ],
+        [
+            'type' => 'component',
+            'name' => 'Search Box',
+            'title' => 'Search Box',
+            'component' => 'NavbarSearch',
+            'key' => 'component-search',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'component',
+            'name' => 'Notification Bell',
+            'title' => 'Notification Bell',
+            'component' => 'NotificationDropdown',
+            'key' => 'component-notification-dropdown',
+            'authenticated' => true,
+        ],
+        [
+            'type' => 'component',
+            'name' => 'Theme Switcher',
+            'title' => 'Theme Switcher',
+            'component' => 'LightDarkSelector',
+            'key' => 'component-theme-switcher',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'Home',
+            'title' => 'Home',
+            'route' => 'home',
+            'key' => 'route-home',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'Statistics',
+            'title' => 'Statistics',
+            'route' => 'player.index',
+            'key' => 'route-stats',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'Polls',
+            'title' => 'Polls',
+            'route' => 'poll.index',
+            'key' => 'route-polls',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'News',
+            'title' => 'News',
+            'route' => 'news.index',
+            'key' => 'route-news',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'Staff Members',
+            'title' => 'Staff Members',
+            'route' => 'staff.index',
+            'key' => 'route-staff-members',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'Login',
+            'title' => 'Login',
+            'route' => 'login',
+            'key' => 'route-login',
+            'authenticated' => false,
+            'guestonly' => true,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'Register',
+            'title' => 'Register',
+            'route' => 'register',
+            'key' => 'route-register',
+            'authenticated' => false,
+            'guestonly' => true,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'Edit Profile',
+            'title' => 'Edit Profile',
+            'route' => 'profile.show',
+            'key' => 'route-edit-profile',
+            'authenticated' => true,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'Linked Players',
+            'title' => 'Linked Players',
+            'route' => 'linked-player.list',
+            'key' => 'route-linked-players',
+            'authenticated' => true,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'Features',
+            'title' => 'Features',
+            'route' => 'features.list',
+            'key' => 'route-features',
+            'authenticated' => false,
+        ],
+    ],
 ];

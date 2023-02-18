@@ -18,141 +18,10 @@ class NavigationSettingController extends Controller
 
     public function show(NavigationSettings $settings, GeneralSettings $generalSettings)
     {
-        // All public routes which we want to show in the navigation
-        $availableNavItems = [
-            [
-                'type' => 'dropdown',
-                'name' => 'Dropdown',
-                'title' => 'Dropdown',
-                'key' => 'dropdown',
-                'children' => [],
-                'authenticated' => false,
-            ],
-            [
-                'type' => 'component',
-                'name' => 'App Logo',
-                'title' => 'App Logo',
-                'component' => 'AppLogoMark',
-                'key' => 'component-app-icon',
-                'authenticated' => false,
-            ],
-            [
-                'type' => 'component',
-                'name' => 'Profile Dropdown',
-                'title' => 'Profile Dropdown',
-                'component' => 'ProfileDropdown',
-                'key' => 'component-user-profile',
-                'authenticated' => true,
-            ],
-            [
-                'type' => 'component',
-                'name' => 'Search Box',
-                'title' => 'Search Box',
-                'component' => 'NavbarSearch',
-                'key' => 'component-search',
-                'authenticated' => false,
-            ],
-            [
-                'type' => 'component',
-                'name' => 'Notification Bell',
-                'title' => 'Notification Bell',
-                'component' => 'NotificationDropdown',
-                'key' => 'component-notification-dropdown',
-                'authenticated' => true,
-            ],
-            [
-                'type' => 'component',
-                'name' => 'Theme Switcher',
-                'title' => 'Theme Switcher',
-                'component' => 'LightDarkSelector',
-                'key' => 'component-theme-switcher',
-                'authenticated' => false,
-            ],
-            [
-                'type' => 'route',
-                'name' => 'Home',
-                'title' => 'Home',
-                'route' => 'home',
-                'key' => 'route-home',
-                'authenticated' => false,
-            ],
-            [
-                'type' => 'route',
-                'name' => 'Statistics',
-                'title' => 'Statistics',
-                'route' => 'player.index',
-                'key' => 'route-stats',
-                'authenticated' => false,
-            ],
-            [
-                'type' => 'route',
-                'name' => 'Polls',
-                'title' => 'Polls',
-                'route' => 'poll.index',
-                'key' => 'route-polls',
-                'authenticated' => false,
-            ],
-            [
-                'type' => 'route',
-                'name' => 'News',
-                'title' => 'News',
-                'route' => 'news.index',
-                'key' => 'route-news',
-                'authenticated' => false,
-            ],
-            [
-                'type' => 'route',
-                'name' => 'Staff Members',
-                'title' => 'Staff Members',
-                'route' => 'staff.index',
-                'key' => 'route-staff-members',
-                'authenticated' => false,
-            ],
-            [
-                'type' => 'route',
-                'name' => 'Login',
-                'title' => 'Login',
-                'route' => 'login',
-                'key' => 'route-login',
-                'authenticated' => false,
-                'guestonly' => true,
-            ],
-            [
-                'type' => 'route',
-                'name' => 'Register',
-                'title' => 'Register',
-                'route' => 'register',
-                'key' => 'route-register',
-                'authenticated' => false,
-                'guestonly' => true,
-            ],
-            [
-                'type' => 'route',
-                'name' => 'Edit Profile',
-                'title' => 'Edit Profile',
-                'route' => 'profile.show',
-                'key' => 'route-edit-profile',
-                'authenticated' => true,
-            ],
-            [
-            'type' => 'route',
-            'name' => 'Linked Players',
-            'title' => 'Linked Players',
-            'route' => 'linked-player.list',
-            'key' => 'route-linked-players',
-            'authenticated' => true,
-            ],
-            [
-                'type' => 'route',
-                'name' => 'Features',
-                'title' => 'Features',
-                'route' => 'features.list',
-                'key' => 'route-features',
-                'authenticated' => false,
-            ],
-        ];
+        // Items which can be added to custom navbar
+        $availableNavItems = config('minetrax.custom_nav_available_items_array');
 
-        // Custom pages
+        // Custom pages which can be added
         $customPageItems = CustomPage::select(['id', 'title', 'path'])->get();
         foreach ($customPageItems as $item) {
             $availableNavItems[] = [
@@ -192,7 +61,8 @@ class NavigationSettingController extends Controller
                     foreach ($item['children'] as $child) {
                         if ($child['type'] === 'dropdown' || $child['type'] === 'component') {
                             return redirect()->back()
-                                ->with(['toast' => ['type' => 'error', 'title' => __('You can not add a dropdown or component inside of a dropdown')]]);
+                                ->with(['toast' => ['type' => 'error', 'title' => __('You can not add a dropdown or component inside of a dropdown')]])
+                                ->withErrors(['custom_navbar_data' => __('You can not add a dropdown or component inside of a dropdown')]);
                         }
                     }
                 }
