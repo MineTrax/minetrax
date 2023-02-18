@@ -124,7 +124,3 @@ Route::get('username-to-uuid', function() {
    return MinecraftApiService::playerUsernameToUuid('xinecraft');
 });
 
-Route::get('list-routes', function() {
-    $routes = Route::getRoutes();
-    dd($routes);
-});

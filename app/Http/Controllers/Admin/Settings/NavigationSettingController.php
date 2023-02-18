@@ -54,7 +54,7 @@ class NavigationSettingController extends Controller
 
         $navbarData = $request->input('custom_navbar_data');
 
-        // Check in array if we have a dropdown type inside of a dropdown type then we give error
+        // Check in array if we have a dropdown type inside a dropdown type then we give error
         foreach ($navbarData as $sideList) {
             foreach ($sideList as $item) {
                 if ($item['type'] === 'dropdown') {
@@ -71,12 +71,11 @@ class NavigationSettingController extends Controller
 
         $settings->enable_custom_navbar = $request->input('enable_custom_navbar');
         $settings->custom_navbar_data = $navbarData;
-
+        $settings->save();
 
         $generalSettings->enable_sticky_header_menu = $request->input('enable_sticky_header_menu');
         $generalSettings->save();
 
-        $settings->save();
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Navigation Settings Updated Successfully')]]);
     }

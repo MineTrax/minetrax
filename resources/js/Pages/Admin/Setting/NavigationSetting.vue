@@ -305,11 +305,8 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XInput from '@/Components/Form/XInput.vue';
-import JetInputError from '@/Jetstream/InputError.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import SettingSidebar from '@/Shared/SettingSidebar.vue';
 import Draggable from 'vuedraggable';
 import Icon from '@/Components/Icon.vue';
@@ -320,12 +317,9 @@ export default {
         Draggable,
         SettingSidebar,
         XCheckbox,
-        XSelect,
         AppLayout,
         LoadingButton,
         XInput,
-        JetInputError,
-        JetSecondaryButton,
     },
     props: {
         settings: Object,
