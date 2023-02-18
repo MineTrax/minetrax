@@ -53,7 +53,7 @@ export default {
       :class="{ 'border-4 border-red-500' : $page.props.isImpersonating}"
     >
       <!-- NavBar -->
-      <MainNavbar />
+      <!--      <MainNavbar />-->
       <MainNavbarCustom />
 
 

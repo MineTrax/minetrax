@@ -31,17 +31,12 @@
 
       <template #content>
         <jet-dropdown-link
+          v-for="item in items"
+          :key="item.key"
           class="text-sm"
-          :href="route('news.index')"
+          :href="route(item.route, item.route_params ?? null)"
         >
-          {{ __("News") }}
-        </jet-dropdown-link>
-
-        <jet-dropdown-link
-          class="text-sm"
-          :href="route('staff.index')"
-        >
-          {{ __("Staff Members") }}
+          {{ __(item.title) }}
         </jet-dropdown-link>
       </template>
     </jet-dropdown>

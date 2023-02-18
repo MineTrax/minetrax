@@ -35,7 +35,7 @@
             >
               <icon
                 name="close"
-                class="p-1"
+                class="p-1 text-gray-500 dark:text-gray-400"
               />
             </button>
             <img

@@ -13,9 +13,11 @@ import AppLogoMark from '@/Components/Navigation/AppLogoMark.vue';
 import NavDropdown from '@/Components/Navigation/NavDropdown.vue';
 import ProfileDropdown from '@/Components/Navigation/ProfileDropdown.vue';
 import LightDarkSelector from '@/Components/Navigation/LightDarkSelector.vue';
+import NavDynamicItem from '@/Components/Navigation/NavDynamicItem.vue';
 
 export default {
     components: {
+        NavDynamicItem,
         LightDarkSelector,
         ProfileDropdown,
         NavDropdown,
@@ -85,82 +87,35 @@ export default {
     <!-- Primary Navigation Menu -->
     <div class="px-4 mx-auto max-w-11xl md:px-6 lg:px-8">
       <div class="flex justify-between font-semibold h-14">
-        <div class="left-menu-items flex">
-          <!-- Logo -->
-          <AppLogoMark
+        <div class="left-menu-items flex space-x-4">
+          <NavDynamicItem
+            v-for="item in leftItems"
+            :key="item.key"
             :can-show-admin-sidebar="canShowAdminSidebar"
+            :item="item"
             @open-admin-sidebar="adminDrawer"
           />
-
-          <!-- Navigation Links -->
-          <div class="hidden space-x-8 md:-my-px md:ml-10 md:flex">
-            <jet-nav-link
-              :href="route('home')"
-              :active="route().current('home')"
-            >
-              {{ __("Home") }}
-            </jet-nav-link>
-            <jet-nav-link
-              :href="route('player.index')"
-              :active="route().current('player.index')"
-            >
-              {{ __("Statistics") }}
-            </jet-nav-link>
-            <jet-nav-link
-              :href="route('poll.index')"
-              :active="route().current('poll.index')"
-            >
-              {{ __("Polls") }}
-            </jet-nav-link>
-
-            <NavDropdown
-              title="Others"
-              :items="[]"
-            />
-          </div>
         </div>
 
-        <div class="right-menu-items hidden md:flex md:items-center md:ml-6">
-          <search v-if="$page.props.user" />
-
-          <notification-dropdown v-if="$page.props.user" />
-
-          <ProfileDropdown
+        <div class="middle-menu-items flex space-x-4">
+          <!--              Add middle items here-->
+          <NavDynamicItem
+            v-for="item in middleItems"
+            :key="item.key"
             :can-show-admin-sidebar="canShowAdminSidebar"
-            @logout="logout"
+            :item="item"
             @open-admin-sidebar="adminDrawer"
           />
-
-          <LightDarkSelector />
         </div>
 
-        <div
-          v-if="!$page.props.user"
-          class="flex"
-        >
-          <search
-            v-if="!$page.props.user"
-            class="hidden mt-2 md:block"
+        <div class="right-menu-items flex space-x-4">
+          <NavDynamicItem
+            v-for="item in rightItems"
+            :key="item.key"
+            :can-show-admin-sidebar="canShowAdminSidebar"
+            :item="item"
+            @open-admin-sidebar="adminDrawer"
           />
-
-          <div class="hidden space-x-8 md:-my-px md:ml-8 md:flex">
-            <jet-nav-link
-              :href="route('login')"
-              :active="route().current('login')"
-            >
-              {{ __("Login") }}
-            </jet-nav-link>
-          </div>
-          <div class="hidden space-x-8 md:-my-px md:ml-8 md:flex">
-            <jet-nav-link
-              v-if="$page.props.hasRegistrationFeature"
-              :href="route('register')"
-              :active="route().current('register')"
-            >
-              {{ __("Register") }}
-            </jet-nav-link>
-          </div>
-          <color-theme-toggle class="items-center justify-center hidden space-x-8 md:flex md:ml-8" />
         </div>
 
         <!-- Hamburger -->
@@ -372,7 +327,10 @@ export default {
         class="ml-2 focus:outline-none"
         @click="adminDrawer"
       >
-        <icon name="close" />
+        <icon
+          name="close"
+          class="text-gray-500 dark:text-gray-400"
+        />
       </button>
     </span>
 

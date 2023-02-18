@@ -50,7 +50,6 @@ class GeneralSettingController extends Controller
             'photo_light' => 'sometimes|nullable|image|max:100',
             'photo_dark' => 'sometimes|nullable|image|max:100',
             'enable_status_feed' => 'required|boolean',
-            'enable_sticky_header_menu' =>  'required|boolean',
         ]);
         $settings->site_name = $request->input('site_name');
         $settings->enable_mcserver_onlineplayersbox = $request->input('enable_mcserver_onlineplayersbox');
@@ -79,8 +78,6 @@ class GeneralSettingController extends Controller
 
         $settings->enable_donation_box = $request->input('enable_donation_box');
         $settings->donation_box_url = $request->input('donation_box_url');
-
-        $settings->enable_sticky_header_menu = $request->input('enable_sticky_header_menu');
 
         // Has Photo?
         if ($request->hasFile('photo_light')) {

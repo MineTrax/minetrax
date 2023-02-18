@@ -24,6 +24,17 @@
                     <div class="shadow overflow-hidden sm:rounded-md">
                       <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
+                          <div class="flex items-center col-span-3 sm:col-span-3">
+                            <x-checkbox
+                              id="enable_sticky_header_menu"
+                              v-model="form.enable_sticky_header_menu"
+                              :label="__('Sticky Navigation Menu')"
+                              :help="__('Navigation menu will be fixed on top when scroll.')"
+                              name="enable_sticky_header_menu"
+                              :error="form.errors.enable_sticky_header_menu"
+                            />
+                          </div>
+
                           <div class="col-span-6 sm:col-span-6">
                             <x-checkbox
                               id="is_custom_rating_enabled"
@@ -36,8 +47,8 @@
                           </div>
 
                           <div class="col-span-6 sm:col-span-6">
-                            <h3 class="text-gray-300 mb-1 font-bold">
-                              Available Items
+                            <h3 class="text-gray-600 dark:text-gray-300 mb-1 font-bold">
+                              {{ __("Available Items") }}
                             </h3>
                             <Draggable
                               :sort="false"
@@ -48,44 +59,46 @@
                               item-key="key"
                             >
                               <template #item="{ element }">
-                                <div class="bg-gray-700 rounded p-2 text-gray-400 text-center">
+                                <div class="bg-gray-200 dark:bg-gray-700 rounded p-2 text-gray-400 shadow-sm text-center">
                                   <p class="text-sm text-gray-500">
                                     {{ element.type }}
                                   </p>
-                                  <p>{{ element.name }}</p>
+                                  <p class="text-gray-700 dark:text-gray-400">
+                                    {{ element.name }}
+                                  </p>
                                 </div>
                               </template>
                             </Draggable>
                           </div>
 
 
-                          <div class="flex col-span-6 border-t border-gray-700 pt-4 gap-5">
+                          <div class="flex col-span-6 border-t border-gray-200 dark:border-gray-700 pt-4 gap-5">
                             <div class="grow">
-                              <h3 class="text-center text-gray-200 font-bold">
+                              <h3 class="text-center text-gray-600 dark:text-gray-200 font-bold">
                                 Left
                               </h3>
                               <Draggable
                                 :swap-threshold="0.65"
-                                class="dragArea flex flex-col gap-2 min-h-[5rem]"
+                                class="dragArea flex flex-col gap-4 min-h-[5rem] h-full"
                                 :list="leftNavList"
                                 :group="{ name: 'navbar' }"
                                 item-key="key"
                               >
                                 <template #item="{ element, index }">
-                                  <div class="bg-gray-700 relative rounded p-2 text-gray-400 text-center">
-                                    <p class="text-sm text-gray-500">
+                                  <div class="bg-gray-200 shadow-sm dark:bg-gray-700 relative rounded p-2 text-gray-700 dark:text-gray-400 text-center">
+                                    <p class="text-sm text-gray-500 dark:text-gray-500">
                                       {{ element.type }}
                                     </p>
                                     <p>{{ element.name }}</p>
                                     <x-input
-                                      v-if="['custom-page', 'route'].includes(element.type)"
+                                      v-if="['custom-page', 'route', 'dropdown'].includes(element.type)"
                                       v-model="element.title"
                                       label="Title"
                                       type="text"
                                     />
 
                                     <Icon
-                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer"
+                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                       name="close"
                                       @click="removeItem(index, leftNavList)"
                                     />
@@ -94,26 +107,28 @@
                                     <div v-if="element.type === 'dropdown'">
                                       <Draggable
                                         :swap-threshold="0.65"
-                                        class="dragArea flex flex-col gap-2 rounded border border-gray-700 p-2 min-h-[5rem] bg-cool-gray-800"
+                                        class="dragArea flex flex-col gap-2 rounded border border-gray-200 dark:border-gray-700 p-2 min-h-[5rem] bg-white dark:bg-cool-gray-800"
                                         :list="element.children"
                                         :group="{ name: 'navbar' }"
                                         item-key="key"
                                       >
-                                        <template #item="{ element: el, idx }">
-                                          <div class="bg-gray-700 relative rounded p-2 text-gray-400 text-center">
+                                        <template #item="{ element: el, index: idx }">
+                                          <div class="bg-gray-200 dark:bg-gray-700 relative rounded p-2 text-gray-700 dark:text-gray-400 text-center">
                                             <p class="text-sm text-gray-500">
                                               {{ el.type }}
                                             </p>
-                                            <p>{{ el.name }}</p>
+                                            <p class="text-gray-700 dark:text-gray-400">
+                                              {{ el.name }}
+                                            </p>
                                             <x-input
-                                              v-if="['custom-page', 'route'].includes(el.type)"
+                                              v-if="['custom-page', 'route', 'dropdown'].includes(el.type)"
                                               v-model="el.title"
                                               label="Title"
                                               type="text"
                                             />
 
                                             <Icon
-                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer"
+                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                               name="close"
                                               @click="removeItem(idx, element.children)"
                                             />
@@ -126,31 +141,31 @@
                               </Draggable>
                             </div>
                             <div class="grow">
-                              <h3 class="text-center text-gray-200 font-bold">
+                              <h3 class="text-center text-gray-600 dark:text-gray-200 font-bold">
                                 Middle
                               </h3>
                               <Draggable
                                 :swap-threshold="0.65"
-                                class="dragArea flex flex-col gap-2 min-h-[5rem]"
+                                class="dragArea flex flex-col gap-4 min-h-[5rem] h-full"
                                 :list="middleNavList"
                                 :group="{ name: 'navbar' }"
                                 item-key="key"
                               >
                                 <template #item="{ element, index }">
-                                  <div class="bg-gray-700 relative rounded p-2 text-gray-400 text-center">
-                                    <p class="text-sm text-gray-500">
+                                  <div class="bg-gray-200 shadow-sm dark:bg-gray-700 relative rounded p-2 text-gray-700 dark:text-gray-400 text-center">
+                                    <p class="text-sm text-gray-500 dark:text-gray-500">
                                       {{ element.type }}
                                     </p>
                                     <p>{{ element.name }}</p>
                                     <x-input
-                                      v-if="['custom-page', 'route'].includes(element.type)"
+                                      v-if="['custom-page', 'route', 'dropdown'].includes(element.type)"
                                       v-model="element.title"
                                       label="Title"
                                       type="text"
                                     />
 
                                     <Icon
-                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer"
+                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                       name="close"
                                       @click="removeItem(index, middleNavList)"
                                     />
@@ -159,26 +174,28 @@
                                     <div v-if="element.type === 'dropdown'">
                                       <Draggable
                                         :swap-threshold="0.65"
-                                        class="dragArea flex flex-col gap-2 rounded border border-gray-700 p-2 min-h-[5rem] bg-cool-gray-800"
+                                        class="dragArea flex flex-col gap-2 rounded border border-gray-200 dark:border-gray-700 p-2 min-h-[5rem] bg-white dark:bg-cool-gray-800"
                                         :list="element.children"
                                         :group="{ name: 'navbar' }"
                                         item-key="key"
                                       >
-                                        <template #item="{ element: el, idx }">
-                                          <div class="bg-gray-700 relative rounded p-2 text-gray-400 text-center">
+                                        <template #item="{ element: el, index: idx }">
+                                          <div class="bg-gray-200 dark:bg-gray-700 relative rounded p-2 text-gray-700 dark:text-gray-400 text-center">
                                             <p class="text-sm text-gray-500">
                                               {{ el.type }}
                                             </p>
-                                            <p>{{ el.name }}</p>
+                                            <p class="text-gray-700 dark:text-gray-400">
+                                              {{ el.name }}
+                                            </p>
                                             <x-input
-                                              v-if="['custom-page', 'route'].includes(el.type)"
+                                              v-if="['custom-page', 'route', 'dropdown'].includes(el.type)"
                                               v-model="el.title"
                                               label="Title"
                                               type="text"
                                             />
 
                                             <Icon
-                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer"
+                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                               name="close"
                                               @click="removeItem(idx, element.children)"
                                             />
@@ -191,31 +208,31 @@
                               </Draggable>
                             </div>
                             <div class="grow">
-                              <h3 class="text-center text-gray-200 font-bold">
+                              <h3 class="text-center text-gray-600 dark:text-gray-200 font-bold">
                                 Right
                               </h3>
                               <Draggable
                                 :swap-threshold="0.65"
-                                class="dragArea flex flex-col gap-2 min-h-[5rem]"
+                                class="dragArea flex flex-col gap-4 min-h-[5rem] h-full"
                                 :list="rightNavList"
                                 :group="{ name: 'navbar' }"
                                 item-key="key"
                               >
                                 <template #item="{ element, index }">
-                                  <div class="bg-gray-700 relative rounded p-2 text-gray-400 text-center">
-                                    <p class="text-sm text-gray-500">
+                                  <div class="bg-gray-200 shadow-sm dark:bg-gray-700 relative rounded p-2 text-gray-700 dark:text-gray-400 text-center">
+                                    <p class="text-sm text-gray-500 dark:text-gray-500">
                                       {{ element.type }}
                                     </p>
                                     <p>{{ element.name }}</p>
                                     <x-input
-                                      v-if="['custom-page', 'route'].includes(element.type)"
+                                      v-if="['custom-page', 'route', 'dropdown'].includes(element.type)"
                                       v-model="element.title"
                                       label="Title"
                                       type="text"
                                     />
 
                                     <Icon
-                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer"
+                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                       name="close"
                                       @click="removeItem(index, rightNavList)"
                                     />
@@ -224,26 +241,28 @@
                                     <div v-if="element.type === 'dropdown'">
                                       <Draggable
                                         :swap-threshold="0.65"
-                                        class="dragArea flex flex-col gap-2 rounded border border-gray-700 p-2 min-h-[5rem] bg-cool-gray-800"
+                                        class="dragArea flex flex-col gap-2 rounded border border-gray-200 dark:border-gray-700 p-2 min-h-[5rem] bg-white dark:bg-cool-gray-800"
                                         :list="element.children"
                                         :group="{ name: 'navbar' }"
                                         item-key="key"
                                       >
-                                        <template #item="{ element: el, idx }">
-                                          <div class="bg-gray-700 relative rounded p-2 text-gray-400 text-center">
+                                        <template #item="{ element: el, index: idx }">
+                                          <div class="bg-gray-200 dark:bg-gray-700 relative rounded p-2 text-gray-700 dark:text-gray-400 text-center">
                                             <p class="text-sm text-gray-500">
                                               {{ el.type }}
                                             </p>
-                                            <p>{{ el.name }}</p>
+                                            <p class="text-gray-700 dark:text-gray-400">
+                                              {{ el.name }}
+                                            </p>
                                             <x-input
-                                              v-if="['custom-page', 'route'].includes(el.type)"
+                                              v-if="['custom-page', 'route', 'dropdown'].includes(el.type)"
                                               v-model="el.title"
                                               label="Title"
                                               type="text"
                                             />
 
                                             <Icon
-                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer"
+                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                               name="close"
                                               @click="removeItem(idx, element.children)"
                                             />
@@ -306,12 +325,14 @@ export default {
     },
     props: {
         settings: Object,
+        generalSettings: Object,
         availableNavItems: Array,
     },
 
     data() {
         return {
             form: this.$inertia.form({
+                enable_sticky_header_menu: this.generalSettings.enable_sticky_header_menu,
                 enable_custom_navbar: this.settings.enable_custom_navbar,
                 custom_navbar_data: this.settings.custom_navbar_data,
             }),
