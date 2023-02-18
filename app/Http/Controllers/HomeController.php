@@ -149,7 +149,14 @@ class HomeController extends Controller
     {
         $myVersion = config("app.version");
 
-        $latestVersion = Http::withoutVerifying()->timeout(5)->get('https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws')->json();
+        $latestVersion = Http::withoutVerifying()->timeout(5)->get('https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws',
+        [
+            'version' => $myVersion,
+            'from' => 'web',
+            'appName' => config("app.name"),
+            'appUrl' => config("app.url"),
+        ]
+        )->json();
         $latestVersion = $latestVersion['web'];
 
         $response = [
