@@ -11,6 +11,7 @@ return [
         \App\Settings\PluginSettings::class,
         \App\Settings\ThemeSettings::class,
         \App\Settings\PlayerSettings::class,
+        \App\Settings\NavigationSettings::class,
     ],
 
     /*
@@ -59,7 +60,7 @@ return [
     'global_casts' => [
         DateTimeInterface::class => Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast::class,
         DateTimeZone::class => Spatie\LaravelSettings\SettingsCasts\DateTimeZoneCast::class,
-        Spatie\DataTransferObject\DataTransferObject::class => Spatie\LaravelSettings\SettingsCasts\DtoCast::class,
+//        Spatie\DataTransferObject\DataTransferObject::class => Spatie\LaravelSettings\SettingsCasts\DtoCast::class,
     ],
 
     /*

@@ -163,6 +163,8 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::post('setting/player', [\App\Http\Controllers\Admin\Settings\PlayerSettingController::class, 'update'])->name('setting.player.update');
     Route::post('setting/player/validate-rating-expression', [\App\Http\Controllers\Admin\Settings\PlayerSettingController::class, 'validateRatingExpression'])->name('setting.player.validate-rating-expression');
     Route::post('setting/player/validate-score-expression', [\App\Http\Controllers\Admin\Settings\PlayerSettingController::class, 'validateScoreExpression'])->name('setting.player.validate-score-expression');
+    Route::get('setting/navigation', [\App\Http\Controllers\Admin\Settings\NavigationSettingController::class, 'show'])->name('setting.navigation.show');
+    Route::post('setting/navigation', [\App\Http\Controllers\Admin\Settings\NavigationSettingController::class, 'update'])->name('setting.navigation.update');
 
     Route::get('poll', [\App\Http\Controllers\Admin\PollController::class, 'index'])->name('poll.index');
     Route::get('poll/create', [\App\Http\Controllers\Admin\PollController::class, 'create'])->name('poll.create');

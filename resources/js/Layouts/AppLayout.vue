@@ -4,9 +4,11 @@ import Toast from '@/Components/Toast.vue';
 import Icon from '@/Components/Icon.vue';
 import AppHead from '@/Components/AppHead.vue';
 import MainNavbar from '@/Shared/MainNavbar.vue';
+import MainNavbarCustom from '@/Shared/MainNavbarCustom.vue';
 
 export default {
     components: {
+        MainNavbarCustom,
         AppHead,
         Icon,
         Toast,
@@ -52,6 +54,8 @@ export default {
     >
       <!-- NavBar -->
       <MainNavbar />
+      <MainNavbarCustom />
+
 
       <!-- Page Content -->
       <main>
