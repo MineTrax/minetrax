@@ -41,7 +41,7 @@
         "vue-codemirror": "^6.1.1",
         "vue-datepicker-next": "^1.0.2",
         "vue-multiselect": "^3.0.0-alpha.2",
-        "vue-tippy": "^6.0.0-alpha.63",
+        "vue-tippy": "^6.0.0",
         "vuedraggable": "^4.1.0",
         "xterm": "^4.19.0",
         "xterm-addon-attach": "^0.6.0",
