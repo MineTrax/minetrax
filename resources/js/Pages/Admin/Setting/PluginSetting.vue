@@ -5,38 +5,7 @@
     />
 
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
-      <div class="w-64 flex-shrink-0 pr-10">
-        <div class="flex flex-col">
-          <div class="uppercase mb-2 text-xs tracking-wide text-gray-600 dark:text-gray-400 font-bold">
-            {{ __("SETTINGS") }}
-          </div>
-
-          <setting-link
-            :href="route('admin.setting.general.show')"
-            :active="route().current('admin.setting.general.show')"
-          >
-            {{ __("General") }}
-          </setting-link>
-          <setting-link
-            :href="route('admin.setting.theme.show')"
-            :active="route().current('admin.setting.theme.show')"
-          >
-            {{ __("Theme") }}
-          </setting-link>
-          <setting-link
-            :href="route('admin.setting.plugin.show')"
-            :active="route().current('admin.setting.plugin.show')"
-          >
-            {{ __("Plugin") }}
-          </setting-link>
-          <setting-link
-            :href="route('admin.setting.player.show')"
-            :active="route().current('admin.setting.player.show')"
-          >
-            {{ __("Player") }}
-          </setting-link>
-        </div>
-      </div>
+      <SettingSidebar />
 
       <div class="flex-1">
         <div class="flex flex-col w-full">
@@ -227,14 +196,14 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import CopyToClipboard from '@/Components/CopyToClipboard.vue';
 import XInput from '@/Components/Form/XInput.vue';
-import SettingLink from '@/Jetstream/SettingLink.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
+import SettingSidebar from '@/Shared/SettingSidebar.vue';
 
 export default {
     components: {
+        SettingSidebar,
         XCheckbox,
-        SettingLink,
         AppLayout,
         LoadingButton,
         XInput,

@@ -5,38 +5,7 @@
     />
 
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
-      <div class="w-64 flex-shrink-0 pr-10">
-        <div class="flex flex-col">
-          <div class="uppercase mb-2 text-xs tracking-wide text-gray-600 dark:text-gray-400 font-bold">
-            {{ __("SETTINGS") }}
-          </div>
-
-          <setting-link
-            :href="route('admin.setting.general.show')"
-            :active="route().current('admin.setting.general.show')"
-          >
-            {{ __("General") }}
-          </setting-link>
-          <setting-link
-            :href="route('admin.setting.theme.show')"
-            :active="route().current('admin.setting.theme.show')"
-          >
-            {{ __("Theme") }}
-          </setting-link>
-          <setting-link
-            :href="route('admin.setting.plugin.show')"
-            :active="route().current('admin.setting.plugin.show')"
-          >
-            {{ __("Plugin") }}
-          </setting-link>
-          <setting-link
-            :href="route('admin.setting.player.show')"
-            :active="route().current('admin.setting.player.show')"
-          >
-            {{ __("Player") }}
-          </setting-link>
-        </div>
-      </div>
+      <SettingSidebar />
 
       <div class="flex-1">
         <div class="flex flex-col w-full">
@@ -452,17 +421,6 @@
 
                           <div class="flex items-center col-span-3 sm:col-span-3">
                             <x-checkbox
-                              id="enable_sticky_header_menu"
-                              v-model="form.enable_sticky_header_menu"
-                              :label="__('Sticky Header Menu')"
-                              :help="__('Header menu will be fixed on top when scroll.')"
-                              name="enable_sticky_header_menu"
-                              :error="form.errors.enable_sticky_header_menu"
-                            />
-                          </div>
-
-                          <div class="flex items-center col-span-3 sm:col-span-3">
-                            <x-checkbox
                               id="enable_welcomebox"
                               v-model="form.enable_welcomebox"
                               :label="__('Welcome Box')"
@@ -518,14 +476,14 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import Icon from '@/Components/Icon.vue';
-import SettingLink from '@/Jetstream/SettingLink.vue';
 import EasyMDE from 'easymde';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import SettingSidebar from '@/Shared/SettingSidebar.vue';
 
 export default {
     components: {
+        SettingSidebar,
         XCheckbox,
-        SettingLink,
         AppLayout,
         JetInputError,
         LoadingButton,
@@ -566,7 +524,6 @@ export default {
                 enable_donation_box: this.settings.enable_donation_box,
                 donation_box_url: this.settings.donation_box_url,
                 enable_status_feed: this.settings.enable_status_feed,
-                enable_sticky_header_menu: this.settings.enable_sticky_header_menu,
                 photo_light: null,
                 photo_dark: null,
             }),

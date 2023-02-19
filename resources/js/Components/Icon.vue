@@ -1,7 +1,7 @@
 <template>
   <svg
     v-if="name === 'close'"
-    class="w-6 h-6 text-gray-300"
+    class="w-6 h-6"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
@@ -947,7 +947,7 @@
   </svg>
 
 
-  <svg 
+  <svg
     v-else-if="name === 'person-badge'"
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"

@@ -11,6 +11,10 @@
         {{ __("You don't have Bungee/Proxy Server Added!") }}
         <template #body>
           {{ __("When a bungee server is not added. Player List Box and Player Status Box (if enabled from settings), use first added server as default query server.") }}
+
+          <p class="italic text-gray-400 dark:text-gray-500">
+            {{ __("Note: This is not an error. You can safely ignore this message if you don't have proxy server.") }}
+          </p>
         </template>
       </AlertCard>
 
@@ -57,9 +61,9 @@
                   <tr>
                     <th
                       scope="col"
-                      class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider"
                     >
-                      {{ __("#") }}
+                      {{ __("Id") }}
                     </th>
                     <th
                       scope="col"
@@ -110,7 +114,7 @@
                     v-for="server in servers.data"
                     :key="server.id"
                   >
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-bold text-gray-500 dark:text-gray-400">
                       {{ server.id }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">

@@ -46,6 +46,9 @@ createInertiaApp({
 
         VueApp.directive('confirm', confirmDirective);
 
+        // remove the global loader with id site-global-loader
+        document.getElementById('site-global-loader').remove();
+
         return VueApp.mount(el);
     },
 });

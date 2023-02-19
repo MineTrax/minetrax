@@ -3,15 +3,15 @@ import JetBanner from '@/Jetstream/Banner.vue';
 import Toast from '@/Components/Toast.vue';
 import Icon from '@/Components/Icon.vue';
 import AppHead from '@/Components/AppHead.vue';
-import MainNavbar from '@/Shared/MainNavbar.vue';
+import MainNavbarCustom from '@/Shared/MainNavbarCustom.vue';
 
 export default {
     components: {
+        MainNavbarCustom,
         AppHead,
         Icon,
         Toast,
         JetBanner,
-        MainNavbar
     },
 
     data() {
@@ -51,7 +51,8 @@ export default {
       :class="{ 'border-4 border-red-500' : $page.props.isImpersonating}"
     >
       <!-- NavBar -->
-      <MainNavbar />
+      <MainNavbarCustom />
+
 
       <!-- Page Content -->
       <main>
