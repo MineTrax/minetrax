@@ -120,4 +120,16 @@ return [
     'password_timeout' => 10800,
 
     'random_user_avatars' => env('RANDOM_USER_AVATARS', true),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Allow login via any provider
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, this feature will allow user to login via any provider
+    | even if the user is not registered with that provider.
+    |
+    */
+    'any_provider_social_auth' => env('ALLOW_ANY_PROVIDER_SOCIAL_AUTH', false),
 ];

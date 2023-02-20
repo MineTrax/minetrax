@@ -45,8 +45,10 @@ class SocialAuthController extends Controller
         // Check if user already exists
         $user = User::where('email', $socialUser->getEmail())->first();
 
+
+        $allowAnyProviderAuth = config('auth.any_provider_social_auth');
         // If user exists and has different provider then return error about it
-        if ($user && ($socialUser->getId() != $user->provider_id || $provider != $user->provider_name)) {
+        if ($user && !$allowAnyProviderAuth && ($socialUser->getId() != $user->provider_id || $provider != $user->provider_name)) {
             $providerHelper = $user->provider_name ? ucfirst($user->provider_name) : " with password";
             if ($request->wantsJson()) {
                 return response()->json(['message' => __('Provider mismatch. You used a different provider while registration. Maybe try :provider?', ['provider' => $providerHelper])], 422);
