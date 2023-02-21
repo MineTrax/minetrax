@@ -130,7 +130,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         if (config('auth.random_user_avatars')) {
             return 'https://avatars.dicebear.com/api/bottts/' . urlencode($this->username) . '.svg';
         }
-        return url('/images/steve.png');
+        return url('/images/default_profile_pic.png');
     }
 
     /**

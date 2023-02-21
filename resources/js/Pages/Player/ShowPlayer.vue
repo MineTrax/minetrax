@@ -36,7 +36,7 @@
             >{{ __("None") }}</span>
           </div>
 
-          <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> Position </span>
+          <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> {{ __("Position") }} </span>
         </div>
 
         <div
@@ -61,7 +61,7 @@
             </p>
           </div>
 
-          <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> Rating </span>
+          <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> {{ __("Rating") }} </span>
         </div>
 
         <div
@@ -87,7 +87,7 @@
             </p>
           </div>
 
-          <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> Rank </span>
+          <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> {{ __("Rank") }} </span>
         </div>
 
         <div
@@ -111,7 +111,7 @@
             {{ __("Unknown") }}
           </p>
 
-          <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> Country </span>
+          <span class="text-sm text-gray-400 dark:text-gray-300 font-bold mt-1"> {{ __("Country") }} </span>
         </div>
       </div>
 

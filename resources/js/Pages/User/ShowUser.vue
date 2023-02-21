@@ -327,7 +327,7 @@
             </div>
             <div class="flex justify-between">
               <span>{{ __("Gender") }}</span>
-              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ profileUser.gender_string || __('unknown') }}</span>
+              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ __(profileUser.gender_string) || __('unknown') }}</span>
             </div>
             <div class="flex justify-between">
               <span>{{ __("Total Posts") }}</span>
