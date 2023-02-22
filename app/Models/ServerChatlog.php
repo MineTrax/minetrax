@@ -16,6 +16,8 @@ class ServerChatlog extends BaseModel
     public function setDataAttribute($value)
     {
         // Fix: Temporary fix for VentureChat weird §x issue https://i.imgur.com/VNVUWxD.png
-        $this->attributes['data'] = str_replace('§x', '', $value);
+        if ($value) {
+            $this->attributes['data'] = str_replace('§x', '', $value);
+        }
     }
 }

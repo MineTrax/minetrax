@@ -14,7 +14,7 @@ class ApiServerChatlogController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
-            'chat' => 'required',
+            'chat' => 'nullable',
             'causer_username' => 'sometimes|nullable|string',
             'causer_uuid' => 'sometimes|nullable|uuid',
             'server_id' => 'required|exists:servers,id',
@@ -24,14 +24,14 @@ class ApiServerChatlogController extends Controller
 
         $log = ServerChatlog::create([
             'server_id' => $request->server_id,
-            'data' => $request->chat,
+            'data' => $request->chat ?? null,
             'causer_username' => $request->causer_username,
             'causer_uuid' => $request->causer_uuid,
             'type' => $request->type,
             'channel' => $request->channel
         ]);
 
-        if (!$request->channel) {
+        if (!$request->channel && $request->chat) {
             broadcast(new ServerChatlogCreated($log));
         }
 

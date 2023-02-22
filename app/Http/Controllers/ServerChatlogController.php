@@ -17,6 +17,7 @@ class ServerChatlogController extends Controller
         $afterId = $request->after;
 
         $query = ServerChatlog::orderByDesc('id')
+            ->whereNotNull('data')
             ->where('server_id', $server)
             ->whereNull('channel');
 
