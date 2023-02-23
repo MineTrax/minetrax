@@ -116,7 +116,9 @@ Route::get('/encryptstring', function () {
 
 
 Route::get('test-log', function () {
-    Log::info('test');
+    for($i = 0; $i < 100; $i++) {
+        Log::info('test');
+    }
     return 'test';
 });
 

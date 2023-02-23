@@ -31,7 +31,10 @@
         </div>
 
         <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
-          <two-factor-authentication-form class="mt-10 sm:mt-0" />
+          <two-factor-authentication-form
+            class="mt-10 sm:mt-0"
+            :requires-confirmation="true"
+          />
 
           <jet-section-border />
         </div>
