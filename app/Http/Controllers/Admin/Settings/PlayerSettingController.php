@@ -7,6 +7,7 @@ use App\Models\Player;
 use App\Settings\PlayerSettings;
 use App\Utils\PlayerRating\PlayerRatingCalculator;
 use App\Utils\PlayerRating\PlayerScoreCalculator;
+use Cache;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -36,6 +37,12 @@ class PlayerSettingController extends Controller
             'is_custom_score_enabled' => 'required|boolean',
             'custom_score_expression' => 'required_if:is_custom_score_enabled,true',
         ]);
+
+
+        // If changes to score algorithm, force run CalculatePlayersJob for all players on next schedule
+        if ($settings->is_custom_score_enabled != $request->is_custom_score_enabled || $settings->custom_score_expression != $request->custom_score_expression) {
+            Cache::put('CalculatePlayersJob::forceRunForAllPlayers', true);
+        }
 
         // Validate the expression before saving if is_custom_rating_enabled is true
         if ($request->is_custom_rating_enabled) {

@@ -7,6 +7,7 @@ use App\Models\JsonMinecraftPlayerStat;
 use App\Models\Player;
 use App\Settings\PlayerSettings;
 use App\Utils\PlayerRating\PlayerScoreCalculator;
+use Cache;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Bus\Queueable;
@@ -34,8 +35,10 @@ class CalculatePlayersJob implements ShouldQueue, ShouldBeUnique
     public function handle(PlayerSettings $playerSettings)
     {
         $playerSettings->refresh();
+
         // Check and set a flag if this is likely the first run
         $isFirstTime = JsonMinecraftPlayerStat::where('player_id', '!=', null)->exists() ? false : true;
+        $shouldForceRunForAllPlayers = Cache::pull('CalculatePlayersJob::forceRunForAllPlayers', false);
 
         // Get All players from minecraft_player_stats & loop thru them. Get using LazyCollection for memory saving
         $rawMcPlayersList = JsonMinecraftPlayerStat::select([
@@ -76,7 +79,7 @@ class CalculatePlayersJob implements ShouldQueue, ShouldBeUnique
             $newLastMpsUpdatedAt = Carbon::parse($player->last_mps_updated_at);
             $currentPlayer = Player::whereUuid($player->uuid)->first();
             $oldLastMpsUpdatedAt = $currentPlayer?->last_mps_updated_at;
-            if ($oldLastMpsUpdatedAt && $oldLastMpsUpdatedAt >= $newLastMpsUpdatedAt) {
+            if ($oldLastMpsUpdatedAt && $oldLastMpsUpdatedAt >= $newLastMpsUpdatedAt && !$shouldForceRunForAllPlayers) {
                 continue;
             }
 
@@ -134,7 +137,7 @@ class CalculatePlayersJob implements ShouldQueue, ShouldBeUnique
                 ]);
             }
 
-            Log::debug("Adding player " . $player->uuid);
+            Log::debug("Adding/Updating player " . $player->uuid);
         }
     }
 
