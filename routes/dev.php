@@ -81,9 +81,9 @@ Route::get('crypt', function () {
     $PORT = 4000;
     $HOST = "127.0.0.1";
     $sock = socket_create(AF_INET, SOCK_STREAM, 0)
-        or die("error: could not create socket\n");
+    or die("error: could not create socket\n");
     $succ = socket_connect($sock, $HOST, $PORT)
-        or die("error: could not connect to host\n");
+    or die("error: could not connect to host\n");
     $text = "Minecraft is getting a\n";
     socket_send($sock, $text, strlen($text), 0);
 
@@ -116,13 +116,12 @@ Route::get('/encryptstring', function () {
 
 
 Route::get('test-log', function () {
-    for($i = 0; $i < 100; $i++) {
-        Log::info('test');
-    }
+    Log::info('test');
+    Log::warning('warning!!');
     return 'test';
 });
 
-Route::get('username-to-uuid', function() {
-   return MinecraftApiService::playerUsernameToUuid('xinecraft');
+Route::get('username-to-uuid', function () {
+    return MinecraftApiService::playerUsernameToUuid('xinecraft');
 });
 

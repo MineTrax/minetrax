@@ -54,7 +54,7 @@ return [
         'stack' => [
             'driver' => 'stack',
             'channels' => env('LOG_DISCORD_WEBHOOK_URL') ? ['daily', 'discord'] : ['daily'],
-            'ignore_exceptions' => false,
+            'ignore_exceptions' => true,
         ],
 
         'single' => [
@@ -121,7 +121,7 @@ return [
         'discord' => [
             'driver' => 'custom',
             'via'    => MarvinLabs\DiscordLogger\Logger::class,
-            'level'  => 'debug',
+            'level'  => env('LOG_LEVEL', 'debug'),
             'url'    => env('LOG_DISCORD_WEBHOOK_URL'),
         ],
     ],
