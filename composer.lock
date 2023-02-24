@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f8c7a151e76312c0ce04d3cb5123b3e1",
+    "content-hash": "c869125f577e9f4811b6727669363cbd",
     "packages": [
         {
             "name": "amphp/amp",
@@ -1742,29 +1742,29 @@
         },
         {
             "name": "cybercog/laravel-love",
-            "version": "8.9.0",
+            "version": "9.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cybercog/laravel-love.git",
-                "reference": "80c7ad2f16b56b51ca3eeb5098f24647e7f0d913"
+                "reference": "0758e2861637300d757b037acdb5637fb7b69baa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cybercog/laravel-love/zipball/80c7ad2f16b56b51ca3eeb5098f24647e7f0d913",
-                "reference": "80c7ad2f16b56b51ca3eeb5098f24647e7f0d913",
+                "url": "https://api.github.com/repos/cybercog/laravel-love/zipball/0758e2861637300d757b037acdb5637fb7b69baa",
+                "reference": "0758e2861637300d757b037acdb5637fb7b69baa",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "^6.20.14|^7.30.4|^8.24|^9.0",
-                "illuminate/support": "^6.0|^7.0|^8.0|^9.0",
-                "php": "^7.2.5|^8.0"
+                "illuminate/database": "^9.0|^10.1.3",
+                "illuminate/support": "^9.0|^10.1.3",
+                "php": "^8.0"
             },
             "require-dev": {
+                "laravel/legacy-factories": "^1.3",
                 "mockery/mockery": "^1.0",
-                "orchestra/database": "~3.7.0|~3.8.0|^4.0|^5.0|^6.0|^7.0",
-                "orchestra/testbench": "~3.7.0|~3.8.0|^4.0|^5.0|^6.0|^7.0",
-                "phpstan/phpstan": "^0.12.29",
-                "phpunit/phpunit": "^7.5|^8.0|^9.0"
+                "orchestra/testbench": "^7.0|^8.0",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^9.6"
             },
             "type": "library",
             "extra": {
@@ -1834,7 +1834,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2022-02-23T10:00:11+00:00"
+            "time": "2023-02-24T13:09:28+00:00"
         },
         {
             "name": "dasprid/enum",
