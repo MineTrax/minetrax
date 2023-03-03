@@ -23,7 +23,7 @@
         "inertiajs/inertia-laravel": "^0.6.0",
         "intervention/imagecache": "^2.5",
         "laravel/framework": "^9.36",
-        "laravel/jetstream": "^2.12",
+        "laravel/jetstream": "^3.0",
         "laravel/sanctum": "^3.0",
         "laravel/socialite": "^5.5",
         "laravel/telescope": "^4.14",
