@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Actions\Jetstream;
+
 use DB;
 
 use Laravel\Jetstream\Contracts\DeletesUsers;
@@ -15,6 +16,11 @@ class DeleteUser implements DeletesUsers
      */
     public function delete($user)
     {
+        // Cannot delete the first user. -> (superadmin)
+        if ($user->id === 1) {
+            abort(403, 'Cannot delete the first user.');
+        }
+
         // Start Transaction
         DB::beginTransaction();
         try {
