@@ -169,7 +169,7 @@ class CalculatePlayersJob implements ShouldQueue, ShouldBeUnique
                 \Log::critical($e);
             }
         } else {
-            $score = max($player['total_mob_kills'] + $player['total_player_kills'] - $player['total_deaths'], 0);
+            $score = max(($player['total_play_one_minute']/24000/3) + ($player['total_mob_kills'] + $player['total_player_kills'] + ($player['total_damage_dealt']/10)) + ($player['total_mined']/9/64) - $player['total_deaths'], 0);
         }
         return $score;
     }

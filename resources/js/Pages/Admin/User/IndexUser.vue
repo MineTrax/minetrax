@@ -192,6 +192,17 @@
                       >
                         {{ __("Edit") }}
                       </inertia-link>
+                      /
+                      <inertia-link
+                        v-if="can('delete users')"
+                        v-confirm="{message: 'Are you sure you want to delete this User permanently?'}"
+                        as="button"
+                        method="DELETE"
+                        :href="route('admin.user.delete', user.id)"
+                        class="text-red-600 hover:text-red-900 focus:outline-none"
+                      >
+                        {{ __("Delete") }}
+                      </inertia-link>
                     </td>
                   </tr>
 
@@ -216,9 +227,9 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 
 export default {
 

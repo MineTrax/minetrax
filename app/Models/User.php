@@ -344,4 +344,8 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
     {
         return $this->morphToMany(Badge::class, 'badgeable')->orderBy('sort_order')->where('is_sticky', true)->withTimestamps();
     }
+
+    public function shouts() {
+        return $this->hasMany(Shout::class);
+    }
 }

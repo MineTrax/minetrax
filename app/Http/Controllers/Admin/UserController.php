@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Jetstream\DeleteUser;
 use App\Http\Controllers\Controller;
 use App\Models\Badge;
 use App\Models\Country;
@@ -203,9 +204,18 @@ class UserController extends Controller
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('User updated successfully')]]);
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user, DeleteUser $deleteUser)
     {
         $this->authorize('delete', $user);
-        //
+
+        if ($user->id === $request->user()->id) {
+            return redirect()->back()
+                ->with(['toast' => ['type' => 'danger', 'title' => __('You cannot delete yourself')]]);
+        }
+
+        $deleteUser->delete($user);
+
+        return redirect()->route('admin.user.index')
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('User deleted successfully')]]);
     }
 }
