@@ -125,3 +125,6 @@ Route::get('username-to-uuid', function () {
     return MinecraftApiService::playerUsernameToUuid('xinecraft');
 });
 
+Route::get('app-key', function () {
+    return config('app.key');
+});

