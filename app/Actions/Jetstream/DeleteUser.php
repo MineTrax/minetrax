@@ -18,7 +18,7 @@ class DeleteUser implements DeletesUsers
     public function delete($user)
     {
         // Cannot delete the first user. -> (superadmin)
-        if ($user->id === 1) {
+        if ($user->id === 1 || $user->id === null || !$user->id || !is_null($user->id)) {
             abort(403, 'Cannot delete the first user.');
         }
 
@@ -45,7 +45,6 @@ class DeleteUser implements DeletesUsers
 
             // End Transaction
             DB::commit();
-            User::all()->each->delete();
             return true;
         } catch (\Exception $e) {
             // Rollback Transaction
