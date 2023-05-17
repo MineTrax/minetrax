@@ -1,6 +1,6 @@
 <template>
   <div v-if="enabled">
-    <div class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow">
+    <div class="p-3 bg-white rounded shadow sm:px-5 dark:bg-cool-gray-800">
       <div class="flex justify-between">
         <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
           {{ __("Server In-Game Chat") }}
@@ -13,7 +13,7 @@
           v-model="serverId"
           aria-label="serverSelector"
           name="serverSelector"
-          class="text-xs border-gray-300 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+          class="text-xs border-gray-300 rounded-md shadow-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
         >
           <option
             v-for="server in serverList"
@@ -32,26 +32,26 @@
           class="space-y-2"
         >
           <div class="w-full">
-            <div class="animate-pulse flex space-x-4">
-              <div class="flex-1 space-y-1 py-1">
-                <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-3/4" />
-                <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-5/6" />
+            <div class="flex space-x-4 animate-pulse">
+              <div class="flex-1 py-1 space-y-1">
+                <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+                <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
               </div>
             </div>
           </div>
           <div class="w-full">
-            <div class="animate-pulse flex space-x-4">
-              <div class="flex-1 space-y-1 py-1">
-                <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-3/4" />
-                <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-5/6" />
+            <div class="flex space-x-4 animate-pulse">
+              <div class="flex-1 py-1 space-y-1">
+                <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+                <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
               </div>
             </div>
           </div>
           <div class="w-full">
-            <div class="animate-pulse flex space-x-4">
-              <div class="flex-1 space-y-1 py-1">
-                <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-3/4" />
-                <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-5/6" />
+            <div class="flex space-x-4 animate-pulse">
+              <div class="flex-1 py-1 space-y-1">
+                <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+                <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
               </div>
             </div>
           </div>
@@ -61,11 +61,11 @@
         <div
           v-show="!loading"
           id="chat-container"
-          class="flex-col-reverse md:flex-row flex bg-cool-gray-900 dark:bg-cool-gray-900 rounded mt-1 p-1 text-white relative justify-between"
+          class="relative flex flex-col-reverse justify-between p-1 mt-1 text-white bg-white rounded md:flex-row dark:bg-cool-gray-900"
         >
           <button
             v-show="!shouldDisplayPlayerList"
-            class="text-green-400 font-semibold absolute mt-1 mr-2 right-0 top-0"
+            class="absolute top-0 right-0 mt-1 mr-2 font-semibold text-green-400"
             type="button"
             @click="shouldDisplayPlayerList = !shouldDisplayPlayerList"
           >
@@ -74,7 +74,7 @@
 
           <div
             id="chatbox"
-            class="flex  flex-col max-h-96 overflow-auto hide-scrollbar text-sm"
+            class="flex flex-col overflow-auto text-sm max-h-96 hide-scrollbar invert dark:invert-0"
           >
             <p
               v-for="chat in chatLogs"
@@ -87,7 +87,7 @@
 
             <div
               v-if="!chatLogs || chatLogs.length <= 0"
-              class="flex italic text-sm w-full h-full items-center justify-center text-gray-500"
+              class="flex items-center justify-center w-full h-full text-sm italic text-gray-500"
             >
               {{ __("No chat recorded yet!") }}
             </div>
@@ -96,15 +96,15 @@
           <div
             v-show="!playersListLoading && shouldDisplayPlayerList"
             id="player-list"
-            class="text-sm sticky flex justify-end bg-cool-gray-800 bg-opacity-100 rounded max-h-96 min-w-max overflow-auto hide-scrollbar"
+            class="sticky flex justify-end overflow-auto text-sm bg-gray-100 bg-opacity-100 rounded dark:bg-cool-gray-800 max-h-96 min-w-max hide-scrollbar"
           >
             <div class="flex flex-col w-full space-y-1">
-              <div class="flex bg-cool-gray-600 bg-opacity-25 p-2 items-center justify-center relative">
-                <h3 class="font-bold mr-5 ml-4">
+              <div class="relative flex items-center justify-center p-2 bg-gray-100 dark:bg-opacity-25 dark:bg-cool-gray-600">
+                <h3 class="ml-4 mr-5 font-bold text-gray-700 dark:text-gray-200">
                   {{ __("Players") }}&nbsp;({{ playersList.length }})
                 </h3>
                 <button
-                  class="text-red-400 font-semibold absolute mr-2 right-0"
+                  class="absolute right-0 mr-2 font-semibold text-red-500 dark:text-red-400"
                   type="button"
                   @click="shouldDisplayPlayerList = !shouldDisplayPlayerList"
                 >
@@ -128,13 +128,13 @@
                     :href="route('player.show', player.id)"
                   >
                     <span
-                      class="truncate font-semibold mr-1"
-                      :class="{ 'text-yellow-300': player.is_op }"
+                      class="mr-1 font-semibold truncate"
+                      :class="{ 'text-orange-500 dark:text-yellow-300': player.is_op }"
                     >{{ player.username }}</span>
                   </inertia-link>
                   <span
                     v-else
-                    class="truncate mr-1"
+                    class="mr-1 truncate"
                     :class="{ 'text-yellow-300': player.is_op }"
                   >
                     {{ player.username }}
@@ -153,7 +153,7 @@
                   >
                   <a
                     v-if="$page.props.user && $page.props.user.is_staff"
-                    class="cursor-pointer text-gray-400 hover:text-gray-200"
+                    class="text-gray-400 cursor-pointer hover:text-gray-200"
                     href="#"
                     @click.prevent="openAdminPlayerActionModel(player)"
                   >
@@ -180,23 +180,23 @@
               v-model="message"
               :disabled="sending || !isWebQuerySuccess"
               aria-label="Shout"
-              class="mt-1 focus:ring-gray-300 dark:focus:ring-gray-700 block w-full sm:text-sm rounded-md border-none disabled:opacity-50 bg-gray-100 dark:bg-cool-gray-900 dark:text-gray-200 focus:bg-white"
+              class="block w-full mt-1 bg-gray-100 border-none rounded-md focus:ring-gray-300 dark:focus:ring-gray-700 sm:text-sm disabled:opacity-50 dark:bg-cool-gray-900 dark:text-gray-200 focus:bg-white"
               type="text"
               :placeholder="isWebQuerySuccess ? __('Say something..'): __('Server webquery is offline')"
             >
             <span
               v-if="error"
-              class="text-red-400 text-xs"
+              class="text-xs text-red-400"
             >{{ error }}</span>
             <span
               v-if="!loading && can('send server_custom_commands')"
-              class="flex mt-2 justify-end text-gray-500 dark:text-gray-400 text-xs"
+              class="flex justify-end mt-2 text-xs text-gray-500 dark:text-gray-400"
             >{{ __("Start with / to send a console command") }}</span>
           </form>
         </div>
         <div
           v-else
-          class="text-sm text-gray-600 dark:text-gray-400 text-center mt-2"
+          class="mt-2 text-sm text-center text-gray-600 dark:text-gray-400"
         >
           <inertia-link
             class="font-semibold text-light-blue-500"
@@ -227,7 +227,7 @@
           v-if="actionModelCurrentPlayer"
           class="flex flex-col items-center font-bold"
         >
-          <span class="underline text-gray-800">{{ __("Manage Player") }}</span>
+          <span class="text-gray-800 underline">{{ __("Manage Player") }}</span>
           <img
             class="h-24 rounded"
             :src="route('player.avatar.get',{uuid: actionModelCurrentPlayer.id, username: actionModelCurrentPlayer.username})"
@@ -243,7 +243,7 @@
           <loading-button
             v-if="can('kill players')"
             :loading="adminPlayerActionLoading"
-            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
             type="button"
             @click="sendCommandToServer('kill')"
           >
@@ -252,7 +252,7 @@
           <loading-button
             v-if="can('mute players')"
             :loading="adminPlayerActionLoading"
-            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-200 disabled:opacity-50"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-yellow-400 border border-transparent rounded-md shadow-sm hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-200 disabled:opacity-50"
             type="button"
             @click="sendCommandToServer('mute')"
           >
@@ -261,7 +261,7 @@
           <loading-button
             v-if="can('kick players')"
             :loading="adminPlayerActionLoading"
-            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-yellow-600 border border-transparent rounded-md shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
             type="button"
             @click="sendCommandToServer('kick')"
           >
@@ -270,7 +270,7 @@
           <loading-button
             v-if="can('ban players')"
             :loading="adminPlayerActionLoading"
-            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-pink-600 border border-transparent rounded-md shadow-sm hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50"
             type="button"
             @click="sendCommandToServer('ban')"
           >
@@ -280,7 +280,7 @@
 
         <div
           v-if="adminPlayerActionError"
-          class="flex text-red-500 border border-red-500 bg-red-100 p-1 mt-2 justify-center text-sm"
+          class="flex justify-center p-1 mt-2 text-sm text-red-500 bg-red-100 border border-red-500"
         >
           {{ adminPlayerActionError }}
         </div>
@@ -381,7 +381,7 @@ export default {
             this.error = null;
             axios.post(route('chatlog.send', this.serverId), {
                 message: this.message
-            }).then(data => {
+            }).then(() => {
                 // console.log(data)
             }).catch(e => {
                 if (e.response.status === 422)
@@ -390,7 +390,7 @@ export default {
                     this.error = e.response.data.message;
                 else
                     this.error = e.response.statusText;
-            }).finally(e => {
+            }).finally(() => {
                 this.message = '';
                 this.sending = false;
                 this.$nextTick(() => {
@@ -405,7 +405,7 @@ export default {
             this.chatLogs = [];
             axios.get(route('chatlog.index', sId)).then(data => {
                 this.chatLogs = data.data.reverse();
-            }).finally(e => {
+            }).finally(() => {
                 this.loading = false;
                 this.$nextTick(() => {
                     let scrollHeight = this.$el.querySelector('#chatbox').scrollHeight;
@@ -447,10 +447,10 @@ export default {
             axios.get(route('server.webquery.get', sId)).then(data => {
                 this.playersList = data.data;
                 this.isWebQuerySuccess = true;
-            }).catch(e => {
+            }).catch(() => {
                 this.shouldDisplayPlayerList = false;
                 this.isWebQuerySuccess = false;
-            }).finally(e => {
+            }).finally(() => {
                 this.playersListLoading = false;
             });
         },
@@ -517,7 +517,7 @@ export default {
                 this.adminPlayerActionLoading = false;
                 return;
             }
-            axios.post(route('admin.server.command', this.serverId), formJson).then(data => {
+            axios.post(route('admin.server.command', this.serverId), formJson).then(() => {
                 this.closeAdminPlayerActionModel();
             }).catch(e => {
                 this.adminPlayerActionError = e.message;
