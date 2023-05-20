@@ -128,14 +128,14 @@
                     :href="route('player.show', player.id)"
                   >
                     <span
-                      class="mr-1 font-semibold truncate"
+                      class="mr-1 font-semibold truncate text-gray-800 dark:text-white"
                       :class="{ 'text-orange-500 dark:text-yellow-300': player.is_op }"
                     >{{ player.username }}</span>
                   </inertia-link>
                   <span
                     v-else
-                    class="mr-1 truncate"
-                    :class="{ 'text-yellow-300': player.is_op }"
+                    class="mr-1 truncate text-gray-800 dark:text-white"
+                    :class="{ 'text-orange-500 dark:text-yellow-300': player.is_op }"
                   >
                     {{ player.username }}
                   </span>
