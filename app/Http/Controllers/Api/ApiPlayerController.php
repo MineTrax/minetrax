@@ -116,10 +116,21 @@ class ApiPlayerController extends Controller
                 'player_id' => null,
         ];
 
-        $player = Player::with('users:id,name,username,profile_photo_path,verified_at')->where('uuid', $request->uuid)->first();
-        if ($player && $player->users->count() > 0) {
-            $responseData['is_verified'] = true;
+        $player = Player::where('uuid', $request->uuid)
+        ->with(['users:id,name,username,profile_photo_path,verified_at', 'rank:id,shortname,name', 'country:id,name,iso_code'])
+        ->first();
+
+        if ($player) {
+            $responseData['is_verified'] = $player->users->count() > 0 ? true: false;
             $responseData['player_id'] = $player->id;
+            $responseData['rating'] = $player->rating;
+            $responseData['total_score'] = $player->total_score;
+            $responseData['position'] = $player->position;
+            $responseData['first_seen_at'] = $player->first_seen_at?->diffForHumans();
+            $responseData['last_seen_at'] = $player->last_seen_at?->diffForHumans();
+            $responseData['rank'] = $player->rank ?? null;
+            $responseData['country'] = $player->country ?? null;
+            $responseData['profile_link'] = route('player.show', [$player->uuid]);
         }
 
         return response()->json($responseData);
