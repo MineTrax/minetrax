@@ -51,12 +51,12 @@ class Poll extends BaseModel
 
     public function isVotable(): bool
     {
-        return !$this->isLockedOrClosed() && now() > $this->started_at;
+        return !$this->isLockedOrClosed() && now() >= $this->started_at;
     }
 
     public function isComingSoon(): bool
     {
-        return $this->started_at > now();
+        return $this->started_at >= now();
     }
 
     /**
