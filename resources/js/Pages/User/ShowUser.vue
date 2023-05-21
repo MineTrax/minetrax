@@ -68,11 +68,11 @@
               </div>
               <!-- Follow Button -->
               <div
-                v-if="$page.props.user"
+                v-if="$page.props.auth.user"
                 class="flex space-x-2 text-xs text-right md:text-medium"
               >
                 <inertia-link
-                  v-if="profileUser.id === $page.props.user.id"
+                  v-if="profileUser.id === $page.props.auth.user.id"
                   :href="route('profile.show')"
                   class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold bg-transparent border rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max border-light-blue-500 text-light-blue-500 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900"
                 >

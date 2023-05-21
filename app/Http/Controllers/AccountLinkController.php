@@ -14,20 +14,20 @@ class AccountLinkController extends Controller
     public function verify($uuid, Server $server, Request $request, PluginSettings $pluginSettings): \Illuminate\Http\RedirectResponse
     {
         if (!$request->hasValidSignature()) {
-            return redirect()->home()
+            return redirect()->route('home')
                 ->with(['toast' => ['type' => 'danger', 'title' => __('Link expired or invalid!'), 'body' => __('Please request a fresh link and try again.'), 'milliseconds' => 10000]]);
         }
 
         // Find player with UUID if not found then tell user to wait for sometime till his player become visible in website
         $player = Player::where('uuid', $uuid)->first();
         if (!$player) {
-            return redirect()->home()
+            return redirect()->route('home')
                 ->with(['toast' => ['type' => 'warning', 'title' => __('Player not found in database!'), 'body' => __('Please wait for sometime for server to update its player database.'), 'milliseconds' => 10000]]);
         }
 
         // Player found. check if this player is already linked with a user.
         if ($player->users()->count() > 0) {
-            return redirect()->home()
+            return redirect()->route('home')
                 ->with(['toast' => ['type' => 'danger', 'title' => __('Player already linked to a user!'), 'body' => __('If you own this user please unlink it from your another account or contact administrator.'), 'milliseconds' => 10000]]);
         }
 
@@ -35,7 +35,7 @@ class AccountLinkController extends Controller
         $user = $request->user();
         $max_slots = $pluginSettings->max_players_link_per_account; // Total number of players that can be linked to account
         if ($user->players()->count() >= $max_slots) {
-            return redirect()->home()
+            return redirect()->route('home')
                 ->with(['toast' => ['type' => 'danger', 'title' => __('User already have max :max_slots players linked!', ['max_slots' => $max_slots]), 'body' => __('If you want to link this player please unlink a player.'), 'milliseconds' => 10000]]);
         }
 
@@ -53,7 +53,7 @@ class AccountLinkController extends Controller
         // Run command to give this player the reward according to Plugin setting if enabled
         AccountLinkAfterSuccessCommandJob::dispatch($player, $server);
 
-        return redirect()->home()
+        return redirect()->route('home')
             ->with(['toast' => ['type' => 'success', 'title' => __('Played linked successfully!'), 'body' => __('This player is now linked to your account.'), 'milliseconds' => 10000]]);
     }
 

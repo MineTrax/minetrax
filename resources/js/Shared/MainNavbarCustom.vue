@@ -32,7 +32,7 @@ export default {
 
     computed: {
         canShowAdminSidebar() {
-            return this.isStaff(this.$page.props.user);
+            return this.isStaff(this.$page.props.auth.user);
         },
         isStickyHeader() {
             return this.$page.props.generalSettings.enable_sticky_header_menu;
@@ -169,12 +169,12 @@ export default {
 
       <!-- Responsive Settings Options / Not configurable by CustomNav -->
       <div
-        v-if="$page.props.user"
+        v-if="$page.props.auth.user"
         class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700"
       >
         <inertia-link
           as="div"
-          :href="route('user.public.get', $page.props.user.username)"
+          :href="route('user.public.get', $page.props.auth.user.username)"
           class="flex items-center px-4"
         >
           <div
@@ -183,17 +183,17 @@ export default {
           >
             <img
               class="object-cover w-10 h-10 rounded-full"
-              :src="$page.props.user.profile_photo_url"
-              :alt="$page.props.user.name"
+              :src="$page.props.auth.user.profile_photo_url"
+              :alt="$page.props.auth.user.name"
             >
           </div>
 
           <div>
             <div class="text-base font-medium text-gray-800 dark:text-gray-300">
-              {{ $page.props.user.name }}
+              {{ $page.props.auth.user.name }}
             </div>
             <div class="text-sm font-medium text-gray-500">
-              {{ $page.props.user.email }}
+              {{ $page.props.auth.user.email }}
             </div>
           </div>
         </inertia-link>

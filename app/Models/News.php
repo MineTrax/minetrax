@@ -16,9 +16,9 @@ class News extends BaseModel implements HasMedia
     protected $appends = ['photo_url'];
     protected $with = ['media'];
     protected $casts = [
-        'type' => NewsType::class
+        'type' => NewsType::class,
+        'published_at' => 'datetime',
     ];
-    protected $dates = ['published_at'];
 
     public function registerMediaCollections(): void
     {

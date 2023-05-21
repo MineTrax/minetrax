@@ -224,7 +224,7 @@ export default{
                 return;
             }
 
-            if (this.$page.props.user) {
+            if (this.$page.props.auth.user) {
                 a.votes++;
                 a.selected = true;
                 this.visibleResults = true;

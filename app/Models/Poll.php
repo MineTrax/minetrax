@@ -10,10 +10,10 @@ class Poll extends BaseModel
     use HasFactory;
 
     protected $casts = [
-        'is_closed' => 'boolean'
+        'is_closed' => 'boolean',
+        'closed_at' => 'datetime',
+        'started_at' => 'datetime',
     ];
-
-    protected $dates = ['closed_at', 'started_at'];
 
     protected $with  = ['options'];
 
@@ -51,12 +51,12 @@ class Poll extends BaseModel
 
     public function isVotable(): bool
     {
-        return !$this->isLockedOrClosed() && now() > $this->started_at;
+        return !$this->isLockedOrClosed() && now() >= $this->started_at;
     }
 
     public function isComingSoon(): bool
     {
-        return $this->started_at > now();
+        return $this->started_at >= now();
     }
 
     /**

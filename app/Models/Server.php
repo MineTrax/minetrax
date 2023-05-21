@@ -16,10 +16,9 @@ class Server extends BaseModel
         'minecraft_version' => ServerVersion::class,
         'is_stats_tracking_enabled' => 'boolean',
         'is_ingame_chat_enabled' => 'boolean',
-        'is_online_players_query_enabled' => 'boolean'
+        'is_online_players_query_enabled' => 'boolean',
+        'last_scanned_at' => 'datetime',
     ];
-
-    protected $dates = ['last_scanned_at'];
 
     public function minecraftPlayerStats(): \Illuminate\Database\Eloquent\Relations\HasMany
     {

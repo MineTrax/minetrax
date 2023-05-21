@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune --hours=48')->daily();
         $schedule->command('queue:prune-batches --hours=48 --unfinished=72')->daily();
         $schedule->command('model:prune')->daily();
+        $schedule->command('cache:prune-stale-tags')->hourly();
     }
 
     /**

@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4 w-full">
     <div
-      v-if="$page.props.user && !username"
+      v-if="$page.props.auth.user && !username"
       class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow"
     >
       <form
@@ -26,6 +26,7 @@
         >
           <div
             v-for="(img, index) in imagesDisplay"
+            :key="index"
             class="relative"
           >
             <button
