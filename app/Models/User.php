@@ -6,6 +6,7 @@ use App\Contracts\Commentator;
 use App\Traits\CanCommentTrait;
 use Cog\Contracts\Love\Reacterable\Models\Reacterable as ReacterableInterface;
 use Cog\Laravel\Love\Reacterable\Models\Traits\Reacterable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
@@ -131,6 +132,45 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
             return 'https://avatars.dicebear.com/api/bottts/' . urlencode($this->username) . '.svg';
         }
         return url('/images/default_profile_pic.png');
+    }
+
+
+    /**
+     * Get the URL to the user's profile photo.
+     *
+     */
+    public function profilePhotoUrl()
+    {
+        $settings = $this->settings;
+        // If settings is not loaded then try loading it.
+        if (!$settings) {
+            $settings = $this->refresh()->getOriginal('settings');
+        }
+
+        if ($settings && array_key_exists('profile_photo_source', $settings) && $settings['profile_photo_source']) {
+            switch ($settings['profile_photo_source']) {
+                case 'gravatar':
+                    $email = $this->email;
+                    // Note: This fix is because we don't load email in public places like shoutbox etc
+                    if (!$email) $email = $this->refresh()->getOriginal('email');
+                    $hashedEmail = md5($email);
+                    return "https://www.gravatar.com/avatar/{$hashedEmail}?size=150&d=mp";
+                // minecraft head using his first linked player username
+                case 'linked_player':
+                    if (!$this?->players()?->first()) {
+                        break;
+                    }
+                    $player = $this->players()->first();
+                    return route('player.avatar.get', [$player->uuid, $player->username, 'size' => 150]);
+                default:
+                    break;
+            }
+        }
+
+        // If source is null this means he prefer uploading.
+        return $this->profile_photo_path
+            ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
+            : $this->defaultProfilePhotoUrl();
     }
 
     /**
