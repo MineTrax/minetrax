@@ -14,7 +14,11 @@ class Player extends BaseModel implements Searchable
 {
     use HasFactory;
 
-    protected $dates = ['last_mps_updated_at', 'last_seen_at', 'first_seen_at'];
+    protected $casts = [
+        'last_mps_updated_at' => 'datetime',
+        'last_seen_at' => 'datetime',
+        'first_seen_at' => 'datetime',
+    ];
 
     protected $hidden = ['ip_address', 'account_link_after_success_command_run_count'];
 

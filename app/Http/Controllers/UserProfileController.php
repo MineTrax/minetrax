@@ -20,7 +20,7 @@ class UserProfileController extends Controller
         $user->user_setup_status = 1;
         $user->save();
 
-        return redirect()->home();
+        return redirect()->route('home');
     }
 
     public function deleteCoverImage(Request $request): \Illuminate\Http\RedirectResponse

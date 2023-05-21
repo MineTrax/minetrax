@@ -10,10 +10,10 @@ class Poll extends BaseModel
     use HasFactory;
 
     protected $casts = [
-        'is_closed' => 'boolean'
+        'is_closed' => 'boolean',
+        'closed_at' => 'datetime',
+        'started_at' => 'datetime',
     ];
-
-    protected $dates = ['closed_at', 'started_at'];
 
     protected $with  = ['options'];
 

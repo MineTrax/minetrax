@@ -68,7 +68,7 @@ class SocialAuthController extends Controller
                 ]);
             } else {
                 Auth::login($user);
-                return redirect()->home();
+                return redirect()->route('home');
             }
         }
 
@@ -104,7 +104,7 @@ class SocialAuthController extends Controller
             ]);
         } else {
             Auth::login($user);
-            return redirect()->home();
+            return redirect()->route('home');
         }
     }
 }

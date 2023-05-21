@@ -36,8 +36,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
-
         // Super Admin can do anything even if that permission is missing for him.
         Gate::before(function ($user, $ability) {
             return $user->hasRole(Role::SUPER_ADMIN_ROLE_NAME) ? true : null;

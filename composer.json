@@ -106,6 +106,5 @@
             "pestphp/pest-plugin": true
         }
     },
-    "minimum-stability": "dev",
     "prefer-stable": true
 }
