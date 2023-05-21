@@ -252,7 +252,7 @@ import XInput from '@/Components/Form/XInput.vue';
 import EasyMDE from 'easymde';
 import XSelect from '@/Components/Form/XSelect.vue';
 import {defineProps, onMounted, ref, shallowRef} from 'vue';
-import {useForm} from '@inertiajs/inertia-vue3';
+import {useForm} from '@inertiajs/vue3';
 import {Codemirror} from 'vue-codemirror';
 import {basicSetup} from 'codemirror';
 import {html} from '@codemirror/lang-html';

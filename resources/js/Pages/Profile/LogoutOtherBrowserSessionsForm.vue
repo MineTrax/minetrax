@@ -150,6 +150,7 @@ import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetInput from '@/Jetstream/Input.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
 
@@ -168,7 +169,7 @@ export default {
         return {
             confirmingLogout: false,
 
-            form: this.$inertia.form({
+            form: useForm({
                 password: '',
             })
         };

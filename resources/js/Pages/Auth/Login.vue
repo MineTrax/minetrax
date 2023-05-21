@@ -83,6 +83,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import SocialAuthButtons from '@/Components/SocialAuthButtons.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -101,7 +102,7 @@ export default {
 
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 email: '',
                 password: '',
                 remember: false

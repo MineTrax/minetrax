@@ -85,17 +85,17 @@
 </template>
 
 <script setup>
-import {computed, defineProps} from 'vue';
+import {computed} from 'vue';
 import AppLogoMark from '@/Components/Navigation/AppLogoMark.vue';
 import NavLink from '@/Jetstream/NavLink.vue';
 import NavDropdown from '@/Components/Navigation/NavDropdown.vue';
 import NotificationDropdown from '@/Shared/NotificationDropdown.vue';
 import Search from '@/Shared/Search.vue';
-import { usePage } from '@inertiajs/inertia-vue3';
+import { usePage } from '@inertiajs/vue3';
 import ProfileDropdown from '@/Components/Navigation/ProfileDropdown.vue';
 import LightDarkSelector from '@/Components/Navigation/LightDarkSelector.vue';
 
-const user = computed(() => usePage().props?.value?.auth?.user);
+const user = computed(() => usePage().props?.auth?.user);
 
 const props = defineProps({
     item: {

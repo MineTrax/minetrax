@@ -166,6 +166,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Icon from '@/Components/Icon.vue';
+import {useForm} from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -179,7 +180,7 @@ export default {
 
     data() {
         return {
-            deleteBadgeForm: this.$inertia.form(),
+            deleteBadgeForm: useForm({}),
         };
     },
 };

@@ -2,8 +2,7 @@ import './bootstrap';
 import '../css/app.css';
 
 import { createApp, h } from 'vue';
-import { createInertiaApp, Head, Link } from '@inertiajs/inertia-vue3';
-import { InertiaProgress } from '@inertiajs/progress';
+import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
@@ -22,8 +21,8 @@ createInertiaApp({
             `./Pages/${name}.vue`,
             import.meta.glob('./Pages/**/*.vue')    // Note: use import.meta.globEager to disable chunking behavior
         ),
-    setup({ el, app, props, plugin }) {
-        const VueApp = createApp({ render: () => h(app, props) })
+    setup({ el, App, props, plugin }) {
+        const VueApp = createApp({ render: () => h(App, props) })
             .use(plugin)
             // eslint-disable-next-line no-undef
             .use(ZiggyVue, Ziggy);
@@ -51,11 +50,9 @@ createInertiaApp({
 
         return VueApp.mount(el);
     },
-});
-
-InertiaProgress.init({
-    showSpinner: true,
-    color: '#29d',
+    progress: {
+        color: '#29d',
+    },
 });
 
 window.Toast = Swal.mixin({

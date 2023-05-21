@@ -238,6 +238,7 @@ import Icon from '@/Components/Icon.vue';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
 
@@ -255,7 +256,7 @@ export default {
 
     data() {
         return {
-            deleteCustomPageForm: this.$inertia.form(),
+            deleteCustomPageForm: useForm({}),
             customPageBeingDeleted: null
         };
     },

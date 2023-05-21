@@ -310,6 +310,7 @@ import XInput from '@/Components/Form/XInput.vue';
 import SettingSidebar from '@/Shared/SettingSidebar.vue';
 import Draggable from 'vuedraggable';
 import Icon from '@/Components/Icon.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -329,7 +330,7 @@ export default {
 
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 enable_sticky_header_menu: this.generalSettings.enable_sticky_header_menu,
                 enable_custom_navbar: this.settings.enable_custom_navbar,
                 custom_navbar_data: this.settings.custom_navbar_data,

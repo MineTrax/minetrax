@@ -1,5 +1,4 @@
 <script setup>
-import { Link } from '@inertiajs/inertia-vue3';
 
 defineProps({
     href: String,
@@ -19,13 +18,13 @@ defineProps({
       <slot />
     </button>
 
-    <Link
+    <InertiaLink
       v-else
       :href="href"
       class="block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-400 hover:bg-cool-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-cool-gray-100 dark:focus:bg-cool-gray-900 transition duration-150 ease-in-out"
       :class="btnClass"
     >
       <slot />
-    </Link>
+    </InertiaLink>
   </div>
 </template>

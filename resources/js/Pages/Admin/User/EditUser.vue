@@ -418,6 +418,7 @@ import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import Multiselect from 'vue-multiselect';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
 
@@ -442,7 +443,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 _method: 'PUT',
                 username: this.userData.username,
                 name: this.userData.name,

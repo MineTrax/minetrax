@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue';
-import { Link } from '@inertiajs/inertia-vue3';
 
 const props = defineProps({
     active: Boolean,
@@ -16,13 +15,21 @@ const classes = computed(() => {
 </script>
 
 <template>
-    <div>
-        <button v-if="as == 'button'" :class="classes" class="w-full text-left">
-            <slot />
-        </button>
+  <div>
+    <button
+      v-if="as == 'button'"
+      :class="classes"
+      class="w-full text-left"
+    >
+      <slot />
+    </button>
 
-        <Link v-else :href="href" :class="classes">
-            <slot />
-        </Link>
-    </div>
+    <InertiaLink
+      v-else
+      :href="href"
+      :class="classes"
+    >
+      <slot />
+    </InertiaLink>
+  </div>
 </template>

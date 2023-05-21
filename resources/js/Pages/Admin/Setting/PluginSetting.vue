@@ -199,6 +199,7 @@ import XInput from '@/Components/Form/XInput.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import SettingSidebar from '@/Shared/SettingSidebar.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -216,7 +217,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 enable_api: this.settings.enable_api,
                 enable_account_link: this.settings.enable_account_link,
                 max_players_link_per_account: this.settings.max_players_link_per_account,

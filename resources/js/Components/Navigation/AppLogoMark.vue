@@ -20,10 +20,8 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
 import JetApplicationMark from '@/Jetstream/ApplicationMark.vue';
 import Icon from '@/Components/Icon.vue';
-import { InertiaLink } from '@inertiajs/inertia-vue3';
 
 const emit = defineEmits(['open-admin-sidebar']);
 

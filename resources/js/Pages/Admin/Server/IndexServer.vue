@@ -281,6 +281,7 @@ import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import AlertCard from '@/Components/AlertCard.vue';
+import {useForm} from '@inertiajs/vue3';
 
 export default {
 
@@ -298,7 +299,7 @@ export default {
     },
     data() {
         return {
-            deleteServerForm: this.$inertia.form(),
+            deleteServerForm: useForm({}),
             serverBeingDeleted: null,
             serverStatus: {},
             serverWebQueryStatus: {}

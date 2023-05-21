@@ -50,6 +50,7 @@ import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import XInput from '@/Components/Form/XInput.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -65,7 +66,7 @@ export default {
 
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 email: ''
             })
         };

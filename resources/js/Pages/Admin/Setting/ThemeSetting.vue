@@ -394,6 +394,7 @@ import XInput from '@/Components/Form/XInput.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import SettingSidebar from '@/Shared/SettingSidebar.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -416,7 +417,7 @@ export default {
 
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 color_mode: this.settings.color_mode,
                 theme_name: this.settings.theme_name,
                 primary_font: this.settings.primary_font,

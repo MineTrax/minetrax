@@ -82,6 +82,7 @@ import JetButton from '@/Jetstream/Button.vue';
 import JetFormSection from '@/Jetstream/FormSection.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -94,7 +95,7 @@ export default {
 
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 current_password: '',
                 password: '',
                 password_confirmation: '',

@@ -479,6 +479,7 @@ import Icon from '@/Components/Icon.vue';
 import EasyMDE from 'easymde';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import SettingSidebar from '@/Shared/SettingSidebar.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -501,7 +502,7 @@ export default {
     data() {
         return {
             easyMDE: null,
-            form: this.$inertia.form({
+            form: useForm({
                 site_name: this.settings.site_name,
                 enable_mcserver_onlineplayersbox: this.settings.enable_mcserver_onlineplayersbox,
                 enable_mcserver_statuspingbox: this.settings.enable_mcserver_statuspingbox,

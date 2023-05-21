@@ -299,6 +299,7 @@ import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import Form from 'vform';
 import SettingSidebar from '@/Shared/SettingSidebar.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -319,7 +320,7 @@ export default {
         return {
             showHelpForRating: false,
             showHelpForScore: false,
-            form: this.$inertia.form({
+            form: useForm({
                 is_custom_rating_enabled: this.settings.is_custom_rating_enabled,
                 custom_rating_expression: this.settings.custom_rating_expression,
                 last_seen_day_for_active: this.settings.last_seen_day_for_active,

@@ -199,6 +199,7 @@ import Pagination from '@/Components/Pagination.vue';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
 
@@ -215,7 +216,7 @@ export default {
 
     data() {
         return {
-            deleteRankForm: this.$inertia.form(),
+            deleteRankForm: useForm({}),
             rankBeingDeleted: null
         };
     },

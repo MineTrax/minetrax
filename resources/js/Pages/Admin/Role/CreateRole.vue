@@ -211,6 +211,7 @@ import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Multiselect from 'vue-multiselect';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
 
@@ -228,7 +229,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 name: '',
                 is_staff: false,
                 is_hidden_from_staff_list: false,

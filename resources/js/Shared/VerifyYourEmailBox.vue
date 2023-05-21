@@ -12,7 +12,7 @@
           {{ __("Email verification is required to perform any action on the site. Please check your email inbox or ") }}
         </p>
 
-        <Link
+        <InertiaLink
           :href="route('verification.send')"
           method="post"
           as="button"
@@ -20,7 +20,7 @@
           @click.prevent="sendEmailVerification"
         >
           {{ __("Click here to re-send the verification email") }}
-        </Link>
+        </InertiaLink>
 
         <div
           v-show="verificationLinkSent"
@@ -36,7 +36,6 @@
 <script setup>
 import { ref } from 'vue';
 import AlertCard from '@/Components/AlertCard.vue';
-import { Link } from '@inertiajs/inertia-vue3';
 
 const verificationLinkSent = ref(null);
 

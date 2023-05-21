@@ -94,6 +94,7 @@ import JetActionMessage from '@/Jetstream/ActionMessage.vue';
 import JetButton from '@/Jetstream/Button.vue';
 import JetFormSection from '@/Jetstream/FormSection.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -107,7 +108,7 @@ export default {
 
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 like_on_post__email: this.user.settings?.notifications?.like_on_post.includes('mail'),
                 comment_on_post__email: this.user.settings?.notifications?.comment_on_post.includes('mail'),
                 you_are_muted__email: this.user.settings?.notifications?.you_are_muted.includes('mail'),

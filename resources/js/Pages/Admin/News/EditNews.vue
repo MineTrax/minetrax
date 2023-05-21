@@ -190,6 +190,7 @@ import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import EasyMDE from 'easymde';
 import XSelect from '@/Components/Form/XSelect.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -205,7 +206,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 title: this.news.title,
                 body: this.news.body,
                 type: this.news.type.value,

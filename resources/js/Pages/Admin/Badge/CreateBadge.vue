@@ -150,6 +150,7 @@ import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -162,7 +163,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 name: '',
                 shortname: '',
                 sort_order: '',

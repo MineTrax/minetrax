@@ -157,6 +157,7 @@ import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import Icon from '@/Components/Icon.vue';
 import DatePicker from 'vue-datepicker-next';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -169,7 +170,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 question: '',
                 options: [{name: ''}, {name: ''}],
                 closed_at: null,

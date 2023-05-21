@@ -162,6 +162,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -180,7 +181,7 @@ export default {
     data() {
         return {
             isCreateOperation: !this.server,
-            form: this.$inertia.form({
+            form: useForm({
                 name: this.server?.name,
                 ip_address: this.server?.ip_address,
                 join_port: this.server?.join_port,

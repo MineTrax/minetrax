@@ -121,7 +121,7 @@ class ApiPlayerController extends Controller
         ->first();
 
         if ($player) {
-            $responseData['is_verified'] = $player->users->count() > 0 ? true: false;
+            $responseData['is_verified'] = $player->users->count() > 0;
             $responseData['player_id'] = $player->id;
             $responseData['rating'] = $player->rating;
             $responseData['total_score'] = $player->total_score;

@@ -217,6 +217,7 @@ import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import Multiselect from 'vue-multiselect';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
 
@@ -235,7 +236,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 name: this.role.name,
                 display_name: this.role.display_name,
                 color: this.role.color,

@@ -388,6 +388,7 @@ import XInput from '@/Components/Form/XInput.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -408,7 +409,7 @@ export default {
 
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 _method: 'PUT',
                 name: this.user.name,
                 photo: null,
