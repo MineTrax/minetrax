@@ -55,7 +55,7 @@
         <div class="items-start order-2 max-w-lg mx-2 space-y-2 text-sm">
           <div
             class="flex flex-col px-4 py-2 text-gray-700 bg-gray-100 rounded-tl-lg rounded-2xl dark:bg-cool-gray-600 dark:bg-opacity-25 dark:text-gray-200"
-            :class="{'border border-gray-300 dark:border-gray-700': $page.props.user && $page.props.user.id === comment.user_id}"
+            :class="{'border border-gray-300 dark:border-gray-700': $page.props.auth.user && $page.props.auth.user.id === comment.user_id}"
           >
             <inertia-link
               as="div"
@@ -85,7 +85,7 @@
           class="order-1 w-8 h-8 mt-2 rounded-full"
         >
         <inertia-link
-          v-if="$page.props.user && comment.permissions.delete"
+          v-if="$page.props.auth.user && comment.permissions.delete"
           v-confirm="{message: __('Are you sure you want to delete this comment?')}"
           :preserve-scroll="true"
           :preserve-state="false"
@@ -104,11 +104,11 @@
 
     <!-- Comments Input Box -->
     <div
-      v-if="$page.props.user"
+      v-if="$page.props.auth.user"
       class="flex mt-1"
     >
       <img
-        :src="$page.props.user.profile_photo_url"
+        :src="$page.props.auth.user.profile_photo_url"
         alt="My profile"
         class="order-1 w-8 h-8 mt-2 rounded-full"
       >

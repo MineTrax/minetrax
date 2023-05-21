@@ -46,7 +46,7 @@
 
     <!--    Notification Component -->
     <div
-      v-if="$page.props.user &&
+      v-if="$page.props.auth.user &&
         item.type === 'component' && item.component === 'NotificationDropdown'"
       class="hidden md:flex items-center"
     >
@@ -55,7 +55,7 @@
 
     <!--      Profile Dropdown-->
     <div
-      v-if="$page.props.user &&
+      v-if="$page.props.auth.user &&
         item.type === 'component' && item.component === 'ProfileDropdown'"
       class="hidden md:flex items-center"
     >
@@ -95,7 +95,7 @@ import { usePage } from '@inertiajs/inertia-vue3';
 import ProfileDropdown from '@/Components/Navigation/ProfileDropdown.vue';
 import LightDarkSelector from '@/Components/Navigation/LightDarkSelector.vue';
 
-const user = computed(() => usePage().props?.value?.user);
+const user = computed(() => usePage().props?.value?.auth?.user);
 
 const props = defineProps({
     item: {

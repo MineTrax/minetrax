@@ -1,7 +1,7 @@
 <template>
   <div
     class="px-5 py-4 bg-white rounded shadow dark:bg-cool-gray-800"
-    :class="{ 'rounded-l-none border-l-4 border-light-blue-500': $page.props.user && $page.props.user.id === post.user.id }"
+    :class="{ 'rounded-l-none border-l-4 border-light-blue-500': $page.props.auth.user && $page.props.auth.user.id === post.user.id }"
   >
     <!-- Header -->
     <div class="flex justify-between">
@@ -38,7 +38,7 @@
         </div>
       </div>
       <inertia-link
-        v-if="$page.props.user && post.permissions.delete"
+        v-if="$page.props.auth.user && post.permissions.delete"
         v-confirm="{message: __('Are you sure you want to delete this Post?')}"
         v-tippy
         :title="__('Delete Post')"
@@ -169,7 +169,7 @@ export default {
     },
     methods: {
         likePost() {
-            if (!this.$page.props.user) {
+            if (!this.$page.props.auth.user) {
                 this.$inertia.get(route('login'));
                 return;
             }
@@ -183,7 +183,7 @@ export default {
             });
         },
         unlikePost() {
-            if (!this.$page.props.user) {
+            if (!this.$page.props.auth.user) {
                 this.$inertia.get(route('login'));
                 return;
             }

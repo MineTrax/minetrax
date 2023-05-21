@@ -38,7 +38,7 @@
         >
           <!-- Message of others start -->
           <div
-            v-if="!$page.props.user || shout.user_id !== $page.props.user.id"
+            v-if="!$page.props.auth.user || shout.user_id !== $page.props.auth.user.id"
             class="flex"
           >
             <div class="items-start order-2 max-w-xs mx-2 space-y-2 text-sm">
@@ -73,7 +73,7 @@
               class="order-1 w-8 h-8 mt-2 rounded-full"
             >
             <inertia-link
-              v-if="$page.props.user && shout.permissions.delete"
+              v-if="$page.props.auth.user && shout.permissions.delete"
               v-confirm="{message:__('Delete this shout permanently?')}"
               class="order-3 focus:outline-none"
               :preserve-state="false"
@@ -95,7 +95,7 @@
             class="flex justify-end"
           >
             <inertia-link
-              v-if="$page.props.user && shout.permissions.delete"
+              v-if="$page.props.auth.user && shout.permissions.delete"
               v-confirm="{message:__('Delete this shout permanently?')}"
               class="focus:outline-none"
               :preserve-state="false"
@@ -144,7 +144,7 @@
         </div>
       </div>
 
-      <div v-if="$page.props.user">
+      <div v-if="$page.props.auth.user">
         <input
           v-if="!loading"
           ref="inputbox"

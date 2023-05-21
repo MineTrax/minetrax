@@ -152,7 +152,7 @@
                     :alt="player.country.name"
                   >
                   <a
-                    v-if="$page.props.user && $page.props.user.is_staff"
+                    v-if="$page.props.auth.user && $page.props.auth.user.is_staff"
                     class="text-gray-400 cursor-pointer hover:text-gray-200"
                     href="#"
                     @click.prevent="openAdminPlayerActionModel(player)"
@@ -170,7 +170,7 @@
 
         <!-- Server chat inbox box -->
         <div
-          v-if="$page.props.user"
+          v-if="$page.props.auth.user"
           class="mt-1"
         >
           <form @submit.prevent="postSendMessage">

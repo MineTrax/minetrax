@@ -23,8 +23,8 @@
         <donation-box />
       </div>
       <div class="order-3 col-span-1 space-y-4 md:col-span-2 md:order-none">
-        <VerifyYourEmailBox v-if="$page.props.jetstream.hasEmailVerification && $page.props.user && $page.props.user.email_verified_at === null" />
-        <version-check v-if="$page.props.user && isStaff($page.props.user)" />
+        <VerifyYourEmailBox v-if="$page.props.jetstream.hasEmailVerification && $page.props.auth.user && $page.props.auth.user.email_verified_at === null" />
+        <version-check v-if="$page.props.auth.user && isStaff($page.props.auth.user)" />
         <welcome-box
           v-if="generalSettings.enable_welcomebox"
           :html-data="welcomeBoxContentHtml"

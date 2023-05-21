@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="$page.props.user"
+    v-if="$page.props.auth.user"
     class="relative ml-3 font-semibold dark:text-gray-400"
   >
     <jet-dropdown
@@ -12,11 +12,11 @@
           v-if="$page.props.jetstream.managesProfilePhotos"
           class="flex items-center text-sm font-semibold transition duration-150 ease-in-out border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 dark:focus:border-cool-gray-700"
         >
-          {{ $page.props.user.name }}
+          {{ $page.props.auth.user.name }}
           <img
             class="h-8 w-8 ml-0.5 rounded-full object-cover"
-            :src="$page.props.user.profile_photo_url"
-            :alt="$page.props.user.name"
+            :src="$page.props.auth.user.profile_photo_url"
+            :alt="$page.props.auth.user.name"
           >
         </button>
 
@@ -28,7 +28,7 @@
             type="button"
             class="inline-flex items-center px-3 py-2 text-sm font-semibold leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none"
           >
-            {{ $page.props.user.name }}
+            {{ $page.props.auth.user.name }}
 
             <svg
               class="ml-2 -mr-0.5 h-4 w-4"
@@ -73,7 +73,7 @@
 
         <jet-dropdown-link
           class="text-sm"
-          :href="route('user.public.get', $page.props.user.username)"
+          :href="route('user.public.get', $page.props.auth.user.username)"
         >
           {{ __("Public Profile") }}
         </jet-dropdown-link>
