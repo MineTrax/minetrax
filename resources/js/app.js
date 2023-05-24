@@ -7,7 +7,6 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 import VueTippy from 'vue-tippy';
-import authorizable from '@/Mixins/authorizable.js';
 import helpers from '@/Mixins/helpers.js';
 import translations from '@/Mixins/translations.js';
 import confirmDirective from './Directives/confirm.js';
@@ -39,7 +38,6 @@ createInertiaApp({
         VueApp.component('AppHead', AppHead);
 
         // eslint-disable-next-line no-undef
-        VueApp.mixin(authorizable);
         VueApp.mixin(helpers);
         VueApp.mixin(translations);
 

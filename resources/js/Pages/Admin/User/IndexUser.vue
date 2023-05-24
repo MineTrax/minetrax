@@ -230,6 +230,7 @@
 import Pagination from '@/Components/Pagination.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
 
@@ -240,6 +241,10 @@ export default {
     },
     props: {
         users: Object
+    },
+    setup() {
+        const {can} = useAuthorizable();
+        return {can};
     },
 };
 </script>

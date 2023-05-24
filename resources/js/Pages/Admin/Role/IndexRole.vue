@@ -223,9 +223,9 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import {useForm} from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
-
     components: {
         AdminLayout,
         Pagination,
@@ -237,14 +237,16 @@ export default {
     props: {
         roles: Object
     },
-
+    setup() {
+        const {can} = useAuthorizable();
+        return {can};
+    },
     data() {
         return {
             deleteRoleForm: useForm({}),
             roleBeingDeleted: null
         };
     },
-
     methods: {
         confirmRoleDeletion(id) {
             this.roleBeingDeleted = id;

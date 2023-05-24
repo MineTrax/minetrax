@@ -282,6 +282,7 @@ import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import AlertCard from '@/Components/AlertCard.vue';
 import {useForm} from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
     components: {
@@ -296,6 +297,10 @@ export default {
         servers: Object,
         canCreateBungeeServer: Boolean
     },
+    setup() {
+        const {can} = useAuthorizable();
+        return {can};
+    },
     data() {
         return {
             deleteServerForm: useForm({}),
@@ -304,7 +309,6 @@ export default {
             serverWebQueryStatus: {}
         };
     },
-
     mounted() {
         // Check ping for each server for online status
         this.servers.data.forEach(server => {

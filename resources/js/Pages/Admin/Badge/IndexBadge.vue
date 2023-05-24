@@ -167,6 +167,7 @@ import Pagination from '@/Components/Pagination.vue';
 import Icon from '@/Components/Icon.vue';
 import {useForm} from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
     components: {
@@ -177,7 +178,10 @@ export default {
     props: {
         badges: Object
     },
-
+    setup() {
+        const {can} = useAuthorizable();
+        return {can};
+    },
     data() {
         return {
             deleteBadgeForm: useForm({}),

@@ -7,6 +7,7 @@ import ColorThemeToggle from '@/Components/ColorThemeToggle.vue';
 import Icon from '@/Components/Icon.vue';
 import NavDynamicItem from '@/Components/Navigation/NavDynamicItem.vue';
 import NavDynamicItemResponsive from '@/Components/Navigation/NavDynamicItemResponsive.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
     components: {
@@ -18,6 +19,10 @@ export default {
         Search,
         ColorThemeToggle,
         JetSidebarLink,
+    },
+    setup() {
+        const {canWild, isStaff} = useAuthorizable();
+        return {canWild, isStaff};
     },
 
     data() {

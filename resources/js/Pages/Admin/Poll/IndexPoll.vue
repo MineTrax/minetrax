@@ -246,6 +246,7 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
 
@@ -260,14 +261,16 @@ export default {
     props: {
         polls: Object
     },
-
+    setup() {
+        const {can} = useAuthorizable();
+        return {can};
+    },
     data() {
         return {
             deletePollForm: useForm({}),
             pollIsBeingDeleted: null
         };
     },
-
     methods: {
         confirmRoleDeletion(id) {
             this.pollIsBeingDeleted = id;

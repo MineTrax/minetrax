@@ -227,47 +227,35 @@
   </AdminLayout>
 </template>
 
-<script>
-import Pagination from '@/Components/Pagination.vue';
+<script setup>
+import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Icon from '@/Components/Icon.vue';
+import Pagination from '@/Components/Pagination.vue';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
-export default {
-    components: {
-        AdminLayout,
-        Icon,
-        Pagination,
-        JetConfirmationModal,
-        JetSecondaryButton,
-        JetDangerButton
-    },
-    props: {
-        newslist: Object
-    },
+defineProps({
+    newslist: Object,
+});
+const deleteNewsForm = useForm({});
+const {can} = useAuthorizable();
+const newsBeingDeleted = ref(null);
 
-    data() {
-        return {
-            deleteNewsForm: useForm({}),
-            newsBeingDeleted: null
-        };
-    },
+function confirmNewsDeletion(id) {
+    newsBeingDeleted.value = id;
+}
 
-    methods: {
-        confirmNewsDeletion(id) {
-            this.newsBeingDeleted = id;
+function deleteNews() {
+    deleteNewsForm.delete(route('admin.news.delete', newsBeingDeleted.value), {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            newsBeingDeleted.value = null;
         },
-
-        deleteNews() {
-            this.deleteNewsForm.delete(route('admin.news.delete', this.newsBeingDeleted), {
-                preserveScroll: true,
-                preserveState: true,
-                onSuccess: () => (this.newsBeingDeleted = null),
-            });
-        },
-    },
-};
+    });
+}
 </script>

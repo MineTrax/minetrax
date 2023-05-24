@@ -419,6 +419,7 @@ import XTextarea from '@/Components/Form/XTextarea.vue';
 import Multiselect from 'vue-multiselect';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
 
@@ -440,6 +441,10 @@ export default {
         rolesList: Object,
         badgesList: Object,
         countryList: Object,
+    },
+    setup() {
+        const {can} = useAuthorizable();
+        return {can};
     },
     data() {
         return {

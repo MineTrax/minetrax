@@ -303,12 +303,18 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import {format} from 'date-fns';
 import {USE_WEBSOCKETS} from '@/constants';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
     components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton},
     props: {
         defaultServerId: Number,
         serverList: Array
+    },
+
+    setup() {
+        const {can} = useAuthorizable();
+        return {can};
     },
 
     data() {
