@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="__('Badges Administration')" />
 
     <div class="px-10 py-12 mx-auto max-w-7xl">
@@ -159,18 +159,18 @@
 
       <pagination :links="badges.links" />
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Icon from '@/Components/Icon.vue';
 import {useForm} from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
     components: {
-        AppLayout,
+        AdminLayout,
         Pagination,
         Icon
     },

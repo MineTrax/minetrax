@@ -1,12 +1,10 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head
       :title="__('Theme Settings')"
     />
 
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
-      <SettingSidebar />
-
       <div class="flex-1">
         <div class="flex flex-col w-full">
           <div class="bg-white dark:bg-cool-gray-800 shadow w-full">
@@ -382,26 +380,24 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import SettingSidebar from '@/Shared/SettingSidebar.vue';
 import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
     components: {
-        SettingSidebar,
+        AdminLayout,
         XCheckbox,
         XSelect,
-        AppLayout,
         LoadingButton,
         XInput,
         JetInputError,

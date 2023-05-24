@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="__('Server #:id', {id: server.id})" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto space-y-4">
@@ -20,18 +20,18 @@
         </h2>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
 
     components: {
+        AdminLayout,
         ServerSubMenu,
-        AppLayout,
     },
     props: {
         server: Object,

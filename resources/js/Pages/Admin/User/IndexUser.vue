@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head
       :title="__('Users Administration')"
     />
@@ -223,18 +223,18 @@
 
       <pagination :links="users.links" />
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
 import Pagination from '@/Components/Pagination.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
 
     components: {
-        AppLayout,
+        AdminLayout,
         Pagination,
         UserDisplayname
     },

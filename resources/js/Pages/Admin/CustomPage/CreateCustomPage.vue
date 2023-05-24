@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head title="Create Custom Page" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
@@ -241,12 +241,10 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
-
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
@@ -258,6 +256,7 @@ import {Codemirror} from 'vue-codemirror';
 import {basicSetup} from 'codemirror';
 import {html} from '@codemirror/lang-html';
 import {oneDark} from '@/Data/CodeMirror/darkTheme.js';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 const pageType = ref('markdown');
 const bodyMarkdown = ref('');

@@ -75,7 +75,7 @@
       "resources/js/Pages/Welcome.vue"
     ],
     "css": [
-      "assets/app.dc1a9748.css"
+      "assets/app.09c23006.css"
     ]
   },
   "resources/js/Pages/API/Index.vue": {
@@ -1326,24 +1326,16 @@
     ]
   },
   "resources/js/app.css": {
-    "file": "assets/app.dc1a9748.css",
+    "file": "assets/app.09c23006.css",
     "src": "resources/js/app.css"
   },
   "resources/js/Pages/Admin/User/EditUser.css": {
     "file": "assets/EditUser.2294e598.css",
     "src": "resources/js/Pages/Admin/User/EditUser.css"
   },
-  "SocialChannelBox.css": {
-    "file": "assets/SocialChannelBox.9a3231de.css",
-    "src": "SocialChannelBox.css"
-  },
   "resources/js/Pages/Profile/UpdateProfileInformationForm.css": {
     "file": "assets/UpdateProfileInformationForm.1f96c07f.css",
     "src": "resources/js/Pages/Profile/UpdateProfileInformationForm.css"
-  },
-  "PollBox.css": {
-    "file": "assets/PollBox.a5a92980.css",
-    "src": "PollBox.css"
   },
   "resources/js/Pages/Admin/Poll/CreatePoll.css": {
     "file": "assets/CreatePoll.40dd7d67.css",
@@ -1352,5 +1344,13 @@
   "resources/js/Pages/Admin/Server/ShowServer.css": {
     "file": "assets/ShowServer.6a291271.css",
     "src": "resources/js/Pages/Admin/Server/ShowServer.css"
+  },
+  "SocialChannelBox.css": {
+    "file": "assets/SocialChannelBox.9a3231de.css",
+    "src": "SocialChannelBox.css"
+  },
+  "PollBox.css": {
+    "file": "assets/PollBox.a5a92980.css",
+    "src": "PollBox.css"
   }
 }

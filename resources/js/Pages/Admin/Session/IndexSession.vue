@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="__('Active User Sessions')" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
@@ -169,17 +169,17 @@
 
       <pagination :links="sessions.links" />
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
 
     components: {
-        AppLayout,
+        AdminLayout,
         Pagination,
     },
     props: {

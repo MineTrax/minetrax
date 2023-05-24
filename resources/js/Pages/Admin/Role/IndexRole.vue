@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head title="User Roles Administration" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
@@ -212,22 +212,22 @@
         </jet-danger-button>
       </template>
     </jet-confirmation-modal>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Icon from '@/Components/Icon.vue';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import {useForm} from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
 
     components: {
-        AppLayout,
+        AdminLayout,
         Pagination,
         Icon,
         JetConfirmationModal,

@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="news.title" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
@@ -107,20 +107,19 @@
         </jet-danger-button>
       </template>
     </jet-confirmation-modal>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
-
     components: {
-        AppLayout,
+        AdminLayout,
         JetConfirmationModal,
         JetSecondaryButton,
         JetDangerButton

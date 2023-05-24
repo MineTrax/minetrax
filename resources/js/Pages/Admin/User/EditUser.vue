@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="__('Edit User @:username', {username: userData.username})" />
 
     <div class="max-w-6xl px-10 py-12 mx-auto">
@@ -403,11 +403,10 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
@@ -419,14 +418,15 @@ import XSelect from '@/Components/Form/XSelect.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import Multiselect from 'vue-multiselect';
 import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
 
     components: {
+        AdminLayout,
         XTextarea,
         XSelect,
         XCheckbox,
-        AppLayout,
         JetInputError,
         LoadingButton,
         JetSecondaryButton,

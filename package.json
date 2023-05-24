@@ -7,6 +7,8 @@
     },
     "devDependencies": {
         "@codemirror/lang-html": "^6.4.1",
+        "@headlessui/vue": "^1.7.13",
+        "@heroicons/vue": "^2.0.18",
         "@inertiajs/vue3": "^1.0.7",
         "@tailwindcss/forms": "^0.5.3",
         "@tailwindcss/typography": "^0.5.7",

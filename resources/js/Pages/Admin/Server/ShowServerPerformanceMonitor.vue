@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="__('Server #:id', {id: server.id})" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto space-y-4">
@@ -244,11 +244,10 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu.vue';
 import ServerCpuMetricBox from '@/Shared/ServerCpuMetricBox.vue';
 import ServerRamMetricBox from '@/Shared/ServerRamMetricBox.vue';
@@ -256,15 +255,16 @@ import ServerAllLiveStatsBox from '@/Shared/ServerAllLiveStatsBox.vue';
 import DatePicker from 'vue-datepicker-next';
 import {pickBy} from 'lodash';
 import Icon from '@/Components/Icon.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
 
     components: {
+        AdminLayout,
         ServerAllLiveStatsBox,
         ServerRamMetricBox,
         ServerCpuMetricBox,
         ServerSubMenu,
-        AppLayout,
         DatePicker,
         Icon,
     },

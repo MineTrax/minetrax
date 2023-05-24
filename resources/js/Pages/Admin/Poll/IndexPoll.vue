@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head title="Polls Administration" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
@@ -100,6 +100,7 @@
                       <template v-if="poll.options.length > 0">
                         <span
                           v-for="option in poll.options"
+                          :key="option.id"
                           class="px-2 mr-1 mb-1 inline-flex text-xs leading-5 font-semibold rounded bg-gray-100 text-gray-800 dark:bg-cool-gray-700 dark:text-gray-300"
                         >{{ option.name }}</span>
                       </template>
@@ -234,22 +235,22 @@
         </jet-danger-button>
       </template>
     </jet-confirmation-modal>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Icon from '@/Components/Icon.vue';
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
 
     components: {
-        AppLayout,
+        AdminLayout,
         Pagination,
         Icon,
         JetConfirmationModal,
