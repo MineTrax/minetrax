@@ -88,6 +88,7 @@
 </template>
 
 <script>
+import { useHelpers } from '@/Composables/useHelpers';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NewsBox from '@/Shared/NewsBox.vue';
 import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
@@ -102,6 +103,10 @@ export default {
     props: {
         news: Object,
         newslist: Array
+    },
+    setup() {
+        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {formatTimeAgoToNow, formatToDayDateString};
     },
 };
 </script>

@@ -17,6 +17,7 @@
 <script>
 import EChart from '@/Components/Dashboard/EChart.vue';
 import Icon from '@/Components/Icon.vue';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     name: 'ServerRamMetricBox',
@@ -30,6 +31,10 @@ export default {
             type: Array,
             default: null
         }
+    },
+    setup() {
+        const {formatToDayDateString} = useHelpers();
+        return {formatToDayDateString};
     },
     beforeMount() {
         this.options = {

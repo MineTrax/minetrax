@@ -380,6 +380,7 @@ import SocialChannelBox from '@/Shared/SocialChannelBox.vue';
 import AlertCard from '@/Components/AlertCard.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
 import {useAuthorizable} from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {
@@ -395,7 +396,8 @@ export default {
     },
     setup() {
         const {can} = useAuthorizable();
-        return {can};
+        const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
+        return {can, formatTimeAgoToNow,formatToDayDateString};
     },
 };
 </script>

@@ -55,10 +55,16 @@
 </template>
 
 <script>
+import { useHelpers } from '@/Composables/useHelpers';
+
 
 export default {
     props: {
         newslist: Array
+    },
+    setup() {
+        const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
+        return {formatTimeAgoToNow,formatToDayDateString};
     },
 };
 </script>

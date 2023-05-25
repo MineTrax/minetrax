@@ -304,6 +304,7 @@ import LoadingButton from '@/Components/LoadingButton.vue';
 import {format} from 'date-fns';
 import {USE_WEBSOCKETS} from '@/constants';
 import {useAuthorizable} from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton},
@@ -314,7 +315,8 @@ export default {
 
     setup() {
         const {can} = useAuthorizable();
-        return {can};
+        const {formatToDayDateString} = useHelpers();
+        return {can, formatToDayDateString};
     },
 
     data() {

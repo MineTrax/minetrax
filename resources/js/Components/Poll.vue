@@ -95,6 +95,8 @@
 </template>
 
 <script>
+import { useHelpers } from '@/Composables/useHelpers';
+
 
 export default{
     name: 'Poll',
@@ -143,6 +145,10 @@ export default{
             type: String,
             default: null
         }
+    },
+    setup() {
+        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {formatTimeAgoToNow, formatToDayDateString};
     },
     data(){
         return{

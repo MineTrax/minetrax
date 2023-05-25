@@ -150,6 +150,7 @@
 import Icon from '@/Components/Icon.vue';
 import Comments from '@/Components/Comments.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {Comments, Icon, UserDisplayname},
@@ -160,6 +161,12 @@ export default {
             default: false
         }
     },
+
+    setup() {
+        const {purifyAndLinkifyText, formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {purifyAndLinkifyText, formatTimeAgoToNow, formatToDayDateString};
+    },
+
     data() {
         return {
             liked: this.post.love_reactant?.reactions?.length > 0,
@@ -167,6 +174,7 @@ export default {
             showComments: this.commentsSectionOpened
         };
     },
+
     methods: {
         likePost() {
             if (!this.$page.props.auth.user) {

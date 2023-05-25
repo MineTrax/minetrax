@@ -159,6 +159,7 @@
 
 <script>
 import Icon from '@/Components/Icon.vue';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {Icon},
@@ -166,6 +167,10 @@ export default {
         title: String,
         players: Array,
         enabled: Boolean
+    },
+    setup() {
+        const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
+        return {formatTimeAgoToNow,formatToDayDateString};
     },
 };
 </script>

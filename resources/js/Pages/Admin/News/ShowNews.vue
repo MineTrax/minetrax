@@ -116,6 +116,7 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {
@@ -126,6 +127,10 @@ export default {
     },
     props: {
         news: Object
+    },
+    setup() {
+        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {formatTimeAgoToNow, formatToDayDateString};
     },
 
     data() {

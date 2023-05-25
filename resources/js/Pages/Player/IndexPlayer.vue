@@ -323,6 +323,8 @@ import Icon from '@/Components/Icon.vue';
 import ShoutBox from '@/Shared/ShoutBox.vue';
 import InfiniteScroll from '@/Components/InfiniteScroll.vue';
 import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
+import { useHelpers } from '@/Composables/useHelpers';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
 
 export default {
 
@@ -342,13 +344,16 @@ export default {
         },
         lastScanAt: String,
     },
-
+    setup() {
+        const {can} = useAuthorizable();
+        const {formatTimeAgoToNow, formatToDayDateString, secondsToHMS} = useHelpers();
+        return {can, formatTimeAgoToNow, formatToDayDateString, secondsToHMS};
+    },
     data() {
         return {
             playersList: this.players
         };
     },
-
     methods: {
         loadMorePlayers() {
             if (!this.playersList.next_page_url) {

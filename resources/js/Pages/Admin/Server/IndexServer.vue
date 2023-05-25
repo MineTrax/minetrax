@@ -283,6 +283,7 @@ import AlertCard from '@/Components/AlertCard.vue';
 import {useForm} from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import {useAuthorizable} from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {
@@ -299,7 +300,8 @@ export default {
     },
     setup() {
         const {can} = useAuthorizable();
-        return {can};
+        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {can, formatTimeAgoToNow, formatToDayDateString};
     },
     data() {
         return {

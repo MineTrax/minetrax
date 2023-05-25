@@ -192,6 +192,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Icon from '@/Components/Icon.vue';
 import * as skinview3d from 'skinview3d';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
 
@@ -203,7 +204,10 @@ export default {
         linkedPlayers: Array,
         maxPlayerPerUser: Number
     },
-
+    setup() {
+        const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
+        return {formatTimeAgoToNow, formatToDayDateString};
+    },
     mounted() {
         for (const player of this.linkedPlayers) {
             let skinViewer = new skinview3d.SkinViewer({

@@ -366,6 +366,8 @@ import {debounce} from 'lodash';
 import millify from 'millify';
 import {USE_WEBSOCKETS} from '@/constants';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {
@@ -376,6 +378,11 @@ export default {
     props: {
         server: Object,
         serverAggrData: Object,
+    },
+    setup() {
+        const {can} = useAuthorizable();
+        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {can, formatTimeAgoToNow, formatToDayDateString};
     },
 
     data() {

@@ -815,9 +815,9 @@ import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu.vue';
 import Icon from '@/Components/Icon.vue';
 import _ from 'lodash';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
-
     components: {
         AdminLayout,
         Icon,
@@ -827,6 +827,10 @@ export default {
         server: Object,
         aggrMax: Object,
         aggrTotal: Object,
+    },
+    setup() {
+        const {secondsToHMS} = useHelpers();
+        return {secondsToHMS};
     },
     computed: {
         isEmpty: function () {

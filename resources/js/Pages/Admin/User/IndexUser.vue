@@ -231,6 +231,7 @@ import Pagination from '@/Components/Pagination.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import {useAuthorizable} from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
 
@@ -244,7 +245,8 @@ export default {
     },
     setup() {
         const {can} = useAuthorizable();
-        return {can};
+        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {can, formatTimeAgoToNow, formatToDayDateString};
     },
 };
 </script>

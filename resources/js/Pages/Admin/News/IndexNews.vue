@@ -237,12 +237,14 @@ import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import {useAuthorizable} from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 
 defineProps({
     newslist: Object,
 });
 const deleteNewsForm = useForm({});
 const {can} = useAuthorizable();
+const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
 const newsBeingDeleted = ref(null);
 
 function confirmNewsDeletion(id) {
