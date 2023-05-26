@@ -21,49 +21,19 @@ class DashboardController extends Controller
     {
         // KPI for total users
         $kpiTotalUsers = User::count();
-        $kpiUserCreatedForInterval = QueryBuilder::for(User::class)
-            ->allowedFilters([
-                AllowedFilter::callback('for_days', function ($query, $value) {
-                    $query->where('created_at', '>=', Carbon::now()->subDays($value));
-                })->default(7),
-            ])
-            ->count();
+        $kpiUserCreatedForInterval = User::where('created_at', '>=', Carbon::now()->subDays(7))->count();
         $kpiTotalUserPercent = $kpiTotalUsers !== 0 ? ($kpiUserCreatedForInterval / ($kpiTotalUsers - $kpiUserCreatedForInterval)) * 100 : 0;
-        $kpiUserLastSeenForInterval = QueryBuilder::for(User::class)
-            ->allowedFilters([
-                AllowedFilter::callback('for_days', function ($query, $value) {
-                    $query->where('last_login_at', '>=', Carbon::now()->subDays($value));
-                })->default(7),
-            ])
-            ->count();
+        $kpiUserLastSeenForInterval = User::where('last_login_at', '>=', Carbon::now()->subDays(7))->count();
 
         // KPI for total players
         $kpiTotalPlayers = Player::count();
-        $kpiPlayerCreatedForInterval = QueryBuilder::for(Player::class)
-            ->allowedFilters([
-                AllowedFilter::callback('for_days', function ($query, $value) {
-                    $query->where('created_at', '>=', Carbon::now()->subDays($value));
-                })->default(7),
-            ])
-            ->count();
+        $kpiPlayerCreatedForInterval = Player::where('created_at', '>=', Carbon::now()->subDays(7))->count();
         $kpiTotalPlayersPercent = $kpiTotalPlayers !== 0 ? ($kpiPlayerCreatedForInterval / ($kpiTotalPlayers - $kpiPlayerCreatedForInterval)) * 100 : 0;
-        $kpiPlayerLastSeenForInterval = QueryBuilder::for(Player::class)
-            ->allowedFilters([
-                AllowedFilter::callback('for_days', function ($query, $value) {
-                    $query->where('last_seen_at', '>=', Carbon::now()->subDays($value));
-                })->default(7),
-            ])
-            ->count();
+        $kpiPlayerLastSeenForInterval = Player::where('last_seen_at', '>=', Carbon::now()->subDays(7))->count();
 
         // KPI for total posts
         $kpiTotalPosts = Post::count();
-        $kpiPostCreatedForInterval = QueryBuilder::for(Post::class)
-            ->allowedFilters([
-                AllowedFilter::callback('for_days', function ($query, $value) {
-                    $query->where('created_at', '>=', Carbon::now()->subDays($value));
-                })->default(7),
-            ])
-            ->count();
+        $kpiPostCreatedForInterval = Post::where('created_at', '>=', Carbon::now()->subDays(7))->count();
         $kpiTotalPostsPercent = $kpiTotalPosts !== 0 ? ($kpiPostCreatedForInterval / ($kpiTotalPosts - $kpiPostCreatedForInterval)) * 100 : 0;
         $kpiTotalComments = Comment::count();
 
