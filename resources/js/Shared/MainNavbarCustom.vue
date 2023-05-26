@@ -1,10 +1,7 @@
 <script>
-import JetApplicationMark from '@/Jetstream/ApplicationMark.vue';
-import JetSidebarLink from '@/Jetstream/SidebarLink.vue';
 import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue';
 import Search from '@/Shared/Search.vue';
 import ColorThemeToggle from '@/Components/ColorThemeToggle.vue';
-import Icon from '@/Components/Icon.vue';
 import NavDynamicItem from '@/Components/Navigation/NavDynamicItem.vue';
 import NavDynamicItemResponsive from '@/Components/Navigation/NavDynamicItemResponsive.vue';
 import {useAuthorizable} from '@/Composables/useAuthorizable';
@@ -13,12 +10,9 @@ export default {
     components: {
         NavDynamicItemResponsive,
         NavDynamicItem,
-        JetApplicationMark,
-        Icon,
         JetResponsiveNavLink,
         Search,
         ColorThemeToggle,
-        JetSidebarLink,
     },
     setup() {
         const {canWild, isStaff} = useAuthorizable();
@@ -30,7 +24,6 @@ export default {
             leftItems: window._customnav.data?.left ?? [],
             middleItems: window._customnav.data?.middle ?? [],
             rightItems: window._customnav.data?.right ?? [],
-            isAdminSidebarOpen: false,
             showingNavigationDropdown: false,
         };
     },
@@ -44,19 +37,9 @@ export default {
         },
     },
 
-    mounted() {
-        document.addEventListener('keydown', e => {
-            if (e.keyCode == 27 && this.isAdminSidebarOpen) this.isAdminSidebarOpen = false;
-        });
-    },
-
     methods: {
         logout() {
             this.$inertia.post(route('logout'));
-        },
-
-        adminDrawer() {
-            this.isAdminSidebarOpen = !this.isAdminSidebarOpen;
         },
     }
 };
@@ -76,7 +59,6 @@ export default {
             :key="item.key"
             :can-show-admin-sidebar="canShowAdminSidebar"
             :item="item"
-            @open-admin-sidebar="adminDrawer"
             @logout="logout"
           />
         </div>
@@ -88,7 +70,6 @@ export default {
             :key="item.key"
             :can-show-admin-sidebar="canShowAdminSidebar"
             :item="item"
-            @open-admin-sidebar="adminDrawer"
             @logout="logout"
           />
         </div>
@@ -99,7 +80,6 @@ export default {
             :key="item.key"
             :can-show-admin-sidebar="canShowAdminSidebar"
             :item="item"
-            @open-admin-sidebar="adminDrawer"
             @logout="logout"
           />
         </div>
@@ -149,7 +129,6 @@ export default {
           :key="item.key"
           :can-show-admin-sidebar="canShowAdminSidebar"
           :item="item"
-          @open-admin-sidebar="adminDrawer"
           @logout="logout"
         />
 
@@ -158,7 +137,6 @@ export default {
           :key="item.key"
           :can-show-admin-sidebar="canShowAdminSidebar"
           :item="item"
-          @open-admin-sidebar="adminDrawer"
           @logout="logout"
         />
 
@@ -167,7 +145,6 @@ export default {
           :key="item.key"
           :can-show-admin-sidebar="canShowAdminSidebar"
           :item="item"
-          @open-admin-sidebar="adminDrawer"
           @logout="logout"
         />
       </div>
@@ -250,159 +227,4 @@ export default {
       </div>
     </div>
   </nav>
-
-  <!-- Sidebar of Admin if User is Admin -->
-  <aside
-    v-if="canShowAdminSidebar"
-    class="fixed top-0 left-0 z-50 h-full overflow-auto transition-all duration-300 ease-in-out transform bg-white shadow w-72 dark:bg-cool-gray-800"
-    :class="isAdminSidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-  >
-    <span class="flex items-center w-full p-4 border-b border-gray-200 px-7 dark:border-gray-700 h-14">
-      <inertia-link
-        :href="route('home')"
-      >
-        <jet-application-mark class="block w-auto h-9" />
-      </inertia-link>
-      <button
-        aria-label="Open Menu"
-        class="ml-2 focus:outline-none"
-        @click="adminDrawer"
-      >
-        <icon
-          name="close"
-          class="text-gray-500 dark:text-gray-400"
-        />
-      </button>
-    </span>
-
-    <jet-sidebar-link
-      v-if="canWild('servers')"
-      :href="route('admin.server.index')"
-      :active="route().current('admin.server.index')"
-    >
-      <template #icon>
-        <icon name="server" />
-      </template>
-      {{ __("Servers") }}
-    </jet-sidebar-link>
-
-    <jet-sidebar-link
-      v-if="canWild('users')"
-      :href="route('admin.user.index')"
-      :active="route().current('admin.user.index')"
-    >
-      <template #icon>
-        <icon
-          name="users"
-          class="w-5 h-5"
-        />
-      </template>
-      {{ __("Users") }}
-    </jet-sidebar-link>
-
-    <jet-sidebar-link
-      v-if="canWild('roles')"
-      :href="route('admin.role.index')"
-      :active="route().current('admin.role.index')"
-    >
-      <template #icon>
-        <icon name="shield-check" />
-      </template>
-      {{ __("User Roles") }}
-    </jet-sidebar-link>
-
-    <jet-sidebar-link
-      v-if="canWild('badges')"
-      :href="route('admin.badge.index')"
-      :active="route().current('admin.badge.index')"
-    >
-      <template #icon>
-        <icon
-          name="question-badge"
-          class="w-5 h-5"
-        />
-      </template>
-      {{ __("User Badges") }}
-    </jet-sidebar-link>
-
-    <jet-sidebar-link
-      v-if="canWild('ranks')"
-      :href="route('admin.rank.index')"
-      :active="route().current('admin.rank.index')"
-    >
-      <template #icon>
-        <icon name="degree-hat" />
-      </template>
-      {{ __("Player Ranks") }}
-    </jet-sidebar-link>
-
-    <jet-sidebar-link
-      v-if="canWild('news')"
-      :href="route('admin.news.index')"
-      :active="route().current('admin.news.index')"
-    >
-      <template #icon>
-        <icon name="newspaper" />
-      </template>
-      {{ __("News") }}
-    </jet-sidebar-link>
-
-    <jet-sidebar-link
-      v-if="canWild('polls')"
-      :href="route('admin.poll.index')"
-      :active="route().current('admin.poll.index')"
-    >
-      <template #icon>
-        <icon
-          class="w-5 h-5"
-          name="chart-pie"
-        />
-      </template>
-      {{ __("Polls") }}
-    </jet-sidebar-link>
-
-    <jet-sidebar-link
-      v-if="canWild('custom_pages')"
-      :href="route('admin.custom-page.index')"
-      :active="route().current('admin.custom-page.index')"
-    >
-      <template #icon>
-        <icon
-          class="w-5 h-5"
-          name="collection"
-        />
-      </template>
-      {{ __("Custom Pages") }}
-    </jet-sidebar-link>
-
-    <jet-sidebar-link
-      v-if="canWild('sessions')"
-      :href="route('admin.session.index')"
-      :active="route().current('admin.session.index')"
-    >
-      <template #icon>
-        <icon
-          class="w-5 h-5"
-          name="finger-print"
-        />
-      </template>
-      {{ __("User Sessions") }}
-    </jet-sidebar-link>
-
-    <jet-sidebar-link
-      v-if="canWild('settings')"
-      :href="route('admin.setting.general.show')"
-      :active="route().current('admin.setting.general.show')"
-    >
-      <template #icon>
-        <icon name="cog" />
-      </template>
-      {{ __("Settings") }}
-    </jet-sidebar-link>
-
-
-    <div class="mt-4 text-xs text-center text-gray-600 dark:text-gray-400">
-      {{ __("Web Version:") }}&nbsp;{{ $page.props.webVersion || 'unknown' }}
-    </div>
-  </aside>
 </template>

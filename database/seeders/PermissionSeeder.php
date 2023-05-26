@@ -82,5 +82,7 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('update badges');
         Permission::findOrCreate('delete badges');
         Permission::findOrCreate('assign badges');
+
+        Permission::findOrCreate('view admin_dashboard');
     }
 }

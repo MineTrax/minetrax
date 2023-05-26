@@ -55,7 +55,7 @@ export default {
 
 
       <!-- Page Content -->
-      <main>
+      <main class="min-h-[80vh]">
         <slot />
       </main>
 

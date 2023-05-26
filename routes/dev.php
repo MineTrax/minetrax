@@ -125,3 +125,10 @@ Route::get('username-to-uuid', function () {
     return MinecraftApiService::playerUsernameToUuid('xinecraft');
 });
 
+//Route::get('db-schema', function() {
+//    $tables = \DB::getDoctrineSchemaManager()->listTables();
+//
+//    foreach ($tables as $table) {
+//        echo $table->getName() . " has columns: " . collect($table->getColumns())->map(fn($column) => $column->getName() . ' ('.$column->getType()->getName().')')->implode(', ') . "<br><br>";
+//    }
+//});

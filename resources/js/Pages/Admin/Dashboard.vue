@@ -1,13 +1,96 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
+import KpiOverviewCard from '@/Components/Dashboard/KpiOverviewCard.vue';
 import AppHead from '@/Components/AppHead.vue';
-import AdminSideMenu from '@/Shared/AdminSideMenu.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import millify from 'millify';
+import {UserPlusIcon, UserIcon, FireIcon, ChatBubbleBottomCenterTextIcon} from '@heroicons/vue/24/solid';
+import KpiOverviewCardForDashboard from '@/Components/Dashboard/KpiOverviewCardForDashboard.vue';
+
+defineProps({
+    kpiTotalUsers: Number,
+    kpiUserCreatedForInterval: Number,
+    kpiUserLastSeenForInterval: Number,
+    kpiTotalUserPercent: Number,
+
+    kpiTotalPlayers: Number,
+    kpiPlayerCreatedForInterval: Number,
+    kpiPlayerLastSeenForInterval: Number,
+    kpiTotalPlayersPercent: Number,
+
+    kpiTotalFailedJobs: Number,
+    kpiFailedJobsForInterval: Number,
+    kpiTotalFailedJobPercent: Number,
+
+    kpiTotalPosts: Number,
+    kpiPostCreatedForInterval: Number,
+    kpiTotalPostsPercent: Number,
+    kpiTotalComments: Number,
+});
 </script>
 
 <template>
   <AdminLayout>
     <AppHead title="Admin Dashboard" />
-    <h1>This is main section and should not be hidden bla bla bla</h1>
+
+    <div class="p-4">
+      <div
+        id="row1"
+        class="flex justify-between flex-1 space-x-4"
+      >
+        <KpiOverviewCardForDashboard
+          class="flex-1"
+          title="Registered Users"
+          :value="millify(kpiTotalUsers)"
+          :sub-value="kpiUserCreatedForInterval"
+          :change="kpiTotalUserPercent"
+          change-desc="in last 7 days"
+          :icon="UserPlusIcon"
+          icon-class="text-light-blue-500 bg-light-blue-100 dark:bg-light-blue-500 dark:text-white"
+          :description="`Active: ${kpiUserLastSeenForInterval} users`"
+        />
+
+        <KpiOverviewCardForDashboard
+          class="flex-1"
+          title="Total Players"
+          :value="kpiTotalPlayers"
+          :sub-value="kpiPlayerCreatedForInterval"
+          :change="kpiTotalPlayersPercent"
+          change-desc="in last 7 days"
+          :icon="UserIcon"
+          icon-class="text-green-500 bg-green-100 dark:bg-green-500 dark:text-white"
+          :description="`Active: ${kpiPlayerLastSeenForInterval} players`"
+        />
+
+        <KpiOverviewCardForDashboard
+          class="flex-1"
+          title="Total Posts"
+          :value="kpiTotalPosts"
+          :sub-value="kpiPostCreatedForInterval"
+          :change="kpiTotalPostsPercent"
+          change-desc="in last 7 days"
+          :icon="ChatBubbleBottomCenterTextIcon"
+          icon-class="text-amber-500 bg-amber-100 dark:bg-amber-500 dark:text-white"
+          :description="`Total comments: ${kpiTotalComments}`"
+        />
+
+        <KpiOverviewCard
+          class="flex-1"
+          title="Failed Jobs"
+          :value="millify(kpiTotalFailedJobs)"
+          :sub-value="`(+${kpiFailedJobsForInterval})`"
+          :sub-value-class="[
+            kpiFailedJobsForInterval > 0 ? 'text-red-500' : 'text-gray-400',
+          ]"
+          :change="`+${millify(kpiTotalFailedJobPercent, {precision: 2})}%`"
+          :change-class="[
+            kpiTotalFailedJobPercent > 0 ? 'text-red-500 bg-red-100' : 'text-gray-400 bg-gray-100',
+          ]"
+          change-desc="in last 7 days"
+          :icon="FireIcon"
+          icon-class="text-red-500 bg-red-100 dark:bg-red-500 dark:text-white"
+          description="Jobs failed to run."
+        />
+      </div>
+    </div>
   </AdminLayout>
 </template>

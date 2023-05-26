@@ -41,7 +41,6 @@
     <AppLogoMark
       v-if="item.type === 'component' && item.component === 'AppLogoMark'"
       :can-show-admin-sidebar="canShowAdminSidebar"
-      @open-admin-sidebar="emit('open-admin-sidebar')"
     />
 
     <!--    Notification Component -->
@@ -62,7 +61,6 @@
       <ProfileDropdown
         :can-show-admin-sidebar="canShowAdminSidebar"
         @logout="emit('logout')"
-        @open-admin-sidebar="emit('open-admin-sidebar')"
       />
     </div>
 
@@ -108,7 +106,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['open-admin-sidebar', 'logout']);
+const emit = defineEmits(['logout']);
 
 const shouldRender = computed(() => {
     if (props.item.authenticated && !user?.value)

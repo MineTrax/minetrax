@@ -61,7 +61,7 @@
         <div
           v-show="!loading"
           id="chat-container"
-          class="relative flex flex-col-reverse justify-between p-1 mt-1 text-white bg-white rounded md:flex-row dark:bg-cool-gray-900"
+          class="relative flex flex-col-reverse justify-between p-1 mt-1 text-white bg-gray-200 rounded md:flex-row dark:bg-cool-gray-900"
         >
           <button
             v-show="!shouldDisplayPlayerList"
@@ -96,7 +96,7 @@
           <div
             v-show="!playersListLoading && shouldDisplayPlayerList"
             id="player-list"
-            class="sticky flex justify-end overflow-auto text-sm bg-gray-100 bg-opacity-100 rounded dark:bg-cool-gray-800 max-h-96 min-w-max hide-scrollbar"
+            class="sticky flex justify-end overflow-auto text-sm bg-white bg-opacity-100 rounded dark:bg-cool-gray-800 max-h-96 min-w-max hide-scrollbar"
           >
             <div class="flex flex-col w-full space-y-1">
               <div class="relative flex items-center justify-center p-2 bg-gray-100 dark:bg-opacity-25 dark:bg-cool-gray-600">

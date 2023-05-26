@@ -10,7 +10,7 @@
       <template #trigger>
         <button
           v-if="$page.props.jetstream.managesProfilePhotos"
-          class="flex items-center text-sm font-semibold transition duration-150 ease-in-out border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 dark:focus:border-cool-gray-700"
+          class="flex text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 items-center text-sm font-semibold transition duration-150 ease-in-out border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 dark:focus:border-cool-gray-700"
         >
           {{ $page.props.auth.user.name }}
           <img
@@ -53,14 +53,13 @@
         >
           {{ __("Staff") }}
         </div>
-        <button
-          v-if="canShowAdminSidebar"
-          type="button"
-          class="block w-full px-4 py-2 text-sm font-semibold leading-5 text-left text-gray-700 transition duration-150 ease-in-out dark:text-gray-400 hover:bg-cool-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-cool-gray-100 dark:focus:bg-cool-gray-900"
-          @click="emit('open-admin-sidebar')"
+        <jet-dropdown-link
+          class="text-sm"
+          :href="route('admin.dashboard')"
         >
-          {{ __("Admin Menu") }}
-        </button>
+          {{ __("Admin Section") }}
+        </jet-dropdown-link>
+
         <div
           v-if="canShowAdminSidebar"
           class="border-t border-gray-100 dark:border-cool-gray-700"
@@ -106,7 +105,7 @@
 import JetDropdownLink from '@/Jetstream/DropdownLink.vue';
 import JetDropdown from '@/Jetstream/Dropdown.vue';
 
-const emit = defineEmits(['open-admin-sidebar', 'logout']);
+const emit = defineEmits(['logout']);
 
 defineProps({
     canShowAdminSidebar: {

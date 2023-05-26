@@ -11,6 +11,8 @@ import {
     Cog8ToothIcon,
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
+const { canWild } = useAuthorizable();
 
 defineProps({
     collapsed: Boolean,
@@ -32,7 +34,7 @@ const navItems = [
         active: route().current('admin.server.*'),
         children: [],
         icon: ServerStackIcon,
-        visible: true
+        visible: canWild('servers')
     },
     {
         label: 'Users', href: '#', active: false, children: [
@@ -42,15 +44,15 @@ const navItems = [
                 active: route().current('admin.user.*'),
                 children: [],
                 icon: null,
-                visible: true
+                visible: canWild('users')
             },
             {
-                label: 'User Roles',
+                label: 'Roles & Permissions',
                 href: route('admin.role.index'),
                 active: route().current('admin.role.*'),
                 children: [],
                 icon: null,
-                visible: true
+                visible: canWild('roles')
             },
             {
                 label: 'User Badges',
@@ -58,7 +60,7 @@ const navItems = [
                 active: route().current('admin.badge.*'),
                 children: [],
                 icon: null,
-                visible: true
+                visible: canWild('badges')
             },
             {
                 label: 'Online Users',
@@ -66,7 +68,7 @@ const navItems = [
                 active: route().current('admin.session.*'),
                 children: [],
                 icon: null,
-                visible: true
+                visible: canWild('sessions')
             },
         ],
         icon: UsersIcon, visible: true
@@ -77,7 +79,7 @@ const navItems = [
         active: route().current('admin.news.*'),
         children: [],
         icon: NewspaperIcon,
-        visible: true
+        visible: canWild('news')
     },
     {
         label: 'Polls',
@@ -85,7 +87,7 @@ const navItems = [
         active: route().current('admin.poll.*'),
         children: [],
         icon: ChartPieIcon,
-        visible: true
+        visible: canWild('polls')
     },
     {
         label: 'Player Ranks',
@@ -93,7 +95,7 @@ const navItems = [
         active: route().current('admin.rank.*'),
         children: [],
         icon: AcademicCapIcon,
-        visible: true
+        visible: canWild('ranks')
     },
     {
         label: 'Custom Pages',
@@ -101,7 +103,7 @@ const navItems = [
         active: route().current('admin.custom-page.*'),
         children: [],
         icon: DocumentTextIcon,
-        visible: true
+        visible: canWild('custom-pages')
     },
     {
         label: 'Settings', href: '#', active: false, children: [
@@ -147,14 +149,8 @@ const navItems = [
             },
         ],
         icon: Cog8ToothIcon,
-        visible: true
+        visible: canWild('settings')
     },
-    // {label: 'Media', href: '#', active: false, children: [
-    //     {label: 'All media', href: '#', active: false, children: [], icon: null},
-    //     {label: 'Add new', href: '#', active: false, children: [
-    //         {label: 'Third level', href: '#', active: true, children: [], icon: null},
-    //     ], icon: null},
-    // ], icon: PhotoIcon},
 ];
 </script>
 
@@ -165,26 +161,33 @@ const navItems = [
       collapsed ? 'w-16' : 'w-64'
     ]"
   >
-    <div :class="['px-4 mt-2 flex', collapsed ? 'justify-center' : 'justify-end']">
-      <button @click.prevent="$emit('toggleCollapse')">
-        <ChevronDoubleLeftIcon
-          :class="[
-            'h-6 w-6 p-0.5 text-gray-400 hover:text-gray-600',
-            collapsed ? '-rotate-180' : ''
-          ]"
-        />
-      </button>
-    </div>
+    <div class="h-screen overflow-y-auto">
+      <div :class="['px-4 mt-2 flex', collapsed ? 'justify-center' : 'justify-end']">
+        <button @click.prevent="$emit('toggleCollapse')">
+          <ChevronDoubleLeftIcon
+            :class="[
+              'h-6 w-6 p-0.5 text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-400',
+              collapsed ? '-rotate-180' : ''
+            ]"
+          />
+        </button>
+      </div>
 
-    <nav class="mt-2 px-2">
-      <SideNavItem
-        v-for="item in navItems"
-        :key="item.label"
-        :item="item"
-        :collapsed="collapsed"
-      />
-    </nav>
+      <nav class="mt-2 px-2">
+        <SideNavItem
+          v-for="item in navItems"
+          :key="item.label"
+          :item="item"
+          :collapsed="collapsed"
+        />
+      </nav>
+
+      <div
+        v-if="!collapsed"
+        class="mt-10 text-xs text-center text-gray-600 dark:text-gray-500"
+      >
+        {{ __("Web Version:") }}&nbsp;{{ $page.props.webVersion || 'unknown' }}
+      </div>
+    </div>
   </div>
 </template>
-
-
