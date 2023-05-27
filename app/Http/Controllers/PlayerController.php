@@ -21,6 +21,8 @@ class PlayerController extends Controller
         $players = Player::select(['id', 'username', 'rating', 'position', 'total_score', 'uuid', 'total_play_one_minute', 'last_seen_at', 'first_seen_at', 'rank_id', 'country_id'])
             ->with(['country:id,iso_code,flag,name', 'rank:id,shortname,name'])
             ->orderBy(DB::raw('-`position`'), 'desc')                   // this sort with position but excludes the nulls
+            ->orderByDesc('rating')
+            ->orderByDesc('total_score')
             ->simplePaginate(15);
 
         if ($request->wantsJson()) {
