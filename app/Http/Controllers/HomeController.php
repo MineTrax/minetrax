@@ -90,7 +90,7 @@ class HomeController extends Controller
         // Top 10 Players
         $top10Players = Player::select(['id', 'username', 'uuid', 'position', 'rating', 'total_score', 'last_seen_at', 'country_id', 'rank_id'])
             ->with(['country:id,iso_code,flag,name', 'rank:id,shortname,name'])
-            ->orderBy('position')
+            ->orderBy(\DB::raw('-`position`'), 'desc')                   // this sort with position but excludes the nulls
             ->orderByDesc('rating')
             ->orderByDesc('total_score')
             ->limit(10)->get();
