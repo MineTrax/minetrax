@@ -1,5 +1,0 @@
-<<<<<<<< HEAD:public/build/assets/SectionTitle.da02a3b3.js
-import{_ as o,o as a,d as c,a as s,m as e}from"./app.cdeb0fbf.js";const n={},r={class:"md:col-span-1 flex justify-between"},d={class:"px-4 sm:px-0"},i={class:"text-lg font-medium text-gray-900 dark:text-gray-200"},l={class:"mt-1 text-sm text-gray-600 dark:text-gray-500"},_={class:"px-4 sm:px-0"};function m(t,p){return a(),c("div",r,[s("div",d,[s("h3",i,[e(t.$slots,"title")]),s("p",l,[e(t.$slots,"description")])]),s("div",_,[e(t.$slots,"aside")])])}const f=o(n,[["render",m]]);export{f as J};
-========
-import{_ as o,o as a,d as c,a as s,q as e}from"./app.304209a1.js";const n={},r={class:"md:col-span-1 flex justify-between"},d={class:"px-4 sm:px-0"},i={class:"text-lg font-medium text-gray-900 dark:text-gray-200"},l={class:"mt-1 text-sm text-gray-600 dark:text-gray-500"},_={class:"px-4 sm:px-0"};function m(t,p){return a(),c("div",r,[s("div",d,[s("h3",i,[e(t.$slots,"title")]),s("p",l,[e(t.$slots,"description")])]),s("div",_,[e(t.$slots,"aside")])])}const f=o(n,[["render",m]]);export{f as J};
->>>>>>>> 0479a6239f83b1225ce1df2c9d4f132ae4a71e33:public/build/assets/SectionTitle.b529a1f5.js

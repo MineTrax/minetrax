@@ -5,6 +5,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import millify from 'millify';
 import {UserPlusIcon, UserIcon, FireIcon, ChatBubbleBottomCenterTextIcon} from '@heroicons/vue/24/solid';
 import KpiOverviewCardForDashboard from '@/Components/Dashboard/KpiOverviewCardForDashboard.vue';
+import PlayersOverTimeMetricBox from '@/Shared/PlayersOverTimeMetricBox.vue';
 
 defineProps({
     kpiTotalUsers: Number,
@@ -32,7 +33,7 @@ defineProps({
   <AdminLayout>
     <AppHead title="Admin Dashboard" />
 
-    <div class="p-4">
+    <div class="p-4 space-y-4">
       <div
         id="row1"
         class="flex justify-between flex-1 space-x-4"
@@ -89,6 +90,18 @@ defineProps({
           :icon="FireIcon"
           icon-class="text-red-500 bg-red-100 dark:bg-red-500 dark:text-white"
           description="Jobs failed to run."
+        />
+      </div>
+
+      <div
+        id="row2"
+        class="flex justify-between flex-1 space-x-4"
+      >
+        <PlayersOverTimeMetricBox
+          class="basis-3/4"
+        />
+        <PlayersOverTimeMetricBox
+          class="basis-1/4"
         />
       </div>
     </div>

@@ -8,7 +8,7 @@ defineProps({
         required: true,
     },
     iconClass: {
-        type: String,
+        type: [Array, String],
         required: false,
         default: 'text-gray-500 bg-gray-100 dark:bg-gray-500 dark:text-white'
     },
