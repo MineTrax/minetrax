@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Server;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class GraphController extends Controller
@@ -60,7 +60,23 @@ class GraphController extends Controller
                 'name' => $server->name,
                 'value' => $server->minecraft_player_stats_count,
             ];
-        })->sortByDesc('players');
+        });
+
+        return response()->json($data);
+    }
+
+    public function getPlayerPerCountry()
+    {
+        $countries = Country::withCount('players')->get();
+
+        $data = $countries->map(function ($country) {
+            return [
+                'name' => $country->name,
+                'value' => $country->players_count,
+                'image' => $country->photo_path,
+            ];
+        });
+
         return response()->json($data);
     }
 }

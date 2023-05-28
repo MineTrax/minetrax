@@ -7,6 +7,7 @@ import {UserPlusIcon, UserIcon, FireIcon, ChatBubbleBottomCenterTextIcon} from '
 import KpiOverviewCardForDashboard from '@/Components/Dashboard/KpiOverviewCardForDashboard.vue';
 import PlayersOverTimeMetricBox from '@/Shared/PlayersOverTimeMetricBox.vue';
 import PlayersPerServerMetricBox from '@/Shared/PlayersPerServerMetricBox.vue';
+import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
 
 defineProps({
     kpiTotalUsers: Number,
@@ -102,6 +103,13 @@ defineProps({
           class="basis-3/4"
         />
         <PlayersPerServerMetricBox class="basis-1/4" />
+      </div>
+
+      <div
+        id="row3"
+        class="flex justify-between flex-1 space-x-4"
+      >
+        <PlayersPerCountryMetricBox class="basis-1/2" />
       </div>
     </div>
   </AdminLayout>

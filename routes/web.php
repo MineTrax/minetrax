@@ -103,6 +103,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     // Graph controller
     Route::get('/graph/online-players', [\App\Http\Controllers\Admin\GraphController::class, 'getOnlinePlayersOverTime'])->name('graph.online-players');
     Route::get('/graph/players-per-server', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayersPerServer'])->name('graph.players-per-server');
+    Route::get('/graph/players-per-country', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerPerCountry'])->name('graph.players-per-country');
 
     Route::get('user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('user.index');
     //  Route::get('user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('user.show');

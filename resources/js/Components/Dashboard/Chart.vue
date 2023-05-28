@@ -3,7 +3,9 @@ import {provide} from 'vue';
 import VChart, {THEME_KEY} from 'vue-echarts';
 import * as echarts from 'echarts';
 import darkmineTheme from '@/Components/Dashboard/darkmineTheme';
+import wordMap from '@/Data/Maps/world.json';
 echarts.registerTheme('darkmine', darkmineTheme);
+echarts.registerMap('world', wordMap);
 
 defineProps({
     options: {
