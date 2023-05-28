@@ -6,6 +6,7 @@ import millify from 'millify';
 import {UserPlusIcon, UserIcon, FireIcon, ChatBubbleBottomCenterTextIcon} from '@heroicons/vue/24/solid';
 import KpiOverviewCardForDashboard from '@/Components/Dashboard/KpiOverviewCardForDashboard.vue';
 import PlayersOverTimeMetricBox from '@/Shared/PlayersOverTimeMetricBox.vue';
+import PlayersPerServerMetricBox from '@/Shared/PlayersPerServerMetricBox.vue';
 
 defineProps({
     kpiTotalUsers: Number,
@@ -78,13 +79,13 @@ defineProps({
           class="flex-1"
           title="Failed Jobs"
           :value="millify(kpiTotalFailedJobs)"
-          :sub-value="`(+${kpiFailedJobsForInterval})`"
+          :sub-value="`(${kpiFailedJobsForInterval > 0 ? '+' : ''}${millify(kpiFailedJobsForInterval)})`"
           :sub-value-class="[
-            kpiFailedJobsForInterval > 0 ? 'text-red-500' : 'text-gray-400',
+            kpiFailedJobsForInterval > 0 ? 'text-red-500' : 'text-green-500',
           ]"
-          :change="`+${millify(kpiTotalFailedJobPercent, {precision: 2})}%`"
+          :change="`${kpiTotalFailedJobPercent > 0 ? '+' : ''}${millify(kpiTotalFailedJobPercent, {precision: 2})}%`"
           :change-class="[
-            kpiTotalFailedJobPercent > 0 ? 'text-red-500 bg-red-100' : 'text-gray-400 bg-gray-100',
+            kpiTotalFailedJobPercent > 0 ? 'text-red-500 bg-red-100' : 'text-green-500 bg-green-100',
           ]"
           change-desc="in last 7 days"
           :icon="FireIcon"
@@ -100,9 +101,7 @@ defineProps({
         <PlayersOverTimeMetricBox
           class="basis-3/4"
         />
-        <PlayersOverTimeMetricBox
-          class="basis-1/4"
-        />
+        <PlayersPerServerMetricBox class="basis-1/4" />
       </div>
     </div>
   </AdminLayout>

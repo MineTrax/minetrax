@@ -11,6 +11,8 @@ import translations from '@/Mixins/translations.js';
 import confirmDirective from './Directives/confirm.js';
 import Swal from 'sweetalert2';
 import AppHead from '@/Components/AppHead.vue';
+import * as echarts from 'echarts';
+import darkmineTheme from '@/Components/Dashboard/darkmineTheme';
 
 createInertiaApp({
     title: (title) => `${title}`,
@@ -63,3 +65,5 @@ window.Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer);
     },
 });
+
+echarts.registerTheme('darkmine', darkmineTheme);

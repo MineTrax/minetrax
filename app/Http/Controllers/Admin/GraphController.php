@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
-use App\Models\MinecraftServerLiveInfo;
 use App\Models\Server;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -39,6 +38,7 @@ class GraphController extends Controller
         }
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
+            $item->created_at_5min = (int)$item->created_at_5min;
             return array_values(get_object_vars($item));
         })->toArray();
 
@@ -47,5 +47,20 @@ class GraphController extends Controller
             'from_date' => $request->query('from_date'),
             'data' => $sqlData,
         ]);
+    }
+
+    public function getPlayersPerServer()
+    {
+        $servers = Server::where('type', '!=', ServerType::Bungee())
+            ->withCount('minecraftPlayerStats')
+            ->get();
+
+        $data = $servers->map(function ($server) {
+            return [
+                'name' => $server->name,
+                'value' => $server->minecraft_player_stats_count,
+            ];
+        })->sortByDesc('players');
+        return response()->json($data);
     }
 }

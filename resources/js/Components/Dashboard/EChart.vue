@@ -7,7 +7,6 @@
 <script>
 import * as echarts from 'echarts';
 import {debounce, uniqueId} from 'lodash';
-import darkmineTheme from '@/Components/Dashboard/darkmineTheme.js';
 
 export default {
     name: 'EChart',
@@ -25,8 +24,6 @@ export default {
         };
     },
     mounted() {
-        echarts.registerTheme('darkmine', darkmineTheme);
-
         let theme = window.colorMode === 'dark' ? 'darkmine' : null;
         // Initialize the echarts instance based on the prepared dom
         const chart = echarts.init(document.getElementById(this.uid), theme, {

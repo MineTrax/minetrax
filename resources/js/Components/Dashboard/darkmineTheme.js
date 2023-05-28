@@ -186,7 +186,7 @@ const theme = {
             // borderColor: '#ca2824',
             // borderColor0: '#09a443'
         }
-    }
+    },
 };
 theme.categoryAxis.splitLine.show = false;
 
