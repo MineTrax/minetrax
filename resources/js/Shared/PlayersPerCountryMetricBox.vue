@@ -40,14 +40,16 @@ onMounted(async () => {
         },
         visualMap: {
             min: 0,
-            max: 10,
+            max: 7,
             left: 'left',
             top: 'bottom',
             text: ['High', 'Low'],
             calculable: true,
-            // inRange: {
-            //     color: ['lightskyblue', 'yellow', 'orangered']
-            // }
+            inRange: {
+                color: window.colorMode === 'dark'
+                    ? ['#e7f1ff', '#89baff', '#5999ff', '#3385ff']
+                    : ['#ffffff', '#718cde', '#1c46c7', '#123395']
+            }
         },
         series: [
             {
@@ -59,19 +61,18 @@ onMounted(async () => {
                     show: false,
                     emphasis: {
                         textStyle: {
-                            // color: '#d7d7d7',
+                            color: window.colorMode === 'dark' ? '#fff' : '#d7d7d7',
                         },
                     },
                 },
-                // itemStyle: {
-                //     normal: {
-                //         areaColor: '#323c48',
-                //         borderColor: '#111',
-                //     },
-                //     emphasis: {
-                //         areaColor: '#2a333d',
-                //     },
-                // },
+                itemStyle: {
+                    normal: {
+                        areaColor: '#fff',
+                    },
+                    emphasis: {
+                        areaColor: '#2a333d',
+                    },
+                },
                 data: graphData.value,
             },
         ],
@@ -85,6 +86,7 @@ onMounted(async () => {
       {{ __("Player's Country") }}
     </h3>
     <Chart
+      :autoresize="true"
       :options="option"
       height="400px"
       :loading="isLoading"

@@ -79,6 +79,7 @@ onMounted(async () => {
       :options="option"
       height="350px"
       :loading="isLoading"
+      :autoresize="true"
     />
   </div>
 </template>
