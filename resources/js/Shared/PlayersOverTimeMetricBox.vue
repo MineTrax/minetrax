@@ -1,15 +1,12 @@
 <script setup>
-import VChart, {THEME_KEY} from 'vue-echarts';
-import {onMounted, ref, provide} from 'vue';
+import {onMounted, ref} from 'vue';
 import axios from 'axios';
+import Chart from '@/Components/Dashboard/Chart.vue';
 
 let option = ref({});
 let graphData = ref(null);
 let isLoading = ref(true);
 
-if (window.colorMode === 'dark') {
-    provide(THEME_KEY, 'darkmine');
-}
 onMounted(async () => {
     const response = await axios.get(route('admin.graph.online-players'));
     isLoading.value = false;
@@ -78,17 +75,10 @@ onMounted(async () => {
     <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex items-center">
       {{ __("Online Players") }}
     </h3>
-    <VChart
-      class="chart"
+    <Chart
+      :options="option"
+      height="350px"
       :loading="isLoading"
-      :option="option"
-      autoresize
     />
   </div>
 </template>
-
-<style scoped>
-.chart {
-    height: 350px;
-}
-</style>
