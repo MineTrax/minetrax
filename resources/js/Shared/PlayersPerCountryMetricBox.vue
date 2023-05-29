@@ -40,7 +40,7 @@ onMounted(async () => {
         },
         visualMap: {
             min: 0,
-            max: 7,
+            max: graphData.value.max,
             left: 'left',
             top: 'bottom',
             text: ['High', 'Low'],
@@ -73,7 +73,7 @@ onMounted(async () => {
                         areaColor: '#2a333d',
                     },
                 },
-                data: graphData.value,
+                data: graphData.value.data,
             },
         ],
     };

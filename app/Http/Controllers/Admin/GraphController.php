@@ -76,7 +76,11 @@ class GraphController extends Controller
                 'image' => $country->photo_path,
             ];
         });
+        $maxValue = $data->max('value') == 0 ? 1 : $data->max('value');
 
-        return response()->json($data);
+        return response()->json([
+            'data' => $data,
+            'max' => $maxValue,
+        ]);
     }
 }

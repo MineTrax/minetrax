@@ -100,9 +100,9 @@ defineProps({
         class="flex justify-between flex-1 space-x-4"
       >
         <PlayersOverTimeMetricBox
-          class="basis-3/4"
+          class="basis-8/12"
         />
-        <PlayersPerServerMetricBox class="basis-1/4" />
+        <PlayersPerServerMetricBox class="basis-4/12" />
       </div>
 
       <div
