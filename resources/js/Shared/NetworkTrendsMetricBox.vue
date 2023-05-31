@@ -63,8 +63,14 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
               <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 <tr>
                   <td class="flex items-center p-4 text-sm font-normal text-gray-900 dark:text-gray-300 whitespace-nowrap">
-                    <UserGroupIcon class="w-5 h-5 text-light-blue-400" />
-                    <span class="mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300 sm:flex-none">Total Players</span>
+                    <UserGroupIcon
+                      class="w-5 h-5 text-light-blue-400"
+                    />
+                    <span
+                      v-tippy="{trigger: 'click'}"
+                      :title="__('All players including old and new who is seen on the given time interval')"
+                      class="mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300 sm:flex-none"
+                    >Total Players</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.total_players.previous_month }}
@@ -79,7 +85,11 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                 <tr>
                   <td class="flex items-center p-4 text-sm font-normal text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     <UserGroupIcon class="w-5 h-5 text-green-400" />
-                    <span class="mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300 sm:flex-none">New Players</span>
+                    <span
+                      v-tippy="{trigger: 'click'}"
+                      :title="__('New players who is seen on the given time interval')"
+                      class="mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300 sm:flex-none"
+                    >New Players</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.total_new_players.previous_month }}
@@ -94,7 +104,11 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                 <tr>
                   <td class="flex items-center p-4 text-sm font-normal text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     <UserPlusIcon class="w-5 h-5 text-orange-400" />
-                    <span class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300">Total Sessions</span>
+                    <span
+                      v-tippy="{trigger: 'click'}"
+                      :title="__('Total sessions of players. One session is counted when player join server and then leave. A player can have multiple sessions.')"
+                      class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300"
+                    >Total Sessions</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.total_player_sessions.previous_month }}
@@ -109,7 +123,11 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                 <tr>
                   <td class="flex items-center p-4 text-sm font-normal text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     <FaceSmileIcon class="w-5 h-5 text-green-400" />
-                    <span class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300">Avg Session Time</span>
+                    <span
+                      v-tippy="{trigger: 'click'}"
+                      :title="__('Average playtime player played during a session.')"
+                      class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300"
+                    >Avg Session Time</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.avg_playtime.previous_month }}
@@ -124,7 +142,11 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                 <tr>
                   <td class="flex items-center p-4 text-sm font-normal text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     <FaceFrownIcon class="w-5 h-5 text-red-400" />
-                    <span class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300">Avg AFK Time</span>
+                    <span
+                      v-tippy="{trigger: 'click'}"
+                      :title="__('Average afktime player spent during a session.')"
+                      class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300"
+                    >Avg AFK Time</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.avg_afktime.previous_month }}
@@ -139,7 +161,11 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                 <tr>
                   <td class="flex items-center p-4 text-sm font-normal text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     <ChartBarIcon class="w-5 h-5 text-yellow-400" />
-                    <span class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300">Avg Player Ping</span>
+                    <span
+                      v-tippy="{trigger: 'click'}"
+                      :title="__('Average ping players getting on your servers.')"
+                      class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300"
+                    >Avg Player Ping</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.avg_player_ping.previous_month }} ms
@@ -154,7 +180,11 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                 <tr>
                   <td class="flex items-center p-4 text-sm font-normal text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     <ArrowTrendingUpIcon class="w-5 h-5 text-light-blue-400" />
-                    <span class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300">Peek Online Players</span>
+                    <span
+                      v-tippy="{trigger: 'click'}"
+                      :title="__('Peek Online player reached on one server.')"
+                      class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300"
+                    >Peek Online Players</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ __(":players players", {players: data.peek_online_players.previous_month}) }}

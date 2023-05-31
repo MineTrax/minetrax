@@ -48,7 +48,7 @@ onMounted(async () => {
             inRange: {
                 color: window.colorMode === 'dark'
                     ? ['#e7f1ff', '#89baff', '#5999ff', '#3385ff']
-                    : ['#ffffff', '#718cde', '#1c46c7', '#123395']
+                    : ['#e6eaed', '#718cde', '#1c46c7', '#123395']
             }
         },
         series: [
@@ -70,7 +70,7 @@ onMounted(async () => {
                         areaColor: '#fff',
                     },
                     emphasis: {
-                        areaColor: '#2a333d',
+                        areaColor: '#e6eaed',
                     },
                 },
                 data: graphData.value.data,

@@ -14,6 +14,9 @@ import PlayersOverTimeMetricBox from '@/Shared/PlayersOverTimeMetricBox.vue';
 import PlayersPerServerMetricBox from '@/Shared/PlayersPerServerMetricBox.vue';
 import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
 import NetworkTrendsMetricBox from '@/Shared/NetworkTrendsMetricBox.vue';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
+
+const {can} = useAuthorizable();
 
 defineProps({
     kpiTotalUsers: Number,
@@ -41,7 +44,19 @@ defineProps({
   <AdminLayout>
     <AppHead title="Admin Dashboard" />
 
-    <div class="p-4 space-y-4">
+    <div
+      v-if="!can('view admin_dashboard')"
+      class="p-4 flex"
+    >
+      <div class="flex-1 bg-white dark:bg-gray-800 p-4 rounded text-red-400 text-center italic">
+        {{ __("Sorry! You are not allowed to view Admin Dashboard Statistics.") }}
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="p-4 space-y-4"
+    >
       <div
         id="row1"
         class="flex justify-between flex-1 space-x-4"

@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Permission;
-use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class PermissionSeeder extends Seeder
 {
@@ -84,5 +82,6 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('assign badges');
 
         Permission::findOrCreate('view admin_dashboard');
+        Permission::findOrCreate('view server_intel');
     }
 }

@@ -13,6 +13,8 @@ class GraphController extends Controller
 {
     public function getOnlinePlayersOverTime(Request $request)
     {
+        $this->authorize('view admin_dashboard');
+
         $request->validate([
             'servers' => 'sometimes|nullable|array',
             'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
@@ -51,6 +53,8 @@ class GraphController extends Controller
 
     public function getPlayersPerServer()
     {
+        $this->authorize('view admin_dashboard');
+
         $servers = Server::where('type', '!=', ServerType::Bungee())
             ->withCount('minecraftPlayerStats')
             ->get();
@@ -67,6 +71,8 @@ class GraphController extends Controller
 
     public function getPlayerPerCountry()
     {
+        $this->authorize('view admin_dashboard');
+
         $countries = Country::withCount('players')->get();
 
         $data = $countries->map(function ($country) {
@@ -86,6 +92,8 @@ class GraphController extends Controller
 
     public function getNetworkTrendsMonthVsMonth()
     {
+        $this->authorize('view admin_dashboard');
+
         $previousMonth = now()->subMonth();
         $currentMonth = now();
 
@@ -170,37 +178,37 @@ class GraphController extends Controller
             'total_players' => [
                 'previous_month' => $avgTotalPlayerPreviousMonth,
                 'current_month' => $avgTotalPlayerCurrentMonth,
-                'change' => $avgTotalPlayerChangePercent,
+                'change' => round($avgTotalPlayerChangePercent, 2),
             ],
             'total_new_players' => [
                 'previous_month' => $avgNewPlayerPreviousMonth,
                 'current_month' => $avgNewPlayerCurrentMonth,
-                'change' => $avgNewPlayerChangePercent,
+                'change' => round($avgNewPlayerChangePercent, 2),
             ],
             'total_player_sessions' => [
                 'previous_month' => $avgTotalSessionPreviousMonth,
                 'current_month' => $avgTotalSessionCurrentMonth,
-                'change' => $avgTotalSessionChangePercent,
+                'change' => round($avgTotalSessionChangePercent, 2),
             ],
             'avg_playtime' => [
                 'previous_month' => $averagePlayTimePreviousMonth,
                 'current_month' => $averagePlayTimeCurrentMonth,
-                'change' => $averagePlayTimeChangePercent,
+                'change' => round($averagePlayTimeChangePercent, 2),
             ],
             'avg_afktime' => [
                 'previous_month' => $averageAfkTimePreviousMonth,
                 'current_month' => $averageAfkTimeCurrentMonth,
-                'change' => $averageAfkTimeChangePercent,
+                'change' => round($averageAfkTimeChangePercent, 2),
             ],
             'avg_player_ping' => [
                 'previous_month' => $averagePlayerPingPreviousMonth,
                 'current_month' => $averagePlayerPingCurrentMonth,
-                'change' => $averagePlayerPingChangePercent,
+                'change' => round($averagePlayerPingChangePercent, 2),
             ],
             'peek_online_players' => [
                 'previous_month' => $peekOnlinePlayersPreviousMonth,
                 'current_month' => $peekOnlinePlayersCurrentMonth,
-                'change' => $peekOnlinePlayersChangePercent,
+                'change' => round($peekOnlinePlayersChangePercent, 2),
             ],
         ]);
     }
