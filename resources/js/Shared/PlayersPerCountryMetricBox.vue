@@ -88,7 +88,7 @@ onMounted(async () => {
     <Chart
       :autoresize="true"
       :options="option"
-      height="400px"
+      height="410px"
       :loading="isLoading"
     />
   </div>

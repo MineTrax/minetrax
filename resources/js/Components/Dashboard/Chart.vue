@@ -26,6 +26,13 @@ defineProps({
 if (window.colorMode === 'dark') {
     provide(THEME_KEY, 'darkmine');
 }
+
+const loadingOptions = {
+    text: 'Loading...',
+    color: '#39b9f1',
+    textColor: window.colorMode === 'dark' ? '#fff' : '#000',
+    maskColor: 'transparent',
+};
 </script>
 
 <template>
@@ -34,5 +41,6 @@ if (window.colorMode === 'dark') {
     :style="{ height: height }"
     :option="options"
     :autoresize="autoresize"
+    :loading-options="loadingOptions"
   />
 </template>

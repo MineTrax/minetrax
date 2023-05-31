@@ -3,11 +3,17 @@ import KpiOverviewCard from '@/Components/Dashboard/KpiOverviewCard.vue';
 import AppHead from '@/Components/AppHead.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import millify from 'millify';
-import {UserPlusIcon, UserIcon, FireIcon, ChatBubbleBottomCenterTextIcon} from '@heroicons/vue/24/solid';
+import {
+    UserPlusIcon,
+    UserIcon,
+    FireIcon,
+    ChatBubbleBottomCenterTextIcon,
+} from '@heroicons/vue/24/solid';
 import KpiOverviewCardForDashboard from '@/Components/Dashboard/KpiOverviewCardForDashboard.vue';
 import PlayersOverTimeMetricBox from '@/Shared/PlayersOverTimeMetricBox.vue';
 import PlayersPerServerMetricBox from '@/Shared/PlayersPerServerMetricBox.vue';
 import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
+import NetworkTrendsMetricBox from '@/Shared/NetworkTrendsMetricBox.vue';
 
 defineProps({
     kpiTotalUsers: Number,
@@ -80,13 +86,21 @@ defineProps({
           class="flex-1"
           title="Failed Jobs"
           :value="millify(kpiTotalFailedJobs)"
-          :sub-value="`(${kpiFailedJobsForInterval > 0 ? '+' : ''}${millify(kpiFailedJobsForInterval)})`"
+          :sub-value="`(${
+            kpiFailedJobsForInterval > 0 ? '+' : ''
+          }${millify(kpiFailedJobsForInterval)})`"
           :sub-value-class="[
-            kpiFailedJobsForInterval > 0 ? 'text-red-500' : 'text-green-500',
+            kpiFailedJobsForInterval > 0
+              ? 'text-red-500'
+              : 'text-green-500',
           ]"
-          :change="`${kpiTotalFailedJobPercent > 0 ? '+' : ''}${millify(kpiTotalFailedJobPercent, {precision: 2})}%`"
+          :change="`${
+            kpiTotalFailedJobPercent > 0 ? '+' : ''
+          }${millify(kpiTotalFailedJobPercent, { precision: 2 })}%`"
           :change-class="[
-            kpiTotalFailedJobPercent > 0 ? 'text-red-500 bg-red-100' : 'text-green-500 bg-green-100',
+            kpiTotalFailedJobPercent > 0
+              ? 'text-red-500 bg-red-100'
+              : 'text-green-500 bg-green-100',
           ]"
           change-desc="in last 7 days"
           :icon="FireIcon"
@@ -99,9 +113,7 @@ defineProps({
         id="row2"
         class="flex justify-between flex-1 space-x-4"
       >
-        <PlayersOverTimeMetricBox
-          class="basis-8/12"
-        />
+        <PlayersOverTimeMetricBox class="basis-8/12" />
         <PlayersPerServerMetricBox class="basis-4/12" />
       </div>
 
@@ -110,6 +122,7 @@ defineProps({
         class="flex justify-between flex-1 space-x-4"
       >
         <PlayersPerCountryMetricBox class="basis-1/2" />
+        <NetworkTrendsMetricBox class="basis-1/2" />
       </div>
     </div>
   </AdminLayout>

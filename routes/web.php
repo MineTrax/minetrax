@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 /**
  * GENERAL SECTION / NO LOGIN
  * Note: We need forbid-banned-user in no-auth section too so that if user login, it automatically get redirected to banned page
  */
-Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(function() {
+Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(function () {
     Route::get('/', [\App\Http\Controllers\HomeController::class, 'home'])->name('home');
     Route::get('news/{news:slug}', [\App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
     Route::get('news', [\App\Http\Controllers\NewsController::class, 'index'])->name('news.index');
@@ -40,8 +40,8 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
 
     Route::get('search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 
-    Route::get('auth/{provider}', [\App\Http\Controllers\SocialAuthController::class,'redirect'])->name('social.login')->middleware('guest');
-    Route::get('auth/{provider}/callback', [\App\Http\Controllers\SocialAuthController::class,'handleCallback'])->name('social.login.callback')->middleware('guest');
+    Route::get('auth/{provider}', [\App\Http\Controllers\SocialAuthController::class, 'redirect'])->name('social.login')->middleware('guest');
+    Route::get('auth/{provider}/callback', [\App\Http\Controllers\SocialAuthController::class, 'handleCallback'])->name('social.login.callback')->middleware('guest');
 
     Route::get('/features', [\App\Http\Controllers\HomeController::class, 'features'])->name('features.list');
     Route::get('/version-check', [\App\Http\Controllers\HomeController::class, 'version'])->name('version.check');
@@ -104,6 +104,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('/graph/online-players', [\App\Http\Controllers\Admin\GraphController::class, 'getOnlinePlayersOverTime'])->name('graph.online-players');
     Route::get('/graph/players-per-server', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayersPerServer'])->name('graph.players-per-server');
     Route::get('/graph/players-per-country', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerPerCountry'])->name('graph.players-per-country');
+    Route::get('/graph/network-trends-vs-month', [\App\Http\Controllers\Admin\GraphController::class, 'getNetworkTrendsMonthVsMonth'])->name('graph.network-trends-vs-month');
 
     Route::get('user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('user.index');
     //  Route::get('user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('user.show');

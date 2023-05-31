@@ -65,7 +65,7 @@
         >
           <button
             v-show="!shouldDisplayPlayerList"
-            class="absolute top-0 right-0 mt-1 mr-2 font-semibold text-green-400"
+            class="absolute top-0 right-0 mt-1 mr-2 font-semibold text-green-400 z-10"
             type="button"
             @click="shouldDisplayPlayerList = !shouldDisplayPlayerList"
           >
@@ -104,7 +104,7 @@
                   {{ __("Players") }}&nbsp;({{ playersList.length }})
                 </h3>
                 <button
-                  class="absolute right-0 mr-2 font-semibold text-red-500 dark:text-red-400"
+                  class="absolute right-0 mr-2 font-semibold text-red-500 dark:text-red-400 z-10"
                   type="button"
                   @click="shouldDisplayPlayerList = !shouldDisplayPlayerList"
                 >
