@@ -13,10 +13,12 @@ use App\Notifications\UserYouAreMuted;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use App\Queries\Filters\FilterMultipleFields;
 
 class UserController extends Controller
 {
-
     public function index()
     {
         $this->authorize('viewAny', User::class);
@@ -28,7 +30,29 @@ class UserController extends Controller
         });
 
         return Inertia::render('Admin/User/IndexUser', [
-            'users' => $users
+            'users' => $users,
+        ]);
+    }
+
+    public function indexDt()
+    {
+        $this->authorize('viewAny', User::class);
+
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100)
+            $perPage = 100;
+
+        $users = QueryBuilder::for (User::class)->with('country:id,name,iso_code')
+            ->allowedFilters(['id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at',
+            AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username']))])
+            ->allowedSorts(['id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at'])
+            ->defaultSort('id')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return Inertia::render('Admin/User/DataTableTestPage', [
+            'users' => $users,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 
@@ -38,7 +62,7 @@ class UserController extends Controller
         $this->authorize('view', $user);
 
         return Inertia::render('Admin/User/ShowUser', [
-            'user' => $user->load('badges')
+            'user' => $user->load('badges'),
         ]);
     }
 
@@ -120,7 +144,7 @@ class UserController extends Controller
             'userData' => $user->load(['badges', 'country:id,name']),
             'rolesList' => $rolesList,
             'badgesList' => $badgesList,
-            'countryList' => $countryList
+            'countryList' => $countryList,
         ]);
     }
 
@@ -150,7 +174,7 @@ class UserController extends Controller
             'profile_photo_source' => ['nullable', 'in:gravatar,linked_player'],
             'verified' => ['required', 'boolean'],
             'badges' => ['sometimes', 'nullable', 'array', 'exists:badges,id'],
-            'country_id' => ['required', 'exists:countries,id']
+            'country_id' => ['required', 'exists:countries,id'],
         ]);
 
         $social_links = [
@@ -166,7 +190,7 @@ class UserController extends Controller
         $settings = [
             'show_yob' => $request->show_yob,
             'show_gender' => $request->show_gender,
-            'profile_photo_source' => $request->profile_photo_source
+            'profile_photo_source' => $request->profile_photo_source,
         ];
 
         // Update the User Detail
