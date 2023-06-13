@@ -160,14 +160,14 @@ function toggleSorting(key) {
                       v-for="th in header"
                       :key="th.key"
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-gray-300 uppercase"
+                      class="px-4 py-3 text-xs font-semibold text-gray-400 dark:text-gray-300 uppercase text-left"
                       :class="[
                         th.sortable ? 'cursor-pointer' : '',
                         th.class ? th.class : '',
                       ]"
                       @click="th.sortable ? toggleSorting(th.key) : null"
                     >
-                      <div class="flex items-center">
+                      <div class="inline-flex items-center">
                         {{ th.label }}
                         <Icon
                           v-if="th.sortable"

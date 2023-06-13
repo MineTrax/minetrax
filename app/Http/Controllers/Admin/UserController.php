@@ -23,21 +23,6 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $users = User::with('country:id,name,iso_code')->paginate(10);
-
-        $users->each(function ($user) {
-            $user->append('dob_string_with_year');
-        });
-
-        return Inertia::render('Admin/User/IndexUser', [
-            'users' => $users,
-        ]);
-    }
-
-    public function indexDt()
-    {
-        $this->authorize('viewAny', User::class);
-
         $perPage = request()->input('perPage', 10);
         if ($perPage > 100)
             $perPage = 100;
@@ -50,7 +35,7 @@ class UserController extends Controller
             ->paginate($perPage)
             ->withQueryString();
 
-        return Inertia::render('Admin/User/DataTableTestPage', [
+        return Inertia::render('Admin/User/IndexUser', [
             'users' => $users,
             'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
