@@ -79,7 +79,7 @@ const headerRow = [
         key: 'actions',
         label: __('Actions'),
         sortable: false,
-        class: 'w-2/12 text-center',
+        class: 'w-2/12 text-right',
     },
 ];
 </script>
