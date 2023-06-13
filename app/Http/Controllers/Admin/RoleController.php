@@ -19,17 +19,22 @@ class RoleController extends Controller
         $this->authorize('viewAny', Role::class);
 
         $perPage = request()->input('perPage', 10);
-        if ($perPage > 100)
+        if ($perPage > 100) {
             $perPage = 100;
+        }
 
-        $roles = Role::query()
-            ->with('permissions:id,name')
-            ->withCount('users')
-            ->orderByDesc('weight')->paginate(10);
-
-        $roles = QueryBuilder::for (Role::class)->with('permissions:id,name')->withCount('users')
-            ->allowedFilters(['id', 'name', 'created_at', 'updated_at', 'weight', 'is_staff', 'is_hidden_from_staff_list', 'display_name',
-            AllowedFilter::custom('q', new FilterMultipleFields(['name', 'display_name', 'id']))])
+        $roles = QueryBuilder::for(Role::class)->with('permissions:id,name')->withCount('users')
+            ->allowedFilters([
+                'id',
+                'name',
+                'created_at',
+                'updated_at',
+                'weight',
+                'is_staff',
+                'is_hidden_from_staff_list',
+                'display_name',
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'display_name', 'id']))
+            ])
             ->allowedSorts(['id', 'name', 'created_at', 'updated_at', 'weight', 'is_staff', 'is_hidden_from_staff_list', 'display_name'])
             ->defaultSort('-weight')
             ->paginate($perPage)

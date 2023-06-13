@@ -27,9 +27,18 @@ class UserController extends Controller
         if ($perPage > 100)
             $perPage = 100;
 
-        $users = QueryBuilder::for (User::class)->with('country:id,name,iso_code')
-            ->allowedFilters(['id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at',
-            AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username']))])
+        $users = QueryBuilder::for(User::class)->with('country:id,name,iso_code')
+            ->allowedFilters([
+                'id',
+                'name',
+                'email',
+                'username',
+                'created_at',
+                'updated_at',
+                'country_id',
+                'last_login_at',
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username']))
+            ])
             ->allowedSorts(['id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at'])
             ->defaultSort('id')
             ->paginate($perPage)
