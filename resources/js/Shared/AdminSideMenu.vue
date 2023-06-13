@@ -103,7 +103,7 @@ const navItems = [
         active: route().current('admin.custom-page.*'),
         children: [],
         icon: DocumentTextIcon,
-        visible: canWild('custom-pages')
+        visible: canWild('custom_pages')
     },
     {
         label: 'Settings', href: '#', active: false, children: [
