@@ -17,7 +17,7 @@
         class="absolute right-0 top-0 mt-3 mr-4"
       >
         <MagnifyingGlassIcon
-          class="text-gray-400 dark:text-gray-600 h-4 w-4"
+          class="text-gray-400 dark:text-gray-600 h-4 w-4 stroke-2"
         />
       </button>
     </form>

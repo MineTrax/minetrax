@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
+use App\Queries\Filters\FilterMultipleFields;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class NewsController extends Controller
 {
@@ -14,19 +17,39 @@ class NewsController extends Controller
     {
         $this->authorize('viewAny', News::class);
 
-        $newslist = News::orderByDesc('id')
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $newslist = QueryBuilder::for(News::class)
             ->select([
-            'id',
-            'title',
-            'slug',
-            'published_at',
-            'is_pinned',
-            'type',
-            'created_at',
-        ])->paginate(10);
+                'id',
+                'title',
+                'slug',
+                'published_at',
+                'is_pinned',
+                'type',
+                'created_at',
+            ])
+            ->allowedFilters([
+                'id',
+                'title',
+                'slug',
+                'published_at',
+                'is_pinned',
+                'type',
+                'created_at',
+                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug']))
+            ])
+            ->allowedSorts(['id', 'title', 'created_at', 'published_at', 'is_pinned', 'type', 'slug'])
+            ->defaultSort('-id')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('Admin/News/IndexNews', [
-            'newslist' => $newslist
+            'newslist' => $newslist,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 
@@ -41,7 +64,7 @@ class NewsController extends Controller
     {
         $news = News::create([
             'title' => $request->title,
-            'slug' => \Str::slug($request->title.' '.now()->timestamp),
+            'slug' => \Str::slug($request->title . ' ' . now()->timestamp),
             'type' => $request->type,
             'body' => $request->body,
             'published_at' => $request->is_published ? now() : null,
@@ -81,7 +104,7 @@ class NewsController extends Controller
         $this->authorize('update', $news);
 
         // Update the Rank Detail
-        $news->slug = $request->title == $news->title ? $news->slug : \Str::slug($request->title.' '.now()->timestamp);
+        $news->slug = $request->title == $news->title ? $news->slug : \Str::slug($request->title . ' ' . now()->timestamp);
         $news->title = $request->title;
         $news->body = $request->body;
         if ($request->is_published && !$news->published_at) {

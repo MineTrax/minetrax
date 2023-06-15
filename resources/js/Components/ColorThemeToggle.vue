@@ -1,30 +1,34 @@
 <template>
   <div>
     <button @click="toggleTheme">
-      <icon
+      <span
         v-if="colorMode === 'dark'"
         v-tippy
         :title="__('Use Light Theme')"
-        name="moon-full"
-        class="w-6 h-6 text-gray-400 focus:outline-none"
-      />
-      <icon
+      >
+        <MoonIcon
+          class="w-5 h-5 text-gray-400 focus:outline-none stroke-2"
+        />
+      </span>
+      <span
         v-else
         v-tippy
         :title="__('Use Dark Theme')"
-        name="moon-outline"
-        class="w-6 h-6 text-gray-400 focus:outline-none"
-      />
+      >
+        <SunIcon
+          class="w-6 h-6 text-gray-400 focus:outline-none stroke-2"
+        />
+      </span>
     </button>
   </div>
 </template>
 
 <script>
-import Icon from '@/Components/Icon.vue';
+import { MoonIcon, SunIcon } from '@heroicons/vue/24/outline';
 
 export default {
     name: 'ColorThemeToggle',
-    components: {Icon},
+    components: { MoonIcon, SunIcon },
     data() {
         return {
             colorMode: window.colorMode
