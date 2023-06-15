@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateRankRequest;
 use App\Http\Requests\UpdateRankRequest;
 use App\Models\Rank;
+use App\Queries\Filters\FilterMultipleFields;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class RankController extends Controller
 {
@@ -19,18 +22,34 @@ class RankController extends Controller
     {
         $this->authorize('viewAny', Rank::class);
 
-        $ranks = Rank::orderBy('weight')->latest()->select([
-            'id',
-            'name',
-            'weight',
-            'shortname',
-            'total_score_needed',
-            'total_play_one_minute_needed',
-            'created_at',
-        ])->withCount('players')->paginate(10);
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $ranks = QueryBuilder::for(Rank::class)
+            ->select([
+                'id',
+                'name',
+                'weight',
+                'shortname',
+                'total_score_needed',
+                'total_play_one_minute_needed',
+                'created_at',
+            ])
+            ->withCount('players')
+            ->allowedFilters([
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'shortname', 'id', 'weight', 'total_score_needed', 'total_play_one_minute_needed']))
+            ])
+            ->allowedSorts(['id', 'name', 'weight', 'shortname', 'total_score_needed', 'total_play_one_minute_needed', 'created_at'])
+            ->defaultSort('-weight', '-id')
+            ->paginate($perPage)
+            ->withQueryString();
+
 
         return Inertia::render('Admin/Rank/IndexRank', [
-            'ranks' => $ranks
+            'ranks' => $ranks,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 
@@ -155,7 +174,7 @@ class RankController extends Controller
         $this->authorize('create', Rank::class);
 
         Rank::all()->each->delete();
-        $data = json_decode(file_get_contents(storage_path('seed')."/ranks.json"), true);
+        $data = json_decode(file_get_contents(storage_path('seed') . "/ranks.json"), true);
         \DB::table('ranks')->insert($data);
 
         return redirect()->back()
