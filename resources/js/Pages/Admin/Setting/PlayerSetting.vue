@@ -7,7 +7,7 @@
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-cool-gray-800 shadow w-full">
+          <div class="bg-white dark:bg-cool-gray-800 shadow w-full rounded">
             <div class="px-6 py-4 border-b dark:border-gray-700 dark:text-gray-300 font-bold">
               {{ __("Player Settings") }}
             </div>
@@ -22,17 +22,6 @@
                     <div class="shadow overflow-hidden sm:rounded-md">
                       <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
-                          <div class="col-span-6 sm:col-span-6">
-                            <x-checkbox
-                              id="is_custom_rating_enabled"
-                              v-model="form.is_custom_rating_enabled"
-                              :label="__('Enable Custom Player Rating Algorithm')"
-                              :help="__('Use your own algorithm for rating players. Enable this only after there is at-least one player in the database.')"
-                              name="is_custom_rating_enabled"
-                              :error="form.errors.is_custom_rating_enabled"
-                            />
-                          </div>
-
                           <div class="col-span-6 sm:col-spam-4">
                             <x-input
                               id="last_seen_day_for_active"
@@ -43,6 +32,17 @@
                               type="text"
                               name="last_seen_day_for_active"
                               help-error-flex="flex-col"
+                            />
+                          </div>
+
+                          <div class="col-span-6 sm:col-span-6">
+                            <x-checkbox
+                              id="is_custom_rating_enabled"
+                              v-model="form.is_custom_rating_enabled"
+                              :label="__('Enable Custom Player Rating Algorithm')"
+                              :help="__('Use your own algorithm for rating players. Enable this only after there is at-least one player in the database.')"
+                              name="is_custom_rating_enabled"
+                              :error="form.errors.is_custom_rating_enabled"
                             />
                           </div>
 

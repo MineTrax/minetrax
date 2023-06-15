@@ -7,7 +7,7 @@
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-cool-gray-800 shadow w-full">
+          <div class="bg-white dark:bg-cool-gray-800 shadow w-full rounded">
             <div class="px-6 py-4 border-b dark:border-gray-700 dark:text-gray-300 font-bold">
               {{ __("Navigation Settings") }}
             </div>
