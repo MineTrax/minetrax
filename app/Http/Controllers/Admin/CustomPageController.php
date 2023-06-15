@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCustomPageRequest;
 use App\Http\Requests\UpdateCustomPageRequest;
 use App\Models\CustomPage;
+use App\Queries\Filters\FilterMultipleFields;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class CustomPageController extends Controller
 {
@@ -14,10 +17,36 @@ class CustomPageController extends Controller
     {
         $this->authorize('viewAny', CustomPage::class);
 
-        $customPages = CustomPage::latest()->paginate(10);
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $customPages = QueryBuilder::for(CustomPage::class)
+            ->allowedFilters([
+                'id',
+                'title',
+                'path',
+                'is_in_navbar',
+                'is_visible',
+                'is_redirect',
+                'redirect_url',
+                'created_by',
+                'updated_by',
+                'created_at',
+                'updated_at',
+                'is_sidebar_visible',
+                'is_html_page',
+                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'path', 'redirect_url']))
+            ])
+            ->allowedSorts(['id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_redirect', 'redirect_url', 'created_by', 'updated_by', 'created_at', 'updated_at', 'is_sidebar_visible', 'is_html_page'])
+            ->defaultSort('-created_at')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('Admin/CustomPage/IndexCustomPage', [
-            'customPages' => $customPages
+            'customPages' => $customPages,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 
