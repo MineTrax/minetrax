@@ -192,6 +192,15 @@ function toggleSorting(key) {
                     :data="data"
                   />
                 </tr>
+
+                <tr v-if="data.data.length <= 0">
+                  <td
+                    :colspan="header.length"
+                    class="px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-300 text-center"
+                  >
+                    {{ __("No data found") }}
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
