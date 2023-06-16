@@ -11,6 +11,7 @@ use App\Jobs\FetchStatsFromAllServersJob;
 use App\Models\JsonMinecraftPlayerStat;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\Server;
+use App\Queries\Filters\FilterMultipleFields;
 use App\Services\GeolocationService;
 use App\Services\MinecraftServerFileService;
 use App\Services\MinecraftServerPingService;
@@ -19,6 +20,8 @@ use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ServerController extends Controller
 {
@@ -26,27 +29,55 @@ class ServerController extends Controller
     {
         $this->authorize('viewAny', Server::class);
 
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
         $canCreateBungeeServer = Server::where('type', ServerType::Bungee)->exists();
 
-        $servers = Server::latest()->select([
-            'id',
-            'name',
-            'hostname',
-            'ip_address',
-            'join_port',
-            'query_port',
-            'webquery_port',
-            'type',
-            'minecraft_version',
-            'order',
-            'country_id',
-            'last_scanned_at',
-            'created_at'
-        ])->with('country')->paginate(5);
+        $servers = QueryBuilder::for(Server::class)
+            ->select([
+                'id',
+                'name',
+                'hostname',
+                'ip_address',
+                'join_port',
+                'query_port',
+                'webquery_port',
+                'type',
+                'minecraft_version',
+                'order',
+                'country_id',
+                'last_scanned_at',
+                'created_at'
+            ])
+            ->with('country')
+            ->allowedFilters([
+                'id',
+                'name',
+                'hostname',
+                'ip_address',
+                'join_port',
+                'query_port',
+                'webquery_port',
+                'type',
+                'minecraft_version',
+                'order',
+                'country_id',
+                'last_scanned_at',
+                'created_at',
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'minecraft_version']))
+            ])
+            ->allowedSorts(['id', 'name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'type', 'minecraft_version', 'order', 'country_id', 'last_scanned_at', 'created_at'])
+            ->defaultSort('-created_at')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('Admin/Server/IndexServer', [
             'servers' => $servers,
-            'canCreateBungeeServer' => !$canCreateBungeeServer
+            'canCreateBungeeServer' => !$canCreateBungeeServer,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 
@@ -98,7 +129,7 @@ class ServerController extends Controller
                 'port' => $request->storage_server_port ?? 22,
                 'root' => $request->storage_server_root ?? ''
             ];
-        } else if($request->connection_type == 'local') {
+        } else if ($request->connection_type == 'local') {
             $storageServerHost = '127.0.0.1';
             $connectionString = [
                 'driver' => 'local',
@@ -110,8 +141,8 @@ class ServerController extends Controller
 
         $ipAddress = gethostbyname($request->hostname);
         // If ip address still have something like 111.111.111.111:25565 then we remove the port part
-        if(\Str::contains($ipAddress, ":")) {
-            $ipAddress = explode(":",$ipAddress);
+        if (\Str::contains($ipAddress, ":")) {
+            $ipAddress = explode(":", $ipAddress);
             $ipAddress = $ipAddress[0];
         }
 
@@ -214,10 +245,9 @@ class ServerController extends Controller
 
         // LiveServerInfoData
         $query = MinecraftServerLiveInfo::query();
-        if($request->has('dateFrom') && $request->has('dateTo')) {
+        if ($request->has('dateFrom') && $request->has('dateTo')) {
             $query->whereBetween('created_at', [$request->dateFrom, $request->dateTo]);
-        }
-        else {
+        } else {
             $query->limit(60);
         }
         $serverLiveInfoData = $query->where('server_id', $server->id)->latest()->get();
@@ -374,9 +404,9 @@ class ServerController extends Controller
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:'.$server->id);
-        Cache::forget('server:query:'.$server->id);
-        Cache::forget('server:webquery:'.$server->id);
+        Cache::forget('server:ping:' . $server->id);
+        Cache::forget('server:query:' . $server->id);
+        Cache::forget('server:webquery:' . $server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Bungee server updated successfully')]]);
@@ -409,7 +439,7 @@ class ServerController extends Controller
                 'port' => $request->storage_server_port ?? 22,
                 'root' => $request->storage_server_root ?? ''
             ];
-        } else if($request->connection_type == 'local') {
+        } else if ($request->connection_type == 'local') {
             $storageServerHost = '127.0.0.1';
             $connectionString = [
                 'driver' => 'local',
@@ -438,9 +468,9 @@ class ServerController extends Controller
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:'.$server->id);
-        Cache::forget('server:query:'.$server->id);
-        Cache::forget('server:webquery:'.$server->id);
+        Cache::forget('server:ping:' . $server->id);
+        Cache::forget('server:query:' . $server->id);
+        Cache::forget('server:webquery:' . $server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Server updated successfully')]]);
@@ -465,7 +495,7 @@ class ServerController extends Controller
             'storage_server_username' => 'nullable|required_if:connection_type,ftp,sftp|string',
             'storage_server_password' => 'required_if:connection_type,ftp,sftp',
             'storage_server_root' => 'sometimes|required_if:connection_type,local|nullable',
-            'storage_server_ssl'=> 'sometimes|nullable|required_if:connection_type,ftp|boolean',
+            'storage_server_ssl' => 'sometimes|nullable|required_if:connection_type,ftp|boolean',
         ]);
 
         // Make connection string
@@ -479,7 +509,7 @@ class ServerController extends Controller
                 'password' => $request->storage_server_password,
                 'port' => $request->storage_server_port ?? 21,
                 'root' => $request->storage_server_root ?? '',
-                'ssl' =>  $request->storage_server_ssl ?? false,
+                'ssl' => $request->storage_server_ssl ?? false,
             ];
         } elseif ($request->connection_type == 'sftp') {
             $connectionString = [
@@ -490,7 +520,7 @@ class ServerController extends Controller
                 'port' => $request->storage_server_port ?? 22,
                 'root' => $request->storage_server_root ?? ''
             ];
-        } else if($request->connection_type == 'local') {
+        } else if ($request->connection_type == 'local') {
             $storageServerHost = '127.0.0.1';
             $connectionString = [
                 'driver' => 'local',
@@ -571,6 +601,6 @@ class ServerController extends Controller
         FetchStatsFromAllServersJob::dispatch();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __('Rescan Queued!'), 'body' => __('Successfully queued rescanning of all servers. It may take sometime to reflect depending on number of players found.'),'milliseconds' => 20000]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Rescan Queued!'), 'body' => __('Successfully queued rescanning of all servers. It may take sometime to reflect depending on number of players found.'), 'milliseconds' => 20000]]);
     }
 }
