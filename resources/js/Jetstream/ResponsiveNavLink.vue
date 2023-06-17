@@ -5,6 +5,10 @@ const props = defineProps({
     active: Boolean,
     href: String,
     as: String,
+    openInNewTab: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const classes = computed(() => {
@@ -25,11 +29,20 @@ const classes = computed(() => {
     </button>
 
     <InertiaLink
-      v-else
+      v-else-if="as != 'button' && !openInNewTab"
       :href="href"
       :class="classes"
     >
       <slot />
     </InertiaLink>
+
+    <a
+      v-else
+      target="_blank"
+      :href="href"
+      :class="classes"
+    >
+      <slot />
+    </a>
   </div>
 </template>

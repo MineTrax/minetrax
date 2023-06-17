@@ -4,6 +4,10 @@ import { computed } from 'vue';
 const props = defineProps({
     href: String,
     active: Boolean,
+    openInNewTab: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const classes = computed(() => {
@@ -15,9 +19,18 @@ const classes = computed(() => {
 
 <template>
   <InertiaLink
+    v-if="!openInNewTab"
     :href="href"
     :class="classes"
   >
     <slot />
   </InertiaLink>
+  <a
+    v-else
+    target="_blank"
+    :href="href"
+    :class="classes"
+  >
+    <slot />
+  </a>
 </template>

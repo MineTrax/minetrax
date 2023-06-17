@@ -8,6 +8,7 @@
       <NavLink
         :href="route(item.route)"
         :active="route().current(item.route)"
+        :open-in-new-tab="item.is_open_in_new_tab"
       >
         {{ __(item.title) }}
       </NavLink>
@@ -21,6 +22,7 @@
       <NavLink
         :href="route(item.route, item.route_params)"
         :active="route().current(item.route, item.route_params)"
+        :open-in-new-tab="item.is_open_in_new_tab"
       >
         {{ __(item.title) }}
       </NavLink>

@@ -139,7 +139,7 @@ const headerRow = [
             {{ item.sort_order }}
           </DtRowItem>
 
-          <DtRowItem>
+          <DtRowItem class="whitespace-nowrap">
             <span
               v-tippy
               :title="formatToDayDateString(item.created_at)"

@@ -153,7 +153,7 @@ const headerRow = [
           <DtRowItem>
             {{ item.email }}
           </DtRowItem>
-          <DtRowItem>
+          <DtRowItem class="whitespace-nowrap">
             <span
               v-tippy
               :title="formatToDayDateString(item.created_at)"

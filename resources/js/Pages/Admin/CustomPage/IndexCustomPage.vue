@@ -59,6 +59,11 @@ const headerRow = [
         label: __('Sidebar'),
     },
     {
+        key: 'is_open_in_new_tab',
+        sortable: true,
+        label: __('New Tab'),
+    },
+    {
         key: 'created_at',
         sortable: true,
         label: __('Created'),
@@ -171,6 +176,21 @@ const headerRow = [
             />
           </td>
 
+          <td
+            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+          >
+            <Icon
+              v-if="item.is_open_in_new_tab"
+              class="text-green-500 focus:outline-none"
+              name="check-circle"
+            />
+            <Icon
+              v-else
+              class="text-red-500"
+              name="cross-circle"
+            />
+          </td>
+
           <DtRowItem>
             <span
               v-tippy
@@ -184,12 +204,21 @@ const headerRow = [
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
             <InertiaLink
+              v-if="!item.is_open_in_new_tab"
               as="a"
               :href="route('custom-page.show', item.path)"
               class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
             >
               <EyeIcon class="inline-block w-5 h-5" />
             </InertiaLink>
+            <a
+              v-else
+              :href="route('custom-page.show', item.path)"
+              class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              target="_blank"
+            >
+              <EyeIcon class="inline-block w-5 h-5" />
+            </a>
             <InertiaLink
               v-if="can('update custom_pages')"
               v-tippy

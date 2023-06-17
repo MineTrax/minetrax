@@ -9,6 +9,7 @@ import {
     ChartPieIcon,
     DocumentTextIcon,
     Cog8ToothIcon,
+    PresentationChartLineIcon,
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
@@ -29,6 +30,14 @@ const navItems = [
         visible: true
     },
     {
+        label: 'Analytics',
+        href: route('admin.server.index'),
+        active: route().current('admin.server.intel.*'),
+        children: [],
+        icon: PresentationChartLineIcon,
+        visible: canWild('server_intel')
+    },
+    {
         label: 'Servers',
         href: route('admin.server.index'),
         active: route().current('admin.server.*'),
@@ -39,7 +48,7 @@ const navItems = [
     {
         label: 'Users', href: '#', active: false, children: [
             {
-                label: 'All Users',
+                label: 'List Users',
                 href: route('admin.user.index'),
                 active: route().current('admin.user.*'),
                 children: [],

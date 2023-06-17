@@ -36,10 +36,11 @@ class CustomPageController extends Controller
                 'created_at',
                 'updated_at',
                 'is_sidebar_visible',
+                'is_open_in_new_tab',
                 'is_html_page',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'path', 'redirect_url']))
             ])
-            ->allowedSorts(['id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_redirect', 'redirect_url', 'created_by', 'updated_by', 'created_at', 'updated_at', 'is_sidebar_visible', 'is_html_page'])
+            ->allowedSorts(['id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_redirect', 'redirect_url', 'created_by', 'updated_by', 'created_at', 'updated_at', 'is_sidebar_visible', 'is_html_page', 'is_open_in_new_tab'])
             ->defaultSort('-created_at')
             ->paginate($perPage)
             ->withQueryString();
@@ -67,6 +68,7 @@ class CustomPageController extends Controller
             'is_in_navbar' => $request->is_in_navbar,
             'is_redirect' => $request->is_redirect,
             'is_sidebar_visible' => $request->is_sidebar_visible,
+            'is_open_in_new_tab' => $request->is_open_in_new_tab,
             'is_html_page' => $request->is_html_page,
             'redirect_url' => $request->redirect_url,
             'created_by' => $request->user()->id,
@@ -95,6 +97,7 @@ class CustomPageController extends Controller
         $customPage->is_visible = $request->is_visible;
         $customPage->is_in_navbar = $request->is_in_navbar;
         $customPage->is_sidebar_visible = $request->is_sidebar_visible;
+        $customPage->is_open_in_new_tab = $request->is_open_in_new_tab;
         $customPage->is_html_page = $request->is_html_page;
         $customPage->is_redirect = $request->is_redirect;
         $customPage->redirect_url = $request->redirect_url;

@@ -144,71 +144,38 @@
                           {{ __("Options") }}
                         </legend>
                         <div class="mt-4 flex space-x-4">
-                          <div class="flex items-start">
-                            <div class="flex items-center h-5">
-                              <input
-                                id="is_visible"
-                                v-model="form.is_visible"
-                                name="is_visible"
-                                type="checkbox"
-                                class="focus:ring-light-blue-400 h-4 w-4 text-light-blue-500 border-gray-300 dark:border-gray-900 rounded dark:bg-cool-gray-900"
-                              >
-                            </div>
-                            <div class="ml-3 text-sm">
-                              <label
-                                for="is_visible"
-                                class="font-medium text-gray-700 dark:text-gray-400"
-                              >{{ __("Visible") }}</label>
-                              <p class="text-gray-500 text-xs">
-                                {{ __("General public can access this URL via link") }}
-                              </p>
-                            </div>
-                          </div>
-                          <div class="flex items-start">
-                            <div class="flex items-center h-5">
-                              <input
-                                id="is_in_navbar"
-                                v-model="form.is_in_navbar"
-                                name="is_in_navbar"
-                                type="checkbox"
-                                class="focus:ring-light-blue-400 h-4 w-4 text-light-blue-500 border-gray-300 dark:border-gray-900 rounded dark:bg-cool-gray-900"
-                              >
-                            </div>
-                            <div class="ml-3 text-sm">
-                              <label
-                                for="is_in_navbar"
-                                class="font-medium text-gray-700 dark:text-gray-400"
-                              >{{ __("Add to Navbar") }}</label>
-                              <p class="text-gray-500 text-xs">
-                                {{ __("Add this page link to the top Navigation bar") }}
-                              </p>
-                            </div>
-                          </div>
-                          <div
+                          <XCheckbox
+                            id="is_visible"
+                            v-model="form.is_visible"
+                            :label="__('Visible')"
+                            :help="__('General public can access this URL via link')"
+                            name="is_visible"
+                          />
+
+                          <XCheckbox
+                            id="is_in_navbar"
+                            v-model="form.is_in_navbar"
+                            :label="__('Add to Navbar')"
+                            :help="__('Add this page link to the top Navigation bar')"
+                            name="is_in_navbar"
+                          />
+
+                          <XCheckbox
+                            id="is_open_in_new_tab"
+                            v-model="form.is_open_in_new_tab"
+                            :label="__('Open in New Tab')"
+                            :help="__('Should this page open in new tab')"
+                            name="is_open_in_new_tab"
+                          />
+
+                          <XCheckbox
                             v-show="pageType !== 'redirect'"
-                            class="flex items-start"
-                          >
-                            <div class="flex items-center h-5">
-                              <input
-                                id="is_sidebar_visible"
-                                v-model="form.is_sidebar_visible"
-                                name="is_sidebar_visible"
-                                type="checkbox"
-                                class="focus:ring-light-blue-400 h-4 w-4 text-light-blue-500 border-gray-300 dark:border-gray-900 rounded dark:bg-cool-gray-900"
-                              >
-                            </div>
-                            <div class="ml-3 text-sm">
-                              <label
-                                for="is_sidebar_visible"
-                                class="font-medium text-gray-700 dark:text-gray-400"
-                              >{{ __("Sidebar Visible") }}</label>
-                              <p class="text-gray-500 text-xs">
-                                {{
-                                  __("Should right sidebar be visible when user open this page")
-                                }}
-                              </p>
-                            </div>
-                          </div>
+                            id="is_sidebar_visible"
+                            v-model="form.is_sidebar_visible"
+                            :label="__('Sidebar Visible')"
+                            :help="__('Should right sidebar be visible when user open this page')"
+                            name="is_sidebar_visible"
+                          />
                         </div>
                         <jet-input-error
                           :message="form.errors.is_in_navbar"
@@ -249,6 +216,7 @@ import JetInputError from '@/Jetstream/InputError.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import EasyMDE from 'easymde';
 import {onMounted, ref, shallowRef} from 'vue';
 import {useForm} from '@inertiajs/vue3';
@@ -275,6 +243,7 @@ const form = useForm({
     redirect_url: null,
     is_html_page: false,
     is_sidebar_visible: true,
+    is_open_in_new_tab: false,
 });
 
 // Codemirror EditorView instance ref

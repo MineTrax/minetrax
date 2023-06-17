@@ -37,6 +37,7 @@ class UpdateCustomPageRequest extends FormRequest
             'is_in_navbar' => 'required|boolean',
             'is_redirect' => 'required|boolean',
             'is_html_page' => 'required|boolean',
+            'is_open_in_new_tab' => 'required|boolean',
             'redirect_url' => 'nullable|required_if:is_redirect,true|url',
             'body' => 'nullable|required_if:is_redirect,false|string',
         ];
