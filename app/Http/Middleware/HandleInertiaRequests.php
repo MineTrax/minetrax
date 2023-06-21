@@ -45,6 +45,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request)
     {
         return array_merge(parent::share($request), [
+            'authHasPassword' => fn () => $request->user() ? $request->user()->password !== null : false,
             'appName' => config('app.name'),
             'locale' => fn () => app()->getLocale(),
             'toast' => fn () => $request->session()->get('toast'),
@@ -58,9 +59,9 @@ class HandleInertiaRequests extends Middleware
                 return $request->user()->getAllPermissions()->pluck('name');
             },
             'defaultQueryServer' => function () {
-                $defaultQueryServer = Server::where('type', ServerType::Bungee)->select('hostname', 'id')->latest()->first();
+                $defaultQueryServer = Server::where('type', ServerType::Bungee)->select(['hostname', 'id'])->latest()->first();
                 if (!$defaultQueryServer) {
-                    $defaultQueryServer = Server::select('id', 'hostname')->first();
+                    $defaultQueryServer = Server::select(['id', 'hostname'])->first();
                 }
                 return $defaultQueryServer;
             },

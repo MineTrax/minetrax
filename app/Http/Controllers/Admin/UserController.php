@@ -16,6 +16,8 @@ use Inertia\Inertia;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use App\Queries\Filters\FilterMultipleFields;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -169,6 +171,7 @@ class UserController extends Controller
             'verified' => ['required', 'boolean'],
             'badges' => ['sometimes', 'nullable', 'array', 'exists:badges,id'],
             'country_id' => ['required', 'exists:countries,id'],
+            'password' => ['sometimes', 'nullable', 'string', Password::min(8)->uncompromised()],
         ]);
 
         $social_links = [
@@ -203,6 +206,10 @@ class UserController extends Controller
             $user->verified_at = now();
         } else if (!$request->verified && $user->verified_at) {
             $user->verified_at = null;
+        }
+
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
         }
 
         $user->save();

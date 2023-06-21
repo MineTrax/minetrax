@@ -54,6 +54,7 @@
           {{ __("Staff") }}
         </div>
         <jet-dropdown-link
+          v-if="canShowAdminSidebar"
           class="text-sm"
           :href="route('admin.dashboard')"
         >

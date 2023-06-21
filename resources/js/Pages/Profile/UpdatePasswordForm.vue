@@ -9,7 +9,10 @@
     </template>
 
     <template #form>
-      <div class="col-span-6 sm:col-span-4">
+      <div
+        v-if="showCurrentPasswordConfirm"
+        class="col-span-6 sm:col-span-4"
+      >
         <x-input
           id="current_password"
           ref="current_password"
@@ -101,6 +104,12 @@ export default {
                 password_confirmation: '',
             }),
         };
+    },
+
+    computed: {
+        showCurrentPasswordConfirm() {
+            return this.$page.props.authHasPassword ?? true;
+        },
     },
 
     methods: {
