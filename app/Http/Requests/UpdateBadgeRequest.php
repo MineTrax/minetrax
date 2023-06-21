@@ -34,7 +34,7 @@ class UpdateBadgeRequest extends FormRequest
             ],
             'sort_order' => 'sometimes|nullable|numeric|min:0',
             'is_sticky' => 'required|boolean',
-            'photo' => 'sometimes|nullable|image|max:64'
+            'photo' => 'sometimes|nullable|image|max:200'
         ];
     }
 }
