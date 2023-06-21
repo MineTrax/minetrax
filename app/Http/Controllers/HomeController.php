@@ -90,7 +90,7 @@ class HomeController extends Controller
         // Top 10 Players
         $top10Players = Player::select(['id', 'username', 'uuid', 'position', 'rating', 'total_score', 'last_seen_at', 'country_id', 'rank_id'])
             ->with(['country:id,iso_code,flag,name', 'rank:id,shortname,name'])
-            ->orderBy(\DB::raw('-`position`'), 'desc')                   // this sort with position but excludes the nulls
+            ->orderBy(\DB::raw('-`position`'), 'desc') // this sort with position but excludes the nulls
             ->orderByDesc('rating')
             ->orderByDesc('total_score')
             ->limit(10)->get();
@@ -149,13 +149,14 @@ class HomeController extends Controller
     {
         $myVersion = config("app.version");
 
-        $latestVersion = Http::withoutVerifying()->timeout(5)->get('https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws',
-        [
-            'version' => $myVersion,
-            'from' => 'web',
-            'appName' => config("app.name"),
-            'appUrl' => config("app.url"),
-        ]
+        $latestVersion = Http::withoutVerifying()->timeout(5)->get(
+            'https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws',
+            [
+                'version' => $myVersion,
+                'from' => 'web',
+                'appName' => config("app.name"),
+                'appUrl' => config("app.url"),
+            ]
         )->json();
         $latestVersion = $latestVersion['web'];
 
@@ -166,5 +167,21 @@ class HomeController extends Controller
         ];
 
         return response()->json($response);
+    }
+
+    public function visitVotingSite(Request $request, GeneralSettings $generalSettings)
+    {
+        $voteSitesArray = $generalSettings->voteforserverbox_content;
+        if (!$voteSitesArray) {
+            return abort(404);
+        }
+
+        $id = (int) $request->id;
+        if (array_key_exists($id - 1, $voteSitesArray)) {
+            $votingSiteData = $voteSitesArray[$id - 1];
+            return redirect()->away($votingSiteData['url']);
+        } else {
+            return abort(404);
+        }
     }
 }

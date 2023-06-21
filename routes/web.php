@@ -49,6 +49,8 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('player/avatar/{uuid}/{username}', [\App\Http\Controllers\PlayerController::class, 'getAvatarImage'])->name('player.avatar.get');
     Route::get('player/skin/{uuid}/{username}', [\App\Http\Controllers\PlayerController::class, 'getSkinImage'])->name('player.skin.get');
     Route::get('player/render/{uuid}/{username}', [\App\Http\Controllers\PlayerController::class, 'getRenderImage'])->name('player.render.get');
+
+    Route::get('vote/{id}', [\App\Http\Controllers\HomeController::class, 'visitVotingSite'])->name('vote.visit');
 });
 
 /**
