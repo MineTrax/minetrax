@@ -1,8 +1,6 @@
 <template>
   <app-layout>
-    <app-head
-      :title="__(':name profile', {name: profileUser.name})"
-    />
+    <app-head :title="__(':name profile', { name: profileUser.name })" />
 
     <div class="max-w-6xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
       <AlertCard
@@ -18,7 +16,8 @@
           />
         </template>
         <template #body>
-          {{ __("If you think it is a mistake.") }}  <inertia-link
+          {{ __("If you think it is a mistake.") }}
+          <inertia-link
             :href="route('staff.index')"
             class="font-semibold hover:underline"
           >
@@ -28,14 +27,19 @@
       </AlertCard>
 
       <AlertCard
-        v-if="$page.props.jetstream.hasEmailVerification && profileUser.email_verified_at === null"
+        v-if="
+          $page.props.jetstream.hasEmailVerification &&
+            profileUser.email_verified_at === null
+        "
         text-color="text-orange-800 dark:text-orange-500"
         border-color="border-orange-500"
       >
         {{ __("This user hasn't verified his email yet!") }}
       </AlertCard>
 
-      <div class="overflow-hidden bg-white border-b border-gray-200 shadow max-w-none dark:bg-cool-gray-800 dark:border-cool-gray-800 md:rounded">
+      <div
+        class="overflow-hidden bg-white border-b border-gray-200 shadow max-w-none dark:bg-cool-gray-800 dark:border-cool-gray-800 md:rounded"
+      >
         <div>
           <div
             class="w-full bg-center bg-no-repeat bg-cover"
@@ -51,13 +55,13 @@
             <div class="relative flex w-full">
               <!-- Avatar -->
               <div class="flex flex-1">
-                <div style="margin-top: -6rem;">
+                <div style="margin-top: -6rem">
                   <div
-                    style="height:9rem; width:9rem;"
+                    style="height: 9rem; width: 9rem"
                     class="relative rounded-full md avatar"
                   >
                     <img
-                      style="height:9rem; width:9rem;"
+                      style="height: 9rem; width: 9rem"
                       class="relative transition bg-white border-4 border-white rounded-full md dark:bg-cool-gray-800 hover:bg-gray-200 dark:border-gray-600"
                       :src="profileUser.profile_photo_url"
                       alt=""
@@ -69,58 +73,124 @@
               <!-- Follow Button -->
               <div
                 v-if="$page.props.auth.user"
-                class="flex space-x-2 text-xs text-right md:text-medium"
+                class="flex text-xs text-right md:text-medium"
               >
-                <inertia-link
-                  v-if="profileUser.id === $page.props.auth.user.id"
-                  :href="route('profile.show')"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold bg-transparent border rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max border-light-blue-500 text-light-blue-500 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900"
-                >
-                  {{ __("Edit") }}<span class="hidden md:block">&nbsp;{{ __("Profile") }}</span>
-                </inertia-link>
-                <inertia-link
-                  v-if="can('mute users') && !profileUser.muted_at"
-                  method="post"
-                  as="button"
-                  :href="route('admin.user.mute', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-yellow-500 bg-transparent border border-yellow-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-yellow-50 dark:hover:bg-cool-gray-900"
-                >
-                  {{ __("Mute") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
-                </inertia-link>
-                <inertia-link
-                  v-if="can('mute users') && profileUser.muted_at"
-                  method="post"
-                  as="button"
-                  :href="route('admin.user.unmute', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
-                >
-                  {{ __("UnMute") }}<span class="hidden md:block">&nbsp;User</span>
-                </inertia-link>
-                <inertia-link
-                  v-if="can('ban users') && !profileUser.banned_at"
-                  method="post"
-                  as="button"
-                  :href="route('admin.user.ban', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-red-500 bg-transparent border border-red-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-red-50 dark:hover:bg-cool-gray-900"
-                >
-                  {{ __("Ban") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
-                </inertia-link>
-                <inertia-link
-                  v-if="can('ban users') && profileUser.banned_at"
-                  method="post"
-                  as="button"
-                  :href="route('admin.user.unban', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-green-500 bg-transparent border border-green-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
-                >
-                  {{ __("UnBan") }}<span class="hidden md:block">&nbsp;{{ __("User") }}</span>
-                </inertia-link>
-                <inertia-link
-                  v-if="can('update users')"
-                  :href="route('admin.user.edit', profileUser.id)"
-                  class="flex items-center justify-center px-4 py-2 ml-auto mr-0 font-bold text-light-blue-500 bg-transparent border border-light-blue-500 rounded-full max-h-max whitespace-nowrap focus:outline-none max-w-max hover:bg-green-50 dark:hover:bg-cool-gray-900"
-                >
-                  {{ __("Edit") }}
-                </inertia-link>
+                <div class="p-4 space-x-2">
+                  <inertia-link
+                    v-if="
+                      profileUser.id ===
+                        $page.props.auth.user.id
+                    "
+                    v-tippy
+                    :title="__('Update Profile')"
+                    :href="route('profile.show')"
+                    class="inline-flex items-center px-2 py-2 text-sm font-medium border-2 rounded-full border-light-blue-500 text-light-blue-500 hover:bg-light-blue-500 hover:text-white"
+                  >
+                    <PencilSquareIcon
+                      class="w-5 h-5 stroke-2"
+                    />
+                  </inertia-link>
+                  <inertia-link
+                    v-if="
+                      can('mute users') &&
+                        !profileUser.muted_at
+                    "
+                    v-tippy
+                    :title="__('Mute')"
+                    method="post"
+                    as="button"
+                    :href="
+                      route(
+                        'admin.user.mute',
+                        profileUser.id
+                      )
+                    "
+                    class="inline-flex items-center px-2 py-2 text-sm font-medium text-orange-500 border-2 border-orange-500 rounded-full hover:bg-orange-500 hover:text-white"
+                  >
+                    <SpeakerXMarkIcon
+                      class="w-5 h-5 stroke-2"
+                    />
+                  </inertia-link>
+                  <inertia-link
+                    v-if="
+                      can('mute users') &&
+                        profileUser.muted_at
+                    "
+                    v-tippy
+                    :title="__('Unmute')"
+                    method="post"
+                    as="button"
+                    :href="
+                      route(
+                        'admin.user.unmute',
+                        profileUser.id
+                      )
+                    "
+                    class="inline-flex items-center px-2 py-2 text-sm font-medium text-teal-500 border-2 border-teal-500 rounded-full hover:bg-teal-500 hover:text-white"
+                  >
+                    <SpeakerWaveIcon
+                      class="w-5 h-5 stroke-2"
+                    />
+                  </inertia-link>
+                  <inertia-link
+                    v-if="
+                      can('ban users') &&
+                        !profileUser.banned_at
+                    "
+                    v-tippy
+                    :title="__('Ban')"
+                    method="post"
+                    as="button"
+                    :href="
+                      route(
+                        'admin.user.ban',
+                        profileUser.id
+                      )
+                    "
+                    class="inline-flex items-center px-2 py-2 text-sm font-medium text-red-500 border-2 border-red-500 rounded-full hover:bg-red-500 hover:text-white"
+                  >
+                    <NoSymbolIcon
+                      class="w-5 h-5 stroke-2"
+                    />
+                  </inertia-link>
+                  <inertia-link
+                    v-if="
+                      can('ban users') &&
+                        profileUser.banned_at
+                    "
+                    v-tippy
+                    :title="__('Unban')"
+                    method="post"
+                    as="button"
+                    :href="
+                      route(
+                        'admin.user.unban',
+                        profileUser.id
+                      )
+                    "
+                    class="inline-flex items-center px-2 py-2 text-sm font-medium text-green-500 border-2 border-green-500 rounded-full hover:bg-green-500 hover:text-white"
+                  >
+                    <NoSymbolIcon
+                      class="w-5 h-5 stroke-2"
+                    />
+                  </inertia-link>
+                  <inertia-link
+                    v-if="can('update users')"
+                    v-tippy
+                    :title="__('Edit')"
+                    :href="
+                      route(
+                        'admin.user.edit',
+                        profileUser.id
+                      )
+                    "
+                    class="inline-flex items-center px-2 py-2 text-sm font-medium text-blue-500 border-2 border-blue-500 rounded-full hover:bg-blue-500 hover:text-white"
+                  >
+                    <PencilSquareIcon
+                      class="w-5 h-5 stroke-2"
+                    />
+                  </inertia-link>
+                </div>
               </div>
             </div>
 
@@ -133,7 +203,9 @@
                   icon-class="w-6 h-6"
                   text-class="text-xl"
                 />
-                <p class="font-medium leading-5 text-gray-600 dark:text-gray-400">
+                <p
+                  class="font-medium leading-5 text-gray-600 dark:text-gray-400"
+                >
                   @{{ profileUser.username }}
                 </p>
               </div>
@@ -153,10 +225,17 @@
                 <p
                   v-tippy
                   class="text-sm font-medium leading-5 text-gray-600 focus:outline-none"
-                  :title="formatToDayDateString(profileUser.created_at)"
+                  :title="
+                    formatToDayDateString(
+                      profileUser.created_at
+                    )
+                  "
                 >
-                  {{ __("Joined") }}: {{
-                    formatTimeAgoToNow(profileUser.created_at)
+                  {{ __("Joined") }}:
+                  {{
+                    formatTimeAgoToNow(
+                      profileUser.created_at
+                    )
                   }}
                 </p>
               </div>
@@ -177,7 +256,13 @@
               class="flex justify-around p-4 space-x-4 border-b border-gray-200 dark:border-none"
             >
               <img
-                :src="route('player.render.get', {uuid: player.uuid, username: player.username, scale: 4})"
+                :src="
+                  route('player.render.get', {
+                    uuid: player.uuid,
+                    username: player.username,
+                    scale: 4,
+                  })
+                "
                 :alt="player.username"
               >
 
@@ -185,7 +270,9 @@
                 <div class="username">
                   <inertia-link
                     as="a"
-                    :href="route('player.show', player.uuid)"
+                    :href="
+                      route('player.show', player.uuid)
+                    "
                     class="text-lg font-bold text-light-blue-400 hover:text-light-blue-500"
                   >
                     {{ player.username }}
@@ -196,7 +283,9 @@
                   <p class="font-bold dark:text-gray-400">
                     {{ __("Position") }}:
                   </p>
-                  <div class="flex items-center space-x-2 text-sm font-extrabold text-center text-light-blue-400">
+                  <div
+                    class="flex items-center space-x-2 text-sm font-extrabold text-center text-light-blue-400"
+                  >
                     <span
                       v-if="player.position"
                       class="px-2 text-lg border-2 rounded border-light-blue-300 bg-light-blue-50 dark:bg-cool-gray-800"
@@ -246,7 +335,10 @@
                       {{ __("None") }}
                     </p>
                     <img
-                      v-if="player.rank && player.rank.photo_url"
+                      v-if="
+                        player.rank &&
+                          player.rank.photo_url
+                      "
                       v-tippy
                       :src="player.rank.photo_url"
                       :alt="player.rank.name"
@@ -264,10 +356,16 @@
                     <p
                       v-tippy
                       class="focus:outline-none dark:text-gray-200"
-                      :title="formatToDayDateString(player.last_seen_at)"
+                      :title="
+                        formatToDayDateString(
+                          player.last_seen_at
+                        )
+                      "
                     >
                       {{
-                        formatTimeAgoToNow(player.last_seen_at)
+                        formatTimeAgoToNow(
+                          player.last_seen_at
+                        )
                       }}
                     </p>
                   </div>
@@ -276,17 +374,16 @@
             </div>
           </div>
 
-
           <div
-            v-if="profileUser.badges && profileUser.badges.length > 0"
+            v-if="
+              profileUser.badges && profileUser.badges.length > 0
+            "
             class="p-4 bg-white rounded shadow dark:bg-cool-gray-800"
           >
             <h3 class="font-bold text-gray-700 dark:text-gray-200">
               Badges
             </h3>
-            <div
-              class="flex flex-row justify-center space-x-2"
-            >
+            <div class="flex flex-row justify-center space-x-2">
               <div
                 v-for="badge in profileUser.badges"
                 :key="badge.id"
@@ -306,13 +403,19 @@
             v-if="profileUser.about"
             class="flex flex-col w-full p-4 bg-white rounded shadow dark:bg-cool-gray-800"
           >
-            <span class="whitespace-pre-wrap dark:text-gray-200">{{ profileUser.about }}</span>
+            <span class="whitespace-pre-wrap dark:text-gray-200">{{
+              profileUser.about
+            }}</span>
           </div>
 
-          <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded shadow dark:bg-cool-gray-800 dark:text-gray-400">
+          <div
+            class="flex flex-col w-full p-4 space-y-2 bg-white rounded shadow dark:bg-cool-gray-800 dark:text-gray-400"
+          >
             <div class="flex justify-between">
               <span>{{ __("Country") }}</span>
-              <span class="font-semibold text-gray-800 dark:text-gray-200">
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200"
+              >
                 {{ profileUser.country.name }}
                 <img
                   class="inline h-6 mb-1"
@@ -323,22 +426,38 @@
             </div>
             <div class="flex justify-between">
               <span>{{ __("Day of Birth") }}</span>
-              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ profileUser.dob_string || __('unknown') }}</span>
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200"
+              >{{
+                profileUser.dob_string || __("unknown")
+              }}</span>
             </div>
             <div class="flex justify-between">
               <span>{{ __("Gender") }}</span>
-              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ __(profileUser.gender_string) || __('unknown') }}</span>
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200"
+              >{{
+                __(profileUser.gender_string) ||
+                  __("unknown")
+              }}</span>
             </div>
             <div class="flex justify-between">
               <span>{{ __("Total Posts") }}</span>
-              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ profileUser.posts_count }}</span>
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200"
+              >{{ profileUser.posts_count }}</span>
             </div>
             <div
-              v-if="profileUser.social_links && profileUser.social_links.s_discord_username"
+              v-if="
+                profileUser.social_links &&
+                  profileUser.social_links.s_discord_username
+              "
               class="flex justify-between"
             >
               <span>{{ __("Discord") }}</span>
-              <span class="font-semibold text-gray-800 dark:text-gray-200">{{
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200"
+              >{{
                 profileUser.social_links.s_discord_username
               }}</span>
             </div>
@@ -365,7 +484,9 @@
           v-else
           class="flex items-center justify-center w-full p-3 space-y-4 text-center text-gray-500 bg-white rounded shadow sm:px-5 dark:bg-cool-gray-800"
         >
-          <span class="italic">{{ __("Posts Feed is disabled!") }}</span>
+          <span class="italic">{{
+            __("Posts Feed is disabled!")
+          }}</span>
         </div>
       </div>
     </div>
@@ -379,8 +500,14 @@ import PostListBox from '@/Shared/PostListBox.vue';
 import SocialChannelBox from '@/Shared/SocialChannelBox.vue';
 import AlertCard from '@/Components/AlertCard.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
-import {useAuthorizable} from '@/Composables/useAuthorizable';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
 import { useHelpers } from '@/Composables/useHelpers';
+import {
+    NoSymbolIcon,
+    PencilSquareIcon,
+    SpeakerXMarkIcon,
+    SpeakerWaveIcon,
+} from '@heroicons/vue/24/outline';
 
 export default {
     components: {
@@ -389,15 +516,19 @@ export default {
         AppLayout,
         PostListBox,
         AlertCard,
-        UserDisplayname
+        UserDisplayname,
+        NoSymbolIcon,
+        PencilSquareIcon,
+        SpeakerXMarkIcon,
+        SpeakerWaveIcon,
     },
     props: {
         profileUser: Object,
     },
     setup() {
-        const {can} = useAuthorizable();
-        const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
-        return {can, formatTimeAgoToNow,formatToDayDateString};
+        const { can } = useAuthorizable();
+        const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
+        return { can, formatTimeAgoToNow, formatToDayDateString };
     },
 };
 </script>
