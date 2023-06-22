@@ -3,7 +3,7 @@
     v-if="enabled"
     ref="box"
   >
-    <div class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow">
+    <div class="p-3 bg-white rounded shadow sm:px-5 dark:bg-cool-gray-800">
       <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
         {{ __("Did You Know?") }}
       </h3>
@@ -11,14 +11,14 @@
       <!--Loading-->
       <div
         v-if="loading"
-        class="space-y-4 mt-4"
+        class="mt-4 space-y-4"
       >
-        <div class="max-w-sm w-full mx-auto">
-          <div class="animate-pulse flex space-x-4">
-            <div class="rounded bg-gray-300 dark:bg-cool-gray-700 h-8 w-8" />
-            <div class="flex-1 space-y-1 py-1">
-              <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-3/4" />
-              <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-5/6" />
+        <div class="w-full max-w-sm mx-auto">
+          <div class="flex space-x-4 animate-pulse">
+            <div class="w-8 h-8 bg-gray-300 rounded dark:bg-cool-gray-700" />
+            <div class="flex-1 py-1 space-y-1">
+              <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+              <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
             </div>
           </div>
         </div>
@@ -27,15 +27,18 @@
       <!--Data-->
       <div
         v-if="!loading"
-        class="flex space-x-2 mt-4"
+        class="flex flex-col mt-4 space-y-2"
       >
         <img
           v-if="imageUrl"
-          class="w-14 h-14"
+          class="w-full rounded"
           :src="imageUrl"
           alt="Image"
         >
-        <div class="text-gray-600 dark:text-gray-300 text-sm">
+        <div
+          class="text-sm text-gray-600 dark:text-gray-300"
+          :class="{ 'font-semibold text-center': imageUrl }"
+        >
           {{ text }}
         </div>
       </div>
@@ -43,63 +46,61 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+import axios from 'axios';
 
-export default {
-    props: {
-        enabled: Boolean
-    },
+const enabled = ref(false);
+const text = ref(null);
+const imageUrl = ref(null);
+const loading = ref(true);
+const box = ref(null);
+let interval = null;
 
-    data() {
-        return {
-            text: null,
-            imageUrl: null,
-            loading: true,
-            interval: null
-        };
-    },
+const isInViewport = () => {
+    const rect = box.value?.getBoundingClientRect();
+    if (!rect) return false;
 
-    created() {
-        axios.get(route('didyouknow.get')).then(data => {
-            this.text = data.data.text;
-            this.imageUrl = data.data.image;
-        }).finally(() => {
-            this.loading = false;
-        });
-    },
-
-    mounted() {
-        this.interval = setInterval(() => {
-            // If element is not in viewport then don't hit
-            if (!this.isInViewport()) {
-                return;
-            }
-            this.loading = true;
-            axios.get(route('didyouknow.get')).then(data => {
-                this.text = data.data.text;
-                this.imageUrl = data.data.image;
-            }).finally(() => {
-                this.loading = false;
-            });
-        }, 30000);
-    },
-
-    unmounted() {
-        clearInterval(this.interval);
-    },
-
-    methods: {
-        isInViewport() {
-            const rect = this.$refs.box?.getBoundingClientRect();
-            if (!rect) return false;
-
-            return (
-                rect.top >= 0 &&
-                rect.left >= 0 &&
-                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-            );
-        }
-    }
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <=
+        (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <=
+        (window.innerWidth || document.documentElement.clientWidth)
+    );
 };
+
+onMounted(() => {
+    enabled.value = true;
+    axios
+        .get(route('didyouknow.get'))
+        .then((data) => {
+            text.value = data.data.text;
+            imageUrl.value = data.data.image;
+        })
+        .finally(() => {
+            loading.value = false;
+        });
+
+    interval = setInterval(() => {
+        if (!isInViewport()) {
+            return;
+        }
+        loading.value = true;
+        axios
+            .get(route('didyouknow.get'))
+            .then((data) => {
+                text.value = data.data.text;
+                imageUrl.value = data.data.image;
+            })
+            .finally(() => {
+                loading.value = false;
+            });
+    }, 30000);
+});
+
+onUnmounted(() => {
+    clearInterval(interval);
+});
 </script>
