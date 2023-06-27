@@ -47,7 +47,7 @@ watch(selectedServers, (newSelectedServers) => {
 
     <div class="p-4 mx-auto space-y-4 max-w-7xl">
       <div class="flex items-center justify-between">
-        <h3 class="text-xl font-extrabold">
+        <h3 class="text-xl font-extrabold text-gray-800 dark:text-gray-200">
           {{ __("Server Performance") }}:
           {{ showing ?? __("All Servers") }}
         </h3>
@@ -58,16 +58,13 @@ watch(selectedServers, (newSelectedServers) => {
           name="select_servers"
           :select-list="props.serverList"
           :placeholder="__('All Servers')"
-          class="w-48"
+          class="w-48 dark:border dark:rounded dark:border-gray-700"
         />
       </div>
 
       <ServerPerformanceOverTimeMetricBox :servers="filters?.servers" />
 
-      <ServerIntelPerformanceNumbersBox
-        class="w-2/3"
-        :servers="filters?.servers"
-      />
+      <ServerIntelPerformanceNumbersBox :servers="filters?.servers" />
     </div>
   </AdminLayout>
 </template>

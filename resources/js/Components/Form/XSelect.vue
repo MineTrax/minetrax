@@ -7,6 +7,7 @@
       :class="[
         error ? 'border-red-400 dark:border-red-400' : 'border-gray-300',
         label ? 'pt-6 h-14' : '',
+        selectClass,
       ]"
       :value="modelValue"
       :autofocus="autofocus"
@@ -93,6 +94,10 @@ export default {
         disableNull: {
             type: Boolean,
             default: false
+        },
+        selectClass: {
+            type: String,
+            required: false,
         }
     },
 

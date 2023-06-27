@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
+use App\Models\MinecraftPlayerSession;
 use App\Models\MinecraftServerLiveInfo;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -107,6 +108,20 @@ class ServerIntelController extends Controller
             $totalRestarts["last_30days"] = MinecraftServerLiveInfo::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->distinct()->count('server_session_id');
             $totalRestarts["last_90days"] = MinecraftServerLiveInfo::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonths(3))->distinct()->count('server_session_id');
             $numbersData["total_restarts"] = $totalRestarts;
+
+            // Player Avg Session Length
+            $playerAvgSessionLength["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->avg('play_time') ?: 0;
+            $playerAvgSessionLength["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->avg('play_time') ?: 0;
+            $playerAvgSessionLength["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->avg('play_time') ?: 0;
+            $playerAvgSessionLength["last_90days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonths(3))->avg('play_time') ?: 0;
+            $numbersData["player_avg_session_length"] = $playerAvgSessionLength;
+
+            // Player Avg AFK Time
+            $playerAvgAFKTime["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->avg('afk_time') ?: 0;
+            $playerAvgAFKTime["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->avg('afk_time') ?: 0;
+            $playerAvgAFKTime["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->avg('afk_time') ?: 0;
+            $playerAvgAFKTime["last_90days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonths(3))->avg('afk_time') ?: 0;
+            $numbersData["player_avg_afk_time"] = $playerAvgAFKTime;
 
             return $numbersData;
         });

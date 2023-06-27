@@ -2,6 +2,8 @@
 import { onMounted, ref } from 'vue';
 import Icon from '@/Components/Icon.vue';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
+import {useHelpers} from '@/Composables/useHelpers';
+const { secondsToHMS } = useHelpers();
 
 const props = defineProps({
     servers: {
@@ -49,7 +51,7 @@ onMounted(async () => {
 
       <div
         v-if="isLoading"
-        class="h-64 flex justify-center items-center"
+        class="h-80 flex justify-center items-center"
       >
         <LoadingSpinner :loading="isLoading" />
       </div>
@@ -111,6 +113,50 @@ onMounted(async () => {
               </td>
               <td class="p-2">
                 {{ numbers.max_players.last_90days }}
+              </td>
+            </tr>
+
+            <tr>
+              <td class="p-2 flex">
+                <icon
+                  name="finger-print"
+                  class="w-5 text-indigo-500 mr-1"
+                />
+                {{ __("Avg Player Session Length") }}
+              </td>
+              <td class="p-2">
+                {{ secondsToHMS(numbers.player_avg_session_length.last_24h, true) }}
+              </td>
+              <td class="p-2">
+                {{ secondsToHMS(numbers.player_avg_session_length.last_7days, true) }}
+              </td>
+              <td class="p-2">
+                {{ secondsToHMS(numbers.player_avg_session_length.last_30days, true) }}
+              </td>
+              <td class="p-2">
+                {{ secondsToHMS(numbers.player_avg_session_length.last_90days, true) }}
+              </td>
+            </tr>
+
+            <tr>
+              <td class="p-2 flex">
+                <icon
+                  name="moon-outline"
+                  class="w-5 text-gray-500 mr-1"
+                />
+                {{ __("Avg Player AFK Time") }}
+              </td>
+              <td class="p-2">
+                {{ secondsToHMS(numbers.player_avg_afk_time.last_24h, true) }}
+              </td>
+              <td class="p-2">
+                {{ secondsToHMS(numbers.player_avg_afk_time.last_7days, true) }}
+              </td>
+              <td class="p-2">
+                {{ secondsToHMS(numbers.player_avg_afk_time.last_30days, true) }}
+              </td>
+              <td class="p-2">
+                {{ secondsToHMS(numbers.player_avg_afk_time.last_90days, true) }}
               </td>
             </tr>
 

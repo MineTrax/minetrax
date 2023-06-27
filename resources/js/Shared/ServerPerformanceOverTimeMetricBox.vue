@@ -195,7 +195,7 @@ const datePickerShortcuts = [
         type="date"
         range
         :placeholder="__('View for date range')"
-        input-class="block w-full p-2 text-sm border-gray-300 rounded-md focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 dark:bg-cool-gray-800 dark:text-gray-300 dark:border-gray-800"
+        input-class="block w-full p-2 text-sm border-gray-300 rounded-md focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
         :shortcuts="datePickerShortcuts"
         @change="fetchData()"
       />
