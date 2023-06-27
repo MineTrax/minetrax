@@ -177,3 +177,7 @@ body.swal2-shown > [aria-hidden="true"] {
         opacity: 0;
     }
 }
+
+.mx-datepicker-sidebar button {
+    font-size: small;
+}

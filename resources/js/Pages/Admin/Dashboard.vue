@@ -42,7 +42,7 @@ defineProps({
 
 <template>
   <AdminLayout>
-    <AppHead title="Admin Dashboard" />
+    <AppHead :title="__('Admin Dashboard')" />
 
     <div
       v-if="!can('view admin_dashboard')"

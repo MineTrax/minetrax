@@ -107,6 +107,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('/graph/players-per-server', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayersPerServer'])->name('graph.players-per-server');
     Route::get('/graph/players-per-country', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerPerCountry'])->name('graph.players-per-country');
     Route::get('/graph/network-trends-vs-month', [\App\Http\Controllers\Admin\GraphController::class, 'getNetworkTrendsMonthVsMonth'])->name('graph.network-trends-vs-month');
+    Route::get('/graph/server-performance', [\App\Http\Controllers\Admin\GraphController::class, 'getServerPerformanceOverTime'])->name('graph.server-performance');
 
     Route::get('user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('user.index');
     //  Route::get('user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('user.show');
@@ -135,9 +136,14 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::put('server/{server}/bungee', [\App\Http\Controllers\Admin\ServerController::class, 'updateBungee'])->name('server.update.bungee');
     Route::delete('server/{server}', [\App\Http\Controllers\Admin\ServerController::class, 'destroy'])->name('server.delete')->middleware('password.confirm');
     Route::post('server/{server}/send-command', [\App\Http\Controllers\Admin\ServerController::class, 'postSendCommandToServer'])->name('server.command');
-    Route::get('server/{server}/performance', [\App\Http\Controllers\Admin\ServerController::class, 'showPerformanceMonitor'])->name('server.show.perfmon');
-    Route::get('server/{server}/insights', [\App\Http\Controllers\Admin\ServerController::class, 'showInsights'])->name('server.show.insights');
     Route::get('server/{server}/stats', [\App\Http\Controllers\Admin\ServerController::class, 'showStatistics'])->name('server.show.stats');
+
+    Route::get('intel/server/overview', [\App\Http\Controllers\Admin\ServerIntelController::class, 'index'])->name('intel.server.index');
+    Route::get('intel/server/performance', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performance'])->name('intel.server.performance');
+    Route::get('intel/server/performance/numbers', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performanceNumbers'])->name('intel.server.performance.numbers');
+    Route::get('intel/server/playerbase', [\App\Http\Controllers\Admin\ServerIntelController::class, 'playerbase'])->name('intel.server.playerbase');
+    Route::get('intel/server/chatlog', [\App\Http\Controllers\Admin\ServerIntelController::class, 'chatlog'])->name('intel.server.chatlog');
+    Route::get('intel/server/consolelog', [\App\Http\Controllers\Admin\ServerIntelController::class, 'consolelog'])->name('intel.server.consolelog');
 
     Route::get('rank', [\App\Http\Controllers\Admin\RankController::class, 'index'])->name('rank.index');
     Route::get('rank/create', [\App\Http\Controllers\Admin\RankController::class, 'create'])->name('rank.create');

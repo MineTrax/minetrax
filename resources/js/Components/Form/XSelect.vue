@@ -3,8 +3,11 @@
     <select
       :id="id"
       ref="input"
-      class="border-gray-300 pt-6 text-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full p-3 h-14 dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
-      :class="borderColor"
+      class="border-gray-300 text-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full p-3 dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
+      :class="[
+        error ? 'border-red-400 dark:border-red-400' : 'border-gray-300',
+        label ? 'pt-6 h-14' : '',
+      ]"
       :value="modelValue"
       :autofocus="autofocus"
       :required="required"
@@ -23,15 +26,16 @@
         {{ placeholder }}
       </option>
       <option
-        v-for="(label, value) in computedList"
+        v-for="(lbl, value) in computedList"
         :key="value"
         :value="value"
       >
-        {{ label }}
+        {{ lbl }}
       </option>
     </select>
 
     <label
+      v-if="label"
       :for="id"
       :class="textColor"
       class="absolute -top-3 left-0 px-3 py-5 text-xs h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-gray-400"
@@ -107,13 +111,6 @@ export default {
             return this.selectList.reduce((acc,value) => {
                 return {[value]: value, ...acc};
             }, {});
-        },
-        borderColor() {
-            if (this.error) {
-                return 'border-red-400 dark:border-red-400';
-            } else {
-                return 'border-gray-300';
-            }
         },
         textColor() {
             if (this.hasFocus) {

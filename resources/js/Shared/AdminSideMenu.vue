@@ -30,20 +30,61 @@ const navItems = [
         visible: true
     },
     {
-        label: 'Analytics',
-        href: route('admin.server.index'),
-        active: route().current('admin.server.intel.*'),
-        children: [],
-        icon: PresentationChartLineIcon,
-        visible: canWild('server_intel')
-    },
-    {
         label: 'Servers',
         href: route('admin.server.index'),
         active: route().current('admin.server.*'),
         children: [],
         icon: ServerStackIcon,
         visible: canWild('servers')
+    },
+    {
+        label: 'Server Analytics',
+        href: '#',
+        active: route().current('admin.intel.*'),
+        children: [
+            {
+                label: 'Overview',
+                href: route('admin.intel.server.index'),
+                active: route().current('admin.intel.server.index'),
+                children: [],
+                icon: null,
+                visible: canWild('server_intel')
+            },
+            {
+                label: 'Performance',
+                href: route('admin.intel.server.performance'),
+                active: route().current('admin.intel.server.performance'),
+                children: [],
+                icon: null,
+                visible: canWild('server_intel')
+            },
+            {
+                label: 'Playerbase',
+                href: route('admin.intel.server.playerbase'),
+                active: route().current('admin.intel.server.playerbase'),
+                children: [],
+                icon: null,
+                visible: canWild('server_intel')
+            },
+            {
+                label: 'Chatlog',
+                href: route('admin.intel.server.chatlog'),
+                active: route().current('admin.intel.server.chatlog'),
+                children: [],
+                icon: null,
+                visible: canWild('server_intel')
+            },
+            {
+                label: 'Consolelog',
+                href: route('admin.intel.server.consolelog'),
+                active: route().current('admin.intel.server.consolelog'),
+                children: [],
+                icon: null,
+                visible: canWild('server_intel')
+            },
+        ],
+        icon: PresentationChartLineIcon,
+        visible: canWild('server_intel')
     },
     {
         label: 'Users', href: '#', active: false, children: [
