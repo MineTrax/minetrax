@@ -24,6 +24,7 @@ const props = defineProps({
                 sort: '',
                 perPage: '',
                 filter: {},
+                servers: undefined   // Handle for special server filter for ServerIntel pages.
             };
         },
     },
@@ -33,6 +34,7 @@ const filters = reactive({
     filter: props.filters.filter ?? { q: '' },
     sort: props.filters.sort ?? '',
     perPage: props.filters.perPage ?? 10,
+    servers: props.filters.servers ?? undefined // Handle for special server filter for ServerIntel pages.
 });
 watch(filters, throttle(
     (newParams) => {
@@ -248,11 +250,14 @@ function toggleSorting(key) {
               </option>
             </select>
           </div>
-          <p class="text-sm text-gray-700 dark:text-gray-400 ml-2">
+          <p
+            v-if="data.total != undefined"
+            class="text-sm text-gray-700 dark:text-gray-400 ml-2"
+          >
             {{ __("Showing") }}
-            <span class="font-semibold dark:text-gray-300">{{ data.from }}</span>
+            <span class="font-semibold dark:text-gray-300">{{ data.from ?? 0 }}</span>
             {{ __("to") }}
-            <span class="font-semibold dark:text-gray-300">{{ data.to }}</span>
+            <span class="font-semibold dark:text-gray-300">{{ data.to ?? 0 }}</span>
             {{ __("of") }}
             <span class="font-semibold dark:text-gray-300">{{ data.total }}</span>
             {{ __("results") }}
@@ -260,7 +265,7 @@ function toggleSorting(key) {
         </div>
         <div>
           <DtPagination
-            v-if="data.last_page > 1"
+            v-if="data.next_page_url || data.prev_page_url"
             :data="data"
           />
         </div>

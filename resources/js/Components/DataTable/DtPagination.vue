@@ -1,6 +1,6 @@
 <script setup>
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
-import {  ref, watchEffect } from 'vue';
+import {  computed, ref, watchEffect } from 'vue';
 let pages = ref([]);
 let previousPage = ref({});
 let nextPage = ref({});
@@ -13,6 +13,10 @@ const props = defineProps({
     },
 });
 
+const isSimplePagination = computed(() => {
+    return props.data.total == undefined;
+});
+
 generatePaginationLinks();
 watchEffect(() => {
     generatePaginationLinks();
@@ -20,6 +24,10 @@ watchEffect(() => {
 
 // Generate Pagination Links
 function generatePaginationLinks() {
+    if(isSimplePagination.value) {
+        return;
+    }
+
     // copy array
     const linksArray = props.data.links.map((link) => {
         return {
@@ -92,6 +100,41 @@ function pagination(currentPage, pageCount) {
 
 <template>
   <nav
+    v-if="isSimplePagination"
+    class="isolate inline-flex space-x-2 rounded-md shadow-sm"
+  >
+    <InertiaLink
+      v-if="props.data.prev_page_url"
+      :href="data.prev_page_url"
+      class="relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+    >
+      {{ __("Previous") }}
+    </InertiaLink>
+    <button
+      v-else
+      disabled
+      class="relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-500  bg-white px-4 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
+    >
+      {{ __("Previous") }}
+    </button>
+    <InertiaLink
+      v-if="props.data.next_page_url"
+      :href="data.next_page_url"
+      class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+    >
+      {{ __("Next") }}
+    </InertiaLink>
+    <button
+      v-else
+      disabled
+      class="relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-500  bg-white px-4 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
+    >
+      {{ __("Next") }}
+    </button>
+  </nav>
+
+  <nav
+    v-else
     class="isolate inline-flex -space-x-px rounded-md shadow-sm"
     aria-label="Pagination"
   >

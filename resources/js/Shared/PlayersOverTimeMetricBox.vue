@@ -39,7 +39,8 @@ onMounted(async () => {
             {
                 type: 'inside',
                 start: 90,
-                end: 100
+                end: 100,
+                zoomLock: true,
             },
             {
                 start: 90,

@@ -123,7 +123,7 @@ class NewsController extends Controller
         }
 
         // Redirect to listing page
-        return redirect()->route('news.show', $news->slug)
+        return redirect()->route('admin.news.show', $news->id)
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('News updated successfully')]]);
     }
 

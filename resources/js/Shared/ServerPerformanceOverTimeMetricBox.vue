@@ -86,6 +86,7 @@ async function fetchData() {
                 type: 'inside',
                 start: 90,
                 end: 100,
+                zoomLock: true,
             },
             {
                 start: 90,

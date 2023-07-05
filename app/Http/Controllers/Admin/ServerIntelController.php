@@ -6,10 +6,17 @@ use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
 use App\Models\MinecraftPlayerSession;
 use App\Models\MinecraftServerLiveInfo;
+use App\Models\ServerChatlog;
+use App\Models\ServerConsolelog;
+use App\Queries\Filters\FilterMultipleFields;
+use App\Utils\Helpers\MinecraftColorUtils;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Server;
 use Illuminate\Support\Facades\Cache;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
+
 const RESPONSE_CACHE_SECONDS = 3600; // 1 hour
 
 class ServerIntelController extends Controller
@@ -19,9 +26,20 @@ class ServerIntelController extends Controller
         $this->middleware('can:view server_intel');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Admin/ServerIntel/Overview');
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+        ]);
+        $serverList = Server::select(['id', 'name'])
+            ->where('type', '!=', ServerType::Bungee())
+            ->get()->pluck('name', 'id');
+
+        return Inertia::render('Admin/ServerIntel/Overview', [
+            'filters' => request()->all(['servers']),
+            'serverList' => $serverList,
+        ]);
     }
 
     public function performance(Request $request)
@@ -131,18 +149,127 @@ class ServerIntelController extends Controller
         ]);
     }
 
-    public function playerbase()
+    public function playerbase(Request $request)
     {
-        return Inertia::render('Admin/ServerIntel/Playerbase');
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+        ]);
+        $serverList = Server::select(['id', 'name'])
+            ->where('type', '!=', ServerType::Bungee())
+            ->get()->pluck('name', 'id');
+
+        return Inertia::render('Admin/ServerIntel/Playerbase', [
+            'filters' => request()->all(['servers']),
+            'serverList' => $serverList,
+        ]);
     }
 
-    public function chatlog()
+    public function chatlog(Request $request)
     {
-        return Inertia::render('Admin/ServerIntel/Chatlog');
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+        ]);
+
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $serverList = Server::select(['id', 'name'])
+            ->where('type', '!=', ServerType::Bungee())
+            ->get()->pluck('name', 'id');
+
+
+        $selectedServers = $request->query('servers') ?? null; // list of selected server ids
+        $chatHistory = QueryBuilder::for(ServerChatlog::class)
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->select([
+                'id',
+                'server_id',
+                'data',
+                'causer_uuid',
+                'causer_username',
+                'channel',
+                'type',
+                'created_at',
+            ])
+            ->allowedFilters([
+                'id',
+                'server_id',
+                'data',
+                'causer_uuid',
+                'causer_username',
+                'channel',
+                'type',
+                'created_at',
+                AllowedFilter::custom('q', new FilterMultipleFields(['data', 'causer_username', 'causer_uuid', 'type']))
+            ])
+            ->with(['server:id,name'])
+            ->allowedSorts(['id', 'server_id', 'causer_uuid', 'causer_username', 'type', 'channel', 'created_at'])
+            ->defaultSort('-id')
+            ->simplePaginate($perPage)
+            ->withQueryString();
+
+        $chatHistory->getCollection()->transform(function ($item) {
+            $item->data = MinecraftColorUtils::convertToHTML($item->data);
+            return $item;
+        });
+
+        return Inertia::render('Admin/ServerIntel/Chatlog', [
+            'filters' => request()->all(['servers', 'perPage', 'sort', 'filter']),
+            'serverList' => $serverList,
+            'chatHistory' => $chatHistory,
+        ]);
     }
 
-    public function consolelog()
+    public function consolelog(Request $request)
     {
-        return Inertia::render('Admin/ServerIntel/Consolelog');
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+        ]);
+
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $serverList = Server::select(['id', 'name'])
+            ->where('type', '!=', ServerType::Bungee())
+            ->get()->pluck('name', 'id');
+
+        $selectedServers = $request->query('servers') ?? null; // list of selected server ids
+        $consoleHistory = QueryBuilder::for(ServerConsolelog::class)
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->select([
+                'id',
+                'server_id',
+                'data',
+                'created_at',
+            ])
+            ->allowedFilters([
+                'id',
+                'server_id',
+                'data',
+                'created_at',
+                AllowedFilter::custom('q', new FilterMultipleFields(['data']))
+            ])
+            ->with(['server:id,name'])
+            ->allowedSorts(['id', 'server_id', 'created_at'])
+            ->defaultSort('-id')
+            ->simplePaginate($perPage)
+            ->withQueryString();
+
+        return Inertia::render('Admin/ServerIntel/Consolelog', [
+            'filters' => request()->all(['servers', 'perPage', 'sort', 'filter']),
+            'serverList' => $serverList,
+            'consoleHistory' => $consoleHistory,
+        ]);
     }
 }
