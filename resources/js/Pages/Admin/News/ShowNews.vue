@@ -28,7 +28,7 @@
       <div class="flex flex-col">
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="shadow max-w-none bg-white px-10 py-5 overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div class="shadow max-w-none bg-white dark:bg-gray-800 px-10 py-5 overflow-hidden border-b border-gray-200 dark:border-gray-900 sm:rounded-lg">
               <span
                 v-if="news.type.value === 0"
                 class="bg-light-blue-400 font-bold inline-flex leading-7 mb-3 px-3 rounded text-sm text-white"
@@ -46,7 +46,7 @@
                 class="bg-gray-600 font-bold inline-flex leading-7 mb-3 px-3 rounded text-sm text-white"
               >{{ news.type.key }}</span>
 
-              <h1 class="font-bold text-4xl text-gray-900 mb-5">
+              <h1 class="font-bold text-4xl text-gray-900 dark:text-gray-100 mb-5">
                 {{ news.title }}
               </h1>
               <img
@@ -62,16 +62,16 @@
                   class="h-12 w-12 mr-3 rounded-full"
                 >
                 <div>
-                  <p class="font-bold text-gray-700">
+                  <p class="font-bold text-gray-700 dark:text-gray-300">
                     {{ news.creator.name }}
                   </p>
-                  <p class="text-gray-500 text-sm">
+                  <p class="text-gray-500 dark:text-gray-400 text-sm">
                     {{ formatTimeAgoToNow(news.created_at) }}
                   </p>
                 </div>
               </div>
               <div
-                class="prose max-w-none"
+                class="prose dark:prose-dark max-w-none"
                 v-html="news.body_html"
               />
             </div>

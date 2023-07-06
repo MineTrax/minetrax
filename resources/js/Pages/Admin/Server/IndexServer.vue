@@ -5,6 +5,7 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import { useStorage } from '@vueuse/core';
 import {
     EyeIcon,
     PencilSquareIcon,
@@ -16,6 +17,7 @@ import { nextTick, reactive, watchEffect } from 'vue';
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
+const showBungeeServerAlert = useStorage('show-bungee-server-missing-alert', true);
 
 const props = defineProps({
     canCreateBungeeServer: Boolean,
@@ -106,9 +108,11 @@ watchEffect(() => {
 
     <div class="px-10 py-8 mx-auto text-gray-400">
       <AlertCard
-        v-if="canCreateBungeeServer"
-        text-color="text-orange-800 dark:text-orange-500"
-        border-color="border-orange-500"
+        v-if="canCreateBungeeServer && showBungeeServerAlert"
+        :close-button="true"
+        text-color="text-light-blue-800 dark:text-light-blue-500"
+        border-color="border-light-blue-500"
+        @close="showBungeeServerAlert = false"
       >
         {{ __("You don't have Bungee/Proxy Server Added!") }}
         <template #body>
