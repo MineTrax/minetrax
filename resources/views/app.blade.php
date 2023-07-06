@@ -41,5 +41,6 @@
 @inertia
 <x-translations></x-translations>
 <x-php-vars-to-js-transformer></x-php-vars-to-js-transformer>
+@include('cookie-consent::index')
 </body>
 </html>
