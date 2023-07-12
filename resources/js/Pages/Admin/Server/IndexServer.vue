@@ -148,7 +148,7 @@ watchEffect(() => {
             "
             :href="route('admin.server.force-scan')"
             method="post"
-            class="ml-2 inline-flex items-center px-4 py-2 border-2 border-red-600 rounded-md font-semibold text-xs text-red-600 uppercase tracking-widest focus:outline-none focus:border-red-800 transition ease-in-out duration-150 dark:text-red-500 dark:border-red-700 dark:hover:border-red-500"
+            class="ml-2 inline-flex items-center px-4 py-2 border-2 border-red-600 rounded-md font-semibold text-xs text-red-600 uppercase tracking-widest focus:outline-none transition ease-in-out duration-150 dark:text-red-500 dark:border-red-700 hover:border-red-300 dark:hover:border-red-500  hover:bg-red-500 hover:text-white dark:hover:text-white"
           >
             <span>{{ __("Rescan all servers") }}</span>
           </InertiaLink>

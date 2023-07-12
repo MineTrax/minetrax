@@ -21,9 +21,22 @@ export function useAuthorizable() {
         });
     }
 
+    function hasRole(role, user = null) {
+        if (!user) {
+            user = page.props.auth.user;
+        }
+
+        if (!user) return false;
+
+        return user?.roles.some((userRole) => {
+            return userRole.name === role;
+        });
+    }
+
     return {
         can,
         canWild,
         isStaff,
+        hasRole,
     };
 }

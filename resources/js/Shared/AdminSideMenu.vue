@@ -13,7 +13,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
-const { canWild } = useAuthorizable();
+const { canWild, hasRole } = useAuthorizable();
 
 defineProps({
     collapsed: Boolean,
@@ -196,6 +196,14 @@ const navItems = [
                 children: [],
                 icon: null,
                 visible: true
+            },
+            {
+                label: 'Dangerzone',
+                href: route('admin.setting.danger.show'),
+                active: route().current('admin.setting.danger.show'),
+                children: [],
+                icon: null,
+                visible: hasRole('superadmin')
             },
         ],
         icon: Cog8ToothIcon,
