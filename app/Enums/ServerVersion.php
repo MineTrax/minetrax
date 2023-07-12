@@ -13,6 +13,7 @@ use BenSampo\Enum\Enum;
  * @method static static v1_17()
  * @method static static v1_18()
  * @method static static v1_19()
+ * @method static static v1_20()
  */
 final class ServerVersion extends Enum
 {
@@ -24,4 +25,5 @@ final class ServerVersion extends Enum
     const v1_17 = "1.17";
     const v1_18 = "1.18";
     const v1_19 = "1.19";
+    const v1_20 = "1.20";
 }
