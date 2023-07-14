@@ -30,6 +30,9 @@ class GeneralSettings extends Settings
     public ?string $facebook_url;
     public ?string $twitter_url;
     public ?string $twitch_url;
+    public ?string $tiktok_url;
+    public ?string $linkedin_url;
+    public ?string $threads_url;
 
     public bool $enable_discordbox;
     public ?string $discord_server_id;

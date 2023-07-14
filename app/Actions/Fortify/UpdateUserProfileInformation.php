@@ -31,6 +31,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             's_youtube_url' => ['nullable', 'url'],
             's_facebook_url' => ['nullable', 'url'],
             's_twitch_url' => ['nullable', 'url'],
+            's_linkedin_url' => ['nullable', 'url'],
+            's_tiktok_url' => ['nullable', 'url'],
             's_website_url' => ['nullable', 'url'],
             'show_gender' => ['boolean'],
             'show_yob' => ['boolean'],
@@ -56,6 +58,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 's_youtube_url' => $input['s_youtube_url'],
                 's_facebook_url' => $input['s_facebook_url'],
                 's_twitch_url' => $input['s_twitch_url'],
+                's_linkedin_url' => $input['s_linkedin_url'],
+                's_tiktok_url' => $input['s_tiktok_url'],
                 's_website_url' => $input['s_website_url'],
             ];
 
@@ -96,6 +100,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             's_youtube_url' => $input['s_youtube_url'],
             's_facebook_url' => $input['s_facebook_url'],
             's_twitch_url' => $input['s_twitch_url'],
+            's_linkedin_url' => $input['s_linkedin_url'],
+            's_tiktok_url' => $input['s_tiktok_url'],
             's_website_url' => $input['s_website_url'],
         ];
 

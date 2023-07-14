@@ -472,6 +472,8 @@
             :twitch="profileUser.social_links.s_twitch_url"
             :twitter="profileUser.social_links.s_twitter_url"
             :steam="profileUser.social_links.s_steam_profile_url"
+            :linkedin="profileUser.social_links.s_linkedin_url"
+            :tiktok="profileUser.social_links.s_tiktok_url"
             :website="profileUser.social_links.s_website_url"
           />
         </div>

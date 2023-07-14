@@ -36,17 +36,20 @@ class GeneralSettingController extends Controller
             'enable_welcomebox' => 'required|boolean',
             'welcomebox_content' => 'required_if:enable_welcomebox,true|nullable|string|max:1000',
             'enable_socialbox' => 'required|boolean',
-            'youtube_url' => 'nullable|active_url|max:255',
-            'facebook_url' => 'nullable|active_url|max:255',
-            'twitter_url' => 'nullable|active_url|max:255',
-            'twitch_url' => 'nullable|active_url|max:255',
+            'youtube_url' => 'nullable|url|max:255',
+            'facebook_url' => 'nullable|url|max:255',
+            'twitter_url' => 'nullable|url|max:255',
+            'twitch_url' => 'nullable|url|max:255',
+            'tiktok_url' => 'nullable|url|max:255',
+            'linkedin_url' => 'nullable|url|max:255',
+            'threads_url' => 'nullable|url|max:255',
             'enable_discordbox' => 'required|boolean',
             'discord_server_id' => 'required_if:enable_discordbox,true|nullable|string|max:255',
             'enable_voteforserverbox' => 'required|boolean',
-            'voteforserverbox_content.*.url' => 'required_if:enable_voteforserverbox,true|nullable|active_url',
+            'voteforserverbox_content.*.url' => 'required_if:enable_voteforserverbox,true|nullable|url',
             'voteforserverbox_content.*.name' => 'required_if:enable_voteforserverbox,true|nullable|string|max:50',
             'enable_donation_box' => 'required|boolean',
-            'donation_box_url' => 'required_if:enable_donation_box,true|nullable|active_url',
+            'donation_box_url' => 'required_if:enable_donation_box,true|nullable|url',
             'photo_light' => 'sometimes|nullable|image|max:100',
             'photo_dark' => 'sometimes|nullable|image|max:100',
             'enable_status_feed' => 'required|boolean',
@@ -72,6 +75,9 @@ class GeneralSettingController extends Controller
         $settings->facebook_url = $request->input('facebook_url');
         $settings->twitter_url = $request->input('twitter_url');
         $settings->twitch_url = $request->input('twitch_url');
+        $settings->tiktok_url = $request->input('tiktok_url');
+        $settings->linkedin_url = $request->input('linkedin_url');
+        // $settings->threads_url = $request->input('threads_url');
 
         $settings->enable_discordbox = $request->input('enable_discordbox');
         $settings->discord_server_id = $request->input('discord_server_id');

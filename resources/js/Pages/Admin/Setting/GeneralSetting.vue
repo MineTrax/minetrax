@@ -280,6 +280,38 @@
                               help-error-flex="flex-col"
                             />
                           </div>
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-6"
+                          >
+                            <x-input
+                              id="tiktok_url"
+                              v-model="form.tiktok_url"
+                              :label="__('Tiktok URL')"
+                              :error="form.errors.tiktok_url"
+                              autocomplete="tiktok_url"
+                              type="text"
+                              name="tiktok_url"
+                              :help="__('Eg: https://www.tiktok.com/@minecraft')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-6"
+                          >
+                            <x-input
+                              id="linkedin_url"
+                              v-model="form.linkedin_url"
+                              :label="__('LinkedIn URL')"
+                              :error="form.errors.linkedin_url"
+                              autocomplete="linkedin_url"
+                              type="text"
+                              name="linkedin_url"
+                              :help="__('Eg: https://www.linkedin.com/in/minecraft')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
 
                           <div class="flex items-center col-span-6 sm:col-span-3">
                             <x-checkbox
@@ -516,6 +548,9 @@ export default {
                 facebook_url: this.settings.facebook_url,
                 twitter_url: this.settings.twitter_url,
                 twitch_url: this.settings.twitch_url,
+                tiktok_url: this.settings.tiktok_url,
+                linkedin_url: this.settings.linkedin_url,
+                // threads_url: this.settings.threads_url,
                 enable_discordbox: this.settings.enable_discordbox,
                 discord_server_id: this.settings.discord_server_id,
                 enable_donation_box: this.settings.enable_donation_box,

@@ -60,6 +60,8 @@
           :twitch="generalSettings.twitch_url"
           :youtube="generalSettings.youtube_url"
           :facebook="generalSettings.facebook_url"
+          :linkedin="generalSettings.linkedin_url"
+          :tiktok="generalSettings.tiktok_url"
         />
       </div>
     </div>
