@@ -120,7 +120,7 @@ defineProps({
               <div class="flex justify-between p-5">
                 <div class="flex flex-col">
                   <h3 class="text-base leading-6 font-semibold text-gray-900 dark:text-gray-100">
-                    {{ __("Delete Intel Data") }}
+                    {{ __("Delete all Analytics Data") }}
                   </h3>
                   <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     {{ __("Permanently delete all the tracked Intel (Player & Server Analytics) data for all servers.") }}

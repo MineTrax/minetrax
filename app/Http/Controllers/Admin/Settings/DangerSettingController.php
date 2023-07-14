@@ -11,6 +11,7 @@ use App\Jobs\TruncateShoutsJob;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Log;
 
 class DangerSettingController extends Controller
 {
@@ -27,6 +28,9 @@ class DangerSettingController extends Controller
 
     public function truncateShouts(Request $request): \Illuminate\Http\RedirectResponse
     {
+        Log::alert('TRUNCATE_SHOUTS', [
+            'causer' => $request->user()->username,
+        ]);
         TruncateShoutsJob::dispatch();
 
         return redirect()->back()
@@ -35,6 +39,9 @@ class DangerSettingController extends Controller
 
     public function truncateConsolelogs(Request $request): \Illuminate\Http\RedirectResponse
     {
+        Log::alert('TRUNCATE_CONSOLELOGS', [
+            'causer' => $request->user()->username,
+        ]);
         TruncateServerConsolelogsJob::dispatch();
 
         return redirect()->back()
@@ -43,6 +50,9 @@ class DangerSettingController extends Controller
 
     public function truncateChatlogs(Request $request): \Illuminate\Http\RedirectResponse
     {
+        Log::alert('TRUNCATE_CHATLOGS', [
+            'causer' => $request->user()->username,
+        ]);
         TruncateServerChatlogsJob::dispatch();
 
         return redirect()->back()
@@ -51,6 +61,9 @@ class DangerSettingController extends Controller
 
     public function truncatePlayerStats(Request $request): \Illuminate\Http\RedirectResponse
     {
+        Log::alert('TRUNCATE_STATS', [
+            'causer' => $request->user()->username,
+        ]);
         TruncatePlayerStatsJob::dispatch();
 
         return redirect()->back()
@@ -59,6 +72,9 @@ class DangerSettingController extends Controller
 
     public function truncateIntelData(Request $request): \Illuminate\Http\RedirectResponse
     {
+        Log::alert('TRUNCATE_INTEL', [
+            'causer' => $request->user()->username,
+        ]);
         TruncateIntelDataJob::dispatch();
 
         return redirect()->back()

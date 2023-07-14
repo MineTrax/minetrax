@@ -287,7 +287,7 @@
                             <x-input
                               id="tiktok_url"
                               v-model="form.tiktok_url"
-                              :label="__('Tiktok URL')"
+                              :label="__('TikTok URL')"
                               :error="form.errors.tiktok_url"
                               autocomplete="tiktok_url"
                               type="text"
