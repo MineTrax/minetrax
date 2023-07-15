@@ -108,6 +108,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('/graph/players-per-country', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerPerCountry'])->name('graph.players-per-country');
     Route::get('/graph/network-trends-vs-month', [\App\Http\Controllers\Admin\GraphController::class, 'getNetworkTrendsMonthVsMonth'])->name('graph.network-trends-vs-month');
     Route::get('/graph/server-performance', [\App\Http\Controllers\Admin\GraphController::class, 'getServerPerformanceOverTime'])->name('graph.server-performance');
+    Route::get('/graph/server-online-activity', [\App\Http\Controllers\Admin\GraphController::class, 'getServerOnlineActivityOverTime'])->name('graph.server-online-activity');
 
     Route::get('user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('user.index');
     //  Route::get('user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('user.show');
@@ -138,7 +139,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::post('server/{server}/send-command', [\App\Http\Controllers\Admin\ServerController::class, 'postSendCommandToServer'])->name('server.command');
     Route::get('server/{server}/stats', [\App\Http\Controllers\Admin\ServerController::class, 'showStatistics'])->name('server.show.stats');
 
-    Route::get('intel/server/overview', [\App\Http\Controllers\Admin\ServerIntelController::class, 'index'])->name('intel.server.index');
+    Route::get('intel/server/overview', [\App\Http\Controllers\Admin\ServerIntelController::class, 'overview'])->name('intel.server.index');
     Route::get('intel/server/performance', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performance'])->name('intel.server.performance');
     Route::get('intel/server/performance/numbers', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performanceNumbers'])->name('intel.server.performance.numbers');
     Route::get('intel/server/playerbase', [\App\Http\Controllers\Admin\ServerIntelController::class, 'playerbase'])->name('intel.server.playerbase');

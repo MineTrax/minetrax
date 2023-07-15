@@ -26,7 +26,7 @@ class ServerIntelController extends Controller
         $this->middleware('can:view server_intel');
     }
 
-    public function index(Request $request)
+    public function overview(Request $request)
     {
         $request->validate([
             'servers' => 'sometimes|nullable|array',
@@ -36,10 +36,84 @@ class ServerIntelController extends Controller
             ->where('type', '!=', ServerType::Bungee())
             ->get()->pluck('name', 'id');
 
+        $selectedServers = $request->query('servers') ?? null; // list of selected server ids
+
+        /**
+         * Start: LAST 7 DAYS STATS
+         */
+        // Unique Players Count
+        $uniquePlayers = MinecraftPlayerSession::select(['player_uuid'])
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->where('created_at', '>=', now()->subWeek())
+            ->distinct()->get();
+        $uniquePlayersCount = $uniquePlayers->count();
+
+        // Old & New Players Count
+        $oldPlayers = MinecraftPlayerSession::select(['player_uuid'])
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->where('created_at', '<', now()->subWeek())
+            ->whereIn('player_uuid', $uniquePlayers->pluck('player_uuid'))
+            ->distinct()->get();
+        $oldPlayersCount = $oldPlayers->count();
+        $newPlayersCount = $uniquePlayers->whereNotIn('player_uuid', $oldPlayers->pluck('player_uuid'))->count();
+
+        // Avg TPS
+        $averageTps = MinecraftServerLiveInfo::select(['tps'])
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->where('created_at', '>=', now()->subWeek())
+            ->avg('tps');
+
+        // Restarts
+        $noOfRestarts = MinecraftServerLiveInfo::select(['server_session_id'])
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->where('created_at', '>=', now()->subWeek())
+            ->distinct()->count();
+
+        // Avg CPU
+        $averageCpuLoad = MinecraftServerLiveInfo::select(['cpu_load'])
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->where('created_at', '>=', now()->subWeek())
+            ->avg('cpu_load');
+
+        // Longest Uptime
+        $longestUptime = MinecraftServerLiveInfo::query()
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->where('created_at', '>=', now()->subWeek())
+            ->max('uptime');
+        /**
+         * End: LAST 7 DAYS STATS
+         */
+
         return Inertia::render('Admin/ServerIntel/Overview', [
             'filters' => request()->all(['servers']),
             'serverList' => $serverList,
+            'last7DaysStats' => [
+                'uniquePlayersCount' => $uniquePlayersCount,
+                'oldPlayersCount' => $oldPlayersCount,
+                'newPlayersCount' => $newPlayersCount,
+                'averageTps' => $averageTps,
+                'averageCpuLoad' => $averageCpuLoad,
+                'noOfRestarts' => $noOfRestarts,
+                'longestUptime' => $longestUptime,
+            ],
         ]);
+    }
+
+    public function overviewNumbers(Request $request)
+    {
+
     }
 
     public function performance(Request $request)

@@ -258,4 +258,45 @@ class GraphController extends Controller
             'data' => $sqlData,
         ]);
     }
+
+    public function getServerOnlineActivityOverTime(Request $request)
+    {
+        $this->authorize('view server_intel');
+
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+            'from_date' => 'sometimes|nullable|date',
+            'to_date' => 'sometimes|nullable|date',
+        ]);
+
+        $servers = $request->query('servers') ?? null;
+        if ($servers) {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+        } else {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+        }
+
+        $fromDate = $request->query('from_date') ?? now()->subMonth();
+        $toDate = $request->query('to_date') ?? now();
+        $query = DB::table('minecraft_server_live_infos')
+            ->selectRaw("ROUND(UNIX_TIMESTAMP(CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H:'), LPAD((MINUTE(created_at) DIV 5) * 5, 2, '0'), ':00')) * 1000) AS created_at_5min")
+            ->selectRaw('MAX(online_players) AS online_players')
+            ->groupBy('created_at_5min')
+            ->orderBy('created_at_5min')
+            ->where('created_at', '>=', $fromDate)
+            ->where('created_at', '<=', $toDate)
+            ->whereIn('server_id', $servers->pluck('id'));
+        $sqlData = $query->get();
+        $sqlData = $sqlData->map(function ($item) {
+            $item->created_at_5min = (int) $item->created_at_5min;
+            return array_values(get_object_vars($item));
+        })->toArray();
+
+        return response()->json([
+            'labels' => [__('Online Players')],
+            'filters' => request()->all(['servers', 'from_date', 'to_date']),
+            'data' => $sqlData,
+        ]);
+    }
 }
