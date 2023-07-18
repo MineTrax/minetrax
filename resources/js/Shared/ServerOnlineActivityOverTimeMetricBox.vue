@@ -13,7 +13,7 @@ import {
     subMonths,
 } from 'date-fns';
 import { useTranslations } from '@/Composables/useTranslations';
-import Icon from '@/Components/Icon.vue';
+import { ArrowTrendingUpIcon } from '@heroicons/vue/24/outline';
 const { __ } = useTranslations();
 
 let option = ref({});
@@ -184,8 +184,7 @@ const datePickerShortcuts = [
   >
     <div class="flex justify-between">
       <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex items-center">
-        <Icon
-          name="cpu"
+        <ArrowTrendingUpIcon
           class="w-6 mr-1"
         />
         {{ __("Server Online Activity") }}

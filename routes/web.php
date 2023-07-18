@@ -140,6 +140,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('server/{server}/stats', [\App\Http\Controllers\Admin\ServerController::class, 'showStatistics'])->name('server.show.stats');
 
     Route::get('intel/server/overview', [\App\Http\Controllers\Admin\ServerIntelController::class, 'overview'])->name('intel.server.index');
+    Route::get('intel/server/overview/numbers', [\App\Http\Controllers\Admin\ServerIntelController::class, 'overviewNumbers'])->name('intel.server.index.numbers');
     Route::get('intel/server/performance', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performance'])->name('intel.server.performance');
     Route::get('intel/server/performance/numbers', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performanceNumbers'])->name('intel.server.performance.numbers');
     Route::get('intel/server/playerbase', [\App\Http\Controllers\Admin\ServerIntelController::class, 'playerbase'])->name('intel.server.playerbase');

@@ -100,7 +100,7 @@ onMounted(async () => {
                   name="users"
                   class="w-5 text-green-500 mr-1"
                 />
-                {{ __("Max Online Players") }}
+                {{ __("Peak Online Players") }}
               </td>
               <td class="p-2">
                 {{ numbers.max_players.last_24h }}

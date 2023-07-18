@@ -18,7 +18,6 @@ return new class extends Migration
             $table->index('free_disk_in_kb');
         });
 
-
         Schema::table('server_chatlogs', function (Blueprint $table) {
             $table->index('created_at');
             $table->index('type');
@@ -26,6 +25,17 @@ return new class extends Migration
 
         Schema::table('server_consolelogs', function (Blueprint $table) {
             $table->index('created_at');
+        });
+
+        Schema::table('minecraft_player_sessions', function(Blueprint $table) {
+            $table->index('player_username');
+            $table->index('updated_at');
+            $table->index('created_at');
+            $table->index('mob_kills');
+            $table->index('player_kills');
+            $table->index('deaths');
+            $table->index('afk_time');
+            $table->index('play_time');
         });
     }
 
@@ -48,6 +58,17 @@ return new class extends Migration
 
         Schema::table('server_consolelogs', function (Blueprint $table) {
             $table->dropIndex(['created_at']);
+        });
+
+        Schema::table('minecraft_player_sessions', function (Blueprint $table) {
+            $table->dropIndex(['player_username']);
+            $table->dropIndex(['updated_at']);
+            $table->dropIndex(['created_at']);
+            $table->dropIndex(['mob_kills']);
+            $table->dropIndex(['player_kills']);
+            $table->dropIndex(['deaths']);
+            $table->dropIndex(['afk_time']);
+            $table->dropIndex(['play_time']);
         });
     }
 };

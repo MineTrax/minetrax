@@ -4,9 +4,11 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
 import ServerOnlineActivityOverTimeMetricBox from '@/Shared/ServerOnlineActivityOverTimeMetricBox.vue';
 import Icon from '@/Components/Icon.vue';
-import { PowerIcon } from '@heroicons/vue/24/outline';
+import { PowerIcon, ServerStackIcon } from '@heroicons/vue/24/outline';
 import {useHelpers} from '@/Composables/useHelpers';
 const { secondsToHMS } = useHelpers();
+import millify from 'millify';
+import ServerIntelOverviewNumbersBox from '@/Shared/ServerIntelOverviewNumbersBox.vue';
 
 defineProps({
     serverList: {
@@ -40,16 +42,17 @@ defineProps({
         id="row2"
         class="flex justify-between flex-1 space-x-4"
       >
-        <div class="bg-white dark:bg-cool-gray-800 rounded w-full shadow basis-4/6">
-          Placeholder Shit for a Chart?
-        </div>
+        <ServerIntelOverviewNumbersBox :servers="filters?.servers" />
 
-        <div class="bg-white dark:bg-cool-gray-800 rounded w-full shadow basis-2/6">
-          <h3 class="p-4 font-extrabold text-gray-800 dark:text-gray-200 flex items-center">
+        <div class="bg-white dark:bg-cool-gray-800 rounded w-full shadow basis-2/6 p-3">
+          <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex mt-2 items-center">
+            <ServerStackIcon
+              class="w-6 mr-1"
+            />
             {{ __("Last 7 Days") }}
           </h3>
 
-          <div class="flex flex-col px-3 text-sm">
+          <div class="flex flex-col text-sm mt-5">
             <table>
               <tbody>
                 <tr>
@@ -69,7 +72,7 @@ defineProps({
                   <td class="py-2 flex">
                     <Icon
                       name="users"
-                      class="w-5 text-green-500 mr-1"
+                      class="w-5 text-lime-500 mr-1"
                     />
                     {{ __("New Players") }}
                   </td>
@@ -94,13 +97,39 @@ defineProps({
                 <tr>
                   <td class="py-2 flex">
                     <Icon
+                      name="users"
+                      class="w-5 text-green-500 mr-1"
+                    />
+                    {{ __("Peak Online Players") }}
+                  </td>
+                  <td class="p-2 text-right">
+                    {{ last7DaysStats.peekOnlinePlayersCount ?? __('none') }}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="py-2 flex">
+                    <Icon
                       name="joystick"
-                      class="w-5 text-pink-500 mr-1"
+                      class="w-5 text-lime-500 mr-1"
                     />
                     {{ __("Avg TPS") }}
                   </td>
                   <td class="p-2 text-right">
-                    {{ last7DaysStats.averageTps ?? __('none') }}
+                    {{ last7DaysStats.averageTps ? millify(last7DaysStats.averageTps, {precision: 2}) : __('none') }}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="py-2 flex">
+                    <Icon
+                      name="joystick"
+                      class="w-5 text-red-500 mr-1"
+                    />
+                    {{ __("Lowest TPS") }}
+                  </td>
+                  <td class="p-2 text-right">
+                    {{ last7DaysStats.lowestTps ? millify(last7DaysStats.lowestTps, {precision: 2}) : __('none') }}
                   </td>
                 </tr>
 
@@ -113,7 +142,7 @@ defineProps({
                     {{ __("Avg CPU Load") }}
                   </td>
                   <td class="p-2 text-right">
-                    {{ last7DaysStats.averageCpuLoad ?? __('none') }}
+                    {{ last7DaysStats.averageCpuLoad ? millify(last7DaysStats.averageCpuLoad, {precision: 2}) : __('none') }}
                   </td>
                 </tr>
 

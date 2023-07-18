@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
+use App\Models\MinecraftPlayer;
 use App\Models\MinecraftPlayerSession;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\ServerChatlog;
@@ -16,6 +17,7 @@ use App\Models\Server;
 use Illuminate\Support\Facades\Cache;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use DB;
 
 const RESPONSE_CACHE_SECONDS = 3600; // 1 hour
 
@@ -61,6 +63,14 @@ class ServerIntelController extends Controller
         $oldPlayersCount = $oldPlayers->count();
         $newPlayersCount = $uniquePlayers->whereNotIn('player_uuid', $oldPlayers->pluck('player_uuid'))->count();
 
+        // Peek Online Players
+        $peekOnlinePlayersCount = MinecraftServerLiveInfo::query()
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->where('created_at', '>=', now()->subWeek())
+            ->max('online_players') ?: 0;
+
         // Avg TPS
         $averageTps = MinecraftServerLiveInfo::select(['tps'])
             ->when($selectedServers, function ($query, $selectedServers) {
@@ -68,6 +78,13 @@ class ServerIntelController extends Controller
             })
             ->where('created_at', '>=', now()->subWeek())
             ->avg('tps');
+
+        $lowestTps = MinecraftServerLiveInfo::select(['tps'])
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            })
+            ->where('created_at', '>=', now()->subWeek())
+            ->min('tps');
 
         // Restarts
         $noOfRestarts = MinecraftServerLiveInfo::select(['server_session_id'])
@@ -102,8 +119,10 @@ class ServerIntelController extends Controller
             'last7DaysStats' => [
                 'uniquePlayersCount' => $uniquePlayersCount,
                 'oldPlayersCount' => $oldPlayersCount,
+                'peekOnlinePlayersCount' => $peekOnlinePlayersCount, // 'peek' is not a typo, it's a pun
                 'newPlayersCount' => $newPlayersCount,
                 'averageTps' => $averageTps,
+                'lowestTps' => $lowestTps,
                 'averageCpuLoad' => $averageCpuLoad,
                 'noOfRestarts' => $noOfRestarts,
                 'longestUptime' => $longestUptime,
@@ -113,7 +132,111 @@ class ServerIntelController extends Controller
 
     public function overviewNumbers(Request $request)
     {
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+        ]);
 
+        $selectedServers = $request->query('servers') ?? null; // list of selected server ids
+
+        $selectedServersKey = serialize($selectedServers);
+        $numbers = Cache::remember("server-overview-numbers.{$selectedServersKey}", 0, function () use ($selectedServers) {
+            if ($selectedServers) {
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->get();
+            } else {
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->get();
+            }
+
+            $numbersData = [];
+            // Total Players
+            $totalPlayers["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->distinct()->count('player_uuid') ?: 0;
+            $totalPlayers["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->distinct()->count('player_uuid') ?: 0;
+            $totalPlayers["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->distinct()->count('player_uuid') ?: 0;
+            $totalPlayers["all_time"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->distinct()->count('player_uuid') ?: 0;
+            $numbersData["total_players"] = $totalPlayers;
+
+            // Total Playtime
+            $totalPlaytime["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->sum('play_time') ?: 0;
+            $totalPlaytime["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->sum('play_time') ?: 0;
+            $totalPlaytime["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->sum('play_time') ?: 0;
+            $totalPlaytime["all_time"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->sum('play_time') ?: 0;
+            $numbersData["total_playtime"] = $totalPlaytime;
+
+            // AFK Time
+            $totalAfkTime["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->sum('afk_time') ?: 0;
+            $totalAfkTime["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->sum('afk_time') ?: 0;
+            $totalAfkTime["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->sum('afk_time') ?: 0;
+            $totalAfkTime["all_time"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->sum('afk_time') ?: 0;
+            $numbersData["total_afktime"] = $totalAfkTime;
+
+            // Total Sessions
+            $totalSessions["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->count() ?: 0;
+            $totalSessions["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->count() ?: 0;
+            $totalSessions["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->count() ?: 0;
+            $totalSessions["all_time"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->distinct()->count() ?: 0;
+            $numbersData["total_sessions"] = $totalSessions;
+
+            // Avg Session Playtime
+            $avgSessionPlaytime["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->avg('play_time') ?: 0;
+            $avgSessionPlaytime["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->avg('play_time') ?: 0;
+            $avgSessionPlaytime["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->avg('play_time') ?: 0;
+            $avgSessionPlaytime["all_time"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->avg('play_time') ?: 0;
+            $numbersData["avg_session_playtime"] = $avgSessionPlaytime;
+
+            // Total Player Kills
+            $totalPlayerKills["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->sum('player_kills') ?: 0;
+            $totalPlayerKills["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->sum('player_kills') ?: 0;
+            $totalPlayerKills["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->sum('player_kills') ?: 0;
+            $totalPlayerKills["all_time"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->sum('player_kills') ?: 0;
+            $numbersData["total_player_kills"] = $totalPlayerKills;
+
+            // Total Mob Kills
+            $totalMobKills["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->sum('mob_kills') ?: 0;
+            $totalMobKills["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->sum('mob_kills') ?: 0;
+            $totalMobKills["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->sum('mob_kills') ?: 0;
+            $totalMobKills["all_time"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->sum('mob_kills') ?: 0;
+            $numbersData["total_mob_kills"] = $totalMobKills;
+
+            // Total Deaths
+            $totalDeaths["last_24h"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->sum('deaths') ?: 0;
+            $totalDeaths["last_7days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->sum('deaths') ?: 0;
+            $totalDeaths["last_30days"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->sum('deaths') ?: 0;
+            $totalDeaths["all_time"] = MinecraftPlayerSession::whereIn('server_id', $selectedServers->pluck('id'))->sum('deaths') ?: 0;
+            $numbersData["total_deaths"] = $totalDeaths;
+
+            // Avg Sessions per Player
+            $minecraftPlayerSessionTableName = app(MinecraftPlayerSession::class)->getTable();
+            $avgSessionsPerPlayer['last_24h'] = DB::table($minecraftPlayerSessionTableName)
+                ->whereIn('server_id', $selectedServers->pluck('id'))
+                ->where('created_at', '>=', now()->subHours(24))
+                ->select('player_uuid', DB::raw('COUNT(*) as count'))
+                ->groupBy('player_uuid')
+                ->pluck('count')?->avg() ?: 0;
+            $avgSessionsPerPlayer['last_7days'] = DB::table($minecraftPlayerSessionTableName)
+                ->whereIn('server_id', $selectedServers->pluck('id'))
+                ->where('created_at', '>=', now()->subWeek())
+                ->select('player_uuid', DB::raw('COUNT(*) as count'))
+                ->groupBy('player_uuid')
+                ->pluck('count')?->avg() ?: 0;
+            $avgSessionsPerPlayer['last_30days'] = DB::table($minecraftPlayerSessionTableName)
+                ->whereIn('server_id', $selectedServers->pluck('id'))
+                ->where('created_at', '>=', now()->subMonth())
+                ->select('player_uuid', DB::raw('COUNT(*) as count'))
+                ->groupBy('player_uuid')
+                ->pluck('count')?->avg() ?: 0;
+            $avgSessionsPerPlayer['all_time'] = DB::table($minecraftPlayerSessionTableName)
+                ->whereIn('server_id', $selectedServers->pluck('id'))
+                ->select('player_uuid', DB::raw('COUNT(*) as count'))
+                ->groupBy('player_uuid')
+                ->pluck('count')?->avg() ?: 0;
+            $numbersData["avg_session_per_player"] = $avgSessionsPerPlayer;
+
+            return $numbersData;
+        });
+
+        return response()->json([
+            'numbers' => $numbers,
+        ]);
     }
 
     public function performance(Request $request)
