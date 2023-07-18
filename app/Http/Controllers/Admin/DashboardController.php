@@ -67,7 +67,6 @@ class DashboardController extends Controller
             ];
         }
 
-        //        $this->authorize('view');
         return Inertia::render('Admin/Dashboard', $responseData);
     }
 }
