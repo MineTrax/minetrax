@@ -18,6 +18,6 @@ class AddHomeHeroConfigToThemeSettings extends SettingsMigration
         $this->migrator->add('theme.show_join_box_in_home_hero', true);
 
         // Main header should be sticky.(general)
-        $this->migrator->add('general.enable_sticky_header_menu', false);
+        $this->migrator->add('general.enable_sticky_header_menu', true);
     }
 }

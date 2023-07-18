@@ -53,7 +53,7 @@ defineProps({
           </h3>
 
           <div class="flex flex-col text-sm mt-5">
-            <table>
+            <table class="table-auto min-w-full dark:text-gray-300 text-gray-700">
               <tbody>
                 <tr>
                   <td class="py-2 flex">
