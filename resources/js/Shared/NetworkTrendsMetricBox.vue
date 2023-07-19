@@ -2,6 +2,9 @@
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import { FaceSmileIcon, UserGroupIcon,UserPlusIcon, FaceFrownIcon, ChartBarIcon, ArrowTrendingUpIcon  } from '@heroicons/vue/24/outline';
 import { useAxios } from '@vueuse/integrations/useAxios';
+import millify from 'millify';
+import {useHelpers} from '@/Composables/useHelpers';
+const { secondsToHMS } = useHelpers();
 
 const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.network-trends-vs-month'));
 </script>
@@ -70,7 +73,7 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                       v-tippy="{trigger: 'click'}"
                       :title="__('All players including old and new who is seen on the given time interval')"
                       class="mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300 sm:flex-none"
-                    >Total Players</span>
+                    >{{ __("Total Players") }}</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.total_players.previous_month }}
@@ -78,7 +81,10 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.total_players.current_month }}
                   </td>
-                  <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  <td
+                    class="p-4 text-sm whitespace-nowrap"
+                    :class="{'text-red-500 font-semibold' : data.total_players.change < 0, 'text-green-500 font-semibold' : data.total_players.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.total_players.change == 0}"
+                  >
                     {{ data.total_players.change }}%
                   </td>
                 </tr>
@@ -89,7 +95,7 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                       v-tippy="{trigger: 'click'}"
                       :title="__('New players who is seen on the given time interval')"
                       class="mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300 sm:flex-none"
-                    >New Players</span>
+                    >{{ __("New Players") }}</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.total_new_players.previous_month }}
@@ -97,7 +103,10 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.total_new_players.current_month }}
                   </td>
-                  <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  <td
+                    class="p-4 text-sm whitespace-nowrap"
+                    :class="{'text-red-500 font-semibold' : data.total_new_players.change < 0, 'text-green-500 font-semibold' : data.total_new_players.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.total_new_players.change == 0}"
+                  >
                     {{ data.total_new_players.change }}%
                   </td>
                 </tr>
@@ -108,7 +117,7 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                       v-tippy="{trigger: 'click'}"
                       :title="__('Total sessions of players. One session is counted when player join server and then leave. A player can have multiple sessions.')"
                       class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300"
-                    >Total Sessions</span>
+                    >{{ __("Total Sessions") }}</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.total_player_sessions.previous_month }}
@@ -116,7 +125,10 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ data.total_player_sessions.current_month }}
                   </td>
-                  <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  <td
+                    class="p-4 text-sm whitespace-nowrap"
+                    :class="{'text-red-500 font-semibold' : data.total_player_sessions.change < 0, 'text-green-500 font-semibold' : data.total_player_sessions.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.total_player_sessions.change == 0}"
+                  >
                     {{ data.total_player_sessions.change }}%
                   </td>
                 </tr>
@@ -127,15 +139,18 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                       v-tippy="{trigger: 'click'}"
                       :title="__('Average playtime player played during a session.')"
                       class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300"
-                    >Avg Session Time</span>
+                    >{{ __("Avg Session Time") }}</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
-                    {{ data.avg_playtime.previous_month }}
+                    {{ secondsToHMS(data.avg_playtime.previous_month, true) }}
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
-                    {{ data.avg_playtime.current_month }}
+                    {{ secondsToHMS(data.avg_playtime.current_month, true) }}
                   </td>
-                  <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  <td
+                    class="p-4 text-sm whitespace-nowrap"
+                    :class="{'text-red-500 font-semibold' : data.avg_playtime.change < 0, 'text-green-500 font-semibold' : data.avg_playtime.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.avg_playtime.change == 0}"
+                  >
                     {{ data.avg_playtime.change }}%
                   </td>
                 </tr>
@@ -146,15 +161,18 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                       v-tippy="{trigger: 'click'}"
                       :title="__('Average afktime player spent during a session.')"
                       class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300"
-                    >Avg AFK Time</span>
+                    >{{ __("Avg AFK Time") }}</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
-                    {{ data.avg_afktime.previous_month }}
+                    {{ secondsToHMS(data.avg_afktime.previous_month, true) }}
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
-                    {{ data.avg_afktime.current_month }}
+                    {{ secondsToHMS(data.avg_afktime.current_month, true) }}
                   </td>
-                  <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  <td
+                    class="p-4 text-sm whitespace-nowrap"
+                    :class="{'text-red-500 font-semibold' : data.avg_afktime.change < 0, 'text-green-500 font-semibold' : data.avg_afktime.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.avg_afktime.change == 0}"
+                  >
                     {{ data.avg_afktime.change }}%
                   </td>
                 </tr>
@@ -165,15 +183,18 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                       v-tippy="{trigger: 'click'}"
                       :title="__('Average ping players getting on your servers.')"
                       class="flex-none mx-5 ml-3 w-32 font-medium text-gray-900 dark:text-gray-300"
-                    >Avg Player Ping</span>
+                    >{{ __("Avg Player Ping") }}</span>
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
-                    {{ data.avg_player_ping.previous_month }} ms
+                    {{ millify(data.avg_player_ping.previous_month) }} ms
                   </td>
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
-                    {{ data.avg_player_ping.current_month }} ms
+                    {{ millify(data.avg_player_ping.current_month) }} ms
                   </td>
-                  <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  <td
+                    class="p-4 text-sm whitespace-nowrap"
+                    :class="{'text-red-500 font-semibold' : data.avg_player_ping.change < 0, 'text-green-500 font-semibold' : data.avg_player_ping.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.avg_player_ping.change == 0}"
+                  >
                     {{ data.avg_player_ping.change }}%
                   </td>
                 </tr>
@@ -192,7 +213,10 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                   <td class="p-4 text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap">
                     {{ __(":players players", {players: data.peek_online_players.current_month}) }}
                   </td>
-                  <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  <td
+                    class="p-4 text-sm whitespace-nowrap"
+                    :class="{'text-red-500 font-semibold' : data.peek_online_players.change < 0, 'text-green-500 font-semibold' : data.peek_online_players.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.peek_online_players.change == 0}"
+                  >
                     {{ data.peek_online_players.change }}%
                   </td>
                 </tr>

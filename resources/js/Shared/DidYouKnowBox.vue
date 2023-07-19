@@ -50,7 +50,13 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 
-const enabled = ref(false);
+defineProps({
+    enabled: {
+        type: Boolean,
+        required: true,
+    },
+});
+
 const text = ref(null);
 const imageUrl = ref(null);
 const loading = ref(true);
@@ -72,7 +78,6 @@ const isInViewport = () => {
 };
 
 onMounted(() => {
-    enabled.value = true;
     axios
         .get(route('didyouknow.get'))
         .then((data) => {

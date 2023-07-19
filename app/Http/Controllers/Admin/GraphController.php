@@ -6,6 +6,7 @@ use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Server;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +29,7 @@ class GraphController extends Controller
             $servers = Server::where('type', '!=', ServerType::Bungee())->get();
         }
 
-        $fromDate = $request->query('from_date') ?? now()->subMonths(12);
+        $fromDate = $request->query('from_date') ?? now()->subMonth();
         $query = DB::table('minecraft_server_live_infos')
             ->selectRaw("ROUND(UNIX_TIMESTAMP(CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H:'), LPAD((MINUTE(created_at) DIV 5) * 5, 2, '0'), ':00')) * 1000) AS created_at_5min")
             ->groupBy('created_at_5min')
@@ -94,28 +95,43 @@ class GraphController extends Controller
     {
         $this->authorize('view admin_dashboard');
 
-        $previousMonth = now()->subMonth();
-        $currentMonth = now();
+        $currentMonth = CarbonImmutable::now();
+        $previousMonth = $currentMonth->subMonth();
 
         // Total Players.
-        $avgTotalPlayerPreviousMonth = DB::table('players')
-            ->where('last_seen_at', '>=', $previousMonth->startOfMonth())
-            ->where('last_seen_at', '<', $previousMonth->endOfMonth())
-            ->count() ?? 0;
-        $avgTotalPlayerCurrentMonth = DB::table('players')
-            ->where('last_seen_at', '>=', $currentMonth->startOfMonth())
-            ->where('last_seen_at', '<', $currentMonth->endOfMonth())
-            ->count() ?? 0;
+        $avgTotalPlayerPreviousMonth = DB::table('minecraft_player_sessions')
+            ->where('created_at', '>=', $previousMonth->startOfMonth())
+            ->where('created_at', '<', $previousMonth->endOfMonth())
+            ->distinct()
+            ->count('player_uuid') ?? 0;
+        $avgTotalPlayerCurrentMonth = DB::table('minecraft_player_sessions')
+            ->where('created_at', '>=', $currentMonth->startOfMonth())
+            ->where('created_at', '<', $currentMonth->endOfMonth())
+            ->distinct()
+            ->count('player_uuid') ?? 0;
         $avgTotalPlayerChangePercent = (($avgTotalPlayerCurrentMonth - $avgTotalPlayerPreviousMonth) / ($avgTotalPlayerPreviousMonth == 0 ? 1 : $avgTotalPlayerPreviousMonth)) * 100;
 
         // New Players.
-        $avgNewPlayerPreviousMonth = DB::table('players')
+        $avgNewPlayerPreviousMonth = DB::table('minecraft_player_sessions')
             ->where('created_at', '>=', $previousMonth->startOfMonth())
             ->where('created_at', '<', $previousMonth->endOfMonth())
-            ->count() ?? 0;
-        $avgNewPlayerCurrentMonth = DB::table('players')
+            ->whereNotIn('player_uuid', function ($query) use ($previousMonth) {
+                $query->select('player_uuid')
+                    ->distinct()
+                    ->from('minecraft_player_sessions')
+                    ->where('created_at', '<', $previousMonth->startOfMonth());
+            })
+            ->distinct()
+            ->count('player_uuid') ?? 0;
+        $avgNewPlayerCurrentMonth = DB::table('minecraft_player_sessions')
             ->where('created_at', '>=', $currentMonth->startOfMonth())
             ->where('created_at', '<', $currentMonth->endOfMonth())
+            ->whereNotIn('player_uuid', function ($query) use ($currentMonth) {
+                $query->select('player_uuid')
+                    ->distinct()
+                    ->from('minecraft_player_sessions')
+                    ->where('created_at', '<', $currentMonth->startOfMonth());
+            })
             ->count() ?? 0;
         $avgNewPlayerChangePercent = (($avgNewPlayerCurrentMonth - $avgNewPlayerPreviousMonth) / ($avgNewPlayerPreviousMonth == 0 ? 1 : $avgNewPlayerPreviousMonth)) * 100;
 
@@ -231,7 +247,7 @@ class GraphController extends Controller
             $servers = Server::where('type', '!=', ServerType::Bungee())->get();
         }
 
-        $fromDate = $request->query('from_date') ?? now()->subMonth();
+        $fromDate = $request->query('from_date') ?? now()->subWeek();
         $toDate = $request->query('to_date') ?? now();
         $query = DB::table('minecraft_server_live_infos')
             ->selectRaw("ROUND(UNIX_TIMESTAMP(CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H:'), LPAD((MINUTE(created_at) DIV 5) * 5, 2, '0'), ':00')) * 1000) AS created_at_5min")
