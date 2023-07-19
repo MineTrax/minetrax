@@ -36,7 +36,7 @@ fi
 
 yes | composer install
 
-php artisan migrate --force
+php artisan migrate --force --seed
 php artisan queue:restart
 
 chmod -R 775 storage/* bootstrap/cache
