@@ -86,12 +86,12 @@ class ServerIntelController extends Controller
             ->min('tps');
 
         // Restarts
-        $noOfRestarts = MinecraftServerLiveInfo::select(['server_session_id'])
+        $noOfRestarts = MinecraftServerLiveInfo::query()
             ->when($selectedServers, function ($query, $selectedServers) {
                 $query->whereIn('server_id', $selectedServers);
             })
             ->where('created_at', '>=', now()->subWeek())
-            ->distinct()->count();
+            ->distinct()->count('server_session_id');
 
         // Avg CPU
         $averageCpuLoad = MinecraftServerLiveInfo::select(['cpu_load'])
