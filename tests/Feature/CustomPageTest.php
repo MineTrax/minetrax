@@ -37,6 +37,7 @@ class CustomPageTest extends TestCase
             'is_redirect' => false,
             'redirect_url' => null,
             'is_html_page' => false,
+            'is_open_in_new_tab' => false,
             'is_sidebar_visible' => true,
         ];
         $response = $this->post(route('admin.custom-page.store'), $data);
@@ -57,6 +58,7 @@ class CustomPageTest extends TestCase
             'redirect_url' => null,
             'is_html_page' => false,
             'is_sidebar_visible' => false,
+            'is_open_in_new_tab' => true,
         ]);
 
         $this->assertEquals('New Title', $customPage->fresh()->title);

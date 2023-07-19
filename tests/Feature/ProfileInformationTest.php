@@ -16,6 +16,8 @@ test('profile information can be updated', function () {
         's_discord_username' => 'DiscordUser#123',
         's_steam_profile_url' => 'https://steamcommunity.com',
         's_twitter_url' => 'https://twitter.com',
+        's_linkedin_url' => 'https://linkedin.com',
+        's_tiktok_url' => 'https://tiktok.com',
         's_youtube_url' => 'https://youtube.com',
         's_facebook_url' => 'https://facebook.com',
         's_twitch_url' => 'https://twitch.com',
