@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head title="Create New Poll" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
@@ -147,20 +147,21 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import Icon from '@/Components/Icon.vue';
 import DatePicker from 'vue-datepicker-next';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
     components: {
-        AppLayout,
+        AdminLayout,
         JetInputError,
         LoadingButton,
         XInput,
@@ -169,7 +170,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 question: '',
                 options: [{name: ''}, {name: ''}],
                 closed_at: null,

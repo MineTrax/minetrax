@@ -1,15 +1,13 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head
       :title="__('General Settings')"
     />
 
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
-      <SettingSidebar />
-
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-cool-gray-800 shadow w-full">
+          <div class="bg-white dark:bg-cool-gray-800 shadow w-full rounded">
             <div class="px-6 py-4 border-b font-bold dark:border-gray-700 dark:text-gray-200">
               {{ __("General Settings") }}
             </div>
@@ -282,6 +280,38 @@
                               help-error-flex="flex-col"
                             />
                           </div>
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-6"
+                          >
+                            <x-input
+                              id="tiktok_url"
+                              v-model="form.tiktok_url"
+                              :label="__('TikTok URL')"
+                              :error="form.errors.tiktok_url"
+                              autocomplete="tiktok_url"
+                              type="text"
+                              name="tiktok_url"
+                              :help="__('Eg: https://www.tiktok.com/@minecraft')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-6"
+                          >
+                            <x-input
+                              id="linkedin_url"
+                              v-model="form.linkedin_url"
+                              :label="__('LinkedIn URL')"
+                              :error="form.errors.linkedin_url"
+                              autocomplete="linkedin_url"
+                              type="text"
+                              name="linkedin_url"
+                              :help="__('Eg: https://www.linkedin.com/in/minecraft')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
 
                           <div class="flex items-center col-span-6 sm:col-span-3">
                             <x-checkbox
@@ -466,11 +496,10 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
@@ -478,13 +507,13 @@ import XInput from '@/Components/Form/XInput.vue';
 import Icon from '@/Components/Icon.vue';
 import EasyMDE from 'easymde';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
-import SettingSidebar from '@/Shared/SettingSidebar.vue';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
     components: {
-        SettingSidebar,
+        AdminLayout,
         XCheckbox,
-        AppLayout,
         JetInputError,
         LoadingButton,
         JetSecondaryButton,
@@ -501,7 +530,7 @@ export default {
     data() {
         return {
             easyMDE: null,
-            form: this.$inertia.form({
+            form: useForm({
                 site_name: this.settings.site_name,
                 enable_mcserver_onlineplayersbox: this.settings.enable_mcserver_onlineplayersbox,
                 enable_mcserver_statuspingbox: this.settings.enable_mcserver_statuspingbox,
@@ -519,6 +548,9 @@ export default {
                 facebook_url: this.settings.facebook_url,
                 twitter_url: this.settings.twitter_url,
                 twitch_url: this.settings.twitch_url,
+                tiktok_url: this.settings.tiktok_url,
+                linkedin_url: this.settings.linkedin_url,
+                // threads_url: this.settings.threads_url,
                 enable_discordbox: this.settings.enable_discordbox,
                 discord_server_id: this.settings.discord_server_id,
                 enable_donation_box: this.settings.enable_donation_box,

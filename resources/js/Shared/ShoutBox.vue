@@ -188,10 +188,15 @@
 
 <script>
 import Icon from '@/Components/Icon.vue';
+import { useHelpers } from '@/Composables/useHelpers';
 import {USE_WEBSOCKETS} from '@/constants';
 
 export default {
     components: {Icon},
+    setup() {
+        const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
+        return {formatTimeAgoToNow,formatToDayDateString};
+    },
     data() {
         return {
             shouts: [],

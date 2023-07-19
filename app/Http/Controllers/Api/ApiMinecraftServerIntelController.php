@@ -26,7 +26,7 @@ class ApiMinecraftServerIntelController extends Controller
             'uptime' => 'required|int',
             'free_disk_in_kb' => 'required|numeric',
             'world_data' => 'required|array',
-            'motd' => 'required|string',
+            'motd' => 'nullable|string',
             'server_version' => 'required|string',
             'server_session_id' => 'present|nullable|string'
         ]);
@@ -47,7 +47,7 @@ class ApiMinecraftServerIntelController extends Controller
                     'cpu_load' => $request->input('cpu_load'),
                     'uptime' => $request->input('uptime'),
                     'free_disk_in_kb' => $request->input('free_disk_in_kb'),
-                    'motd' => $request->input('motd'),
+                    'motd' => $request->input('motd') ?? null,
                     'server_version' => $request->input('server_version'),
                     'chunks_loaded' => $request->input('chunks_loaded'),
                     'server_session_id' => $request->input('server_session_id'),

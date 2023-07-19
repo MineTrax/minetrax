@@ -44,7 +44,6 @@ class DeleteUser implements DeletesUsers
 
             // End Transaction
             DB::commit();
-            return true;
         } catch (\Exception $e) {
             // Rollback Transaction
             DB::rollback();

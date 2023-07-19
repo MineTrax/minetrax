@@ -50,6 +50,8 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         'provider_name',
         'email_verified_at',
         'user_setup_status',
+        'last_login_at',
+        'last_login_ip',
     ];
 
     // For spatie/laravel-permissions https://github.com/spatie/laravel-permission/issues/1540
@@ -65,6 +67,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
+        'last_login_ip',
     ];
 
     /**
@@ -75,6 +78,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
     protected $casts = [
         'email_verified_at' => 'datetime',
         'verified_at' => 'datetime',
+        'last_login_at' => 'datetime',
         'dob' => 'date',
         'social_links' => 'json',
         'settings' => 'json'

@@ -330,6 +330,34 @@
         />
       </div>
 
+      <!-- s_tiktok_url -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="s_tiktok_url"
+          v-model="form.s_tiktok_url"
+          :label="__('TikTok URL')"
+          :error="form.errors.s_tiktok_url"
+          autocomplete="s_tiktok_url"
+          type="text"
+          name="s_tiktok_url"
+          :help="__('Eg: https://www.tiktok.com/@minecraft')"
+        />
+      </div>
+
+      <!-- s_linkedin_url -->
+      <div class="col-span-6 sm:col-span-3">
+        <x-input
+          id="s_linkedin_url"
+          v-model="form.s_linkedin_url"
+          :label="__('LinkedIn URL')"
+          :error="form.errors.s_linkedin_url"
+          autocomplete="s_linkedin_url"
+          type="text"
+          name="s_linkedin_url"
+          :help="__('Eg: https://www.linkedin.com/in/minecraft')"
+        />
+      </div>
+
       <!-- s_website_url -->
       <div class="col-span-6 sm:col-span-3">
         <x-input
@@ -388,6 +416,7 @@ import XInput from '@/Components/Form/XInput.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -408,7 +437,7 @@ export default {
 
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 _method: 'PUT',
                 name: this.user.name,
                 photo: null,
@@ -422,6 +451,8 @@ export default {
                 s_youtube_url: this.user.social_links ? this.user.social_links.s_youtube_url : null,
                 s_facebook_url: this.user.social_links ? this.user.social_links.s_facebook_url : null,
                 s_twitch_url: this.user.social_links ? this.user.social_links.s_twitch_url : null,
+                s_linkedin_url: this.user.social_links ? this.user.social_links.s_linkedin_url : null,
+                s_tiktok_url: this.user.social_links ? this.user.social_links.s_tiktok_url : null,
                 s_website_url: this.user.social_links ? this.user.social_links.s_website_url : null,
                 about: this.user.about,
 

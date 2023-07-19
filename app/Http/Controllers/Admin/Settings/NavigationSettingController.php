@@ -22,7 +22,7 @@ class NavigationSettingController extends Controller
         $availableNavItems = config('minetrax.custom_nav_available_items_array');
 
         // Custom pages which can be added
-        $customPageItems = CustomPage::select(['id', 'title', 'path'])->get();
+        $customPageItems = CustomPage::select(['id', 'title', 'path', 'is_open_in_new_tab'])->get();
         foreach ($customPageItems as $item) {
             $availableNavItems[] = [
                 'type' => 'custom-page',
@@ -33,6 +33,7 @@ class NavigationSettingController extends Controller
                 'route_params' => [
                     'path' => $item->path,
                 ],
+                'is_open_in_new_tab' => $item->is_open_in_new_tab,
                 'key' => 'custom-page-' . $item->id,
             ];
         }
@@ -49,7 +50,7 @@ class NavigationSettingController extends Controller
         $request->validate([
             'enable_custom_navbar' => 'required|boolean',
             'custom_navbar_data' => 'nullable|array',
-            'enable_sticky_header_menu' =>  'required|boolean',
+            'enable_sticky_header_menu' => 'required|boolean',
         ]);
 
         $navbarData = $request->input('custom_navbar_data');

@@ -1,10 +1,13 @@
 <script setup>
 import { computed } from 'vue';
-import { Link } from '@inertiajs/inertia-vue3';
 
 const props = defineProps({
     href: String,
     active: Boolean,
+    openInNewTab: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const classes = computed(() => {
@@ -15,7 +18,19 @@ const classes = computed(() => {
 </script>
 
 <template>
-    <Link :href="href" :class="classes">
-        <slot />
-    </Link>
+  <InertiaLink
+    v-if="!openInNewTab"
+    :href="href"
+    :class="classes"
+  >
+    <slot />
+  </InertiaLink>
+  <a
+    v-else
+    target="_blank"
+    :href="href"
+    :class="classes"
+  >
+    <slot />
+  </a>
 </template>

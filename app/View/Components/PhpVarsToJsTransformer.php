@@ -116,10 +116,10 @@ class PhpVarsToJsTransformer extends Component
 
         // If custom navbar is disabled, generate default navbar
         if (!$customNavbarEnabled) {
-            $customPagesInNavbar = CustomPage::visible()->navbar()->select(['id', 'title', 'path', 'is_in_navbar', 'is_visible'])->get();
+            $customPagesInNavbar = CustomPage::visible()->navbar()->select(['id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_open_in_new_tab'])->get();
 
             $leftNavbar = self::DEFAULT_NAV_LEFT;
-            $dropdownList =   [
+            $dropdownList = [
                 'type' => 'dropdown',
                 'name' => 'Dropdown',
                 'title' => 'Others',
@@ -155,6 +155,7 @@ class PhpVarsToJsTransformer extends Component
                     'route_params' => [
                         'path' => $page->path,
                     ],
+                    'is_open_in_new_tab' => $page->is_open_in_new_tab,
                     'key' => 'custom-page-' . $page->id . '-01',
                 ];
             }

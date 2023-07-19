@@ -59,6 +59,11 @@ class SocialAuthController extends Controller
 
         // else generate and token if wants json else login with session
         if ($user) {
+            $user->update([
+                'last_login_at' => now(),
+                'last_login_ip' => request()->ip(),
+            ]);
+
             if ($request->wantsJson()) {
                 // Generate token
                 $token = $user->createToken('default');
@@ -89,7 +94,9 @@ class SocialAuthController extends Controller
             'provider_id' => $socialUser->getId(),
             'password' => null,
             'country_id' => $countryId,
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
+            'last_login_at' => now(),
+            'last_login_ip' => request()->ip(),
         ];
         $user = User::create($data);
         $user->assignRole(Role::DEFAULT_ROLE_NAME);

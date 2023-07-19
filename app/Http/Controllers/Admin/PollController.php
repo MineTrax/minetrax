@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePollRequest;
 use App\Models\Poll;
+use App\Queries\Filters\FilterMultipleFields;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PollController extends Controller
 {
@@ -14,11 +17,32 @@ class PollController extends Controller
     {
         $this->authorize('viewAny', Poll::class);
 
-        $polls = Poll::with(['options', 'creator:id,name,username,profile_photo_path'])
-            ->orderByDesc('id')->paginate(10);
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $polls = QueryBuilder::for(Poll::class)
+            ->with(['options', 'creator:id,name,username,profile_photo_path'])
+            ->allowedFilters([
+                'id',
+                'question',
+                'is_closed',
+                'started_at',
+                'closed_at',
+                'created_at',
+                'created_by',
+                'updated_by',
+                AllowedFilter::custom('q', new FilterMultipleFields(['question', 'id']))
+            ])
+            ->allowedSorts(['id', 'question', 'is_closed', 'started_at', 'closed_at', 'created_at', 'created_by', 'updated_by'])
+            ->defaultSort('-id')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('Admin/Poll/IndexPoll', [
-            'polls' => $polls
+            'polls' => $polls,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 

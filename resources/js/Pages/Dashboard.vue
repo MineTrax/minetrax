@@ -60,6 +60,8 @@
           :twitch="generalSettings.twitch_url"
           :youtube="generalSettings.youtube_url"
           :facebook="generalSettings.facebook_url"
+          :linkedin="generalSettings.linkedin_url"
+          :tiktok="generalSettings.tiktok_url"
         />
       </div>
     </div>
@@ -88,6 +90,7 @@ import OnlineUsersBox from '@/Shared/OnlineUsersBox.vue';
 import TopPlayersListBox from '@/Shared/TopPlayersListBox.vue';
 import VerifyYourEmailBox from '@/Shared/VerifyYourEmailBox.vue';
 import HeroSection from '@/Shared/HeroSection.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
     components: {
@@ -127,7 +130,10 @@ export default {
         top10Players: Array,
         themeSettings: Object,
     },
-
+    setup() {
+        const {canWild, isStaff} = useAuthorizable();
+        return {canWild, isStaff};
+    },
     data() {
         return {
             generalSettings: this.$page.props.generalSettings

@@ -21,7 +21,9 @@ class CountrySeeder extends Seeder
         }
 
         $data = json_decode(file_get_contents(storage_path('seed')."/countries.json"), true);
+        $id = 1;
         foreach ($data as $country) {
+            $c['id'] = $id;
             $c['name'] = $country['name']['common'];
             $c['iso_code'] = $country['cca2'];
             $c['region'] = $country['region'];
@@ -35,6 +37,7 @@ class CountrySeeder extends Seeder
             $c['created_at'] = now();
             $c['updated_at'] = now();
             DB::table('countries')->insert($c);
+            $id++;
         }
     }
 }

@@ -713,6 +713,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Icon from '@/Components/Icon.vue';
 import * as skinview3d from 'skinview3d';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
 
@@ -723,14 +724,16 @@ export default {
     props: {
         player: Object
     },
-
+    setup() {
+        const {secondsToHMS, formatTimeAgoToNow,formatToDayDateString} = useHelpers();
+        return {secondsToHMS, formatTimeAgoToNow, formatToDayDateString};
+    },
     data() {
         return {
             playerAnimationEnabled: true,
             skinViewer: null,
         };
     },
-
     mounted() {
         this.skinViewer = new skinview3d.SkinViewer({
             canvas: document.getElementById('skin_container'),

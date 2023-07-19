@@ -2,14 +2,11 @@ import './bootstrap';
 import '../css/app.css';
 
 import { createApp, h } from 'vue';
-import { createInertiaApp, Head, Link } from '@inertiajs/inertia-vue3';
-import { InertiaProgress } from '@inertiajs/progress';
+import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 import VueTippy from 'vue-tippy';
-import authorizable from '@/Mixins/authorizable.js';
-import helpers from '@/Mixins/helpers.js';
 import translations from '@/Mixins/translations.js';
 import confirmDirective from './Directives/confirm.js';
 import Swal from 'sweetalert2';
@@ -22,8 +19,8 @@ createInertiaApp({
             `./Pages/${name}.vue`,
             import.meta.glob('./Pages/**/*.vue')    // Note: use import.meta.globEager to disable chunking behavior
         ),
-    setup({ el, app, props, plugin }) {
-        const VueApp = createApp({ render: () => h(app, props) })
+    setup({ el, App, props, plugin }) {
+        const VueApp = createApp({ render: () => h(App, props) })
             .use(plugin)
             // eslint-disable-next-line no-undef
             .use(ZiggyVue, Ziggy);
@@ -40,8 +37,6 @@ createInertiaApp({
         VueApp.component('AppHead', AppHead);
 
         // eslint-disable-next-line no-undef
-        VueApp.mixin(authorizable);
-        VueApp.mixin(helpers);
         VueApp.mixin(translations);
 
         VueApp.directive('confirm', confirmDirective);
@@ -51,11 +46,9 @@ createInertiaApp({
 
         return VueApp.mount(el);
     },
-});
-
-InertiaProgress.init({
-    showSpinner: true,
-    color: '#29d',
+    progress: {
+        color: '#29d',
+    },
 });
 
 window.Toast = Swal.mixin({

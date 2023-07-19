@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="__('Edit Role - :name', {name: role.name})" />
 
     <div class="max-w-6xl px-10 py-12 mx-auto">
@@ -206,23 +206,24 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import Multiselect from 'vue-multiselect';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
 
     components: {
+        AdminLayout,
         XCheckbox,
-        AppLayout,
         JetInputError,
         LoadingButton,
         JetSecondaryButton,
@@ -235,7 +236,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 name: this.role.name,
                 display_name: this.role.display_name,
                 color: this.role.color,

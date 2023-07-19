@@ -44,7 +44,9 @@ class CreateNewUser implements CreatesNewUsers
             'username' => $input['username'],
             'password' => Hash::make($input['password']),
             'country_id' => $countryId,
-            'user_setup_status' => 1
+            'user_setup_status' => 1,
+            'last_login_at' => now(),
+            'last_login_ip' => request()->ip(),
         ]);
         $user->assignRole(Role::DEFAULT_ROLE_NAME);
         return $user;

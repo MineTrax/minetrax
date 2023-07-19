@@ -35,6 +35,7 @@
           :key="item.key"
           class="text-sm"
           :href="route(item.route, item.route_params ?? null)"
+          :open-in-new-tab="item.is_open_in_new_tab"
         >
           {{ __(item.title) }}
         </jet-dropdown-link>

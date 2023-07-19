@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 /**
  * GENERAL SECTION / NO LOGIN
  * Note: We need forbid-banned-user in no-auth section too so that if user login, it automatically get redirected to banned page
  */
-Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(function() {
+Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(function () {
     Route::get('/', [\App\Http\Controllers\HomeController::class, 'home'])->name('home');
     Route::get('news/{news:slug}', [\App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
     Route::get('news', [\App\Http\Controllers\NewsController::class, 'index'])->name('news.index');
@@ -40,15 +40,17 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
 
     Route::get('search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 
-    Route::get('auth/{provider}', [\App\Http\Controllers\SocialAuthController::class,'redirect'])->name('social.login')->middleware('guest');
-    Route::get('auth/{provider}/callback', [\App\Http\Controllers\SocialAuthController::class,'handleCallback'])->name('social.login.callback')->middleware('guest');
+    Route::get('auth/{provider}', [\App\Http\Controllers\SocialAuthController::class, 'redirect'])->name('social.login')->middleware('guest');
+    Route::get('auth/{provider}/callback', [\App\Http\Controllers\SocialAuthController::class, 'handleCallback'])->name('social.login.callback')->middleware('guest');
 
     Route::get('/features', [\App\Http\Controllers\HomeController::class, 'features'])->name('features.list');
     Route::get('/version-check', [\App\Http\Controllers\HomeController::class, 'version'])->name('version.check');
 
-    Route::get('player/avatar/{uuid}/{username}', [\App\Http\Controllers\PlayerController::class, 'getAvatarImage'])->name('player.avatar.get');
-    Route::get('player/skin/{uuid}/{username}', [\App\Http\Controllers\PlayerController::class, 'getSkinImage'])->name('player.skin.get');
-    Route::get('player/render/{uuid}/{username}', [\App\Http\Controllers\PlayerController::class, 'getRenderImage'])->name('player.render.get');
+    Route::get('player/avatar/{uuid}/{username?}', [\App\Http\Controllers\PlayerController::class, 'getAvatarImage'])->name('player.avatar.get');
+    Route::get('player/skin/{uuid}/{username?}', [\App\Http\Controllers\PlayerController::class, 'getSkinImage'])->name('player.skin.get');
+    Route::get('player/render/{uuid}/{username?}', [\App\Http\Controllers\PlayerController::class, 'getRenderImage'])->name('player.render.get');
+
+    Route::get('vote/{id}', [\App\Http\Controllers\HomeController::class, 'visitVotingSite'])->name('vote.visit');
 });
 
 /**
@@ -98,6 +100,16 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
  * ADMIN SECTION
  */
 Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 'staff-member', 'redirect-uncompleted-user'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
+    // Graph controller
+    Route::get('/graph/online-players', [\App\Http\Controllers\Admin\GraphController::class, 'getOnlinePlayersOverTime'])->name('graph.online-players');
+    Route::get('/graph/players-per-server', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayersPerServer'])->name('graph.players-per-server');
+    Route::get('/graph/players-per-country', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerPerCountry'])->name('graph.players-per-country');
+    Route::get('/graph/network-trends-vs-month', [\App\Http\Controllers\Admin\GraphController::class, 'getNetworkTrendsMonthVsMonth'])->name('graph.network-trends-vs-month');
+    Route::get('/graph/server-performance', [\App\Http\Controllers\Admin\GraphController::class, 'getServerPerformanceOverTime'])->name('graph.server-performance');
+    Route::get('/graph/server-online-activity', [\App\Http\Controllers\Admin\GraphController::class, 'getServerOnlineActivityOverTime'])->name('graph.server-online-activity');
+
     Route::get('user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('user.index');
     //  Route::get('user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('user.show');
     Route::get('user/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('user.edit');
@@ -125,9 +137,15 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::put('server/{server}/bungee', [\App\Http\Controllers\Admin\ServerController::class, 'updateBungee'])->name('server.update.bungee');
     Route::delete('server/{server}', [\App\Http\Controllers\Admin\ServerController::class, 'destroy'])->name('server.delete')->middleware('password.confirm');
     Route::post('server/{server}/send-command', [\App\Http\Controllers\Admin\ServerController::class, 'postSendCommandToServer'])->name('server.command');
-    Route::get('server/{server}/performance', [\App\Http\Controllers\Admin\ServerController::class, 'showPerformanceMonitor'])->name('server.show.perfmon');
-    Route::get('server/{server}/insights', [\App\Http\Controllers\Admin\ServerController::class, 'showInsights'])->name('server.show.insights');
     Route::get('server/{server}/stats', [\App\Http\Controllers\Admin\ServerController::class, 'showStatistics'])->name('server.show.stats');
+
+    Route::get('intel/server/overview', [\App\Http\Controllers\Admin\ServerIntelController::class, 'overview'])->name('intel.server.index');
+    Route::get('intel/server/overview/numbers', [\App\Http\Controllers\Admin\ServerIntelController::class, 'overviewNumbers'])->name('intel.server.index.numbers');
+    Route::get('intel/server/performance', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performance'])->name('intel.server.performance');
+    Route::get('intel/server/performance/numbers', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performanceNumbers'])->name('intel.server.performance.numbers');
+    Route::get('intel/server/playerbase', [\App\Http\Controllers\Admin\ServerIntelController::class, 'playerbase'])->name('intel.server.playerbase');
+    Route::get('intel/server/chatlog', [\App\Http\Controllers\Admin\ServerIntelController::class, 'chatlog'])->name('intel.server.chatlog');
+    Route::get('intel/server/consolelog', [\App\Http\Controllers\Admin\ServerIntelController::class, 'consolelog'])->name('intel.server.consolelog');
 
     Route::get('rank', [\App\Http\Controllers\Admin\RankController::class, 'index'])->name('rank.index');
     Route::get('rank/create', [\App\Http\Controllers\Admin\RankController::class, 'create'])->name('rank.create');
@@ -166,6 +184,12 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::post('setting/player/validate-score-expression', [\App\Http\Controllers\Admin\Settings\PlayerSettingController::class, 'validateScoreExpression'])->name('setting.player.validate-score-expression');
     Route::get('setting/navigation', [\App\Http\Controllers\Admin\Settings\NavigationSettingController::class, 'show'])->name('setting.navigation.show');
     Route::post('setting/navigation', [\App\Http\Controllers\Admin\Settings\NavigationSettingController::class, 'update'])->name('setting.navigation.update');
+    Route::get('setting/danger', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'show'])->name('setting.danger.show');
+    Route::delete('setting/danger/truncate-shouts', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateShouts'])->name('setting.danger.truncate.shouts');
+    Route::delete('setting/danger/truncate-consolelogs', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateConsolelogs'])->name('setting.danger.truncate.consolelogs');
+    Route::delete('setting/danger/truncate-chatlogs', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateChatlogs'])->name('setting.danger.truncate.chatlogs');
+    Route::delete('setting/danger/truncate-playerstats', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncatePlayerStats'])->name('setting.danger.truncate.playerstats');
+    Route::delete('setting/danger/truncate-inteldata', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateIntelData'])->name('setting.danger.truncate.inteldata');
 
     Route::get('poll', [\App\Http\Controllers\Admin\PollController::class, 'index'])->name('poll.index');
     Route::get('poll/create', [\App\Http\Controllers\Admin\PollController::class, 'create'])->name('poll.create');

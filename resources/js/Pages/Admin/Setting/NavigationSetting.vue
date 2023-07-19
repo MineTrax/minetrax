@@ -1,15 +1,13 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head
       :title="__('Navigation Settings')"
     />
 
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
-      <SettingSidebar />
-
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-cool-gray-800 shadow w-full">
+          <div class="bg-white dark:bg-cool-gray-800 shadow w-full rounded">
             <div class="px-6 py-4 border-b dark:border-gray-700 dark:text-gray-300 font-bold">
               {{ __("Navigation Settings") }}
             </div>
@@ -299,25 +297,24 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XInput from '@/Components/Form/XInput.vue';
-import SettingSidebar from '@/Shared/SettingSidebar.vue';
 import Draggable from 'vuedraggable';
 import Icon from '@/Components/Icon.vue';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
     components: {
+        AdminLayout,
         Icon,
         Draggable,
-        SettingSidebar,
         XCheckbox,
-        AppLayout,
         LoadingButton,
         XInput,
     },
@@ -329,7 +326,7 @@ export default {
 
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 enable_sticky_header_menu: this.generalSettings.enable_sticky_header_menu,
                 enable_custom_navbar: this.settings.enable_custom_navbar,
                 custom_navbar_data: this.settings.custom_navbar_data,

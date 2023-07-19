@@ -30,7 +30,7 @@ class UpdateRoleRequest extends FormRequest
             'is_hidden_from_staff_list' => 'required|boolean',
             'weight' => 'required|integer',
             'web_message_format' => 'nullable|string|max:255',
-            'photo' => 'sometimes|nullable|image|max:128',
+            'photo' => 'sometimes|nullable|image|max:300',
             'permissions' => 'sometimes|nullable|array|exists:permissions,name'
         ];
     }

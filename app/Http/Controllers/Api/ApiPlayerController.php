@@ -35,12 +35,12 @@ class ApiPlayerController extends Controller
         $columnName = $request->uuid ? 'uuid' : 'username';
 
         // Count the number of matches and return 1 if there is an exact match
-        $playerFoundCount = Player::where($columnName, 'LIKE', $username)->count();
+        $playerFoundCount = Player::where($columnName, 'LIKE', $username)->whereNotNull($columnName)->count();
         if ($playerFoundCount && $request->only_exact_result) {
             $playerFoundCount = 1;
         }
         if (!$playerFoundCount && !$request->only_exact_result) {
-            $playerFoundCount = Player::where($columnName, 'LIKE', '%' . $username . '%')->count();
+            $playerFoundCount = Player::where($columnName, 'LIKE', '%' . $username . '%')->whereNotNull($columnName)->count();
         }
 
         $whoisData['count'] = $playerFoundCount;
@@ -50,7 +50,7 @@ class ApiPlayerController extends Controller
             case 0:
                 break;
             case 1:
-                $player = Player::with('users:id,name,username')->where($columnName, 'LIKE', $username )->orderBy('position')->first();
+                $player = Player::with('users:id,name,username')->where($columnName, 'LIKE', $username )->whereNotNull($columnName)->orderBy('position')->first();
                 if ($player->users->count()) {
                     $player->user = $player->users->first();
                     unset($player->users);
@@ -58,7 +58,7 @@ class ApiPlayerController extends Controller
                 $players = $players->push($player);
                 break;
             default:
-                $players = Player::where($columnName, 'LIKE', '%' . $username . '%')->limit(10)->orderBy('position')->get();
+                $players = Player::where($columnName, 'LIKE', '%' . $username . '%')->whereNotNull($columnName)->limit(10)->orderBy('position')->get();
                 break;
         }
 
@@ -75,7 +75,7 @@ class ApiPlayerController extends Controller
                     'rank' => $pl->rank ? $pl->rank->name : null,
                     'country' => $pl->country ? $pl->country->name : 'Terra Incognita',
                     'user' => $pl->user ? '@' . $pl->user->username : null,
-                    'url' => route('player.show', [$pl->username])
+                    'url' => route('player.show', [$pl->username ?? $pl->uuid])
                 ];
             });
         }
@@ -121,7 +121,7 @@ class ApiPlayerController extends Controller
         ->first();
 
         if ($player) {
-            $responseData['is_verified'] = $player->users->count() > 0 ? true: false;
+            $responseData['is_verified'] = $player->users->count() > 0;
             $responseData['player_id'] = $player->id;
             $responseData['rating'] = $player->rating;
             $responseData['total_score'] = $player->total_score;

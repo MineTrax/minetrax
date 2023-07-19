@@ -7,20 +7,21 @@
       />
       {{ __("Server Performance") }}
     </h3>
-    <e-chart
+    <Chart
       :options="options"
-      :height="300"
+      height="300px"
     />
   </div>
 </template>
 
 <script>
-import EChart from '@/Components/Dashboard/EChart.vue';
 import Icon from '@/Components/Icon.vue';
+import { useHelpers } from '@/Composables/useHelpers';
+import Chart from '@/Components/Dashboard/Chart.vue';
 
 export default {
     name: 'ServerAllLiveStatsBox',
-    components: {Icon, EChart},
+    components: {Chart, Icon},
     props: {
         serverId: {
             type: Number,
@@ -30,6 +31,10 @@ export default {
             type: Array,
             default: null
         }
+    },
+    setup() {
+        const {formatToDayDateString} = useHelpers();
+        return {formatToDayDateString};
     },
     beforeMount() {
         this.options = {

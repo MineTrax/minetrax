@@ -29,7 +29,7 @@ class UpdateNewsRequest extends FormRequest
             'is_published' => 'required|boolean',
             'is_pinned' => 'required|boolean',
             'type' => 'required|numeric|in:0,1,2',   // @TODO change to NewsType
-            'photo' => 'sometimes|nullable|image|max:512',
+            'photo' => 'sometimes|nullable|image|max:2048',
         ];
     }
 }

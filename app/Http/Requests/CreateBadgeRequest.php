@@ -30,7 +30,7 @@ class CreateBadgeRequest extends FormRequest
             'shortname' => 'required|alpha_dash|max:25|unique:badges',
             'sort_order' => 'sometimes|nullable|numeric|min:0',
             'is_sticky' => 'required|boolean',
-            'photo' => 'required|image|max:64'
+            'photo' => 'required|image|max:200'
         ];
     }
 }

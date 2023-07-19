@@ -83,6 +83,7 @@ import JetLabel from '@/Jetstream/Label.vue';
 import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -97,7 +98,7 @@ export default {
     data() {
         return {
             recovery: false,
-            form: this.$inertia.form({
+            form: useForm({
                 code: '',
                 recovery_code: '',
             })

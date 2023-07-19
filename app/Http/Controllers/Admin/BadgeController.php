@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBadgeRequest;
 use App\Http\Requests\UpdateBadgeRequest;
 use App\Models\Badge;
+use App\Queries\Filters\FilterMultipleFields;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class BadgeController extends Controller
 {
@@ -15,13 +18,30 @@ class BadgeController extends Controller
     {
         $this->authorize('viewAny', Badge::class);
 
-        $badges = Badge::orderBy('sort_order')
-            ->latest()
-            ->withCount('users')
-            ->paginate(10);
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $badges = QueryBuilder::for(Badge::class)->withCount('users')
+            ->allowedFilters([
+                'id',
+                'name',
+                'shortname',
+                'is_sticky',
+                'sort_order',
+                'created_at',
+                'updated_at',
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'shortname', 'id']))
+            ])
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at', 'shortname', 'is_sticky', 'sort_order'])
+            ->defaultSort('sort_order')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('Admin/Badge/IndexBadge', [
-            'badges' => $badges
+            'badges' => $badges,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 

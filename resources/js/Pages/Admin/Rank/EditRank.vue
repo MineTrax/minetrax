@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="__('Edit Rank - :name', {name: rank.name})" />
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
@@ -157,21 +157,22 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
     components: {
+        AdminLayout,
         XTextarea,
-        AppLayout,
         JetInputError,
         LoadingButton,
         JetSecondaryButton,
@@ -182,7 +183,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 name: this.rank.name,
                 shortname: this.rank.shortname,
                 description: this.rank.description,

@@ -61,11 +61,11 @@
         <div
           v-show="!loading"
           id="chat-container"
-          class="relative flex flex-col-reverse justify-between p-1 mt-1 text-white bg-white rounded md:flex-row dark:bg-cool-gray-900"
+          class="relative flex flex-col-reverse justify-between p-1 mt-1 text-white bg-gray-200 rounded md:flex-row dark:bg-cool-gray-900"
         >
           <button
             v-show="!shouldDisplayPlayerList"
-            class="absolute top-0 right-0 mt-1 mr-2 font-semibold text-green-400"
+            class="absolute top-0 right-0 mt-1 mr-2 font-semibold text-green-400 z-10"
             type="button"
             @click="shouldDisplayPlayerList = !shouldDisplayPlayerList"
           >
@@ -96,7 +96,7 @@
           <div
             v-show="!playersListLoading && shouldDisplayPlayerList"
             id="player-list"
-            class="sticky flex justify-end overflow-auto text-sm bg-gray-100 bg-opacity-100 rounded dark:bg-cool-gray-800 max-h-96 min-w-max hide-scrollbar"
+            class="sticky flex justify-end overflow-auto text-sm bg-white bg-opacity-100 rounded dark:bg-cool-gray-800 max-h-96 min-w-max hide-scrollbar"
           >
             <div class="flex flex-col w-full space-y-1">
               <div class="relative flex items-center justify-center p-2 bg-gray-100 dark:bg-opacity-25 dark:bg-cool-gray-600">
@@ -104,7 +104,7 @@
                   {{ __("Players") }}&nbsp;({{ playersList.length }})
                 </h3>
                 <button
-                  class="absolute right-0 mr-2 font-semibold text-red-500 dark:text-red-400"
+                  class="absolute right-0 mr-2 font-semibold text-red-500 dark:text-red-400 z-10"
                   type="button"
                   @click="shouldDisplayPlayerList = !shouldDisplayPlayerList"
                 >
@@ -303,12 +303,20 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import {format} from 'date-fns';
 import {USE_WEBSOCKETS} from '@/constants';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton},
     props: {
         defaultServerId: Number,
         serverList: Array
+    },
+
+    setup() {
+        const {can} = useAuthorizable();
+        const {formatToDayDateString} = useHelpers();
+        return {can, formatToDayDateString};
     },
 
     data() {

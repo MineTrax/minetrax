@@ -129,10 +129,12 @@
 </template>
 
 <script>
+import InfiniteScroll from '@/Components/InfiniteScroll.vue';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 import ShoutBox from '@/Shared/ShoutBox.vue';
-import InfiniteScroll from '@/Components/InfiniteScroll.vue';
 
 export default {
 
@@ -144,6 +146,12 @@ export default {
     },
     props: {
         newses: Object,
+    },
+
+    setup() {
+        const {can} = useAuthorizable();
+        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {can, formatTimeAgoToNow, formatToDayDateString};
     },
 
     data() {

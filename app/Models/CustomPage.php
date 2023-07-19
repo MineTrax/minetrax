@@ -14,6 +14,7 @@ class CustomPage extends BaseModel
         'is_in_navbar' => 'boolean',
         'is_redirect' => 'boolean',
         'is_sidebar_visible' => 'boolean',
+        'is_open_in_new_tab' => 'boolean',
         'is_html_page' => 'boolean',
     ];
 

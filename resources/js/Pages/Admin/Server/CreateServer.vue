@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head
       :title="__('Add New Server')"
     />
@@ -387,21 +387,22 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
     components: {
+        AdminLayout,
         XCheckbox,
         XSelect,
-        AppLayout,
         LoadingButton,
         XInput
     },
@@ -410,7 +411,7 @@ export default {
     },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 connection_type: 'sftp',
                 storage_server_host: '',
                 storage_server_port: '',

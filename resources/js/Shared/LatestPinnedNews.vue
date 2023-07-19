@@ -5,6 +5,7 @@
   >
     <div
       v-for="news in newslist"
+      :key="news.id"
       class="bg-white dark:bg-cool-gray-800 rounded shadow flex justify-between"
     >
       <div class="p-3 sm:px-5">
@@ -54,11 +55,16 @@
 
 <script>
 import Icon from '@/Components/Icon.vue';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {Icon},
     props: {
         newslist: Array
+    },
+    setup() {
+        const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
+        return {formatTimeAgoToNow,formatToDayDateString};
     },
 };
 </script>

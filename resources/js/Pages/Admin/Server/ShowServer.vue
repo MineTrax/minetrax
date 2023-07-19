@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="__('Server #:id', {id: server.id})" />
 
     <div class="max-w-6xl px-10 py-12 mx-auto space-y-4">
@@ -353,11 +353,10 @@
         </form>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import {Terminal} from 'xterm';
 import {FitAddon} from 'xterm-addon-fit';
 import {WebLinksAddon} from 'xterm-addon-web-links';
@@ -366,16 +365,24 @@ import ServerSubMenu from '@/Pages/Admin/Server/ServerSubMenu.vue';
 import {debounce} from 'lodash';
 import millify from 'millify';
 import {USE_WEBSOCKETS} from '@/constants';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {
+        AdminLayout,
         ServerSubMenu,
         OverviewCard,
-        AppLayout,
     },
     props: {
         server: Object,
         serverAggrData: Object,
+    },
+    setup() {
+        const {can} = useAuthorizable();
+        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {can, formatTimeAgoToNow, formatToDayDateString};
     },
 
     data() {

@@ -11,6 +11,7 @@ use App\Jobs\FetchStatsFromAllServersJob;
 use App\Models\JsonMinecraftPlayerStat;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\Server;
+use App\Queries\Filters\FilterMultipleFields;
 use App\Services\GeolocationService;
 use App\Services\MinecraftServerFileService;
 use App\Services\MinecraftServerPingService;
@@ -19,6 +20,8 @@ use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ServerController extends Controller
 {
@@ -26,27 +29,55 @@ class ServerController extends Controller
     {
         $this->authorize('viewAny', Server::class);
 
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
         $canCreateBungeeServer = Server::where('type', ServerType::Bungee)->exists();
 
-        $servers = Server::latest()->select([
-            'id',
-            'name',
-            'hostname',
-            'ip_address',
-            'join_port',
-            'query_port',
-            'webquery_port',
-            'type',
-            'minecraft_version',
-            'order',
-            'country_id',
-            'last_scanned_at',
-            'created_at'
-        ])->with('country')->paginate(5);
+        $servers = QueryBuilder::for(Server::class)
+            ->select([
+                'id',
+                'name',
+                'hostname',
+                'ip_address',
+                'join_port',
+                'query_port',
+                'webquery_port',
+                'type',
+                'minecraft_version',
+                'order',
+                'country_id',
+                'last_scanned_at',
+                'created_at'
+            ])
+            ->with('country')
+            ->allowedFilters([
+                'id',
+                'name',
+                'hostname',
+                'ip_address',
+                'join_port',
+                'query_port',
+                'webquery_port',
+                'type',
+                'minecraft_version',
+                'order',
+                'country_id',
+                'last_scanned_at',
+                'created_at',
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'minecraft_version']))
+            ])
+            ->allowedSorts(['id', 'name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'type', 'minecraft_version', 'order', 'country_id', 'last_scanned_at', 'created_at'])
+            ->defaultSort('-created_at')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('Admin/Server/IndexServer', [
             'servers' => $servers,
-            'canCreateBungeeServer' => !$canCreateBungeeServer
+            'canCreateBungeeServer' => !$canCreateBungeeServer,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 
@@ -98,7 +129,7 @@ class ServerController extends Controller
                 'port' => $request->storage_server_port ?? 22,
                 'root' => $request->storage_server_root ?? ''
             ];
-        } else if($request->connection_type == 'local') {
+        } else if ($request->connection_type == 'local') {
             $storageServerHost = '127.0.0.1';
             $connectionString = [
                 'driver' => 'local',
@@ -110,8 +141,8 @@ class ServerController extends Controller
 
         $ipAddress = gethostbyname($request->hostname);
         // If ip address still have something like 111.111.111.111:25565 then we remove the port part
-        if(\Str::contains($ipAddress, ":")) {
-            $ipAddress = explode(":",$ipAddress);
+        if (\Str::contains($ipAddress, ":")) {
+            $ipAddress = explode(":", $ipAddress);
             $ipAddress = $ipAddress[0];
         }
 
@@ -208,89 +239,6 @@ class ServerController extends Controller
         return $query->get();
     }
 
-    public function showPerformanceMonitor(Server $server, Request $request)
-    {
-        $this->authorize('view', $server);
-
-        // LiveServerInfoData
-        $query = MinecraftServerLiveInfo::query();
-        if($request->has('dateFrom') && $request->has('dateTo')) {
-            $query->whereBetween('created_at', [$request->dateFrom, $request->dateTo]);
-        }
-        else {
-            $query->limit(60);
-        }
-        $serverLiveInfoData = $query->where('server_id', $server->id)->latest()->get();
-
-        // TODO NOTE: Can be optimized to less number of queries. But do we need to?
-        // NumbersData - last 24 hours, last week, last month, all time.
-        $numbersData = [];
-        // Max Online Players
-        $maxPlayers["last_24h"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subHours(24))->max('online_players') ?: 0;
-        $maxPlayers["last_week"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subWeek())->max('online_players') ?: 0;
-        $maxPlayers["last_month"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subMonth())->max('online_players') ?: 0;
-        $maxPlayers["all_time"] = MinecraftServerLiveInfo::where('server_id', $server->id)->max('online_players') ?: 0;
-        $numbersData["max_players"] = $maxPlayers;
-
-        // Lowest TPS
-        $lowTPS["last_24h"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subHours(24))->min('tps') ?: 0;
-        $lowTPS["last_week"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subWeek())->min('tps') ?: 0;
-        $lowTPS["last_month"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subMonth())->min('tps') ?: 0;
-        $lowTPS["all_time"] = MinecraftServerLiveInfo::where('server_id', $server->id)->min('tps') ?: 0;
-        $numbersData["low_tps"] = $lowTPS;
-
-        // Avg CPU
-        $avgCPU["last_24h"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subHours(24))->avg('cpu_load') ?: 0;
-        $avgCPU["last_week"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subWeek())->avg('cpu_load') ?: 0;
-        $avgCPU["last_month"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subMonth())->avg('cpu_load') ?: 0;
-        $avgCPU["all_time"] = MinecraftServerLiveInfo::where('server_id', $server->id)->avg('cpu_load') ?: 0;
-        $numbersData["avg_cpu"] = $avgCPU;
-
-        // Avg Ram
-        $avgMemory["last_24h"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subHours(24))->avg('used_memory') ?: 0;
-        $avgMemory["last_week"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subWeek())->avg('used_memory') ?: 0;
-        $avgMemory["last_month"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subMonth())->avg('used_memory') ?: 0;
-        $avgMemory["all_time"] = MinecraftServerLiveInfo::where('server_id', $server->id)->avg('used_memory') ?: 0;
-        $numbersData["avg_memory"] = $avgMemory;
-
-        // Avg Chunks
-        $avgChunks["last_24h"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subHours(24))->avg('chunks_loaded') ?: 0;
-        $avgChunks["last_week"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subWeek())->avg('chunks_loaded') ?: 0;
-        $avgChunks["last_month"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subMonth())->avg('chunks_loaded') ?: 0;
-        $avgChunks["all_time"] = MinecraftServerLiveInfo::where('server_id', $server->id)->avg('chunks_loaded') ?: 0;
-        $numbersData["avg_chunks"] = $avgChunks;
-
-        // Min Free Disk
-        $minFreeDisk["last_24h"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subHours(24))->min('free_disk_in_kb') ?: 0;
-        $minFreeDisk["last_week"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subWeek())->min('free_disk_in_kb') ?: 0;
-        $minFreeDisk["last_month"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subMonth())->min('free_disk_in_kb') ?: 0;
-        $minFreeDisk["all_time"] = MinecraftServerLiveInfo::where('server_id', $server->id)->min('free_disk_in_kb') ?: 0;
-        $numbersData["min_free_disk"] = $minFreeDisk;
-
-        // Total Restarts
-        $totalRestarts["last_24h"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subHours(24))->distinct()->count('server_session_id');
-        $totalRestarts["last_week"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subWeek())->distinct()->count('server_session_id');
-        $totalRestarts["last_month"] = MinecraftServerLiveInfo::where('server_id', $server->id)->where('created_at', '>=', now()->subMonth())->distinct()->count('server_session_id');
-        $totalRestarts["all_time"] = MinecraftServerLiveInfo::where('server_id', $server->id)->distinct()->count('server_session_id');
-        $numbersData["total_restarts"] = $totalRestarts;
-
-        return Inertia::render('Admin/Server/ShowServerPerformanceMonitor', [
-            'server' => $server,
-            'serverLiveInfo' => $serverLiveInfoData->reverse()->values(),
-            'numbers' => $numbersData,
-            'queryParams' => request()->all(['dateFrom', 'dateTo']),
-        ]);
-    }
-
-    public function showInsights(Server $server)
-    {
-        $this->authorize('view', $server);
-
-        return Inertia::render('Admin/Server/ShowServerInsights', [
-            'server' => $server,
-        ]);
-    }
-
     public function showStatistics(Server $server)
     {
         $this->authorize('view', $server);
@@ -374,9 +322,9 @@ class ServerController extends Controller
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:'.$server->id);
-        Cache::forget('server:query:'.$server->id);
-        Cache::forget('server:webquery:'.$server->id);
+        Cache::forget('server:ping:' . $server->id);
+        Cache::forget('server:query:' . $server->id);
+        Cache::forget('server:webquery:' . $server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Bungee server updated successfully')]]);
@@ -409,7 +357,7 @@ class ServerController extends Controller
                 'port' => $request->storage_server_port ?? 22,
                 'root' => $request->storage_server_root ?? ''
             ];
-        } else if($request->connection_type == 'local') {
+        } else if ($request->connection_type == 'local') {
             $storageServerHost = '127.0.0.1';
             $connectionString = [
                 'driver' => 'local',
@@ -438,9 +386,9 @@ class ServerController extends Controller
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:'.$server->id);
-        Cache::forget('server:query:'.$server->id);
-        Cache::forget('server:webquery:'.$server->id);
+        Cache::forget('server:ping:' . $server->id);
+        Cache::forget('server:query:' . $server->id);
+        Cache::forget('server:webquery:' . $server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Server updated successfully')]]);
@@ -465,7 +413,7 @@ class ServerController extends Controller
             'storage_server_username' => 'nullable|required_if:connection_type,ftp,sftp|string',
             'storage_server_password' => 'required_if:connection_type,ftp,sftp',
             'storage_server_root' => 'sometimes|required_if:connection_type,local|nullable',
-            'storage_server_ssl'=> 'sometimes|nullable|required_if:connection_type,ftp|boolean',
+            'storage_server_ssl' => 'sometimes|nullable|required_if:connection_type,ftp|boolean',
         ]);
 
         // Make connection string
@@ -479,7 +427,7 @@ class ServerController extends Controller
                 'password' => $request->storage_server_password,
                 'port' => $request->storage_server_port ?? 21,
                 'root' => $request->storage_server_root ?? '',
-                'ssl' =>  $request->storage_server_ssl ?? false,
+                'ssl' => $request->storage_server_ssl ?? false,
             ];
         } elseif ($request->connection_type == 'sftp') {
             $connectionString = [
@@ -490,7 +438,7 @@ class ServerController extends Controller
                 'port' => $request->storage_server_port ?? 22,
                 'root' => $request->storage_server_root ?? ''
             ];
-        } else if($request->connection_type == 'local') {
+        } else if ($request->connection_type == 'local') {
             $storageServerHost = '127.0.0.1';
             $connectionString = [
                 'driver' => 'local',
@@ -571,6 +519,6 @@ class ServerController extends Controller
         FetchStatsFromAllServersJob::dispatch();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __('Rescan Queued!'), 'body' => __('Successfully queued rescanning of all servers. It may take sometime to reflect depending on number of players found.'),'milliseconds' => 20000]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Rescan Queued!'), 'body' => __('Successfully queued rescanning of all servers. It may take sometime to reflect depending on number of players found.'), 'milliseconds' => 20000]]);
     }
 }

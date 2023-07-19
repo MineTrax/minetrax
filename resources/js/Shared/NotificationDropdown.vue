@@ -4,9 +4,8 @@
     class="ml-4"
   >
     <template #trigger>
-      <icon
-        name="bell"
-        class="w-5 h-5 text-gray-700 dark:text-gray-200"
+      <BellIcon
+        class="w-5 h-5 hover:cursor-pointer text-gray-500 dark:text-gray-400 dark:hover:text-gray-200"
       />
     </template>
 
@@ -88,17 +87,17 @@
 
 <script>
 import JetDropdown from '@/Jetstream/Dropdown.vue';
-import Icon from '@/Components/Icon.vue';
 import Notification from '@/Components/Notification.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
+import { BellIcon } from '@heroicons/vue/24/outline';
 
 export default {
     name: 'NotificationDropdown',
     components: {
         ErrorMessage,
         Notification,
-        Icon,
         JetDropdown,
+        BellIcon,
     },
     data() {
         return {

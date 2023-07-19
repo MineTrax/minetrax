@@ -74,6 +74,7 @@ import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import JetInput from '@/Jetstream/Input.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -89,7 +90,7 @@ export default {
         return {
             confirmingUserDeletion: false,
 
-            form: this.$inertia.form({
+            form: useForm({
                 password: '',
             })
         };

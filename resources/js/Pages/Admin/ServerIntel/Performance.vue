@@ -1,0 +1,34 @@
+<script setup>
+import AppHead from '@/Components/AppHead.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import ServerPerformanceOverTimeMetricBox from '@/Shared/ServerPerformanceOverTimeMetricBox.vue';
+import ServerIntelPerformanceNumbersBox from '@/Shared/ServerIntelPerformanceNumbersBox.vue';
+import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
+
+const props = defineProps({
+    serverList: {
+        type: Object,
+    },
+    filters: {
+        type: Object,
+    },
+});
+</script>
+
+<template>
+  <AdminLayout>
+    <AppHead :title="__('Performance - ServerIntel')" />
+
+    <div class="p-4 mx-auto space-y-4 max-w-7xl">
+      <ServerIntelServerSelector
+        :title="__('Server Performance')"
+        :server-list="props.serverList"
+        :filters="props.filters"
+      />
+
+      <ServerPerformanceOverTimeMetricBox :servers="filters?.servers" />
+
+      <ServerIntelPerformanceNumbersBox :servers="filters?.servers" />
+    </div>
+  </AdminLayout>
+</template>

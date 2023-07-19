@@ -31,7 +31,7 @@ class CreateRankRequest extends FormRequest
             'total_score_needed' => 'required|numeric|min:0',
             'total_play_one_minute_needed' => 'required|numeric|min:0',
             'description' => 'nullable|max:1000',
-            'photo' => 'required|image|max:128'
+            'photo' => 'required|image|max:512'
         ];
     }
 }

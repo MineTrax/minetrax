@@ -18,6 +18,7 @@ class News extends BaseModel implements HasMedia
     protected $casts = [
         'type' => NewsType::class,
         'published_at' => 'datetime',
+        'is_pinned' => 'boolean',
     ];
 
     public function registerMediaCollections(): void

@@ -1,14 +1,81 @@
-<template>
-  <app-layout>
-    <app-head :title="__('Player Ranks Administration')" />
+<script setup>
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
+import { useTranslations } from '@/Composables/useTranslations';
+import DataTable from '@/Components/DataTable/DataTable.vue';
+import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
-    <div class="py-12 px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("Player Ranks") }}
+const { can } = useAuthorizable();
+const { __ } = useTranslations();
+const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
+
+defineProps({
+    ranks: Object,
+    filters: Object,
+});
+
+const headerRow = [
+    {
+        key: 'id',
+        label: __('ID'),
+        sortable: true,
+    },
+    {
+        key: 'image',
+        sortable: false,
+        label: __('Image'),
+    },
+    {
+        key: 'name',
+        sortable: true,
+        label: __('Name'),
+        class: 'w-2/12',
+    },
+    {
+        key: 'total_play_one_minute_needed',
+        label: __('Play Time Needed'),
+        sortable: true,
+        class: 'text-right',
+    },
+    {
+        key: 'total_score_needed',
+        label: __('Score Needed'),
+        sortable: true,
+        class: 'text-right',
+    },
+    {
+        key: 'players_count',
+        label: __('Player Count'),
+        sortable: false,
+        class: 'text-right',
+    },
+    {
+        key: 'created_at',
+        sortable: true,
+        label: __('Created'),
+    },
+    {
+        key: 'actions',
+        label: __('Actions'),
+        sortable: false,
+        class: 'w-1/12 text-right',
+    },
+];
+</script>
+
+<template>
+  <AdminLayout>
+    <app-head :title="__('Manage Player Ranks')" />
+
+    <div class="px-10 py-8 mx-auto text-gray-400">
+      <div class="flex justify-between mb-4">
+        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+          {{ __("Manage Player Ranks") }}
         </h1>
         <div class="flex">
-          <inertia-link
+          <InertiaLink
             v-if="can('update ranks')"
             v-confirm="{message: 'Are you sure you want to Reset all Ranks? This will remove current rank of all players.'}"
             method="post"
@@ -17,221 +84,103 @@
             class="mr-2 inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red transition ease-in-out duration-150"
           >
             {{ __("Reset to Default Ranks") }}
-          </inertia-link>
-          <inertia-link
+          </InertiaLink>
+          <InertiaLink
             v-if="can('create ranks')"
             :href="route('admin.rank.create')"
-            class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
           >
             <span>{{ __("Create New") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Rank") }}</span>
-          </inertia-link>
+          </InertiaLink>
         </div>
       </div>
-      <div class="flex flex-col">
-        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="shadow overflow-hidden border-b border-gray-200 dark:border-none sm:rounded-lg">
-              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-cool-gray-800 text-gray-500 dark:text-gray-300">
-                  <tr>
-                    <th
-                      scope="col"
-                      class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    >
-                      {{ __("#") }}
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    >
-                      {{ __("Name") }}
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    >
-                      {{ __("Play Time Needed") }}
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    >
-                      {{ __("Score Needed") }}
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    >
-                      {{ __("Player Count") }}
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    >
-                      {{ __("Created") }}
-                    </th>
-                    <th
-                      scope="col"
-                      class="relative px-6 py-3"
-                    >
-                      <span class="sr-only">{{ __("Edit") }}</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white dark:bg-cool-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  <tr
-                    v-for="(rank, index) in ranks.data"
-                    :key="index"
-                  >
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {{ (index)+ranks.from }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10">
-                          <img
-                            class="h-10 w-10"
-                            :src="rank.photo_url"
-                            alt=""
-                          >
-                        </div>
-                        <div class="ml-4">
-                          <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
-                            {{ rank.name }}
-                          </div>
-                          <div class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ rank.shortname }}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900 dark:text-gray-300">
-                        {{ rank.total_play_one_minute_needed }}
-                      </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {{ rank.total_score_needed }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {{ rank.players_count }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {{ formatTimeAgoToNow(rank.created_at) }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium dark:text-gray-400">
-                      <a
-                        href="#"
-                        class="text-blue-600 hover:text-blue-900"
-                      >{{ __("View") }}</a>
-                      /
-                      <inertia-link
-                        v-if="can('update ranks')"
-                        as="a"
-                        :href="route('admin.rank.edit', rank.id)"
-                        class="text-yellow-600 hover:text-yellow-900"
-                      >
-                        {{ __("Edit") }}
-                      </inertia-link>
-                      /
-                      <button
-                        v-if="can('delete ranks')"
-                        class="text-red-600 hover:text-red-900 focus:outline-none"
-                        @click="confirmRankDeletion(rank.id)"
-                      >
-                        {{ __("Delete") }}
-                      </button>
-                    </td>
-                  </tr>
 
-                  <tr v-if="ranks.data.length === 0">
-                    <td
-                      class="border-t dark:border-gray-700 px-6 py-4 text-center"
-                      colspan="7"
-                    >
-                      {{ __("No ranks found.") }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+      <DataTable
+        class="bg-white rounded shadow dark:bg-gray-800"
+        :header="headerRow"
+        :data="ranks"
+        :filters="filters"
+      >
+        <template #default="{ item }">
+          <td
+            class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+          >
+            {{ item.id }}
+          </td>
+          <td class="px-4">
+            <div class="">
+              <img
+                class="h-10 w-10"
+                :src="item.photo_url"
+                :alt="__('Rank Image')"
+              >
             </div>
-          </div>
-        </div>
-      </div>
+          </td>
 
-      <pagination :links="ranks.links" />
+          <td class="px-4 whitespace-nowrap">
+            <div>
+              <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                {{ item.name }}
+              </div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                {{ item.shortname }}
+              </div>
+            </div>
+          </td>
+
+          <DtRowItem class="text-right">
+            {{ item.total_play_one_minute_needed }}
+          </DtRowItem>
+
+          <DtRowItem class="text-right">
+            {{ item.total_score_needed }}
+          </DtRowItem>
+
+          <DtRowItem class="text-right">
+            {{ item.players_count }}
+          </DtRowItem>
+
+          <DtRowItem>
+            <span
+              v-tippy
+              :title="formatToDayDateString(item.created_at)"
+            >
+              {{ formatTimeAgoToNow(item.created_at) }}
+            </span>
+          </DtRowItem>
+
+          <td
+            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+          >
+            <InertiaLink
+              v-if="can('update ranks')"
+              v-tippy
+              as="a"
+              :href="route('admin.rank.edit', item.id)"
+              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              :title="__('Edit Rank')"
+            >
+              <PencilSquareIcon class="inline-block w-5 h-5" />
+            </InertiaLink>
+            <InertiaLink
+              v-if="can('delete ranks')"
+              v-confirm="{
+                message:
+                  'Are you sure you want to delete this Rank permanently?',
+              }"
+              v-tippy
+              as="button"
+              method="DELETE"
+              :href="route('admin.rank.delete', item.id)"
+              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              :title="__('Delete Rank')"
+            >
+              <TrashIcon class="inline-block w-5 h-5" />
+            </InertiaLink>
+          </td>
+        </template>
+      </DataTable>
     </div>
-
-    <jet-confirmation-modal
-      :show="!!rankBeingDeleted"
-      @close="rankBeingDeleted = null"
-    >
-      <template #title>
-        {{ __("Delete Rank") }}
-      </template>
-
-      <template #content>
-        {{ __("Are you sure you would like to delete this Rank?") }}
-      </template>
-
-      <template #footer>
-        <jet-secondary-button @click="rankBeingDeleted = null">
-          {{ __("Nevermind") }}
-        </jet-secondary-button>
-
-        <jet-danger-button
-          class="ml-2"
-          :class="{ 'opacity-25': deleteRankForm.processing }"
-          :disabled="deleteRankForm.processing"
-          @click="deleteNews"
-        >
-          {{ __("Delete Rank") }}
-        </jet-danger-button>
-      </template>
-    </jet-confirmation-modal>
-  </app-layout>
+  </AdminLayout>
 </template>
-
-<script>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import Pagination from '@/Components/Pagination.vue';
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import JetDangerButton from '@/Jetstream/DangerButton.vue';
-
-export default {
-
-    components: {
-        AppLayout,
-        Pagination,
-        JetConfirmationModal,
-        JetSecondaryButton,
-        JetDangerButton
-    },
-    props: {
-        ranks: Object
-    },
-
-    data() {
-        return {
-            deleteRankForm: this.$inertia.form(),
-            rankBeingDeleted: null
-        };
-    },
-
-    methods: {
-        confirmRankDeletion(id) {
-            this.rankBeingDeleted = id;
-        },
-
-        deleteNews() {
-            this.deleteRankForm.delete(route('admin.rank.delete', this.rankBeingDeleted), {
-                preserveScroll: true,
-                preserveState: true,
-                onSuccess: () => (this.rankBeingDeleted = null),
-            });
-        },
-    },
-};
-</script>

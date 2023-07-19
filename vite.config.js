@@ -19,9 +19,6 @@ export default defineConfig({
         }),
     ],
     build: {
-        chunkSizeWarningLimit: 1500
-    },
-    ssr: {
-        noExternal: ['@inertiajs/server'],
-    },
+        chunkSizeWarningLimit: 2000
+    }
 });

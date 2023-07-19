@@ -79,9 +79,15 @@
 </template>
 
 <script>
+import { useHelpers } from '@/Composables/useHelpers';
+
 
 export default {
     name: 'Notification',
     props: ['notification'],
+    setup() {
+        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {formatTimeAgoToNow, formatToDayDateString};
+    },
 };
 </script>

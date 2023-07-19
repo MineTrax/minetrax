@@ -137,12 +137,18 @@
 <script>
 import Icon from '@/Components/Icon.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
+import { useHelpers } from '@/Composables/useHelpers';
 
 export default {
     components: {Icon, UserDisplayname},
 
     props: {
         post: Object
+    },
+
+    setup() {
+        const {purifyAndLinkifyText, formatTimeAgoToNow, formatToDayDateString} = useHelpers();
+        return {purifyAndLinkifyText, formatTimeAgoToNow, formatToDayDateString};
     },
 
     data() {

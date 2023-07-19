@@ -25,11 +25,11 @@
 
 
 <script setup>
-import {computed, defineProps} from 'vue';
-import { usePage } from '@inertiajs/inertia-vue3';
+import {computed} from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import ResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue';
 
-const user = computed(() => usePage().props?.value?.auth?.user);
+const user = computed(() => usePage().props?.auth?.user);
 
 const props = defineProps({
     item: {

@@ -8,6 +8,9 @@ use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Permission;
 use App\Models\Role;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use App\Queries\Filters\FilterMultipleFields;
 
 class RoleController extends Controller
 {
@@ -15,13 +18,31 @@ class RoleController extends Controller
     {
         $this->authorize('viewAny', Role::class);
 
-        $roles = Role::query()
-            ->with('permissions:id,name')
-            ->withCount('users')
-            ->orderByDesc('weight')->paginate(10);
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $roles = QueryBuilder::for(Role::class)->with('permissions:id,name')->withCount('users')
+            ->allowedFilters([
+                'id',
+                'name',
+                'created_at',
+                'updated_at',
+                'weight',
+                'is_staff',
+                'is_hidden_from_staff_list',
+                'display_name',
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'display_name', 'id']))
+            ])
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at', 'weight', 'is_staff', 'is_hidden_from_staff_list', 'display_name'])
+            ->defaultSort('-weight')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('Admin/Role/IndexRole', [
-            'roles' => $roles
+            'roles' => $roles,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 

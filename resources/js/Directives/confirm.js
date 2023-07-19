@@ -1,5 +1,7 @@
 import Swal from 'sweetalert2';
 import _ from 'lodash';
+import { useTranslations } from '@/Composables/useTranslations';
+const { __ } = useTranslations();
 
 const clickNode = function (node) {
     if (document.createEvent) {
@@ -34,11 +36,11 @@ const clickHandler = function (event, el, binding) {
 
     let options = getOptions(binding);
     Swal.fire({
-        title: options.title || binding.instance.__('Confirm!'),
-        text: options.message || binding.instance.__('Are you sure you want to perform this action?'),
+        title: options.title || __('Confirm!'),
+        text: options.message ||__('Are you sure you want to perform this action?'),
         icon: options.icon || 'warning',
-        confirmButtonText: options.confirmButtonText || binding.instance.__('Proceed'),
-        cancelButtonText: options.cancelButtonText || binding.instance.__('Cancel'),
+        confirmButtonText: options.confirmButtonText || __('Proceed'),
+        cancelButtonText: options.cancelButtonText || __('Cancel'),
         showCancelButton: true,
         reverseButtons: true,
         focusCancel: true,

@@ -1,5 +1,5 @@
 <template>
-  <app-layout>
+  <AdminLayout>
     <app-head :title="__('Edit User @:username', {username: userData.username})" />
 
     <div class="max-w-6xl px-10 py-12 mx-auto">
@@ -386,6 +386,19 @@
                         class="mt-2"
                       />
                     </div>
+
+                    <div class="col-span-6 sm:col-span-6">
+                      <x-input
+                        id="password"
+                        v-model="form.password"
+                        :label="__('Change User Password')"
+                        :error="form.errors.password"
+                        autocomplete="password"
+                        type="text"
+                        name="password"
+                        :help="__('Leave it empty if you dont want to change password')"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="flex justify-end px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6">
@@ -403,11 +416,10 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AdminLayout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
@@ -418,14 +430,17 @@ import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import Multiselect from 'vue-multiselect';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import {useAuthorizable} from '@/Composables/useAuthorizable';
 
 export default {
 
     components: {
+        AdminLayout,
         XTextarea,
         XSelect,
         XCheckbox,
-        AppLayout,
         JetInputError,
         LoadingButton,
         JetSecondaryButton,
@@ -440,9 +455,13 @@ export default {
         badgesList: Object,
         countryList: Object,
     },
+    setup() {
+        const {can} = useAuthorizable();
+        return {can};
+    },
     data() {
         return {
-            form: this.$inertia.form({
+            form: useForm({
                 _method: 'PUT',
                 username: this.userData.username,
                 name: this.userData.name,
@@ -467,6 +486,7 @@ export default {
                 badges: this.userData.badges,
                 country: this.userData.country,
                 country_id: this.userData.country_id,
+                password: '',
             }),
 
             photoPreview: null,

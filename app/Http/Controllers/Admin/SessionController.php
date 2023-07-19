@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Session;
 use App\Models\User;
+use App\Queries\Filters\FilterMultipleFields;
 use App\Services\GeolocationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Jenssegers\Agent\Agent;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class SessionController extends Controller
 {
@@ -17,12 +20,29 @@ class SessionController extends Controller
     {
         $this->authorize('viewAny', Session::class);
 
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
         $timestamp5MinutesBefore = now()->subtract(5, 'minute')->timestamp;
-        $sessions = Session::with('user:id,name,username,profile_photo_path,verified_at,settings')
-            ->where('last_activity', '>=' , $timestamp5MinutesBefore)
+
+        $sessions = QueryBuilder::for(Session::class)
             ->select(['id', 'user_id', 'ip_address', 'user_agent', 'last_activity'])
-            ->orderByDesc('last_activity')
-            ->paginate(10);
+            ->where('last_activity', '>=', $timestamp5MinutesBefore)
+            ->with('user:id,name,username,profile_photo_path,verified_at,settings')
+            ->allowedFilters([
+                'id',
+                'user_id',
+                'ip_address',
+                'user_agent',
+                'last_activity',
+                AllowedFilter::custom('q', new FilterMultipleFields(['user_id', 'ip_address', 'user_agent', 'last_activity']))
+            ])
+            ->allowedSorts(['id', 'user_id', 'ip_address', 'user_agent', 'last_activity'])
+            ->defaultSort('-last_activity')
+            ->paginate($perPage)
+            ->withQueryString();
 
         $sessions->getCollection()->transform(function ($session) use ($geolocationService) {
             $agent = $this->createAgent($session);
@@ -45,7 +65,8 @@ class SessionController extends Controller
         });
 
         return Inertia::render('Admin/Session/IndexSession', [
-            'sessions' => $sessions
+            'sessions' => $sessions,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
 
