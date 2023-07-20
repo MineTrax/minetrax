@@ -57,13 +57,13 @@ class GraphController extends Controller
         $this->authorize('view admin_dashboard');
 
         $servers = Server::where('type', '!=', ServerType::Bungee())
-            ->withCount('minecraftPlayerStats')
+            ->withCount('minecraftPlayers')
             ->get();
 
         $data = $servers->map(function ($server) {
             return [
                 'name' => $server->name,
-                'value' => $server->minecraft_player_stats_count,
+                'value' => $server->minecraft_players_count,
             ];
         });
 
