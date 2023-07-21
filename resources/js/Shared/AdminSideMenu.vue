@@ -10,6 +10,7 @@ import {
     DocumentTextIcon,
     Cog8ToothIcon,
     PresentationChartLineIcon,
+    CircleStackIcon,
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
@@ -154,6 +155,14 @@ const navItems = [
         children: [],
         icon: DocumentTextIcon,
         visible: canWild('custom_pages')
+    },
+    {
+        label: 'Ask DB',
+        href: route('admin.ask-db.index'),
+        active: route().current('admin.ask-db.*'),
+        children: [],
+        icon: CircleStackIcon,
+        visible: canWild('ask_db')
     },
     {
         label: 'Settings', href: '#', active: false, children: [

@@ -83,5 +83,7 @@ class PermissionSeeder extends Seeder
 
         Permission::findOrCreate('view admin_dashboard');
         Permission::findOrCreate('view server_intel');
+
+        Permission::findOrCreate('use ask_db');
     }
 }

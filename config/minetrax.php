@@ -217,4 +217,14 @@ return [
             'authenticated' => false,
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | AskDB Feature Enabled
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, staff who have permission `use ask_db`, will be able to ask questions to database and get answers.
+    |
+    */
+    "askdb_enabled" => env("ASKDB_ENABLED", false) && env("OPENAI_API_KEY"),
 ];

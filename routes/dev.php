@@ -2,6 +2,7 @@
 
 use App\Jobs\FetchStatsFromAllServersJob;
 use App\Models\Server;
+use App\Services\AskGptService;
 use App\Services\MinecraftApiService;
 use App\Services\MinecraftServerQueryService;
 use App\Utils\Helpers\LegacyFtpStorage;
@@ -132,3 +133,22 @@ Route::get('username-to-uuid', function () {
 //        echo $table->getName() . " has columns: " . collect($table->getColumns())->map(fn($column) => $column->getName() . ' ('.$column->getType()->getName().')')->implode(', ') . "<br><br>";
 //    }
 //});
+
+
+Route::get('ask-db', function(AskGptService $askDbGptService) {
+   $response = $askDbGptService->getDbQuery('Which player has most number of player kills?');
+
+   dd($response);
+
+// $tables = \DB::connection('mysql')
+// ->getDoctrineSchemaManager()
+// ->listViews();
+
+
+// dd($tables);
+
+// foreach($tables as $table) {
+//     echo $table->getName() . "<br>";
+// }
+
+});

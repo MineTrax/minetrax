@@ -213,4 +213,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('badge/{badge}/edit', [\App\Http\Controllers\Admin\BadgeController::class, 'edit'])->name('badge.edit');
     Route::put('badge/{badge}', [\App\Http\Controllers\Admin\BadgeController::class, 'update'])->name('badge.update');
     Route::delete('badge/{badge}', [\App\Http\Controllers\Admin\BadgeController::class, 'destroy'])->name('badge.delete');
+
+    Route::get('ask-db', [\App\Http\Controllers\Admin\AskDbController::class, 'index'])->name('ask-db.index');
+    Route::post('ask-db', [\App\Http\Controllers\Admin\AskDbController::class, 'query'])->name('ask-db.query');
 });
