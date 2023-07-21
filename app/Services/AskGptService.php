@@ -79,12 +79,10 @@ class AskGptService
     protected function buildSystemPromptForAskDb(string $promptView, string $question, string $query = null, string $result = null): string
     {
         $tables = $this->getTables($question);
-        $views = $this->getViews($question);
 
         $prompt = (string) view($promptView, [
             'question' => $question,
             'tables' => $tables,
-            'views' => $views,
             'dialect' => $this->getDialect(),
             'query' => $query,
             'result' => $result,
@@ -137,17 +135,6 @@ class AskGptService
             }
 
             return $this->filterMatchingTables($question, $tables);
-        });
-    }
-
-    protected function getViews(string $question): array
-    {
-        return once(function () use ($question) {
-            $views = DB::connection($this->connection)
-                ->getDoctrineSchemaManager()
-                ->listViews();
-
-            return $views;
         });
     }
 
