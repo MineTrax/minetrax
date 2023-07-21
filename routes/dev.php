@@ -134,21 +134,3 @@ Route::get('username-to-uuid', function () {
 //    }
 //});
 
-
-Route::get('ask-db', function(AskGptService $askDbGptService) {
-   $response = $askDbGptService->getDbQuery('Which player has most number of player kills?');
-
-   dd($response);
-
-// $tables = \DB::connection('mysql')
-// ->getDoctrineSchemaManager()
-// ->listViews();
-
-
-// dd($tables);
-
-// foreach($tables as $table) {
-//     echo $table->getName() . "<br>";
-// }
-
-});
