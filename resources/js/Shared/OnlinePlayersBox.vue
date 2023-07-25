@@ -105,8 +105,6 @@ function getServerQuery() {
         shouldUseWebQuery = usePage().props.defaultQueryServer.shouldUseWebQuery;
     }
 
-    shouldUseWebQuery = true;
-
     if (shouldUseWebQuery) {
         tryFetchUsingWebQuery(serverToQuery);
     } else {
