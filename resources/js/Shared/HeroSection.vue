@@ -39,7 +39,7 @@
         type="button"
         :title="__('Click to Copy')"
         class="bg-gray-800 bg-opacity-75 items-center px-5 py-3 rounded mx-3"
-        @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer.hostname)"
+        @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
       >
         <loading-spinner :loading="loading" />
         <div v-if="!loading && !error">
@@ -47,7 +47,7 @@
             v-if="props.status !== 'copied'"
             class="text-gray-100 text-xl font-bold"
           >
-            {{ __("Join") }} <span class="text-light-blue-500 dark:text-light-blue-400 font-extrabold">{{ serverInfo.players.online }}</span> {{ __("players on") }} {{ server ? server.hostname : $page.props.defaultQueryServer.hostname }}
+            {{ __("Join") }} <span class="text-light-blue-500 dark:text-light-blue-400 font-extrabold">{{ serverInfo.players.online }}</span> {{ __("players on") }} {{ server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname }}
           </span>
           <span
             v-else
@@ -95,7 +95,7 @@ export default {
         joinBoxEnabled() {
             if (!this.settings.show_join_box_in_home_hero) return false;
 
-            return !!(this.server || this.$page.props.defaultQueryServer);
+            return !!(this.server || this.$page.props.defaultQueryServer.server);
         }
     },
     created() {
@@ -113,7 +113,7 @@ export default {
         getServerPing() {
             let serverToPing = this.server;
             if (!serverToPing) {
-                serverToPing = this.$page.props.defaultQueryServer;
+                serverToPing = this.$page.props.defaultQueryServer.server;
             }
             axios.get(route('server.ping.get', serverToPing.id)).then(data => {
                 this.serverInfo = data.data;

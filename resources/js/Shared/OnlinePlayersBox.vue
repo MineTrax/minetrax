@@ -7,7 +7,12 @@
           v-if="!loading && !error"
           class="float-right text-green-500 font-semibold"
         >
-          {{ serverInfo['Players'] }} / {{ serverInfo['MaxPlayers'] }}
+          <span v-if="serverInfo['MaxPlayers']">
+            {{ serverInfo['Players'] }} / {{ serverInfo['MaxPlayers'] }}
+          </span>
+          <span v-else>
+            {{ serverInfo['Players'] }} {{ __("online") }}
+          </span>
         </span>
       </h3>
 
@@ -73,77 +78,114 @@
   </div>
 </template>
 
-<script>
 
+<script setup>
 import ErrorMessage from '@/Components/ErrorMessage.vue';
+import { usePage } from '@inertiajs/vue3';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
-export default {
-    components: {ErrorMessage},
-    props: {
-        server: Object,
-    },
-
-    data() {
-        return {
-            serverInfo: Object,
-            playersList: Object,
-            loading: true,
-            error: null,
-            sizeClass: 'w-5 h-5',
-            interval: null
-        };
-    },
-
-    computed: {
-        enabled() {
-            if (!this.$page.props.generalSettings.enable_mcserver_onlineplayersbox) return false;
-
-            return !!(this.server || this.$page.props.defaultQueryServer);
-        }
-    },
-
-    created() {
-        if (!this.enabled) return;
-        this.getServerQuery();
-        this.interval = setInterval(() => this.getServerQuery(), 10000);
-    },
-
-    unmounted() {
-        clearInterval(this.interval);
-    },
-
-    methods: {
-        getServerQuery() {
-            let serverToQuery = this.server;
-            if (!serverToQuery) {
-                serverToQuery = this.$page.props.defaultQueryServer;
-            }
-
-            axios.get(route('server.query.get', serverToQuery.id)).then(data => {
-                this.serverInfo = data.data.server_info;
-                this.playersList = data.data.players_list;
-
-                for (let pl in this.playersList) {
-                    if (!this.playersList[pl]) {
-                        this.playersList[pl] = '00000000-0000-0000-0000-000000000000';
-                    }
-                }
-
-                this.error = null;
-
-                // Change avatar size according to number of people
-                if (Object.keys(this.playersList).length <= 5) {
-                    this.sizeClass = 'w-8 h-8';
-                }
-
-            }).catch(err => {
-                this.error = err.response.data.message || err.message;
-                this.serverInfo = null;
-                this.playersList = null;
-            }).finally(() => {
-                this.loading = false;
-            });
-        }
+const props = defineProps({
+    server: {
+        type: Object,
     }
-};
+});
+
+let serverInfo = ref({});
+let playersList = ref({});
+let loading = ref(true);
+let error = ref(null);
+let sizeClass = ref('w-5 h-5');
+let interval = null;
+
+function getServerQuery() {
+    let shouldUseWebQuery = false;
+    let serverToQuery = props.server;
+    if (!serverToQuery) {
+        serverToQuery = usePage().props.defaultQueryServer.server;
+        shouldUseWebQuery = usePage().props.defaultQueryServer.shouldUseWebQuery;
+    }
+
+    shouldUseWebQuery = true;
+
+    if (shouldUseWebQuery) {
+        tryFetchUsingWebQuery(serverToQuery);
+    } else {
+        tryFetchUsingQuery(serverToQuery);
+    }
+}
+
+function tryFetchUsingQuery(serverToQuery) {
+    axios.get(route('server.query.get', serverToQuery.id)).then(data => {
+        serverInfo.value = data.data.server_info;
+        playersList.value = data.data.players_list;
+
+        for (let pl in playersList.value) {
+            if (!playersList.value[pl]) {
+                playersList.value[pl] = '00000000-0000-0000-0000-000000000000';
+            }
+        }
+
+        error.value = null;
+
+        // Change avatar size according to number of people
+        if (Object.keys(playersList.value).length <= 5) {
+            sizeClass.value = 'w-8 h-8';
+        }
+    }).catch(err => {
+        error.value = err.response.data.message || err.message;
+        serverInfo.value = null;
+        playersList.value = null;
+    }).finally(() => {
+        loading.value = false;
+    });
+}
+
+function tryFetchUsingWebQuery(serverToQuery) {
+    axios.get(route('server.webquery.get', serverToQuery.id)).then(data => {
+
+        if(data.data.length > 0) {
+            playersList.value = data.data.reduce((acc, cur) => {
+                acc[cur.username] = cur.id;
+                return acc;
+            }, {});
+        }
+        else {
+            playersList.value = [];
+        }
+
+        serverInfo.value = {
+            Players: Object.keys(playersList.value).length,
+        };
+
+        error.value = null;
+
+        // Change avatar size according to number of people
+        if (Object.keys(playersList.value).length <= 5) {
+            sizeClass.value = 'w-8 h-8';
+        }
+    }).catch(err => {
+        error.value = err.response.data.message || err.message;
+        serverInfo.value = null;
+        playersList.value = null;
+    }).finally(() => {
+        loading.value = false;
+    });
+}
+
+let enabled = computed(() => {
+    if (!usePage().props.generalSettings.enable_mcserver_onlineplayersbox) {
+        return false;
+    }
+    return !!(props.server || usePage().props.defaultQueryServer.server);
+});
+
+onMounted(() => {
+    if (!enabled.value) return;
+    getServerQuery();
+    interval = setInterval(() => getServerQuery(), 10000);
+});
+
+onUnmounted(() => {
+    clearInterval(interval);
+});
 </script>

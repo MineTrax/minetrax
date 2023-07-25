@@ -111,7 +111,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-2">
+                    <!-- <div class="col-span-6 sm:col-span-2">
                       <x-input
                         id="webquery_port"
                         v-model="form.webquery_port"
@@ -123,7 +123,7 @@
                         :help="__('Eg: 25585')"
                         help-error-flex="flex-col"
                       />
-                    </div>
+                    </div> -->
 
                     <div class="col-span-6 sm:col-span-2">
                       <x-select

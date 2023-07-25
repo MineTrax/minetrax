@@ -59,11 +59,16 @@ class HandleInertiaRequests extends Middleware
                 return $request->user()->getAllPermissions()->pluck('name');
             },
             'defaultQueryServer' => function () {
+                $shouldUseWebQuery = false;
                 $defaultQueryServer = Server::where('type', ServerType::Bungee)->select(['hostname', 'id'])->latest()->first();
                 if (!$defaultQueryServer) {
-                    $defaultQueryServer = Server::select(['id', 'hostname'])->first();
+                    $defaultQueryServer = Server::select(['id', 'hostname', 'webquery_port'])->orderBy('id')->first();
+                    $shouldUseWebQuery = $defaultQueryServer?->webquery_port != null;
                 }
-                return $defaultQueryServer;
+                return [
+                    'server' => $defaultQueryServer?->only(['id', 'hostname']),
+                    'shouldUseWebQuery' => $shouldUseWebQuery,
+                ];
             },
             'generalSettings' => fn (GeneralSettings $generalSettings) => $generalSettings->toArray(),
             'isImpersonating' => $request->user() && $request->user()->isImpersonating(),
