@@ -227,4 +227,14 @@ return [
     |
     */
     "askdb_enabled" => env("ASKDB_ENABLED", false) && env("OPENAI_API_KEY"),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cookie Consent Enabled
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, cookie consent will be shown to users for GDPR compliance.
+    |
+    */
+    "cookie_consent_enabled" => env("COOKIE_CONSENT_ENABLED", true),
 ];

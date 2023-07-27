@@ -4,6 +4,7 @@ import Toast from '@/Components/Toast.vue';
 import Icon from '@/Components/Icon.vue';
 import AppHead from '@/Components/AppHead.vue';
 import MainNavbarCustom from '@/Shared/MainNavbarCustom.vue';
+import CookieConsent from '@/Components/CookieConsent.vue';
 
 export default {
     components: {
@@ -12,6 +13,7 @@ export default {
         Icon,
         Toast,
         JetBanner,
+        CookieConsent,
     },
 
     data() {
@@ -85,4 +87,6 @@ export default {
       </footer>
     </div>
   </div>
+
+  <CookieConsent />
 </template>
