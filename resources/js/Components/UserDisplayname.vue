@@ -48,7 +48,7 @@ defineProps({
       v-tippy
       name="shield-check-fill"
       :title="__('Staff Member')"
-      class="inline mb-1 text-pink-400 fill-current focus:outline-none"
+      class="inline mb-1 text-amber-400 fill-current focus:outline-none"
       :class="iconClass"
     />
     <Icon
@@ -59,7 +59,7 @@ defineProps({
       class="inline mb-1 text-red-500 fill-current focus:outline-none"
       :class="iconClass"
     />
-	
+
     <template v-if="user.sticky_badges && user.sticky_badges.length > 0">
       <img
         v-for="badge in user.sticky_badges"

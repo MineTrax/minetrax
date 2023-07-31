@@ -2,7 +2,7 @@
   <AdminLayout>
     <app-head :title="__('Edit User @:username', {username: userData.username})" />
 
-    <div class="max-w-6xl px-10 py-12 mx-auto">
+    <div class="max-w-5xl px-10 py-12 mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
           {{ __("Edit User ':username'", {username: userData.name}) }}
@@ -17,19 +17,8 @@
 
 
       <div class="mt-10 sm:mt-0">
-        <div class="md:grid md:grid-cols-3 md:gap-6">
-          <div class="md:col-span-1">
-            <div class="px-4 sm:px-0">
-              <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                {{ __("Tips!") }}
-              </h3>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                {{ __("You can change role of a user in this section") }}
-              </p>
-            </div>
-          </div>
-
-          <div class="mt-5 md:mt-0 md:col-span-2">
+        <div class="">
+          <div class="mt-5 md:mt-0">
             <form @submit.prevent="updateUserInformation">
               <div class="shadow sm:rounded-md">
                 <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
@@ -282,6 +271,34 @@
                       />
                     </div>
 
+                    <!-- s_linkedin_url -->
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="s_linkedin_url"
+                        v-model="form.s_linkedin_url"
+                        :label="__('LinkedIn URL')"
+                        :error="form.errors.s_linkedin_url"
+                        autocomplete="s_linkedin_url"
+                        type="text"
+                        name="s_linkedin_url"
+                        :help="__('Eg: https://www.linkedin.com/in/minecraft')"
+                      />
+                    </div>
+
+                    <!-- s_tiktok_url -->
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="s_tiktok_url"
+                        v-model="form.s_tiktok_url"
+                        :label="__('TikTok URL')"
+                        :error="form.errors.s_tiktok_url"
+                        autocomplete="s_tiktok_url"
+                        type="text"
+                        name="s_tiktok_url"
+                        :help="__('Eg: https://www.tiktok.com/@minecraft')"
+                      />
+                    </div>
+
                     <!-- s_website_url -->
                     <div class="col-span-6 sm:col-span-3">
                       <x-input
@@ -470,13 +487,15 @@ export default {
                 dob: this.userData.dob,
                 gender: this.userData.gender,
                 cover_image_url: this.userData.cover_image_url,
-                s_discord_username: this.userData.social_links ? this.userData.social_links.s_discord_username : null,
-                s_steam_profile_url: this.userData.social_links ? this.userData.social_links.s_steam_profile_url : null,
-                s_twitter_url: this.userData.social_links ? this.userData.social_links.s_twitter_url : null,
-                s_youtube_url: this.userData.social_links ? this.userData.social_links.s_youtube_url : null,
-                s_facebook_url: this.userData.social_links ? this.userData.social_links.s_facebook_url : null,
-                s_twitch_url: this.userData.social_links ? this.userData.social_links.s_twitch_url : null,
-                s_website_url: this.userData.social_links ? this.userData.social_links.s_website_url : null,
+                s_discord_username: this.userData?.social_links?.s_discord_username ?? null,
+                s_steam_profile_url: this.userData?.social_links?.s_steam_profile_url ?? null,
+                s_twitter_url: this.userData?.social_links?.s_twitter_url ?? null,
+                s_youtube_url: this.userData?.social_links?.s_youtube_url ?? null,
+                s_facebook_url: this.userData?.social_links?.s_facebook_url ?? null,
+                s_twitch_url: this.userData?.social_links?.s_twitch_url ?? null,
+                s_website_url: this.userData?.social_links?.s_website_url ?? null,
+                s_linkedin_url: this.userData?.social_links?.s_linkedin_url ?? null,
+                s_tiktok_url: this.userData?.social_links?.s_tiktok_url ?? null,
                 about: this.userData.about,
                 profile_photo_source: this.userData.settings ? this.userData.settings.profile_photo_source : null,
                 show_gender: this.userData.settings ? !!+this.userData.settings.show_gender : false,                     // coz in old version, data store as string 1,0

@@ -1,6 +1,7 @@
 <?php
 
 use App\Jobs\FetchStatsFromAllServersJob;
+use App\Models\MinecraftPlayerEvent;
 use App\Models\Server;
 use App\Services\AskGptService;
 use App\Services\MinecraftApiService;
@@ -37,6 +38,7 @@ Route::get('calr', function () {
 
 Route::get('/status', function () {
 
+    $Query = null;
     try {
         $Query = new xPaw\MinecraftPing('144.76.224.57', 25565);
 

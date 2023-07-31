@@ -97,10 +97,10 @@ defineProps({
               <div class="flex justify-between p-5">
                 <div class="flex flex-col">
                   <h3 class="text-base leading-6 font-semibold text-gray-900 dark:text-gray-100">
-                    {{ __("Delete all Statistics") }}
+                    {{ __("Delete all Player Stats") }}
                   </h3>
                   <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {{ __("Permanently delete all the recorded player stats for all servers. This doesn't include Intel(Analytics data).") }}
+                    {{ __("Permanently delete all player related stats for all servers. It will also unlink all players linked to user and then delete all player data.") }}
                   </p>
                 </div>
                 <div>
@@ -108,7 +108,7 @@ defineProps({
                     v-tippy
                     v-confirm="{message: __('Are you sure you want to delete all Player Statistics?')}"
                     as="button"
-                    :href="route('admin.setting.danger.truncate.playerstats')"
+                    :href="route('admin.setting.danger.truncate.playerintel')"
                     method="delete"
                     class="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                   >
@@ -120,22 +120,22 @@ defineProps({
               <div class="flex justify-between p-5">
                 <div class="flex flex-col">
                   <h3 class="text-base leading-6 font-semibold text-gray-900 dark:text-gray-100">
-                    {{ __("Delete all Analytics Data") }}
+                    {{ __("Delete Server Analytics Data") }}
                   </h3>
                   <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {{ __("Permanently delete all the tracked Intel (Player & Server Analytics) data for all servers.") }}
+                    {{ __("Permanently delete all the tracked Server Intel (Analytics) data for all servers. Eg: performance, activities data etc.") }}
                   </p>
                 </div>
                 <div>
                   <InertiaLink
                     v-tippy
-                    v-confirm="{message: __('Are you sure you want to delete all Analytics/Intel data?')}"
+                    v-confirm="{message: __('Are you sure you want to delete all Server Analytics/Intel data?')}"
                     as="button"
-                    :href="route('admin.setting.danger.truncate.inteldata')"
+                    :href="route('admin.setting.danger.truncate.serverintel')"
                     method="delete"
                     class="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                   >
-                    <span>{{ __("Delete Intel Data") }}</span>
+                    <span>{{ __("Delete Server Intel") }}</span>
                   </InertiaLink>
                 </div>
               </div>

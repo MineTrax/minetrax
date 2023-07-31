@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="show"
-    class="fixed p-2 bottom-0 bg-black w-full text-gray-300 text-center bg-opacity-90 dark:bg-opacity-60"
+    class="z-50 fixed p-2 bottom-0 bg-black w-full text-gray-300 text-center bg-opacity-90 dark:bg-opacity-60"
   >
     <div>
       <span>

@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\MinecraftPlayerEventCreated;
+use App\Events\MinecraftPlayerSessionCreated;
+use App\Listeners\UpdateStatsOnMinecraftPlayerEvent;
+use App\Listeners\UpsertPlayerOnSessionStart;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,6 +26,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         SocialiteWasCalled::class => [
             DiscordExtendSocialite::class
+        ],
+        MinecraftPlayerSessionCreated::class => [
+            UpsertPlayerOnSessionStart::class,
+        ],
+        MinecraftPlayerEventCreated::class => [
+            UpdateStatsOnMinecraftPlayerEvent::class,
         ],
     ];
 

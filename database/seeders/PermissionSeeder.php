@@ -80,6 +80,7 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('update badges');
         Permission::findOrCreate('delete badges');
         Permission::findOrCreate('assign badges');
+        Permission::findOrCreate('lock badges'); // Locked badges can't be asssigned to anyone or removed. they became kinda special limited offer badge.
 
         Permission::findOrCreate('view admin_dashboard');
         Permission::findOrCreate('view server_intel');

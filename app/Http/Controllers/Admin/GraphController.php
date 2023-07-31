@@ -132,7 +132,8 @@ class GraphController extends Controller
                     ->from('minecraft_player_sessions')
                     ->where('created_at', '<', $currentMonth->startOfMonth());
             })
-            ->count() ?? 0;
+            ->distinct()
+            ->count('player_uuid') ?? 0;
         $avgNewPlayerChangePercent = (($avgNewPlayerCurrentMonth - $avgNewPlayerPreviousMonth) / ($avgNewPlayerPreviousMonth == 0 ? 1 : $avgNewPlayerPreviousMonth)) * 100;
 
         // Total sessions

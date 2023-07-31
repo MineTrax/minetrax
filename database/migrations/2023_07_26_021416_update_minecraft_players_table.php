@@ -22,34 +22,36 @@ return new class extends Migration
             $table->string('player_displayname')->nullable();
             $table->string('player_ip_address')->nullable();
 
-            $table->unsignedBigInteger('mob_kills')->nullable();
-            $table->unsignedBigInteger('player_kills')->nullable();
-            $table->unsignedBigInteger('deaths')->nullable();
-            $table->unsignedBigInteger('afk_time')->nullable();
-            $table->unsignedBigInteger('play_time')->nullable();
-            $table->integer('ban_counter')->nullable();
-            $table->integer('kick_counter')->nullable();
+            $table->unsignedBigInteger('mob_kills')->nullable()->default(0);
+            $table->unsignedBigInteger('player_kills')->nullable()->default(0);
+            $table->unsignedBigInteger('deaths')->nullable()->default(0);
+            $table->unsignedBigInteger('afk_time')->nullable()->default(0);
+            $table->unsignedBigInteger('play_time')->nullable()->default(0);
+            $table->integer('ban_counter')->nullable()->default(0);
+            $table->integer('kick_counter')->nullable()->default(0);
 
-            $table->unsignedBigInteger('items_used')->nullable();
-            $table->unsignedBigInteger('items_mined')->nullable();
-            $table->unsignedBigInteger('items_picked_up')->nullable();
-            $table->unsignedBigInteger('items_dropped')->nullable();
-            $table->unsignedBigInteger('items_broken')->nullable();
-            $table->unsignedBigInteger('items_crafted')->nullable();
-            $table->unsignedBigInteger('items_placed')->nullable();
-            $table->unsignedBigInteger('items_consumed')->nullable();
-            $table->unsignedBigInteger('fish_caught')->nullable();
-            $table->unsignedBigInteger('items_enchanted')->nullable();
-            $table->unsignedBigInteger('times_slept_in_bed')->nullable();
-            $table->unsignedBigInteger('times_jumped')->nullable();
-            $table->unsignedBigInteger('raids_won')->nullable();
-            $table->double('distance_travelled')->nullable();
-            $table->double('distance_traveled_on_land')->nullable();
-            $table->double('distance_traveled_on_water')->nullable();
-            $table->double('distance_traveled_on_air')->nullable();
-            $table->double('pvp_damage_given')->nullable();
-            $table->double('pvp_damage_taken')->nullable();
+            $table->unsignedBigInteger('items_used')->nullable()->default(0);
+            $table->unsignedBigInteger('items_mined')->nullable()->default(0);
+            $table->unsignedBigInteger('items_picked_up')->nullable()->default(0);
+            $table->unsignedBigInteger('items_dropped')->nullable()->default(0);
+            $table->unsignedBigInteger('items_broken')->nullable()->default(0);
+            $table->unsignedBigInteger('items_crafted')->nullable()->default(0);
+            $table->unsignedBigInteger('items_placed')->nullable()->default(0);
+            $table->unsignedBigInteger('items_consumed')->nullable()->default(0);
+            $table->unsignedBigInteger('fish_caught')->nullable()->default(0);
+            $table->unsignedBigInteger('items_enchanted')->nullable()->default(0);
+            $table->unsignedBigInteger('times_slept_in_bed')->nullable()->default(0);
+            $table->unsignedBigInteger('times_jumped')->nullable()->default(0);
+            $table->unsignedBigInteger('raids_won')->nullable()->default(0);
+            $table->double('distance_traveled')->nullable()->default(0);
+            $table->double('distance_traveled_on_land')->nullable()->default(0);
+            $table->double('distance_traveled_on_water')->nullable()->default(0);
+            $table->double('distance_traveled_on_air')->nullable()->default(0);
+            $table->double('pvp_damage_given')->nullable()->default(0);
+            $table->double('pvp_damage_taken')->nullable()->default(0);
 
+            $table->timestamp('first_seen_at');
+            $table->timestamp('last_seen_at')->nullable();
             $table->string('last_minecraft_version')->nullable();
             $table->string('last_join_address')->nullable();
             $table->double('vault_balance')->nullable();
@@ -59,6 +61,8 @@ return new class extends Migration
             $table->foreignId('player_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('country_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
+
+            $table->unique(['player_uuid', 'server_id']);
         });
     }
 

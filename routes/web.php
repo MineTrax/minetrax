@@ -188,8 +188,8 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::delete('setting/danger/truncate-shouts', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateShouts'])->name('setting.danger.truncate.shouts');
     Route::delete('setting/danger/truncate-consolelogs', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateConsolelogs'])->name('setting.danger.truncate.consolelogs');
     Route::delete('setting/danger/truncate-chatlogs', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateChatlogs'])->name('setting.danger.truncate.chatlogs');
-    Route::delete('setting/danger/truncate-playerstats', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncatePlayerStats'])->name('setting.danger.truncate.playerstats');
-    Route::delete('setting/danger/truncate-inteldata', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateIntelData'])->name('setting.danger.truncate.inteldata');
+    Route::delete('setting/danger/truncate-serverintel', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncatePlayerIntelData'])->name('setting.danger.truncate.playerintel');
+    Route::delete('setting/danger/truncate-playerintel', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateServerIntelData'])->name('setting.danger.truncate.serverintel');
 
     Route::get('poll', [\App\Http\Controllers\Admin\PollController::class, 'index'])->name('poll.index');
     Route::get('poll/create', [\App\Http\Controllers\Admin\PollController::class, 'create'])->name('poll.create');

@@ -21,19 +21,22 @@ return new class extends Migration
         });
 
         Schema::table('minecraft_player_events', function (Blueprint $table) {
-            $table->integer('fish_caught')->nullable();
-            $table->integer('items_enchanted')->nullable();
-            $table->integer('times_slept_in_bed')->nullable();
-            $table->integer('times_jumped')->nullable();
-            $table->integer('raids_won')->nullable();
-            $table->double('distance_travelled')->nullable();
-            $table->double('distance_traveled_on_land')->nullable();
-            $table->double('distance_traveled_on_water')->nullable();
-            $table->double('distance_traveled_on_air')->nullable();
-            $table->double('pvp_damage_given')->nullable();
-            $table->double('pvp_damage_taken')->nullable();
+            $table->string('player_displayname')->nullable();
+            $table->integer('play_time')->nullable()->default(0);
+            $table->integer('fish_caught')->nullable()->default(0);
+            $table->integer('items_enchanted')->nullable()->default(0);
+            $table->integer('times_slept_in_bed')->nullable()->default(0);
+            $table->integer('times_jumped')->nullable()->default(0);
+            $table->integer('raids_won')->nullable()->default(0);
+            $table->double('distance_traveled')->nullable()->default(0);
+            $table->double('distance_traveled_on_land')->nullable()->default(0);
+            $table->double('distance_traveled_on_water')->nullable()->default(0);
+            $table->double('distance_traveled_on_air')->nullable()->default(0);
+            $table->double('pvp_damage_given')->nullable()->default(0);
+            $table->double('pvp_damage_taken')->nullable()->default(0);
 
-            $table->json('items_stack')->nullable(); // list of items in inventory at time of event.
+            $table->json('inventory_items')->nullable(); // list of items in inventory at time of event.
+            $table->json('enderchest_items')->nullable(); // list of items in inventory at time of event.
 
             $table->double('vault_balance')->nullable();
             $table->json('vault_groups')->nullable();
@@ -55,12 +58,14 @@ return new class extends Migration
         });
 
         Schema::table('minecraft_player_events', function (Blueprint $table) {
+            $table->dropColumn('player_displayname');
+            $table->dropColumn('play_time');
             $table->dropColumn('fish_caught');
             $table->dropColumn('items_enchanted');
             $table->dropColumn('times_slept_in_bed');
             $table->dropColumn('times_jumped');
             $table->dropColumn('raids_won');
-            $table->dropColumn('distance_travelled');
+            $table->dropColumn('distance_traveled');
             $table->dropColumn('distance_traveled_on_land');
             $table->dropColumn('distance_traveled_on_water');
             $table->dropColumn('distance_traveled_on_air');
@@ -69,6 +74,9 @@ return new class extends Migration
 
             $table->dropColumn('vault_balance');
             $table->dropColumn('vault_groups');
+
+            $table->dropColumn('inventory_items');
+            $table->dropColumn('enderchest_items');
         });
     }
 };
