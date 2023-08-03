@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JsonMinecraftPlayerStat;
+use App\Models\MinecraftPlayer;
 use App\Models\Player;
 use App\Models\Rank;
 use App\Models\Server;
@@ -61,11 +61,11 @@ class PlayerController extends Controller
         }
 
         // Servers Count
-        $player->servers_count = JsonMinecraftPlayerStat::where('uuid', $player->uuid)->count();
+        $player->servers_count = MinecraftPlayer::where('player_uuid', $player->uuid)->count();
 
         // Favorite Server
-        $player->favorite_server = JsonMinecraftPlayerStat::where('uuid', $player->uuid)
-            ->orderByDesc('total_play_one_minute')->first()?->server->only(['name', 'hostname']);
+        $player->favorite_server = MinecraftPlayer::where('player_uuid', $player->uuid)
+            ->orderByDesc('play_time')->first()?->server->only(['name', 'hostname']);
 
         // Owner if any
         $player->owner = $player->users()->first()?->only(['id', 'username']);

@@ -11,6 +11,7 @@ use App\Models\MinecraftPlayerPvpKill;
 use App\Models\MinecraftPlayerSession;
 use App\Models\MinecraftPlayerWorldStat;
 use App\Models\MinecraftServerWorld;
+use App\Models\Server;
 use App\Services\GeolocationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -34,6 +35,14 @@ class ApiMinecraftPlayerIntelController extends Controller
             'is_op' => 'required|boolean',
             'players_world_stat_intel' => 'sometimes|nullable|array'
         ]);
+
+        $server = Server::where('id', $request->server_id)->firstOrFail();
+        if (!$server->is_player_intel_enabled) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Player intel is disabled for this server.',
+            ], 403);
+        }
 
         try {
             $playerCountryId = $geolocationService->getCountryIdFromIP($request->ip_address);

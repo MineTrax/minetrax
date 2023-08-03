@@ -14,20 +14,15 @@ class Server extends BaseModel
         'settings' => 'json',
         'type' => ServerType::class,
         'minecraft_version' => ServerVersion::class,
-        'is_stats_tracking_enabled' => 'boolean',
+        'is_server_intel_enabled' => 'boolean',
+        'is_player_intel_enabled' => 'boolean',
         'is_ingame_chat_enabled' => 'boolean',
-        'is_online_players_query_enabled' => 'boolean',
         'last_scanned_at' => 'datetime',
     ];
 
-    public function minecraftPlayerStats(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function minecraftPlayers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(JsonMinecraftPlayerStat::class);
-    }
-
-    public function minecraftPlayerAdvancements(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(JsonMinecraftPlayerAdvancement::class);
+        return $this->hasMany(MinecraftPlayer::class);
     }
 
     public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -47,7 +42,7 @@ class Server extends BaseModel
 
     public function getAggregatedTotalJsonStats()
     {
-        return $this->minecraftPlayerStats()
+        return $this->minecraftPlayers()
             ->selectRaw("SUM(total_used) as total_used")
             ->selectRaw("SUM(total_mined) as total_mined")
             ->selectRaw("SUM(total_picked_up) as total_picked_up")
@@ -57,7 +52,7 @@ class Server extends BaseModel
             ->selectRaw("SUM(total_mob_kills) as total_mob_kills")
             ->selectRaw("SUM(total_player_kills) as total_player_kills")
             ->selectRaw("SUM(total_deaths) as total_deaths")
-            ->selectRaw("SUM(total_walk_one_cm) as total_walk_one_cm")
+            ->selectRaw("SUM(distance_traveled) as distance_traveled")
             ->selectRaw("SUM(total_fish_caught) as total_fish_caught")
             ->selectRaw("SUM(total_enchant_item) as total_enchant_item")
             ->selectRaw("SUM(total_play_one_minute) as total_play_one_minute")
@@ -70,29 +65,24 @@ class Server extends BaseModel
 
     public function getAggregatedMaxJsonStats()
     {
-        $max['max_used'] = $this->minecraftPlayerStats()->maxRowForCol("total_used", $this->id)->first();
-        $max['max_mined'] = $this->minecraftPlayerStats()->maxRowForCol("total_mined", $this->id)->first();
-        $max['max_picked_up'] = $this->minecraftPlayerStats()->maxRowForCol("total_picked_up", $this->id)->first();
-        $max['max_dropped'] = $this->minecraftPlayerStats()->maxRowForCol("total_dropped", $this->id)->first();
-        $max['max_broken'] = $this->minecraftPlayerStats()->maxRowForCol("total_broken", $this->id)->first();
-        $max['max_crafted'] = $this->minecraftPlayerStats()->maxRowForCol("total_crafted", $this->id)->first();
-        $max['max_mob_kills'] = $this->minecraftPlayerStats()->maxRowForCol("total_mob_kills", $this->id)->first();
-        $max['max_player_kills'] = $this->minecraftPlayerStats()->maxRowForCol("total_player_kills", $this->id)->first();
-        $max['max_deaths'] = $this->minecraftPlayerStats()->maxRowForCol("total_deaths", $this->id)->first();
-        $max['max_walk_one_cm'] = $this->minecraftPlayerStats()->maxRowForCol("total_walk_one_cm", $this->id)->first();
-        $max['max_fish_caught'] = $this->minecraftPlayerStats()->maxRowForCol("total_fish_caught", $this->id)->first();
-        $max['max_enchant_item'] = $this->minecraftPlayerStats()->maxRowForCol("total_enchant_item", $this->id)->first();
-        $max['max_play_one_minute'] = $this->minecraftPlayerStats()->maxRowForCol("total_play_one_minute", $this->id)->first();
-        $max['max_sleep_in_bed'] = $this->minecraftPlayerStats()->maxRowForCol("total_sleep_in_bed", $this->id)->first();
-        $max['max_jumps'] = $this->minecraftPlayerStats()->maxRowForCol("total_jumps", $this->id)->first();
-        $max['max_leave_game'] = $this->minecraftPlayerStats()->maxRowForCol("total_leave_game", $this->id)->first();
-        $max['max_money'] = $this->minecraftPlayerStats()->maxRowForCol("money", $this->id)->first();
+        $max['max_used'] = $this->minecraftPlayers()->maxRowForCol("total_used", $this->id)->first();
+        $max['max_mined'] = $this->minecraftPlayers()->maxRowForCol("total_mined", $this->id)->first();
+        $max['max_picked_up'] = $this->minecraftPlayers()->maxRowForCol("total_picked_up", $this->id)->first();
+        $max['max_dropped'] = $this->minecraftPlayers()->maxRowForCol("total_dropped", $this->id)->first();
+        $max['max_broken'] = $this->minecraftPlayers()->maxRowForCol("total_broken", $this->id)->first();
+        $max['max_crafted'] = $this->minecraftPlayers()->maxRowForCol("total_crafted", $this->id)->first();
+        $max['max_mob_kills'] = $this->minecraftPlayers()->maxRowForCol("total_mob_kills", $this->id)->first();
+        $max['max_player_kills'] = $this->minecraftPlayers()->maxRowForCol("total_player_kills", $this->id)->first();
+        $max['max_deaths'] = $this->minecraftPlayers()->maxRowForCol("total_deaths", $this->id)->first();
+        $max['max_walk_one_cm'] = $this->minecraftPlayers()->maxRowForCol("total_walk_one_cm", $this->id)->first();
+        $max['max_fish_caught'] = $this->minecraftPlayers()->maxRowForCol("total_fish_caught", $this->id)->first();
+        $max['max_enchant_item'] = $this->minecraftPlayers()->maxRowForCol("total_enchant_item", $this->id)->first();
+        $max['max_play_one_minute'] = $this->minecraftPlayers()->maxRowForCol("total_play_one_minute", $this->id)->first();
+        $max['max_sleep_in_bed'] = $this->minecraftPlayers()->maxRowForCol("total_sleep_in_bed", $this->id)->first();
+        $max['max_jumps'] = $this->minecraftPlayers()->maxRowForCol("total_jumps", $this->id)->first();
+        $max['max_leave_game'] = $this->minecraftPlayers()->maxRowForCol("total_leave_game", $this->id)->first();
+        $max['max_money'] = $this->minecraftPlayers()->maxRowForCol("money", $this->id)->first();
 
         return $max;
-    }
-
-    public function minecraftPlayers(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(MinecraftPlayer::class);
     }
 }

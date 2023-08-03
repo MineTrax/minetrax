@@ -32,6 +32,7 @@ class UpsertPlayerOnSessionStart implements ShouldQueue
 
         DB::transaction(function () use ($minecraftPlayerSession, $minecraftPlayer) {
             if (!$minecraftPlayer) {
+                $maxPlayerPosition = Player::query()->max('position') ?? 0;
                 $player = Player::create([
                     'uuid' => $minecraftPlayerSession->player_uuid,
                     'username' => $minecraftPlayerSession->player_username,
@@ -41,6 +42,7 @@ class UpsertPlayerOnSessionStart implements ShouldQueue
                     'country_id' => $minecraftPlayerSession->country_id,
                     'last_minecraft_version' => $minecraftPlayerSession->minecraft_version,
                     'last_join_address' => $minecraftPlayerSession->join_address,
+                    'position' => $maxPlayerPosition + 1
                 ]);
 
                 $minecraftPlayer = MinecraftPlayer::create([

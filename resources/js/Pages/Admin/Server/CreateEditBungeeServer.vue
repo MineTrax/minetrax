@@ -31,7 +31,7 @@
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
                 {{ __("Minetrax only support adding one bungee server. This server will be used to show online players and server status. All sensitive information will be encrypted.") }}
-                <br>
+                <br><br>
                 {{ __("Please note Proxy servers don't need Minetrax.jar plugin. Only install them on actual servers like spigot, bukkit etc.") }}
               </p>
             </div>
@@ -69,7 +69,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-2">
+                    <div class="col-span-6 sm:col-span-3">
                       <x-input
                         id="ip_address"
                         v-model="form.ip_address"
@@ -83,7 +83,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-2">
+                    <div class="col-span-6 sm:col-span-3">
                       <x-input
                         id="join_port"
                         v-model="form.join_port"
@@ -97,7 +97,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-2">
+                    <div class="col-span-6 sm:col-span-3">
                       <x-input
                         id="query_port"
                         v-model="form.query_port"
@@ -125,7 +125,7 @@
                       />
                     </div> -->
 
-                    <div class="col-span-6 sm:col-span-2">
+                    <div class="col-span-6 sm:col-span-3">
                       <x-select
                         id="minecraft_version"
                         v-model="form.minecraft_version"

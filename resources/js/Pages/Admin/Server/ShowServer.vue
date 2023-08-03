@@ -113,11 +113,11 @@
                   />
                 </svg>
                 <p class="ml-1">
-                  {{ __("Join / Query / WebQuery Port") }}
+                  {{ __("Join / Query Port") }}
                 </p>
               </div>
               <p>
-                {{ server.join_port }} / {{ server.query_port }} / {{ server.webquery_port }}
+                {{ server.join_port }} / {{ server.query_port }}
               </p>
             </div>
             <div class="flex justify-between">
@@ -183,46 +183,48 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-red-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z" />
-                </svg>
-                <p class="ml-1">
-                  {{ __("Level Name") }}
-                </p>
-              </div>
-              <p
-                class="focus:outline-none"
-              >
-                {{ server.level_name }}
-              </p>
-            </div>
-            <div class="flex justify-between">
-              <div class="flex">
-                <svg
                   class="w-5 h-5 text-green-500"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
                 >
                   <path
-                    d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"
+                    d="M15.384 6.115a.485.485 0 0 0-.047-.736A12.444 12.444 0 0 0 8 3C5.259 3 2.723 3.882.663 5.379a.485.485 0 0 0-.048.736.518.518 0 0 0 .668.05A11.448 11.448 0 0 1 8 4c2.507 0 4.827.802 6.716 2.164.205.148.49.13.668-.049z"
                   />
                   <path
-                    fill-rule="evenodd"
-                    d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
+                    d="M13.229 8.271a.482.482 0 0 0-.063-.745A9.455 9.455 0 0 0 8 6c-1.905 0-3.68.56-5.166 1.526a.48.48 0 0 0-.063.745.525.525 0 0 0 .652.065A8.46 8.46 0 0 1 8 7a8.46 8.46 0 0 1 4.576 1.336c.206.132.48.108.653-.065zm-2.183 2.183c.226-.226.185-.605-.1-.75A6.473 6.473 0 0 0 8 9c-1.06 0-2.062.254-2.946.704-.285.145-.326.524-.1.75l.015.015c.16.16.407.19.611.09A5.478 5.478 0 0 1 8 10c.868 0 1.69.201 2.42.56.203.1.45.07.61-.091l.016-.015zM9.06 12.44c.196-.196.198-.52-.04-.66A1.99 1.99 0 0 0 8 11.5a1.99 1.99 0 0 0-1.02.28c-.238.14-.236.464-.04.66l.706.706a.5.5 0 0 0 .707 0l.707-.707z"
                   />
                 </svg>
                 <p class="ml-1">
-                  {{ __("Last Scanned") }}
+                  {{ __("WebQuery Port") }}
+                </p>
+              </div>
+              <p
+                class="focus:outline-none"
+              >
+                {{ server.webquery_port }}
+              </p>
+            </div>
+            <div class="flex justify-between">
+              <div class="flex">
+                <svg
+                  class="w-5 h-5 text-indigo-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M9 7a1 1 0 0 1 1-1h5v2h-5a1 1 0 0 1-1-1zM1 9h4a1 1 0 0 1 0 2H1V9z" />
+                  <path
+                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"
+                  />
+                </svg>
+                <p class="ml-1">
+                  {{ __("Added At") }}
                 </p>
               </div>
               <p>
                 {{
-                  server.last_scanned_at ? formatToDayDateString(server.last_scanned_at) : 'not yet'
+                  formatToDayDateString(server.created_at)
                 }}
               </p>
             </div>
@@ -264,10 +266,10 @@
                   />
                 </svg>
                 <p class="ml-1">
-                  {{ __("Player Query Enabled") }}
+                  {{ __("Server Intel Enabled") }}
                 </p>
               </div>
-              <p>{{ server.is_online_players_query_enabled ? __('Yes') : __('No') }}</p>
+              <p>{{ server.is_server_intel_enabled ? __('Yes') : __('No') }}</p>
             </div>
           </div>
           <div class="flex-1 space-y-4">
@@ -287,11 +289,11 @@
                   />
                 </svg>
                 <p class="ml-1">
-                  {{ __("Stats Tracking Enabled") }}
+                  {{ __("Is Player Intel Enabled") }}
                 </p>
               </div>
               <p>
-                <span>{{ server.is_stats_tracking_enabled ? __('Yes') : __('No') }}</span>
+                <span>{{ server.is_player_intel_enabled ? __('Yes') : __('No') }}</span>
               </p>
             </div>
             <div class="flex justify-between">

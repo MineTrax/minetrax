@@ -55,5 +55,11 @@ MineTrax has lot of features, some of them are listed below:
 ## Install
 Check out official docs at [https://minetrax.github.io](https://minetrax.github.io)
 
+## Queue Workers
+Command for running queue in dev.
+```
+php artisan queue:work --queue=longtask,default redis-longtask --timeout=0 --sleep=3 --tries=3
+```
+
 ## License
 MIT License

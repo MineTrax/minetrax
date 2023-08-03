@@ -1,15 +1,16 @@
 <?php
 
-use App\Jobs\FetchStatsFromAllServersJob;
 use App\Models\MinecraftPlayerEvent;
 use App\Models\Server;
 use App\Services\AskGptService;
 use App\Services\MinecraftApiService;
 use App\Services\MinecraftServerQueryService;
+use App\Settings\PluginSettings;
 use App\Utils\Helpers\LegacyFtpStorage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 
 Route::get('time', function () {
@@ -21,14 +22,14 @@ Route::get('time', function () {
 //     dd(auth()->user()->createToken('test')->plainTextToken);
 // });
 
-Route::get('fetch', function () {
-    FetchStatsFromAllServersJob::dispatch();
+Route::get('cal', function () {
+    \App\Jobs\CalculatePlayersJob::dispatch();
     return 'Fetching MC Players';
 });
 
-Route::get('cal', function () {
-    \App\Jobs\CalculatePlayersJob::dispatch();
-    return 'Calculating Players';
+Route::get('cals', function () {
+    \App\Jobs\CalculatePlayersScoreJob::dispatch();
+    return 'Calculating Players Score';
 });
 
 Route::get('calr', function () {
@@ -84,9 +85,9 @@ Route::get('crypt', function () {
     $PORT = 4000;
     $HOST = "127.0.0.1";
     $sock = socket_create(AF_INET, SOCK_STREAM, 0)
-    or die("error: could not create socket\n");
+        or die("error: could not create socket\n");
     $succ = socket_connect($sock, $HOST, $PORT)
-    or die("error: could not connect to host\n");
+        or die("error: could not connect to host\n");
     $text = "Minecraft is getting a\n";
     socket_send($sock, $text, strlen($text), 0);
 

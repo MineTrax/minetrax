@@ -2,8 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\JsonMinecraftPlayerAdvancement;
-use App\Models\JsonMinecraftPlayerStat;
 use App\Models\MinecraftPlayer;
 use App\Models\MinecraftPlayerDeath;
 use App\Models\MinecraftPlayerEvent;

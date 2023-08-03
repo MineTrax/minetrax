@@ -59,14 +59,14 @@ class CalculatePlayersRatingJob implements ShouldQueue
          * Getting all Players and updating its position one by one.
          */
         $pTs = Player::orderByDesc('rating')->orderByDesc('total_score')->cursor();
-        $position=0;
+        $position = 0;
         foreach($pTs as $pT)
         {
             $pT->position = ++$position;
             $pT->save();
         }
 
-        \Log::debug("CalculatePlayersRatingJob completed");
+        \Log::info("[RatingJob] Finished calculating rating & ranks for all players");
     }
 
     private function calculatePlayerRating($player, $minScore, $maxScore, PlayerSettings $playerSettings): int|null
@@ -107,7 +107,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
          * TODO: Cache rank table to $this->rankList so that we dont have to query everytime.
          */
         $rankId = Rank::where('total_score_needed','<=',$player->total_score ?? 0)
-            ->where('total_play_one_minute_needed', '<=', $player->total_play_one_minute ?? 0)
+            ->where('total_play_one_minute_needed', '<=', $player->play_time ?? 0)
             ->where('rating_needed', '<=', $player->rating ?? 0)
             ->orderByDesc('weight')->first()?->id;
         return $rankId;
