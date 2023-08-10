@@ -2,12 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\MinecraftPlayerDeath;
-use App\Models\MinecraftPlayerEvent;
-use App\Models\MinecraftPlayerMobKill;
-use App\Models\MinecraftPlayerPvpKill;
-use App\Models\MinecraftPlayerSession;
-use App\Models\MinecraftPlayerWorldStat;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\MinecraftServerWorld;
 use App\Models\MinecraftWorldLiveInfo;
@@ -18,7 +12,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use DB;
-use Cache;
 
 class TruncateServerIntelJob implements ShouldQueue, ShouldBeUnique
 {

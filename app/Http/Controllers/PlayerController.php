@@ -18,7 +18,7 @@ class PlayerController extends Controller
 {
     public function index(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        $players = Player::select(['id', 'username', 'rating', 'position', 'total_score', 'uuid', 'total_play_one_minute', 'last_seen_at', 'first_seen_at', 'rank_id', 'country_id'])
+        $players = Player::select(['id', 'username', 'rating', 'position', 'total_score', 'uuid', 'play_time', 'last_seen_at', 'first_seen_at', 'rank_id', 'country_id'])
             ->with(['country:id,iso_code,flag,name', 'rank:id,shortname,name'])
             ->orderBy(DB::raw('-`position`'), 'desc') // this sort with position but excludes the nulls
             ->orderByDesc('rating')
@@ -31,7 +31,7 @@ class PlayerController extends Controller
 
         $totalPlayersCount = Player::count();
         $activePlayersCount = Player::where('last_seen_at', '>=', now()->subDays(30))->count();
-        $totalPlayTime = Player::sum('total_play_one_minute');
+        $totalPlayTime = Player::sum('play_time');
         $lastScanAt = Server::orderByDesc('last_scanned_at')->first()?->last_scanned_at;
 
         return Inertia::render('Player/IndexPlayer', [

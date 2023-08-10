@@ -32,4 +32,14 @@ class MinecraftPlayer extends BaseModel
     {
         return $this->hasMany(MinecraftPlayerSession::class);
     }
+
+    public function scopeMaxRowForCol($query, $column, $serverId)
+    {
+        $query->select(["id","player_uuid","player_username","player_id",$column])
+            ->where($column, function($q) use ($column, $serverId) {
+                $q->from($this->getTable())
+                    ->selectRaw("MAX({$column})")
+                    ->where("server_id", $serverId);
+            });
+    }
 }

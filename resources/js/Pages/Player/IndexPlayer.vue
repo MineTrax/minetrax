@@ -81,7 +81,7 @@
                     {{ __("Play Time") }}
                   </div>
                   <div class="font-bold text-lg dark:text-gray-200">
-                    {{ totalPlayTime === 0 ? '0 h' : secondsToHMS(totalPlayTime/20) }}
+                    {{ totalPlayTime === 0 ? '0 h' : secondsToHMS(totalPlayTime) }}
                   </div>
                 </div>
               </div>
@@ -267,7 +267,7 @@
                           {{ player.total_score }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                          {{ secondsToHMS(player.total_play_one_minute/20, true) }}
+                          {{ secondsToHMS(player.play_time, true) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                           <span

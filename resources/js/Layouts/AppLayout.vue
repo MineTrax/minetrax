@@ -69,7 +69,7 @@ export default {
           v-if="$page.props.showPoweredBy"
           class="text-xs text-gray-500"
         >
-          Powered with
+          {{ __("Powered with") }}
           <icon
             class="absolute inline-flex w-4 h-4 text-red-500 opacity-75 animate-ping"
             name="heart-fill"
@@ -83,6 +83,17 @@ export default {
             href="https://minetrax.github.io"
             class="hover:underline hover:text-light-blue-500"
           >MineTrax</a>
+
+          <span
+            v-if="$page.props.poweredByExtraName && $page.props.poweredByExtraLink"
+          >
+            &
+            <a
+              target="_blank"
+              :href="$page.props.poweredByExtraLink"
+              class="hover:underline hover:text-light-blue-500"
+            >{{ $page.props.poweredByExtraName }}</a>
+          </span>
         </div>
       </footer>
     </div>

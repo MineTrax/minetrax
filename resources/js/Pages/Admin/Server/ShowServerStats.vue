@@ -2,7 +2,7 @@
   <AdminLayout>
     <app-head :title="__('Server #:id', {id: server.id})" />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto space-y-4">
+    <div class="max-w-6xl px-10 py-12 mx-auto space-y-4">
       <h2 class="text-2xl text-gray-600 dark:text-gray-200">
         <span class="font-bold">#{{ server.id }}</span>
         -
@@ -13,17 +13,17 @@
 
       <div
         v-if="isEmpty"
-        class="shadow bg-white text-gray-700 dark:text-gray-300 text-sm dark:bg-cool-gray-800 dark:text-gray-300 rounded w-full p-2 space-y-4 md:p-5"
+        class="w-full p-2 space-y-4 text-sm text-gray-700 bg-white rounded shadow dark:text-gray-300 dark:bg-cool-gray-800 md:p-5"
       >
-        <h3 class="text-red-400 text-center">
+        <h3 class="text-center text-red-400">
           {{ __("No data captured yet for this server! Please try visiting later.") }}
         </h3>
       </div>
       <div
         v-else
-        class="shadow bg-white text-gray-700 dark:text-gray-300 text-sm dark:bg-cool-gray-800 dark:text-gray-300 rounded w-full p-2 space-y-4 md:p-5"
+        class="w-full p-2 space-y-4 text-sm text-gray-700 bg-white rounded shadow dark:text-gray-300 dark:bg-cool-gray-800 md:p-5"
       >
-        <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex items-center border-b border-gray-200 pb-4 dark:border-gray-700">
+        <h3 class="flex items-center pb-4 font-extrabold text-gray-800 border-b border-gray-200 dark:text-gray-200 dark:border-gray-700">
           <icon
             name="calculator"
             class="w-6 mr-1"
@@ -33,7 +33,7 @@
 
         <!-- items used -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-green-500"
@@ -49,10 +49,10 @@
                 {{ __("Total items used by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_used }}</p>
+            <p>{{ aggrTotal.items_used }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-pink-500"
@@ -68,13 +68,13 @@
                 {{ __("Max items used by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_used.total_used }} ({{ aggrMax.max_used.username }})</p>
+            <p>{{ aggrMax.max_used.items_used }} ({{ aggrMax.max_used.player_username }})</p>
           </div>
         </div>
 
         <!-- items mined -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-pink-500"
@@ -90,10 +90,10 @@
                 {{ __("Total blocks mined by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_mined }}</p>
+            <p>{{ aggrTotal.items_mined }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-lime-500"
@@ -109,13 +109,13 @@
                 {{ __("Max blocks mined by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_mined.total_mined }} ({{ aggrMax.max_mined.username }})</p>
+            <p>{{ aggrMax.max_mined.items_mined }} ({{ aggrMax.max_mined.player_username }})</p>
           </div>
         </div>
 
         <!-- items picked up -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-purple-500"
@@ -134,10 +134,10 @@
                 {{ __("Total items picked up by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_picked_up }}</p>
+            <p>{{ aggrTotal.items_picked_up }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-orange-500"
@@ -156,14 +156,14 @@
                 {{ __("Max items picked up by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_picked_up.total_picked_up }} ({{ aggrMax.max_picked_up.username }})</p>
+            <p>{{ aggrMax.max_picked_up.items_picked_up }} ({{ aggrMax.max_picked_up.player_username }})</p>
           </div>
         </div>
 
 
         <!-- items dropped -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-red-500"
@@ -182,10 +182,10 @@
                 {{ __("Total items dropped by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_dropped }}</p>
+            <p>{{ aggrTotal.items_dropped }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-blue-500"
@@ -204,14 +204,14 @@
                 {{ __("Max items dropped by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_dropped.total_dropped }} ({{ aggrMax.max_dropped.username }})</p>
+            <p>{{ aggrMax.max_dropped.items_dropped }} ({{ aggrMax.max_dropped.player_username }})</p>
           </div>
         </div>
 
 
         <!-- items broken -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-light-blue-500"
@@ -234,10 +234,10 @@
                 {{ __("Total items broken by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_broken }}</p>
+            <p>{{ aggrTotal.items_broken }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-red-500"
@@ -260,14 +260,14 @@
                 {{ __("Max items broken by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_broken.total_broken }} ({{ aggrMax.max_broken.username }})</p>
+            <p>{{ aggrMax.max_broken.items_broken }} ({{ aggrMax.max_broken.player_username }})</p>
           </div>
         </div>
 
 
         <!-- items crafted -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-rose-500"
@@ -283,10 +283,10 @@
                 {{ __("Total items crafted by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_crafted }}</p>
+            <p>{{ aggrTotal.items_crafted }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-indigo-500"
@@ -302,13 +302,13 @@
                 {{ __("Max items crafted by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_crafted.total_crafted }} ({{ aggrMax.max_crafted.username }})</p>
+            <p>{{ aggrMax.max_crafted.items_crafted }} ({{ aggrMax.max_crafted.player_username }})</p>
           </div>
         </div>
 
         <!-- mob kills -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-lime-500"
@@ -324,10 +324,10 @@
                 {{ __("Total mob kills by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_mob_kills }}</p>
+            <p>{{ aggrTotal.mob_kills }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-amber-500"
@@ -343,13 +343,13 @@
                 {{ __("Max mob kills by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_mob_kills.total_mob_kills }} ({{ aggrMax.max_mob_kills.username }})</p>
+            <p>{{ aggrMax.max_mob_kills.mob_kills }} ({{ aggrMax.max_mob_kills.player_username }})</p>
           </div>
         </div>
 
         <!-- player kills -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-blue-500"
@@ -365,10 +365,10 @@
                 {{ __("Total player kills by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_player_kills }}</p>
+            <p>{{ aggrTotal.player_kills }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-pink-500"
@@ -384,13 +384,13 @@
                 {{ __("Max player kills by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_player_kills.total_player_kills }} ({{ aggrMax.max_player_kills.username }})</p>
+            <p>{{ aggrMax.max_player_kills.player_kills }} ({{ aggrMax.max_player_kills.player_username }})</p>
           </div>
         </div>
 
         <!-- deaths -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-red-500"
@@ -410,10 +410,10 @@
                 {{ __("Total deaths by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_deaths }}</p>
+            <p>{{ aggrTotal.deaths }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-green-500"
@@ -433,13 +433,13 @@
                 {{ __("Max deaths by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_deaths.total_deaths }} ({{ aggrMax.max_deaths.username }})</p>
+            <p>{{ aggrMax.max_deaths.deaths }} ({{ aggrMax.max_deaths.player_username }})</p>
           </div>
         </div>
 
         <!-- walk_one_cm -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-light-blue-500"
@@ -456,15 +456,15 @@
                 {{ __("Total distance walk by all players") }}
               </p>
             </div>
-            <p v-if="aggrTotal.total_walk_one_cm">
-              {{ aggrTotal.total_walk_one_cm / 100 }}m
+            <p v-if="aggrTotal.distance_traveled">
+              {{ millify(aggrTotal.distance_traveled) }}m
             </p>
             <p v-else>
               0
             </p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-red-500"
@@ -481,8 +481,8 @@
                 {{ __("Max distance walk by one player") }}
               </p>
             </div>
-            <p v-if="aggrMax.max_walk_one_cm && aggrMax.max_walk_one_cm.total_walk_one_cm">
-              {{ aggrMax.max_walk_one_cm.total_walk_one_cm/100 }}m ({{ aggrMax.max_walk_one_cm.username }})
+            <p v-if="aggrMax.max_distance_traveled && aggrMax.max_distance_traveled.distance_traveled">
+              {{ millify(aggrMax.max_distance_traveled.distance_traveled) }}m ({{ aggrMax.max_distance_traveled.player_username }})
             </p>
             <p v-else>
               0
@@ -492,7 +492,7 @@
 
         <!-- fish_caught -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-amber-500"
@@ -508,10 +508,10 @@
                 {{ __("Total fish caught by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_fish_caught }}</p>
+            <p>{{ aggrTotal.fish_caught }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-indigo-500"
@@ -527,13 +527,13 @@
                 {{ __("Max fish caught by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_fish_caught.total_fish_caught }} ({{ aggrMax.max_fish_caught.username }})</p>
+            <p>{{ aggrMax.max_fish_caught.fish_caught }} ({{ aggrMax.max_fish_caught.player_username }})</p>
           </div>
         </div>
 
         <!-- enchant_item -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-light-blue-500"
@@ -549,10 +549,10 @@
                 {{ __("Total items enchanted by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_enchant_item }}</p>
+            <p>{{ aggrTotal.items_enchanted }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-pink-500"
@@ -568,13 +568,13 @@
                 {{ __("Max items enchanted by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_enchant_item.total_enchant_item }} ({{ aggrMax.max_enchant_item.username }})</p>
+            <p>{{ aggrMax.max_items_enchanted.items_enchanted }} ({{ aggrMax.max_items_enchanted.player_username }})</p>
           </div>
         </div>
 
-        <!-- play_one_minute -->
+        <!-- play_time -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-orange-500"
@@ -590,15 +590,15 @@
                 {{ __("Total playtime by all players") }}
               </p>
             </div>
-            <p v-if="aggrTotal.total_play_one_minute">
-              {{ secondsToHMS(aggrTotal.total_play_one_minute/20, true) }}
+            <p v-if="aggrTotal.play_time">
+              {{ secondsToHMS(aggrTotal.play_time, true) }}
             </p>
             <p v-else>
               0s
             </p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-teal-500"
@@ -614,8 +614,64 @@
                 {{ __("Max playtime by one player") }}
               </p>
             </div>
-            <p v-if="aggrMax.max_play_one_minute && aggrMax.max_play_one_minute.total_play_one_minute">
-              {{ secondsToHMS(aggrMax.max_play_one_minute.total_play_one_minute/20, true) }} ({{ aggrMax.max_play_one_minute.username }})
+            <p v-if="aggrMax.max_play_time && aggrMax.max_play_time.play_time">
+              {{ secondsToHMS(aggrMax.max_play_time.play_time, true) }} ({{ aggrMax.max_play_time.player_username }})
+            </p>
+            <p
+              v-else
+              class="italic"
+            >
+              {{ __("None") }}
+            </p>
+          </div>
+        </div>
+
+        <!-- max_afk_time -->
+        <div class="flex justify-between space-x-10">
+          <div class="flex justify-between flex-1">
+            <div class="flex">
+              <svg
+                class="w-5 h-5 text-lime-500"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+              </svg>
+              <p class="ml-1">
+                {{ __("Total afktime by all players") }}
+              </p>
+            </div>
+            <p v-if="aggrTotal.afk_time">
+              {{ secondsToHMS(aggrTotal.afk_time, true) }}
+            </p>
+            <p v-else>
+              0s
+            </p>
+          </div>
+
+          <div class="flex justify-between flex-1">
+            <div class="flex">
+              <svg
+                class="w-5 h-5 text-pink-500"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+              </svg>
+              <p class="ml-1">
+                {{ __("Max afktime by one player") }}
+              </p>
+            </div>
+            <p v-if="aggrMax.max_afk_time && aggrMax.max_afk_time.afk_time">
+              {{ secondsToHMS(aggrMax.max_afk_time.afk_time, true) }} ({{ aggrMax.max_afk_time.player_username }})
             </p>
             <p
               v-else
@@ -628,7 +684,7 @@
 
         <!-- sleep_in_bed -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <icon
                 name="moon-outline"
@@ -638,10 +694,10 @@
                 {{ __("Total sleeps by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_sleep_in_bed }}</p>
+            <p>{{ aggrTotal.times_slept_in_bed }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <icon
                 name="moon-outline"
@@ -651,13 +707,13 @@
                 {{ __("Max sleeps by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_sleep_in_bed.total_sleep_in_bed }} ({{ aggrMax.max_sleep_in_bed.username }})</p>
+            <p>{{ aggrMax.max_sleep_in_bed.times_slept_in_bed }} ({{ aggrMax.max_sleep_in_bed.player_username }})</p>
           </div>
         </div>
 
-        <!-- jumps -->
+        <!-- raids -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-red-500"
@@ -677,13 +733,13 @@
                 />
               </svg>
               <p class="ml-1">
-                {{ __("Total jumps by all players") }}
+                {{ __("Total raids win by all players") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_jumps }}</p>
+            <p>{{ aggrTotal.raids_won }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-light-blue-500"
@@ -703,59 +759,16 @@
                 />
               </svg>
               <p class="ml-1">
-                {{ __("Max jumps by one player") }}
+                {{ __("Max raids win by one player") }}
               </p>
             </div>
-            <p>{{ aggrMax.max_jumps.total_jumps }} ({{ aggrMax.max_jumps.username }})</p>
-          </div>
-        </div>
-
-        <!-- leave_game -->
-        <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
-            <div class="flex">
-              <svg
-                class="w-5 h-5 text-lime-500"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-              </svg>
-              <p class="ml-1">
-                {{ __("Total game leaves by all players") }}
-              </p>
-            </div>
-            <p>{{ aggrTotal.total_leave_game }}</p>
-          </div>
-
-          <div class="flex flex-1 justify-between">
-            <div class="flex">
-              <svg
-                class="w-5 h-5 text-pink-500"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-              </svg>
-              <p class="ml-1">
-                {{ __("Max game leaves by one player") }}
-              </p>
-            </div>
-            <p>{{ aggrMax.max_leave_game.total_leave_game }} ({{ aggrMax.max_leave_game.username }})</p>
+            <p>{{ aggrMax.max_raids_won.raids_won }} ({{ aggrMax.max_raids_won.player_username }})</p>
           </div>
         </div>
 
         <!-- money -->
         <div class="flex justify-between space-x-10">
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-orange-500"
@@ -773,10 +786,10 @@
                 {{ __("Total money on server") }}
               </p>
             </div>
-            <p>{{ aggrTotal.total_money || 0 }}</p>
+            <p>{{ millify(aggrTotal.vault_balance) || 0 }}</p>
           </div>
 
-          <div class="flex flex-1 justify-between">
+          <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
                 class="w-5 h-5 text-green-500"
@@ -794,8 +807,8 @@
                 {{ __("Max money by one player") }}
               </p>
             </div>
-            <p v-if="aggrMax.max_money">
-              {{ aggrMax.max_money.money }} ({{ aggrMax.max_money.username }})
+            <p v-if="aggrMax.max_vault_balance">
+              {{ millify(aggrMax.max_vault_balance.vault_balance) }} ({{ aggrMax.max_vault_balance.player_username }})
             </p>
             <p
               v-else
@@ -816,6 +829,7 @@ import Icon from '@/Components/Icon.vue';
 import _ from 'lodash';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useHelpers } from '@/Composables/useHelpers';
+import millify from 'millify';
 
 export default {
     components: {
@@ -830,7 +844,7 @@ export default {
     },
     setup() {
         const {secondsToHMS} = useHelpers();
-        return {secondsToHMS};
+        return {secondsToHMS, millify};
     },
     computed: {
         isEmpty: function () {

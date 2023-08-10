@@ -85,6 +85,8 @@ class HandleInertiaRequests extends Middleware
             "webVersion" => config("app.version"),
             "hasRegistrationFeature" => Route::has("register"),
             "showPoweredBy" => config("minetrax.show_powered_by"),
+            'poweredByExtraName' => config("minetrax.powered_by_extra_name"),
+            'poweredByExtraLink' => config("minetrax.powered_by_extra_link"),
             "showHomeButton" => config("minetrax.show_home_button"),
             "showCookieConsent" => config("minetrax.cookie_consent_enabled") && !$request->cookie("laravel_cookie_consent"),
         ]);
