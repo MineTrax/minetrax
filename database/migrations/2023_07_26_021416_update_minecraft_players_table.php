@@ -85,7 +85,7 @@ return new class extends Migration
         return <<<'SQL'
             CREATE VIEW `minecraft_players` AS
             SELECT
-            ROW_NUMBER() OVER () AS id,
+            MIN(id) AS id,
             mps.player_uuid,
             mps.server_id,
             (SELECT player_username
