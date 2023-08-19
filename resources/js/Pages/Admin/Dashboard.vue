@@ -15,6 +15,8 @@ import PlayersPerServerMetricBox from '@/Shared/PlayersPerServerMetricBox.vue';
 import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
 import NetworkTrendsMetricBox from '@/Shared/NetworkTrendsMetricBox.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
+import PlayersJoinAddressMetricBox from '@/Shared/PlayersJoinAddressMetricBox.vue';
+import PlayersMinecraftVersionMetricBox from '@/Shared/PlayersMinecraftVersionMetricBox.vue';
 
 const {can} = useAuthorizable();
 
@@ -138,6 +140,14 @@ defineProps({
       >
         <PlayersPerCountryMetricBox class="basis-1/2" />
         <NetworkTrendsMetricBox class="basis-1/2" />
+      </div>
+
+      <div
+        id="row4"
+        class="flex justify-between flex-1 space-x-4"
+      >
+        <PlayersJoinAddressMetricBox class="basis-1/2" />
+        <PlayersMinecraftVersionMetricBox class="basis-1/2" />
       </div>
     </div>
   </AdminLayout>

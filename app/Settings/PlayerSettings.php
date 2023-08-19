@@ -11,6 +11,7 @@ class PlayerSettings extends Settings
     public int $last_seen_day_for_active;   // last X day for player to be count as active for rating calculation -1 to disable.
     public bool $is_custom_score_enabled;
     public ?string $custom_score_expression;
+    public string $show_player_intel_to;    // none, staff, self, login, all
 
     public static function group(): string
     {

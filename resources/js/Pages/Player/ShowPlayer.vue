@@ -147,7 +147,7 @@
               <h1 class="text-2xl text-gray-800 dark:text-gray-200 font-extrabold">
                 {{ player.username }}
               </h1>
-              <h2 class="text-gray-400 font-bold text-xs md:text-base">
+              <h2 class="text-gray-400 font-semibold text-xs md:text-sm">
                 {{ player.uuid }}
               </h2>
             </div>
@@ -379,7 +379,7 @@
                       </p>
                     </div>
                     <p>
-                      {{ secondsToHMS(player.total_play_one_minute/20, true) }}
+                      {{ secondsToHMS(player.play_time, true) }}
                     </p>
                   </div>
                   <div class="flex justify-between">
@@ -449,34 +449,23 @@
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
-                        class="w-5 h-5 text-red-500"
+                        class="w-5 h-5 text-yellow-500"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
                           fill-rule="evenodd"
-                          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
                           clip-rule="evenodd"
                         />
                       </svg>
                       <p class="ml-1">
-                        {{ __("Favorite Server") }}
+                        {{ __("Total Afktime") }}
                       </p>
                     </div>
-                    <p
-                      v-if="!player.favorite_server"
-                      class="text-gray-400 italic"
-                    >
-                      {{ __("None") }}
-                    </p>
-                    <p
-                      v-else
-                      v-tippy
-                      class="focus:outline-none"
-                      :title="player.favorite_server.hostname"
-                    >
-                      {{ player.favorite_server.name }}
+                    <p>
+                      {{ secondsToHMS(player.afk_time, true) }}
                     </p>
                   </div>
                   <div class="flex justify-between">
@@ -550,6 +539,26 @@
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
+                        class="w-5 h-5 text-purple-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M4.293 15.707a1 1 0 010-1.414l5-5a1 1 0 011.414 0l5 5a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414 0zm0-6a1 1 0 010-1.414l5-5a1 1 0 011.414 0l5 5a1 1 0 01-1.414 1.414L10 5.414 5.707 9.707a1 1 0 01-1.414 0z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      <p class="ml-1">
+                        {{ __("Items Picked Up") }}
+                      </p>
+                    </div>
+                    <p>{{ player.total_picked_up }}</p>
+                  </div>
+                  <div class="flex justify-between">
+                    <div class="flex">
+                      <svg
                         class="w-5 h-5 text-red-500"
                         fill="currentColor"
                         viewBox="0 0 20 20"
@@ -599,7 +608,7 @@
                         {{ __("Distance Walked") }}
                       </p>
                     </div>
-                    <p>{{ (player.total_walk_one_cm)/100 }}m</p>
+                    <p>{{ millify(player.distance_traveled) }} {{ __("meters") }}</p>
                   </div>
                   <div class="flex justify-between">
                     <div class="flex">
@@ -616,7 +625,7 @@
                         />
                       </svg>
                       <p class="ml-1">
-                        {{ __("Owner") }}
+                        {{ __("Claimed By") }}
                       </p>
                     </div>
                     <p>
@@ -632,6 +641,39 @@
                         v-else
                         class="italic text-gray-500"
                       >{{ __("None") }}</span>
+                    </p>
+                  </div>
+                  <div class="flex justify-between">
+                    <div class="flex">
+                      <svg
+                        class="w-5 h-5 text-red-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      <p class="ml-1">
+                        {{ __("Favorite Server") }}
+                      </p>
+                    </div>
+                    <p
+                      v-if="!player.favorite_server"
+                      class="text-gray-400 italic"
+                    >
+                      {{ __("None") }}
+                    </p>
+                    <p
+                      v-else
+                      v-tippy
+                      class="focus:outline-none"
+                      :title="player.favorite_server.hostname"
+                    >
+                      {{ player.favorite_server.name }}
                     </p>
                   </div>
                 </div>
@@ -714,6 +756,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Icon from '@/Components/Icon.vue';
 import * as skinview3d from 'skinview3d';
 import { useHelpers } from '@/Composables/useHelpers';
+import millify from 'millify';
 
 export default {
 
@@ -726,7 +769,7 @@ export default {
     },
     setup() {
         const {secondsToHMS, formatTimeAgoToNow,formatToDayDateString} = useHelpers();
-        return {secondsToHMS, formatTimeAgoToNow, formatToDayDateString};
+        return {secondsToHMS, formatTimeAgoToNow, formatToDayDateString, millify};
     },
     data() {
         return {

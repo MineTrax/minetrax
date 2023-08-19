@@ -38,7 +38,7 @@ class CustomPageController extends Controller
                 'is_sidebar_visible',
                 'is_open_in_new_tab',
                 'is_html_page',
-                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'path', 'redirect_url']))
+                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'path', 'redirect_url'])),
             ])
             ->allowedSorts(['id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_redirect', 'redirect_url', 'created_by', 'updated_by', 'created_at', 'updated_at', 'is_sidebar_visible', 'is_html_page', 'is_open_in_new_tab'])
             ->defaultSort('-created_at')
@@ -83,7 +83,7 @@ class CustomPageController extends Controller
         $this->authorize('update', $customPage);
 
         return Inertia::render('Admin/CustomPage/EditCustomPage', [
-            'customPage' => $customPage
+            'customPage' => $customPage,
         ]);
     }
 
@@ -113,6 +113,7 @@ class CustomPageController extends Controller
         $this->authorize('delete', $customPage);
 
         $customPage->delete();
+
         return redirect()->route('admin.custom-page.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Custom Page has been deleted permanently')]]);
     }

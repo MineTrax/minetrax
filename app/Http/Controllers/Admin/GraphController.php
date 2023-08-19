@@ -42,6 +42,7 @@ class GraphController extends Controller
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
             $item->created_at_5min = (int) $item->created_at_5min;
+
             return array_values(get_object_vars($item));
         })->toArray();
 
@@ -266,6 +267,7 @@ class GraphController extends Controller
         $sqlData = $sqlData->map(function ($item) {
             $item->created_at_5min = (int) $item->created_at_5min;
             $item->used_memory = round($item->used_memory / 1024); // Convert to MB
+
             return array_values(get_object_vars($item));
         })->toArray();
 
@@ -307,6 +309,7 @@ class GraphController extends Controller
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
             $item->created_at_5min = (int) $item->created_at_5min;
+
             return array_values(get_object_vars($item));
         })->toArray();
 
@@ -315,5 +318,41 @@ class GraphController extends Controller
             'filters' => request()->all(['servers', 'from_date', 'to_date']),
             'data' => $sqlData,
         ]);
+    }
+
+    public function getPlayerMinecraftVersions()
+    {
+        $this->authorize('view admin_dashboard');
+
+        $data = DB::table('players')
+            ->selectRaw('COUNT(*) AS count, last_minecraft_version')
+            ->groupBy('last_minecraft_version')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'name' => $item->last_minecraft_version,
+                    'value' => $item->count,
+                ];
+            });
+
+        return response()->json($data);
+    }
+
+    public function getPlayerJoinAddresses()
+    {
+        $this->authorize('view admin_dashboard');
+
+        $data = DB::table('players')
+            ->selectRaw('COUNT(*) AS count, last_join_address')
+            ->groupBy('last_join_address')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'name' => $item->last_join_address,
+                    'value' => $item->count,
+                ];
+            });
+
+        return response()->json($data);
     }
 }

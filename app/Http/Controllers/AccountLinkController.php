@@ -13,14 +13,14 @@ class AccountLinkController extends Controller
 {
     public function verify($uuid, Server $server, Request $request, PluginSettings $pluginSettings): \Illuminate\Http\RedirectResponse
     {
-        if (!$request->hasValidSignature()) {
+        if (! $request->hasValidSignature()) {
             return redirect()->route('home')
                 ->with(['toast' => ['type' => 'danger', 'title' => __('Link expired or invalid!'), 'body' => __('Please request a fresh link and try again.'), 'milliseconds' => 10000]]);
         }
 
         // Find player with UUID if not found then tell user to wait for sometime till his player become visible in website
         $player = Player::where('uuid', $uuid)->first();
-        if (!$player) {
+        if (! $player) {
             return redirect()->route('home')
                 ->with(['toast' => ['type' => 'warning', 'title' => __('Player not found in database!'), 'body' => __('Please wait for sometime for server to update its player database.'), 'milliseconds' => 10000]]);
         }
@@ -60,9 +60,10 @@ class AccountLinkController extends Controller
     public function listMyPlayers(Request $request, PluginSettings $pluginSettings)
     {
         $linkedPlayers = $request->user()->players()->with(['country', 'rank:id,name,shortname'])->get();
+
         return Inertia::render('User/ListLinkedPlayer', [
             'linkedPlayers' => $linkedPlayers,
-            'maxPlayerPerUser' =>  $pluginSettings->max_players_link_per_account
+            'maxPlayerPerUser' => $pluginSettings->max_players_link_per_account,
         ]);
     }
 
@@ -71,7 +72,7 @@ class AccountLinkController extends Controller
         // Make sure the player is linked to current user who is running to unlink
         $user = $request->user();
         $userHasPlayer = $user->players()->where('player_id', $player->id)->exists();
-        if (!$userHasPlayer) {
+        if (! $userHasPlayer) {
             return redirect()->back()
                 ->with(['toast' => ['type' => 'danger', 'title' => __('Player not found!'), 'body' => __('No player with that ID found linked to your account.'), 'milliseconds' => 10000]]);
         }
@@ -81,7 +82,7 @@ class AccountLinkController extends Controller
 
         // If MARK_USER_VERIFYED_ON_ACCOUNT_LINK is enabled then mark user as unverified when he unlink all players.
         $linkedPlayersExist = $user->players()->exists();
-        if (config('minetrax.mark_user_verified_on_account_link') && $user->verified_at && !$linkedPlayersExist) {
+        if (config('minetrax.mark_user_verified_on_account_link') && $user->verified_at && ! $linkedPlayersExist) {
             $user->verified_at = null;
             $user->save();
         }

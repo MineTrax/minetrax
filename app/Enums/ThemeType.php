@@ -4,7 +4,6 @@ namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-
 /**
  * @method static static LIGHT_BLUE()
  * @method static static BLUE()
@@ -19,20 +18,28 @@ use BenSampo\Enum\Enum;
 final class ThemeType extends Enum
 {
     const LIGHT_BLUE = 'light-blue';
-    const BLUE =   'blue';
+
+    const BLUE = 'blue';
+
     const RED = 'red';
+
     const ORANGE = 'orange';
+
     const LIME = 'lime';
+
     const GREEN = 'green';
+
     const TEAL = 'teal';
+
     const INDIGO = 'indigo';
+
     const FUCHSIA = 'fuchsia';
 
     public function toArray(): mixed
     {
         return [
-            "key" => $this->key,
-            "value" => $this->value
+            'key' => $this->key,
+            'value' => $this->value,
         ];
     }
 }

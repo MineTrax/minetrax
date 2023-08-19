@@ -3,7 +3,6 @@
 namespace App\Actions\Jetstream;
 
 use DB;
-
 use Laravel\Jetstream\Contracts\DeletesUsers;
 
 class DeleteUser implements DeletesUsers

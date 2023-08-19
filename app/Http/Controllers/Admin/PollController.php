@@ -33,7 +33,7 @@ class PollController extends Controller
                 'created_at',
                 'created_by',
                 'updated_by',
-                AllowedFilter::custom('q', new FilterMultipleFields(['question', 'id']))
+                AllowedFilter::custom('q', new FilterMultipleFields(['question', 'id'])),
             ])
             ->allowedSorts(['id', 'question', 'is_closed', 'started_at', 'closed_at', 'created_at', 'created_by', 'updated_by'])
             ->defaultSort('-id')
@@ -62,7 +62,7 @@ class PollController extends Controller
             'question' => $request->question,
             'started_at' => $request->started_at ?? now(),
             'closed_at' => $request->closed_at,
-            'created_by' => $request->user()->id
+            'created_by' => $request->user()->id,
         ]);
 
         // Create Options
@@ -101,6 +101,7 @@ class PollController extends Controller
         $this->authorize('delete', $poll);
 
         $poll->delete();
+
         return redirect()->route('admin.poll.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Poll has been deleted permanently')]]);
     }

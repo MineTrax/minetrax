@@ -109,6 +109,8 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('/graph/network-trends-vs-month', [\App\Http\Controllers\Admin\GraphController::class, 'getNetworkTrendsMonthVsMonth'])->name('graph.network-trends-vs-month');
     Route::get('/graph/server-performance', [\App\Http\Controllers\Admin\GraphController::class, 'getServerPerformanceOverTime'])->name('graph.server-performance');
     Route::get('/graph/server-online-activity', [\App\Http\Controllers\Admin\GraphController::class, 'getServerOnlineActivityOverTime'])->name('graph.server-online-activity');
+    Route::get('/graph/player-minecraft-versions', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerMinecraftVersions'])->name('graph.player-minecraft-versions');
+    Route::get('/graph/player-join-addresses', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerJoinAddresses'])->name('graph.player-join-addresses');
 
     Route::get('user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('user.index');
     //  Route::get('user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('user.show');

@@ -3,9 +3,7 @@
 namespace App\Events;
 
 use App\Models\ServerConsolelog;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -17,8 +15,6 @@ class ServerConsolelogCreated implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @param ServerConsolelog $serverConsolelog
      */
     public function __construct(public ServerConsolelog $serverConsolelog)
     {
@@ -26,8 +22,6 @@ class ServerConsolelogCreated implements ShouldBroadcast
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return PrivateChannel
      */
     public function broadcastOn(): PrivateChannel
     {

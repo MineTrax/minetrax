@@ -1,7 +1,15 @@
 <script setup>
 import AppHead from '@/Components/AppHead.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
+
 defineProps({
+    serverList: {
+        type: Object,
+    },
+    filters: {
+        type: Object,
+    },
 });
 </script>
 
@@ -10,6 +18,12 @@ defineProps({
     <AppHead :title="__('Playerbase - ServerIntel')" />
 
     <div class="p-4 mx-auto space-y-4 max-w-7xl">
+      <ServerIntelServerSelector
+        :title="__('Playerbase')"
+        :server-list="serverList"
+        :filters="filters"
+      />
+
       <div
         class="p-3 space-y-8 bg-white rounded shadow dark:bg-cool-gray-800"
       >

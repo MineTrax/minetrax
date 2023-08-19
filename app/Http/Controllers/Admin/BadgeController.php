@@ -7,7 +7,6 @@ use App\Http\Requests\CreateBadgeRequest;
 use App\Http\Requests\UpdateBadgeRequest;
 use App\Models\Badge;
 use App\Queries\Filters\FilterMultipleFields;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -32,7 +31,7 @@ class BadgeController extends Controller
                 'sort_order',
                 'created_at',
                 'updated_at',
-                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'shortname', 'id']))
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'shortname', 'id'])),
             ])
             ->allowedSorts(['id', 'name', 'created_at', 'updated_at', 'shortname', 'is_sticky', 'sort_order'])
             ->defaultSort('sort_order')
@@ -59,7 +58,7 @@ class BadgeController extends Controller
             'name' => $request->name,
             'shortname' => $request->shortname,
             'is_sticky' => $request->is_sticky,
-            'created_by' => $request->user()->id
+            'created_by' => $request->user()->id,
         ]);
 
         // Upload the Photo
@@ -74,7 +73,7 @@ class BadgeController extends Controller
         $this->authorize('update', $badge);
 
         return Inertia::render('Admin/Badge/EditBadge', [
-            'badge' => $badge
+            'badge' => $badge,
         ]);
     }
 
@@ -103,6 +102,7 @@ class BadgeController extends Controller
         $this->authorize('delete', $badge);
 
         $badge->delete();
+
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Badge has been deleted permanently')]]);
     }

@@ -7,16 +7,17 @@ use App\Models\Player;
 use App\Models\Rank;
 use App\Models\Server;
 use App\Services\MinecraftApiService;
+use App\Settings\PlayerSettings;
 use DB;
 use Exception;
+use Http;
 use Illuminate\Http\Request;
 use Image;
 use Inertia\Inertia;
-use Http;
 
 class PlayerController extends Controller
 {
-    public function index(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function index(Request $request, PlayerSettings $playerSettings): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         $players = Player::select(['id', 'username', 'rating', 'position', 'total_score', 'uuid', 'play_time', 'last_seen_at', 'first_seen_at', 'rank_id', 'country_id'])
             ->with(['country:id,iso_code,flag,name', 'rank:id,shortname,name'])
@@ -29,17 +30,17 @@ class PlayerController extends Controller
             return response()->json($players);
         }
 
+        $playerActiveLastDay = $playerSettings->last_seen_day_for_active == -1 ? now()->subYears(100) : now()->subDays($playerSettings->last_seen_day_for_active);
+
         $totalPlayersCount = Player::count();
-        $activePlayersCount = Player::where('last_seen_at', '>=', now()->subDays(30))->count();
+        $activePlayersCount = Player::where('last_seen_at', '>=', $playerActiveLastDay)->count();
         $totalPlayTime = Player::sum('play_time');
-        $lastScanAt = Server::orderByDesc('last_scanned_at')->first()?->last_scanned_at;
 
         return Inertia::render('Player/IndexPlayer', [
             'players' => $players,
             'totalPlayersCount' => $totalPlayersCount,
             'activePlayersCount' => $activePlayersCount,
             'totalPlayTime' => $totalPlayTime,
-            'lastScanAt' => $lastScanAt
         ]);
     }
 
@@ -80,16 +81,22 @@ class PlayerController extends Controller
             'position',
             'total_used',
             'total_mined',
+            'total_picked_up',
             'total_dropped',
             'total_broken',
             'total_crafted',
+            'total_items_placed',
+            'total_items_enchanted',
             'total_mob_kills',
             'total_player_kills',
             'total_deaths',
-            'total_walk_one_cm',
-            'total_play_one_minute',
+            'total_fish_caught',
             'total_sleep_in_bed',
             'total_leave_game',
+            'play_time',
+            'afk_time',
+            'distance_traveled',
+            'raids_won',
             'first_seen_at',
             'last_seen_at',
             'is_active',
@@ -109,14 +116,15 @@ class PlayerController extends Controller
 
     public function getAvatarImage(Request $request, $uuid, $username = null)
     {
-        $useUsernameForSkins = config("minetrax.use_username_for_skins");
-        $fetchAvatarFromUrlUsingCurl = config("minetrax.fetch_avatar_from_url_using_curl");
+        $useUsernameForSkins = config('minetrax.use_username_for_skins');
+        $fetchAvatarFromUrlUsingCurl = config('minetrax.fetch_avatar_from_url_using_curl');
         $param = $useUsernameForSkins ? $username : $uuid;
         $size = $request->size ?? 100;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = Image::make(public_path('images/alex.png'))->resize($size, $size);
+
             return $img->response('jpg');
         }
 
@@ -124,9 +132,11 @@ class PlayerController extends Controller
             $img = Image::cache(function ($image) use ($param, $size, $fetchAvatarFromUrlUsingCurl) {
                 // try getting from third party service
                 $url = "https://minotar.net/avatar/$param";
-                if ($size)
+                if ($size) {
                     $url = "https://minotar.net/avatar/{$param}/{$size}";
+                }
                 $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
+
                 return $image->make($data);
             }, 60, true); // Cache lifetime is in minutes
         } catch (Exception $exception) {
@@ -138,8 +148,9 @@ class PlayerController extends Controller
                     } else {
                         $uuid = $param;
                     }
-                    $url = 'https://crafatar.com/avatars/' . $uuid . '?size=' . $size;
+                    $url = 'https://crafatar.com/avatars/'.$uuid.'?size='.$size;
                     $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
+
                     return $image->make($data);
                 }, 60, true); // Cache lifetime is in minutes
             } catch (Exception $exception) {
@@ -150,16 +161,16 @@ class PlayerController extends Controller
         return $img->response('jpg');
     }
 
-
     public function getSkinImage(Request $request, $uuid, $username = null)
     {
-        $useUsernameForSkins = config("minetrax.use_username_for_skins");
-        $fetchAvatarFromUrlUsingCurl = config("minetrax.fetch_avatar_from_url_using_curl");
+        $useUsernameForSkins = config('minetrax.use_username_for_skins');
+        $fetchAvatarFromUrlUsingCurl = config('minetrax.fetch_avatar_from_url_using_curl');
         $param = $useUsernameForSkins ? $username : $uuid;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = Image::make(public_path('images/alex_skin.png'));
+
             return $img->response('jpg');
         }
 
@@ -168,6 +179,7 @@ class PlayerController extends Controller
                 // try getting from third party service
                 $url = "https://minotar.net/skin/$param";
                 $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
+
                 return $image->make($data);
             }, 60, true); // Cache lifetime is in minutes
         } catch (Exception $exception) {
@@ -179,8 +191,9 @@ class PlayerController extends Controller
                     } else {
                         $uuid = $param;
                     }
-                    $url = 'https://crafatar.com/skins/' . $uuid;
+                    $url = 'https://crafatar.com/skins/'.$uuid;
                     $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
+
                     return $image->make($data);
                 }, 60, true); // Cache lifetime is in minutes
             } catch (Exception $exception) {
@@ -191,17 +204,17 @@ class PlayerController extends Controller
         return $img->response('png');
     }
 
-
     public function getRenderImage(Request $request, $uuid, $username = null)
     {
-        $useUsernameForSkins = config("minetrax.use_username_for_skins");
-        $fetchAvatarFromUrlUsingCurl = config("minetrax.fetch_avatar_from_url_using_curl");
+        $useUsernameForSkins = config('minetrax.use_username_for_skins');
+        $fetchAvatarFromUrlUsingCurl = config('minetrax.fetch_avatar_from_url_using_curl');
         $param = $useUsernameForSkins ? $username : $uuid;
         $scale = $request->scale;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = Image::make(public_path('images/alex_render.png'));
+
             return $img->response('jpg');
         }
 
@@ -214,8 +227,9 @@ class PlayerController extends Controller
                     $uuid = $param;
                 }
 
-                $url = 'https://crafatar.com/renders/body/' . $uuid . '?scale=' . $scale;
+                $url = 'https://crafatar.com/renders/body/'.$uuid.'?scale='.$scale;
                 $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
+
                 return $image->make($data);
             }, 60, true); // Cache lifetime is in minutes
         } catch (Exception $exception) {

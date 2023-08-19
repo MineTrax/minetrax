@@ -26,9 +26,9 @@ class AskDbController extends Controller
     public function query(Request $request, AskGptService $askGptService)
     {
         $featureEnabled = config('minetrax.askdb_enabled');
-        if (!$featureEnabled) {
+        if (! $featureEnabled) {
             return response()->json([
-                'message' => __("This feature is not enabled!"),
+                'message' => __('This feature is not enabled!'),
             ], 403);
         }
 
@@ -38,6 +38,7 @@ class AskDbController extends Controller
 
         try {
             $response = $askGptService->askDb($request->prompt);
+
             return response()->json([
                 'data' => $response,
             ]);

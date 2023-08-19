@@ -12,7 +12,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      * Validate and update the given user's profile information.
      *
      * @param  mixed  $user
-     * @param  array  $input
      * @return void
      */
     public function update($user, array $input)
@@ -36,7 +35,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             's_website_url' => ['nullable', 'url'],
             'show_gender' => ['boolean'],
             'show_yob' => ['boolean'],
-            'profile_photo_source' => ['nullable', 'in:gravatar,linked_player']
+            'profile_photo_source' => ['nullable', 'in:gravatar,linked_player'],
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
@@ -66,7 +65,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $settings = [
                 'show_yob' => $input['show_yob'],
                 'show_gender' => $input['show_gender'],
-                'profile_photo_source' => $input['profile_photo_source']
+                'profile_photo_source' => $input['profile_photo_source'],
             ];
 
             $userSettings = $user->settings ?? [];
@@ -79,7 +78,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'gender' => $input['gender'],
                 'about' => $input['about'],
                 'social_links' => $social_links,
-                'settings' => $settings
+                'settings' => $settings,
             ])->save();
         }
     }
@@ -88,7 +87,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      * Update the given verified user's profile information.
      *
      * @param  mixed  $user
-     * @param  array  $input
      * @return void
      */
     protected function updateVerifiedUser($user, array $input)
@@ -108,7 +106,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         $settings = [
             'show_yob' => $input['show_yob'],
             'show_gender' => $input['show_gender'],
-            'profile_photo_source' => $input['profile_photo_source']
+            'profile_photo_source' => $input['profile_photo_source'],
         ];
 
         $user->forceFill([
@@ -119,7 +117,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'gender' => $input['gender'],
             'about' => $input['about'],
             'social_links' => $social_links,
-            'settings' => $settings
+            'settings' => $settings,
         ])->save();
 
         $user->sendEmailVerificationNotification();
