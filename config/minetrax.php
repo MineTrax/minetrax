@@ -249,4 +249,17 @@ return [
     */
     "powered_by_extra_name" => env("POWERED_BY_EXTRA_NAME", null),
     "powered_by_extra_link" => env("POWERED_BY_EXTRA_LINK", null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Query/Ping Proxy Server using IP Instead.
+    |--------------------------------------------------------------------------
+    |
+    | By default the PING uses hostname when server is bungee.
+    | By default the QUERY uses ip address when server is bungee.
+    |
+    | Change accordingly in .env to use hostname or ip as per requirement.
+    */
+    'ping_proxy_server_using_ip_address' => env('PING_PROXY_SERVER_USING_IP_ADDRESS', false),
+    'query_proxy_server_using_ip_address' => env('QUERY_PROXY_SERVER_USING_IP_ADDRESS', true),
 ];
