@@ -33,6 +33,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:prune-batches --hours=48 --unfinished=72')->daily();
         $schedule->command('model:prune')->daily();
         $schedule->command('cache:prune-stale-tags')->hourly();
+
+        $backupEnabled = config('backup.enabled');
+        if ($backupEnabled) {
+            $schedule->command('backup:clean')->daily()->at('01:00');
+            $schedule->command('backup:run')->daily()->at('01:30');
+        }
     }
 
     /**
