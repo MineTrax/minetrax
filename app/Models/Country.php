@@ -23,6 +23,11 @@ class Country extends BaseModel
         return $this->hasMany(Player::class);
     }
 
+    public function minecraftPlayers(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(MinecraftPlayer::class);
+    }
+
     public function servers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Server::class);

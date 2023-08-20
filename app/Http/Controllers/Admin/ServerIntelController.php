@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
+use App\Models\Country;
+use App\Models\MinecraftPlayer;
 use App\Models\MinecraftPlayerSession;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\ServerChatlog;
@@ -358,6 +360,35 @@ class ServerIntelController extends Controller
         return Inertia::render('Admin/ServerIntel/Playerbase', [
             'filters' => request()->all(['servers']),
             'serverList' => $serverList,
+        ]);
+    }
+
+    public function getPlayerPerCountry(Request $request)
+    {
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+        ]);
+
+        $selectedServers = $request->query('servers') ?? null; // list of selected server ids
+
+        $countries = Country::withCount(['minecraftPlayers' => function ($query) use ($selectedServers) {
+            $query->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('server_id', $selectedServers);
+            });
+        }])->get();
+        $data = $countries->map(function ($country) {
+            return [
+                'name' => $country->name,
+                'value' => $country->minecraft_players_count,
+                'image' => $country->photo_path,
+            ];
+        });
+        $maxValue = $data->max('value') == 0 ? 1 : $data->max('value');
+
+        return response()->json([
+            'data' => $data,
+            'max' => $maxValue,
         ]);
     }
 

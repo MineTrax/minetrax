@@ -2,14 +2,22 @@
 import AppHead from '@/Components/AppHead.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
+import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
+import {computed} from 'vue';
 
-defineProps({
+const props = defineProps({
     serverList: {
         type: Object,
     },
     filters: {
         type: Object,
     },
+});
+
+const countryMapRoute = computed(() => {
+    return route('admin.intel.server.playerbase.countries', {
+        servers: props.filters?.servers,
+    });
 });
 </script>
 
@@ -23,6 +31,13 @@ defineProps({
         :server-list="serverList"
         :filters="filters"
       />
+
+      <div id="row1">
+        <PlayersPerCountryMetricBox
+          map-height="500px"
+          :route="countryMapRoute"
+        />
+      </div>
 
       <div
         class="p-3 space-y-8 bg-white rounded shadow dark:bg-cool-gray-800"
