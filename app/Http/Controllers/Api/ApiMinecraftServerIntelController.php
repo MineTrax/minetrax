@@ -42,7 +42,7 @@ class ApiMinecraftServerIntelController extends Controller
 
         try {
             // Create MinecraftServerLiveInfo
-            DB::transaction(function() use ($request) {
+            DB::transaction(function() use ($request, $server) {
                 MinecraftServerLiveInfo::create([
                     'server_id' => $request->input('server_id'),
                     'online_players' => $request->input('online_players'),
@@ -83,6 +83,10 @@ class ApiMinecraftServerIntelController extends Controller
                         'server_session_id' => $request->input('server_session_id'),
                     ]);
                 }
+
+                $server->update([
+                    'last_scanned_at' => now(),
+                ]);
             });
 
             return response()->json([

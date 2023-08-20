@@ -9,6 +9,7 @@ import {useHelpers} from '@/Composables/useHelpers';
 const { secondsToHMS } = useHelpers();
 import millify from 'millify';
 import ServerIntelOverviewNumbersBox from '@/Shared/ServerIntelOverviewNumbersBox.vue';
+import AlertCard from '@/Components/AlertCard.vue';
 
 defineProps({
     serverList: {
@@ -20,6 +21,9 @@ defineProps({
     last7DaysStats: {
         type: Object,
     },
+    noIntelForOverWeek: {
+        type: Boolean
+    }
 });
 </script>
 
@@ -33,6 +37,15 @@ defineProps({
         :server-list="serverList"
         :filters="filters"
       />
+
+      <AlertCard
+        v-if="noIntelForOverWeek"
+        title-class="flex items-center"
+        text-color="text-orange-800 dark:text-orange-500"
+        border-color="border-orange-500"
+      >
+        {{ __("Server haven't sent Intel data for over 7 days.") }}
+      </AlertCard>
 
       <div id="row1">
         <ServerOnlineActivityOverTimeMetricBox :servers="filters?.servers" />
