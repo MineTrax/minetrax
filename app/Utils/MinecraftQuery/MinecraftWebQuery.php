@@ -78,7 +78,7 @@ class MinecraftWebQuery
         $string = json_encode($string);
 
         $newEncrypter = new Encrypter(($apiSecret), "AES-256-CBC");
-        return $newEncrypter->encrypt($string);
+        return $newEncrypter->encryptString($string);
     }
 
     public function decryptEncryptedString(string $string): string
@@ -87,6 +87,6 @@ class MinecraftWebQuery
 
         $apiSecret = Str::substr($pluginSettings->plugin_api_secret, 0, 32);
         $newEncrypter = new Encrypter(($apiSecret), "AES-256-CBC");
-        return $newEncrypter->decrypt($string);
+        return $newEncrypter->decryptString($string);
     }
 }

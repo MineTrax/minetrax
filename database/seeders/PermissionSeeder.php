@@ -84,6 +84,7 @@ class PermissionSeeder extends Seeder
 
         Permission::findOrCreate('view admin_dashboard');
         Permission::findOrCreate('view server_intel');
+        Permission::findOrCreate('view player_intel_critical'); // View critical player_intel which only admin should view, player ip, inventory data etc.
 
         Permission::findOrCreate('use ask_db');
     }

@@ -31,7 +31,7 @@ defineProps({
   <AdminLayout>
     <AppHead :title="__('Overview - ServerIntel')" />
 
-    <div class="p-4 mx-auto space-y-4 max-w-7xl">
+    <div class="p-4 mx-auto space-y-4 px-10">
       <ServerIntelServerSelector
         :title="__('Server Overview')"
         :server-list="serverList"

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateServerRequest;
 use App\Http\Requests\UpdateServerRequest;
 use App\Jobs\CalculatePlayersJob;
+use App\Jobs\ResyncPlayersTableJob;
 use App\Models\MinecraftPlayer;
 use App\Models\Server;
 use App\Queries\Filters\FilterMultipleFields;
@@ -319,6 +320,9 @@ class ServerController extends Controller
         $this->authorize('delete', $server);
 
         $server->delete();
+
+        ResyncPlayersTableJob::dispatch();
+
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Server has been deleted permanently')]]);
     }

@@ -8,7 +8,7 @@ let graphData = ref(null);
 let isLoading = ref(true);
 
 const props = defineProps({
-    route: {
+    routeName: {
         type: String,
         required: false,
         default: route('admin.graph.players-per-country'),
@@ -21,7 +21,7 @@ const props = defineProps({
 });
 
 onMounted(async () => {
-    const response = await axios.get(props.route);
+    const response = await axios.get(props.routeName);
 
     isLoading.value = false;
     graphData.value = response.data;
@@ -49,6 +49,7 @@ onMounted(async () => {
             feature: {
                 restore: {},
                 saveAsImage: {},
+                dataView: { readOnly: true },
             },
         },
         visualMap: {

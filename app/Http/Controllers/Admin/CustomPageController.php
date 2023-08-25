@@ -104,7 +104,7 @@ class CustomPageController extends Controller
         $customPage->updated_by = $request->user()->id;
         $customPage->save();
 
-        return redirect()->route('admin.custom-page.index')
+        return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Custom Page updated successfully')]]);
     }
 

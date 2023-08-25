@@ -3,12 +3,27 @@ import {onMounted, ref} from 'vue';
 import axios from 'axios';
 import Chart from '@/Components/Dashboard/Chart.vue';
 
+const props = defineProps({
+    servers: {
+        type: Array,
+        required: false,
+    },
+    chartHeight: {
+        type: String,
+        default: '350px',
+    },
+});
+
 let option = ref({});
 let graphData = ref(null);
 let isLoading = ref(true);
 
 onMounted(async () => {
-    const response = await axios.get(route('admin.graph.player-join-addresses'));
+    const params = {};
+    if (props.servers && props.servers.length > 0) {
+        params['servers'] = props.servers;
+    }
+    const response = await axios.get(route('admin.graph.player-join-addresses', params));
     isLoading.value = false;
     graphData.value = response.data ?? [];
 
@@ -21,7 +36,8 @@ onMounted(async () => {
         },
         toolbox: {
             feature: {
-                saveAsImage: {}
+                saveAsImage: {},
+                dataView: { readOnly: true },
             }
         },
         xAxis: {
@@ -33,7 +49,7 @@ onMounted(async () => {
         },
         series: [
             {
-                name: 'Players',
+                name: 'Count',
                 type: 'bar',
                 barWidth: '60%',
                 data: graphData.value.map((item) => item.value)
@@ -50,7 +66,7 @@ onMounted(async () => {
     </h3>
     <Chart
       :options="option"
-      height="350px"
+      :height="chartHeight"
       :loading="isLoading"
       :autoresize="true"
     />

@@ -5,9 +5,8 @@ namespace App\Listeners;
 use App\Events\MinecraftPlayerSessionCreated;
 use App\Models\MinecraftPlayer;
 use App\Models\Player;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use DB;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UpsertPlayerOnSessionStart implements ShouldQueue
 {
@@ -31,19 +30,31 @@ class UpsertPlayerOnSessionStart implements ShouldQueue
             ->first();
 
         DB::transaction(function () use ($minecraftPlayerSession, $minecraftPlayer) {
-            if (!$minecraftPlayer) {
-                $maxPlayerPosition = Player::query()->max('position') ?? 0;
-                $player = Player::create([
-                    'uuid' => $minecraftPlayerSession->player_uuid,
-                    'username' => $minecraftPlayerSession->player_username,
-                    'ip_address' => $minecraftPlayerSession->player_ip_address,
-                    'first_seen_at' => $minecraftPlayerSession->session_started_at,
-                    'last_seen_at' => $minecraftPlayerSession->session_ended_at ?? now(),
-                    'country_id' => $minecraftPlayerSession->country_id,
-                    'last_minecraft_version' => $minecraftPlayerSession->minecraft_version,
-                    'last_join_address' => $minecraftPlayerSession->join_address,
-                    'position' => $maxPlayerPosition + 1
-                ]);
+            if (! $minecraftPlayer) {
+
+                $player = Player::where('uuid', $minecraftPlayerSession->player_uuid)->first();
+                if (! $player) {
+                    $maxPlayerPosition = Player::query()->max('position') ?? 0;
+                    $player = Player::create([
+                        'uuid' => $minecraftPlayerSession->player_uuid,
+                        'username' => $minecraftPlayerSession->player_username,
+                        'ip_address' => $minecraftPlayerSession->player_ip_address,
+                        'first_seen_at' => $minecraftPlayerSession->session_started_at,
+                        'last_seen_at' => $minecraftPlayerSession->session_ended_at ?? now(),
+                        'country_id' => $minecraftPlayerSession->country_id,
+                        'last_minecraft_version' => $minecraftPlayerSession->minecraft_version,
+                        'last_join_address' => $minecraftPlayerSession->join_address,
+                        'position' => $maxPlayerPosition + 1,
+                    ]);
+                } else {
+                    $player->last_join_address = $minecraftPlayerSession->join_address ?? $player->last_join_address;
+                    $player->last_minecraft_version = $minecraftPlayerSession->minecraft_version ?? $player->last_minecraft_version;
+                    $player->last_seen_at = $minecraftPlayerSession->session_ended_at ?? now();
+                    $player->ip_address = $minecraftPlayerSession->player_ip_address;
+                    $player->username = $minecraftPlayerSession->player_username;
+                    $player->country_id = $minecraftPlayerSession->country_id;
+                    $player->save();
+                }
 
                 $minecraftPlayer = MinecraftPlayer::create([
                     'player_uuid' => $minecraftPlayerSession->player_uuid,
@@ -61,20 +72,20 @@ class UpsertPlayerOnSessionStart implements ShouldQueue
                     'player_id' => $player->id,
                 ]);
             } else {
-                $minecraftPlayer->last_join_address = $minecraftPlayerSession->join_address;
-                $minecraftPlayer->last_minecraft_version = $minecraftPlayerSession->minecraft_version;
+                $minecraftPlayer->last_join_address = $minecraftPlayerSession->join_address ?? $minecraftPlayer->last_join_address;
+                $minecraftPlayer->last_minecraft_version = $minecraftPlayerSession->minecraft_version ?? $minecraftPlayer->last_minecraft_version;
                 $minecraftPlayer->last_seen_at = $minecraftPlayerSession->session_ended_at ?? now();
                 $minecraftPlayer->player_displayname = $minecraftPlayerSession->player_displayname;
                 $minecraftPlayer->player_ip_address = $minecraftPlayerSession->player_ip_address;
                 $minecraftPlayer->player_username = $minecraftPlayerSession->player_username;
-                $minecraftPlayer->vault_balance = $minecraftPlayerSession->vault_balance;
-                $minecraftPlayer->vault_groups = $minecraftPlayerSession->vault_groups;
+                $minecraftPlayer->vault_balance = $minecraftPlayerSession->vault_balance ?? $minecraftPlayer->vault_balance;
+                $minecraftPlayer->vault_groups = $minecraftPlayerSession->vault_groups ?? $minecraftPlayer->vault_groups;
                 $minecraftPlayer->country_id = $minecraftPlayerSession->country_id;
                 $minecraftPlayer->save();
 
                 $player = Player::where('uuid', $minecraftPlayerSession->player_uuid)->first();
-                $player->last_join_address = $minecraftPlayerSession->join_address;
-                $player->last_minecraft_version = $minecraftPlayerSession->minecraft_version;
+                $player->last_join_address = $minecraftPlayerSession->join_address ?? $player->last_join_address;
+                $player->last_minecraft_version = $minecraftPlayerSession->minecraft_version ?? $player->last_minecraft_version;
                 $player->last_seen_at = $minecraftPlayerSession->session_ended_at ?? now();
                 $player->ip_address = $minecraftPlayerSession->player_ip_address;
                 $player->username = $minecraftPlayerSession->player_username;
