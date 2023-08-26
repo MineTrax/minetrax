@@ -150,6 +150,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('intel/server/consolelog', [\App\Http\Controllers\Admin\ServerIntelController::class, 'consolelog'])->name('intel.server.consolelog');
     Route::get('intel/server/playerbase', [\App\Http\Controllers\Admin\ServerIntelController::class, 'playerbase'])->name('intel.server.playerbase');
     Route::get('intel/server/playerbase/countries', [\App\Http\Controllers\Admin\ServerIntelController::class, 'getPlayerPerCountry'])->name('intel.server.playerbase.countries');
+    Route::get('intel/player/list', [\App\Http\Controllers\Admin\PlayerIntelController::class, 'playersList'])->name('intel.player.list');
 
     Route::get('rank', [\App\Http\Controllers\Admin\RankController::class, 'index'])->name('rank.index');
     Route::get('rank/create', [\App\Http\Controllers\Admin\RankController::class, 'create'])->name('rank.create');

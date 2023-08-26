@@ -3,7 +3,6 @@ import {
     ChevronDoubleLeftIcon,
     ServerStackIcon,
     UsersIcon,
-    AcademicCapIcon,
     HomeIcon,
     NewspaperIcon,
     ChartPieIcon,
@@ -11,6 +10,7 @@ import {
     Cog8ToothIcon,
     PresentationChartLineIcon,
     CircleStackIcon,
+    TrophyIcon,
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
@@ -41,7 +41,7 @@ const navItems = [
     {
         label: 'Server Analytics',
         href: '#',
-        active: route().current('admin.intel.*'),
+        active: route().current('admin.intel.server.*'),
         children: [
             {
                 label: 'Overview',
@@ -86,6 +86,31 @@ const navItems = [
         ],
         icon: PresentationChartLineIcon,
         visible: canWild('server_intel')
+    },
+    {
+        label: 'Players',
+        href: '#',
+        active: route().current('admin.intel.player.*') || route().current('admin.rank.*'),
+        children: [
+            {
+                label: 'List Players',
+                href: route('admin.intel.player.list'),
+                active: route().current('admin.intel.player.list'),
+                children: [],
+                icon: null,
+                visible: canWild('player_intel_critical')
+            },
+            {
+                label: 'Player Ranks',
+                href: route('admin.rank.index'),
+                active: route().current('admin.rank.*'),
+                children: [],
+                icon: null,
+                visible: canWild('ranks')
+            },
+        ],
+        icon: TrophyIcon,
+        visible: canWild('player_intel_critical') || canWild('ranks')
     },
     {
         label: 'Users', href: '#', active: false, children: [
@@ -139,14 +164,6 @@ const navItems = [
         children: [],
         icon: ChartPieIcon,
         visible: canWild('polls')
-    },
-    {
-        label: 'Player Ranks',
-        href: route('admin.rank.index'),
-        active: route().current('admin.rank.*'),
-        children: [],
-        icon: AcademicCapIcon,
-        visible: canWild('ranks')
     },
     {
         label: 'Custom Pages',
