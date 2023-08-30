@@ -52,7 +52,7 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
 
     Route::get('vote/{id}', [\App\Http\Controllers\HomeController::class, 'visitVotingSite'])->name('vote.visit');
 
-    Route::get('intel/player/{player:uuid}', [\App\Http\Controllers\PlayerIntelController::class, 'overview'])->name('player.intel.overview');
+    // Route::get('intel/player/{player:uuid}', [\App\Http\Controllers\PlayerIntelController::class, 'overview'])->name('player.intel.overview');
     Route::get('intel/player/{player:uuid}/sessions', [\App\Http\Controllers\PlayerIntelController::class, 'indexSession'])->name('player.intel.session.index');
     Route::get('intel/player/{player:uuid}/sessions/{session}', [\App\Http\Controllers\PlayerIntelController::class, 'showSession'])->name('player.intel.session.show');
 });
