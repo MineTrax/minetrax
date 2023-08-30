@@ -1,6 +1,6 @@
 [
     {
-        "weight": 1500,
+        "weight": 1100,
         "name": "Stranger",
         "shortname": "stranger",
         "total_score_needed": 500,
@@ -9,7 +9,7 @@
         "updated_at": "2021-01-09 19:24:22"
     },
     {
-        "weight": 15000,
+        "weight": 8600,
         "name": "Citizen",
         "shortname": "citizen",
         "total_score_needed": 5000,
@@ -18,7 +18,7 @@
         "updated_at": "2021-01-09 19:24:22"
     },
     {
-        "weight": 65000,
+        "weight": 33000,
         "name": "Merchant",
         "shortname": "merchant",
         "total_score_needed": 15000,
@@ -27,7 +27,7 @@
         "updated_at": "2021-01-09 19:24:22"
     },
     {
-        "weight": 150000,
+        "weight": 86000,
         "name": "Knight",
         "shortname": "knight",
         "total_score_needed": 50000,
@@ -36,7 +36,7 @@
         "updated_at": "2021-01-09 19:24:22"
     },
     {
-        "weight": 600000,
+        "weight": 190000,
         "name": "Legend",
         "shortname": "legend",
         "total_score_needed": 100000,
