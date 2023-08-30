@@ -123,7 +123,7 @@ class PlayerIntelController extends Controller
             $criticalInfo['is_op'] = $session->is_op;
             $criticalInfo['vault_groups'] = $session->vault_groups;
             $criticalInfo['vault_balance'] = $session->vault_balance;
-            $criticalInfo['world_location'] = $latestEvent->world_location;
+            $criticalInfo['world_location'] = $latestEvent?->world_location;
         }
 
         return Inertia::render('PlayerIntel/ShowSession', [
