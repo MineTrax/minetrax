@@ -13,6 +13,7 @@ use Exception;
 use Http;
 use Illuminate\Http\Request;
 use Image;
+use Gate;
 use Inertia\Inertia;
 
 class PlayerController extends Controller
@@ -71,6 +72,9 @@ class PlayerController extends Controller
         // Owner if any
         $player->owner = $player->users()->first()?->only(['id', 'username']);
 
+        // Can show player intel
+        $canShowPlayerIntel = Gate::allows('viewIntel', $player);
+
         // filter out stuffs that are not used
         $player = $player->only([
             'id',
@@ -109,8 +113,10 @@ class PlayerController extends Controller
             'servers_count',
         ]);
 
+
         return Inertia::render('Player/ShowPlayer', [
             'player' => $player,
+            'canShowPlayerIntel' => $canShowPlayerIntel,
         ]);
     }
 

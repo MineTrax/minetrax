@@ -44,7 +44,7 @@ class PlayerIntelController extends Controller
             ->selectRaw('player_id')
             ->selectRaw('MAX(id) as id')
             ->selectRaw('MIN(country_id) as country_id')
-            ->selectRaw('COUNT(server_id) as server_play_count')
+            ->selectRaw('COUNT(*) as server_play_count')
             ->selectRaw('SUM(mob_kills) as mob_kills')
             ->selectRaw('SUM(player_kills) as player_kills')
             ->selectRaw('SUM(deaths) as deaths')
@@ -80,7 +80,8 @@ class PlayerIntelController extends Controller
                 'afk_time',
                 'last_minecraft_version',
                 'last_join_address',
-                'vault_balance'])
+                'vault_balance',
+            ])
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();

@@ -42,4 +42,9 @@ class MinecraftPlayer extends BaseModel
                     ->where("server_id", $serverId);
             });
     }
+
+    public function getAvatarUrlAttribute(): string
+    {
+        return route('player.avatar.get', [$this->player_uuid, $this->player_username, 'size' => 100]);
+    }
 }

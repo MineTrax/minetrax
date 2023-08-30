@@ -136,4 +136,3 @@ Route::get('username-to-uuid', function () {
 //        echo $table->getName() . " has columns: " . collect($table->getColumns())->map(fn($column) => $column->getName() . ' ('.$column->getType()->getName().')')->implode(', ') . "<br><br>";
 //    }
 //});
-

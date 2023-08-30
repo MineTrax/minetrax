@@ -28,6 +28,13 @@ const props = defineProps({
             };
         },
     },
+    routeParams: {
+        required: false,
+        type: Object,
+        default: () => {
+            return {};
+        },
+    }
 });
 
 const filters = reactive({
@@ -46,7 +53,7 @@ watch(filters, throttle(
         if(parsedParams.perPage == 10) {
             delete parsedParams.perPage;
         }
-        router.get(route(route().current()), parsedParams, {
+        router.get(route(route().current(), props.routeParams), parsedParams, {
             replace: true,
             preserveScroll: true,
             preserveState: true,

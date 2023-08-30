@@ -3,7 +3,10 @@
     <app-head :title="__(':username - Player Details', {username: player.username})" />
 
     <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto space-y-4">
-      <PlayerSubMenu :player="player" />
+      <PlayerSubMenu
+        :player="player"
+        :can-show-player-intel="canShowPlayerIntel"
+      />
 
       <div
         class="flex justify-between items-center shadow bg-white dark:bg-cool-gray-800 rounded p-3"
@@ -781,7 +784,8 @@ export default {
         AppLayout,
     },
     props: {
-        player: Object
+        player: Object,
+        canShowPlayerIntel: Boolean,
     },
     setup() {
         const {secondsToHMS, formatTimeAgoToNow, formatToDayDateString} = useHelpers();
