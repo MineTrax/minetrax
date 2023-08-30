@@ -107,7 +107,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
          * TODO: Cache rank table to $this->rankList so that we dont have to query everytime.
          */
         $rankId = Rank::where('total_score_needed','<=',$player->total_score ?? 0)
-            ->where('total_play_one_minute_needed', '<=', $player->play_time ?? 0)
+            ->where('total_play_time_needed', '<=', $player->play_time ?? 0)
             ->where('rating_needed', '<=', $player->rating ?? 0)
             ->orderByDesc('weight')->first()?->id;
         return $rankId;

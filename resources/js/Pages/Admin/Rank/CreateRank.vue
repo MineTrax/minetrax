@@ -23,7 +23,7 @@
                 {{ __("Overview") }}
               </h3>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                {{ __("Ranks are assigned to players when a given criteria is matched, eg: play time, score etc.") }}<br>{{ __("Play Time Need should be provided in Ticks. 20 Ticks = 1 seconds. So if you want to add criteria to give rank if player played at-least 1 minute then you write 1200") }}
+                {{ __("Ranks are assigned to players when a given criteria is matched, eg: play time, score etc.") }}<br>{{ __("Play Time Need should be provided in Seconds. So if you want to add criteria to give rank if player played at-least 1 minute then you write 60") }}
               </p>
               <p class="mt-3 text-sm text-gray-600 dark:text-gray-500">
                 {{ __("Each rank is sorted according to its weight. More the score and time is more the weight.") }}
@@ -75,12 +75,12 @@
 
                     <div class="col-span-6 sm:col-span-3">
                       <x-input
-                        id="total_play_one_minute_needed"
-                        v-model="form.total_play_one_minute_needed"
+                        id="total_play_time_needed"
+                        v-model="form.total_play_time_needed"
                         :label="__('Play Time Needed')"
-                        :error="form.errors.total_play_one_minute_needed"
+                        :error="form.errors.total_play_time_needed"
                         type="number"
-                        name="total_play_one_minute_needed"
+                        name="total_play_time_needed"
                       />
                     </div>
 
@@ -181,7 +181,7 @@ export default {
                 shortname: '',
                 description: '',
                 total_score_needed: '',
-                total_play_one_minute_needed: '',
+                total_play_time_needed: '',
                 photo: null,
             }),
             photoPreview: null,

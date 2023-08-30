@@ -33,7 +33,7 @@ class UpdateRankRequest extends FormRequest
                 Rule::unique('ranks')->ignore($this->route('rank')),
             ],
             'total_score_needed' => 'required|numeric|min:0',
-            'total_play_one_minute_needed' => 'required|numeric|min:0',
+            'total_play_time_needed' => 'required|numeric|min:0',
             'description' => 'nullable|max:1000',
             'photo' => 'sometimes|nullable|image|max:512'
         ];

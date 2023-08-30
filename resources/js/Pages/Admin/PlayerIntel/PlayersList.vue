@@ -154,15 +154,32 @@ const headerRow = [
             </DtRowItem>
 
             <DtRowItem>
-              {{ secondsToHMS(item.play_time) }}
+              <span v-if="item.play_time">
+                {{ secondsToHMS(item.play_time, true) }}
+              </span>
+              <span v-else>
+                --
+              </span>
             </DtRowItem>
 
             <DtRowItem>
-              {{ secondsToHMS(item.afk_time) }}
+              <span v-if="item.afk_time">
+                {{ secondsToHMS(item.afk_time, true) }}
+              </span>
+              <span v-else>
+                --
+              </span>
             </DtRowItem>
 
             <DtRowItem>
-              {{ millify(item.vault_balance) }}
+              <span v-if="item.vault_balance">
+                {{ millify(item.vault_balance, {
+                  precision: 2,
+                }) }}
+              </span>
+              <span v-else>
+                --
+              </span>
             </DtRowItem>
 
             <DtRowItem>

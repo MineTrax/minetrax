@@ -4,7 +4,7 @@
         "name": "Stranger",
         "shortname": "stranger",
         "total_score_needed": 500,
-        "total_play_one_minute_needed": 1000,
+        "total_play_time_needed": 600,
         "created_at": "2021-01-09 19:24:22",
         "updated_at": "2021-01-09 19:24:22"
     },
@@ -13,7 +13,7 @@
         "name": "Citizen",
         "shortname": "citizen",
         "total_score_needed": 5000,
-        "total_play_one_minute_needed": 10000,
+        "total_play_time_needed": 3600,
         "created_at": "2021-01-09 19:24:22",
         "updated_at": "2021-01-09 19:24:22"
     },
@@ -22,7 +22,7 @@
         "name": "Merchant",
         "shortname": "merchant",
         "total_score_needed": 15000,
-        "total_play_one_minute_needed": 50000,
+        "total_play_time_needed": 18000,
         "created_at": "2021-01-09 19:24:22",
         "updated_at": "2021-01-09 19:24:22"
     },
@@ -31,7 +31,7 @@
         "name": "Knight",
         "shortname": "knight",
         "total_score_needed": 50000,
-        "total_play_one_minute_needed": 100000,
+        "total_play_time_needed": 36000,
         "created_at": "2021-01-09 19:24:22",
         "updated_at": "2021-01-09 19:24:22"
     },
@@ -40,7 +40,7 @@
         "name": "Legend",
         "shortname": "legend",
         "total_score_needed": 100000,
-        "total_play_one_minute_needed": 500000,
+        "total_play_time_needed": 90000,
         "created_at": "2021-01-09 19:24:22",
         "updated_at": "2021-01-09 19:24:22"
     }

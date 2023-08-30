@@ -34,14 +34,14 @@ class RankController extends Controller
                 'weight',
                 'shortname',
                 'total_score_needed',
-                'total_play_one_minute_needed',
+                'total_play_time_needed',
                 'created_at',
             ])
             ->withCount('players')
             ->allowedFilters([
-                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'shortname', 'id', 'weight', 'total_score_needed', 'total_play_one_minute_needed']))
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'shortname', 'id', 'weight', 'total_score_needed', 'total_play_time_needed']))
             ])
-            ->allowedSorts(['id', 'name', 'weight', 'shortname', 'total_score_needed', 'total_play_one_minute_needed', 'created_at'])
+            ->allowedSorts(['id', 'name', 'weight', 'shortname', 'total_score_needed', 'total_play_time_needed', 'created_at'])
             ->defaultSort('-weight', '-id')
             ->paginate($perPage)
             ->withQueryString();
@@ -74,7 +74,7 @@ class RankController extends Controller
     public function store(CreateRankRequest $request)
     {
         // Calculate in which Order this Rank should be
-        $weight = $request->total_score_needed + $request->total_play_one_minute_needed;
+        $weight = $request->total_score_needed + $request->total_play_time_needed;
 
         $rank = Rank::create([
             'weight' => $weight,
@@ -82,7 +82,7 @@ class RankController extends Controller
             'shortname' => $request->shortname,
             'description' => $request->descripion ?? null,
             'total_score_needed' => $request->total_score_needed ?? null,
-            'total_play_one_minute_needed' => $request->total_play_one_minute_needed ?? null,
+            'total_play_time_needed' => $request->total_play_time_needed ?? null,
             'created_by' => $request->user()->id
         ]);
 
@@ -138,9 +138,9 @@ class RankController extends Controller
         $rank->name = $request->name;
         $rank->shortname = $request->shortname;
         $rank->total_score_needed = $request->total_score_needed;
-        $rank->total_play_one_minute_needed = $request->total_play_one_minute_needed;
+        $rank->total_play_time_needed = $request->total_play_time_needed;
         $rank->description = $request->description ?? null;
-        $rank->weight = $rank->total_score_needed + $rank->total_play_one_minute_needed;
+        $rank->weight = $rank->total_score_needed + $rank->total_play_time_needed;
         $rank->updated_by = $request->user()->id;
         $rank->save();
 

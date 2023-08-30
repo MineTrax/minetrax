@@ -77,37 +77,49 @@ const worldLocation = parsedWorldLocation
         >
           <table>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Session UUID") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Session UUID") }}
+              </td>
               <td class="text-right">
                 {{ session.uuid }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Server") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Server") }}
+              </td>
               <td class="text-right">
                 {{ session.server.name }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Country") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Country") }}
+              </td>
               <td class="text-right">
                 {{ session.country.name }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Username") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Username") }}
+              </td>
               <td class="text-right">
                 {{ session.player_username }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Displayname") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Displayname") }}
+              </td>
               <td class="text-right">
                 {{ session.player_displayname }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Started At") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Started At") }}
+              </td>
               <td class="text-right">
                 <span
                   v-tippy
@@ -127,7 +139,9 @@ const worldLocation = parsedWorldLocation
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Ended At") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Ended At") }}
+              </td>
               <td class="text-right">
                 <span
                   v-if="session.session_ended_at"
@@ -152,49 +166,65 @@ const worldLocation = parsedWorldLocation
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Play Time") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Play Time") }}
+              </td>
               <td class="text-right">
                 {{ secondsToHMS(session.play_time, true) }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Afk Time") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Afk Time") }}
+              </td>
               <td class="text-right">
                 {{ secondsToHMS(session.afk_time, true) }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Pvp Damage Given") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Pvp Damage Given") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.pvp_damage_given }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Pvp Damage Taken") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Pvp Damage Taken") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.pvp_damage_taken }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Fish Caught") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Fish Caught") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.fish_caught }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Raids Won") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Raids Won") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.raids_won }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Times Slept") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Times Slept") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.times_slept_in_bed }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Items Enchanted") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Items Enchanted") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.items_enchanted }}
               </td>
@@ -202,80 +232,106 @@ const worldLocation = parsedWorldLocation
           </table>
           <table>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Player Kills") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Player Kills") }}
+              </td>
               <td class="text-right">
                 {{ session.player_kills }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Mob Kills") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Mob Kills") }}
+              </td>
               <td class="text-right">
                 {{ session.mob_kills }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Deaths") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Deaths") }}
+              </td>
               <td class="text-right">
                 {{ session.deaths }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Items Used") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Items Used") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.items_used }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Items Mined") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Items Mined") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.items_mined }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Items Pickedup") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Items Pickedup") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.items_picked_up }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Items Dropped") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Items Dropped") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.items_dropped }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Items Consumed") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Items Consumed") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.items_consumed }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Items Broken") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Items Broken") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.items_broken }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Items Crafted") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Items Crafted") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.items_crafted }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Items Placed") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Items Placed") }}
+              </td>
               <td class="text-right">
                 {{ eventCounts.items_placed }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Distance Traveled") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Distance Traveled") }}
+              </td>
               <td class="text-right">
                 {{ millify(eventCounts.distance_traveled) }}
                 {{ __("meters") }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Distance Traveled on Land") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Distance Traveled on Land") }}
+              </td>
               <td class="text-right">
                 {{
                   millify(
@@ -286,7 +342,9 @@ const worldLocation = parsedWorldLocation
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Distance Traveled on Air") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Distance Traveled on Air") }}
+              </td>
               <td class="text-right">
                 {{
                   millify(
@@ -297,7 +355,9 @@ const worldLocation = parsedWorldLocation
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Distance Traveled on Water") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Distance Traveled on Water") }}
+              </td>
               <td class="text-right">
                 {{
                   millify(
@@ -325,7 +385,9 @@ const worldLocation = parsedWorldLocation
         >
           <table>
             <tr>
-              <td class="whitespace-nowrap">{{ __("IP Address") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("IP Address") }}
+              </td>
               <td class="text-right">
                 <a
                   class="hover:text-light-blue-400 hover:underline"
@@ -337,57 +399,77 @@ const worldLocation = parsedWorldLocation
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Join Address") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Join Address") }}
+              </td>
               <td class="text-right">
                 {{ criticalInfo.join_address }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Minecraft Version") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Minecraft Version") }}
+              </td>
               <td class="text-right">
                 {{ criticalInfo.minecraft_version }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Player Ping") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Player Ping") }}
+              </td>
               <td class="text-right">
                 {{ criticalInfo.player_ping }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Vault Balance") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Vault Balance") }}
+              </td>
               <td class="text-right">
-                {{ millify(criticalInfo.vault_balance) }}
+                {{ millify(criticalInfo.vault_balance, {
+                  precision: 2,
+                }) }}
               </td>
             </tr>
           </table>
           <table>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Kicked") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Kicked") }}
+              </td>
               <td class="text-right">
                 {{ criticalInfo.is_kicked }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Banned") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Banned") }}
+              </td>
               <td class="text-right">
                 {{ criticalInfo.is_banned }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Oped") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Oped") }}
+              </td>
               <td class="text-right">
                 {{ criticalInfo.is_op }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("Vault Groups") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("Vault Groups") }}
+              </td>
               <td class="text-right">
                 {{ criticalInfo.vault_groups }}
               </td>
             </tr>
             <tr>
-              <td class="whitespace-nowrap">{{ __("World Location") }}</td>
+              <td class="whitespace-nowrap">
+                {{ __("World Location") }}
+              </td>
               <td class="text-right">
                 {{ worldLocation }}
               </td>

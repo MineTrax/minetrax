@@ -26,7 +26,7 @@ class RankFactory extends Factory
             'shortname' => $this->faker->userName,
             'order' => $this->faker->randomNumber(2),
             'total_score_needed' => $this->faker->randomNumber(2),
-            'total_play_one_minute_needed' => $this->faker->randomNumber(2),
+            'total_play_time_needed' => $this->faker->randomNumber(2),
         ];
     }
 }
