@@ -73,7 +73,7 @@ class CalculatePlayersScoreJob implements ShouldQueue, ShouldBeUnique
                 \Log::critical($e);
             }
         } else {
-            $score = max(($player['play_time'] / 24000 / 3) + ($player['total_mob_kills'] + $player['total_player_kills'] + ($player['pvp_damage_given'] / 10)) + ($player['total_mined'] / 9 / 64) - $player['total_deaths'], 0);
+            $score = max(($player['play_time'] / 1200 / 3) + ($player['total_mob_kills'] + $player['total_player_kills'] + ($player['pvp_damage_given'] / 10)) + ($player['total_mined'] / 9 / 64) - $player['total_deaths'], 0);
         }
         return $score ?? 0;
     }

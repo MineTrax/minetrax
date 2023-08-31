@@ -45,6 +45,9 @@ const worldLocation = parsedWorldLocation
         parsedWorldLocation.y
     )}, z: ${Math.round(parsedWorldLocation.z)}`
     : '—';
+
+let activeTime = props.session.play_time - props.session.afk_time;
+activeTime = Math.max(activeTime, 0);
 </script>
 
 <template>
@@ -76,14 +79,6 @@ const worldLocation = parsedWorldLocation
           class="grid grid-cols-1 md:grid-cols-2 grap-2 md:gap-16 w-full dark:text-gray-400 text-gray-600 mt-4"
         >
           <table>
-            <tr>
-              <td class="whitespace-nowrap">
-                {{ __("Session UUID") }}
-              </td>
-              <td class="text-right">
-                {{ session.uuid }}
-              </td>
-            </tr>
             <tr>
               <td class="whitespace-nowrap">
                 {{ __("Server") }}
@@ -171,6 +166,14 @@ const worldLocation = parsedWorldLocation
               </td>
               <td class="text-right">
                 {{ secondsToHMS(session.play_time, true) }}
+              </td>
+            </tr>
+            <tr>
+              <td class="whitespace-nowrap">
+                {{ __("Active Time") }}
+              </td>
+              <td class="text-right">
+                {{ secondsToHMS(activeTime, true) }}
               </td>
             </tr>
             <tr>
