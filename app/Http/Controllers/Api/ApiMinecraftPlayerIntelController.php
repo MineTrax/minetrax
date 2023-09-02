@@ -47,6 +47,8 @@ class ApiMinecraftPlayerIntelController extends Controller
         try {
             $playerCountryId = $geolocationService->getCountryIdFromIP($request->ip_address);
             $carbonDate = Carbon::createFromTimestampMs($request->session_started_at);
+            // trim join address last .
+            $fixedJoinAddress = $request->join_address ? trim($request->join_address, '.') : null;
             // Start the session
             $newSession = MinecraftPlayerSession::create([
                 'uuid' => $request->session_uuid,
@@ -58,7 +60,7 @@ class ApiMinecraftPlayerIntelController extends Controller
                 'player_ip_address' => $request->ip_address,
                 'country_id' => $playerCountryId,
                 'is_op' => $request->is_op,
-                'join_address' => $request->join_address,
+                'join_address' => $fixedJoinAddress,
                 'minecraft_version' => $request->minecraft_version,
             ]);
 
