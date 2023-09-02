@@ -61,7 +61,7 @@
         <div
           v-show="!loading"
           id="chat-container"
-          class="relative flex flex-col-reverse justify-between p-1 mt-1 text-white bg-gray-200 rounded md:flex-row dark:bg-cool-gray-900"
+          class="relative min-h-[5rem] flex flex-col-reverse justify-between p-1 mt-1 text-white bg-gray-200 rounded md:flex-row dark:bg-cool-gray-900"
         >
           <button
             v-show="!shouldDisplayPlayerList"
@@ -110,6 +110,13 @@
                 >
                   [-]
                 </button>
+              </div>
+
+              <div
+                v-if="!playersList || playersList.length <= 0"
+                class="text-sm text-center italic text-gray-500 dark:text-gray-400 pb-2 pt-1"
+              >
+                {{ __("No players.") }}
               </div>
 
               <div

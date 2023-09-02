@@ -142,6 +142,13 @@
           </div>
           <!-- self end -->
         </div>
+
+        <div
+          v-if="!loading && (!shouts || shouts.length <= 0)"
+          class="italic text-gray-500 dark:text-gray-400 text-center"
+        >
+          {{ __("No shouts yet.") }}
+        </div>
       </div>
 
       <div v-if="$page.props.auth.user">

@@ -13,7 +13,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.google"
         :href="route('social.login', 'google')"
-        class="inline-flex mt-1 justify-center py-2 px-9 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+        class="inline-flex mt-1 justify-center py-2 px-9 border dark:border-transparent shadow-sm text-sm font-medium rounded-md dark:text-white text-red-500 dark:bg-red-500 hover:bg-gray-50 dark:hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
       >
         <icon
           name="google"
@@ -23,7 +23,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.facebook"
         :href="route('social.login', 'facebook')"
-        class="inline-flex mt-1 justify-center py-2 px-9 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 disabled:opacity-50"
+        class="inline-flex mt-1 justify-center py-2 px-9 border dark:border-transparent shadow-sm text-sm font-medium rounded-md dark:text-white dark:bg-blue-700 hover:bg-gray-50 dark:hover:bg-blue-800 text-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 disabled:opacity-50"
       >
         <icon
           name="facebook"
@@ -33,7 +33,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.twitter"
         :href="route('social.login', 'twitter')"
-        class="inline-flex mt-1 justify-center py-2 px-9 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-400 hover:bg-light-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+        class="inline-flex mt-1 justify-center py-2 px-9 border dark:border-transparent shadow-sm text-sm font-medium rounded-md dark:text-white text-light-blue-400 dark:bg-light-blue-400 hover:bg-gray-50 dark:hover:bg-light-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
       >
         <icon
           name="twitter"
@@ -43,7 +43,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.discord"
         :href="route('social.login', 'discord')"
-        class="inline-flex mt-1 justify-center py-2 px-9 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 disabled:opacity-50"
+        class="inline-flex mt-1 justify-center py-2 px-9 border dark:border-transparent shadow-sm text-sm font-medium rounded-md dark:text-white text-indigo-500 dark:bg-indigo-500 hover:bg-gray-50 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 disabled:opacity-50"
       >
         <icon
           name="discord"

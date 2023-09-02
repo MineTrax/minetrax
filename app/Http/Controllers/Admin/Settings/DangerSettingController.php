@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin\Settings;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\TruncateIntelDataJob;
-use App\Jobs\TruncatePlayerStatsJob;
+use App\Jobs\TruncatePlayerIntelJob;
 use App\Jobs\TruncateServerChatlogsJob;
 use App\Jobs\TruncateServerConsolelogsJob;
+use App\Jobs\TruncateServerIntelJob;
 use App\Jobs\TruncateShoutsJob;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -59,25 +59,25 @@ class DangerSettingController extends Controller
             ->with(['toast' => ['type' => 'success', 'milliseconds' => 7000, 'title' => __('Queued Successfully! All chat history will be deleted shortly.')]]);
     }
 
-    public function truncatePlayerStats(Request $request): \Illuminate\Http\RedirectResponse
+    public function truncatePlayerIntelData(Request $request): \Illuminate\Http\RedirectResponse
     {
-        Log::alert('TRUNCATE_STATS', [
+        Log::alert('TRUNCATE_PLAYER_INTEL', [
             'causer' => $request->user()->username,
         ]);
-        TruncatePlayerStatsJob::dispatch();
+        TruncatePlayerIntelJob::dispatch();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'milliseconds' => 7000, 'title' => __('Queued Successfully! All player stats will be deleted shortly.')]]);
+            ->with(['toast' => ['type' => 'success', 'milliseconds' => 7000, 'title' => __('Queued Successfully! All player stats will be deleted shortly. It may take upto 1 minute to complete.')]]);
     }
 
-    public function truncateIntelData(Request $request): \Illuminate\Http\RedirectResponse
+    public function truncateServerIntelData(Request $request): \Illuminate\Http\RedirectResponse
     {
-        Log::alert('TRUNCATE_INTEL', [
+        Log::alert('TRUNCATE_SERVER_INTEL', [
             'causer' => $request->user()->username,
         ]);
-        TruncateIntelDataJob::dispatch();
+        TruncateServerIntelJob::dispatch();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'milliseconds' => 10000, 'title' => __('Queued Successfully! Analytics data will be deleted shortly. It may take upto 1 hour to complete.')]]);
+            ->with(['toast' => ['type' => 'success', 'milliseconds' => 10000, 'title' => __('Queued Successfully! Server Analytics data will be deleted shortly. It may take upto 1 minute to complete.')]]);
     }
 }

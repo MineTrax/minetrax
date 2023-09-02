@@ -41,7 +41,7 @@ class ImpersonateController extends Controller
     {
         $currentUser = $request->user();
         // Only if user is impersonating
-        if (!$currentUser->isImpersonating()) {
+        if (! $currentUser->isImpersonating()) {
             return redirect()->route('home');
         }
 

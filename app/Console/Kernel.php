@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\ResetUserPasswordCommand;
-use App\Jobs\FetchStatsFromAllServersJob;
+use App\Jobs\CalculatePlayersJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -21,13 +21,12 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
         $playerFetcherInterval = config('minetrax.players_fetcher_cron_interval') ?? 'hourly';
-        $schedule->job(new FetchStatsFromAllServersJob)->{$playerFetcherInterval}();
+        $schedule->job(new CalculatePlayersJob)->{$playerFetcherInterval}();
 
         $schedule->command('telescope:prune --hours=48')->daily();
         $schedule->command('queue:prune-batches --hours=48 --unfinished=72')->daily();
@@ -48,7 +47,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }

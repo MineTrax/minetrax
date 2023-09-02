@@ -123,7 +123,7 @@ class MinecraftServerQueryService
 
         $apiKey = $pluginSettings->plugin_api_key;
         $newEncrypter = new Encrypter( ($apiKey), "AES-256-CBC" );
-        $data = $newEncrypter->decrypt($data['status']);
+        $data = $newEncrypter->decryptString($data['status']);
         return collect(json_decode($data));
     }
 
@@ -136,7 +136,7 @@ class MinecraftServerQueryService
 
         $apiKey = $pluginSettings->plugin_api_key;
         $newEncrypter = new Encrypter( ($apiKey), "AES-256-CBC" );
-        $data = $newEncrypter->decrypt($data['status']);
+        $data = $newEncrypter->decryptString($data['status']);
         return json_decode($data, true);
     }
 }

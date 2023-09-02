@@ -25,22 +25,22 @@
         } else {
             document.documentElement.classList.remove('dark')
         }
+
     </script>
 
 </head>
 <body class="font-sans antialiased bg-cool-gray-200 dark:bg-cool-gray-900">
 
-{{--Show global loading indication till Vue take over--}}
-<div id="site-global-loader" class="flex h-screen justify-center items-center">
-    <div class="lds-ripple">
-        <div></div>
-        <div></div>
+    {{--Show global loading indication till Vue take over--}}
+    <div id="site-global-loader" class="flex h-screen justify-center items-center">
+        <div class="lds-ripple">
+            <div></div>
+            <div></div>
+        </div>
     </div>
-</div>
 
-@inertia
-<x-translations></x-translations>
-<x-php-vars-to-js-transformer></x-php-vars-to-js-transformer>
-@include('cookie-consent::index')
+    @inertia
+    <x-translations></x-translations>
+    <x-php-vars-to-js-transformer></x-php-vars-to-js-transformer>
 </body>
 </html>

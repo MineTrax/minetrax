@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\MinecraftPlayerEventCreated;
+use App\Events\MinecraftPlayerSessionCreated;
 use App\Http\Controllers\Controller;
 use App\Models\MinecraftPlayerDeath;
 use App\Models\MinecraftPlayerEvent;
@@ -9,6 +11,7 @@ use App\Models\MinecraftPlayerPvpKill;
 use App\Models\MinecraftPlayerSession;
 use App\Models\MinecraftPlayerWorldStat;
 use App\Models\MinecraftServerWorld;
+use App\Models\Server;
 use App\Services\GeolocationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -25,11 +28,21 @@ class ApiMinecraftPlayerIntelController extends Controller
             'player_id' => 'sometimes|nullable|numeric',
             'username' => 'required|string',
             'ip_address' => 'required|string',
+            'join_address' => 'sometimes|nullable|string',
+            'minecraft_version' => 'sometimes|nullable|string',
             'display_name' => 'required|string',
             'session_started_at' => 'required|numeric',
             'is_op' => 'required|boolean',
             'players_world_stat_intel' => 'sometimes|nullable|array'
         ]);
+
+        $server = Server::where('id', $request->server_id)->firstOrFail();
+        if (!$server->is_player_intel_enabled) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Player intel is disabled for this server.',
+            ], 403);
+        }
 
         try {
             $playerCountryId = $geolocationService->getCountryIdFromIP($request->ip_address);
@@ -45,12 +58,15 @@ class ApiMinecraftPlayerIntelController extends Controller
                 'player_ip_address' => $request->ip_address,
                 'country_id' => $playerCountryId,
                 'is_op' => $request->is_op,
+                'join_address' => $request->join_address,
+                'minecraft_version' => $request->minecraft_version,
             ]);
 
             if ($request->players_world_stat_intel) {
                 foreach ($request->players_world_stat_intel as $playerWorldStat) {
                     $sWorld = MinecraftServerWorld::where('world_name', $playerWorldStat['world_name'])->where('server_id', $request->server_id)->first();
-                    if (!$sWorld) continue;
+                    if (!$sWorld)
+                        continue;
                     MinecraftPlayerWorldStat::create([
                         'player_uuid' => $request->uuid,
                         'session_id' => $newSession->id,
@@ -62,6 +78,9 @@ class ApiMinecraftPlayerIntelController extends Controller
                     ]);
                 }
             }
+
+            // Create a minecraft_player and player if not exists using event.
+            MinecraftPlayerSessionCreated::dispatch($newSession, $request->all());
 
             return response()->json($newSession, 201);
         } catch (\Exception $e) {
@@ -178,6 +197,7 @@ class ApiMinecraftPlayerIntelController extends Controller
             "player_kills" => "required|numeric",
             "deaths" => "required|numeric",
             "afk_time" => "required|numeric",
+            "play_time" => "sometimes|nullable|integer",
             "is_kicked" => "required|boolean",
             "is_banned" => "required|boolean",
 
@@ -194,11 +214,31 @@ class ApiMinecraftPlayerIntelController extends Controller
             "items_placed_xmin" => "required|numeric",
             "items_consumed_xmin" => "required|numeric",
             "afk_time_xmin" => "required|numeric",
+            "play_time_xmin" => "required|numeric",
             "world_location" => 'sometimes|nullable|json',
             "world_name" => 'sometimes|nullable|string',
-            "play_time" => "sometimes|nullable|integer",
-            'players_world_stat_intel' => 'sometimes|nullable|array'
+            'players_world_stat_intel' => 'sometimes|nullable|array',
+
+            'fish_caught_xmin' => 'sometimes|nullable|integer',
+            'items_enchanted_xmin' => 'sometimes|nullable|integer',
+            'times_slept_in_bed_xmin' => 'sometimes|nullable|integer',
+            'jumps_xmin' => 'sometimes|nullable|integer',
+            'raids_won_xmin' => 'sometimes|nullable|integer',
+            'distance_traveled_xmin' => 'sometimes|nullable|numeric',
+            'distance_traveled_on_land_xmin' => 'sometimes|nullable|numeric',
+            'distance_traveled_on_water_xmin' => 'sometimes|nullable|numeric',
+            'distance_traveled_on_air_xmin' => 'sometimes|nullable|numeric',
+            'pvp_damage_given_xmin' => 'sometimes|nullable|numeric',
+            'pvp_damage_taken_xmin' => 'sometimes|nullable|numeric',
+            'vault_balance' => 'sometimes|nullable|numeric',
+            'vault_groups' => 'sometimes|nullable|array',
+            'inventory' => 'sometimes|nullable|json',
+            'ender_chest' => 'sometimes|nullable|json',
         ]);
+
+        $inventory = $request->inventory ? json_decode($request->inventory) : null;
+        $enderchest = $request->ender_chest ? json_decode($request->ender_chest) : null;
+        $worldLocation = $request->world_location ? json_decode($request->world_location) : null;
 
         $minecraftPlayerSession = MinecraftPlayerSession::where('uuid', $request->session_uuid)->firstOrFail();
         DB::beginTransaction();
@@ -206,6 +246,7 @@ class ApiMinecraftPlayerIntelController extends Controller
             // Report data to MinecraftPlayerSessions table and end the session if condition there.
             $sessionEndedCarbonDate = $request->session_ended_at ? Carbon::createFromTimestampMs($request->session_ended_at) : null;
             MinecraftPlayerSession::where('uuid', $request->session_uuid)->update([
+                "player_ping" => $request->player_ping,
                 "mob_kills" => $request->mob_kills,
                 "player_kills" => $request->player_kills,
                 "deaths" => $request->deaths,
@@ -215,39 +256,46 @@ class ApiMinecraftPlayerIntelController extends Controller
                 "is_banned" => $request->is_banned,
                 "is_op" => $request->is_op || $minecraftPlayerSession->is_op,
                 "session_ended_at" => $sessionEndedCarbonDate,
+                'vault_balance' => $request->vault_balance,
+                'vault_groups' => $request->vault_groups,
             ]);
 
             // Update PlayerWorldStats for the given session for each world
             if ($request->players_world_stat_intel) {
                 foreach ($request->players_world_stat_intel as $playerWorldStat) {
                     $sWorld = MinecraftServerWorld::where('world_name', $playerWorldStat['world_name'])->where('server_id', $request->server_id)->first();
-                    if (!$sWorld) continue;
-                    MinecraftPlayerWorldStat::updateOrCreate([
-                        'session_id' => $minecraftPlayerSession->id,
-                        'minecraft_server_world_id' => $sWorld->id,
-                        'player_uuid' => $request->uuid,
-                    ],
+                    if (!$sWorld)
+                        continue;
+                    MinecraftPlayerWorldStat::updateOrCreate(
+                        [
+                            'session_id' => $minecraftPlayerSession->id,
+                            'minecraft_server_world_id' => $sWorld->id,
+                            'player_uuid' => $request->uuid,
+                        ],
                         [
                             'survival_time' => $playerWorldStat['survival_time'],
                             'creative_time' => $playerWorldStat['creative_time'],
                             'adventure_time' => $playerWorldStat['adventure_time'],
                             'spectator_time' => $playerWorldStat['spectator_time']
-                        ]);
+                        ]
+                    );
                 }
             }
 
             // Report data to MinecraftPlayerEvents table
             $minecraftServerWorld = MinecraftServerWorld::where('server_id', $minecraftPlayerSession->server_id)->where('world_name', $request->world_name)->first();
-            MinecraftPlayerEvent::create([
+            $mcPlayerEvent = MinecraftPlayerEvent::create([
                 "session_id" => $minecraftPlayerSession->id,
                 "player_uuid" => $request->uuid,
                 "player_username" => $request->username,
+                "player_displayname" => $request->display_name,
                 "ip_address" => $request->ip_address,
                 "player_ping" => $request->player_ping,
                 "mob_kills" => $request->mob_kills_xmin,
                 "player_kills" => $request->player_kills_xmin,
                 "deaths" => $request->deaths_xmin,
                 "afk_time" => $request->afk_time_xmin,
+                "play_time" => $request->play_time_xmin,
                 "items_used" => $request->items_used_xmin,
                 "items_mined" => $request->items_mined_xmin,
                 "items_picked_up" => $request->items_picked_up_xmin,
@@ -256,11 +304,30 @@ class ApiMinecraftPlayerIntelController extends Controller
                 "items_crafted" => $request->items_crafted_xmin,
                 "items_placed" => $request->items_placed_xmin,
                 "items_consumed" => $request->items_consumed_xmin,
-                "world_location" => $request->world_location,
+                "world_location" => $worldLocation,
                 'minecraft_server_world_id' => $minecraftServerWorld?->id,
+                'fish_caught' => $request->fish_caught_xmin,
+                'items_enchanted' => $request->items_enchanted_xmin,
+                'times_slept_in_bed' => $request->times_slept_in_bed_xmin,
+                'times_jumped' => $request->jumps_xmin,
+                'raids_won' => $request->raids_won_xmin,
+                'distance_traveled' => $request->distance_traveled_xmin,
+                'distance_traveled_on_land' => $request->distance_traveled_on_land_xmin,
+                'distance_traveled_on_water' => $request->distance_traveled_on_water_xmin,
+                'distance_traveled_on_air' => $request->distance_traveled_on_air_xmin,
+                'pvp_damage_given' => $request->pvp_damage_given_xmin,
+                'pvp_damage_taken' => $request->pvp_damage_taken_xmin,
+                'vault_balance' => $request->vault_balance,
+                'vault_groups' => $request->vault_groups,
+                'enderchest_items' => $enderchest,
+                'inventory_items' => $inventory,
             ]);
 
             DB::commit();
+
+            // Fire Event for this so we can update minecraft_players and players table.
+            MinecraftPlayerEventCreated::dispatch($mcPlayerEvent, $minecraftPlayerSession->server_id, $request->all());
+
             // Return response
             return response()->json([
                 'status' => 'success',

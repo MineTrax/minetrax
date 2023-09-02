@@ -59,11 +59,16 @@ class HandleInertiaRequests extends Middleware
                 return $request->user()->getAllPermissions()->pluck('name');
             },
             'defaultQueryServer' => function () {
+                $shouldUseWebQuery = false;
                 $defaultQueryServer = Server::where('type', ServerType::Bungee)->select(['hostname', 'id'])->latest()->first();
                 if (!$defaultQueryServer) {
-                    $defaultQueryServer = Server::select(['id', 'hostname'])->first();
+                    $defaultQueryServer = Server::select(['id', 'hostname', 'webquery_port'])->orderBy('id')->first();
+                    $shouldUseWebQuery = $defaultQueryServer?->webquery_port != null;
                 }
-                return $defaultQueryServer;
+                return [
+                    'server' => $defaultQueryServer?->only(['id', 'hostname']),
+                    'shouldUseWebQuery' => $shouldUseWebQuery,
+                ];
             },
             'generalSettings' => fn (GeneralSettings $generalSettings) => $generalSettings->toArray(),
             'isImpersonating' => $request->user() && $request->user()->isImpersonating(),
@@ -80,7 +85,10 @@ class HandleInertiaRequests extends Middleware
             "webVersion" => config("app.version"),
             "hasRegistrationFeature" => Route::has("register"),
             "showPoweredBy" => config("minetrax.show_powered_by"),
+            'poweredByExtraName' => config("minetrax.powered_by_extra_name"),
+            'poweredByExtraLink' => config("minetrax.powered_by_extra_link"),
             "showHomeButton" => config("minetrax.show_home_button"),
+            "showCookieConsent" => config("minetrax.cookie_consent_enabled") && !$request->cookie("laravel_cookie_consent"),
         ]);
     }
 }

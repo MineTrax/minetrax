@@ -34,7 +34,7 @@ const headerRow = [
         class: 'w-2/12',
     },
     {
-        key: 'total_play_one_minute_needed',
+        key: 'total_play_time_needed',
         label: __('Play Time Needed'),
         sortable: true,
         class: 'text-right',
@@ -130,7 +130,7 @@ const headerRow = [
           </td>
 
           <DtRowItem class="text-right">
-            {{ item.total_play_one_minute_needed }}
+            {{ item.total_play_time_needed }}
           </DtRowItem>
 
           <DtRowItem class="text-right">

@@ -15,18 +15,23 @@ class ServerController extends Controller
     public function pingServer(Server $server, MinecraftServerPingService $pingService)
     {
         // Check if we got cache
-        $hasCache = Cache::get('server:ping:'.$server->id);
+        $hasCache = Cache::get('server:ping:' . $server->id);
         if ($hasCache) {
             return json_decode($hasCache, true);
         }
 
-        // If server is bungee then ping hostname
-        $pingAddress = $server->type->value == ServerType::Bungee ? $server->hostname : $server->ip_address;
+        // Decide what address to use to ping the server.
+        $pingProxyServerUsingIPAddress = config('minetrax.ping_proxy_server_using_ip_address');
+        if ($pingProxyServerUsingIPAddress && $server->type->value == ServerType::Bungee) {
+            $pingAddress = $server->ip_address;
+        } else {
+            $pingAddress = $server->type->value == ServerType::Bungee ? $server->hostname : $server->ip_address;
+        }
         // Get Ping Info of the server using MinecraftPingService
         $pingData = $pingService->pingServer($pingAddress, $server->join_port);
 
         if ($pingData) {
-            Cache::put('server:ping:'.$server->id, json_encode($pingData), 60);
+            Cache::put('server:ping:' . $server->id, json_encode($pingData), 60);
         }
 
         if (!$pingData) {
@@ -42,16 +47,21 @@ class ServerController extends Controller
     public function queryServer(Server $server, MinecraftServerQueryService $queryService)
     {
         // Check if we got cache
-        $hasCache = Cache::get('server:query:'.$server->id);
+        $hasCache = Cache::get('server:query:' . $server->id);
         if ($hasCache) {
             return json_decode($hasCache, true);
         }
 
+        $queryProxyServerUsingIPAddress = config('minetrax.query_proxy_server_using_ip_address');
+        $queryAddress = $server->ip_address;
+        if(!$queryProxyServerUsingIPAddress && $server->type->value == ServerType::Bungee) {
+            $queryAddress = $server->hostname;
+        }
         // Get Query for the server using MinecraftQueryService
         $queryData = $queryService->getServerStatusWithPlayerUuid($server->ip_address, $server->query_port);
 
         if ($queryData) {
-            Cache::put('server:query:'.$server->id, json_encode($queryData), 60);
+            Cache::put('server:query:' . $server->id, json_encode($queryData), 60);
         }
 
         if (!$queryData) {
@@ -75,14 +85,14 @@ class ServerController extends Controller
 
         try {
             // Check if we got cache
-            $hasCache = Cache::get('server:webquery:'.$server->id);
+            $hasCache = Cache::get('server:webquery:' . $server->id);
             if ($hasCache) {
                 return json_decode($hasCache, true);
             }
 
             $queryData = $queryService->getServerStatusWithPluginWebQueryProtocol($server->ip_address, $server->webquery_port);
 
-            $queryData = $queryData->map(function($player) use($geolocationService) {
+            $queryData = $queryData->map(function ($player) use ($geolocationService) {
                 $player->country = $geolocationService->getCountryFromIP($player->ip_address);
                 $player->is_in_db = Player::whereUuid($player->id)->exists();
                 unset($player->ip_address);
@@ -90,7 +100,7 @@ class ServerController extends Controller
             });
 
             if ($queryData) {
-                Cache::put('server:webquery:'.$server->id, json_encode($queryData), 60);
+                Cache::put('server:webquery:' . $server->id, json_encode($queryData), 60);
             }
 
             return ($queryData);

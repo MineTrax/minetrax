@@ -51,7 +51,7 @@ const headerRow = [
   <AdminLayout>
     <AppHead :title="__('ConsoleLog - ServerIntel')" />
 
-    <div class="p-4 mx-auto space-y-4 max-w-7xl">
+    <div class="p-4 mx-auto space-y-4 px-10">
       <ServerIntelServerSelector
         :title="__('ConsoleLog')"
         :server-list="serverList"

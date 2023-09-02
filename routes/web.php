@@ -51,6 +51,10 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('player/render/{uuid}/{username?}', [\App\Http\Controllers\PlayerController::class, 'getRenderImage'])->name('player.render.get');
 
     Route::get('vote/{id}', [\App\Http\Controllers\HomeController::class, 'visitVotingSite'])->name('vote.visit');
+
+    // Route::get('intel/player/{player:uuid}', [\App\Http\Controllers\PlayerIntelController::class, 'overview'])->name('player.intel.overview');
+    Route::get('intel/player/{player:uuid}/sessions', [\App\Http\Controllers\PlayerIntelController::class, 'indexSession'])->name('player.intel.session.index');
+    Route::get('intel/player/{player:uuid}/sessions/{session}', [\App\Http\Controllers\PlayerIntelController::class, 'showSession'])->name('player.intel.session.show');
 });
 
 /**
@@ -109,6 +113,10 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('/graph/network-trends-vs-month', [\App\Http\Controllers\Admin\GraphController::class, 'getNetworkTrendsMonthVsMonth'])->name('graph.network-trends-vs-month');
     Route::get('/graph/server-performance', [\App\Http\Controllers\Admin\GraphController::class, 'getServerPerformanceOverTime'])->name('graph.server-performance');
     Route::get('/graph/server-online-activity', [\App\Http\Controllers\Admin\GraphController::class, 'getServerOnlineActivityOverTime'])->name('graph.server-online-activity');
+    Route::get('/graph/player-minecraft-versions', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerMinecraftVersions'])->name('graph.player-minecraft-versions');
+    Route::get('/graph/player-join-addresses', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerJoinAddresses'])->name('graph.player-join-addresses');
+    Route::get('/graph/player-join-addresses-timeseries', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerJoinAddressesOverTime'])->name('graph.player-join-addresses.timeseries');
+    Route::get('/graph/player-minecraft-versions-timeseries', [\App\Http\Controllers\Admin\GraphController::class, 'getPlayerMinecraftVersionsOverTime'])->name('graph.player-minecraft-versions.timeseries');
 
     Route::get('user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('user.index');
     //  Route::get('user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('user.show');
@@ -126,8 +134,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('server', [\App\Http\Controllers\Admin\ServerController::class, 'index'])->name('server.index');
     Route::get('server/create', [\App\Http\Controllers\Admin\ServerController::class, 'create'])->name('server.create');
     Route::get('server/create-bungee', [\App\Http\Controllers\Admin\ServerController::class, 'createBungee'])->name('server.create-bungee');
-    Route::post('server/prefetch', [\App\Http\Controllers\Admin\ServerController::class, 'prefetch'])->name('server.prefetch');
-    Route::post('server/force-scan', [\App\Http\Controllers\Admin\ServerController::class, 'postForceScan'])->name('server.force-scan');
+    Route::post('server/force-scan', [\App\Http\Controllers\Admin\ServerController::class, 'postForceSyncStats'])->name('server.force-scan');
     Route::post('server', [\App\Http\Controllers\Admin\ServerController::class, 'store'])->name('server.store');
     Route::post('server-bungee', [\App\Http\Controllers\Admin\ServerController::class, 'storeBungee'])->name('server-bungee.store');
     Route::get('server/{server}', [\App\Http\Controllers\Admin\ServerController::class, 'show'])->name('server.show');
@@ -143,9 +150,11 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('intel/server/overview/numbers', [\App\Http\Controllers\Admin\ServerIntelController::class, 'overviewNumbers'])->name('intel.server.index.numbers');
     Route::get('intel/server/performance', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performance'])->name('intel.server.performance');
     Route::get('intel/server/performance/numbers', [\App\Http\Controllers\Admin\ServerIntelController::class, 'performanceNumbers'])->name('intel.server.performance.numbers');
-    Route::get('intel/server/playerbase', [\App\Http\Controllers\Admin\ServerIntelController::class, 'playerbase'])->name('intel.server.playerbase');
     Route::get('intel/server/chatlog', [\App\Http\Controllers\Admin\ServerIntelController::class, 'chatlog'])->name('intel.server.chatlog');
     Route::get('intel/server/consolelog', [\App\Http\Controllers\Admin\ServerIntelController::class, 'consolelog'])->name('intel.server.consolelog');
+    Route::get('intel/server/playerbase', [\App\Http\Controllers\Admin\ServerIntelController::class, 'playerbase'])->name('intel.server.playerbase');
+    Route::get('intel/server/playerbase/countries', [\App\Http\Controllers\Admin\ServerIntelController::class, 'getPlayerPerCountry'])->name('intel.server.playerbase.countries');
+    Route::get('intel/player/list', [\App\Http\Controllers\Admin\PlayerIntelController::class, 'playersList'])->name('intel.player.list');
 
     Route::get('rank', [\App\Http\Controllers\Admin\RankController::class, 'index'])->name('rank.index');
     Route::get('rank/create', [\App\Http\Controllers\Admin\RankController::class, 'create'])->name('rank.create');
@@ -188,8 +197,8 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::delete('setting/danger/truncate-shouts', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateShouts'])->name('setting.danger.truncate.shouts');
     Route::delete('setting/danger/truncate-consolelogs', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateConsolelogs'])->name('setting.danger.truncate.consolelogs');
     Route::delete('setting/danger/truncate-chatlogs', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateChatlogs'])->name('setting.danger.truncate.chatlogs');
-    Route::delete('setting/danger/truncate-playerstats', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncatePlayerStats'])->name('setting.danger.truncate.playerstats');
-    Route::delete('setting/danger/truncate-inteldata', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateIntelData'])->name('setting.danger.truncate.inteldata');
+    Route::delete('setting/danger/truncate-serverintel', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncatePlayerIntelData'])->name('setting.danger.truncate.playerintel');
+    Route::delete('setting/danger/truncate-playerintel', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateServerIntelData'])->name('setting.danger.truncate.serverintel');
 
     Route::get('poll', [\App\Http\Controllers\Admin\PollController::class, 'index'])->name('poll.index');
     Route::get('poll/create', [\App\Http\Controllers\Admin\PollController::class, 'create'])->name('poll.create');

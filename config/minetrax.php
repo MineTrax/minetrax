@@ -227,4 +227,39 @@ return [
     |
     */
     "askdb_enabled" => env("ASKDB_ENABLED", false) && env("OPENAI_API_KEY"),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cookie Consent Enabled
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, cookie consent will be shown to users for GDPR compliance.
+    |
+    */
+    "cookie_consent_enabled" => env("COOKIE_CONSENT_ENABLED", true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Powered By Extra
+    |--------------------------------------------------------------------------
+    |
+    | If added, extra name and link will appear with powered by in footer.
+    | Helpful to show your name if you are a hosting provider or theme developer.
+    |
+    */
+    "powered_by_extra_name" => env("POWERED_BY_EXTRA_NAME", null),
+    "powered_by_extra_link" => env("POWERED_BY_EXTRA_LINK", null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Query/Ping Proxy Server using IP Instead.
+    |--------------------------------------------------------------------------
+    |
+    | By default the PING uses hostname when server is bungee.
+    | By default the QUERY uses ip address when server is bungee.
+    |
+    | Change accordingly in .env to use hostname or ip as per requirement.
+    */
+    'ping_proxy_server_using_ip_address' => env('PING_PROXY_SERVER_USING_IP_ADDRESS', false),
+    'query_proxy_server_using_ip_address' => env('QUERY_PROXY_SERVER_USING_IP_ADDRESS', true),
 ];

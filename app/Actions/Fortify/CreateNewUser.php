@@ -23,7 +23,6 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Validate and create a newly registered user.
      *
-     * @param array $input
      * @return \App\Models\User
      */
     public function create(array $input)
@@ -49,6 +48,7 @@ class CreateNewUser implements CreatesNewUsers
             'last_login_ip' => request()->ip(),
         ]);
         $user->assignRole(Role::DEFAULT_ROLE_NAME);
+
         return $user;
     }
 }

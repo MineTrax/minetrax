@@ -31,6 +31,7 @@ class ServerChatlogCreated implements ShouldBroadcast
     public function broadcastWith()
     {
         $this->serverChatlog->data = MinecraftColorUtils::convertToHTML($this->serverChatlog->data);
+
         return ['data' => $this->serverChatlog];
     }
 }

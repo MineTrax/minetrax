@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
+use App\Models\Country;
+use App\Models\MinecraftPlayer;
 use App\Models\MinecraftPlayerSession;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\ServerChatlog;
@@ -11,6 +13,7 @@ use App\Models\ServerConsolelog;
 use App\Queries\Filters\FilterMultipleFields;
 use App\Utils\Helpers\MinecraftColorUtils;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use App\Models\Server;
 use Illuminate\Support\Facades\Cache;
@@ -112,6 +115,18 @@ class ServerIntelController extends Controller
          * End: LAST 7 DAYS STATS
          */
 
+        $lastIntelReportedAt = Server::query()
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('id', $selectedServers);
+            })
+            ->max('last_scanned_at');
+        if ($lastIntelReportedAt) {
+            $lastIntelReportedAt = Carbon::parse($lastIntelReportedAt);
+            $noIntelForOverWeek = $lastIntelReportedAt->diffInDays(now()) > 7;
+        } else {
+            $noIntelForOverWeek = true;
+        }
+
         return Inertia::render('Admin/ServerIntel/Overview', [
             'filters' => request()->all(['servers']),
             'serverList' => $serverList,
@@ -126,6 +141,7 @@ class ServerIntelController extends Controller
                 'noOfRestarts' => $noOfRestarts,
                 'longestUptime' => $longestUptime,
             ],
+            'noIntelForOverWeek' => $noIntelForOverWeek,
         ]);
     }
 
@@ -249,9 +265,24 @@ class ServerIntelController extends Controller
             ->where('type', '!=', ServerType::Bungee())
             ->get()->pluck('name', 'id');
 
+        $selectedServers = $request->query('servers') ?? null; // list of selected server ids
+
+        $lastIntelReportedAt = Server::query()
+            ->when($selectedServers, function ($query, $selectedServers) {
+                $query->whereIn('id', $selectedServers);
+            })
+            ->max('last_scanned_at');
+        if ($lastIntelReportedAt) {
+            $lastIntelReportedAt = Carbon::parse($lastIntelReportedAt);
+            $noIntelForOverWeek = $lastIntelReportedAt->diffInDays(now()) > 7;
+        } else {
+            $noIntelForOverWeek = true;
+        }
+
         return Inertia::render('Admin/ServerIntel/Performance', [
             'filters' => request()->all(['servers']),
             'serverList' => $serverList,
+            'noIntelForOverWeek' => $noIntelForOverWeek,
         ]);
     }
 
@@ -358,6 +389,37 @@ class ServerIntelController extends Controller
         return Inertia::render('Admin/ServerIntel/Playerbase', [
             'filters' => request()->all(['servers']),
             'serverList' => $serverList,
+        ]);
+    }
+
+    public function getPlayerPerCountry(Request $request)
+    {
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+        ]);
+
+        $selectedServers = $request->query('servers') ?? null; // list of selected server ids
+
+        $countries = Country::withCount([
+            'minecraftPlayers' => function ($query) use ($selectedServers) {
+                $query->when($selectedServers, function ($query, $selectedServers) {
+                    $query->whereIn('server_id', $selectedServers);
+                });
+            }
+        ])->get();
+        $data = $countries->map(function ($country) {
+            return [
+                'name' => $country->name,
+                'value' => $country->minecraft_players_count,
+                'image' => $country->photo_path,
+            ];
+        });
+        $maxValue = $data->max('value') == 0 ? 1 : $data->max('value');
+
+        return response()->json([
+            'data' => $data,
+            'max' => $maxValue,
         ]);
     }
 

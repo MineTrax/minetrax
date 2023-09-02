@@ -58,9 +58,9 @@ const headerRow = [
         label: __('Version'),
     },
     {
-        key: 'last_scanned_at',
+        key: 'created_at',
         sortable: true,
-        label: __('Last Scanned'),
+        label: __('Added'),
     },
     {
         key: 'actions',
@@ -118,14 +118,14 @@ watchEffect(() => {
         <template #body>
           {{
             __(
-              "When a bungee server is not added. Player List Box and Player Status Box (if enabled from settings), use first added server as default query server."
+              "Adding Proxy server is recommended if you are adding more than 1 server to MineTrax, so that it can be used to show whole network player count in homepage."
             )
           }}
 
           <p class="italic text-gray-400 dark:text-gray-500">
             {{
               __(
-                "Note: This is not an error. You can safely ignore this message if you don't have proxy server."
+                "Note: This is not an error. You can safely ignore this message if you don't want to add proxy server."
               )
             }}
           </p>
@@ -143,32 +143,31 @@ watchEffect(() => {
             as="button"
             :title="
               __(
-                'MineTrax automatically scan all servers every hour for new players and statistics updates. Click here to force a scan now. Use it rarely.'
+                'MineTrax automatically sync player stats every hour or as per schedule define in .env file. Click here to force a sync now.'
               )
             "
             :href="route('admin.server.force-scan')"
             method="post"
             class="ml-2 inline-flex items-center px-4 py-2 border-2 border-red-600 rounded-md font-semibold text-xs text-red-600 uppercase tracking-widest focus:outline-none transition ease-in-out duration-150 dark:text-red-500 dark:border-red-700 hover:border-red-300 dark:hover:border-red-500  hover:bg-red-500 hover:text-white dark:hover:text-white"
           >
-            <span>{{ __("Rescan all servers") }}</span>
+            <span>{{ __("Sync Player Statistics") }}</span>
           </InertiaLink>
         </h1>
         <div class="flex">
           <InertiaLink
-            v-if="can('create servers') && canCreateBungeeServer"
-            :href="route('admin.server.create-bungee')"
-            class="mr-1 inline-flex items-center px-4 py-2 border-2 border-gray-800 rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest focus:outline-none focus:border-gray-900 transition ease-in-out duration-150 dark:text-gray-300 dark:border-gray-700 dark:hover:border-gray-500"
-          >
-            <span>{{ __("Add Bungee Server") }}</span>
-          </InertiaLink>
-
-          <InertiaLink
             v-if="can('create servers')"
             :href="route('admin.server.create')"
-            class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="mr-1 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Add") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Server") }}</span>
+          </InertiaLink>
+          <InertiaLink
+            v-if="can('create servers') && canCreateBungeeServer"
+            :href="route('admin.server.create-bungee')"
+            class="inline-flex items-center px-4 py-2 border-2 border-gray-800 rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest focus:outline-none focus:border-gray-900 transition ease-in-out duration-150 dark:text-gray-300 dark:border-gray-700 dark:hover:border-gray-500"
+          >
+            <span>{{ __("Add Proxy Server") }}</span>
           </InertiaLink>
         </div>
       </div>
@@ -268,21 +267,10 @@ watchEffect(() => {
 
           <DtRowItem>
             <span
-              v-if="item.type.value === 5"
-              class="italic"
-            >
-              {{ __("not applicable") }}
-            </span>
-            <span
-              v-else
               v-tippy
-              :title="formatToDayDateString(item.last_scanned_at)"
+              :title="formatToDayDateString(item.created_at)"
             >
-              {{
-                item.last_scanned_at
-                  ? formatTimeAgoToNow(item.last_scanned_at)
-                  : __("not scanned yet")
-              }}
+              {{ formatTimeAgoToNow(item.created_at) }}
             </span>
           </DtRowItem>
 
@@ -311,8 +299,9 @@ watchEffect(() => {
             <InertiaLink
               v-if="can('delete servers')"
               v-confirm="{
+                title: 'Delete Server?',
                 message:
-                  'Are you sure you want to delete this Server permanently?',
+                  'Are you sure you want to delete this Server permanently? Deleting a Server will also delete all of its associated data including all of its Player & Server Intel data. This action cannot be undone.',
               }"
               v-tippy
               as="button"

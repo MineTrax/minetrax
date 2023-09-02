@@ -266,7 +266,7 @@ onMounted(async () => {
             <td class="p-2 flex">
               <icon
                 name="skull-outline"
-                class="w-5 text-green-500 mr-1"
+                class="w-5 text-red-500 mr-1"
               />
               {{ __("Total Deaths") }}
             </td>

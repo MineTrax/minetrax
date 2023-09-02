@@ -40,7 +40,7 @@ class NewsController extends Controller
                 'is_pinned',
                 'type',
                 'created_at',
-                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug']))
+                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug'])),
             ])
             ->allowedSorts(['id', 'title', 'created_at', 'published_at', 'is_pinned', 'type', 'slug'])
             ->defaultSort('-id')
@@ -64,12 +64,12 @@ class NewsController extends Controller
     {
         $news = News::create([
             'title' => $request->title,
-            'slug' => \Str::slug($request->title . ' ' . now()->timestamp),
+            'slug' => \Str::slug($request->title.' '.now()->timestamp),
             'type' => $request->type,
             'body' => $request->body,
             'published_at' => $request->is_published ? now() : null,
             'is_pinned' => $request->is_pinned,
-            'created_by' => $request->user()->id
+            'created_by' => $request->user()->id,
         ]);
 
         // Upload the Photo if Have
@@ -86,7 +86,7 @@ class NewsController extends Controller
         $this->authorize('view', $news);
 
         return Inertia::render('Admin/News/ShowNews', [
-            'news' => $news->append(['body_html', 'time_to_read'])->load('creator:id,name,username,profile_photo_path')
+            'news' => $news->append(['body_html', 'time_to_read'])->load('creator:id,name,username,profile_photo_path'),
         ]);
     }
 
@@ -95,7 +95,7 @@ class NewsController extends Controller
         $this->authorize('update', $news);
 
         return Inertia::render('Admin/News/EditNews', [
-            'news' => $news
+            'news' => $news,
         ]);
     }
 
@@ -104,12 +104,12 @@ class NewsController extends Controller
         $this->authorize('update', $news);
 
         // Update the Rank Detail
-        $news->slug = $request->title == $news->title ? $news->slug : \Str::slug($request->title . ' ' . now()->timestamp);
+        $news->slug = $request->title == $news->title ? $news->slug : \Str::slug($request->title.' '.now()->timestamp);
         $news->title = $request->title;
         $news->body = $request->body;
-        if ($request->is_published && !$news->published_at) {
+        if ($request->is_published && ! $news->published_at) {
             $news->published_at = now();
-        } elseif (!$request->is_published && $news->published_at) {
+        } elseif (! $request->is_published && $news->published_at) {
             $news->published_at = null;
         }
         $news->type = $request->type;
@@ -132,6 +132,7 @@ class NewsController extends Controller
         $this->authorize('delete', $news);
 
         $news->delete();
+
         return redirect()->route('admin.news.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('News has been deleted permanently')]]);
     }

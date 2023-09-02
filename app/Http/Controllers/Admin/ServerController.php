@@ -7,14 +7,13 @@ use App\Enums\ServerVersion;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateServerRequest;
 use App\Http\Requests\UpdateServerRequest;
-use App\Jobs\FetchStatsFromAllServersJob;
-use App\Models\JsonMinecraftPlayerStat;
-use App\Models\MinecraftServerLiveInfo;
+use App\Jobs\CalculatePlayersJob;
+use App\Jobs\ResyncPlayersTableJob;
+use App\Models\MinecraftPlayer;
 use App\Models\Server;
 use App\Queries\Filters\FilterMultipleFields;
 use App\Services\GeolocationService;
-use App\Services\MinecraftServerFileService;
-use App\Services\MinecraftServerPingService;
+use App\Settings\PluginSettings;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
@@ -104,49 +103,11 @@ class ServerController extends Controller
         ]);
     }
 
-    public function store(CreateServerRequest $request, GeolocationService $geolocationService)
+    public function store(CreateServerRequest $request, GeolocationService $geolocationService, PluginSettings $pluginSettings)
     {
-        // Encrypt the Login information
-        // Make connection string
-        $connectionString = [];
-        $storageServerHost = $request->storage_server_host;
-        if ($request->connection_type == 'ftp') {
-            $connectionString = [
-                'driver' => 'ftp',
-                'host' => $storageServerHost,
-                'username' => $request->storage_server_username,
-                'password' => $request->storage_server_password,
-                'port' => $request->storage_server_port ?? 21,
-                'root' => $request->storage_server_root ?? '',
-                'ssl' => $request->storage_server_ssl ?? false,
-            ];
-        } elseif ($request->connection_type == 'sftp') {
-            $connectionString = [
-                'driver' => 'sftp',
-                'host' => $storageServerHost,
-                'username' => $request->storage_server_username,
-                'password' => $request->storage_server_password,
-                'port' => $request->storage_server_port ?? 22,
-                'root' => $request->storage_server_root ?? ''
-            ];
-        } else if ($request->connection_type == 'local') {
-            $storageServerHost = '127.0.0.1';
-            $connectionString = [
-                'driver' => 'local',
-                'root' => $request->storage_server_root
-            ];
-        }
-        $connectionString = encrypt($connectionString);
-        $countryId = $geolocationService->getCountryIdFromIP(gethostbyname($storageServerHost));
+        $countryId = $geolocationService->getCountryIdFromIP(gethostbyname($request->ip_address));
 
-        $ipAddress = gethostbyname($request->hostname);
-        // If ip address still have something like 111.111.111.111:25565 then we remove the port part
-        if (\Str::contains($ipAddress, ":")) {
-            $ipAddress = explode(":", $ipAddress);
-            $ipAddress = $ipAddress[0];
-        }
-
-        Server::create([
+        $server = Server::create([
             'ip_address' => $request->ip_address,
             'join_port' => $request->join_port,
             'query_port' => $request->query_port,
@@ -155,18 +116,21 @@ class ServerController extends Controller
             'name' => $request->name,
             'minecraft_version' => $request->minecraft_version,
             'type' => $request->type,
-            'storage_login' => $connectionString,
-            'level_name' => $request->level_name,
             'country_id' => $countryId,
             'created_by' => $request->user()->id,
             'settings' => $request->settings,
-            'is_stats_tracking_enabled' => $request->is_stats_tracking_enabled,
+            'is_server_intel_enabled' => $request->is_server_intel_enabled,
+            'is_player_intel_enabled' => $request->is_player_intel_enabled,
             'is_ingame_chat_enabled' => $request->is_ingame_chat_enabled,
-            'is_online_players_query_enabled' => $request->is_online_players_query_enabled
         ]);
 
-        return redirect()->route('admin.server.index')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('New server added successfully')]]);
+
+        return Inertia::render('Admin/Server/AfterCreateSteps', [
+            'server' => $server,
+            'apiKey' => $pluginSettings->plugin_api_key,
+            'apiSecret' => $pluginSettings->plugin_api_secret,
+            'apiHost' => config('app.url')
+        ])->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('New server added successfully')]]);
     }
 
     public function storeBungee(Request $request, GeolocationService $geolocationService)
@@ -212,13 +176,12 @@ class ServerController extends Controller
         $this->authorize('view', $server);
 
         $serverAggrData = [];
-        $serverAggrData['pvp_kills'] = (string) JsonMinecraftPlayerStat::where('server_id', $server->id)->sum('total_player_kills');
-        $serverAggrData['mob_kills'] = (string) JsonMinecraftPlayerStat::where('server_id', $server->id)->sum('total_mob_kills');
-        $serverAggrData['player_deaths'] = (string) JsonMinecraftPlayerStat::where('server_id', $server->id)->sum('total_deaths');
-        $serverAggrData['player_damage_taken'] = (string) JsonMinecraftPlayerStat::where('server_id', $server->id)->sum('total_damage_taken');
-        $serverAggrData['total_players'] = (string) JsonMinecraftPlayerStat::where('server_id', $server->id)->count();
-        $serverAggrData['active_players'] = (string) JsonMinecraftPlayerStat::where('server_id', $server->id)
-            ->where('updated_at', '>=', now()->subDays(30))->count();
+        $serverAggrData['pvp_kills'] = (string) MinecraftPlayer::where('server_id', $server->id)->sum('player_kills');
+        $serverAggrData['mob_kills'] = (string) MinecraftPlayer::where('server_id', $server->id)->sum('mob_kills');
+        $serverAggrData['player_deaths'] = (string) MinecraftPlayer::where('server_id', $server->id)->sum('deaths');
+        $serverAggrData['player_damage_taken'] = (string) MinecraftPlayer::where('server_id', $server->id)->sum('pvp_damage_taken');
+        $serverAggrData['total_players'] = (string) MinecraftPlayer::where('server_id', $server->id)->count();
+        $serverAggrData['active_players'] = (string) MinecraftPlayer::where('server_id', $server->id)->where('last_seen_at', '>=', now()->subDays(30))->count();
 
         return Inertia::render('Admin/Server/ShowServer', [
             'server' => $server->load(['country']),
@@ -264,28 +227,19 @@ class ServerController extends Controller
             ]);
         }
 
-        $decryptedStorageLoginData = decrypt($server->storage_login);
         $serverData = [
             'id' => $server->id,
-            "connection_type" => $decryptedStorageLoginData['driver'],
-            "storage_server_host" => $decryptedStorageLoginData['host'] ?? null,
-            "storage_server_port" => $decryptedStorageLoginData['port'] ?? null,
-            "storage_server_username" => $decryptedStorageLoginData['username'] ?? null,
-            "storage_server_password" => $decryptedStorageLoginData['password'] ?? null,
-            "storage_server_root" => $decryptedStorageLoginData['root'] ?? null,
-            "storage_server_ssl" => $decryptedStorageLoginData['ssl'] ?? null,
             "name" => $server->name,
             "join_port" => $server->join_port,
             "query_port" => $server->query_port,
             "webquery_port" => $server->webquery_port,
-            "level_name" => $server->level_name,
             "minecraft_version" => $server->minecraft_version,
             "type" => $server->type->value,
             "hostname" => $server->hostname,
             "ip_address" => $server->ip_address,
-            "is_stats_tracking_enabled" => $server->is_stats_tracking_enabled,
+            "is_server_intel_enabled" => $server->is_server_intel_enabled,
+            "is_player_intel_enabled" => $server->is_player_intel_enabled,
             "is_ingame_chat_enabled" => $server->is_ingame_chat_enabled,
-            "is_online_players_query_enabled" => $server->is_online_players_query_enabled,
             "settings" => $server->settings,
         ];
         return Inertia::render('Admin/Server/EditServer', [
@@ -334,37 +288,6 @@ class ServerController extends Controller
     {
         $this->authorize('update', $server);
 
-        // Encrypt the Login information
-        // Make connection string
-        $connectionString = [];
-        $storageServerHost = $request->storage_server_host;
-        if ($request->connection_type == 'ftp') {
-            $connectionString = [
-                'driver' => 'ftp',
-                'host' => $storageServerHost,
-                'username' => $request->storage_server_username,
-                'password' => $request->storage_server_password,
-                'port' => $request->storage_server_port ?? 21,
-                'root' => $request->storage_server_root ?? '',
-                'ssl' => $request->storage_server_ssl ?? false
-            ];
-        } elseif ($request->connection_type == 'sftp') {
-            $connectionString = [
-                'driver' => 'sftp',
-                'host' => $storageServerHost,
-                'username' => $request->storage_server_username,
-                'password' => $request->storage_server_password,
-                'port' => $request->storage_server_port ?? 22,
-                'root' => $request->storage_server_root ?? ''
-            ];
-        } else if ($request->connection_type == 'local') {
-            $storageServerHost = '127.0.0.1';
-            $connectionString = [
-                'driver' => 'local',
-                'root' => $request->storage_server_root
-            ];
-        }
-        $connectionString = encrypt($connectionString);
         $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
 
         $server->ip_address = $request->ip_address;
@@ -375,14 +298,12 @@ class ServerController extends Controller
         $server->name = $request->name;
         $server->minecraft_version = $request->minecraft_version;
         $server->type = $request->type;
-        $server->storage_login = $connectionString;
-        $server->level_name = $request->level_name;
         $server->country_id = $countryId;
         $server->updated_by = $request->user()->id;
         $server->settings = $request->settings;
-        $server->is_stats_tracking_enabled = $request->is_stats_tracking_enabled;
+        $server->is_server_intel_enabled = $request->is_server_intel_enabled;
+        $server->is_player_intel_enabled = $request->is_player_intel_enabled;
         $server->is_ingame_chat_enabled = $request->is_ingame_chat_enabled;
-        $server->is_online_players_query_enabled = $request->is_online_players_query_enabled;
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
@@ -399,67 +320,11 @@ class ServerController extends Controller
         $this->authorize('delete', $server);
 
         $server->delete();
+
+        ResyncPlayersTableJob::dispatch();
+
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Server has been deleted permanently')]]);
-    }
-
-    public function prefetch(Request $request, MinecraftServerFileService $serverFileService, MinecraftServerPingService $serverPingService)
-    {
-        $this->authorize('create', Server::class);
-
-        $request->validate([
-            'storage_server_host' => 'required_if:connection_type,ftp,sftp',
-            'storage_server_port' => 'nullable|numeric|min:0|max:65535',
-            'storage_server_username' => 'nullable|required_if:connection_type,ftp,sftp|string',
-            'storage_server_password' => 'required_if:connection_type,ftp,sftp',
-            'storage_server_root' => 'sometimes|required_if:connection_type,local|nullable',
-            'storage_server_ssl' => 'sometimes|nullable|required_if:connection_type,ftp|boolean',
-        ]);
-
-        // Make connection string
-        $connectionString = [];
-        $storageServerHost = $request->storage_server_host;
-        if ($request->connection_type == 'ftp') {
-            $connectionString = [
-                'driver' => 'ftp',
-                'host' => $storageServerHost,
-                'username' => $request->storage_server_username,
-                'password' => $request->storage_server_password,
-                'port' => $request->storage_server_port ?? 21,
-                'root' => $request->storage_server_root ?? '',
-                'ssl' => $request->storage_server_ssl ?? false,
-            ];
-        } elseif ($request->connection_type == 'sftp') {
-            $connectionString = [
-                'driver' => 'sftp',
-                'host' => $storageServerHost,
-                'username' => $request->storage_server_username,
-                'password' => $request->storage_server_password,
-                'port' => $request->storage_server_port ?? 22,
-                'root' => $request->storage_server_root ?? ''
-            ];
-        } else if ($request->connection_type == 'local') {
-            $storageServerHost = '127.0.0.1';
-            $connectionString = [
-                'driver' => 'local',
-                'root' => $request->storage_server_root
-            ];
-        }
-
-        // Send request to Service and return results.
-        try {
-            $fetchInfo = $serverFileService->getServerPropertiesFromRemote($connectionString);
-            if ($fetchInfo) {
-                $serverStatus = $serverPingService->pingServer($storageServerHost, $fetchInfo['server-port']);
-            }
-
-            if ($fetchInfo) {
-                return response(['success' => __('Something found'), 'data' => $fetchInfo, 'server_status' => $serverStatus]);
-            }
-            return response(['message' => __('No Server found at this path')], 404);
-        } catch (\Exception $exception) {
-            return response(['message' => $exception->getMessage()], 500);
-        }
     }
 
     public function postSendCommandToServer(Server $server, Request $request)
@@ -512,13 +377,13 @@ class ServerController extends Controller
         return $response;
     }
 
-    public function postForceScan(Request $request)
+    public function postForceSyncStats(Request $request)
     {
         $this->authorize('create', Server::class);
 
-        FetchStatsFromAllServersJob::dispatch();
+        CalculatePlayersJob::dispatch();
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __('Rescan Queued!'), 'body' => __('Successfully queued rescanning of all servers. It may take sometime to reflect depending on number of players found.'), 'milliseconds' => 20000]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Rescan Queued!'), 'body' => __('Successfully queued resync of player stats. It may take sometime to reflect depending on number of players.'), 'milliseconds' => 20000]]);
     }
 }

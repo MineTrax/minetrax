@@ -8,7 +8,7 @@
       <div class="md:flex space-x-4">
         <div class="flex-grow">
           <div class="grid grid-cols-12 gap-4 mb-4">
-            <div class="col-span-12  md:col-span-3">
+            <div class="col-span-12  md:col-span-4">
               <div class="flex flex-row bg-white dark:bg-cool-gray-800 shadow rounded p-4">
                 <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-light-blue-100 dark:bg-opacity-10 text-light-blue-500">
                   <svg
@@ -34,7 +34,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-span-12  md:col-span-3">
+            <div class="col-span-12  md:col-span-4">
               <div class="flex flex-row bg-white dark:bg-cool-gray-800 shadow rounded p-4">
                 <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-green-100 dark:bg-opacity-10 text-green-500">
                   <svg
@@ -60,7 +60,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-span-12  md:col-span-3">
+            <div class="col-span-12  md:col-span-4">
               <div class="flex flex-row bg-white dark:bg-cool-gray-800 shadow rounded p-4">
                 <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-pink-100 dark:bg-opacity-10 text-pink-500">
                   <svg
@@ -81,33 +81,7 @@
                     {{ __("Play Time") }}
                   </div>
                   <div class="font-bold text-lg dark:text-gray-200">
-                    {{ totalPlayTime === 0 ? '0 h' : secondsToHMS(totalPlayTime/20) }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-span-12  md:col-span-3">
-              <div class="flex flex-row bg-white dark:bg-cool-gray-800 shadow rounded p-4">
-                <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-purple-100 dark:bg-opacity-10 text-purple-500">
-                  <svg
-                    class="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  ><path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"
-                  /></svg>
-                </div>
-                <div class="flex flex-col flex-grow ml-4">
-                  <div class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ __("Last Scan") }}
-                  </div>
-                  <div class="font-bold text-lg dark:text-gray-200">
-                    {{ lastScanAt ? formatTimeAgoToNow(lastScanAt, false) : __('not yet') }}
+                    {{ totalPlayTime === 0 ? '0 h' : secondsToHMS(totalPlayTime) }}
                   </div>
                 </div>
               </div>
@@ -267,7 +241,7 @@
                           {{ player.total_score }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                          {{ secondsToHMS(player.total_play_one_minute/20, true) }}
+                          {{ secondsToHMS(player.play_time, true) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                           <span

@@ -41,7 +41,8 @@ class GraphController extends Controller
         }
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
-            $item->created_at_5min = (int) $item->created_at_5min;
+            $item->created_at_5min = (int)$item->created_at_5min;
+
             return array_values(get_object_vars($item));
         })->toArray();
 
@@ -132,7 +133,8 @@ class GraphController extends Controller
                     ->from('minecraft_player_sessions')
                     ->where('created_at', '<', $currentMonth->startOfMonth());
             })
-            ->count() ?? 0;
+            ->distinct()
+            ->count('player_uuid') ?? 0;
         $avgNewPlayerChangePercent = (($avgNewPlayerCurrentMonth - $avgNewPlayerPreviousMonth) / ($avgNewPlayerPreviousMonth == 0 ? 1 : $avgNewPlayerPreviousMonth)) * 100;
 
         // Total sessions
@@ -263,8 +265,9 @@ class GraphController extends Controller
             ->whereIn('server_id', $servers->pluck('id'));
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
-            $item->created_at_5min = (int) $item->created_at_5min;
+            $item->created_at_5min = (int)$item->created_at_5min;
             $item->used_memory = round($item->used_memory / 1024); // Convert to MB
+
             return array_values(get_object_vars($item));
         })->toArray();
 
@@ -305,7 +308,8 @@ class GraphController extends Controller
             ->whereIn('server_id', $servers->pluck('id'));
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
-            $item->created_at_5min = (int) $item->created_at_5min;
+            $item->created_at_5min = (int)$item->created_at_5min;
+
             return array_values(get_object_vars($item));
         })->toArray();
 
@@ -313,6 +317,226 @@ class GraphController extends Controller
             'labels' => [__('Online Players')],
             'filters' => request()->all(['servers', 'from_date', 'to_date']),
             'data' => $sqlData,
+        ]);
+    }
+
+    public function getPlayerMinecraftVersions(Request $request)
+    {
+        $isAuthorized = $request->user()->can('view admin_dashboard') || $request->user()->can('view server_intel');
+        if (!$isAuthorized) {
+            abort(403);
+        }
+
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+        ]);
+
+        $servers = $request->query('servers') ?? null;
+        if ($servers) {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+        } else {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+        }
+
+        $data = DB::table('minecraft_player_sessions')
+            ->selectRaw('COUNT(*) AS count, minecraft_version')
+            ->whereIn('server_id', $servers->pluck('id'))
+            ->groupBy('minecraft_version')
+            ->orderBy('count', 'desc')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'name' => $item->minecraft_version,
+                    'value' => $item->count,
+                ];
+            });
+
+        return response()->json($data);
+    }
+
+    public function getPlayerJoinAddresses(Request $request)
+    {
+        $isAuthorized = $request->user()->can('view admin_dashboard') || $request->user()->can('view server_intel');
+        if (!$isAuthorized) {
+            abort(403);
+        }
+
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+        ]);
+
+        $servers = $request->query('servers') ?? null;
+        if ($servers) {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+        } else {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+        }
+
+        $data = DB::table('minecraft_player_sessions')
+            ->selectRaw('COUNT(*) AS count, join_address')
+            ->whereIn('server_id', $servers->pluck('id'))
+            ->groupBy('join_address')
+            ->orderBy('count', 'desc')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'name' => $item->join_address,
+                    'value' => $item->count,
+                ];
+            });
+
+        return response()->json($data);
+    }
+
+    public function getPlayerJoinAddressesOverTime(Request $request)
+    {
+        $this->authorize('view server_intel');
+
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+            'from_date' => 'sometimes|nullable|date',
+            'to_date' => 'sometimes|nullable|date',
+        ]);
+
+        $servers = $request->query('servers') ?? null;
+        if ($servers) {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+        } else {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+        }
+
+        $fromDate = $request->query('from_date') ?? now()->subMonth();
+        $toDate = $request->query('to_date') ?? now();
+        $query = DB::table('minecraft_player_sessions')
+            ->selectRaw('UNIX_TIMESTAMP(DATE(created_at)) AS unix_day')
+            ->selectRaw('join_address')
+            ->selectRaw('COUNT(*) AS count')
+            ->groupBy(['join_address', 'unix_day'])
+            ->orderBy('unix_day')
+            ->where('created_at', '>=', $fromDate)
+            ->where('created_at', '<=', $toDate)
+            ->whereIn('server_id', $servers->pluck('id'));
+        $sqlData = $query->get();
+
+        // Generate DataSet for Chart.
+        $dataSets = [];
+        $seriesName = [];
+        $uniqueDates = $sqlData->unique('unix_day');
+
+        foreach ($sqlData as $data) {
+            $day = $data->unix_day * 1000;
+            $address = $data->join_address;
+            $count = $data->count;
+
+            $dataSets[$address][$day] = $count;
+        }
+
+        // Fill in missing data.
+        foreach ($dataSets as $address => $dataSet) {
+            foreach ($uniqueDates as $date) {
+                $day = $date->unix_day * 1000;
+                if (!isset($dataSet[$day])) {
+                    $dataSets[$address][$day] = 0;
+                }
+            }
+        }
+
+        $finalDataSet = [];
+        foreach ($dataSets as $address => $dataSet) {
+            $seriesName[] = $address;
+
+            $dataSet = \Arr::sort($dataSet, function ($value, $key) {
+                return $key;
+            });
+            $convertedArray = array_map(function ($key, $value) {
+                return [$key, $value];
+            }, array_keys($dataSet), $dataSet);
+            $convertedArray = array_values($convertedArray);
+            $finalDataSet[]['source'] = $convertedArray;
+        }
+
+        return response()->json([
+            'filters' => request()->all(['servers', 'from_date', 'to_date']),
+            'data' => $finalDataSet,
+            'series' => $seriesName,
+        ]);
+    }
+
+    public function getPlayerMinecraftVersionsOverTime(Request $request)
+    {
+        $this->authorize('view server_intel');
+
+        $request->validate([
+            'servers' => 'sometimes|nullable|array',
+            'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+            'from_date' => 'sometimes|nullable|date',
+            'to_date' => 'sometimes|nullable|date',
+        ]);
+
+        $servers = $request->query('servers') ?? null;
+        if ($servers) {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+        } else {
+            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+        }
+
+        $fromDate = $request->query('from_date') ?? now()->subMonth();
+        $toDate = $request->query('to_date') ?? now();
+        $query = DB::table('minecraft_player_sessions')
+            ->selectRaw('UNIX_TIMESTAMP(DATE(created_at)) AS unix_day')
+            ->selectRaw('minecraft_version')
+            ->selectRaw('COUNT(*) AS count')
+            ->groupBy(['minecraft_version', 'unix_day'])
+            ->orderBy('unix_day')
+            ->where('created_at', '>=', $fromDate)
+            ->where('created_at', '<=', $toDate)
+            ->whereIn('server_id', $servers->pluck('id'));
+        $sqlData = $query->get();
+
+        // Generate DataSet for Chart.
+        $dataSets = [];
+        $seriesName = [];
+        $uniqueDates = $sqlData->unique('unix_day');
+
+        foreach ($sqlData as $data) {
+            $day = $data->unix_day * 1000;
+            $version = $data->minecraft_version;
+            $count = $data->count;
+
+            $dataSets[$version][$day] = $count;
+        }
+
+        // Fill in missing data.
+        foreach ($dataSets as $version => $dataSet) {
+            foreach ($uniqueDates as $date) {
+                $day = $date->unix_day * 1000;
+                if (!isset($dataSet[$day])) {
+                    $dataSets[$version][$day] = 0;
+                }
+            }
+        }
+
+        $finalDataSet = [];
+        foreach ($dataSets as $version => $dataSet) {
+            $seriesName[] = $version;
+
+            $dataSet = \Arr::sort($dataSet, function ($value, $key) {
+                return $key;
+            });
+            $convertedArray = array_map(function ($key, $value) {
+                return [$key, $value];
+            }, array_keys($dataSet), $dataSet);
+            $convertedArray = array_values($convertedArray);
+            $finalDataSet[]['source'] = $convertedArray;
+        }
+
+        return response()->json([
+            'filters' => request()->all(['servers', 'from_date', 'to_date']),
+            'data' => $finalDataSet,
+            'series' => $seriesName,
         ]);
     }
 }

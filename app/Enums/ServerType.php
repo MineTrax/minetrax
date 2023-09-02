@@ -14,18 +14,23 @@ use BenSampo\Enum\Enum;
  */
 final class ServerType extends Enum
 {
-    const Paper =   0;
-    const Spigot =   1;
+    const Paper = 0;
+
+    const Spigot = 1;
+
     const Forge = 2;
+
     const Bukkit = 3;
+
     const Vanilla = 4;
+
     const Bungee = 5;
 
     public function toArray(): mixed
     {
         return [
-            "key" => $this->key,
-            "value" => $this->value
+            'key' => $this->key,
+            'value' => $this->value,
         ];
     }
 }

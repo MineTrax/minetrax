@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\MinecraftServerWorld;
 use App\Models\MinecraftWorldLiveInfo;
+use App\Models\Server;
 use DB;
 use Illuminate\Http\Request;
 
@@ -31,9 +32,17 @@ class ApiMinecraftServerIntelController extends Controller
             'server_session_id' => 'present|nullable|string'
         ]);
 
+        $server = Server::where('id', $request->server_id)->firstOrFail();
+        if (!$server->is_server_intel_enabled) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Server intel is disabled for this server.',
+            ], 403);
+        }
+
         try {
             // Create MinecraftServerLiveInfo
-            DB::transaction(function() use ($request) {
+            DB::transaction(function() use ($request, $server) {
                 MinecraftServerLiveInfo::create([
                     'server_id' => $request->input('server_id'),
                     'online_players' => $request->input('online_players'),
@@ -74,17 +83,21 @@ class ApiMinecraftServerIntelController extends Controller
                         'server_session_id' => $request->input('server_session_id'),
                     ]);
                 }
+
+                $server->update([
+                    'last_scanned_at' => now(),
+                ]);
             });
 
             return response()->json([
                 'status' => 'success',
-                'message' => __('Server Intel successfully reported.'),
+                'message' => 'Server Intel successfully reported.',
             ], 201);
         } catch(\Exception $e) {
             \Log::error($e);
             return response()->json([
                 'status' => 'error',
-                'message' => __('Server Intel failed to report.'),
+                'message' => 'Server Intel failed to report.',
                 'debug' => $e->getMessage(),
             ], 500);
         }

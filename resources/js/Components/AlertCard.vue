@@ -17,8 +17,10 @@
           </svg>
         </slot>
       </div>
-      <div>
-        <div class="font-bold">
+      <div :class="titleClass">
+        <div
+          class="font-bold"
+        >
           <slot />
         </div>
         <div class="text-sm">
@@ -47,6 +49,10 @@ defineProps({
     textColor: {
         type: String,
         default: 'text-green-500',
+    },
+    titleClass: {
+        type: String,
+        default: '',
     },
     closeButton: {
         type: Boolean,

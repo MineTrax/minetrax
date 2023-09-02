@@ -7,8 +7,21 @@ let option = ref({});
 let graphData = ref(null);
 let isLoading = ref(true);
 
+const props = defineProps({
+    routeName: {
+        type: String,
+        required: false,
+        default: route('admin.graph.players-per-country'),
+    },
+    mapHeight: {
+        type: String,
+        required: false,
+        default: '410px',
+    }
+});
+
 onMounted(async () => {
-    const response = await axios.get(route('admin.graph.players-per-country'));
+    const response = await axios.get(props.routeName);
 
     isLoading.value = false;
     graphData.value = response.data;
@@ -36,6 +49,7 @@ onMounted(async () => {
             feature: {
                 restore: {},
                 saveAsImage: {},
+                dataView: { readOnly: true },
             },
         },
         visualMap: {
@@ -88,7 +102,7 @@ onMounted(async () => {
     <Chart
       :autoresize="true"
       :options="option"
-      height="410px"
+      :height="mapHeight"
       :loading="isLoading"
     />
   </div>

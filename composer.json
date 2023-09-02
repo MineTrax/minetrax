@@ -12,6 +12,7 @@
     "require": {
         "php": ">=8.1",
         "ext-json": "*",
+        "ext-zip": "*",
         "ext-sockets": "*",
         "bensampo/laravel-enum": "^6.0",
         "beyondcode/laravel-websockets": "^1.13",
@@ -40,7 +41,6 @@
         "pusher/pusher-php-server": "^7.0",
         "socialiteproviders/discord": "^4.1",
         "spatie/laravel-backup": "^8.3",
-        "spatie/laravel-cookie-consent": "^3.2",
         "spatie/laravel-medialibrary": "^10.9",
         "spatie/laravel-permission": "^5.5",
         "spatie/laravel-query-builder": "^5.2",

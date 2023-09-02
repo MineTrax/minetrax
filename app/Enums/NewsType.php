@@ -11,15 +11,17 @@ use BenSampo\Enum\Enum;
  */
 final class NewsType extends Enum
 {
-    const General =   0;
-    const Announcement =   1;
+    const General = 0;
+
+    const Announcement = 1;
+
     const Event = 2;
 
     public function toArray(): mixed
     {
         return [
-            "key" => $this->key,
-            "value" => $this->value
+            'key' => $this->key,
+            'value' => $this->value,
         ];
     }
 }

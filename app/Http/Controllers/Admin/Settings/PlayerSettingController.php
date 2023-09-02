@@ -36,6 +36,7 @@ class PlayerSettingController extends Controller
             'custom_rating_expression' => 'required_if:is_custom_rating_enabled,true',
             'is_custom_score_enabled' => 'required|boolean',
             'custom_score_expression' => 'required_if:is_custom_score_enabled,true',
+            'show_player_intel_to' => 'required|in:none,staff,self,login,all',
         ]);
 
 
@@ -70,6 +71,7 @@ class PlayerSettingController extends Controller
         $settings->is_custom_score_enabled = $request->is_custom_score_enabled;
         $settings->is_custom_rating_enabled = $request->is_custom_rating_enabled;
         $settings->last_seen_day_for_active = $request->last_seen_day_for_active;
+        $settings->show_player_intel_to = $request->show_player_intel_to;
         $settings->save();
 
         return redirect()->back()

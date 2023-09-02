@@ -51,10 +51,10 @@
             :title="__('Click to Copy')"
             type="button"
             class="text-center font-extrabold mt-3 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded p-2 hover:text-light-blue-500 dark:hover:text-light-blue-400 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900 hover:border-light-blue-500 dark:hover:border-cool-gray-800 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 transition duration-150 ease-in-out focus:outline-none"
-            @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer.hostname)"
+            @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
           >
             <span v-if="props.status !== 'copied'">
-              {{ server ? server.hostname : $page.props.defaultQueryServer.hostname }}
+              {{ server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname }}
             </span>
             <span v-else>
               {{ __("Copied!") }}
@@ -91,7 +91,7 @@ export default {
         enabled() {
             if (!this.$page.props.generalSettings.enable_mcserver_statuspingbox) return false;
 
-            return !!(this.server || this.$page.props.defaultQueryServer);
+            return !!(this.server || this.$page.props.defaultQueryServer.server);
         }
     },
 
@@ -110,7 +110,7 @@ export default {
         getServerQuery() {
             let serverToQuery = this.server;
             if (!serverToQuery) {
-                serverToQuery = this.$page.props.defaultQueryServer;
+                serverToQuery = this.$page.props.defaultQueryServer.server;
             }
             axios.get(route('server.ping.get', serverToQuery.id)).then(data => {
                 this.serverInfo = data.data;
@@ -118,7 +118,7 @@ export default {
             }).catch(err => {
                 this.error = err.response.data.message || err.message;
                 this.serverInfo = null;
-            }).finally(e => {
+            }).finally(() => {
                 this.loading = false;
             });
         }

@@ -266,6 +266,132 @@
                               {{ __("Oops!") }}&nbsp;{{ validator_score_exception }}
                             </p>
                           </div>
+
+                          <div class="col-span-6 sm:col-span-6 border-t border-gray-300 dark:border-gray-700 pt-4 space-y-3">
+                            <p class="text-sm text-gray-700 font-bold dark:text-gray-300">
+                              {{ __("Show Player Intel To") }}
+                            </p>
+
+                            <div class="grid md:grid-cols-2 gap-3">
+                              <div class="flex">
+                                <div class="flex items-center h-5">
+                                  <input
+                                    id="show_player_intel_to_none"
+                                    v-model="form.show_player_intel_to"
+                                    type="radio"
+                                    value="none"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    name="show_player_intel_to"
+                                  >
+                                </div>
+                                <div class="ml-2 text-sm">
+                                  <label
+                                    for="show_player_intel_to_none"
+                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                  >{{ __("Only Superadmin") }}</label>
+                                  <p
+                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                  >
+                                    {{ __("Only superadmin role will be able to view player intel data for anyone.") }}
+                                  </p>
+                                </div>
+                              </div>
+                              <div class="flex">
+                                <div class="flex items-center h-5">
+                                  <input
+                                    id="show_player_intel_to_staff"
+                                    v-model="form.show_player_intel_to"
+                                    type="radio"
+                                    value="staff"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    name="show_player_intel_to"
+                                  >
+                                </div>
+                                <div class="ml-2 text-sm">
+                                  <label
+                                    for="show_player_intel_to_staff"
+                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                  >{{ __("Staff Role and above") }}</label>
+                                  <p
+                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                  >
+                                    {{ __("Any staff role & superadmin will be able to view player intel for any player.") }}
+                                  </p>
+                                </div>
+                              </div>
+                              <div class="flex">
+                                <div class="flex items-center h-5">
+                                  <input
+                                    id="show_player_intel_to_self"
+                                    v-model="form.show_player_intel_to"
+                                    type="radio"
+                                    value="self"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    name="show_player_intel_to"
+                                  >
+                                </div>
+                                <div class="ml-2 text-sm">
+                                  <label
+                                    for="show_player_intel_to_self"
+                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                  >{{ __("Linked Account and above") }}</label>
+                                  <p
+                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                  >
+                                    {{ __("User who linked player can view player intel for the linked players. Superadmin & Staff role can view all players.") }}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div class="flex">
+                                <div class="flex items-center h-5">
+                                  <input
+                                    id="show_player_intel_to_login"
+                                    v-model="form.show_player_intel_to"
+                                    type="radio"
+                                    value="login"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    name="show_player_intel_to"
+                                  >
+                                </div>
+                                <div class="ml-2 text-sm">
+                                  <label
+                                    for="show_player_intel_to_login"
+                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                  >{{ __("Any Authenticated User") }}</label>
+                                  <p
+                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                  >
+                                    {{ __("Any authenticated user can view player intel data for any player.") }}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div class="flex">
+                                <div class="flex items-center h-5">
+                                  <input
+                                    id="show_player_intel_to_all"
+                                    v-model="form.show_player_intel_to"
+                                    type="radio"
+                                    value="all"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    name="show_player_intel_to"
+                                  >
+                                </div>
+                                <div class="ml-2 text-sm">
+                                  <label
+                                    for="show_player_intel_to_all"
+                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                  >{{ __("Public") }}</label>
+                                  <p
+                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                  >
+                                    {{ __("Any user or guest visiting the website can view player intel for any player.") }}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
@@ -321,7 +447,8 @@ export default {
                 custom_rating_expression: this.settings.custom_rating_expression,
                 last_seen_day_for_active: this.settings.last_seen_day_for_active,
                 is_custom_score_enabled: this.settings.is_custom_score_enabled,
-                custom_score_expression: this.settings.custom_score_expression
+                custom_score_expression: this.settings.custom_score_expression,
+                show_player_intel_to: this.settings.show_player_intel_to,
             }),
 
             rating_expression_validation_form: new Form({

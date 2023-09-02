@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use JetBrains\PhpStorm\Pure;
 use Spatie\Searchable\Searchable;
 
 class Player extends BaseModel implements Searchable
@@ -15,12 +14,16 @@ class Player extends BaseModel implements Searchable
     use HasFactory;
 
     protected $casts = [
-        'last_mps_updated_at' => 'datetime',
         'last_seen_at' => 'datetime',
         'first_seen_at' => 'datetime',
     ];
 
-    protected $hidden = ['ip_address', 'account_link_after_success_command_run_count'];
+    protected $hidden = [
+        'ip_address',
+        'account_link_after_success_command_run_count',
+        'last_minecraft_version',
+        'last_join_address'
+    ];
 
     protected $appends = ['avatar_url', 'is_active'];
 
@@ -47,14 +50,9 @@ class Player extends BaseModel implements Searchable
         return $this->belongsTo(Rank::class);
     }
 
-    public function minecraftPlayerStats(): HasMany
+    public function minecraftPlayers(): HasMany
     {
-        return $this->hasMany(JsonMinecraftPlayerStat::class);
-    }
-
-    public function minecraftPlayerAdvancements(): HasMany
-    {
-        return $this->hasMany(JsonMinecraftPlayerAdvancement::class);
+        return $this->hasMany(MinecraftPlayer::class);
     }
 
     public function users(): BelongsToMany
@@ -78,7 +76,7 @@ class Player extends BaseModel implements Searchable
     public function getRatingAttribute($value)
     {
         if ($value === 0 || $value != null)
-            return  (int)round($value);
+            return (int) round($value);
 
         return null;
     }

@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 use Hash;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class ResetUserPasswordCommand extends Command
 {
@@ -33,8 +33,9 @@ class ResetUserPasswordCommand extends Command
         $username = $this->argument('username');
         $user = User::where('username', $username)->first();
 
-        if (!$user) {
-            $this->error("No user found with provided username");
+        if (! $user) {
+            $this->error('No user found with provided username');
+
             return Command::FAILURE;
         }
 
@@ -44,6 +45,7 @@ class ResetUserPasswordCommand extends Command
         ])->save();
 
         $this->info("Reset Successful! New Password for {$username}: {$randomPassword}");
+
         return Command::SUCCESS;
     }
 }

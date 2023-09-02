@@ -1,5 +1,8 @@
 <template>
-  <div class="floating-input relative w-full">
+  <div
+    class="floating-input relative w-full"
+    :class="divClass"
+  >
     <input
       :id="id"
       ref="input"
@@ -79,6 +82,10 @@ export default {
             type: String,
             default: ''
         },
+        divClass: {
+            type: String,
+            default: ''
+        }
     },
 
     data() {

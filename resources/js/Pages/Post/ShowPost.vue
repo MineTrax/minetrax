@@ -4,16 +4,8 @@
       :title="__('Post #:id by :name', {id: post.id, name: post.user.name})"
     />
 
-    <div class="px-2 py-4 md:py-12 md:px-16 max-w-8xl mx-auto">
+    <div class="px-2 py-4 md:py-12 md:px-8 max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
-        <div class="hidden md:flex flex-col space-y-4 flex-none w-1/4 h-screen sticky top-5">
-          <did-you-know-box :enabled="$page.props.generalSettings.enable_didyouknowbox" />
-          <discord-server-box
-            :enabled="$page.props.generalSettings.enable_discordbox"
-            :server="$page.props.generalSettings.discord_server_id"
-          />
-        </div>
-
         <div class="flex-grow">
           <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
