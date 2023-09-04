@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ce468bdfa341c109bfe30ca67362488",
+    "content-hash": "50ce1a6b8f3b8cc1c008d5c1f76263a4",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -3610,16 +3610,16 @@
         },
         {
             "name": "laravel/jetstream",
-            "version": "v3.3.3",
+            "version": "v4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/jetstream.git",
-                "reference": "6660ede858e1a964134732bb41dff9fd08450d0e"
+                "reference": "21f3f26c9acc69ae0d4fd72158ef2126d71c463a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/jetstream/zipball/6660ede858e1a964134732bb41dff9fd08450d0e",
-                "reference": "6660ede858e1a964134732bb41dff9fd08450d0e",
+                "url": "https://api.github.com/repos/laravel/jetstream/zipball/21f3f26c9acc69ae0d4fd72158ef2126d71c463a",
+                "reference": "21f3f26c9acc69ae0d4fd72158ef2126d71c463a",
                 "shasum": ""
             },
             "require": {
@@ -3633,7 +3633,7 @@
             "require-dev": {
                 "inertiajs/inertia-laravel": "^0.6.5",
                 "laravel/sanctum": "^3.0",
-                "livewire/livewire": "^2.12",
+                "livewire/livewire": "^3.0",
                 "mockery/mockery": "^1.0",
                 "orchestra/testbench": "^8.0",
                 "phpstan/phpstan": "^1.10",
@@ -3642,7 +3642,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.x-dev"
+                    "dev-master": "4.x-dev"
                 },
                 "laravel": {
                     "providers": [
@@ -3675,7 +3675,7 @@
                 "issues": "https://github.com/laravel/jetstream/issues",
                 "source": "https://github.com/laravel/jetstream"
             },
-            "time": "2023-08-23T13:50:02+00:00"
+            "time": "2023-08-27T15:50:10+00:00"
         },
         {
             "name": "laravel/prompts",
