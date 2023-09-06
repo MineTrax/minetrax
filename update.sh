@@ -15,7 +15,9 @@ php artisan down
 php artisan clear
 php artisan cache:clear
 php artisan config:clear
+php artisan route:clear
 php artisan view:clear
+php artisan optimize:clear
 
 # Try taking pull, if dont work then prompt for stash
 if git pull origin main; then
@@ -43,5 +45,6 @@ chmod -R 775 storage/* bootstrap/cache
 chown -R $USER:www-data .
 
 php artisan up
+php artisan optimize
 
 echo "Success! Your application is now up-to-date."
