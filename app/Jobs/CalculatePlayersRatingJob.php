@@ -41,12 +41,15 @@ class CalculatePlayersRatingJob implements ShouldQueue
         $playerSettings->refresh();
         $pluginSettings->refresh();
 
+        // id list of all servers.
+        $serversIds = Server::get()->pluck('id')->toArray();
+
         $playersList = Player::with('minecraftPlayers')->cursor();
         $minScore = Player::min('total_score');
         $maxScore = Player::max('total_score');
 
         foreach ($playersList as $player) {
-            $player->rating = $this->calculatePlayerRating($player, $minScore, $maxScore, $playerSettings);
+            $player->rating = $this->calculatePlayerRating($player, $minScore, $maxScore, $playerSettings, $serversIds);
             if ($pluginSettings->enable_sync_player_ranks_from_server && $server) {
                 $player->rank_id = $this->calculatePlayerRankIdFromServerWebQuery($server->ip_address, $server->webquery_port, $player);
             } else {
@@ -69,7 +72,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
         \Log::info("[RatingJob] Finished calculating rating & ranks for all players");
     }
 
-    private function calculatePlayerRating($player, $minScore, $maxScore, PlayerSettings $playerSettings): int|null
+    private function calculatePlayerRating($player, $minScore, $maxScore, PlayerSettings $playerSettings, array $serverIds): int|null
     {
         $rating = null;
         $minScore = $minScore ?? 0;
@@ -82,7 +85,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
         if ($playerSettings->is_custom_rating_enabled && $playerSettings->custom_rating_expression) {
             try {
                 $playerRatingCalculator = new PlayerRatingCalculator();
-                $rating = $playerRatingCalculator->calculate($playerSettings->custom_rating_expression, $player);
+                $rating = $playerRatingCalculator->calculate($playerSettings->custom_rating_expression, $player, $serverIds);
             } catch (\Exception $e) {
                 \Log::critical($e);
                 $rating = null;

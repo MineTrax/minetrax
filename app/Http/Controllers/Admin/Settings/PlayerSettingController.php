@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\Player;
+use App\Models\Server;
 use App\Settings\PlayerSettings;
 use App\Utils\PlayerRating\PlayerRatingCalculator;
 use App\Utils\PlayerRating\PlayerScoreCalculator;
@@ -41,18 +42,18 @@ class PlayerSettingController extends Controller
             'show_player_intel_to' => 'required|in:none,staff,self,login,all',
         ]);
 
-
         // If changes to score algorithm, force run CalculatePlayersJob for all players on next schedule
         if ($settings->is_custom_score_enabled != $request->is_custom_score_enabled || $settings->custom_score_expression != $request->custom_score_expression) {
             Cache::put('CalculatePlayersJob::forceRunForAllPlayers', true);
         }
 
         // Validate the expression before saving if is_custom_rating_enabled is true
+        $serversIds = Server::get()->pluck('id')->toArray();
         if ($request->is_custom_rating_enabled) {
             try {
                 $player = Player::with('minecraftPlayers')->first();
                 $playerRatingCalculator = new PlayerRatingCalculator();
-                $playerRatingCalculator->calculate($request->custom_rating_expression, $player);
+                $playerRatingCalculator->calculate($request->custom_rating_expression, $player, $serversIds);
             } catch (\Exception $e) {
                 return back()->withErrors(['custom_rating_expression' => __('Something wrong with your custom rating expression. Try validating it again.')]);
             }
@@ -63,7 +64,7 @@ class PlayerSettingController extends Controller
             try {
                 $player = Player::with('minecraftPlayers')->first();
                 $playerScoreCalculator = new PlayerScoreCalculator();
-                $playerScoreCalculator->calculate($request->custom_score_expression, $player);
+                $playerScoreCalculator->calculate($request->custom_score_expression, $player, $serversIds);
             } catch (\Exception $e) {
                 return back()->withErrors(['custom_rating_expression' => __('Something wrong with your custom score expression. Try validating it again.')]);
             }
@@ -90,7 +91,8 @@ class PlayerSettingController extends Controller
         try {
             $player = Player::with('minecraftPlayers')->whereUsername($request->player_username)->first();
             $playerRatingCalculator = new PlayerRatingCalculator();
-            $result = $playerRatingCalculator->calculate($request->custom_rating_expression, $player);
+            $serverIds = Server::get()->pluck('id')->toArray();
+            $result = $playerRatingCalculator->calculate($request->custom_rating_expression, $player, $serverIds);
         } catch (\NXP\Exception\DivisionByZeroException $e) {
             return response()->json(['message' => __('Divide by 0 not supported.')], 400);
         } catch (\NXP\Exception\UnknownFunctionException $e) {
@@ -116,7 +118,8 @@ class PlayerSettingController extends Controller
         try {
             $player = Player::with('minecraftPlayers')->whereUsername($request->player_username)->first();
             $playerScoreCalculator = new PlayerScoreCalculator();
-            $result = $playerScoreCalculator->calculate($request->custom_score_expression, $player);
+            $serverIds = Server::get()->pluck('id')->toArray();
+            $result = $playerScoreCalculator->calculate($request->custom_score_expression, $player, $serverIds);
         } catch (\NXP\Exception\DivisionByZeroException $e) {
             return response()->json(['message' => __('Divide by 0 not supported.')], 400);
         } catch (\NXP\Exception\UnknownFunctionException $e) {

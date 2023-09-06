@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\MinecraftPlayer;
 use App\Models\Player;
+use App\Models\Server;
 use App\Settings\PlayerSettings;
 use App\Utils\PlayerRating\PlayerScoreCalculator;
 use Cache;
@@ -32,6 +33,9 @@ class CalculatePlayersScoreJob implements ShouldQueue
     {
         $playerSettings->refresh();
 
+        // id list of all servers.
+        $serversIds = Server::get()->pluck('id')->toArray();
+
         // Check and set a flag if this is likely the first run
         $shouldForceRunForAllPlayers = Cache::pull('CalculatePlayersJob::forceRunForAllPlayers', false);
 
@@ -50,7 +54,7 @@ class CalculatePlayersScoreJob implements ShouldQueue
             }
 
             // Calculation of Score
-            $score = $this->calculatePlayerScore($player, $playerSettings);
+            $score = $this->calculatePlayerScore($player, $playerSettings, $serversIds);
             Player::where('uuid', $player->uuid)->update([
                 'total_score' => $score,
                 'total_money' => $mcPlayerDataFromServer->vault_balance ?? 0,
@@ -62,13 +66,13 @@ class CalculatePlayersScoreJob implements ShouldQueue
         Log::info('[ScoreJob] Finished calculating scores for all players');
     }
 
-    private function calculatePlayerScore($player, $playerSettings)
+    private function calculatePlayerScore($player, $playerSettings, $serversIds)
     {
         $score = 0;
         if ($playerSettings->is_custom_score_enabled && $playerSettings->custom_score_expression) {
             try {
                 $playerScoreCalculator = new PlayerScoreCalculator();
-                $score = $playerScoreCalculator->calculate($playerSettings->custom_score_expression, (object) $player);
+                $score = $playerScoreCalculator->calculate($playerSettings->custom_score_expression, (object) $player, $serversIds);
             } catch (\Exception $e) {
                 \Log::critical($e);
             }
