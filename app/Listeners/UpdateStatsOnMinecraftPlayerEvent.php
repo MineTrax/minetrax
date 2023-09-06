@@ -6,9 +6,8 @@ use App\Events\MinecraftPlayerEventCreated;
 use App\Models\MinecraftPlayer;
 use App\Models\Player;
 use Carbon\Carbon;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use DB;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UpdateStatsOnMinecraftPlayerEvent implements ShouldQueue
 {
@@ -36,7 +35,7 @@ class UpdateStatsOnMinecraftPlayerEvent implements ShouldQueue
         $exists = MinecraftPlayer::where('player_uuid', $minecraftPlayerEvent->player_uuid)
             ->where('server_id', $serverId)
             ->exists();
-        if (!$exists) {
+        if (! $exists) {
             return;
         }
 
@@ -112,6 +111,6 @@ class UpdateStatsOnMinecraftPlayerEvent implements ShouldQueue
                     'username' => $minecraftPlayerEvent->player_username,
                     'last_seen_at' => $sessionEndedAt ?? now(),
                 ]);
-        });
+        }, 5);
     }
 }

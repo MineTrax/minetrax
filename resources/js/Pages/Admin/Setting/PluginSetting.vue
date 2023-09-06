@@ -73,7 +73,6 @@
                                 :label="__('API Secret')"
                                 type="text"
                                 name="plugin_api_secret"
-                                :disabled="true"
                                 input-class="disabled:opacity-100 hover:cursor-pointer"
                                 @click="props.copy(settings.plugin_api_secret)"
                               />

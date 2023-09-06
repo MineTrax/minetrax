@@ -87,7 +87,7 @@ class ApiMinecraftServerIntelController extends Controller
                 $server->update([
                     'last_scanned_at' => now(),
                 ]);
-            });
+            }, 3);
 
             return response()->json([
                 'status' => 'success',

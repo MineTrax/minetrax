@@ -41,7 +41,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
         $playerSettings->refresh();
         $pluginSettings->refresh();
 
-        $playersList = Player::cursor();
+        $playersList = Player::with('minecraftPlayers')->cursor();
         $minScore = Player::min('total_score');
         $maxScore = Player::max('total_score');
 

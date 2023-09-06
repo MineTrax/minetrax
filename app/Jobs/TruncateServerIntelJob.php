@@ -5,15 +5,15 @@ namespace App\Jobs;
 use App\Models\MinecraftServerLiveInfo;
 use App\Models\MinecraftServerWorld;
 use App\Models\MinecraftWorldLiveInfo;
+use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use DB;
 
-class TruncateServerIntelJob implements ShouldQueue, ShouldBeUnique
+class TruncateServerIntelJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -35,6 +35,6 @@ class TruncateServerIntelJob implements ShouldQueue, ShouldBeUnique
             MinecraftWorldLiveInfo::query()->delete();
             MinecraftServerWorld::query()->delete();
             MinecraftServerLiveInfo::query()->delete();
-        });
+        }, 3);
     }
 }

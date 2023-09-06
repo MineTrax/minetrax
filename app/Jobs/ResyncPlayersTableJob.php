@@ -123,6 +123,6 @@ class ResyncPlayersTableJob implements ShouldQueue, ShouldBeUnique
             DB::table('players')
                 ->whereNotIn('uuid', $newPlayerListIds)
                 ->delete();
-        });
+        }, 3);
     }
 }

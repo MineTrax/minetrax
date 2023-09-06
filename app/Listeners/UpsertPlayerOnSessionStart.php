@@ -95,6 +95,6 @@ class UpsertPlayerOnSessionStart implements ShouldQueue
 
             $minecraftPlayerSession->minecraft_player_id = $minecraftPlayer->id;
             $minecraftPlayerSession->save();
-        });
+        }, 5);
     }
 }

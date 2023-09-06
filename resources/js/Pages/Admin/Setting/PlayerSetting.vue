@@ -94,6 +94,24 @@
                               v-if="showHelpForRating"
                               class="flex flex-col mt-2 dark:text-gray-400"
                             >
+                              <span class="font-bold">{{ __("Available Dynamic Variables (per server)") }}</span>
+                              <ul class="list-disc list px-4">
+                                <li
+                                  v-for="(description, variable) in variables_for_rating_dynamic"
+                                  :key="variable"
+                                  class="text-xs list-item"
+                                >
+                                  <span class="font-bold">{{ variable }} </span>
+                                  -
+                                  <span>{{ description }}</span>
+                                </li>
+                              </ul>
+                            </div>
+
+                            <div
+                              v-if="showHelpForRating"
+                              class="flex flex-col mt-2 dark:text-gray-400"
+                            >
                               <span class="font-bold">{{ __("Available Functions") }}</span>
                               <ul class="list-disc list px-4">
                                 <li
@@ -196,6 +214,24 @@
                               <ul class="list-disc list px-4">
                                 <li
                                   v-for="(description, variable) in variables_for_score_static"
+                                  :key="variable"
+                                  class="text-xs list-item"
+                                >
+                                  <span class="font-bold">{{ variable }} </span>
+                                  -
+                                  <span>{{ description }}</span>
+                                </li>
+                              </ul>
+                            </div>
+
+                            <div
+                              v-if="showHelpForScore"
+                              class="flex flex-col mt-2 dark:text-gray-400"
+                            >
+                              <span class="font-bold">{{ __("Available Dynamic Variables (per server)") }}</span>
+                              <ul class="list-disc list px-4">
+                                <li
+                                  v-for="(description, variable) in variables_for_score_dynamic"
                                   :key="variable"
                                   class="text-xs list-item"
                                 >
@@ -436,6 +472,8 @@ export default {
         settings: Object,
         variables_for_rating_static: Object,
         variables_for_score_static: Object,
+        variables_for_score_dynamic: Object,
+        variables_for_rating_dynamic: Object,
         math_functions_for_rating: Object,
     },
     data() {

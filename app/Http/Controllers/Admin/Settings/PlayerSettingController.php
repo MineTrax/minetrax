@@ -23,7 +23,9 @@ class PlayerSettingController extends Controller
         return Inertia::render('Admin/Setting/PlayerSetting', [
             'settings' => $settings->toArray(),
             'variables_for_score_static' => config('constants.variables_for_score_static'),
+            'variables_for_score_dynamic' => config('constants.variables_for_score_dynamic'),
             'variables_for_rating_static' => config('constants.variables_for_rating_static'),
+            'variables_for_rating_dynamic' => config('constants.variables_for_rating_dynamic'),
             'math_functions_for_rating' => config('constants.math_functions_for_rating_and_score'),
         ]);
     }
@@ -48,7 +50,7 @@ class PlayerSettingController extends Controller
         // Validate the expression before saving if is_custom_rating_enabled is true
         if ($request->is_custom_rating_enabled) {
             try {
-                $player = Player::first();
+                $player = Player::with('minecraftPlayers')->first();
                 $playerRatingCalculator = new PlayerRatingCalculator();
                 $playerRatingCalculator->calculate($request->custom_rating_expression, $player);
             } catch (\Exception $e) {
@@ -59,7 +61,7 @@ class PlayerSettingController extends Controller
 
         if ($request->is_custom_score_enabled) {
             try {
-                $player = Player::first();
+                $player = Player::with('minecraftPlayers')->first();
                 $playerScoreCalculator = new PlayerScoreCalculator();
                 $playerScoreCalculator->calculate($request->custom_score_expression, $player);
             } catch (\Exception $e) {
@@ -86,7 +88,7 @@ class PlayerSettingController extends Controller
         ]);
 
         try {
-            $player = Player::whereUsername($request->player_username)->first();
+            $player = Player::with('minecraftPlayers')->whereUsername($request->player_username)->first();
             $playerRatingCalculator = new PlayerRatingCalculator();
             $result = $playerRatingCalculator->calculate($request->custom_rating_expression, $player);
         } catch (\NXP\Exception\DivisionByZeroException $e) {
@@ -112,7 +114,7 @@ class PlayerSettingController extends Controller
         ]);
 
         try {
-            $player = Player::whereUsername($request->player_username)->first();
+            $player = Player::with('minecraftPlayers')->whereUsername($request->player_username)->first();
             $playerScoreCalculator = new PlayerScoreCalculator();
             $result = $playerScoreCalculator->calculate($request->custom_score_expression, $player);
         } catch (\NXP\Exception\DivisionByZeroException $e) {

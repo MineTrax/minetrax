@@ -20,7 +20,6 @@ class ApiPlayerController extends Controller
      * If there is ip_address provided then also return IP address whois details
      * no matter what is result from above cases.
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function postWhoisPlayer(Request $request)
@@ -28,7 +27,7 @@ class ApiPlayerController extends Controller
         $request->validate([
             'username' => ['required_without:uuid', 'string', 'min:3'],
             'uuid' => ['required_without:username', 'uuid'],
-            'ip_address' => ['sometimes', 'nullable', 'ip']
+            'ip_address' => ['sometimes', 'nullable', 'ip'],
         ]);
 
         $username = $request->uuid ?? $request->username;
@@ -39,8 +38,8 @@ class ApiPlayerController extends Controller
         if ($playerFoundCount && $request->only_exact_result) {
             $playerFoundCount = 1;
         }
-        if (!$playerFoundCount && !$request->only_exact_result) {
-            $playerFoundCount = Player::where($columnName, 'LIKE', '%' . $username . '%')->whereNotNull($columnName)->count();
+        if (! $playerFoundCount && ! $request->only_exact_result) {
+            $playerFoundCount = Player::where($columnName, 'LIKE', '%'.$username.'%')->whereNotNull($columnName)->count();
         }
 
         $whoisData['count'] = $playerFoundCount;
@@ -50,7 +49,7 @@ class ApiPlayerController extends Controller
             case 0:
                 break;
             case 1:
-                $player = Player::with('users:id,name,username')->where($columnName, 'LIKE', $username )->whereNotNull($columnName)->orderBy('position')->first();
+                $player = Player::with('users:id,name,username')->where($columnName, 'LIKE', '%'.$username.'%')->whereNotNull($columnName)->orderBy('position')->first();
                 if ($player->users->count()) {
                     $player->user = $player->users->first();
                     unset($player->users);
@@ -58,7 +57,7 @@ class ApiPlayerController extends Controller
                 $players = $players->push($player);
                 break;
             default:
-                $players = Player::where($columnName, 'LIKE', '%' . $username . '%')->whereNotNull($columnName)->limit(10)->orderBy('position')->get();
+                $players = Player::where($columnName, 'LIKE', '%'.$username.'%')->whereNotNull($columnName)->limit(10)->orderBy('position')->get();
                 break;
         }
 
@@ -74,8 +73,8 @@ class ApiPlayerController extends Controller
                     'last_seen_at' => $pl->last_seen_at?->diffForHumans(),
                     'rank' => $pl->rank ? $pl->rank->name : null,
                     'country' => $pl->country ? $pl->country->name : 'Terra Incognita',
-                    'user' => $pl->user ? '@' . $pl->user->username : null,
-                    'url' => route('player.show', [$pl->username ?? $pl->uuid])
+                    'user' => $pl->user ? '@'.$pl->user->username : null,
+                    'url' => route('player.show', [$pl->username ?? $pl->uuid]),
                 ];
             });
         }
@@ -89,7 +88,7 @@ class ApiPlayerController extends Controller
                 'iso_code' => $country->iso_code,
                 'country' => $country->country,
                 'city' => $country->city,
-                'state_name' => $country->state_name
+                'state_name' => $country->state_name,
             ];
         }
         $whoisData['geo'] = $geoResponse;
@@ -97,7 +96,7 @@ class ApiPlayerController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Ok',
-            'data' => $whoisData
+            'data' => $whoisData,
         ]);
     }
 
@@ -109,16 +108,16 @@ class ApiPlayerController extends Controller
         ]);
 
         $responseData = [
-                'uuid' => $request->uuid,
-                'username' => $request->username,
-                'is_verified' => false,
-                'daily_rewards_claimed_at' => null,
-                'player_id' => null,
+            'uuid' => $request->uuid,
+            'username' => $request->username,
+            'is_verified' => false,
+            'daily_rewards_claimed_at' => null,
+            'player_id' => null,
         ];
 
         $player = Player::where('uuid', $request->uuid)
-        ->with(['users:id,name,username,profile_photo_path,verified_at', 'rank:id,shortname,name', 'country:id,name,iso_code'])
-        ->first();
+            ->with(['users:id,name,username,profile_photo_path,verified_at', 'rank:id,shortname,name', 'country:id,name,iso_code'])
+            ->first();
 
         if ($player) {
             $responseData['is_verified'] = $player->users->count() > 0;

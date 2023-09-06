@@ -10,15 +10,15 @@ use App\Models\MinecraftPlayerPvpKill;
 use App\Models\MinecraftPlayerSession;
 use App\Models\MinecraftPlayerWorldStat;
 use App\Models\Player;
+use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use DB;
 
-class TruncatePlayerIntelJob implements ShouldQueue, ShouldBeUnique
+class TruncatePlayerIntelJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -35,7 +35,7 @@ class TruncatePlayerIntelJob implements ShouldQueue, ShouldBeUnique
      */
     public function handle(): void
     {
-        DB::transaction(function() {
+        DB::transaction(function () {
             // Delete player intel.
             MinecraftPlayerDeath::query()->delete();
             MinecraftPlayerEvent::query()->delete();
@@ -45,6 +45,6 @@ class TruncatePlayerIntelJob implements ShouldQueue, ShouldBeUnique
             MinecraftPlayerSession::query()->delete();
             MinecraftPlayer::query()->delete();
             Player::query()->delete();
-        });
+        }, 3);
     }
 }

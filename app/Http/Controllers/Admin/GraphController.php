@@ -347,7 +347,7 @@ class GraphController extends Controller
             ->get()
             ->map(function ($item) {
                 return [
-                    'name' => $item->minecraft_version,
+                    'name' => $item->minecraft_version ?? __('Unknown'),
                     'value' => $item->count,
                 ];
             });
@@ -382,7 +382,7 @@ class GraphController extends Controller
             ->get()
             ->map(function ($item) {
                 return [
-                    'name' => $item->join_address,
+                    'name' => $item->join_address ?? __('Unknown'),
                     'value' => $item->count,
                 ];
             });
@@ -446,7 +446,7 @@ class GraphController extends Controller
 
         $finalDataSet = [];
         foreach ($dataSets as $address => $dataSet) {
-            $seriesName[] = $address;
+            $seriesName[] = $address ?: __('Unknown');
 
             $dataSet = \Arr::sort($dataSet, function ($value, $key) {
                 return $key;
@@ -521,7 +521,7 @@ class GraphController extends Controller
 
         $finalDataSet = [];
         foreach ($dataSets as $version => $dataSet) {
-            $seriesName[] = $version;
+            $seriesName[] = $version ?: __('Unknown');
 
             $dataSet = \Arr::sort($dataSet, function ($value, $key) {
                 return $key;
