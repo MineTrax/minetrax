@@ -176,6 +176,21 @@
           </g>
         </svg>
       </a>
+
+      <a
+        v-if="discord"
+        v-tippy
+        :title="__('Discord')"
+        :href="discord"
+        target="_blank"
+        class="inline-block p-1 hover:bg-indigo-600 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
+      >
+
+        <icon
+          name="discord"
+          class="h-8 w-8 p-1 fill-current"
+        />
+      </a>
     </div>
   </div>
 </template>

@@ -64,10 +64,10 @@ class HomeController extends Controller
             ->get()
             // Filter out duplicate user sessions but don't filter guest session with null user_id
             ->filter(function ($user) use ($onlineUsers) {
-                if (!$user->user) {
+                if (! $user->user) {
                     $onlineUsers->push($user);
                 } else {
-                    if (!$onlineUsers->firstWhere('user_id', $user->user_id)) {
+                    if (! $onlineUsers->firstWhere('user_id', $user->user_id)) {
                         $onlineUsers->push($user);
                     }
                 }
@@ -115,6 +115,11 @@ class HomeController extends Controller
                 'home_hero_bg_repeat_css' => $themeSettings->home_hero_bg_repeat_css,
                 'home_hero_bg_attachment_css' => $themeSettings->home_hero_bg_attachment_css,
                 'show_join_box_in_home_hero' => $themeSettings->show_join_box_in_home_hero,
+                'home_hero_fg_image_path_dark' => $themeSettings->home_hero_fg_image_path_dark,
+                'home_hero_fg_image_path_light' => $themeSettings->home_hero_fg_image_path_light,
+                'show_fg_image_box_in_home_hero' => $themeSettings->show_fg_image_box_in_home_hero,
+                'show_discord_box_in_home_hero' => $themeSettings->show_discord_box_in_home_hero,
+                'home_hero_bg_particles' => $themeSettings->home_hero_bg_particles,
             ],
         ]);
     }
@@ -122,6 +127,7 @@ class HomeController extends Controller
     public function didYouKnow(): \Illuminate\Http\JsonResponse
     {
         $didYouKnowArray = json_decode(Storage::disk('local')->get('misc/did-you-know.json'), true);
+
         return response()->json(\Arr::random($didYouKnowArray));
     }
 
@@ -134,9 +140,10 @@ class HomeController extends Controller
         $oneHour = 3600;
         $featureList = Cache::remember('feature:list', $oneHour, function () {
             $features = Http::withoutVerifying()->timeout(5)->get('https://q0rmzst113.execute-api.eu-central-1.amazonaws.com/v1/features')->json();
-            if (!$features['body']) {
+            if (! $features['body']) {
                 throw new \Exception('Failed to get data');
             }
+
             return $features['body'];
         });
 
@@ -147,23 +154,23 @@ class HomeController extends Controller
 
     public function version()
     {
-        $myVersion = config("app.version");
+        $myVersion = config('app.version');
 
         $latestVersion = Http::withoutVerifying()->timeout(5)->get(
             'https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws',
             [
                 'version' => $myVersion,
                 'from' => 'web',
-                'appName' => config("app.name"),
-                'appUrl' => config("app.url"),
+                'appName' => config('app.name'),
+                'appUrl' => config('app.url'),
             ]
         )->json();
         $latestVersion = $latestVersion['web'];
 
         $response = [
-            "my_version" => $myVersion,
-            "latest_version" => $latestVersion,
-            "is_uptodate" => $myVersion == $latestVersion,
+            'my_version' => $myVersion,
+            'latest_version' => $latestVersion,
+            'is_uptodate' => $myVersion == $latestVersion,
         ];
 
         return response()->json($response);
@@ -172,13 +179,14 @@ class HomeController extends Controller
     public function visitVotingSite(Request $request, GeneralSettings $generalSettings)
     {
         $voteSitesArray = $generalSettings->voteforserverbox_content;
-        if (!$voteSitesArray) {
+        if (! $voteSitesArray) {
             return abort(404);
         }
 
         $id = (int) $request->id;
         if (array_key_exists($id - 1, $voteSitesArray)) {
             $votingSiteData = $voteSitesArray[$id - 1];
+
             return redirect()->away($votingSiteData['url']);
         } else {
             return abort(404);

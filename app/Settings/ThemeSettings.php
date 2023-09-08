@@ -19,6 +19,11 @@ class ThemeSettings extends Settings
     public string $home_hero_bg_repeat_css;
     public string $home_hero_bg_attachment_css;
     public bool $show_join_box_in_home_hero;
+    public ?string $home_hero_fg_image_path_dark;
+    public ?string $home_hero_fg_image_path_light;
+    public bool $show_fg_image_box_in_home_hero;
+    public bool $show_discord_box_in_home_hero;
+    public ?string $home_hero_bg_particles;
 
     public static function group(): string
     {

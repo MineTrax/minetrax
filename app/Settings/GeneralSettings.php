@@ -33,6 +33,7 @@ class GeneralSettings extends Settings
     public ?string $tiktok_url;
     public ?string $linkedin_url;
     public ?string $threads_url;
+    public ?string $discord_invite_url;
 
     public bool $enable_discordbox;
     public ?string $discord_server_id;
@@ -40,6 +41,9 @@ class GeneralSettings extends Settings
     public bool $enable_donation_box;
     public ?string $donation_box_url;
     public bool $enable_sticky_header_menu;
+    public ?string $header_broadcast_text;
+    public ?string $header_broadcast_url;
+    public bool $enable_topplayersbox;
 
     public static function group(): string
     {

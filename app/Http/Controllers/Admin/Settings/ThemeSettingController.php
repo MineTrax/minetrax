@@ -8,13 +8,12 @@ use App\Http\Controllers\Controller;
 use App\Settings\ThemeSettings;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Storage;
-use Illuminate\Support\Str;
 
 class ThemeSettingController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware(['can:update settings']);
@@ -50,6 +49,11 @@ class ThemeSettingController extends Controller
             'home_hero_bg_repeat_css' => ['nullable', 'in:repeat,repeat-x,repeat-y,no-repeat,round,space'],
             'home_hero_bg_attachment_css' => ['nullable', 'in:scroll,fixed,local'],
             'show_join_box_in_home_hero' => ['required', 'boolean'],
+            'show_fg_image_box_in_home_hero' => ['required', 'boolean'],
+            'show_discord_box_in_home_hero' => ['required', 'boolean'],
+            'home_hero_bg_particles' => ['nullable', 'string', 'json'],
+            'home_hero_fg_image_light' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp', 'max:1024'],
+            'home_hero_fg_image_dark' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp', 'max:1024'],
         ]);
 
         $themeSettings->color_mode = $request->color_mode;
@@ -65,19 +69,36 @@ class ThemeSettingController extends Controller
         $themeSettings->home_hero_bg_attachment_css = $request->home_hero_bg_attachment_css;
         $themeSettings->show_join_box_in_home_hero = $request->show_join_box_in_home_hero;
 
+        $themeSettings->show_fg_image_box_in_home_hero = $request->show_fg_image_box_in_home_hero;
+        $themeSettings->show_discord_box_in_home_hero = $request->show_discord_box_in_home_hero;
+        $themeSettings->home_hero_bg_particles = $request->home_hero_bg_particles;
 
         if ($request->hasFile('home_hero_bg_image_light')) {
             $path = Storage::putFileAs(
-                'public', $request->file('home_hero_bg_image_light'), 'home_hero_bg_image_light.' . $request->file('home_hero_bg_image_light')->getClientOriginalExtension()
+                'public', $request->file('home_hero_bg_image_light'), 'home_hero_bg_image_light.'.$request->file('home_hero_bg_image_light')->getClientOriginalExtension()
             );
-            $themeSettings->home_hero_bg_image_path_light = Storage::url($path) . '?hash=' . \Str::random(8);
+            $themeSettings->home_hero_bg_image_path_light = Storage::url($path).'?hash='.\Str::random(8);
         }
 
         if ($request->hasFile('home_hero_bg_image_dark')) {
             $path = Storage::putFileAs(
-                'public', $request->file('home_hero_bg_image_dark'), 'home_hero_bg_image_dark.' . $request->file('home_hero_bg_image_dark')->getClientOriginalExtension()
+                'public', $request->file('home_hero_bg_image_dark'), 'home_hero_bg_image_dark.'.$request->file('home_hero_bg_image_dark')->getClientOriginalExtension()
             );
-            $themeSettings->home_hero_bg_image_path_dark = Storage::url($path) . '?hash=' . \Str::random(8);
+            $themeSettings->home_hero_bg_image_path_dark = Storage::url($path).'?hash='.\Str::random(8);
+        }
+
+        if ($request->hasFile('home_hero_fg_image_light')) {
+            $path = Storage::putFileAs(
+                'public', $request->file('home_hero_fg_image_light'), 'home_hero_fg_image_light.'.$request->file('home_hero_fg_image_light')->getClientOriginalExtension()
+            );
+            $themeSettings->home_hero_fg_image_path_light = Storage::url($path).'?hash='.\Str::random(8);
+        }
+
+        if ($request->hasFile('home_hero_fg_image_dark')) {
+            $path = Storage::putFileAs(
+                'public', $request->file('home_hero_fg_image_dark'), 'home_hero_fg_image_dark.'.$request->file('home_hero_fg_image_dark')->getClientOriginalExtension()
+            );
+            $themeSettings->home_hero_fg_image_path_dark = Storage::url($path).'?hash='.\Str::random(8);
         }
 
         $themeSettings->save();

@@ -15,6 +15,9 @@ export default defineConfig({
                     base: null,
                     includeAbsolute: false,
                 },
+                compilerOptions: {
+                    isCustomElement: (tag) => ['marquee'].includes(tag),
+                }
             },
         }),
     ],

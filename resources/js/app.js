@@ -10,6 +10,7 @@ import VueTippy from 'vue-tippy';
 import translations from '@/Mixins/translations.js';
 import confirmDirective from './Directives/confirm.js';
 import Swal from 'sweetalert2';
+import Particles from 'vue3-particles';
 import AppHead from '@/Components/AppHead.vue';
 
 createInertiaApp({
@@ -22,6 +23,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const VueApp = createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(Particles)
             // eslint-disable-next-line no-undef
             .use(ZiggyVue, Ziggy);
 

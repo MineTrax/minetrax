@@ -100,6 +100,136 @@
                             />
                           </div>
 
+                          <!-- Hero Foreground Image Light -->
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <input
+                              id="home_hero_fg_image_light"
+                              ref="home_hero_fg_image_light"
+                              type="file"
+                              class="hidden"
+                              @change="updateHomeHeroFgImageLightPreview"
+                            >
+
+                            <label
+                              for="home_hero_fg_image_light"
+                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            >{{ __("Hero Foreground Image Light") }}</label>
+
+                            <div
+                              v-show="!homeHeroFgImageLightPreview"
+                              class="mt-2 flex justify-center items-center h-40"
+                            >
+                              <img
+                                v-if="settings.home_hero_fg_image_path_light"
+                                :src="settings.home_hero_fg_image_path_light"
+                                alt="home_hero_fg_image_light"
+                                class="rounded h-40"
+                              >
+                              <span
+                                v-else
+                                class="text-gray-400 italic text-xs"
+                              >
+                                {{ __("No Foreground Image.") }}
+                              </span>
+                            </div>
+
+                            <div
+                              v-show="homeHeroFgImageLightPreview"
+                              class="mt-2"
+                            >
+                              <span
+                                class="block rounded h-40"
+                                :style="`background-size: contain; background-repeat: no-repeat; background-position: center center; background-image: url(${homeHeroFgImageLightPreview});`"
+                              />
+                            </div>
+
+                            <jet-secondary-button
+                              class="mt-2 mr-2"
+                              type="button"
+                              @click.prevent="selectHomeHeroFgImageLight"
+                            >
+                              {{ __("Select A New Image") }}
+                            </jet-secondary-button>
+
+                            <div class="mt-2 text-xs text-gray-400">
+                              {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp
+                            </div>
+
+                            <jet-input-error
+                              :message="form.errors.home_hero_fg_image_light"
+                              class="mt-2"
+                            />
+                          </div>
+
+
+                          <!-- Hero Foreground Image Dark -->
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <input
+                              id="home_hero_fg_image_dark"
+                              ref="home_hero_fg_image_dark"
+                              type="file"
+                              class="hidden"
+                              @change="updateHomeHeroFgImageDarkPreview"
+                            >
+
+                            <label
+                              for="home_hero_fg_image_dark"
+                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            >{{ __("Hero Foreground Image Dark") }}</label>
+
+                            <div
+                              v-show="!homeHeroFgImageDarkPreview"
+                              class="mt-2 flex justify-center items-center h-40"
+                            >
+                              <img
+                                v-if="settings.home_hero_fg_image_path_dark"
+                                :src="settings.home_hero_fg_image_path_dark"
+                                alt="home_hero_fg_image_dark"
+                                class="rounded h-40 object-center"
+                              >
+                              <span
+                                v-else
+                                class="text-gray-400 italic text-xs"
+                              >
+                                {{ __("No Foreground Image.") }}
+                              </span>
+                            </div>
+
+                            <div
+                              v-show="homeHeroFgImageDarkPreview"
+                              class="mt-2"
+                            >
+                              <span
+                                class="block rounded h-40"
+                                :style="`background-size: contain; background-repeat: no-repeat; background-position: center center; background-image: url(${homeHeroFgImageDarkPreview});`"
+                              />
+                            </div>
+
+                            <jet-secondary-button
+                              class="mt-2 mr-2"
+                              type="button"
+                              @click.prevent="selectHomeHeroFgImageDark"
+                            >
+                              {{ __("Select A New Image") }}
+                            </jet-secondary-button>
+
+                            <div class="mt-2 text-xs text-gray-400">
+                              {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp
+                            </div>
+
+                            <jet-input-error
+                              :message="form.errors.home_hero_fg_image_dark"
+                              class="mt-2"
+                            />
+                          </div>
+
+
                           <!-- Hero Image Light -->
                           <div
                             v-if="form.enable_home_hero_section"
@@ -348,9 +478,52 @@
                               id="show_join_box_in_home_hero"
                               v-model="form.show_join_box_in_home_hero"
                               :label="__('Show Join Box in Hero Section')"
-                              :help="__('If enabled, will show server join details like player count & join hostname in hero section.')"
+                              :help="__('If enabled, will show server join details like player count & join hostname in hero section. (left side)')"
                               name="show_join_box_in_home_hero"
                               :error="form.errors.show_join_box_in_home_hero"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="flex items-center col-span-3 sm:col-span-3"
+                          >
+                            <x-checkbox
+                              id="show_fg_image_box_in_home_hero"
+                              v-model="form.show_fg_image_box_in_home_hero"
+                              :label="__('Show Foreground Image Box in Hero Section')"
+                              :help="__('If enabled, will show middle foreground image box in hero section (middle).')"
+                              name="show_fg_image_box_in_home_hero"
+                              :error="form.errors.show_fg_image_box_in_home_hero"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="flex items-center col-span-3 sm:col-span-3"
+                          >
+                            <x-checkbox
+                              id="show_discord_box_in_home_hero"
+                              v-model="form.show_discord_box_in_home_hero"
+                              :label="__('Show Discord Box in Hero Section')"
+                              :help="__('If enabled, will show discord box in hero section (right side). Make sure to add Discord Invite URL & Discord Server ID in General Settings.')"
+                              name="show_discord_box_in_home_hero"
+                              :error="form.errors.show_discord_box_in_home_hero"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_home_hero_section"
+                            class="col-span-6 sm:col-span-6"
+                          >
+                            <x-textarea
+                              id="home_hero_bg_particles"
+                              v-model="form.home_hero_bg_particles"
+                              :auto-resize="false"
+                              :label="__('Particle Effect Options')"
+                              :help="__('tsParticles Options json. See https://minetrax.github.io/docs/web/theme-settings for more info. (Set it empty to disable particles effect)')"
+                              :error="form.errors.home_hero_bg_particles"
+                              name="home_hero_bg_particles"
                             />
                           </div>
                         </div>
@@ -387,6 +560,7 @@
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
@@ -398,6 +572,7 @@ export default {
         AdminLayout,
         XCheckbox,
         XSelect,
+        XTextarea,
         LoadingButton,
         XInput,
         JetInputError,
@@ -427,7 +602,14 @@ export default {
                 show_join_box_in_home_hero: this.settings.show_join_box_in_home_hero,
                 home_hero_bg_image_light: null,
                 home_hero_bg_image_dark: null,
+                show_fg_image_box_in_home_hero: this.settings.show_fg_image_box_in_home_hero,
+                show_discord_box_in_home_hero: this.settings.show_discord_box_in_home_hero,
+                home_hero_bg_particles: this.settings.home_hero_bg_particles,
+                home_hero_fg_image_light: null,
+                home_hero_fg_image_dark: null,
             }),
+            homeHeroFgImageLightPreview: null,
+            homeHeroFgImageDarkPreview: null,
             homeHeroBgImageLightPreview: null,
             homeHeroBgImageLightPreviewIsVideo: false,
             homeHeroBgImageDarkPreview: null,
@@ -505,6 +687,32 @@ export default {
             this.$refs.home_hero_bg_image_dark.click();
         },
 
+        updateHomeHeroFgImageDarkPreview() {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                this.homeHeroFgImageDarkPreview = e.target.result;
+            };
+
+            reader.readAsDataURL(this.$refs.home_hero_fg_image_dark.files[0]);
+        },
+        selectHomeHeroFgImageDark() {
+            this.$refs.home_hero_fg_image_dark.click();
+        },
+
+        updateHomeHeroFgImageLightPreview() {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                this.homeHeroFgImageLightPreview = e.target.result;
+            };
+
+            reader.readAsDataURL(this.$refs.home_hero_fg_image_light.files[0]);
+        },
+        selectHomeHeroFgImageLight() {
+            this.$refs.home_hero_fg_image_light.click();
+        },
+
         saveThemeSetting() {
             if (this.$refs.home_hero_bg_image_light) {
                 this.form.home_hero_bg_image_light = this.$refs.home_hero_bg_image_light.files[0];
@@ -512,6 +720,14 @@ export default {
 
             if (this.$refs.home_hero_bg_image_dark) {
                 this.form.home_hero_bg_image_dark = this.$refs.home_hero_bg_image_dark.files[0];
+            }
+
+            if (this.$refs.home_hero_fg_image_light) {
+                this.form.home_hero_fg_image_light = this.$refs.home_hero_fg_image_light.files[0];
+            }
+
+            if (this.$refs.home_hero_fg_image_dark) {
+                this.form.home_hero_fg_image_dark = this.$refs.home_hero_fg_image_dark.files[0];
             }
 
             this.form.post(route('admin.setting.theme.update'), {

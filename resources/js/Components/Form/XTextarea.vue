@@ -74,6 +74,10 @@ export default {
         helpErrorFlex: {
             type: String,
             default: 'flex-col'
+        },
+        autoResize: {
+            type: Boolean,
+            default: true
         }
     },
 
@@ -110,9 +114,11 @@ export default {
         },
         handleInputEvent($event) {
             this.$emit('update:modelValue', $event.target.value);
-            const textarea = this.$refs['input'];
-            textarea.style.height = 'initial';
-            textarea.style.height = `${textarea.scrollHeight}px`;
+            if (this.autoResize) {
+                const textarea = this.$refs['input'];
+                textarea.style.height = 'initial';
+                textarea.style.height = `${textarea.scrollHeight}px`;
+            }
         },
     }
 };

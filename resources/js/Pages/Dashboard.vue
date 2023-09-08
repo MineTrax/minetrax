@@ -34,7 +34,7 @@
           :server-list="chatServerList"
         />
         <top-players-list-box
-          :enabled="true"
+          :enabled="generalSettings.enable_topplayersbox"
           :players="top10Players"
           :title="__('Top 10 Players')"
         />
@@ -62,6 +62,7 @@
           :facebook="generalSettings.facebook_url"
           :linkedin="generalSettings.linkedin_url"
           :tiktok="generalSettings.tiktok_url"
+          :discord="generalSettings.discord_invite_url"
         />
       </div>
     </div>

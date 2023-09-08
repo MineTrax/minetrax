@@ -4,6 +4,7 @@ import Toast from '@/Components/Toast.vue';
 import Icon from '@/Components/Icon.vue';
 import AppHead from '@/Components/AppHead.vue';
 import MainNavbarCustom from '@/Shared/MainNavbarCustom.vue';
+import HeaderBroadcastBar from '@/Shared/HeaderBroadcastBar.vue';
 import CookieConsent from '@/Components/CookieConsent.vue';
 
 export default {
@@ -14,6 +15,7 @@ export default {
         Toast,
         JetBanner,
         CookieConsent,
+        HeaderBroadcastBar
     },
 
     data() {
@@ -58,6 +60,7 @@ export default {
 
       <!-- Page Content -->
       <main class="min-h-[80vh]">
+        <HeaderBroadcastBar />
         <slot />
       </main>
 

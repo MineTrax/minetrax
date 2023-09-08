@@ -7,7 +7,7 @@ class AddHomeHeroConfigToThemeSettings extends SettingsMigration
     public function up(): void
     {
         // Hero section (theme)
-        $this->migrator->add('theme.enable_home_hero_section', false);
+        $this->migrator->add('theme.enable_home_hero_section', true);
         $this->migrator->add('theme.home_hero_bg_image_path_dark', '/images/def_home_hero_bg_image_dark.webp');
         $this->migrator->add('theme.home_hero_bg_image_path_light', '/images/def_home_hero_bg_image_light.webp');
         $this->migrator->add('theme.home_hero_bg_size_css', 'cover');

@@ -4,11 +4,11 @@
       :title="__('General Settings')"
     />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto flex">
+    <div class="flex max-w-6xl px-10 py-12 mx-auto">
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-cool-gray-800 shadow w-full rounded">
-            <div class="px-6 py-4 border-b font-bold dark:border-gray-700 dark:text-gray-200">
+          <div class="w-full bg-white rounded shadow dark:bg-cool-gray-800">
+            <div class="px-6 py-4 font-bold border-b dark:border-gray-700 dark:text-gray-200">
               {{ __("General Settings") }}
             </div>
 
@@ -19,7 +19,7 @@
                     autocomplete="off"
                     @submit.prevent="saveSetting"
                   >
-                    <div class="shadow overflow-hidden sm:rounded-md">
+                    <div class="overflow-hidden shadow sm:rounded-md">
                       <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
                           <div class="col-span-6 sm:col-span-3">
@@ -205,6 +205,16 @@
                             />
                           </div>
 
+                          <div class="flex items-center col-span-6 sm:col-span-3">
+                            <x-checkbox
+                              id="enable_topplayersbox"
+                              v-model="form.enable_topplayersbox"
+                              :label="__('Top Players Box')"
+                              :help="__('Enable Top Players Box in Homepage')"
+                              name="enable_topplayersbox"
+                              :error="form.errors.enable_topplayersbox"
+                            />
+                          </div>
 
                           <div class="flex items-center col-span-6 sm:col-span-3">
                             <x-checkbox
@@ -214,6 +224,21 @@
                               :help="__('Enable social box in homepage.')"
                               name="enable_socialbox"
                               :error="form.errors.enable_socialbox"
+                            />
+                          </div>
+                          <div
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-input
+                              id="discord_invite_url"
+                              v-model="form.discord_invite_url"
+                              :label="__('Discord Invite URL')"
+                              :error="form.errors.discord_invite_url"
+                              autocomplete="discord_invite_url"
+                              type="text"
+                              name="discord_invite_url"
+                              :help="__('Eg: https://discord.gg/Hzfj27k')"
+                              help-error-flex="flex-col"
                             />
                           </div>
                           <div
@@ -380,15 +405,15 @@
 
                           <div
                             v-if="form.enable_voteforserverbox"
-                            class="col-span-6 sm:col-span-6 flex-col space-y-1"
+                            class="flex-col col-span-6 space-y-1 sm:col-span-6"
                           >
                             <div class="flex space-x-4">
                               <div class="w-5" />
                               <label
-                                class="block flex-1 text-sm font-medium text-gray-700 dark:text-gray-400"
+                                class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
                               >{{ __("Voting Site Link") }}</label>
                               <label
-                                class="block flex-1 text-sm font-medium text-gray-700 dark:text-gray-400"
+                                class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
                               >{{ __("Display Name") }}</label>
                             </div>
 
@@ -469,19 +494,42 @@
                               v-model="form.welcomebox_content"
                               aria-label="welcomebox"
                               name="welcomebox_content"
-                              class="mt-1 focus:ring-light-blue-500 focus:border-light-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                              class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
                             />
                             <jet-input-error
                               :message="form.errors.welcomebox_content"
                               class="mt-2"
                             />
                           </div>
+
+                          <div class="col-span-6 sm:col-span-3">
+                            <x-input
+                              id="header_broadcast_text"
+                              v-model="form.header_broadcast_text"
+                              :label="__('Broadcast Text')"
+                              :error="form.errors.header_broadcast_text"
+                              type="text"
+                              :help="__('Some important info or something to show in top at every page.')"
+                              name="header_broadcast_text"
+                            />
+                          </div>
+                          <div class="col-span-6 sm:col-span-3">
+                            <x-input
+                              id="header_broadcast_url"
+                              v-model="form.header_broadcast_url"
+                              :label="__('Broadcast URL')"
+                              :error="form.errors.header_broadcast_url"
+                              :help="__('URL to redirect when broadcast text is clicked. Leave empty to not redirect.')"
+                              type="text"
+                              name="header_broadcast_url"
+                            />
+                          </div>
                         </div>
                       </div>
-                      <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
+                      <div class="flex justify-end px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6">
                         <loading-button
                           :loading="form.processing"
-                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
+                          class="inline-flex justify-center px-4 py-2 text-sm font-bold text-white border border-transparent rounded-md shadow-sm bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
                           type="submit"
                         >
                           {{ __("Save General Settings") }}
@@ -544,6 +592,7 @@ export default {
                 enable_newuserbox: this.settings.enable_newuserbox,
                 enable_didyouknowbox: this.settings.enable_didyouknowbox,
                 enable_socialbox: this.settings.enable_socialbox,
+                enable_topplayersbox: this.settings.enable_topplayersbox,
                 youtube_url: this.settings.youtube_url,
                 facebook_url: this.settings.facebook_url,
                 twitter_url: this.settings.twitter_url,
@@ -551,6 +600,7 @@ export default {
                 tiktok_url: this.settings.tiktok_url,
                 linkedin_url: this.settings.linkedin_url,
                 // threads_url: this.settings.threads_url,
+                discord_invite_url: this.settings.discord_invite_url,
                 enable_discordbox: this.settings.enable_discordbox,
                 discord_server_id: this.settings.discord_server_id,
                 enable_donation_box: this.settings.enable_donation_box,
@@ -558,6 +608,8 @@ export default {
                 enable_status_feed: this.settings.enable_status_feed,
                 photo_light: null,
                 photo_dark: null,
+                header_broadcast_text: this.settings.header_broadcast_text,
+                header_broadcast_url: this.settings.header_broadcast_url,
             }),
             photoPreview: null,
             photoPreviewDark: null,

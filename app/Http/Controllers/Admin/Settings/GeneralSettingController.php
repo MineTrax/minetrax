@@ -17,8 +17,8 @@ class GeneralSettingController extends Controller
 
     public function show(GeneralSettings $settings): \Inertia\Response
     {
-        return Inertia::render('Admin/Setting/GeneralSetting',[
-            'settings' => $settings->toArray()
+        return Inertia::render('Admin/Setting/GeneralSetting', [
+            'settings' => $settings->toArray(),
         ]);
     }
 
@@ -43,6 +43,7 @@ class GeneralSettingController extends Controller
             'tiktok_url' => 'nullable|url|max:255',
             'linkedin_url' => 'nullable|url|max:255',
             'threads_url' => 'nullable|url|max:255',
+            'discord_invite_url' => 'nullable|url|max:255',
             'enable_discordbox' => 'required|boolean',
             'discord_server_id' => 'required_if:enable_discordbox,true|nullable|string|max:255',
             'enable_voteforserverbox' => 'required|boolean',
@@ -53,6 +54,9 @@ class GeneralSettingController extends Controller
             'photo_light' => 'sometimes|nullable|image|max:100',
             'photo_dark' => 'sometimes|nullable|image|max:100',
             'enable_status_feed' => 'required|boolean',
+            'header_broadcast_text' => 'nullable|string|max:1000',
+            'header_broadcast_url' => 'nullable|url|max:1000',
+            'enable_topplayersbox' => 'required|boolean',
         ]);
         $settings->site_name = $request->input('site_name');
         $settings->enable_mcserver_onlineplayersbox = $request->input('enable_mcserver_onlineplayersbox');
@@ -77,6 +81,7 @@ class GeneralSettingController extends Controller
         $settings->twitch_url = $request->input('twitch_url');
         $settings->tiktok_url = $request->input('tiktok_url');
         $settings->linkedin_url = $request->input('linkedin_url');
+        $settings->discord_invite_url = $request->input('discord_invite_url');
         // $settings->threads_url = $request->input('threads_url');
 
         $settings->enable_discordbox = $request->input('enable_discordbox');
@@ -85,19 +90,24 @@ class GeneralSettingController extends Controller
         $settings->enable_donation_box = $request->input('enable_donation_box');
         $settings->donation_box_url = $request->input('donation_box_url');
 
+        $settings->header_broadcast_text = $request->input('header_broadcast_text') ?? null;
+        $settings->header_broadcast_url = $request->input('header_broadcast_url') ?? null;
+
+        $settings->enable_topplayersbox = $request->input('enable_topplayersbox');
+
         // Has Photo?
         if ($request->hasFile('photo_light')) {
             $path = Storage::putFileAs(
                 'public', $request->file('photo_light'), 'site_header_logo_light.'.$request->file('photo_light')->getClientOriginalExtension()
             );
-            $settings->site_header_logo_path_light = Storage::url($path) . '?hash='. \Str::random(8);
+            $settings->site_header_logo_path_light = Storage::url($path).'?hash='.\Str::random(8);
         }
 
         if ($request->hasFile('photo_dark')) {
             $path = Storage::putFileAs(
                 'public', $request->file('photo_dark'), 'site_header_logo_dark.'.$request->file('photo_dark')->getClientOriginalExtension()
             );
-            $settings->site_header_logo_path_dark = Storage::url($path) . '?hash='. \Str::random(8);
+            $settings->site_header_logo_path_dark = Storage::url($path).'?hash='.\Str::random(8);
         }
 
         $settings->save();
