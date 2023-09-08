@@ -44,10 +44,10 @@
         >
       </video>
 
-      <div class="flex items-center justify-around w-4/5">
+      <div class="flex flex-col items-center justify-around w-4/5 md:flex-row">
         <div
           v-if="joinBoxEnabled"
-          class="flex justify-center cursor-pointer basis-1/4 hover:rainbow"
+          class="flex justify-center cursor-pointer basis-1/4 hover:rainbow mb-4 md:mb-0"
           @click="isSupported && copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
         >
           <img
@@ -102,7 +102,7 @@
 
         <div
           v-if="discordBoxEnabled"
-          class="flex justify-center basis-1/4 hover:rainbow"
+          class="justify-center hidden basis-1/4 hover:rainbow md:flex"
         >
           <div class="flex flex-col">
             <p class="mt-2 font-bold text-right uppercase text-light-blue-400">
