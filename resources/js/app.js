@@ -23,7 +23,6 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const VueApp = createApp({ render: () => h(App, props) })
             .use(plugin)
-            .use(Particles)
             // eslint-disable-next-line no-undef
             .use(ZiggyVue, Ziggy);
 
@@ -45,6 +44,8 @@ createInertiaApp({
 
         // remove the global loader with id site-global-loader
         document.getElementById('site-global-loader').remove();
+
+        VueApp.use(Particles);
 
         return VueApp.mount(el);
     },
