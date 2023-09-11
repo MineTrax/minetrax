@@ -1,3 +1,126 @@
+<script setup>
+import LoadingButton from '@/Components/LoadingButton.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import XInput from '@/Components/Form/XInput.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
+import Draggable from 'vuedraggable';
+import Icon from '@/Components/Icon.vue';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { ref } from 'vue';
+
+const footerStyleList = [
+    'variant_2',
+    'variant_1',
+];
+
+const props = defineProps({
+    settings: Object,
+    generalSettings: Object,
+    availableNavItems: Array,
+});
+
+const leftNavList = ref(props.settings.custom_navbar_data?.left || []);
+const middleNavList = ref(props.settings.custom_navbar_data?.middle || []);
+const rightNavList = ref(props.settings.custom_navbar_data?.right || []);
+
+const isCustomFooterPropDataAvailable = props.settings.custom_footer_data && Object.keys(props.settings.custom_footer_data).length > 0;
+
+const customFooterData = ref(isCustomFooterPropDataAvailable ? props.settings.custom_footer_data : {
+    style: null,
+    site_moto: null,
+    columns: [
+        {
+            title: null,
+            items: [
+                {
+                    title: null,
+                    url: null,
+                },
+            ]
+        },
+        {
+            title: null,
+            items: [
+                {
+                    title: null,
+                    url: null,
+                },
+            ]
+        },
+        {
+            title: null,
+            items: [
+                {
+                    title: null,
+                    url: null,
+                },
+            ]
+        },
+        {
+            title: null,
+            items: [
+                {
+                    title: null,
+                    url: null,
+                },
+            ]
+        }
+    ],
+});
+
+function addFooterColumnItem(column) {
+    column.items.push({
+        title: null,
+        url: null,
+    });
+}
+
+function removeFooterColumnItem(column, idx) {
+    column.items.splice(idx, 1);
+}
+
+const form = useForm({
+    enable_sticky_header_menu: props.generalSettings.enable_sticky_header_menu,
+    enable_custom_navbar: props.settings.enable_custom_navbar,
+    custom_navbar_data: props.settings.custom_navbar_data,
+    enable_custom_footer: props.settings.enable_custom_footer,
+    custom_footer_data: props.settings.custom_footer_data,
+});
+
+function saveSetting() {
+    form.custom_navbar_data = {
+        left: leftNavList.value,
+        middle: middleNavList.value,
+        right: rightNavList.value,
+    };
+
+    form.custom_footer_data = customFooterData.value;
+
+    form.post(route('admin.setting.navigation.update'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            location.reload();
+        },
+    });
+}
+
+function cloneNavItem(item) {
+    let clone = JSON.parse(JSON.stringify(item));
+    return {
+        ...clone,
+        key: item.key + '-' +  Math.random(),
+    };
+}
+
+function removeNavItem(idx, list) {
+    list.splice(idx, 1);
+}
+</script>
+
+
+
 <template>
   <AdminLayout>
     <app-head
@@ -50,7 +173,7 @@
                             </h3>
                             <Draggable
                               :sort="false"
-                              class="dragArea grid grid-cols-5 gap-2 min-h-[5rem]"
+                              class="dragArea grid grid-cols-5 gap-2 min-h-[5rem] cursor-move"
                               :list="availableNavItems"
                               :group="{ name: 'navbar', pull: 'clone', put: false }"
                               :clone="cloneNavItem"
@@ -98,7 +221,7 @@
                                     <Icon
                                       class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                       name="close"
-                                      @click="removeItem(index, leftNavList)"
+                                      @click="removeNavItem(index, leftNavList)"
                                     />
 
                                     <!--Draggable list if this is dropdown-->
@@ -128,7 +251,7 @@
                                             <Icon
                                               class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                               name="close"
-                                              @click="removeItem(idx, element.children)"
+                                              @click="removeNavItem(idx, element.children)"
                                             />
                                           </div>
                                         </template>
@@ -165,7 +288,7 @@
                                     <Icon
                                       class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                       name="close"
-                                      @click="removeItem(index, middleNavList)"
+                                      @click="removeNavItem(index, middleNavList)"
                                     />
 
                                     <!--Draggable list if this is dropdown-->
@@ -195,7 +318,7 @@
                                             <Icon
                                               class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                               name="close"
-                                              @click="removeItem(idx, element.children)"
+                                              @click="removeNavItem(idx, element.children)"
                                             />
                                           </div>
                                         </template>
@@ -232,7 +355,7 @@
                                     <Icon
                                       class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                       name="close"
-                                      @click="removeItem(index, rightNavList)"
+                                      @click="removeNavItem(index, rightNavList)"
                                     />
 
                                     <!--Draggable list if this is dropdown-->
@@ -262,7 +385,7 @@
                                             <Icon
                                               class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-gray-500 dark:text-gray-400"
                                               name="close"
-                                              @click="removeItem(idx, element.children)"
+                                              @click="removeNavItem(idx, element.children)"
                                             />
                                           </div>
                                         </template>
@@ -277,8 +400,118 @@
                           <div class="flex col-span-6 text-gray-500 text-sm justify-center italic">
                             {{ __("Tip: Start by dragging items from above 'Available Items' to down here.") }}
                           </div>
+
+                          <div class="flex items-center col-span-3 sm:col-span-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+                            <x-checkbox
+                              id="enable_custom_footer"
+                              v-model="form.enable_custom_footer"
+                              :label="__('Enable Custom Footer')"
+                              :help="__('Let you customize the site footer and content in it.')"
+                              name="enable_custom_footer"
+                              :error="form.errors.enable_custom_footer"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_custom_footer"
+                            class="col-span-6 sm:col-span-6"
+                          >
+                            <x-select
+                              id="custom_footer_style"
+                              v-model="customFooterData.style"
+                              name="custom_footer_style"
+                              :error="form.errors['custom_footer_data.style']"
+                              :label="__('Custom Footer Style')"
+                              :placeholder="__('Select the style variant of the footer.')"
+                              :disable-null="true"
+                              :help="__('Select the style variant of the footer. Try variant_1 first and later change if you want.')"
+                              :select-list="footerStyleList"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_custom_footer"
+                            class="col-span-6 sm:col-span-6"
+                          >
+                            <x-textarea
+                              id="custom_footer_moto"
+                              v-model="customFooterData.site_moto"
+                              :auto-resize="true"
+                              :label="__('Footer Site Moto')"
+                              :help="__('This can be anything you want to display below Logo in footer. Eg: Think Different!')"
+                              :error="form.errors['custom_footer_data.site_moto']"
+                              name="custom_footer_moto"
+                            />
+                          </div>
+
+                          <!-- Custom Footer Here -->
+                          <template
+                            v-if="form.enable_custom_footer"
+                          >
+                            <div
+                              v-for="column,column_index in customFooterData.columns"
+                              :key="column_index"
+                              class="col-span-6 sm:col-span-6"
+                            >
+                              <x-input
+                                :id="`column_${column_index}_header`"
+                                v-model="column.title"
+                                :label="__(`Footer Column ${column_index+1} Header Title`)"
+                                type="text"
+                                :name="`column_${column_index}_header`"
+                                :error="form.errors[`custom_footer_data.columns.${column_index}.title`]"
+                                help-error-flex="flex-col"
+                              />
+                              <div
+                                v-for="item,item_index in column.items"
+                                :key="column_index + '_' + item_index"
+                                class="flex gap-2"
+                              >
+                                <x-input
+                                  :id="`column_${column_index}_item_${item_index}_title`"
+                                  v-model="item.title"
+                                  :label="__(`Item ${item_index+1} Title`)"
+                                  type="text"
+                                  :name="`column_${column_index}_item_${item_index}_title`"
+                                  :error="form.errors[`custom_footer_data.columns.${column_index}.items.${item_index}.title`]"
+                                  help-error-flex="flex-col"
+                                />
+                                <x-input
+                                  :id="`column_${column_index}_item_${item_index}_url`"
+                                  v-model="item.url"
+                                  :label="__(`Item ${item_index+1} Url`)"
+                                  type="text"
+                                  :name="`column_${column_index}_item_${item_index}_url`"
+                                  :error="form.errors[`custom_footer_data.columns.${column_index}.items.${item_index}.url`]"
+                                  help-error-flex="flex-col"
+                                />
+
+                                <div class="flex items-center justify-center">
+                                  <button
+                                    type="button"
+                                    class="focus:outline-none group"
+                                    @click="removeFooterColumnItem(column, item_index)"
+                                  >
+                                    <Icon
+                                      class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                      name="trash"
+                                    />
+                                  </button>
+                                </div>
+                              </div>
+
+                              <button
+                                class="mt-2 float-right inline-flex items-center px-2 py-1 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
+                                type="button"
+                                @click="addFooterColumnItem(column)"
+                              >
+                                Add
+                              </button>
+                            </div>
+                          </template>
                         </div>
                       </div>
+
                       <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
                         <loading-button
                           :loading="form.processing"
@@ -299,68 +532,3 @@
     </div>
   </AdminLayout>
 </template>
-
-<script>
-import LoadingButton from '@/Components/LoadingButton.vue';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import Draggable from 'vuedraggable';
-import Icon from '@/Components/Icon.vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-
-export default {
-    components: {
-        AdminLayout,
-        Icon,
-        Draggable,
-        XCheckbox,
-        LoadingButton,
-        XInput,
-    },
-    props: {
-        settings: Object,
-        generalSettings: Object,
-        availableNavItems: Array,
-    },
-
-    data() {
-        return {
-            form: useForm({
-                enable_sticky_header_menu: this.generalSettings.enable_sticky_header_menu,
-                enable_custom_navbar: this.settings.enable_custom_navbar,
-                custom_navbar_data: this.settings.custom_navbar_data,
-            }),
-            leftNavList: this.settings.custom_navbar_data?.left || [],
-            middleNavList: this.settings.custom_navbar_data?.middle || [],
-            rightNavList: this.settings.custom_navbar_data?.right || [],
-        };
-    },
-
-    methods: {
-        saveSetting() {
-            this.form.custom_navbar_data = {
-                left: this.leftNavList,
-                middle: this.middleNavList,
-                right: this.rightNavList,
-            };
-            this.form.post(route('admin.setting.navigation.update'), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    location.reload();
-                },
-            });
-        },
-        cloneNavItem(item) {
-            let clone = JSON.parse(JSON.stringify(item));
-            return {
-                ...clone,
-                key: item.key + '-' +  Math.random(),
-            };
-        },
-        removeItem(idx, list) {
-            list.splice(idx, 1);
-        },
-    }
-};
-</script>

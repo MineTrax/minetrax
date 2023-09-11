@@ -101,17 +101,20 @@ class PhpVarsToJsTransformer extends Component
             "VITE_PUSHER_APP_CLUSTER" => config("broadcasting.connections.pusher._pusher_app_cluster"),
         ];
 
-        $navbar = $this->generateCustomNavbarData();
+        $navbarSettings = app(NavigationSettings::class);
+        $navbar = $this->generateCustomNavbarData($navbarSettings);
+        $footer = $navbarSettings->enable_custom_footer ? $navbarSettings->custom_footer_data : null;
+
 
         return view('components.php-vars-to-js-transformer', [
             'pusher' => $pusher,
-            'customnav' => $navbar
+            'customnav' => $navbar,
+            'customfooter' => $footer,
         ]);
     }
 
-    private function generateCustomNavbarData()
+    private function generateCustomNavbarData($navbarSettings)
     {
-        $navbarSettings = app(NavigationSettings::class);
         $customNavbarEnabled = $navbarSettings->enable_custom_navbar;
 
         // If custom navbar is disabled, generate default navbar

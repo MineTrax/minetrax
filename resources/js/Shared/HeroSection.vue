@@ -86,18 +86,16 @@
 
         <div
           v-if="fgImageBoxEnabled"
-          class="flex items-center justify-center basis-1/2 hover:rainbow"
+          class="flex items-center justify-center basis-1/2"
           :style="`
       max-width: ${settings.home_hero_bg_height_css};
       `"
         >
-          <InertiaLink href="/">
-            <img
-              class="object-contain"
-              :src="fgImageUrl"
-              alt="HeaderFgImage"
-            >
-          </InertiaLink>
+          <img
+            class="object-contain animate-[scale_6s_ease-in-out_infinite]"
+            :src="fgImageUrl"
+            alt="HeaderFgImage"
+          >
         </div>
 
         <div
@@ -133,7 +131,7 @@ import axios from 'axios';
 import { usePage } from '@inertiajs/vue3';
 import { useClipboard } from '@vueuse/core';
 const { copy, copied, isSupported } = useClipboard({ legacy: true });
-import { loadSlim } from 'tsparticles-slim';
+import { loadFull } from 'tsparticles';
 
 const props = defineProps({
     settings: Object, // This is Theme Settings
@@ -142,7 +140,7 @@ const props = defineProps({
 
 const particlesInit = async engine => {
     //await loadFull(engine);
-    await loadSlim(engine);
+    await loadFull(engine);
 };
 
 const serverInfo = ref({});
