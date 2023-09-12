@@ -1,69 +1,98 @@
+<script setup>
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ShoutBox from '@/Shared/ShoutBox.vue';
+import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
+
+defineProps({
+    staffs: {
+        type: Array,
+        required: true,
+    },
+});
+</script>
+
 <template>
   <app-layout>
-    <app-head
-      :title="__('Staff Members')"
-    />
+    <app-head :title="__('Staff Members')" />
 
-    <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto">
+    <div class="px-2 py-4 mx-auto md:py-12 md:px-10 max-w-7xl">
       <div class="flex flex-col md:space-x-4 md:flex-row">
         <div class="flex-grow">
           <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
-            <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
-              <div class="shadow space-y-10 bg-white dark:bg-cool-gray-800 overflow-hidden border-b border-gray-200 dark:border-gray-800 rounded p-4">
-                <div
-                  v-for="role in rolesWithUsers"
-                  :key="role.id"
+            <div
+              class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8"
+            >
+              <div
+                class="p-4 space-y-10 overflow-hidden bg-white border-b border-gray-200 rounded shadow dark:bg-cool-gray-800 dark:border-gray-800"
+              >
+                <h2
+                  class="mt-2 text-2xl font-bold text-center text-gray-700 dark:text-gray-300"
                 >
-                  <div
-                    id="title"
-                    class="flex flex-col items-center"
+                  {{ __("Meet the Team") }}
+                </h2>
+
+                <div
+                  v-if="staffs.length > 0"
+                  class="grid gap-4 grid:cols-1 md:grid-cols-3"
+                >
+                  <InertiaLink
+                    v-for="staff in staffs"
+                    :key="staff.id"
+                    class="flex flex-col items-center cursor-pointer hover:opacity-50"
+                    as="div"
+                    :href="
+                      route(
+                        'user.public.get',
+                        staff.username
+                      )
+                    "
                   >
-                    <h1
-                      class="text-lg font-extrabold text-light-blue-400"
-                      :style="[role.color ? {color: role.color} : null]"
-                    >
-                      {{ role.display_name }}
-                    </h1>
                     <img
-                      :src="role.photo_url"
-                      alt="Role Image"
-                      class="max-h-32 mb-2"
+                      class="w-40 h-40 rounded-lg drop-shadow"
+                      :src="staff.profile_photo_url"
+                      alt="Profile Photo"
                     >
-                  </div>
-                  <div
-                    v-if="role.users.length > 0"
-                    class="flex justify-center flex-wrap"
-                  >
-                    <inertia-link
-                      v-for="user in role.users"
-                      :key="user.id"
-                      as="div"
-                      :href="route('user.public.get', user.username)"
-                      class="inline-flex mb-2 mx-2 p-2 rounded border hover:border-light-blue-400 dark:border-gray-700 dark:hover:border-light-blue-400 cursor-pointer"
+                    <div
+                      class="flex flex-col items-center mt-2"
                     >
-                      <img
-                        class="h-14 w-14"
-                        :src="user.profile_photo_url"
-                        alt="Profile Photo"
+                      <h3
+                        class="font-bold text-gray-800 dark:text-gray-300"
                       >
-                      <div class="flex flex-col px-2">
-                        <span class="font-semibold dark:text-gray-200">{{ user.name }}</span>
-                        <span class="text-gray-600 dark:text-gray-400">@{{ user.username }}</span>
-                      </div>
-                    </inertia-link>
-                  </div>
-                  <div
-                    v-else
-                    class="flex text-gray-600 dark:text-gray-400 italic justify-center"
-                  >
-                    {{ __("No :role yet.", {role: role.display_name}) }}
-                  </div>
+                        {{ staff.name }}
+                      </h3>
+                      <p
+                        :style="[
+                          staff.roles[0].color
+                            ? {
+                              color: staff
+                                .roles[0]
+                                .color,
+                            }
+                            : null,
+                        ]"
+                        class="text-sm text-gray-700 dark:text-gray-400"
+                      >
+                        {{
+                          staff.roles[0].display_name
+                        }}
+                      </p>
+                    </div>
+                  </InertiaLink>
+                </div>
+
+                <div
+                  v-else
+                  class="flex justify-center italic text-gray-600 dark:text-gray-400"
+                >
+                  {{ __("No Staff Yet!") }}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex flex-col space-y-4 flex-none md:w-1/4 h-screen sticky top-5 mt-4 md:mt-0">
+        <div
+          class="sticky flex flex-col flex-none h-screen mt-4 space-y-4 md:w-1/4 top-5 md:mt-0"
+        >
           <server-status-box />
           <shout-box />
         </div>
@@ -71,21 +100,3 @@
     </div>
   </app-layout>
 </template>
-
-<script>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import ShoutBox from '@/Shared/ShoutBox.vue';
-import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
-
-export default {
-
-    components: {
-        ServerStatusBox,
-        AppLayout,
-        ShoutBox,
-    },
-    props: {
-        rolesWithUsers: Array
-    },
-};
-</script>
