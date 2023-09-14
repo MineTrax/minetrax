@@ -57,18 +57,10 @@
         target="_blank"
         class="inline-block p-1 hover:bg-purple-600 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
       >
-        <svg
+        <icon
+          name="twitch"
           class="h-8 w-8 p-1 fill-current"
-          height="512"
-          viewBox="0 0 24 24"
-          width="512"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M.975 4.175v16.694h5.749V24h3.139l3.134-3.132h4.705l6.274-6.258V0H2.542zm3.658-2.09h17.252v11.479l-3.66 3.652h-5.751L9.34 20.343v-3.127H4.633z"
-          />
-          <path d="M10.385 6.262h2.09v6.26h-2.09zM16.133 6.262h2.091v6.26h-2.091z" />
-        </svg>
+        />
       </a>
 
       <a
@@ -98,17 +90,10 @@
         target="_blank"
         class="inline-block p-1 hover:bg-[#0a66c2] text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          class="w-8 h-8 p-1 fill-current"
-          fill="none"
-        >
-          <path
-            d="M5.372 24H.396V7.976h4.976V24ZM2.882 5.79C1.29 5.79 0 4.474 0 2.883a2.882 2.882 0 1 1 5.763 0c0 1.59-1.29 2.909-2.881 2.909ZM23.995 24H19.03v-7.8c0-1.86-.038-4.243-2.587-4.243-2.587 0-2.984 2.02-2.984 4.109V24H8.49V7.976h4.772v2.186h.07c.664-1.259 2.287-2.587 4.708-2.587 5.035 0 5.961 3.316 5.961 7.623V24h-.005Z"
-            fill="currentColor"
-          />
-        </svg>
+        <icon
+          name="linkedin"
+          class="h-8 w-8 p-1 fill-current"
+        />
       </a>
 
       <a
@@ -119,17 +104,10 @@
         target="_blank"
         class="inline-block p-1 hover:bg-black text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          class="w-8 h-8 p-1 fill-current"
-          fill="none"
-        >
-          <path
-            d="M12.95.02C14.26 0 15.56.01 16.86 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07Z"
-            fill="currentColor"
-          />
-        </svg>
+        <icon
+          name="tiktok"
+          class="h-8 w-8 p-1 fill-current"
+        />
       </a>
 
       <a

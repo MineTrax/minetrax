@@ -13,6 +13,19 @@ module.exports = {
     darkMode: 'class',
     theme: {
         extend: {
+            keyframes: {
+                'scale': {
+                    '0%': {
+                        transform: 'scale(1,1)',
+                    },
+                    '50%': {
+                        transform: 'scale(1.05,1.05)',
+                    },
+                    '100%': {
+                        transform: 'scale(1,1)',
+                    },
+                },
+            },
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
             },

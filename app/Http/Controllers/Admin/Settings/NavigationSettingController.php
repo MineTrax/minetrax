@@ -34,7 +34,7 @@ class NavigationSettingController extends Controller
                     'path' => $item->path,
                 ],
                 'is_open_in_new_tab' => $item->is_open_in_new_tab,
-                'key' => 'custom-page-' . $item->id,
+                'key' => 'custom-page-'.$item->id,
             ];
         }
 
@@ -51,6 +51,16 @@ class NavigationSettingController extends Controller
             'enable_custom_navbar' => 'required|boolean',
             'custom_navbar_data' => 'nullable|array',
             'enable_sticky_header_menu' => 'required|boolean',
+            'enable_custom_footer' => 'required|boolean',
+            'custom_footer_data.site_moto' => 'nullable|string',
+            'custom_footer_data.style' => 'required_if:enable_custom_footer,true|in:variant_1,variant_2',
+            'custom_footer_data.columns' => 'nullable|array',
+            'custom_footer_data.columns.*' => 'nullable|array',
+            'custom_footer_data.columns.*.title' => 'nullable|string',
+            'custom_footer_data.columns.*.items' => 'nullable|array',
+            'custom_footer_data.columns.*.items.*' => 'nullable|array',
+            'custom_footer_data.columns.*.items.*.url' => 'nullable|string',
+            'custom_footer_data.columns.*.items.*.title' => 'required_with:custom_footer_data.columns.*.items.*.url|nullable|string',
         ]);
 
         $navbarData = $request->input('custom_navbar_data');
@@ -72,6 +82,8 @@ class NavigationSettingController extends Controller
 
         $settings->enable_custom_navbar = $request->input('enable_custom_navbar');
         $settings->custom_navbar_data = $navbarData;
+        $settings->enable_custom_footer = $request->input('enable_custom_footer');
+        $settings->custom_footer_data = $request->input('custom_footer_data');
         $settings->save();
 
         $generalSettings->enable_sticky_header_menu = $request->input('enable_sticky_header_menu');
