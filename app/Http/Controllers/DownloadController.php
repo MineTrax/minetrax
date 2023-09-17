@@ -76,7 +76,7 @@ class DownloadController extends Controller
         if (! $isExternal) {
             $file = $download->file;
 
-            return $file;
+            return response()->download($file->getPath(), $download->file_name);
         }
 
         if ($isExternal && $isExternalUrlHidden) {
