@@ -11,6 +11,7 @@ import {
     PresentationChartLineIcon,
     CircleStackIcon,
     TrophyIcon,
+    CloudArrowDownIcon,
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
@@ -164,6 +165,14 @@ const navItems = [
         children: [],
         icon: ChartPieIcon,
         visible: canWild('polls')
+    },
+    {
+        label: 'Downloads',
+        href: route('admin.download.index'),
+        active: route().current('admin.download.*'),
+        children: [],
+        icon: CloudArrowDownIcon,
+        visible: canWild('downloads')
     },
     {
         label: 'Custom Pages',
