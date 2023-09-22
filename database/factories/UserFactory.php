@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Country;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,6 +24,7 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $countryId = Country::inRandomOrder()->first()->id;
         return [
             'name' => $this->faker->name,
             'username' => $this->faker->userName,
@@ -31,6 +33,7 @@ class UserFactory extends Factory
             'user_setup_status' => 1,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
+            'country_id' => $countryId,
         ];
     }
 

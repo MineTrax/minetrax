@@ -38,8 +38,13 @@ return [
 
         'media' => [
             'driver' => 'local',
-            'root'   => storage_path('app/public/media'),
+            'root' => storage_path('app/public/media'),
             'url' => env('APP_URL').'/storage/media',
+        ],
+
+        'download' => [
+            'driver' => 'local',
+            'root' => storage_path('app/downloads'),
         ],
 
         'public' => [

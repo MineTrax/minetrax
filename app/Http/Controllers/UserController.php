@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -15,20 +13,24 @@ class UserController extends Controller
             ->makeHidden(['email', 'dob', 'gender', 'updated_at', 'provider_id', 'provider_name', 'two_factor_confirmed_at', 'settings']);
 
         return Inertia::render('User/ShowUser', [
-            'profileUser' => $user->load('badges:id,name,shortname,sort_order')
+            'profileUser' => $user->load('badges:id,name,shortname,sort_order'),
         ]);
     }
 
     public function indexStaff(): \Inertia\Response
     {
-        $rolesWithUsers = Role::with('users:id,name,username,profile_photo_path,verified_at')
-            ->where('is_hidden_from_staff_list', false)
-            ->orderByDesc('weight')
-            ->select(['id', 'name', 'display_name', 'is_staff', 'color'])
-            ->where('is_staff', true)->get();
+        $staffsWithRole = User::with(['roles' => function ($query) {
+            $query->where('is_hidden_from_staff_list', false)
+                ->orderByDesc('weight');
+        }])
+            ->whereHas('roles', function ($query) {
+                $query->where('is_staff', true);
+            })
+            ->select(['id', 'name', 'username', 'profile_photo_path', 'verified_at'])
+            ->get();
 
         return Inertia::render('User/IndexStaff', [
-            'rolesWithUsers' => $rolesWithUsers
+            'staffs' => $staffsWithRole,
         ]);
     }
 }

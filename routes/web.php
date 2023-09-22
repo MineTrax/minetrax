@@ -55,6 +55,11 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     // Route::get('intel/player/{player:uuid}', [\App\Http\Controllers\PlayerIntelController::class, 'overview'])->name('player.intel.overview');
     Route::get('intel/player/{player:uuid}/sessions', [\App\Http\Controllers\PlayerIntelController::class, 'indexSession'])->name('player.intel.session.index');
     Route::get('intel/player/{player:uuid}/sessions/{session}', [\App\Http\Controllers\PlayerIntelController::class, 'showSession'])->name('player.intel.session.show');
+
+    // Download file
+    Route::get('download', [\App\Http\Controllers\DownloadController::class, 'index'])->name('download.index');
+    Route::get('download/{download:slug}', [\App\Http\Controllers\DownloadController::class, 'show'])->name('download.show');
+    Route::get('download/{download:slug}/download', [\App\Http\Controllers\DownloadController::class, 'download'])->name('download.download');
 });
 
 /**
@@ -225,4 +230,11 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
 
     Route::get('ask-db', [\App\Http\Controllers\Admin\AskDbController::class, 'index'])->name('ask-db.index');
     Route::post('ask-db', [\App\Http\Controllers\Admin\AskDbController::class, 'query'])->name('ask-db.query');
+
+    Route::get('download', [\App\Http\Controllers\Admin\DownloadController::class, 'index'])->name('download.index');
+    Route::get('download/create', [\App\Http\Controllers\Admin\DownloadController::class, 'create'])->name('download.create');
+    Route::post('download', [\App\Http\Controllers\Admin\DownloadController::class, 'store'])->name('download.store');
+    Route::get('download/{download}/edit', [\App\Http\Controllers\Admin\DownloadController::class, 'edit'])->name('download.edit');
+    Route::put('download/{download}', [\App\Http\Controllers\Admin\DownloadController::class, 'update'])->name('download.update');
+    Route::delete('download/{download}', [\App\Http\Controllers\Admin\DownloadController::class, 'destroy'])->name('download.delete');
 });

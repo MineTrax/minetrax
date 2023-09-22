@@ -87,5 +87,10 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('view player_intel_critical'); // View critical player_intel which only admin should view, player ip, inventory data etc.
 
         Permission::findOrCreate('use ask_db');
+
+        Permission::findOrCreate('create downloads');
+        Permission::findOrCreate('read downloads');
+        Permission::findOrCreate('update downloads');
+        Permission::findOrCreate('delete downloads');
     }
 }

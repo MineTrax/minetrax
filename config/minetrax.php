@@ -9,7 +9,7 @@ return [
     | Hide powered by MineTrax references in footer and other places.
     |
     */
-    "show_powered_by" => env("SHOW_POWERED_BY", true),
+    'show_powered_by' => env('SHOW_POWERED_BY', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -19,7 +19,7 @@ return [
     | hide or show the home button in navbar.
     |
     */
-    "show_home_button" => env("SHOW_HOME_BUTTON", false),
+    'show_home_button' => env('SHOW_HOME_BUTTON', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -32,7 +32,7 @@ return [
     | Eg: Multicraft FTP Server, FileZilla FTP Server
     |
     */
-    "use_legacy_ftp_driver" => env("USE_LEGACY_FTP_DRIVER", false),
+    'use_legacy_ftp_driver' => env('USE_LEGACY_FTP_DRIVER', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -44,7 +44,7 @@ return [
     | he removes linked player.
     |
     */
-    "mark_user_verified_on_account_link" => env("MARK_USER_VERIFYED_ON_ACCOUNT_LINK", true),
+    'mark_user_verified_on_account_link' => env('MARK_USER_VERIFYED_ON_ACCOUNT_LINK', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -55,8 +55,7 @@ return [
     | services like minotar etc instead of uuid.
     |
     */
-    "use_username_for_skins" => env("USE_USERNAME_FOR_SKINS", false),
-
+    'use_username_for_skins' => env('USE_USERNAME_FOR_SKINS', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -71,10 +70,9 @@ return [
     | it might have unexpected behaviors.
     |
     */
-    "players_fetcher_cron_interval" => env("PLAYER_FETCHER_CRON_INTERVAL", "hourly"),
+    'players_fetcher_cron_interval' => env('PLAYER_FETCHER_CRON_INTERVAL', 'hourly'),
 
-    "fetch_avatar_from_url_using_curl" => env("FETCH_AVATAR_FROM_URL_USING_CURL", false),
-
+    'fetch_avatar_from_url_using_curl' => env('FETCH_AVATAR_FROM_URL_USING_CURL', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -85,7 +83,7 @@ return [
     | Setting > Navigation
     |
     */
-    "custom_nav_available_items_array" => [
+    'custom_nav_available_items_array' => [
         [
             'type' => 'dropdown',
             'name' => 'Dropdown',
@@ -216,6 +214,14 @@ return [
             'key' => 'route-features',
             'authenticated' => false,
         ],
+        [
+            'type' => 'route',
+            'name' => 'Downloads',
+            'title' => 'Downloads',
+            'route' => 'download.index',
+            'key' => 'route-downloads',
+            'authenticated' => false,
+        ],
     ],
 
     /*
@@ -226,7 +232,7 @@ return [
     | If enabled, staff who have permission `use ask_db`, will be able to ask questions to database and get answers.
     |
     */
-    "askdb_enabled" => env("ASKDB_ENABLED", false) && env("OPENAI_API_KEY"),
+    'askdb_enabled' => env('ASKDB_ENABLED', false) && env('OPENAI_API_KEY'),
 
     /*
     |--------------------------------------------------------------------------
@@ -236,7 +242,7 @@ return [
     | If enabled, cookie consent will be shown to users for GDPR compliance.
     |
     */
-    "cookie_consent_enabled" => env("COOKIE_CONSENT_ENABLED", true),
+    'cookie_consent_enabled' => env('COOKIE_CONSENT_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -247,8 +253,8 @@ return [
     | Helpful to show your name if you are a hosting provider or theme developer.
     |
     */
-    "powered_by_extra_name" => env("POWERED_BY_EXTRA_NAME", null),
-    "powered_by_extra_link" => env("POWERED_BY_EXTRA_LINK", null),
+    'powered_by_extra_name' => env('POWERED_BY_EXTRA_NAME', null),
+    'powered_by_extra_link' => env('POWERED_BY_EXTRA_LINK', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -262,4 +268,14 @@ return [
     */
     'ping_proxy_server_using_ip_address' => env('PING_PROXY_SERVER_USING_IP_ADDRESS', false),
     'query_proxy_server_using_ip_address' => env('QUERY_PROXY_SERVER_USING_IP_ADDRESS', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Downloads Module Disk
+    |--------------------------------------------------------------------------
+    |
+    | Disk to use to store all files of Downloads Module.
+    |
+    */
+    'downloads_module_disk' => env('DOWNLOADS_MODULE_DISK', 'download'),
 ];
