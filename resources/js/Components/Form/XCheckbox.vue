@@ -4,9 +4,10 @@
       :id="id"
       ref="input"
       v-model="proxyChecked"
+      :disabled="disabled"
       type="checkbox"
       :name="name"
-      class="rounded border-gray-300 dark:bg-cool-gray-900 dark:border-gray-900 text-light-blue-500 shadow-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50"
+      class="rounded border-gray-300 dark:bg-cool-gray-900 dark:border-gray-900 text-light-blue-500 shadow-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
       :class="checkboxSizeClass"
       :required="required"
       @input="$emit('input', $event.target.value)"
@@ -49,7 +50,11 @@ export default {
         required: {
             type: Boolean,
             default: false
-        }
+        },
+        disabled: {
+            type: Boolean,
+            default: false
+        },
     },
 
     computed: {

@@ -223,3 +223,13 @@ body.swal2-shown > [aria-hidden="true"] {
 .mx-datepicker-sidebar button {
     font-size: small;
 }
+
+.CodeMirror {
+    color: #8c8c8c;
+    border-color: #333;
+    background-color: inherit;
+}
+
+.cm-s-easymde .CodeMirror-cursor {
+    border-color: #a0a0a0;
+}

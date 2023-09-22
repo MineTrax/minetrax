@@ -16,11 +16,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     public function update($user, array $input)
     {
+        $maxProfilePhotoSize = config('auth.max_profile_photo_size_kb');
+        $maxCoverPhotoSize = config('auth.max_cover_photo_size_kb');
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             // 'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'photo' => ['nullable', 'image', 'max:512'],
-            'cover_image' => ['nullable', 'image', 'max:1024'],
+            'photo' => ['nullable', 'image', 'max:' . $maxProfilePhotoSize],
+            'cover_image' => ['nullable', 'image', 'max:' . $maxCoverPhotoSize],
             'dob' => ['nullable', 'date', 'before:today'],
             'gender' => ['nullable', 'in:m,f,o'],
             'about' => ['nullable', 'string', 'max:255'],

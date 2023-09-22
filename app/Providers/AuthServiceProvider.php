@@ -20,13 +20,14 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Shout::class => \App\Policies\ShoutPolicy::class,
         \App\Models\Comment::class => \App\Policies\CommentPolicy::class,
         \App\Models\Server::class => \App\Policies\ServerPolicy::class,
-        \App\Models\Role::class => \App\Policies\RolePolicy::class,
+        Role::class => \App\Policies\RolePolicy::class,
         \App\Models\Rank::class => \App\Policies\RankPolicy::class,
         \App\Models\News::class => \App\Policies\NewsPolicy::class,
         \App\Models\Poll::class => \App\Policies\PollPolicy::class,
         \App\Models\CustomPage::class => \App\Policies\CustomPagePolicy::class,
         \App\Models\Session::class => \App\Policies\SessionPolicy::class,
         \App\Models\Badge::class => \App\Policies\BadgePolicy::class,
+        \App\Models\Download::class => \App\Policies\DownloadPolicy::class,
     ];
 
     /**

@@ -119,6 +119,15 @@ return [
 
     'password_timeout' => 10800,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Show Random Avatar for User
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, This feature will show random avatar/profile photo for users
+    | who don't have set any profile picture yet.
+    |
+    */
     'random_user_avatars' => env('RANDOM_USER_AVATARS', true),
 
 
@@ -132,4 +141,24 @@ return [
     |
     */
     'any_provider_social_auth' => env('ALLOW_ANY_PROVIDER_SOCIAL_AUTH', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Max Profile Photo Size (KB)
+    |--------------------------------------------------------------------------
+    |
+    | Maximum allowed size for profile photo in kilobytes.
+    |
+    */
+    'max_profile_photo_size_kb' => env('MAX_USER_PROFILE_PHOTO_SIZE_KB', 512),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Max Profile Cover Photo Size (KB)
+    |--------------------------------------------------------------------------
+    |
+    | Maximum allowed size for user's cover photo in kilobytes.
+    |
+    */
+    'max_cover_photo_size_kb' => env('MAX_USER_COVER_PHOTO_SIZE_KB', 1024),
 ];
