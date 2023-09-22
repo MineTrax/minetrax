@@ -24,19 +24,29 @@ class DownloadController extends Controller
             'id',
             'name',
             'slug',
-            'is_active',
             'download_count',
             'created_at',
             'updated_at',
         ];
         $downloads = QueryBuilder::for(Download::class)
+            ->where('is_active', true)
+            ->when(! $isAuthenticated, function ($query) {
+                $query->where('is_only_auth', false);
+            })
+            ->when($isAuthenticated, function ($query) use ($request) {
+                $user = $request->user();
+                $userRoleWeight = $user->roles->max('weight');
+                $query->where(function ($q) use ($userRoleWeight) {
+                    $q->where('min_role_weight_required', '<=', $userRoleWeight)->orWhere('min_role_weight_required', null);
+                });
+            })
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
-                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'name', 'description'])),
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'description'])),
             ])
             ->allowedSorts($fields)
-            ->defaultSort('-download_count')
+            ->defaultSort('-created_at')
             ->paginate($perPage)
             ->withQueryString();
 
@@ -51,11 +61,12 @@ class DownloadController extends Controller
         $this->authorize('download', $download);
 
         return Inertia::render('Download/ShowDownload', [
-            'download' => $download->only([
+            'download' => $download->append(['description_html'])->only([
                 'id',
                 'name',
                 'slug',
                 'description',
+                'description_html',
                 'is_active',
                 'download_count',
                 'created_at',

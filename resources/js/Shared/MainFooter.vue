@@ -29,7 +29,10 @@ if(customFooterData?.style == 'variant_1') {
 </script>
 
 <template>
-  <footer class="w-full text-gray-700 bg-white dark:bg-cool-gray-800 body-font">
+  <footer
+    class="w-full text-gray-700 bg-white dark:bg-cool-gray-800 body-font"
+    :class="{'md:mt-28': canShowCustomFooter}"
+  >
     <div
       v-if="canShowCustomFooter && customFooterData.style == 'variant_1'"
       id="variant_1"

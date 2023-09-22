@@ -214,6 +214,14 @@ return [
             'key' => 'route-features',
             'authenticated' => false,
         ],
+        [
+            'type' => 'route',
+            'name' => 'Downloads',
+            'title' => 'Downloads',
+            'route' => 'download.index',
+            'key' => 'route-downloads',
+            'authenticated' => false,
+        ],
     ],
 
     /*

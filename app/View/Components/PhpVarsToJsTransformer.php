@@ -34,6 +34,7 @@ class PhpVarsToJsTransformer extends Component
             'authenticated' => false,
         ],
     ];
+
     const DEFAULT_NAV_RIGHT = [
         [
             'type' => 'component',
@@ -89,22 +90,21 @@ class PhpVarsToJsTransformer extends Component
 
     public function render()
     {
-        $useWebsockets = config("broadcasting.default") == "pusher" || config("broadcasting.default") == "ably";
-        $useWebsockets = $useWebsockets && config("broadcasting.connections." . config("broadcasting.default") . ".key");
+        $useWebsockets = config('broadcasting.default') == 'pusher' || config('broadcasting.default') == 'ably';
+        $useWebsockets = $useWebsockets && config('broadcasting.connections.'.config('broadcasting.default').'.key');
 
         $pusher = [
-            "USE_WEBSOCKETS" => $useWebsockets,
-            "VITE_PUSHER_APP_KEY" => config("broadcasting.connections.pusher.key"),
-            "VITE_PUSHER_HOST" => config("broadcasting.connections.pusher._pusher_host"),
-            "VITE_PUSHER_PORT" => config("broadcasting.connections.pusher._pusher_port"),
-            "VITE_PUSHER_SCHEME" => config("broadcasting.connections.pusher._pusher_scheme"),
-            "VITE_PUSHER_APP_CLUSTER" => config("broadcasting.connections.pusher._pusher_app_cluster"),
+            'USE_WEBSOCKETS' => $useWebsockets,
+            'VITE_PUSHER_APP_KEY' => config('broadcasting.connections.pusher.key'),
+            'VITE_PUSHER_HOST' => config('broadcasting.connections.pusher._pusher_host'),
+            'VITE_PUSHER_PORT' => config('broadcasting.connections.pusher._pusher_port'),
+            'VITE_PUSHER_SCHEME' => config('broadcasting.connections.pusher._pusher_scheme'),
+            'VITE_PUSHER_APP_CLUSTER' => config('broadcasting.connections.pusher._pusher_app_cluster'),
         ];
 
         $navbarSettings = app(NavigationSettings::class);
         $navbar = $this->generateCustomNavbarData($navbarSettings);
         $footer = $navbarSettings->enable_custom_footer ? $navbarSettings->custom_footer_data : null;
-
 
         return view('components.php-vars-to-js-transformer', [
             'pusher' => $pusher,
@@ -118,7 +118,7 @@ class PhpVarsToJsTransformer extends Component
         $customNavbarEnabled = $navbarSettings->enable_custom_navbar;
 
         // If custom navbar is disabled, generate default navbar
-        if (!$customNavbarEnabled) {
+        if (! $customNavbarEnabled) {
             $customPagesInNavbar = CustomPage::visible()->navbar()->select(['id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_open_in_new_tab'])->get();
 
             $leftNavbar = self::DEFAULT_NAV_LEFT;
@@ -144,6 +144,14 @@ class PhpVarsToJsTransformer extends Component
                         'key' => 'route-staff-members-01',
                         'authenticated' => false,
                     ],
+                    [
+                        'type' => 'route',
+                        'name' => 'Downloads',
+                        'title' => 'Downloads',
+                        'route' => 'download.index',
+                        'key' => 'route-downloads-01',
+                        'authenticated' => false,
+                    ],
                 ],
                 'authenticated' => false,
             ];
@@ -159,7 +167,7 @@ class PhpVarsToJsTransformer extends Component
                         'path' => $page->path,
                     ],
                     'is_open_in_new_tab' => $page->is_open_in_new_tab,
-                    'key' => 'custom-page-' . $page->id . '-01',
+                    'key' => 'custom-page-'.$page->id.'-01',
                 ];
             }
             $leftNavbar[] = $dropdownList;

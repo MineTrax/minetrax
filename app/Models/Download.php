@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -33,5 +34,12 @@ class Download extends BaseModel implements HasMedia
         }
 
         return $file;
+    }
+
+    public function getDescriptionHtmlAttribute(): string
+    {
+        $converter = new GithubFlavoredMarkdownConverter();
+
+        return $converter->convertToHtml($this->description);
     }
 }
