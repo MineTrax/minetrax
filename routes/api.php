@@ -17,17 +17,16 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
+Route::middleware(['auth.api-key'])->group(function () {
+    Route::post('v1/server/chat', [\App\Http\Controllers\Api\ApiServerChatlogController::class, 'store'])->name('api.server.chat');
+    Route::post('v1/server/console', [\App\Http\Controllers\Api\ApiServerConsolelogController::class, 'store'])->name('api.server.console');
 
-Route::middleware(['auth.api-key'])->group(function() {
-   Route::post('v1/server/chat', [\App\Http\Controllers\Api\ApiServerChatlogController::class, 'store'])->name('api.server.chat');
-   Route::post('v1/server/console', [\App\Http\Controllers\Api\ApiServerConsolelogController::class, 'store'])->name('api.server.console');
+    Route::post('v1/account-link/init', [\App\Http\Controllers\Api\ApiAccountLinkController::class, 'init'])->name('api.account-link.init');
 
-   Route::post('v1/account-link/init', [\App\Http\Controllers\Api\ApiAccountLinkController::class, 'init'])->name('api.account-link.init');
+    Route::post('v1/player/whois', [\App\Http\Controllers\Api\ApiPlayerController::class, 'postWhoisPlayer'])->name('api.player.whois');
+    Route::post('v1/player/data', [\App\Http\Controllers\Api\ApiPlayerController::class, 'postFetchPlayerData'])->name('api.player.data');
 
-   Route::post('v1/player/whois', [\App\Http\Controllers\Api\ApiPlayerController::class, 'postWhoisPlayer'])->name('api.player.whois');
-   Route::post('v1/player/data', [\App\Http\Controllers\Api\ApiPlayerController::class, 'postFetchPlayerData'])->name('api.player.data');
-
-   // Intel APIs: used by Server to Report Player/Server Intelligence Data.
+    // Intel APIs: used by Server to Report Player/Server Intelligence Data.
     Route::post('v1/intel/player/session-init', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postSessionInit'])->name('api.intel.player.session-init');
     Route::post('v1/intel/player/report/event', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postReportEvent'])->name('api.intel.player.report.event');
     Route::post('v1/intel/player/report/pvp-kill', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postReportPvpKill'])->name('api.intel.player.report.pvp');

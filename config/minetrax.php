@@ -278,4 +278,8 @@ return [
     |
     */
     'downloads_module_disk' => env('DOWNLOADS_MODULE_DISK', 'download'),
+
+    'ratelimit' => [
+        'api' => env('RATELIMIT_API_PER_MINUTE', 600),
+    ],
 ];

@@ -12,13 +12,12 @@ use App\Models\MinecraftPlayerWorldStat;
 use App\Models\Player;
 use DB;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class TruncatePlayerIntelJob implements ShouldBeUnique, ShouldQueue
+class TruncatePlayerIntelJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

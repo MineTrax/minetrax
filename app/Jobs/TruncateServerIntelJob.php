@@ -7,13 +7,12 @@ use App\Models\MinecraftServerWorld;
 use App\Models\MinecraftWorldLiveInfo;
 use DB;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class TruncateServerIntelJob implements ShouldBeUnique, ShouldQueue
+class TruncateServerIntelJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

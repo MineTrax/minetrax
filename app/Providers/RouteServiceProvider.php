@@ -62,7 +62,9 @@ class RouteServiceProvider extends ServiceProvider
     protected function configureRateLimiting()
     {
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(6000)->by(optional($request->user())->id ?: $request->ip());
+            $limit = config('minetrax.ratelimit.api', 600);
+
+            return Limit::perMinute($limit)->by(optional($request->user())->id ?: $request->ip());
         });
 
         RateLimiter::for('chat', function (Request $request) {
