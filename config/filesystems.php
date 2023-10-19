@@ -67,6 +67,30 @@ return [
             'throw' => false,
         ],
 
+        's3-private' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => env('AWS_PRIVATE_BUCKET'),
+            'url' => env('AWS_URL'),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+        ],
+
+        'sftp' => [
+            'driver' => 'sftp',
+            'host' => env('SFTP_DISK_HOST'),
+            'username' => env('SFTP_DISK_USERNAME'),
+            'password' => env('SFTP_DISK_PASSWORD'),
+            'privateKey' => env('SFTP_DISK_PRIVATE_KEY'),
+            'passphrase' => env('SFTP_DISK_PASSPHRASE'),
+            'visibility' => 'private', // `private` = 0600, `public` = 0644
+            'directory_visibility' => 'private', // `private` = 0700, `public` = 0755
+            'port' => (int) env('SFTP_DISK_PORT', 22),
+            'throw' => false,
+        ],
     ],
 
     /*

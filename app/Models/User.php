@@ -6,6 +6,8 @@ use App\Contracts\Commentator;
 use App\Traits\CanCommentTrait;
 use Cog\Contracts\Love\Reacterable\Models\Reacterable as ReacterableInterface;
 use Cog\Laravel\Love\Reacterable\Models\Traits\Reacterable;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,26 +15,22 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\Features;
-use Laravel\Fortify\Fortify;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Searchable\Searchable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Auth\Notifications\VerifyEmail;
 
-class User extends Authenticatable implements ReacterableInterface, Commentator, Searchable, MustVerifyEmail
+class User extends Authenticatable implements Commentator, MustVerifyEmail, ReacterableInterface, Searchable
 {
+    use CanCommentTrait;
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
-    use Notifiable;
-    use TwoFactorAuthenticatable;
     use HasRoles;
+    use Notifiable;
     use Reacterable;
-    use CanCommentTrait;
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -81,7 +79,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         'last_login_at' => 'datetime',
         'dob' => 'date',
         'social_links' => 'json',
-        'settings' => 'json'
+        'settings' => 'json',
     ];
 
     /**
@@ -90,12 +88,12 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
      * @var array
      */
     protected $appends = [
-        'profile_photo_url', 'dob_string', 'gender_string', 'is_staff', 'cover_image_url'
+        'profile_photo_url', 'dob_string', 'gender_string', 'is_staff', 'cover_image_url',
     ];
 
     protected $with = [
         'roles:id,name,display_name,is_staff,color,web_message_format,weight',
-        'stickyBadges:id,name,shortname,sort_order'
+        'stickyBadges:id,name,shortname,sort_order',
     ];
 
     /**
@@ -104,7 +102,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
     public function sendEmailVerificationNotification()
     {
         // Only send verification email if Feature is enabled.
-        if (Features::enabled(Features::emailVerification()) && !$this->hasVerifiedEmail()) {
+        if (Features::enabled(Features::emailVerification()) && ! $this->hasVerifiedEmail()) {
             $this->notify(new VerifyEmail);
         }
     }
@@ -133,8 +131,9 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
     protected function defaultProfilePhotoUrl()
     {
         if (config('auth.random_user_avatars')) {
-            return 'https://avatars.dicebear.com/api/bottts/' . urlencode($this->username) . '.svg';
+            return 'https://api.dicebear.com/7.x/pixel-art/svg?seed='.urlencode($this->username);
         }
+
         return url('/images/default_profile_pic.png');
     }
 
@@ -146,7 +145,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         return Attribute::get(function () {
             $settings = $this->settings;
             // If settings is not loaded then try loading it.
-            if (!$settings) {
+            if (! $settings) {
                 $settings = $this->refresh()->getOriginal('settings');
             }
 
@@ -155,15 +154,19 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
                     case 'gravatar':
                         $email = $this->email;
                         // Note: This fix is because we don't load email in public places like shoutbox etc
-                        if (!$email) $email = $this->refresh()->getOriginal('email');
+                        if (! $email) {
+                            $email = $this->refresh()->getOriginal('email');
+                        }
                         $hashedEmail = md5($email);
+
                         return "https://www.gravatar.com/avatar/{$hashedEmail}?size=150&d=mp";
-                    // minecraft head using his first linked player username
+                        // minecraft head using his first linked player username
                     case 'linked_player':
-                        if (!$this?->players()?->first()) {
+                        if (! $this?->players()?->first()) {
                             break;
                         }
                         $player = $this->players()->first();
+
                         return route('player.avatar.get', [$player->uuid, $player->username, 'size' => 150]);
                     default:
                         break;
@@ -182,13 +185,13 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         if ($this->cover_image_path) {
             return Storage::disk($this->profilePhotoDisk())->url($this->cover_image_path);
         }
+
         return url('/images/default_user_profile_cover.jpg');
     }
 
     /**
      * Update user cover image
      *
-     * @param UploadedFile $image
      * @return void
      */
     public function updateCoverImage(UploadedFile $image)
@@ -247,6 +250,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
             if ($this->settings && array_key_exists('show_yob', $this->settings) && $this->settings['show_yob']) {
                 return $this->dob->format('jS F Y');
             }
+
             return $this->dob->format('jS F');
         }
 
@@ -258,6 +262,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         if ($this->dob) {
             return $this->dob->format('jS F Y');
         }
+
         return null;
     }
 
@@ -311,14 +316,14 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
     public function voteForPollOption($option)
     {
         // Check if poll is votable
-        if (!$option->poll->isVotable()) {
+        if (! $option->poll->isVotable()) {
             throw new \Exception('Poll is not votable');
-        };
+        }
 
         // Check if user has already voted for poll
         if ($this->hasVotedForPoll($option->poll)) {
             throw new \Exception('User already voted for poll');
-        };
+        }
 
         // vote for poll option
         $this->pollOptions()->sync($option->id, false);
@@ -329,7 +334,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
     {
         $data = [];
 
-        if (!$this?->settings || !array_key_exists('notifications', $this->settings)) {
+        if (! $this?->settings || ! array_key_exists('notifications', $this->settings)) {
             return $data;
         }
 
@@ -337,6 +342,7 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         if ($notificationPreferences) {
             $data = $notificationPreferences;
         }
+
         return $data;
     }
 
@@ -350,7 +356,8 @@ class User extends Authenticatable implements ReacterableInterface, Commentator,
         return $this->morphToMany(Badge::class, 'badgeable')->orderBy('sort_order')->where('is_sticky', true)->withTimestamps();
     }
 
-    public function shouts() {
+    public function shouts()
+    {
         return $this->hasMany(Shout::class);
     }
 }
