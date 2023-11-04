@@ -33,7 +33,7 @@ class PlayerController extends Controller
 
         $playerActiveLastDay = $playerSettings->last_seen_day_for_active == -1 ? now()->subYears(100) : now()->subDays($playerSettings->last_seen_day_for_active);
 
-        $totalPlayersCount = Player::count();
+        $totalPlayersCount = Player::fastCount();
         $activePlayersCount = Player::where('last_seen_at', '>=', $playerActiveLastDay)->count();
         $totalPlayTime = Player::sum('play_time');
 

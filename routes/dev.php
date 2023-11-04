@@ -1,17 +1,10 @@
 <?php
 
-use App\Models\MinecraftPlayerEvent;
-use App\Models\Server;
-use App\Services\AskGptService;
 use App\Services\MinecraftApiService;
 use App\Services\MinecraftServerQueryService;
-use App\Settings\PluginSettings;
-use App\Utils\Helpers\LegacyFtpStorage;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
+use App\Utils\Helpers\Helper;
 use Illuminate\Support\Facades\Log;
-use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Route;
 
 Route::get('time', function () {
     $timestamp = 1644663318245;
@@ -24,16 +17,19 @@ Route::get('time', function () {
 
 Route::get('cal', function () {
     \App\Jobs\CalculatePlayersJob::dispatch();
+
     return 'Fetching MC Players';
 });
 
 Route::get('cals', function () {
     \App\Jobs\CalculatePlayersScoreJob::dispatch();
+
     return 'Calculating Players Score';
 });
 
 Route::get('calr', function () {
     \App\Jobs\CalculatePlayersRatingJob::dispatch();
+
     return 'Calculating Players Rating';
 });
 
@@ -68,26 +64,26 @@ Route::get('query', function () {
 
 Route::get('crypt', function () {
     $string = [
-        "secret" => "0ha4afOPiRPkcbo8PWUVqs4WZtdbsmk81lreZiWErg6qCDuaV2RlBJgKh0MzDuZo",
-        "type" => "command",
-        "params" => "stop"
+        'secret' => '0ha4afOPiRPkcbo8PWUVqs4WZtdbsmk81lreZiWErg6qCDuaV2RlBJgKh0MzDuZo',
+        'type' => 'command',
+        'params' => 'stop',
     ];
 
     $string = json_encode($string);
 
-    $theOtherKey = "tMeoi56X4GkRwFBGcg2n6mrn5D0lKPfT";
+    $theOtherKey = 'tMeoi56X4GkRwFBGcg2n6mrn5D0lKPfT';
 
-    $newEncrypter = new \Illuminate\Encryption\Encrypter(($theOtherKey), "AES-256-CBC");
+    $newEncrypter = new \Illuminate\Encryption\Encrypter(($theOtherKey), 'AES-256-CBC');
     $es2 = $newEncrypter->encrypt($string);
     $decrypted = $newEncrypter->decrypt($es2);
     dump($es2);
     dump($decrypted);
     $PORT = 4000;
-    $HOST = "127.0.0.1";
+    $HOST = '127.0.0.1';
     $sock = socket_create(AF_INET, SOCK_STREAM, 0)
-        or die("error: could not create socket\n");
+        or exit("error: could not create socket\n");
     $succ = socket_connect($sock, $HOST, $PORT)
-        or die("error: could not connect to host\n");
+        or exit("error: could not connect to host\n");
     $text = "Minecraft is getting a\n";
     socket_send($sock, $text, strlen($text), 0);
 
@@ -97,7 +93,7 @@ Route::get('crypt', function () {
     socket_close($sock);
 });
 
-Route::get('webquery/{uuid}', function (\Illuminate\Http\Request $request) {
+Route::get('webquery/{uuid}', function (Illuminate\Http\Request $request) {
 
     $server = \App\Models\Server::whereId(2)->first();
 
@@ -108,8 +104,8 @@ Route::get('webquery/{uuid}', function (\Illuminate\Http\Request $request) {
 });
 
 Route::get('/encryptstring', function () {
-    $query = new \App\Utils\MinecraftQuery\MinecraftWebQuery("127.0.0.1", 1123);
-    $string = $query->makeEncryptedString("console_cmd", "Xinecraft");
+    $query = new \App\Utils\MinecraftQuery\MinecraftWebQuery('127.0.0.1', 1123);
+    $string = $query->makeEncryptedString('console_cmd', 'Xinecraft');
 
     dump($string);
 
@@ -118,10 +114,10 @@ Route::get('/encryptstring', function () {
     dump($dyc);
 });
 
-
 Route::get('test-log', function () {
     Log::info('test');
     Log::warning('warning!!');
+
     return 'test';
 });
 
