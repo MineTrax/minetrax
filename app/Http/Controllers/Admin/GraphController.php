@@ -41,7 +41,7 @@ class GraphController extends Controller
         }
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
-            $item->created_at_5min = (int)$item->created_at_5min;
+            $item->created_at_5min = (int) $item->created_at_5min;
 
             return array_values(get_object_vars($item));
         })->toArray();
@@ -265,7 +265,7 @@ class GraphController extends Controller
             ->whereIn('server_id', $servers->pluck('id'));
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
-            $item->created_at_5min = (int)$item->created_at_5min;
+            $item->created_at_5min = (int) $item->created_at_5min;
             $item->used_memory = round($item->used_memory / 1024); // Convert to MB
 
             return array_values(get_object_vars($item));
@@ -308,7 +308,7 @@ class GraphController extends Controller
             ->whereIn('server_id', $servers->pluck('id'));
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
-            $item->created_at_5min = (int)$item->created_at_5min;
+            $item->created_at_5min = (int) $item->created_at_5min;
 
             return array_values(get_object_vars($item));
         })->toArray();
@@ -323,13 +323,14 @@ class GraphController extends Controller
     public function getPlayerMinecraftVersions(Request $request)
     {
         $isAuthorized = $request->user()->can('view admin_dashboard') || $request->user()->can('view server_intel');
-        if (!$isAuthorized) {
+        if (! $isAuthorized) {
             abort(403);
         }
 
         $request->validate([
             'servers' => 'sometimes|nullable|array',
             'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+            'top' => 'sometimes|nullable|integer',
         ]);
 
         $servers = $request->query('servers') ?? null;
@@ -344,6 +345,9 @@ class GraphController extends Controller
             ->whereIn('server_id', $servers->pluck('id'))
             ->groupBy('minecraft_version')
             ->orderBy('count', 'desc')
+            ->when($request->query('top'), function ($query, $top) {
+                return $query->limit($top);
+            })
             ->get()
             ->map(function ($item) {
                 return [
@@ -358,13 +362,14 @@ class GraphController extends Controller
     public function getPlayerJoinAddresses(Request $request)
     {
         $isAuthorized = $request->user()->can('view admin_dashboard') || $request->user()->can('view server_intel');
-        if (!$isAuthorized) {
+        if (! $isAuthorized) {
             abort(403);
         }
 
         $request->validate([
             'servers' => 'sometimes|nullable|array',
             'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
+            'top' => 'sometimes|nullable|integer',
         ]);
 
         $servers = $request->query('servers') ?? null;
@@ -379,6 +384,9 @@ class GraphController extends Controller
             ->whereIn('server_id', $servers->pluck('id'))
             ->groupBy('join_address')
             ->orderBy('count', 'desc')
+            ->when($request->query('top'), function ($query, $top) {
+                return $query->limit($top);
+            })
             ->get()
             ->map(function ($item) {
                 return [
@@ -438,7 +446,7 @@ class GraphController extends Controller
         foreach ($dataSets as $address => $dataSet) {
             foreach ($uniqueDates as $date) {
                 $day = $date->unix_day * 1000;
-                if (!isset($dataSet[$day])) {
+                if (! isset($dataSet[$day])) {
                     $dataSets[$address][$day] = 0;
                 }
             }
@@ -513,7 +521,7 @@ class GraphController extends Controller
         foreach ($dataSets as $version => $dataSet) {
             foreach ($uniqueDates as $date) {
                 $day = $date->unix_day * 1000;
-                if (!isset($dataSet[$day])) {
+                if (! isset($dataSet[$day])) {
                     $dataSets[$version][$day] = 0;
                 }
             }

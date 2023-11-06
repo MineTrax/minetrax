@@ -12,6 +12,10 @@ const props = defineProps({
         type: String,
         default: '350px',
     },
+    topCount: {
+        type: Number,
+        default: null,
+    },
 });
 
 let option = ref({});
@@ -23,6 +27,12 @@ onMounted(async () => {
     if (props.servers && props.servers.length > 0) {
         params['servers'] = props.servers;
     }
+
+    if (props.topCount) {
+        params['top'] = props.topCount;
+    }
+    console.log('params', params);
+
     const response = await axios.get(route('admin.graph.player-join-addresses', params));
     isLoading.value = false;
     graphData.value = response.data ?? [];

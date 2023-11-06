@@ -12,6 +12,10 @@ const props = defineProps({
         type: String,
         default: '350px',
     },
+    topCount: {
+        type: Number,
+        default: null,
+    },
 });
 
 let option = ref({});
@@ -22,6 +26,9 @@ onMounted(async () => {
     const params = {};
     if (props.servers && props.servers.length > 0) {
         params['servers'] = props.servers;
+    }
+    if (props.topCount) {
+        params['top'] = props.topCount;
     }
     const response = await axios.get(route('admin.graph.player-minecraft-versions', params));
     isLoading.value = false;

@@ -146,8 +146,14 @@ defineProps({
         id="row4"
         class="flex justify-between flex-1 space-x-4"
       >
-        <PlayersJoinAddressMetricBox class="basis-1/2" />
-        <PlayersMinecraftVersionMetricBox class="basis-1/2" />
+        <PlayersJoinAddressMetricBox
+          :top-count="10"
+          class="basis-1/2"
+        />
+        <PlayersMinecraftVersionMetricBox
+          :top-count="10"
+          class="basis-1/2"
+        />
       </div>
     </div>
   </AdminLayout>
