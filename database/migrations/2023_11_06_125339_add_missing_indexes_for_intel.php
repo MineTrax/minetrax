@@ -40,6 +40,11 @@ return new class extends Migration
             $table->index('first_seen_at');
             $table->index('last_seen_at');
         });
+
+        Schema::table('minecraft_player_sessions', function (Blueprint $table) {
+            $table->index('session_started_at');
+            $table->index('session_ended_at');
+        });
     }
 
     /**
@@ -75,6 +80,11 @@ return new class extends Migration
             $table->dropIndex(['created_at']);
             $table->dropIndex(['first_seen_at']);
             $table->dropIndex(['last_seen_at']);
+        });
+
+        Schema::table('minecraft_player_sessions', function (Blueprint $table) {
+            $table->dropIndex(['session_started_at']);
+            $table->dropIndex(['session_ended_at']);
         });
     }
 };
