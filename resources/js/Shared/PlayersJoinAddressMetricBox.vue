@@ -47,6 +47,10 @@ onMounted(async () => {
         toolbox: {
             feature: {
                 saveAsImage: {},
+                dataZoom: {
+                    yAxisIndex: 'none',
+                },
+                restore: {},
                 dataView: { readOnly: true },
             }
         },

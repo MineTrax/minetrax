@@ -147,11 +147,11 @@ defineProps({
         class="flex justify-between flex-1 space-x-4"
       >
         <PlayersJoinAddressMetricBox
-          :top-count="10"
+          :top-count="20"
           class="basis-1/2"
         />
         <PlayersMinecraftVersionMetricBox
-          :top-count="10"
+          :top-count="20"
           class="basis-1/2"
         />
       </div>
