@@ -32,7 +32,7 @@ return [
 
     'paths' => [
         public_path('upload'),
-        public_path('images')
+        public_path('images'),
     ],
 
     /*
@@ -68,4 +68,13 @@ return [
 
     'lifetime' => 43200,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Image Cache Driver
+    |--------------------------------------------------------------------------
+    |
+    | Custom cache driver to be used for image caching. Set null to use default cache driver.
+    |
+    */
+    'cache_driver' => env('IMAGE_CACHE_DRIVER', 'file'),
 ];
