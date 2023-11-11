@@ -6,9 +6,8 @@ use App\Events\MinecraftPlayerSessionCreated;
 use App\Models\MinecraftPlayer;
 use App\Models\Player;
 use DB;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UpsertPlayerOnSessionStart implements ShouldQueue
+class UpsertPlayerOnSessionStart
 {
     /**
      * Create the event listener.

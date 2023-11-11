@@ -13,19 +13,24 @@ class ApiServerConsolelogController extends Controller
     {
         $request->validate([
             'log' => 'required',
-            'server_id' => 'required|exists:servers,id'
+            'server_id' => 'required|exists:servers,id',
         ]);
 
-        $log = ServerConsolelog::create([
-            'server_id' => $request->server_id,
-            'data' => $request->log
-        ]);
+        // Split each log into 50000 (<65535) bytes max (MySQL TEXT column limit)
+        $logs = str_split($request->log, 50000);
 
-        broadcast(new ServerConsolelogCreated($log));
+        foreach ($logs as $log) {
+            $log = ServerConsolelog::create([
+                'server_id' => $request->server_id,
+                'data' => $log,
+            ]);
+
+            broadcast(new ServerConsolelogCreated($log));
+        }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Ok'
+            'message' => 'Ok',
         ], 201);
     }
 }
