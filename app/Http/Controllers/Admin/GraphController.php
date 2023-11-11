@@ -6,9 +6,12 @@ use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Server;
+use Cache;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
+const RESPONSE_CACHE_SECONDS = 30 * 60;
 
 class GraphController extends Controller
 {
@@ -96,139 +99,142 @@ class GraphController extends Controller
     {
         $this->authorize('view admin_dashboard');
 
-        $currentMonth = CarbonImmutable::now();
-        $previousMonth = $currentMonth->subMonth();
+        $responseData = Cache::remember('graph-network-trends-vs-month', RESPONSE_CACHE_SECONDS, function () {
+            $currentMonth = CarbonImmutable::now();
+            $previousMonth = $currentMonth->subMonth();
+            // Total Players.
+            $avgTotalPlayerPreviousMonth = DB::table('minecraft_player_sessions')
+                ->where('created_at', '>=', $previousMonth->startOfMonth())
+                ->where('created_at', '<', $previousMonth->endOfMonth())
+                ->distinct()
+                ->count('player_uuid') ?? 0;
+            $avgTotalPlayerCurrentMonth = DB::table('minecraft_player_sessions')
+                ->where('created_at', '>=', $currentMonth->startOfMonth())
+                ->where('created_at', '<', $currentMonth->endOfMonth())
+                ->distinct()
+                ->count('player_uuid') ?? 0;
+            $avgTotalPlayerChangePercent = (($avgTotalPlayerCurrentMonth - $avgTotalPlayerPreviousMonth) / ($avgTotalPlayerPreviousMonth == 0 ? 1 : $avgTotalPlayerPreviousMonth)) * 100;
 
-        // Total Players.
-        $avgTotalPlayerPreviousMonth = DB::table('minecraft_player_sessions')
-            ->where('created_at', '>=', $previousMonth->startOfMonth())
-            ->where('created_at', '<', $previousMonth->endOfMonth())
-            ->distinct()
-            ->count('player_uuid') ?? 0;
-        $avgTotalPlayerCurrentMonth = DB::table('minecraft_player_sessions')
-            ->where('created_at', '>=', $currentMonth->startOfMonth())
-            ->where('created_at', '<', $currentMonth->endOfMonth())
-            ->distinct()
-            ->count('player_uuid') ?? 0;
-        $avgTotalPlayerChangePercent = (($avgTotalPlayerCurrentMonth - $avgTotalPlayerPreviousMonth) / ($avgTotalPlayerPreviousMonth == 0 ? 1 : $avgTotalPlayerPreviousMonth)) * 100;
+            // New Players.
+            $avgNewPlayerPreviousMonth = DB::table('minecraft_player_sessions')
+                ->where('created_at', '>=', $previousMonth->startOfMonth())
+                ->where('created_at', '<', $previousMonth->endOfMonth())
+                ->whereNotIn('player_uuid', function ($query) use ($previousMonth) {
+                    $query->select('player_uuid')
+                        ->distinct()
+                        ->from('minecraft_player_sessions')
+                        ->where('created_at', '<', $previousMonth->startOfMonth());
+                })
+                ->distinct()
+                ->count('player_uuid') ?? 0;
+            $avgNewPlayerCurrentMonth = DB::table('minecraft_player_sessions')
+                ->where('created_at', '>=', $currentMonth->startOfMonth())
+                ->where('created_at', '<', $currentMonth->endOfMonth())
+                ->whereNotIn('player_uuid', function ($query) use ($currentMonth) {
+                    $query->select('player_uuid')
+                        ->distinct()
+                        ->from('minecraft_player_sessions')
+                        ->where('created_at', '<', $currentMonth->startOfMonth());
+                })
+                ->distinct()
+                ->count('player_uuid') ?? 0;
+            $avgNewPlayerChangePercent = (($avgNewPlayerCurrentMonth - $avgNewPlayerPreviousMonth) / ($avgNewPlayerPreviousMonth == 0 ? 1 : $avgNewPlayerPreviousMonth)) * 100;
 
-        // New Players.
-        $avgNewPlayerPreviousMonth = DB::table('minecraft_player_sessions')
-            ->where('created_at', '>=', $previousMonth->startOfMonth())
-            ->where('created_at', '<', $previousMonth->endOfMonth())
-            ->whereNotIn('player_uuid', function ($query) use ($previousMonth) {
-                $query->select('player_uuid')
-                    ->distinct()
-                    ->from('minecraft_player_sessions')
-                    ->where('created_at', '<', $previousMonth->startOfMonth());
-            })
-            ->distinct()
-            ->count('player_uuid') ?? 0;
-        $avgNewPlayerCurrentMonth = DB::table('minecraft_player_sessions')
-            ->where('created_at', '>=', $currentMonth->startOfMonth())
-            ->where('created_at', '<', $currentMonth->endOfMonth())
-            ->whereNotIn('player_uuid', function ($query) use ($currentMonth) {
-                $query->select('player_uuid')
-                    ->distinct()
-                    ->from('minecraft_player_sessions')
-                    ->where('created_at', '<', $currentMonth->startOfMonth());
-            })
-            ->distinct()
-            ->count('player_uuid') ?? 0;
-        $avgNewPlayerChangePercent = (($avgNewPlayerCurrentMonth - $avgNewPlayerPreviousMonth) / ($avgNewPlayerPreviousMonth == 0 ? 1 : $avgNewPlayerPreviousMonth)) * 100;
+            // Total sessions
+            $avgTotalSessionPreviousMonth = DB::table('minecraft_player_sessions')
+                ->where('session_started_at', '>=', $previousMonth->startOfMonth())
+                ->where('session_started_at', '<', $previousMonth->endOfMonth())
+                ->count() ?? 0;
+            $avgTotalSessionCurrentMonth = DB::table('minecraft_player_sessions')
+                ->where('session_started_at', '>=', $currentMonth->startOfMonth())
+                ->where('session_started_at', '<', $currentMonth->endOfMonth())
+                ->count() ?? 0;
+            $avgTotalSessionChangePercent = (($avgTotalSessionCurrentMonth - $avgTotalSessionPreviousMonth) / ($avgTotalSessionPreviousMonth == 0 ? 1 : $avgTotalSessionPreviousMonth)) * 100;
 
-        // Total sessions
-        $avgTotalSessionPreviousMonth = DB::table('minecraft_player_sessions')
-            ->where('session_started_at', '>=', $previousMonth->startOfMonth())
-            ->where('session_started_at', '<', $previousMonth->endOfMonth())
-            ->count() ?? 0;
-        $avgTotalSessionCurrentMonth = DB::table('minecraft_player_sessions')
-            ->where('session_started_at', '>=', $currentMonth->startOfMonth())
-            ->where('session_started_at', '<', $currentMonth->endOfMonth())
-            ->count() ?? 0;
-        $avgTotalSessionChangePercent = (($avgTotalSessionCurrentMonth - $avgTotalSessionPreviousMonth) / ($avgTotalSessionPreviousMonth == 0 ? 1 : $avgTotalSessionPreviousMonth)) * 100;
+            // Average Play Time.
+            $averagePlayTimePreviousMonth = DB::table('minecraft_player_sessions')
+                ->where('session_started_at', '>=', $previousMonth->startOfMonth())
+                ->where('session_started_at', '<', $previousMonth->endOfMonth())
+                ->avg('play_time') ?? 0;
+            $averagePlayTimeCurrentMonth = DB::table('minecraft_player_sessions')
+                ->where('session_started_at', '>=', $currentMonth->startOfMonth())
+                ->where('session_started_at', '<', $currentMonth->endOfMonth())
+                ->avg('play_time') ?? 0;
+            $averagePlayTimeChangePercent = (($averagePlayTimeCurrentMonth - $averagePlayTimePreviousMonth) / ($averagePlayTimePreviousMonth == 0 ? 1 : $averagePlayTimePreviousMonth)) * 100;
 
-        // Average Play Time.
-        $averagePlayTimePreviousMonth = DB::table('minecraft_player_sessions')
-            ->where('session_started_at', '>=', $previousMonth->startOfMonth())
-            ->where('session_started_at', '<', $previousMonth->endOfMonth())
-            ->avg('play_time') ?? 0;
-        $averagePlayTimeCurrentMonth = DB::table('minecraft_player_sessions')
-            ->where('session_started_at', '>=', $currentMonth->startOfMonth())
-            ->where('session_started_at', '<', $currentMonth->endOfMonth())
-            ->avg('play_time') ?? 0;
-        $averagePlayTimeChangePercent = (($averagePlayTimeCurrentMonth - $averagePlayTimePreviousMonth) / ($averagePlayTimePreviousMonth == 0 ? 1 : $averagePlayTimePreviousMonth)) * 100;
+            // Average AFK Time.
+            $averageAfkTimePreviousMonth = DB::table('minecraft_player_sessions')
+                ->where('session_started_at', '>=', $previousMonth->startOfMonth())
+                ->where('session_started_at', '<', $previousMonth->endOfMonth())
+                ->avg('afk_time') ?? 0;
+            $averageAfkTimeCurrentMonth = DB::table('minecraft_player_sessions')
+                ->where('session_started_at', '>=', $currentMonth->startOfMonth())
+                ->where('session_started_at', '<', $currentMonth->endOfMonth())
+                ->avg('afk_time') ?? 0;
+            $averageAfkTimeChangePercent = (($averageAfkTimeCurrentMonth - $averageAfkTimePreviousMonth) / ($averageAfkTimePreviousMonth == 0 ? 1 : $averageAfkTimePreviousMonth)) * 100;
 
-        // Average AFK Time.
-        $averageAfkTimePreviousMonth = DB::table('minecraft_player_sessions')
-            ->where('session_started_at', '>=', $previousMonth->startOfMonth())
-            ->where('session_started_at', '<', $previousMonth->endOfMonth())
-            ->avg('afk_time') ?? 0;
-        $averageAfkTimeCurrentMonth = DB::table('minecraft_player_sessions')
-            ->where('session_started_at', '>=', $currentMonth->startOfMonth())
-            ->where('session_started_at', '<', $currentMonth->endOfMonth())
-            ->avg('afk_time') ?? 0;
-        $averageAfkTimeChangePercent = (($averageAfkTimeCurrentMonth - $averageAfkTimePreviousMonth) / ($averageAfkTimePreviousMonth == 0 ? 1 : $averageAfkTimePreviousMonth)) * 100;
+            // Average Player Ping.
+            $averagePlayerPingPreviousMonth = DB::table('minecraft_player_events')
+                ->where('created_at', '>=', $previousMonth->startOfMonth())
+                ->where('created_at', '<', $previousMonth->endOfMonth())
+                ->avg('player_ping') ?? 0;
+            $averagePlayerPingCurrentMonth = DB::table('minecraft_player_events')
+                ->where('created_at', '>=', $currentMonth->startOfMonth())
+                ->where('created_at', '<', $currentMonth->endOfMonth())
+                ->avg('player_ping') ?? 0;
+            $averagePlayerPingChangePercent = (($averagePlayerPingCurrentMonth - $averagePlayerPingPreviousMonth) / ($averagePlayerPingPreviousMonth == 0 ? 1 : $averagePlayerPingPreviousMonth)) * 100;
 
-        // Average Player Ping.
-        $averagePlayerPingPreviousMonth = DB::table('minecraft_player_events')
-            ->where('created_at', '>=', $previousMonth->startOfMonth())
-            ->where('created_at', '<', $previousMonth->endOfMonth())
-            ->avg('player_ping') ?? 0;
-        $averagePlayerPingCurrentMonth = DB::table('minecraft_player_events')
-            ->where('created_at', '>=', $currentMonth->startOfMonth())
-            ->where('created_at', '<', $currentMonth->endOfMonth())
-            ->avg('player_ping') ?? 0;
-        $averagePlayerPingChangePercent = (($averagePlayerPingCurrentMonth - $averagePlayerPingPreviousMonth) / ($averagePlayerPingPreviousMonth == 0 ? 1 : $averagePlayerPingPreviousMonth)) * 100;
+            // Peek Online Players.
+            $peekOnlinePlayersPreviousMonth = DB::table('minecraft_server_live_infos')
+                ->where('created_at', '>=', $previousMonth->startOfMonth())
+                ->where('created_at', '<', $previousMonth->endOfMonth())
+                ->max('online_players') ?? 0;
+            $peekOnlinePlayersCurrentMonth = DB::table('minecraft_server_live_infos')
+                ->where('created_at', '>=', $currentMonth->startOfMonth())
+                ->where('created_at', '<', $currentMonth->endOfMonth())
+                ->max('online_players') ?? 0;
+            $peekOnlinePlayersChangePercent = (($peekOnlinePlayersCurrentMonth - $peekOnlinePlayersPreviousMonth) / ($peekOnlinePlayersPreviousMonth == 0 ? 1 : $peekOnlinePlayersPreviousMonth)) * 100;
 
-        // Peek Online Players.
-        $peekOnlinePlayersPreviousMonth = DB::table('minecraft_server_live_infos')
-            ->where('created_at', '>=', $previousMonth->startOfMonth())
-            ->where('created_at', '<', $previousMonth->endOfMonth())
-            ->max('online_players') ?? 0;
-        $peekOnlinePlayersCurrentMonth = DB::table('minecraft_server_live_infos')
-            ->where('created_at', '>=', $currentMonth->startOfMonth())
-            ->where('created_at', '<', $currentMonth->endOfMonth())
-            ->max('online_players') ?? 0;
-        $peekOnlinePlayersChangePercent = (($peekOnlinePlayersCurrentMonth - $peekOnlinePlayersPreviousMonth) / ($peekOnlinePlayersPreviousMonth == 0 ? 1 : $peekOnlinePlayersPreviousMonth)) * 100;
+            return [
+                'total_players' => [
+                    'previous_month' => $avgTotalPlayerPreviousMonth,
+                    'current_month' => $avgTotalPlayerCurrentMonth,
+                    'change' => round($avgTotalPlayerChangePercent, 2),
+                ],
+                'total_new_players' => [
+                    'previous_month' => $avgNewPlayerPreviousMonth,
+                    'current_month' => $avgNewPlayerCurrentMonth,
+                    'change' => round($avgNewPlayerChangePercent, 2),
+                ],
+                'total_player_sessions' => [
+                    'previous_month' => $avgTotalSessionPreviousMonth,
+                    'current_month' => $avgTotalSessionCurrentMonth,
+                    'change' => round($avgTotalSessionChangePercent, 2),
+                ],
+                'avg_playtime' => [
+                    'previous_month' => $averagePlayTimePreviousMonth,
+                    'current_month' => $averagePlayTimeCurrentMonth,
+                    'change' => round($averagePlayTimeChangePercent, 2),
+                ],
+                'avg_afktime' => [
+                    'previous_month' => $averageAfkTimePreviousMonth,
+                    'current_month' => $averageAfkTimeCurrentMonth,
+                    'change' => round($averageAfkTimeChangePercent, 2),
+                ],
+                'avg_player_ping' => [
+                    'previous_month' => $averagePlayerPingPreviousMonth,
+                    'current_month' => $averagePlayerPingCurrentMonth,
+                    'change' => round($averagePlayerPingChangePercent, 2),
+                ],
+                'peek_online_players' => [
+                    'previous_month' => $peekOnlinePlayersPreviousMonth,
+                    'current_month' => $peekOnlinePlayersCurrentMonth,
+                    'change' => round($peekOnlinePlayersChangePercent, 2),
+                ],
+            ];
+        });
 
-        return response()->json([
-            'total_players' => [
-                'previous_month' => $avgTotalPlayerPreviousMonth,
-                'current_month' => $avgTotalPlayerCurrentMonth,
-                'change' => round($avgTotalPlayerChangePercent, 2),
-            ],
-            'total_new_players' => [
-                'previous_month' => $avgNewPlayerPreviousMonth,
-                'current_month' => $avgNewPlayerCurrentMonth,
-                'change' => round($avgNewPlayerChangePercent, 2),
-            ],
-            'total_player_sessions' => [
-                'previous_month' => $avgTotalSessionPreviousMonth,
-                'current_month' => $avgTotalSessionCurrentMonth,
-                'change' => round($avgTotalSessionChangePercent, 2),
-            ],
-            'avg_playtime' => [
-                'previous_month' => $averagePlayTimePreviousMonth,
-                'current_month' => $averagePlayTimeCurrentMonth,
-                'change' => round($averagePlayTimeChangePercent, 2),
-            ],
-            'avg_afktime' => [
-                'previous_month' => $averageAfkTimePreviousMonth,
-                'current_month' => $averageAfkTimeCurrentMonth,
-                'change' => round($averageAfkTimeChangePercent, 2),
-            ],
-            'avg_player_ping' => [
-                'previous_month' => $averagePlayerPingPreviousMonth,
-                'current_month' => $averagePlayerPingCurrentMonth,
-                'change' => round($averagePlayerPingChangePercent, 2),
-            ],
-            'peek_online_players' => [
-                'previous_month' => $peekOnlinePlayersPreviousMonth,
-                'current_month' => $peekOnlinePlayersCurrentMonth,
-                'change' => round($peekOnlinePlayersChangePercent, 2),
-            ],
-        ]);
+        return response()->json($responseData);
     }
 
     public function getServerPerformanceOverTime(Request $request)

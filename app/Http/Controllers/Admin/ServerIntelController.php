@@ -161,7 +161,7 @@ class ServerIntelController extends Controller
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
 
         $selectedServersKey = serialize($selectedServers);
-        $numbers = Cache::remember("server-overview-numbers.{$selectedServersKey}", 5, function () use ($selectedServers) {
+        $numbers = Cache::remember("server-overview-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS, function () use ($selectedServers) {
             if ($selectedServers) {
                 $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->get();
             } else {
