@@ -282,4 +282,14 @@ return [
     'ratelimit' => [
         'api' => env('RATELIMIT_API_PER_MINUTE', 600),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Max Post Feed Media Size (KB)
+    |--------------------------------------------------------------------------
+    |
+    | Maximum allowed size post feed media in kilobytes.
+    |
+    */
+    'max_post_feed_media_size_kb' => env('MAX_POST_FEED_MEDIA_SIZE_KB', 1024),
 ];

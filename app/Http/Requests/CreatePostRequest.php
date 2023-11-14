@@ -24,10 +24,17 @@ class CreatePostRequest extends FormRequest
      */
     public function rules()
     {
+        $maxMediaSize = config('minetrax.max_post_feed_media_size_kb');
+
         return [
             'media' => 'max:4',
-            'media.*' => 'sometimes|nullable|image|max:1048',
-            'body' => 'required_without:media|max:1000'
+            'media.*' => [
+                'sometimes',
+                'nullable',
+                'image',
+                'max:'.$maxMediaSize,
+            ],
+            'body' => 'required_without:media|max:1000',
         ];
     }
 }
