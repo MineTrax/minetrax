@@ -46,31 +46,28 @@ class ServerIntelController extends Controller
          * Start: LAST 7 DAYS STATS
          */
         // Unique Players Count
-        $uniquePlayers = MinecraftPlayerSession::select(['player_uuid'])
+        $uniquePlayersCount = MinecraftPlayer::select(['player_uuid'])
             ->when($selectedServers, function ($query, $selectedServers) {
                 $query->whereIn('server_id', $selectedServers);
             })
-            ->where('created_at', '>=', now()->subWeek())
-            ->distinct()->get();
-        $uniquePlayersCount = $uniquePlayers->count();
+            ->where('last_seen_at', '>=', now()->subWeek())
+            ->distinct()->count('player_uuid');
 
         // Old & New Players Count
-        $uniquePlayersSubquery = MinecraftPlayerSession::select(['player_uuid'])
+        $oldPlayersCount = MinecraftPlayer::select(['player_uuid'])
             ->when($selectedServers, function ($query, $selectedServers) {
                 $query->whereIn('server_id', $selectedServers);
             })
-            ->where('created_at', '>=', now()->subWeek())
-            ->distinct()
-            ->getQuery();
-        $oldPlayers = MinecraftPlayerSession::select(['player_uuid'])
+            ->where('first_seen_at', '<', now()->subWeek())
+            ->where('last_seen_at', '>=', now()->subWeek())
+            ->distinct()->count('player_uuid');
+
+        $newPlayersCount = MinecraftPlayer::select(['player_uuid'])
             ->when($selectedServers, function ($query, $selectedServers) {
                 $query->whereIn('server_id', $selectedServers);
             })
-            ->where('created_at', '<', now()->subWeek())
-            ->whereIn('player_uuid', $uniquePlayersSubquery)
-            ->distinct()->get();
-        $oldPlayersCount = $oldPlayers->count();
-        $newPlayersCount = $uniquePlayers->whereNotIn('player_uuid', $oldPlayers->pluck('player_uuid'))->count();
+            ->where('first_seen_at', '>=', now()->subWeek())
+            ->distinct()->count('player_uuid');
 
         // Peek Online Players
         $peekOnlinePlayersCount = MinecraftServerLiveInfo::query()

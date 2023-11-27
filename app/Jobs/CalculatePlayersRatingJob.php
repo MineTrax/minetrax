@@ -14,6 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Log;
 
 class CalculatePlayersRatingJob implements ShouldQueue
 {
@@ -33,6 +34,8 @@ class CalculatePlayersRatingJob implements ShouldQueue
      */
     public function handle(PlayerSettings $playerSettings, PluginSettings $pluginSettings)
     {
+        Log::info("[RatingJob] Starting calculating rating & ranks for all players");
+
         $server = null;
         if ($pluginSettings->enable_sync_player_ranks_from_server) {
             $server = Server::where('id', $pluginSettings->sync_player_ranks_from_server_id)->first();
@@ -69,7 +72,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
             $pT->save();
         }
 
-        \Log::info("[RatingJob] Finished calculating rating & ranks for all players");
+        Log::info("[RatingJob] Finished calculating rating & ranks for all players");
     }
 
     private function calculatePlayerRating($player, $minScore, $maxScore, PlayerSettings $playerSettings, array $serverIds): int|null
@@ -87,7 +90,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
                 $playerRatingCalculator = new PlayerRatingCalculator();
                 $rating = $playerRatingCalculator->calculate($playerSettings->custom_rating_expression, $player, $serverIds);
             } catch (\Exception $e) {
-                \Log::critical($e);
+                Log::critical($e);
                 $rating = null;
             }
         } else {
@@ -128,7 +131,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
                     ->orderByDesc('weight')->first()?->id;
             }
         } catch(\Exception $e) {
-            \Log::critical($e);
+            Log::critical($e);
         }
 
         return $rankId;

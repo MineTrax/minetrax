@@ -31,6 +31,7 @@ class CalculatePlayersScoreJob implements ShouldQueue
      */
     public function handle(PlayerSettings $playerSettings)
     {
+        Log::info('[ScoreJob] Starting calculating scores for all players');
         $playerSettings->refresh();
 
         // id list of all servers.
@@ -48,8 +49,6 @@ class CalculatePlayersScoreJob implements ShouldQueue
                 ->selectRaw('sum(vault_balance) as vault_balance')
                 ->first();
             if ($mcPlayerDataFromServer->updated_at < $player->updated_at && ! $shouldForceRunForAllPlayers) {
-                Log::info('[ScoreJob] Skipping player: '.$player->uuid.' as it is already up to date');
-
                 continue;
             }
 
@@ -59,8 +58,6 @@ class CalculatePlayersScoreJob implements ShouldQueue
                 'total_score' => $score,
                 'total_money' => $mcPlayerDataFromServer->vault_balance ?? 0,
             ]);
-
-            Log::info('[ScoreJob] Calculated score for player: '.$player->uuid.' as '.$score);
         }
 
         Log::info('[ScoreJob] Finished calculating scores for all players');
