@@ -216,6 +216,8 @@ export default {
     },
 
     created() {
+        if (!this.$page.props.generalSettings.enable_shoutbox) return;
+
         axios.get(route('shout.index')).then(data => {
             this.shouts = data.data;
         }).finally(() => {
