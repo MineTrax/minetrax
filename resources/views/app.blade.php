@@ -33,10 +33,14 @@
 
     {{--Show global loading indication till Vue take over--}}
     <div id="site-global-loader" class="flex h-screen justify-center items-center">
+        @if (app(\App\Settings\ThemeSettings::class)->loading_gif)
+        <img width="50" height="50" src="{{ app(\App\Settings\ThemeSettings::class)->loading_gif }}" alt="logo" class="w-14 h-14">
+        @else
         <div class="lds-ripple">
             <div></div>
             <div></div>
         </div>
+        @endif
     </div>
 
     @inertia

@@ -54,6 +54,7 @@ class ThemeSettingController extends Controller
             'home_hero_bg_particles' => ['nullable', 'string', 'json'],
             'home_hero_fg_image_light' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp', 'max:1024'],
             'home_hero_fg_image_dark' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp', 'max:1024'],
+            'loading_gif' => ['sometimes', 'nullable', 'mimes:gif,svg', 'max:1024'],
         ]);
 
         $themeSettings->color_mode = $request->color_mode;
@@ -99,6 +100,15 @@ class ThemeSettingController extends Controller
                 'public', $request->file('home_hero_fg_image_dark'), 'home_hero_fg_image_dark.'.$request->file('home_hero_fg_image_dark')->getClientOriginalExtension()
             );
             $themeSettings->home_hero_fg_image_path_dark = Storage::url($path).'?hash='.\Str::random(8);
+        }
+
+        if ($request->hasFile('loading_gif')) {
+            $path = Storage::putFileAs(
+                'public', $request->file('loading_gif'), 'loading_gif.'.$request->file('loading_gif')->getClientOriginalExtension()
+            );
+            $themeSettings->loading_gif = Storage::url($path).'?hash='.\Str::random(8);
+        } elseif ($request->input('loading_gif') === null) {
+            $themeSettings->loading_gif = null;
         }
 
         $themeSettings->save();

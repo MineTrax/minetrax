@@ -24,6 +24,7 @@ class ThemeSettings extends Settings
     public bool $show_fg_image_box_in_home_hero;
     public bool $show_discord_box_in_home_hero;
     public ?string $home_hero_bg_particles;
+    public ?string $loading_gif;
 
     public static function group(): string
     {

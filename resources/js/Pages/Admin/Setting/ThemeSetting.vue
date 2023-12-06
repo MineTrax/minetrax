@@ -109,6 +109,7 @@
                               id="home_hero_fg_image_light"
                               ref="home_hero_fg_image_light"
                               type="file"
+                              accept="image/*"
                               class="hidden"
                               @change="updateHomeHeroFgImageLightPreview"
                             >
@@ -174,6 +175,7 @@
                               id="home_hero_fg_image_dark"
                               ref="home_hero_fg_image_dark"
                               type="file"
+                              accept="image/*"
                               class="hidden"
                               @change="updateHomeHeroFgImageDarkPreview"
                             >
@@ -239,6 +241,7 @@
                               id="home_hero_bg_image_light"
                               ref="home_hero_bg_image_light"
                               type="file"
+                              accept="image/*, video/*"
                               class="hidden"
                               @change="updateHomeHeroBgImageLightPreview"
                             >
@@ -319,6 +322,7 @@
                               id="home_hero_bg_image_dark"
                               ref="home_hero_bg_image_dark"
                               type="file"
+                              accept="image/*, video/*"
                               class="hidden"
                               @change="updateHomeHeroBgImageDarkPreview"
                             >
@@ -526,6 +530,78 @@
                               name="home_hero_bg_particles"
                             />
                           </div>
+
+                          <!-- Loading Gif -->
+                          <div
+                            class="col-span-6 sm:col-span-6 border-t border-gray-300 dark:border-gray-700 pt-4"
+                          >
+                            <input
+                              id="loading_gif"
+                              ref="loading_gif"
+                              type="file"
+                              class="hidden"
+                              accept="image/gif, image/svg+xml"
+                              @change="updateLoadingGifPreview"
+                            >
+
+                            <label
+                              for="loading_gif"
+                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            >{{ __("Animated Loading Image") }}</label>
+
+                            <div
+                              v-show="!loadingGifPreview"
+                              class="mt-2 flex items-center p-6"
+                            >
+                              <img
+                                v-if="settings.loading_gif"
+                                :src="settings.loading_gif"
+                                alt="loading_gif"
+                                class="h-14 w-14"
+                              >
+                              <span
+                                v-else
+                                class="text-gray-400 italic text-xs"
+                              >
+                                {{ __("No Animated Loading Image.") }}
+                              </span>
+                            </div>
+
+                            <div
+                              v-show="loadingGifPreview"
+                              class="mt-2 p-4"
+                            >
+                              <span
+                                class="block rounded h-14 w-14"
+                                :style="`background-size: contain; background-repeat: no-repeat; background-position: center center; background-image: url(${loadingGifPreview});`"
+                              />
+                            </div>
+
+                            <jet-secondary-button
+                              class="mt-2 mr-2"
+                              type="button"
+                              @click.prevent="selectLoadingGif"
+                            >
+                              {{ __("Select A New Image") }}
+                            </jet-secondary-button>
+
+                            <jet-secondary-button
+                              class="mt-2 mr-2"
+                              type="button"
+                              @click.prevent="removeLoadingGif"
+                            >
+                              {{ __("Remove Image") }}
+                            </jet-secondary-button>
+
+                            <div class="mt-2 text-xs text-gray-400">
+                              {{ __("Allowed") }}:  gif & svg
+                            </div>
+
+                            <jet-input-error
+                              :message="form.errors.loading_gif"
+                              class="mt-2"
+                            />
+                          </div>
                         </div>
                       </div>
                       <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
@@ -607,6 +683,7 @@ export default {
                 home_hero_bg_particles: this.settings.home_hero_bg_particles,
                 home_hero_fg_image_light: null,
                 home_hero_fg_image_dark: null,
+                loading_gif: null,
             }),
             homeHeroFgImageLightPreview: null,
             homeHeroFgImageDarkPreview: null,
@@ -614,6 +691,7 @@ export default {
             homeHeroBgImageLightPreviewIsVideo: false,
             homeHeroBgImageDarkPreview: null,
             homeHeroBgImageDarkPreviewIsVideo: false,
+            loadingGifPreview: null,
             backgroundPositionList: [
                 'left top',
                 'left center',
@@ -713,6 +791,19 @@ export default {
             this.$refs.home_hero_fg_image_light.click();
         },
 
+        updateLoadingGifPreview() {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                this.loadingGifPreview = e.target.result;
+            };
+
+            reader.readAsDataURL(this.$refs.loading_gif.files[0]);
+        },
+        selectLoadingGif() {
+            this.$refs.loading_gif.click();
+        },
+
         saveThemeSetting() {
             if (this.$refs.home_hero_bg_image_light) {
                 this.form.home_hero_bg_image_light = this.$refs.home_hero_bg_image_light.files[0];
@@ -730,6 +821,10 @@ export default {
                 this.form.home_hero_fg_image_dark = this.$refs.home_hero_fg_image_dark.files[0];
             }
 
+            if (this.$refs.loading_gif) {
+                this.form.loading_gif = this.$refs.loading_gif.files[0];
+            }
+
             this.form.post(route('admin.setting.theme.update'), {
                 preserveScroll: true,
                 onSuccess: () => {
@@ -738,6 +833,15 @@ export default {
                         preserveScroll: true,
                     });
                 }
+            });
+        },
+
+        removeLoadingGif() {
+            this.form.reset();
+            this.form.loading_gif = null;
+            this.form.post(route('admin.setting.theme.update'), {
+                preserveScroll: true,
+                onSuccess: () => (this.loadingGifPreview = null),
             });
         }
     }
