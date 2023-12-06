@@ -12,8 +12,8 @@
     "require": {
         "php": ">=8.1",
         "ext-json": "*",
-        "ext-zip": "*",
         "ext-sockets": "*",
+        "ext-zip": "*",
         "bensampo/laravel-enum": "^6.0",
         "beyondcode/laravel-websockets": "^1.13",
         "clue/socket-raw": "^1.6",
@@ -25,6 +25,7 @@
         "intervention/imagecache": "^2.5",
         "laravel/framework": "^10.0",
         "laravel/jetstream": "^4.0",
+        "laravel/pulse": "^1.0@beta",
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.5",
         "laravel/telescope": "^4.14",
@@ -113,5 +114,6 @@
             "php-http/discovery": true
         }
     },
-    "prefer-stable": true
+    "prefer-stable": true,
+    "minimum-stability": "beta"
 }

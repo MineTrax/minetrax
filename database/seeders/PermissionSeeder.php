@@ -92,5 +92,7 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('read downloads');
         Permission::findOrCreate('update downloads');
         Permission::findOrCreate('delete downloads');
+
+        Permission::findOrCreate('view pulse_admin_dashboard');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -40,6 +41,10 @@ class AuthServiceProvider extends ServiceProvider
         // Super Admin can do anything even if that permission is missing for him.
         Gate::before(function ($user, $ability) {
             return $user->hasRole(Role::SUPER_ADMIN_ROLE_NAME) ? true : null;
+        });
+
+        Gate::define('viewPulse', function (User $user) {
+            return $user->can('view pulse_admin_dashboard');
         });
     }
 }
