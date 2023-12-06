@@ -684,6 +684,7 @@ export default {
                 home_hero_fg_image_light: null,
                 home_hero_fg_image_dark: null,
                 loading_gif: null,
+                remove_loading_gif: false,
             }),
             homeHeroFgImageLightPreview: null,
             homeHeroFgImageDarkPreview: null,
@@ -839,6 +840,7 @@ export default {
         removeLoadingGif() {
             this.form.reset();
             this.form.loading_gif = null;
+            this.form.remove_loading_gif = true;
             this.form.post(route('admin.setting.theme.update'), {
                 preserveScroll: true,
                 onSuccess: () => (this.loadingGifPreview = null),
