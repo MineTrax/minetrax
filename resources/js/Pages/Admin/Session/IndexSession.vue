@@ -30,11 +30,6 @@ const headerRow = [
         label: __('Ip Address'),
     },
     {
-        key: 'device',
-        label: __('Device'),
-        sortable: false,
-    },
-    {
         key: 'platform',
         label: __('Platform'),
         sortable: false,
@@ -128,10 +123,6 @@ const headerRow = [
                 :href="`https://whois.domaintools.com/${item.ip_address}`"
               >{{ item.ip_address }}</a>
             </div>
-          </DtRowItem>
-
-          <DtRowItem>
-            {{ item.agent.device }}
           </DtRowItem>
 
           <DtRowItem>
