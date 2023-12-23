@@ -19,15 +19,14 @@ class UserController extends Controller
 
     public function indexStaff(): \Inertia\Response
     {
-        $staffsWithRole = User::with(['roles' => function ($query) {
-            $query->where('is_hidden_from_staff_list', false)
-                ->orderByDesc('weight');
-        }])
+        $staffsWithRole = User::with(['roles'])
             ->whereHas('roles', function ($query) {
-                $query->where('is_staff', true);
+                $query->where('is_staff', true)
+                    ->where('is_hidden_from_staff_list', false)
+                    ->orderByDesc('weight');
             })
             ->select(['id', 'name', 'username', 'profile_photo_path', 'verified_at'])
-            ->get();
+            ->dumpRawSql()->get();
 
         return Inertia::render('User/IndexStaff', [
             'staffs' => $staffsWithRole,
