@@ -26,7 +26,7 @@ class UserController extends Controller
                     ->orderByDesc('weight');
             })
             ->select(['id', 'name', 'username', 'profile_photo_path', 'verified_at'])
-            ->dumpRawSql()->get();
+            ->get();
 
         return Inertia::render('User/IndexStaff', [
             'staffs' => $staffsWithRole,
