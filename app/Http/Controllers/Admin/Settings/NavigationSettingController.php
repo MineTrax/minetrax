@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\CustomPage;
+use App\Models\Download;
 use App\Settings\GeneralSettings;
 use App\Settings\NavigationSettings;
 use Illuminate\Http\Request;
@@ -35,6 +36,22 @@ class NavigationSettingController extends Controller
                 ],
                 'is_open_in_new_tab' => $item->is_open_in_new_tab,
                 'key' => 'custom-page-'.$item->id,
+            ];
+        }
+        // Downloads which can be added
+        $downloadItems = Download::select(['id', 'name', 'slug'])->get();
+        foreach ($downloadItems as $item) {
+            $availableNavItems[] = [
+                'type' => 'download',
+                'name' => $item->name,
+                'title' => $item->name,
+                'id' => $item->id,
+                'route' => 'download.show',
+                'route_params' => [
+                    'download' => $item->slug,
+                ],
+                'is_open_in_new_tab' => false,
+                'key' => 'download-'.$item->id,
             ];
         }
 

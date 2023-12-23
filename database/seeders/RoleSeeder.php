@@ -29,8 +29,10 @@ class RoleSeeder extends Seeder
 
         $admin = Role::create(['name' => 'admin', 'display_name' => 'Admin', 'is_staff' => true, 'weight' => 3]);
         $admin->givePermissionTo(['create news', 'read news', 'update news', 'delete news',
-                'create polls', 'read polls', 'update polls', 'delete polls',
-                'read users', 'update users', 'ban users', 'mute users', 'warn users', 'delete shouts', 'delete posts', 'delete comments', 'kick players', 'kill players', 'mute players', 'send server_broadcasts']);
+            'create polls', 'read polls', 'update polls', 'delete polls',
+            'read users', 'update users', 'ban users', 'mute users', 'warn users',
+            'delete shouts', 'delete posts', 'delete comments', 'kick players', 'kill players',
+            'mute players', 'send server_broadcasts', 'read custom_form_submissions', 'delete custom_form_submissions']);
 
         $moderator = Role::create(['name' => 'moderator', 'display_name' => 'Moderator', 'is_staff' => true, 'weight' => 2]);
         $moderator->givePermissionTo(['read users', 'mute users', 'warn users', 'delete shouts', 'delete comments', 'kill players', 'mute players']);

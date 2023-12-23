@@ -12,6 +12,7 @@ import {
     CircleStackIcon,
     TrophyIcon,
     CloudArrowDownIcon,
+    ClipboardDocumentListIcon
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
@@ -189,6 +190,30 @@ const navItems = [
         children: [],
         icon: CircleStackIcon,
         visible: canWild('ask_db')
+    },
+    {
+        label: 'Custom Forms',
+        active: false,
+        children: [
+            {
+                label: 'List Forms',
+                href: route('admin.custom-form.index'),
+                active: route().current('admin.custom-form.index'),
+                children: [],
+                icon: null,
+                visible: true
+            },
+            {
+                label: 'User Submissions',
+                href: route('admin.setting.theme.show'),
+                active: route().current('admin.setting.theme.show'),
+                children: [],
+                icon: null,
+                visible: true
+            },
+        ],
+        icon: ClipboardDocumentListIcon,
+        visible: canWild('custom_pages')
     },
     {
         label: 'Settings', href: '#', active: false, children: [

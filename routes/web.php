@@ -237,4 +237,11 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('download/{download}/edit', [\App\Http\Controllers\Admin\DownloadController::class, 'edit'])->name('download.edit');
     Route::put('download/{download}', [\App\Http\Controllers\Admin\DownloadController::class, 'update'])->name('download.update');
     Route::delete('download/{download}', [\App\Http\Controllers\Admin\DownloadController::class, 'destroy'])->name('download.delete');
+
+    Route::get('custom-form', [\App\Http\Controllers\Admin\CustomFormController::class, 'index'])->name('custom-form.index');
+    Route::get('custom-form/create', [\App\Http\Controllers\Admin\CustomFormController::class, 'create'])->name('custom-form.create');
+    Route::post('custom-form', [\App\Http\Controllers\Admin\CustomFormController::class, 'store'])->name('custom-form.store');
+    Route::get('custom-form/{customForm}/edit', [\App\Http\Controllers\Admin\CustomFormController::class, 'edit'])->name('custom-form.edit');
+    Route::put('custom-form/{customForm}', [\App\Http\Controllers\Admin\CustomFormController::class, 'update'])->name('custom-form.update');
+    Route::delete('custom-form/{customForm}', [\App\Http\Controllers\Admin\CustomFormController::class, 'destroy'])->name('custom-form.delete');
 });
