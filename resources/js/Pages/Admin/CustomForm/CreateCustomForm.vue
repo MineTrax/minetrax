@@ -92,7 +92,6 @@
                             :help="__('Only authenticated users should be able to fill this form.')"
                             name="is_only_auth"
                           />
-
                           <XCheckbox
                             id="is_only_staff"
                             v-model="form.is_only_staff"
@@ -100,8 +99,6 @@
                             :help="__('Only staff members can view & fill this form.')"
                             name="is_only_staff"
                           />
-                        </div>
-                        <div class="flex mt-4">
                           <XCheckbox
                             id="is_notify_staff_on_submission"
                             v-model="form.is_notify_staff_on_submission"
@@ -238,7 +235,13 @@
                     </div>
                   </div>
                 </div>
-                <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
+                <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-between gap-2">
+                  <loading-button
+                    class="inline-flex justify-center py-2 px-4 border border-gray-200 shadow-sm text-sm font-medium rounded-md text-gray-600 bg-gray-50 hover:bg-white disabled:opacity-50 dark:bg-gray-700 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:border-gray-600"
+                    type="button"
+                  >
+                    {{ __("Preview Form") }}
+                  </loading-button>
                   <loading-button
                     :loading="form.processing"
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
@@ -252,11 +255,17 @@
           </div>
         </div>
       </div>
+
+      <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6 rounded shadow mt-4">
+        <h1>Preview Card</h1>
+        <FormKitSchema :schema="computedFormSchema" />
+      </div>
     </div>
   </AdminLayout>
 </template>
 
 <script setup>
+import { FormKitSchema } from '@formkit/vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
@@ -267,6 +276,7 @@ import {onMounted, ref} from 'vue';
 import {useForm} from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Icon from '@/Components/Icon.vue';
+import { computed } from 'vue';
 
 const pageType = ref('draft');
 const formStatusList = {
@@ -280,7 +290,14 @@ const formFieldType = {
     text: {
         defaultValidation: 'required',
     },
+    textarea: {
+        defaultValidation: 'required',
+    },
     select: {
+        hasOptions: true,
+        defaultValidation: 'required',
+    },
+    multiselect: {
         hasOptions: true,
         defaultValidation: 'required',
     },
@@ -288,7 +305,35 @@ const formFieldType = {
         hasOptions: true,
         defaultValidation: 'required',
     },
-    textarea: {
+    checkbox: {},
+    email: {
+        defaultValidation: 'required|email',
+    },
+    number: {
+        defaultValidation: 'required|numeric',
+    },
+    password: {
+        defaultValidation: 'required',
+    },
+    tel: {
+        defaultValidation: 'required',
+    },
+    url: {
+        defaultValidation: 'required|url',
+    },
+    week: {
+        defaultValidation: 'required',
+    },
+    month: {
+        defaultValidation: 'required',
+    },
+    time: {
+        defaultValidation: 'required',
+    },
+    date: {
+        defaultValidation: 'required',
+    },
+    'datetime-local': {
         defaultValidation: 'required',
     },
 };
@@ -316,6 +361,15 @@ const form = useForm({
             label: 'Select It',
             name: 'select',
             placeholder: null,
+            help: null,
+            validation: 'required',
+            options: 'House,Car,Boat',
+            multiple: false,
+        },
+        {
+            type: 'radio',
+            label: 'Select It',
+            name: 'select',
             help: null,
             validation: 'required',
             options: 'House,Car,Boat',
@@ -352,5 +406,25 @@ function removeField(index) {
     }
     form.fields.splice(index, 1);
 }
+
+const computedFormSchema = computed(() => {
+    const parsed = form.fields.map((field) => {
+        let f = {
+            $formkit: field.type == 'multiselect' ? 'select' : field.type,
+            label: field.label,
+            name: field.label.toLowerCase().replace(/ /g, '_'),
+            help: field.help ?? undefined,
+            validation: field.validation ?? undefined,
+            placeholder: field.placeholder ?? undefined,
+            multiple: field.type == 'multiselect' ? true : undefined,
+        };
+
+        if (field.type === 'select' || field.type === 'multiselect' || field.type === 'radio') {
+            f.options = field.options?.split(',') ?? [];
+        }
+        return f;
+    });
+    return parsed;
+});
 
 </script>
