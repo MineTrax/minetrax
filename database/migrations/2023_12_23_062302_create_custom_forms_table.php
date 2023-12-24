@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('custom_forms', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique();
+            $table->string('title');
             $table->string('slug')->unique();
             $table->longText('description')->nullable();
             $table->string('status')->default('active'); // draft, active, disabled, archived
 
-            $table->boolean('is_only_auth')->default(false); // only authenticated user can view & submit.
-            $table->boolean('is_only_staff')->default(false); // only staff can view & submit.
+            $table->string('can_create_submission')->default('anyone'); // anyone -> anyone, "auth" -> only authenticated users, "staff" -> only staff
+            $table->boolean('require_restricted_permission_to_view_submission')->default(false); // Only staff with view restricted_custom_form_submission permission can view submission for this form.
             $table->boolean('is_notify_staff_on_submission')->default(false); // notify staff (with view access) when new submission is made.
 
             $table->json('fields')->nullable();

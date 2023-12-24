@@ -1,11 +1,11 @@
 <template>
   <AdminLayout>
-    <app-head title="Create Custom Form" />
+    <app-head title="Edit Custom Form" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("Create Custom Form") }}
+          {{ __("Edit Custom Form") }}
         </h1>
         <inertia-link
           :href="route('admin.custom-form.index')"
@@ -18,7 +18,7 @@
       <div class="mt-10 sm:mt-0">
         <div class="md:grid md:grid-cols-6 md:gap-6">
           <div class="mt-5 md:mt-0 md:col-span-6">
-            <form @submit.prevent="createCustomForm">
+            <form @submit.prevent="submitForm">
               <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
                   <div class="grid grid-cols-6 gap-4">
@@ -355,7 +355,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    {{ __("Create Custom Form") }}
+                    {{ __("Update Custom Form") }}
                   </loading-button>
                 </div>
               </div>
@@ -405,6 +405,10 @@ import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import {useFormKit} from '@/Composables/useFormKit';
 
+const props = defineProps({
+    customForm: Object
+});
+
 const formStatusList = {
     draft: 'Draft - Form is under development and not visible to users',
     active: 'Active - Form is actively accepting submissions',
@@ -444,43 +448,25 @@ const formFieldType = {
 };
 
 const form = useForm({
-    title: '',
-    slug: '',
-    status: 'draft',
-    description: '',
-    can_create_submission: 'anyone',
-    require_restricted_permission_to_view_submission: false,
-    is_notify_staff_on_submission: true,
-    fields: [
-        {
-            type: 'text',
-            label: 'Name',
-            name: 'name',
-            placeholder: null,
-            help: null,
-            validation: 'required|length:3,100',
-            options: null,
-        },
-        {
-            type: 'select',
-            label: 'Type',
-            name: 'select',
-            placeholder: null,
-            help: null,
-            validation: 'required',
-            options: 'Type1,Type2,Type3',
-        },
-    ],
+    title: props.customForm.title,
+    slug: props.customForm.slug,
+    status: props.customForm.status.value,
+    description: props.customForm.description,
+    can_create_submission: props.customForm.can_create_submission,
+    require_restricted_permission_to_view_submission: props.customForm.require_restricted_permission_to_view_submission,
+    is_notify_staff_on_submission: props.customForm.is_notify_staff_on_submission,
+    fields: props.customForm.fields,
+    '_method': 'PUT',
 });
 
 let easyMDE = null;
 
-const createCustomForm = () => {
+const submitForm = () => {
     form.description = easyMDE.value();
     form.fields.map(item => {
         item.name = item.label.toLowerCase().replace(/ /g, '_');
     });
-    form.post(route('admin.custom-form.store'), {});
+    form.post(route('admin.custom-form.update', props.customForm.id), {});
 };
 
 onMounted(() => {

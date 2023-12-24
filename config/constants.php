@@ -177,4 +177,24 @@ return [
         // Total Money if there is Vault
         '$total_money__server_{id}' => 'The total amount of money the player has (in Vault), on server with id {id}. Eg: $total_money__server_1',
     ],
+
+    // Available input types for custom form
+    'custom_form_input_types' => [
+        'text',
+        'textarea',
+        'select',
+        'multiselect',
+        'radio',
+        'checkbox',
+        'email',
+        'number',
+        'password',
+        'tel',
+        'url',
+        'week',
+        'month',
+        'time',
+        'date',
+        'datetime-local',
+    ],
 ];

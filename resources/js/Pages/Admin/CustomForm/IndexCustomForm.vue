@@ -39,19 +39,19 @@ const headerRow = [
         sortable: true,
     },
     {
-        key: 'is_only_auth',
-        label: __('Auth Only'),
+        key: 'can_create_submission',
+        label: __('Who can Submit'),
         sortable: true,
     },
     {
-        key: 'is_only_staff',
-        label: __('Staff Only'),
+        key: 'require_restricted_permission_to_view_submission',
+        label: __('Restricted View Permission'),
         sortable: true,
     },
     {
         key: 'is_notify_staff_on_submission',
         sortable: true,
-        label: __('Notify Staff'),
+        label: __('Notify Staff on Submit'),
     },
     {
         key: 'created_at',
@@ -110,14 +110,24 @@ const headerRow = [
               <div
                 class="text-sm font-medium text-gray-900 dark:text-gray-300"
               >
-                {{ item.status }}
+                {{ item.status.value }}
+              </div>
+            </div>
+          </td>
+
+          <td class="px-4 whitespace-normal">
+            <div class="flex items-center">
+              <div
+                class="text-sm font-medium text-gray-900 dark:text-gray-300"
+              >
+                {{ item.can_create_submission }}
               </div>
             </div>
           </td>
 
           <td class="py-4 text-sm text-gray-500 px-9">
             <Icon
-              v-if="item.is_only_auth"
+              v-if="item.require_restricted_permission_to_view_submission"
               class="text-green-500 focus:outline-none"
               name="check-circle"
             />
@@ -127,23 +137,8 @@ const headerRow = [
               name="cross-circle"
             />
           </td>
-          <td
-            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
-          >
-            <Icon
-              v-if="item.is_only_staff"
-              class="text-green-500"
-              name="check-circle"
-            />
-            <Icon
-              v-else
-              class="text-red-500"
-              name="cross-circle"
-            />
-          </td>
-          <td
-            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
-          >
+
+          <td class="py-4 text-sm text-gray-500 px-9">
             <Icon
               v-if="item.is_notify_staff_on_submission"
               class="text-green-500 focus:outline-none"
@@ -189,7 +184,7 @@ const headerRow = [
               v-if="can('delete custom_forms')"
               v-confirm="{
                 message:
-                  'Are you sure you want to delete this Custom Form permanently?',
+                  'Deleting this Custom Form will also delete all its submissions. Are you sure you want to delete this form & its submissions permanently?',
               }"
               v-tippy
               as="button"

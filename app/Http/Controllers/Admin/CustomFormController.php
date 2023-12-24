@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateCustomFormRequest;
+use App\Http\Requests\UpdateCustomFormRequest;
 use App\Models\CustomForm;
 use App\Queries\Filters\FilterMultipleFields;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -27,14 +28,14 @@ class CustomFormController extends Controller
                 'title',
                 'slug',
                 'status',
-                'is_only_auth',
-                'is_only_staff',
+                'can_create_submission',
+                'require_restricted_permission_to_view_submission',
                 'is_notify_staff_on_submission',
                 'created_at',
                 'created_by',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug', 'description'])),
             ])
-            ->allowedSorts(['id', 'title', 'slug', 'status', 'is_only_auth', 'is_only_staff', 'is_notify_staff_on_submission', 'created_at'])
+            ->allowedSorts(['id', 'title', 'slug', 'status', 'can_create_submission', 'require_restricted_permission_to_view_submission', 'is_notify_staff_on_submission', 'created_at'])
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();
@@ -52,28 +53,59 @@ class CustomFormController extends Controller
         return Inertia::render('Admin/CustomForm/CreateCustomForm');
     }
 
-    public function store(Request $request)
+    public function store(CreateCustomFormRequest $request)
     {
-        //
+        CustomForm::create([
+            'title' => $request->title,
+            'slug' => $request->slug,
+            'description' => $request->description,
+            'status' => $request->status,
+            'can_create_submission' => $request->can_create_submission,
+            'require_restricted_permission_to_view_submission' => $request->require_restricted_permission_to_view_submission,
+            'is_notify_staff_on_submission' => $request->is_notify_staff_on_submission,
+            'fields' => $request->fields,
+            'created_by' => $request->user()->id,
+        ]);
+
+        return redirect()->route('admin.custom-form.index')
+            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Custom Form is created successfully')]]);
     }
 
-    public function show(string $id)
+    public function edit(CustomForm $customForm)
     {
-        //
+        $this->authorize('update', $customForm);
+
+        return Inertia::render('Admin/CustomForm/EditCustomForm', [
+            'customForm' => $customForm,
+        ]);
     }
 
-    public function edit(string $id)
+    public function update(UpdateCustomFormRequest $request, CustomForm $customForm)
     {
-        //
+        $this->authorize('update', $customForm);
+
+        $customForm->title = $request->title;
+        $customForm->slug = $request->slug;
+        $customForm->description = $request->description;
+        $customForm->status = $request->status;
+        $customForm->can_create_submission = $request->can_create_submission;
+        $customForm->require_restricted_permission_to_view_submission = $request->require_restricted_permission_to_view_submission;
+        $customForm->is_notify_staff_on_submission = $request->is_notify_staff_on_submission;
+        $customForm->fields = $request->fields;
+        $customForm->updated_by = $request->user()->id;
+        $customForm->save();
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Custom Form updated successfully')]]);
     }
 
-    public function update(Request $request, string $id)
+    public function destroy(CustomForm $customForm)
     {
-        //
-    }
+        $this->authorize('delete', $customForm);
 
-    public function destroy(string $id)
-    {
-        //
+        $customForm->delete();
+
+        return redirect()->route('admin.custom-form.index')
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Custom Form has been deleted permanently')]]);
     }
 }
