@@ -17,6 +17,10 @@
     @vite('resources/js/app.js')
     @inertiaHead
 
+    @if(now()->month === 12 && now()->day >= 22 && now()->day <= 31)
+    <link rel="stylesheet" type="text/css" href="snow/css/snowfall.css">
+    @endif
+
     <script>
         let defaultTheme = '{{ app(\App\Settings\ThemeSettings::class)->color_mode }}'
         window.colorMode = localStorage.theme || defaultTheme
@@ -30,7 +34,6 @@
 
 </head>
 <body class="font-sans antialiased bg-cool-gray-200 dark:bg-cool-gray-900">
-
     {{--Show global loading indication till Vue take over--}}
     <div id="site-global-loader" class="flex h-screen justify-center items-center">
         @if (app(\App\Settings\ThemeSettings::class)->loading_gif)
@@ -46,5 +49,50 @@
     @inertia
     <x-translations></x-translations>
     <x-php-vars-to-js-transformer></x-php-vars-to-js-transformer>
+
+    @if(now()->month === 12 && now()->day >= 22 && now()->day <= 31)
+    <snowfall>
+        <snowflake><span>❄</span>️️</snowflake>
+        <snowflake><span>❄</span>️️</snowflake>
+        <snowflake><span>❄</span>️️</snowflake>
+        <snowflake><span>❄</span>️️</snowflake>
+        <snowflake><span>🍂</span>️️</snowflake>
+        <snowflake><span>💝</span> ️️</snowflake>
+        <snowflake><span>🌟</span>️</snowflake>
+        <snowflake><span>🎅</span>️</snowflake>
+        <snowflake><span>🎄</span>️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+    </snowfall>
+    @endif
 </body>
 </html>
