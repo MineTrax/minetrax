@@ -48,7 +48,7 @@ class DownloadPolicy
     public function download(?User $user, Download $download)
     {
         // If admin, true
-        if ($user->can('read downloads')) {
+        if ($user?->can('read downloads')) {
             return true;
         }
 
