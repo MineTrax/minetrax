@@ -165,7 +165,7 @@ const headerRow = [
           >
             <InertiaLink
               as="a"
-              :href="route('custom-page.show', item.id)"
+              :href="route('custom-form.show', item.slug)"
               class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
             >
               <EyeIcon class="inline-block w-5 h-5" />

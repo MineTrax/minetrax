@@ -60,6 +60,11 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('download', [\App\Http\Controllers\DownloadController::class, 'index'])->name('download.index');
     Route::get('download/{download:slug}', [\App\Http\Controllers\DownloadController::class, 'show'])->name('download.show');
     Route::get('download/{download:slug}/download', [\App\Http\Controllers\DownloadController::class, 'download'])->name('download.download');
+
+    // Custom Form
+    Route::get('form', [\App\Http\Controllers\CustomFormController::class, 'index'])->name('custom-form.index');
+    Route::get('form/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'show'])->name('custom-form.show');
+    Route::post('form/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'submit'])->name('custom-form.submit');
 });
 
 /**

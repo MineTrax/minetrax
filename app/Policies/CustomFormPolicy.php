@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\CustomFormStatus;
 use App\Models\CustomForm;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -78,5 +79,47 @@ class CustomFormPolicy
         if ($user->can('delete custom_forms')) {
             return true;
         }
+    }
+
+    public function viewPublic(?User $user, CustomForm $customForm)
+    {
+        $invalidStatus = in_array($customForm->status, [CustomFormStatus::ARCHIVED, CustomFormStatus::DRAFT]);
+        if ($invalidStatus) {
+            return false;
+        }
+
+        $canCreateSubmission = $customForm->can_create_submission;
+        if ($canCreateSubmission === 'anyone' || $canCreateSubmission === 'auth') {
+            return true;
+        }
+
+        if ($canCreateSubmission === 'staff' && $user && $user->isStaffMember()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function submit(User $user, CustomForm $customForm)
+    {
+        $isActive = $customForm->status === CustomFormStatus::ACTIVE;
+        if (! $isActive) {
+            return false;
+        }
+
+        $canCreateSubmission = $customForm->can_create_submission;
+        if ($canCreateSubmission === 'anyone') {
+            return true;
+        }
+
+        if ($canCreateSubmission === 'auth' && $user) {
+            return true;
+        }
+
+        if ($canCreateSubmission === 'staff' && $user && $user->isStaffMember()) {
+            return true;
+        }
+
+        return false;
     }
 }
