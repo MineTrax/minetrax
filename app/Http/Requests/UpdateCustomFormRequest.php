@@ -38,6 +38,7 @@ class UpdateCustomFormRequest extends FormRequest
             'status' => ['required', new EnumValue(CustomFormStatus::class)],
             'can_create_submission' => 'required|string|in:anyone,auth,staff',
             'min_role_weight_to_view_submission' => 'nullable|integer',
+            'max_submission_per_user' => 'nullable|integer|min:1',
             'is_notify_staff_on_submission' => 'required|boolean',
             'fields' => 'required|array',
             'fields.*.type' => 'required|string|in:'.implode(',', $inputTypes),

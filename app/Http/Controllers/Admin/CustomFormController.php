@@ -30,12 +30,13 @@ class CustomFormController extends Controller
                 'status',
                 'can_create_submission',
                 'min_role_weight_to_view_submission',
+                'max_submission_per_user',
                 'is_notify_staff_on_submission',
                 'created_at',
                 'created_by',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug', 'description', 'min_role_weight_to_view_submission'])),
             ])
-            ->allowedSorts(['id', 'title', 'slug', 'status', 'can_create_submission', 'min_role_weight_to_view_submission', 'is_notify_staff_on_submission', 'created_at'])
+            ->allowedSorts(['id', 'title', 'slug', 'status', 'max_submission_per_user', 'can_create_submission', 'min_role_weight_to_view_submission', 'is_notify_staff_on_submission', 'created_at'])
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();
@@ -61,6 +62,7 @@ class CustomFormController extends Controller
             'description' => $request->description,
             'status' => $request->status,
             'can_create_submission' => $request->can_create_submission,
+            'max_submission_per_user' => $request->max_submission_per_user,
             'min_role_weight_to_view_submission' => $request->min_role_weight_to_view_submission,
             'is_notify_staff_on_submission' => $request->is_notify_staff_on_submission,
             'fields' => $request->fields,
@@ -89,6 +91,7 @@ class CustomFormController extends Controller
         $customForm->description = $request->description;
         $customForm->status = $request->status;
         $customForm->can_create_submission = $request->can_create_submission;
+        $customForm->max_submission_per_user = $request->max_submission_per_user;
         $customForm->min_role_weight_to_view_submission = $request->min_role_weight_to_view_submission;
         $customForm->is_notify_staff_on_submission = $request->is_notify_staff_on_submission;
         $customForm->fields = $request->fields;

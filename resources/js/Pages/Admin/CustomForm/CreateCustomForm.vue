@@ -82,7 +82,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-6">
+                    <div class="col-span-6 sm:col-span-3">
                       <x-select
                         id="can_create_submission"
                         v-model="form.can_create_submission
@@ -99,6 +99,21 @@
                         :disable-null="true"
                         :select-list="canCreateSubmissionList
                         "
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        v-if="form.can_create_submission !== 'anyone'"
+                        id="max_submission_per_user"
+                        v-model="form.max_submission_per_user"
+                        :label="__('Max Submission Per User')
+                        "
+                        :help="__('Leave empty to allow unlimited submission per user.')"
+                        :error="form.errors.max_submission_per_user"
+                        type="number"
+                        name="max_submission_per_user"
+                        help-error-flex="flex-row"
                       />
                     </div>
 
@@ -441,6 +456,7 @@ const form = useForm({
     status: 'draft',
     description: '',
     can_create_submission: 'anyone',
+    max_submission_per_user: null,
     min_role_weight_to_view_submission: null,
     is_notify_staff_on_submission: true,
     fields: [
@@ -472,6 +488,11 @@ const createCustomForm = () => {
     form.fields.map(item => {
         item.name = item.label.toLowerCase().replace(/ /g, '_');
     });
+
+    if (form.can_create_submission === 'anyone') {
+        form.max_submission_per_user = null;
+    }
+
     form.post(route('admin.custom-form.store'), {});
 };
 

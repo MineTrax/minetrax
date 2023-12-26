@@ -82,7 +82,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-6">
+                    <div class="col-span-6 sm:col-span-3">
                       <x-select
                         id="can_create_submission"
                         v-model="form.can_create_submission
@@ -99,6 +99,21 @@
                         :disable-null="true"
                         :select-list="canCreateSubmissionList
                         "
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        v-if="form.can_create_submission !== 'anyone'"
+                        id="max_submission_per_user"
+                        v-model="form.max_submission_per_user"
+                        :label="__('Max Submission Per User')
+                        "
+                        :help="__('Leave empty to allow unlimited submission per user.')"
+                        :error="form.errors.max_submission_per_user"
+                        type="number"
+                        name="max_submission_per_user"
+                        help-error-flex="flex-row"
                       />
                     </div>
 
@@ -445,6 +460,7 @@ const form = useForm({
     status: props.customForm.status.value,
     description: props.customForm.description,
     can_create_submission: props.customForm.can_create_submission,
+    max_submission_per_user: props.customForm.max_submission_per_user,
     min_role_weight_to_view_submission: props.customForm.min_role_weight_to_view_submission,
     is_notify_staff_on_submission: props.customForm.is_notify_staff_on_submission,
     fields: props.customForm.fields,
@@ -458,6 +474,11 @@ const submitForm = () => {
     form.fields.map(item => {
         item.name = item.label.toLowerCase().replace(/ /g, '_');
     });
+
+    if (form.can_create_submission === 'anyone') {
+        form.max_submission_per_user = null;
+    }
+
     form.post(route('admin.custom-form.update', props.customForm.id), {});
 };
 
