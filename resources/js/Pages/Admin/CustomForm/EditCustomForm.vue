@@ -102,11 +102,22 @@
                       />
                     </div>
 
-                    <div class="flex items-center col-span-6 sm:col-span-6">
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="min_role_weight_to_view_submission"
+                        v-model="form.min_role_weight_to_view_submission"
+                        :label="__('Role Weight to View Submission')
+                        "
+                        :help="__('Leave empty to allow any staff with view custom_form_submissions permission to view submissions.')"
+                        :error="form.errors.min_role_weight_to_view_submission"
+                        type="number"
+                        name="min_role_weight_to_view_submission"
+                        help-error-flex="flex-row"
+                      />
+                    </div>
+
+                    <div class="flex items-center col-span-6 sm:col-span-3">
                       <fieldset>
-                        <legend class="text-base font-medium text-gray-900 dark:text-gray-300">
-                          {{ __("Flags") }}
-                        </legend>
                         <div class="mt-4 flex space-x-4">
                           <XCheckbox
                             id="is_notify_staff_on_submission"
@@ -122,26 +133,7 @@
                             "
                             name="is_notify_staff_on_submission"
                           />
-                          <XCheckbox
-                            id="require_restricted_permission_to_view_submission"
-                            v-model="form.require_restricted_permission_to_view_submission
-                            "
-                            :label="__(
-                              'Require Restricted Permission to View Submission'
-                            )
-                            "
-                            :help="__(
-                              'Only staff users with permission restricted_custom_form_submissions can view submission for this form.'
-                            )
-                            "
-                            name="require_restricted_permission_to_view_submission"
-                          />
                         </div>
-                        <jet-input-error
-                          :message="form.errors.require_restricted_permission_to_view_submission
-                          "
-                          class="mt-2"
-                        />
                         <jet-input-error
                           :message="form.errors.is_notify_staff_on_submission
                           "
@@ -453,7 +445,7 @@ const form = useForm({
     status: props.customForm.status.value,
     description: props.customForm.description,
     can_create_submission: props.customForm.can_create_submission,
-    require_restricted_permission_to_view_submission: props.customForm.require_restricted_permission_to_view_submission,
+    min_role_weight_to_view_submission: props.customForm.min_role_weight_to_view_submission,
     is_notify_staff_on_submission: props.customForm.is_notify_staff_on_submission,
     fields: props.customForm.fields,
     '_method': 'PUT',

@@ -13,7 +13,6 @@ class CustomForm extends BaseModel
     protected $casts = [
         'fields' => 'array',
         'status' => CustomFormStatus::class,
-        'require_restricted_permission_to_view_submission' => 'boolean',
         'is_notify_staff_on_submission' => 'boolean',
     ];
 

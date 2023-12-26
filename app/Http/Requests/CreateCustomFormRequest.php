@@ -33,7 +33,7 @@ class CreateCustomFormRequest extends FormRequest
             'description' => 'nullable|string|max:50000',
             'status' => ['required', new EnumValue(CustomFormStatus::class)],
             'can_create_submission' => 'required|string|in:anyone,auth,staff',
-            'require_restricted_permission_to_view_submission' => 'required|boolean',
+            'min_role_weight_to_view_submission' => 'nullable|integer',
             'is_notify_staff_on_submission' => 'required|boolean',
             'fields' => 'required|array',
             'fields.*.type' => 'required|string|in:'.implode(',', $inputTypes),

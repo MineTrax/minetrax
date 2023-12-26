@@ -44,14 +44,16 @@ const headerRow = [
         sortable: true,
     },
     {
-        key: 'require_restricted_permission_to_view_submission',
-        label: __('Restricted View Permission'),
+        key: 'min_role_weight_to_view_submission',
+        label: __('Role Weight to View Submission'),
         sortable: true,
+        class: 'text-right',
     },
     {
         key: 'is_notify_staff_on_submission',
         sortable: true,
         label: __('Notify Staff on Submit'),
+        class: 'text-center',
     },
     {
         key: 'created_at',
@@ -125,20 +127,11 @@ const headerRow = [
             </div>
           </td>
 
-          <td class="py-4 text-sm text-gray-500 px-9">
-            <Icon
-              v-if="item.require_restricted_permission_to_view_submission"
-              class="text-green-500 focus:outline-none"
-              name="check-circle"
-            />
-            <Icon
-              v-else
-              class="text-red-500"
-              name="cross-circle"
-            />
-          </td>
+          <DtRowItem class="text-right">
+            {{ item.min_role_weight_to_view_submission ?? '-' }}
+          </DtRowItem>
 
-          <td class="py-4 text-sm text-gray-500 px-9">
+          <td class="py-4 text-sm text-gray-500 px-9 flex justify-center">
             <Icon
               v-if="item.is_notify_staff_on_submission"
               class="text-green-500 focus:outline-none"

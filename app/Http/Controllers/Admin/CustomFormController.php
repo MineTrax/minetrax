@@ -29,13 +29,13 @@ class CustomFormController extends Controller
                 'slug',
                 'status',
                 'can_create_submission',
-                'require_restricted_permission_to_view_submission',
+                'min_role_weight_to_view_submission',
                 'is_notify_staff_on_submission',
                 'created_at',
                 'created_by',
-                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug', 'description'])),
+                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug', 'description', 'min_role_weight_to_view_submission'])),
             ])
-            ->allowedSorts(['id', 'title', 'slug', 'status', 'can_create_submission', 'require_restricted_permission_to_view_submission', 'is_notify_staff_on_submission', 'created_at'])
+            ->allowedSorts(['id', 'title', 'slug', 'status', 'can_create_submission', 'min_role_weight_to_view_submission', 'is_notify_staff_on_submission', 'created_at'])
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();
@@ -61,7 +61,7 @@ class CustomFormController extends Controller
             'description' => $request->description,
             'status' => $request->status,
             'can_create_submission' => $request->can_create_submission,
-            'require_restricted_permission_to_view_submission' => $request->require_restricted_permission_to_view_submission,
+            'min_role_weight_to_view_submission' => $request->min_role_weight_to_view_submission,
             'is_notify_staff_on_submission' => $request->is_notify_staff_on_submission,
             'fields' => $request->fields,
             'created_by' => $request->user()->id,
@@ -89,7 +89,7 @@ class CustomFormController extends Controller
         $customForm->description = $request->description;
         $customForm->status = $request->status;
         $customForm->can_create_submission = $request->can_create_submission;
-        $customForm->require_restricted_permission_to_view_submission = $request->require_restricted_permission_to_view_submission;
+        $customForm->min_role_weight_to_view_submission = $request->min_role_weight_to_view_submission;
         $customForm->is_notify_staff_on_submission = $request->is_notify_staff_on_submission;
         $customForm->fields = $request->fields;
         $customForm->updated_by = $request->user()->id;

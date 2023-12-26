@@ -20,7 +20,7 @@ return new class extends Migration
 
             $table->string('can_create_submission')->default('anyone'); // anyone -> anyone, "auth" -> only authenticated users, "staff" -> only staff
             $table->integer('max_submission_per_user')->nullable(); // null -> unlimited
-            $table->boolean('require_restricted_permission_to_view_submission')->default(false); // Only staff with view restricted_custom_form_submission permission can view submission for this form.
+            $table->integer('min_role_weight_to_view_submission')->nullable(); // Only staff with role weight >= min_role_weight_to_view_submission can view submission for this form.
             $table->boolean('is_notify_staff_on_submission')->default(false); // notify staff (with view access) when new submission is made.
 
             $table->json('fields')->nullable();
