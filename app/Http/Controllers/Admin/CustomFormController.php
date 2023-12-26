@@ -95,7 +95,7 @@ class CustomFormController extends Controller
         $customForm->updated_by = $request->user()->id;
         $customForm->save();
 
-        return redirect()->back()
+        return redirect()->route('admin.custom-form.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Custom Form updated successfully')]]);
     }
 
