@@ -19,6 +19,8 @@ class CustomFormPolicy
         if ($user->can('read custom_forms')) {
             return true;
         }
+
+        return false;
     }
 
     /**
@@ -29,6 +31,8 @@ class CustomFormPolicy
         if ($user->can('read custom_forms')) {
             return true;
         }
+
+        return false;
     }
 
     /**
@@ -39,6 +43,8 @@ class CustomFormPolicy
         if ($user->can('create custom_forms')) {
             return true;
         }
+
+        return false;
     }
 
     /**
@@ -49,6 +55,8 @@ class CustomFormPolicy
         if ($user->can('update custom_forms')) {
             return true;
         }
+
+        return false;
     }
 
     /**
@@ -59,6 +67,8 @@ class CustomFormPolicy
         if ($user->can('delete custom_forms')) {
             return true;
         }
+
+        return false;
     }
 
     /**
@@ -69,6 +79,8 @@ class CustomFormPolicy
         if ($user->can('delete custom_forms')) {
             return true;
         }
+
+        return false;
     }
 
     /**
@@ -79,11 +91,13 @@ class CustomFormPolicy
         if ($user->can('delete custom_forms')) {
             return true;
         }
+
+        return false;
     }
 
     public function viewPublic(?User $user, CustomForm $customForm)
     {
-        $invalidStatus = in_array($customForm->status, [CustomFormStatus::ARCHIVED, CustomFormStatus::DRAFT]);
+        $invalidStatus = in_array($customForm->status->value, [CustomFormStatus::ARCHIVED, CustomFormStatus::DRAFT]);
         if ($invalidStatus) {
             return false;
         }
@@ -100,26 +114,33 @@ class CustomFormPolicy
         return false;
     }
 
-    public function submit(User $user, CustomForm $customForm)
+    public function submit(?User $user, CustomForm $customForm)
     {
-        $isActive = $customForm->status === CustomFormStatus::ACTIVE;
+        // Bail if form is not active
+        $isActive = $customForm->status->value === CustomFormStatus::ACTIVE;
         if (! $isActive) {
             return false;
         }
 
-        $canCreateSubmission = $customForm->can_create_submission;
-        if ($canCreateSubmission === 'anyone') {
-            return true;
+        // Bail if user is not logged in and can_create_submission is auth or staff
+        if (in_array($customForm->can_create_submission, ['auth', 'staff']) && ! $user) {
+            return false;
         }
 
-        if ($canCreateSubmission === 'auth' && $user) {
-            return true;
+        // Bail if max_submission_per_user is reached
+        $maxSubmissionPerUser = $customForm->max_submission_per_user;
+        if (in_array($customForm->can_create_submission, ['auth', 'staff']) && $maxSubmissionPerUser) {
+            $currentUserSubmissionCount = $customForm->submissions()->where('user_id', $user->id)->count();
+            if ($currentUserSubmissionCount >= $maxSubmissionPerUser) {
+                return false;
+            }
         }
 
-        if ($canCreateSubmission === 'staff' && $user && $user->isStaffMember()) {
-            return true;
+        // Bail if user is not staff and can_create_submission is staff
+        if ($customForm->can_create_submission === 'staff' && ! $user->isStaffMember()) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 }

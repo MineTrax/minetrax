@@ -22,4 +22,9 @@ class CustomForm extends BaseModel
 
         return $this->description ? $converter->convertToHtml($this->description) : null;
     }
+
+    public function submissions()
+    {
+        return $this->hasMany(CustomFormSubmission::class);
+    }
 }

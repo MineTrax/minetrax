@@ -21,20 +21,42 @@
         <div
           class="overflow-x-auto md:w-9/12"
         >
+          <AlertCard
+            v-if="formDisabled"
+            text-color="text-orange-800 dark:text-orange-500"
+            border-color="border-orange-500"
+          >
+            {{ disabledErrorMessage.title }}
+            <template #body>
+              {{
+                disabledErrorMessage.body
+              }}
+            </template>
+          </AlertCard>
           <div class="min-w-full">
             <div class="shadow max-w-none bg-white dark:bg-cool-gray-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded">
               <div
                 v-if="customForm.description"
-                class="prose dark:prose-dark max-w-none mb-4"
+                class="prose dark:prose-dark max-w-none mb-6 pb-6 border-b dark:border-gray-700"
                 v-html="customForm.description_html"
               />
 
               <FormKit
+                :disabled="formDisabled"
                 type="form"
                 @submit="submitForm"
               >
                 <FormKitSchema :schema="formSchema" />
               </FormKit>
+
+              <p
+                v-if="!formDisabled && customForm.max_submission_per_user"
+                class="text-xs text-gray-500 dark:text-gray-400 text-right"
+              >
+                {{ __("You can submit this form only :count times.", {
+                  count: customForm.max_submission_per_user
+                }) }}
+              </p>
             </div>
           </div>
         </div>
@@ -56,11 +78,19 @@ import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 import ShoutBox from '@/Shared/ShoutBox.vue';
 import { FormKitSchema } from '@formkit/vue';
 import {useFormKit} from '@/Composables/useFormKit';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import AlertCard from '@/Components/AlertCard.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+
+const { __ } = useTranslations();
 
 const props = defineProps({
     customForm: {
         type: Object,
+    },
+    currentUserCanSubmit: {
+        type: Boolean,
     },
 });
 
@@ -85,4 +115,52 @@ const promisifyForm = (values) => {
         });
     });
 };
+
+const formDisabled = computed(() => {
+    return props.customForm.status.value !== 'active' || !props.currentUserCanSubmit;
+});
+
+const disabledErrorMessage = computed(() => {
+    if (!formDisabled.value) {
+        return {
+            title: null,
+            body: null,
+        };
+    }
+
+    if (props.customForm.status.value === 'disabled') {
+        return {
+            title: __('Oh Jeez! This form is currently disabled.'),
+            body: __(
+                'It seems the form is no longer accepting submissions. Please check back later.'
+            ),
+        };
+    }
+
+    if (props.customForm.status.value !== 'active') {
+        return {
+            title: __('Oh Jeez! This form is not active.'),
+            body: __(
+                'It seems the form is not active yet. Please check back later.'
+            ),
+        };
+    }
+
+    if (['auth', 'staff'].includes(props.customForm.can_create_submission) && !usePage().props.auth.user) {
+        return {
+            title: __('Oh Jeez! You need to be logged in to submit this form.'),
+            body: __(
+                'Please login and try again.'
+            ),
+        };
+    }
+
+    return {
+        title: __('Oh Jeez! You have already submitted this form.'),
+        body: __(
+            'You have already submitted this form maximum number of times allowed.'
+        ),
+    };
+});
+
 </script>

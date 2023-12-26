@@ -3,9 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class CustomFormSubmission extends Model
+class CustomFormSubmission extends BaseModel
 {
     use HasFactory;
+
+    protected $casts = [
+        'data' => 'array',
+    ];
+
+    public function customForm()
+    {
+        return $this->belongsTo(CustomForm::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

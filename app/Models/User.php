@@ -360,4 +360,9 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     {
         return $this->hasMany(Shout::class);
     }
+
+    public function customFormSubmissions()
+    {
+        return $this->hasMany(CustomFormSubmission::class);
+    }
 }
