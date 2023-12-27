@@ -18,7 +18,7 @@
     @inertiaHead
 
     @if(now()->month === 12 && now()->day >= 22 && now()->day <= 31)
-    <link rel="stylesheet" type="text/css" href="snow/css/snowfall.css">
+    <link rel="stylesheet" type="text/css" href="/snow/css/snowfall.css">
     @endif
 
     <script>
@@ -61,37 +61,37 @@
         <snowflake><span>🌟</span>️</snowflake>
         <snowflake><span>🎅</span>️</snowflake>
         <snowflake><span>🎄</span>️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
-        <snowflake><img src="snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
+        <snowflake><img src="/snow/img/snowflake.png">️</snowflake>
     </snowfall>
     @endif
 </body>
