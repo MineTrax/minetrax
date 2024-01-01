@@ -40,20 +40,26 @@ const headerRow = [
     },
     {
         key: 'can_create_submission',
-        label: __('Who can Submit'),
+        label: __('Can Submit'),
         sortable: true,
     },
     {
         key: 'min_role_weight_to_view_submission',
         label: __('Role Weight to View Submission'),
         sortable: true,
-        class: 'text-right',
+        class: 'text-right whitespace-nowrap',
     },
     {
         key: 'is_notify_staff_on_submission',
         sortable: true,
         label: __('Notify Staff on Submit'),
-        class: 'text-center',
+        class: 'whitespace-nowrap',
+    },
+    {
+        key: 'is_visible_in_listing',
+        sortable: true,
+        label: __('Visible in Listing'),
+        class: 'whitespace-nowrap',
     },
     {
         key: 'created_at',
@@ -131,9 +137,26 @@ const headerRow = [
             {{ item.min_role_weight_to_view_submission ?? '-' }}
           </DtRowItem>
 
-          <td class="py-4 text-sm text-gray-500 px-9 flex justify-center">
+          <td
+            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+          >
             <Icon
               v-if="item.is_notify_staff_on_submission"
+              class="text-green-500 focus:outline-none"
+              name="check-circle"
+            />
+            <Icon
+              v-else
+              class="text-red-500"
+              name="cross-circle"
+            />
+          </td>
+
+          <td
+            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+          >
+            <Icon
+              v-if="item.is_visible_in_listing"
               class="text-green-500 focus:outline-none"
               name="check-circle"
             />

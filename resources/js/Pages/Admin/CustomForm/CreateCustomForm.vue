@@ -157,6 +157,32 @@
                       </fieldset>
                     </div>
 
+                    <div class="flex items-center col-span-6 sm:col-span-3">
+                      <fieldset>
+                        <div class="mt-4 flex space-x-4">
+                          <XCheckbox
+                            id="is_visible_in_listing"
+                            v-model="form.is_visible_in_listing
+                            "
+                            :label="__(
+                              'Is Visible in Listing'
+                            )
+                            "
+                            :help="__(
+                              'Allow this form to be listed in custom form listing page.'
+                            )
+                            "
+                            name="is_visible_in_listing"
+                          />
+                        </div>
+                        <jet-input-error
+                          :message="form.errors.is_visible_in_listing
+                          "
+                          class="mt-2"
+                        />
+                      </fieldset>
+                    </div>
+
                     <div class="flex-col col-span-6 space-y-1 sm:col-span-6">
                       <legend class="text-base font-medium text-gray-900 dark:text-gray-300">
                         {{ __("Fields") }}
@@ -407,10 +433,11 @@ import { onMounted, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Icon from '@/Components/Icon.vue';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import {useFormKit} from '@/Composables/useFormKit';
+import { kebabCase } from 'lodash';
 
 const formStatusList = {
     draft: 'Draft - Form is under development and not visible to users',
@@ -459,6 +486,7 @@ const form = useForm({
     max_submission_per_user: null,
     min_role_weight_to_view_submission: null,
     is_notify_staff_on_submission: true,
+    is_visible_in_listing: true,
     fields: [
         {
             type: 'text',
@@ -522,5 +550,9 @@ const showingFormPreview = ref(false);
 
 const computedFormSchema = computed(() => {
     return useFormKit().generateSchemaFromFieldsArray(form.fields);
+});
+
+watch(() => form.title, (value) => {
+    form.slug = kebabCase(value);
 });
 </script>

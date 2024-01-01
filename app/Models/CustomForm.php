@@ -14,6 +14,7 @@ class CustomForm extends BaseModel
         'fields' => 'array',
         'status' => CustomFormStatus::class,
         'is_notify_staff_on_submission' => 'boolean',
+        'is_visible_in_listing' => 'boolean',
     ];
 
     public function getDescriptionHtmlAttribute(): string|null

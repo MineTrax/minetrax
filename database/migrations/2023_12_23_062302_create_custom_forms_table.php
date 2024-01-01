@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('max_submission_per_user')->nullable(); // null -> unlimited
             $table->integer('min_role_weight_to_view_submission')->nullable(); // Only staff with role weight >= min_role_weight_to_view_submission can view submission for this form.
             $table->boolean('is_notify_staff_on_submission')->default(false); // notify staff (with view access) when new submission is made.
+            $table->boolean('is_visible_in_listing')->default(true); // If this form is visible in custom-forms listing page.
 
             $table->json('fields')->nullable();
 

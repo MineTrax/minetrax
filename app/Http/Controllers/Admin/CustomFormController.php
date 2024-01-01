@@ -32,11 +32,12 @@ class CustomFormController extends Controller
                 'min_role_weight_to_view_submission',
                 'max_submission_per_user',
                 'is_notify_staff_on_submission',
+                'is_visible_in_listing',
                 'created_at',
                 'created_by',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug', 'description', 'min_role_weight_to_view_submission'])),
             ])
-            ->allowedSorts(['id', 'title', 'slug', 'status', 'max_submission_per_user', 'can_create_submission', 'min_role_weight_to_view_submission', 'is_notify_staff_on_submission', 'created_at'])
+            ->allowedSorts(['id', 'title', 'slug', 'status', 'max_submission_per_user', 'can_create_submission', 'min_role_weight_to_view_submission', 'is_notify_staff_on_submission', 'is_visible_in_listing', 'created_at'])
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();
@@ -65,6 +66,7 @@ class CustomFormController extends Controller
             'max_submission_per_user' => $request->max_submission_per_user,
             'min_role_weight_to_view_submission' => $request->min_role_weight_to_view_submission,
             'is_notify_staff_on_submission' => $request->is_notify_staff_on_submission,
+            'is_visible_in_listing' => $request->is_visible_in_listing,
             'fields' => $request->fields,
             'created_by' => $request->user()->id,
         ]);
@@ -94,6 +96,7 @@ class CustomFormController extends Controller
         $customForm->max_submission_per_user = $request->max_submission_per_user;
         $customForm->min_role_weight_to_view_submission = $request->min_role_weight_to_view_submission;
         $customForm->is_notify_staff_on_submission = $request->is_notify_staff_on_submission;
+        $customForm->is_visible_in_listing = $request->is_visible_in_listing;
         $customForm->fields = $request->fields;
         $customForm->updated_by = $request->user()->id;
         $customForm->save();

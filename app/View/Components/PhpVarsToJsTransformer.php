@@ -152,6 +152,14 @@ class PhpVarsToJsTransformer extends Component
                         'key' => 'route-downloads-01',
                         'authenticated' => false,
                     ],
+                    [
+                        'type' => 'route',
+                        'name' => 'Forms',
+                        'title' => 'Forms',
+                        'route' => 'custom-form.index',
+                        'key' => 'route-custom-forms-01',
+                        'authenticated' => false,
+                    ],
                 ],
                 'authenticated' => false,
             ];

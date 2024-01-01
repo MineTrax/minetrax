@@ -40,6 +40,7 @@ class UpdateCustomFormRequest extends FormRequest
             'min_role_weight_to_view_submission' => 'nullable|integer',
             'max_submission_per_user' => 'nullable|integer|min:1',
             'is_notify_staff_on_submission' => 'required|boolean',
+            'is_visible_in_listing' => 'required|boolean',
             'fields' => 'required|array',
             'fields.*.type' => 'required|string|in:'.implode(',', $inputTypes),
             'fields.*.label' => 'required|string|max:255',

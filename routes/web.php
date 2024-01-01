@@ -36,7 +36,8 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('@{user:username}', [\App\Http\Controllers\UserController::class, 'showProfile'])->name('user.public.get');
     Route::get('/staff-members', [\App\Http\Controllers\UserController::class, 'indexStaff'])->name('staff.index');
 
-    Route::get('pages/{customPage:path}', [\App\Http\Controllers\CustomPageController::class, 'show'])->name('custom-page.show');
+    Route::get('pages/{customPage:path}', [\App\Http\Controllers\CustomPageController::class, 'show'])->name('custom-page.show.long');
+    Route::get('p/{customPage:path}', [\App\Http\Controllers\CustomPageController::class, 'show'])->name('custom-page.show');
 
     Route::get('search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 
@@ -62,9 +63,9 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('download/{download:slug}/download', [\App\Http\Controllers\DownloadController::class, 'download'])->name('download.download');
 
     // Custom Form
-    Route::get('form', [\App\Http\Controllers\CustomFormController::class, 'index'])->name('custom-form.index');
-    Route::get('form/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'show'])->name('custom-form.show');
-    Route::post('form/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'submit'])->name('custom-form.submit');
+    Route::get('forms', [\App\Http\Controllers\CustomFormController::class, 'index'])->name('custom-form.index');
+    Route::get('forms/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'show'])->name('custom-form.show');
+    Route::post('forms/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'submit'])->name('custom-form.submit');
 });
 
 /**
