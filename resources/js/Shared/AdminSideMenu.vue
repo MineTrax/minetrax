@@ -12,7 +12,8 @@ import {
     CircleStackIcon,
     TrophyIcon,
     CloudArrowDownIcon,
-    ClipboardDocumentListIcon
+    ClipboardDocumentListIcon,
+    BugAntIcon
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
@@ -268,6 +269,30 @@ const navItems = [
         ],
         icon: Cog8ToothIcon,
         visible: canWild('settings')
+    },
+    {
+        label: 'Debug', href: '#', active: false, children: [
+            {
+                label: 'Pulse',
+                href: '/admin/pulse',
+                active: false,
+                children: [],
+                icon: null,
+                visible: true,
+                newtab: true
+            },
+            {
+                label: 'Telescope',
+                href: '/telescope',
+                active: false,
+                children: [],
+                icon: null,
+                visible: true,
+                newtab: true
+            },
+        ],
+        icon: BugAntIcon,
+        visible: hasRole('superadmin')
     },
 ];
 </script>
