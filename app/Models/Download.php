@@ -36,10 +36,10 @@ class Download extends BaseModel implements HasMedia
         return $file;
     }
 
-    public function getDescriptionHtmlAttribute(): string
+    public function getDescriptionHtmlAttribute(): ?string
     {
         $converter = new GithubFlavoredMarkdownConverter();
 
-        return $converter->convertToHtml($this->description);
+        return $this->description ? $converter->convertToHtml($this->description) : null;
     }
 }
