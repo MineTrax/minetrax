@@ -115,7 +115,7 @@ const headerRow = [
             {{ item.id }}
           </td>
 
-          <DtRowItem class="text-white">
+          <DtRowItem class="">
             {{ item.title }}
           </DtRowItem>
 

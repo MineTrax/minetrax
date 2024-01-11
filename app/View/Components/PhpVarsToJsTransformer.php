@@ -154,7 +154,7 @@ class PhpVarsToJsTransformer extends Component
                     ],
                     [
                         'type' => 'route',
-                        'name' => 'Forms',
+                        'name' => 'Custom Forms',
                         'title' => 'Forms',
                         'route' => 'custom-form.index',
                         'key' => 'route-custom-forms-01',
