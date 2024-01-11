@@ -64,7 +64,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     {
         Gate::define('viewTelescope', function ($user) {
             // We return false here because only superadmin should access it, and that role already override all gates.
-           return false;
+            return false;
         });
     }
 }

@@ -10,6 +10,7 @@ export function useFormKit() {
                 validation: field.validation ?? undefined,
                 placeholder: field.placeholder ?? undefined,
                 multiple: field.type == 'multiselect' ? true : undefined,
+                value: field.value ?? undefined,
             };
 
             if (

@@ -28,13 +28,11 @@ class CalculatePlayersRatingJob implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param PlayerSettings $playerSettings
-     * @param PluginSettings $pluginSettings
      * @return void
      */
     public function handle(PlayerSettings $playerSettings, PluginSettings $pluginSettings)
     {
-        Log::info("[RatingJob] Starting calculating rating & ranks for all players");
+        Log::info('[RatingJob] Starting calculating rating & ranks for all players');
 
         $server = null;
         if ($pluginSettings->enable_sync_player_ranks_from_server) {
@@ -66,16 +64,15 @@ class CalculatePlayersRatingJob implements ShouldQueue
          */
         $pTs = Player::orderByDesc('rating')->orderByDesc('total_score')->cursor();
         $position = 0;
-        foreach($pTs as $pT)
-        {
+        foreach ($pTs as $pT) {
             $pT->position = ++$position;
             $pT->save();
         }
 
-        Log::info("[RatingJob] Finished calculating rating & ranks for all players");
+        Log::info('[RatingJob] Finished calculating rating & ranks for all players');
     }
 
-    private function calculatePlayerRating($player, $minScore, $maxScore, PlayerSettings $playerSettings, array $serverIds): int|null
+    private function calculatePlayerRating($player, $minScore, $maxScore, PlayerSettings $playerSettings, array $serverIds): ?int
     {
         $rating = null;
         $minScore = $minScore ?? 0;
@@ -96,13 +93,13 @@ class CalculatePlayersRatingJob implements ShouldQueue
         } else {
             // TODO: Temp to testing, change this with some good professional rating calculation
             $divideBy = ($maxScore - $minScore) == 0 ? 1 : $maxScore - $minScore;
-            $rating = round(( $player->total_score - $minScore ) / $divideBy * 10, 2);
+            $rating = round(($player->total_score - $minScore) / $divideBy * 10, 2);
         }
 
         return $rating;
     }
 
-    private function calculatePlayerRankIdFromScore($player): int|null
+    private function calculatePlayerRankIdFromScore($player): ?int
     {
         /**
          * Calculation of rank_id using total_score_needed and Rank table
@@ -112,14 +109,16 @@ class CalculatePlayersRatingJob implements ShouldQueue
          *
          * TODO: Cache rank table to $this->rankList so that we dont have to query everytime.
          */
-        $rankId = Rank::where('total_score_needed','<=',$player->total_score ?? 0)
+        $rankId = Rank::where('total_score_needed', '<=', $player->total_score ?? 0)
             ->where('total_play_time_needed', '<=', $player->play_time ?? 0)
             ->where('rating_needed', '<=', $player->rating ?? 0)
             ->orderByDesc('weight')->first()?->id;
+
         return $rankId;
     }
 
-    private function calculatePlayerRankIdFromServerWebQuery($serverHost, $serverPort, $player): int|null {
+    private function calculatePlayerRankIdFromServerWebQuery($serverHost, $serverPort, $player): ?int
+    {
         $rankId = null;
 
         try {
@@ -130,7 +129,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
                 $rankId = Rank::whereIn('shortname', $playerGroups['groups'])
                     ->orderByDesc('weight')->first()?->id;
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::critical($e);
         }
 

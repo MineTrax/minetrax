@@ -51,7 +51,7 @@ class SessionController extends Controller
                 'agent' => [
                     'is_desktop' => $agent->isDesktop(),
                     'platform' => $agent->platform(),
-                    'platform_version' => $agent->version($agent->platform()),
+                    'platform_version' => $agent->platform() ? $agent->version($agent->platform()) : null,
                     'browser' => $agent->browser(),
                     'browser_version' => $agent->version($agent->browser()),
                 ],

@@ -17,7 +17,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
-const { canWild, hasRole } = useAuthorizable();
+const { canWild, hasRole, can } = useAuthorizable();
 
 defineProps({
     collapsed: Boolean,
@@ -202,19 +202,19 @@ const navItems = [
                 active: route().current('admin.custom-form.index'),
                 children: [],
                 icon: null,
-                visible: true
+                visible: can('read custom_forms')
             },
             {
                 label: 'User Submissions',
-                href: route('admin.setting.theme.show'),
-                active: route().current('admin.setting.theme.show'),
+                href: route('admin.custom-form-submission.index'),
+                active: route().current('admin.custom-form-submission.index'),
                 children: [],
                 icon: null,
-                visible: true
+                visible: can('read custom_form_submissions')
             },
         ],
         icon: ClipboardDocumentListIcon,
-        visible: canWild('custom_pages')
+        visible: canWild('custom_forms')
     },
     {
         label: 'Settings', href: '#', active: false, children: [

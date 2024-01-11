@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\CustomFormSubmissionCreated;
 use App\Events\MinecraftPlayerEventCreated;
 use App\Events\MinecraftPlayerSessionCreated;
+use App\Listeners\NotifyStaffOnCustomFormSubmission;
 use App\Listeners\UpdateStatsOnMinecraftPlayerEvent;
 use App\Listeners\UpsertPlayerOnSessionStart;
 use Illuminate\Auth\Events\Registered;
@@ -33,6 +35,9 @@ class EventServiceProvider extends ServiceProvider
         MinecraftPlayerEventCreated::class => [
             UpdateStatsOnMinecraftPlayerEvent::class,
         ],
+        CustomFormSubmissionCreated::class => [
+            NotifyStaffOnCustomFormSubmission::class,
+        ]
     ];
 
     /**

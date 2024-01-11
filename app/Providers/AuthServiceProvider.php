@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Badge;
 use App\Models\Comment;
 use App\Models\CustomForm;
+use App\Models\CustomFormSubmission;
 use App\Models\CustomPage;
 use App\Models\Download;
 use App\Models\News;
@@ -41,6 +42,7 @@ class AuthServiceProvider extends ServiceProvider
         Badge::class => \App\Policies\BadgePolicy::class,
         Download::class => \App\Policies\DownloadPolicy::class,
         CustomForm::class => \App\Policies\CustomFormPolicy::class,
+        CustomFormSubmission::class => \App\Policies\CustomFormSubmissionPolicy::class,
     ];
 
     /**

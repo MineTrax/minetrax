@@ -125,7 +125,7 @@ const headerRow = [
                 v-tippy
                 as="a"
                 :href="route('custom-form.show', item.slug)"
-                class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+                class="inline-flex items-center justify-center text-light-blue-600 dark:text-light-blue-500 hover:text-light-blue-800 dark:hover:text-light-blue-800"
                 :title="__('Show Details')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />

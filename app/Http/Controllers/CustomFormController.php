@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CustomFormStatus;
+use App\Events\CustomFormSubmissionCreated;
 use App\Models\CustomForm;
 use App\Queries\Filters\FilterMultipleFields;
+use App\Services\GeolocationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -66,7 +68,7 @@ class CustomFormController extends Controller
         ]);
     }
 
-    public function submit(Request $request, CustomForm $customForm)
+    public function submit(Request $request, CustomForm $customForm, GeolocationService $geolocationService)
     {
         $this->authorize('submit', $customForm);
 
@@ -78,11 +80,14 @@ class CustomFormController extends Controller
             return $field;
         })->toArray();
 
-        $customForm->submissions()->create([
+        $countryId = $geolocationService->getCountryIdFromIP($request->ip());
+        $submission = $customForm->submissions()->create([
             'user_id' => $request->user()?->id,
             'ip_address' => $request->ip(),
+            'country_id' => $countryId ?? null,
             'data' => $data,
         ]);
+        CustomFormSubmissionCreated::dispatch($submission);
 
         return redirect()->route('home')
             ->with(['toast' => ['type' => 'success', 'title' => __('Submit Successful!'), 'body' => __('Form has been submitted successfully.')]]);

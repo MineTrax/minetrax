@@ -21,4 +21,9 @@ class CustomFormSubmission extends BaseModel
     {
         return $this->belongsTo(User::class);
     }
+
+    public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

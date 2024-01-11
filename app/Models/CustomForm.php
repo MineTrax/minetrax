@@ -17,7 +17,7 @@ class CustomForm extends BaseModel
         'is_visible_in_listing' => 'boolean',
     ];
 
-    public function getDescriptionHtmlAttribute(): string|null
+    public function getDescriptionHtmlAttribute(): ?string
     {
         $converter = new GithubFlavoredMarkdownConverter();
 

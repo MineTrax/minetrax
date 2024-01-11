@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('custom_form_id')->constrained('custom_forms')->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->string('ip_address')->nullable();
+            $table->foreignId('country_id')->nullable()->constrained()->onDelete('set null');
 
             $table->json('data');
             $table->timestamps();

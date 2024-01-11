@@ -365,4 +365,9 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     {
         return $this->hasMany(CustomFormSubmission::class);
     }
+
+    public function maxRoleWeight()
+    {
+        return $this->roles->sortByDesc([['weight', 'desc']])?->first()?->weight ?? null;
+    }
 }

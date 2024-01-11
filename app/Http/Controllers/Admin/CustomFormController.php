@@ -37,7 +37,8 @@ class CustomFormController extends Controller
                 'created_by',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug', 'description', 'min_role_weight_to_view_submission'])),
             ])
-            ->allowedSorts(['id', 'title', 'slug', 'status', 'max_submission_per_user', 'can_create_submission', 'min_role_weight_to_view_submission', 'is_notify_staff_on_submission', 'is_visible_in_listing', 'created_at'])
+            ->allowedSorts(['id', 'title', 'slug', 'status', 'max_submission_per_user', 'can_create_submission', 'min_role_weight_to_view_submission', 'is_notify_staff_on_submission', 'is_visible_in_listing', 'created_at', 'submissions_count'])
+            ->withCount('submissions')
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();

@@ -62,6 +62,12 @@ const headerRow = [
         class: 'whitespace-nowrap',
     },
     {
+        key: 'submissions_count',
+        sortable: true,
+        label: __('Total Submissions'),
+        class: 'text-right whitespace-nowrap',
+    },
+    {
         key: 'created_at',
         sortable: true,
         label: __('Created'),
@@ -109,24 +115,24 @@ const headerRow = [
             {{ item.id }}
           </td>
 
-          <DtRowItem>
+          <DtRowItem class="text-white">
             {{ item.title }}
+          </DtRowItem>
+
+          <DtRowItem class="px-4 whitespace-normal">
+            <div class="flex items-center">
+              <div
+                class="text-sm font-medium text-gray-900 dark:text-gray-400"
+              >
+                {{ item.status.value }}
+              </div>
+            </div>
           </DtRowItem>
 
           <td class="px-4 whitespace-normal">
             <div class="flex items-center">
               <div
-                class="text-sm font-medium text-gray-900 dark:text-gray-300"
-              >
-                {{ item.status.value }}
-              </div>
-            </div>
-          </td>
-
-          <td class="px-4 whitespace-normal">
-            <div class="flex items-center">
-              <div
-                class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                class="text-sm font-medium text-gray-900 dark:text-gray-400"
               >
                 {{ item.can_create_submission }}
               </div>
@@ -167,7 +173,11 @@ const headerRow = [
             />
           </td>
 
-          <DtRowItem>
+          <DtRowItem class="text-right">
+            {{ item.submissions_count }}
+          </DtRowItem>
+
+          <DtRowItem class="whitespace-nowrap">
             <span
               v-tippy
               :title="formatToDayDateString(item.created_at)"

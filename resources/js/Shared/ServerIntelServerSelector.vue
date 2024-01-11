@@ -56,7 +56,7 @@ watch(selectedServers, (newSelectedServers) => {
       name="select_servers"
       :select-list="props.serverList"
       :placeholder="__('All Servers')"
-      class="w-48 dark:border dark:rounded dark:border-gray-700"
+      class="w-48 max-w-48 dark:border dark:rounded dark:border-gray-700"
     />
   </div>
 </template>

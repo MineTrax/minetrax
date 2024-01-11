@@ -9,7 +9,15 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $notifications = $request->user()->notifications()->latest()->cursorPaginate();
+        $request->validate([
+            'unread_only' => 'sometimes|boolean'
+        ]);
+        $isUnreadOnly = $request->get('unread_only');
+        if ($isUnreadOnly) {
+            $notifications = $request->user()->unreadNotifications()->latest()->cursorPaginate();
+        } else {
+            $notifications = $request->user()->notifications()->latest()->cursorPaginate();
+        }
 
         if ($request->wantsJson()) {
             return $notifications;
@@ -28,7 +36,7 @@ class NotificationController extends Controller
         $notificationIdArray = $request->get('notifications');
         if ($notificationIdArray) {
             foreach ($notificationIdArray as $notificationId) {
-                $notification = $request->user()->notifications()->firstOrFail($notificationId);
+                $notification = $request->user()->notifications()->whereId($notificationId)->firstOrFail();
                 $notification?->markAsRead();
             }
         } else {
