@@ -27,7 +27,7 @@ const headerRow = [
     {
         key: 'flags',
         sortable: false,
-        label: __(''),
+        label: '',
         class: 'w-1/12 text-right',
     },
     {
