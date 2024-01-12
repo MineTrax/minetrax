@@ -7,6 +7,13 @@
       <BellIcon
         class="w-5 h-5 hover:cursor-pointer text-gray-500 dark:text-gray-400 dark:hover:text-gray-200"
       />
+      <span class="sr-only">{{ __("Notifications") }}</span>
+      <div
+        v-if="notifications && notifications.length > 0"
+        class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-800 cursor-pointer"
+      >
+        {{ notifications.length }}
+      </div>
     </template>
 
     <template #content>
@@ -68,7 +75,7 @@
             :key="999999999"
             class="flex items-center justify-center italic text-gray-500 dark:text-gray-400 p-4"
           >
-            {{ __("No notifications to show.") }}
+            {{ __("No new notifications to show.") }}
           </div>
         </div>
 
@@ -107,7 +114,9 @@ export default {
         };
     },
     mounted() {
-        let routeToHit = route('notification.index');
+        let routeToHit = route('notification.index', {
+            'unread_only': true
+        });
         axios.get(routeToHit).then(response => {
             this.notifications = response.data.data;
         }).catch(e => {

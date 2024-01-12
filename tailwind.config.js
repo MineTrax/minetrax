@@ -9,6 +9,7 @@ module.exports = {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
+        './formkit.theme.mjs'
     ],
     darkMode: 'class',
     theme: {

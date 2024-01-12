@@ -10,10 +10,10 @@ use App\Services\MinecraftApiService;
 use App\Settings\PlayerSettings;
 use DB;
 use Exception;
+use Gate;
 use Http;
 use Illuminate\Http\Request;
 use Image;
-use Gate;
 use Inertia\Inertia;
 
 class PlayerController extends Controller
@@ -112,7 +112,6 @@ class PlayerController extends Controller
             'next_rank',
             'servers_count',
         ]);
-
 
         return Inertia::render('Player/ShowPlayer', [
             'player' => $player,

@@ -36,7 +36,8 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('@{user:username}', [\App\Http\Controllers\UserController::class, 'showProfile'])->name('user.public.get');
     Route::get('/staff-members', [\App\Http\Controllers\UserController::class, 'indexStaff'])->name('staff.index');
 
-    Route::get('pages/{customPage:path}', [\App\Http\Controllers\CustomPageController::class, 'show'])->name('custom-page.show');
+    Route::get('pages/{customPage:path}', [\App\Http\Controllers\CustomPageController::class, 'show'])->name('custom-page.show.long');
+    Route::get('p/{customPage:path}', [\App\Http\Controllers\CustomPageController::class, 'show'])->name('custom-page.show');
 
     Route::get('search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 
@@ -60,6 +61,11 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('download', [\App\Http\Controllers\DownloadController::class, 'index'])->name('download.index');
     Route::get('download/{download:slug}', [\App\Http\Controllers\DownloadController::class, 'show'])->name('download.show');
     Route::get('download/{download:slug}/download', [\App\Http\Controllers\DownloadController::class, 'download'])->name('download.download');
+
+    // Custom Form
+    Route::get('forms', [\App\Http\Controllers\CustomFormController::class, 'index'])->name('custom-form.index');
+    Route::get('forms/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'show'])->name('custom-form.show');
+    Route::post('forms/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'submit'])->name('custom-form.submit');
 });
 
 /**
@@ -237,4 +243,15 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('download/{download}/edit', [\App\Http\Controllers\Admin\DownloadController::class, 'edit'])->name('download.edit');
     Route::put('download/{download}', [\App\Http\Controllers\Admin\DownloadController::class, 'update'])->name('download.update');
     Route::delete('download/{download}', [\App\Http\Controllers\Admin\DownloadController::class, 'destroy'])->name('download.delete');
+
+    Route::get('custom-form', [\App\Http\Controllers\Admin\CustomFormController::class, 'index'])->name('custom-form.index');
+    Route::get('custom-form/create', [\App\Http\Controllers\Admin\CustomFormController::class, 'create'])->name('custom-form.create');
+    Route::post('custom-form', [\App\Http\Controllers\Admin\CustomFormController::class, 'store'])->name('custom-form.store');
+    Route::get('custom-form/{customForm}/edit', [\App\Http\Controllers\Admin\CustomFormController::class, 'edit'])->name('custom-form.edit');
+    Route::put('custom-form/{customForm}', [\App\Http\Controllers\Admin\CustomFormController::class, 'update'])->name('custom-form.update');
+    Route::delete('custom-form/{customForm}', [\App\Http\Controllers\Admin\CustomFormController::class, 'destroy'])->name('custom-form.delete');
+
+    Route::get('custom-form-submission', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'index'])->name('custom-form-submission.index');
+    Route::get('custom-form-submission/{submission}', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'show'])->name('custom-form-submission.show');
+    Route::delete('custom-form-submission/{submission}', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'destroy'])->name('custom-form-submission.delete');
 });

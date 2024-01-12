@@ -158,7 +158,7 @@
           v-model="message"
           :disabled="sending"
           aria-label="Shout"
-          class="block w-full mt-1 bg-gray-100 border-none rounded-md focus:ring-gray-300 sm:text-sm disabled:opacity-50 focus:bg-white dark:bg-cool-gray-900 dark:text-gray-200 dark:focus:ring-gray-700"
+          class="block w-full mt-1 bg-gray-100 border-none rounded-md focus:ring-gray-300 sm:text-sm disabled:opacity-50 focus:bg-white dark:bg-cool-gray-900 dark:text-gray-200 dark:focus:bg-gray-900 dark:focus:ring-gray-700"
           type="text"
           :placeholder="__('Say something..')"
           @keypress.enter="sendShout"

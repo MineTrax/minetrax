@@ -2,7 +2,6 @@
 
 use App\Services\MinecraftApiService;
 use App\Services\MinecraftServerQueryService;
-use App\Utils\Helpers\Helper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 

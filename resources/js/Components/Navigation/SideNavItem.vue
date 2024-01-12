@@ -23,7 +23,8 @@ const hasActiveChild = computed(() => {
 </script>
 
 <template>
-  <Link
+  <component
+    :is="item.newtab ? 'a' : Link"
     v-if="!item.children.length && item.visible"
     :class="[
       'group flex w-full items-center rounded-md py-2 px-3 text-sm font-medium',
@@ -31,6 +32,7 @@ const hasActiveChild = computed(() => {
       item.active ? 'text-gray-800 font-semibold dark:text-gray-200' : 'text-gray-600 dark:text-gray-400 font-medium'
     ]"
     :href="item.href"
+    :target="item.newtab ? '_blank' : null"
   >
     <component
       :is="item.icon"
@@ -41,7 +43,7 @@ const hasActiveChild = computed(() => {
       ]"
     />
     <span v-if="!collapsed">{{ __(item.label) }}</span>
-  </Link>
+  </component>
 
   <Disclosure
     v-else-if="item.children.length && item.visible"

@@ -222,6 +222,14 @@ return [
             'key' => 'route-downloads',
             'authenticated' => false,
         ],
+        [
+            'type' => 'route',
+            'name' => 'Custom Forms',
+            'title' => 'Forms',
+            'route' => 'custom-form.index',
+            'key' => 'route-custom-forms',
+            'authenticated' => false,
+        ],
     ],
 
     /*

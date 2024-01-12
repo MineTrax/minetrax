@@ -12,10 +12,12 @@ import {
     CircleStackIcon,
     TrophyIcon,
     CloudArrowDownIcon,
+    ClipboardDocumentListIcon,
+    BugAntIcon
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
-const { canWild, hasRole } = useAuthorizable();
+const { canWild, hasRole, can } = useAuthorizable();
 
 defineProps({
     collapsed: Boolean,
@@ -191,6 +193,30 @@ const navItems = [
         visible: canWild('ask_db')
     },
     {
+        label: 'Custom Forms',
+        active: false,
+        children: [
+            {
+                label: 'List Forms',
+                href: route('admin.custom-form.index'),
+                active: route().current('admin.custom-form.index'),
+                children: [],
+                icon: null,
+                visible: can('read custom_forms')
+            },
+            {
+                label: 'User Submissions',
+                href: route('admin.custom-form-submission.index'),
+                active: route().current('admin.custom-form-submission.index'),
+                children: [],
+                icon: null,
+                visible: can('read custom_form_submissions')
+            },
+        ],
+        icon: ClipboardDocumentListIcon,
+        visible: canWild('custom_forms')
+    },
+    {
         label: 'Settings', href: '#', active: false, children: [
             {
                 label: 'General',
@@ -243,6 +269,30 @@ const navItems = [
         ],
         icon: Cog8ToothIcon,
         visible: canWild('settings')
+    },
+    {
+        label: 'Debug', href: '#', active: false, children: [
+            {
+                label: 'Pulse',
+                href: '/admin/pulse',
+                active: false,
+                children: [],
+                icon: null,
+                visible: true,
+                newtab: true
+            },
+            {
+                label: 'Telescope',
+                href: '/telescope',
+                active: false,
+                children: [],
+                icon: null,
+                visible: true,
+                newtab: true
+            },
+        ],
+        icon: BugAntIcon,
+        visible: hasRole('superadmin')
     },
 ];
 </script>

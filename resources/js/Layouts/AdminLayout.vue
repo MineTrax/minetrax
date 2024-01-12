@@ -1,9 +1,9 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import AdminSideMenu from '@/Shared/AdminSideMenu.vue';
-import {ref} from 'vue';
+import { useStorage } from '@vueuse/core';
 
-const isMenuCollapsed = ref(false);
+let isMenuCollapsed = useStorage('is-admin-sidebar-menu-collapsed', false);
 function toggleMenuCollapse() {
     isMenuCollapsed.value = !isMenuCollapsed.value;
 }
