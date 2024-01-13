@@ -53,7 +53,7 @@ class SessionController extends Controller
                     'platform' => $agent->platform(),
                     'platform_version' => $agent->platform() ? $agent->version($agent->platform()) : null,
                     'browser' => $agent->browser(),
-                    'browser_version' => $agent->version($agent->browser()),
+                    'browser_version' => $agent->browser() ? $agent->version($agent->browser()) : null,
                 ],
                 'ip_address' => $session->ip_address,
                 'country' => $country,
