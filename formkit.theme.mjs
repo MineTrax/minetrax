@@ -926,7 +926,8 @@ const classes = {
         'group-data-[multiple]:py-2': true,
         'group-data-[multiple]:px-2.5': true,
         'dark:group-data-[multiple]:focus:bg-sky-800': true,
-        'dark:group-data-[multiple]:checked:bg-sky-800': true
+        'dark:group-data-[multiple]:checked:bg-sky-800': true,
+        'dark:text-gray-700': true,
     },
     'select__prefixIcon': {
         'flex': true,

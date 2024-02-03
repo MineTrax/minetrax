@@ -233,3 +233,15 @@ body.swal2-shown > [aria-hidden="true"] {
 .cm-s-easymde .CodeMirror-cursor {
     border-color: #a0a0a0;
 }
+
+.no-disabled-effect .data-\[disabled\]\:opacity-50[data-disabled] {
+    opacity: 1;
+}
+
+.no-disabled-effect .group[data-disabled] .group-data-\[disabled\]\:opacity-50 {
+    opacity: 1;
+}
+
+.no-disabled-effect .group[data-disabled] * {
+    opacity: 1;
+}

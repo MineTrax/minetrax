@@ -69,7 +69,7 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value);
       </div>
 
       <div class="flex w-full gap-4">
-        <div class="flex-grow px-3 py-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800 md:px-10 md:py-5">
+        <div class="flex-grow px-3 py-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800 md:px-10 md:py-5 no-disabled-effect">
           <FormKit
             :disabled="true"
             type="form"
@@ -143,7 +143,7 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value);
 
             <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
               <div class="flex items-center justify-between w-full">
-                <span>Form</span>
+                <span>{{ __("Form") }}</span>
                 <span>{{ submission.custom_form.title }}</span>
               </div>
             </li>

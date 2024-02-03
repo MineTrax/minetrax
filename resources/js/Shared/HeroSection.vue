@@ -47,7 +47,7 @@
       <div class="flex flex-col items-center justify-around w-4/5 md:flex-row">
         <div
           v-if="joinBoxEnabled"
-          class="flex justify-center cursor-pointer basis-1/4 hover:rainbow mb-4 md:mb-0"
+          class="flex justify-center cursor-pointer basis-1/4 hover:rainbow mb-4 md:mb-0 hover:scale-110 transition ease-in-out duration-500"
           @click="isSupported && copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
         >
           <img
@@ -98,28 +98,28 @@
           >
         </div>
 
-        <div
+        <a
           v-if="discordBoxEnabled"
-          class="justify-center hidden basis-1/4 hover:rainbow md:flex"
+          :href="$page.props.generalSettings.discord_invite_url"
+          target="_blank"
+          class="justify-center hidden basis-1/4 hover:rainbow md:flex hover:scale-110 transition ease-in-out duration-500"
         >
           <div class="flex flex-col">
             <p class="mt-2 font-bold text-right uppercase text-light-blue-400">
               {{ discordUsersCount }} {{ __("Online") }}
             </p>
-            <a
-              :href="$page.props.generalSettings.discord_invite_url"
-              target="_blank"
+            <span
               class="font-semibold text-sm mt-1.5 uppercase text-white"
             >
               {{ __("Click to Join") }}
-            </a>
+            </span>
           </div>
           <img
             src="/images/header-discord.png"
             alt="Discord"
             class="w-16 h-16"
           >
-        </div>
+        </a>
       </div>
     </div>
   </div>

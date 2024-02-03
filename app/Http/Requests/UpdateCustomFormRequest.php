@@ -44,7 +44,7 @@ class UpdateCustomFormRequest extends FormRequest
             'fields' => 'required|array',
             'fields.*.type' => 'required|string|in:'.implode(',', $inputTypes),
             'fields.*.label' => 'required|string|max:255',
-            'fields.*.name' => 'required|string|alpha_dash|max:100|distinct:ignore_case',
+            'fields.*.name' => 'required|string|max:255|distinct:ignore_case',
             'fields.*.placeholder' => 'sometimes|nullable|string|max:255',
             'fields.*.help' => 'sometimes|nullable|string|max:255',
             'fields.*.validation' => 'sometimes|nullable|string|max:255',

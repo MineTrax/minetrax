@@ -247,6 +247,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('custom-form', [\App\Http\Controllers\Admin\CustomFormController::class, 'index'])->name('custom-form.index');
     Route::get('custom-form/create', [\App\Http\Controllers\Admin\CustomFormController::class, 'create'])->name('custom-form.create');
     Route::post('custom-form', [\App\Http\Controllers\Admin\CustomFormController::class, 'store'])->name('custom-form.store');
+    Route::get('custom-form/{customForm}', [\App\Http\Controllers\Admin\CustomFormController::class, 'show'])->name('custom-form.show');
     Route::get('custom-form/{customForm}/edit', [\App\Http\Controllers\Admin\CustomFormController::class, 'edit'])->name('custom-form.edit');
     Route::put('custom-form/{customForm}', [\App\Http\Controllers\Admin\CustomFormController::class, 'update'])->name('custom-form.update');
     Route::delete('custom-form/{customForm}', [\App\Http\Controllers\Admin\CustomFormController::class, 'destroy'])->name('custom-form.delete');

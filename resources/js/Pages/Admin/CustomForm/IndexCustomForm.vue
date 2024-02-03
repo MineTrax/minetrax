@@ -9,6 +9,7 @@ import {
     EyeIcon,
     PencilSquareIcon,
     TrashIcon,
+    ChartBarSquareIcon,
 } from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
 
@@ -42,12 +43,7 @@ const headerRow = [
         key: 'can_create_submission',
         label: __('Can Submit'),
         sortable: true,
-    },
-    {
-        key: 'min_role_weight_to_view_submission',
-        label: __('Role Weight to View Submission'),
-        sortable: true,
-        class: 'text-right whitespace-nowrap',
+        class: 'whitespace-nowrap',
     },
     {
         key: 'is_notify_staff_on_submission',
@@ -116,7 +112,13 @@ const headerRow = [
           </td>
 
           <DtRowItem class="">
-            {{ item.title }}
+            <InertiaLink
+              as="a"
+              :href="route('admin.custom-form.show', item.id)"
+              class="dark:hover:text-gray-200 hover:text-light-blue-400"
+            >
+              {{ item.title }}
+            </InertiaLink>
           </DtRowItem>
 
           <DtRowItem class="px-4 whitespace-normal">
@@ -138,10 +140,6 @@ const headerRow = [
               </div>
             </div>
           </td>
-
-          <DtRowItem class="text-right">
-            {{ item.min_role_weight_to_view_submission ?? '-' }}
-          </DtRowItem>
 
           <td
             class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
@@ -190,11 +188,22 @@ const headerRow = [
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
             <InertiaLink
+              v-tippy
               as="a"
               :href="route('custom-form.show', item.slug)"
               class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              :title="__('Show Public View')"
             >
               <EyeIcon class="inline-block w-5 h-5" />
+            </InertiaLink>
+            <InertiaLink
+              v-tippy
+              as="a"
+              :href="route('admin.custom-form.show', item.id)"
+              class="inline-flex items-center justify-center text-green-500 hover:text-green-800"
+              :title="__('Show Intel')"
+            >
+              <ChartBarSquareIcon class="inline-block w-5 h-5" />
             </InertiaLink>
             <InertiaLink
               v-if="can('update custom_forms')"
