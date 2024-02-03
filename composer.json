@@ -37,7 +37,7 @@
         "league/mime-type-detection": "^1.11",
         "marvinlabs/laravel-discord-logger": "^1.4",
         "nxp/math-executor": "^2.3",
-        "openai-php/laravel": "^0.6.0",
+        "openai-php/laravel": "^0.8.1",
         "predis/predis": "^2.0",
         "pusher/pusher-php-server": "^7.0",
         "socialiteproviders/discord": "^4.1",
