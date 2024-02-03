@@ -19,7 +19,7 @@
         "clue/socket-raw": "^1.6",
         "cybercog/laravel-love": "^9.0",
         "doctrine/dbal": "^3.6",
-        "geoip2/geoip2": "^2.12",
+        "geoip2/geoip2": "^3.0",
         "guzzlehttp/guzzle": "^7.4",
         "inertiajs/inertia-laravel": "^0.6.0",
         "intervention/imagecache": "^2.5",
