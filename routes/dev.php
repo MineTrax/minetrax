@@ -1,9 +1,11 @@
 <?php
 
+use App\Services\AskGptService;
 use App\Services\MinecraftApiService;
 use App\Services\MinecraftServerQueryService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 Route::get('time', function () {
     $timestamp = 1644663318245;
@@ -131,3 +133,13 @@ Route::get('username-to-uuid', function () {
 //        echo $table->getName() . " has columns: " . collect($table->getColumns())->map(fn($column) => $column->getName() . ' ('.$column->getType()->getName().')')->implode(', ') . "<br><br>";
 //    }
 //});
+
+Route::get('test-askdb', function(AskGptService $askDbService) {
+    $response = $askDbService->askDb('What is the name of the player with the highest score?');
+    $converter = new GithubFlavoredMarkdownConverter();
+    $response = $converter->convertToHtml("## Hello World");
+
+    return [
+        'data' => $response->getContent()
+    ];
+});

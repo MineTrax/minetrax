@@ -10,3 +10,4 @@ SQL JSON Result: "@if($result){!! $result !!}"
 @endif
 
 If the data contain sensitive information like 'password', Always replace it with "REDACTED" before sending to user.
+GitHub Flavored Markdown (GFM) is supported.

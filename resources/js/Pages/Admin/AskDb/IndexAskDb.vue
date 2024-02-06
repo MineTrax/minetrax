@@ -8,8 +8,12 @@ import { reactive, ref } from 'vue';
 import { useStorage } from '@vueuse/core';
 const { __ } = useTranslations();
 
-defineProps({
+const props = defineProps({
     featureEnabled: {
+        type: Boolean,
+        required: true,
+    },
+    appDebug: {
         type: Boolean,
         required: true,
     },
@@ -21,6 +25,7 @@ const form = reactive({
     prompt: null,
     loading: false,
     error: null,
+    verboseError: null,
 });
 
 const showExamples = ref(true);
@@ -29,6 +34,7 @@ let results = reactive([]);
 function askDb() {
     form.loading = true;
     form.error = null;
+    form.verboseError = null;
     axios.post(route('admin.ask-db.query'), {
         prompt: form.prompt,
     }).then((response) => {
@@ -40,6 +46,9 @@ function askDb() {
         showExamples.value = false;
     }).catch((error) => {
         form.error = error.response?.data?.message || error.message || __('Failed to Query Database! Try again after rephrasing your question.');
+        if (props.appDebug) {
+            form.verboseError = error.response?.data?.verbose || null;
+        }
     }).finally(() => {
         form.loading = false;
     });
@@ -146,6 +155,13 @@ const examples = [
                 >
                   {{ form.error }}
                 </p>
+
+                <p
+                  v-if="appDebug && form.verboseError"
+                  class="text-sm mt-1 text-red-400 text-center dark:bg-gray-800 bg-white p-2 rounded shadow"
+                >
+                  {{ form.verboseError }}
+                </p>
               </div>
 
               <LoadingButton
@@ -173,9 +189,10 @@ const examples = [
               {{ result.prompt }}
             </h3>
             <hr class="h-px my-3 bg-gray-200 border-0 dark:bg-gray-700">
-            <p class="dark:text-gray-300 text-gray-700 whitespace-pre-wrap">
-              {{ result.result }}
-            </p>
+            <p
+              class="dark:text-gray-300 text-gray-700 prose dark:prose-dark "
+              v-html="result.result"
+            />
           </div>
         </div>
 
