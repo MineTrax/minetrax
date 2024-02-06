@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\NewsType;
+use App\Traits\HasCommentsTrait;
 use App\Utils\Helpers\Helper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -11,7 +12,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class News extends BaseModel implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, HasCommentsTrait;
 
     protected $appends = ['photo_url'];
     protected $with = ['media'];
@@ -19,6 +20,8 @@ class News extends BaseModel implements HasMedia
         'type' => NewsType::class,
         'published_at' => 'datetime',
         'is_pinned' => 'boolean',
+        'is_commentable' => 'boolean',
+        'is_notify_staff_on_comment' => 'boolean',
     ];
 
     public function registerMediaCollections(): void

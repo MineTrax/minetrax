@@ -19,8 +19,9 @@ use Illuminate\Support\Facades\Route;
  */
 Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(function () {
     Route::get('/', [\App\Http\Controllers\HomeController::class, 'home'])->name('home');
-    Route::get('news/{news:slug}', [\App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
     Route::get('news', [\App\Http\Controllers\NewsController::class, 'index'])->name('news.index');
+    Route::get('news/{news:slug}', [\App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
+    Route::get('news/{news}/comment', [\App\Http\Controllers\NewsController::class, 'indexComment'])->name('news.comment.index');
     Route::get('post', [\App\Http\Controllers\PostController::class, 'index'])->name('post.index');
     Route::get('post/{post}', [\App\Http\Controllers\PostController::class, 'show'])->name('post.show');
     Route::get('post/user/{user:username}', [\App\Http\Controllers\PostController::class, 'indexForUser'])->name('post.user.index');
@@ -83,10 +84,13 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     // Post Comments
     Route::post('post/{post}/comment', [\App\Http\Controllers\PostController::class, 'postComment'])->name('post.comment.store')->middleware('forbid-muted-user');
     Route::delete('post/{post}/comment/{comment}', [\App\Http\Controllers\PostController::class, 'deleteComment'])->name('post.comment.delete');
-
     // Reactions
     Route::post('reaction/post/{post}/like', [\App\Http\Controllers\PostController::class, 'likePost'])->name('reaction.post.like');
     Route::post('reaction/post/{post}/unlike', [\App\Http\Controllers\PostController::class, 'unlikePost'])->name('reaction.post.unlike');
+
+    // News Comments
+    Route::post('news/{news}/comment', [\App\Http\Controllers\NewsController::class, 'postComment'])->name('news.comment.store')->middleware('forbid-muted-user');
+    Route::delete('news/{news}/comment/{comment}', [\App\Http\Controllers\NewsController::class, 'deleteComment'])->name('news.comment.delete');
 
     // Polls
     Route::get('poll', [\App\Http\Controllers\PollController::class, 'index'])->name('poll.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);

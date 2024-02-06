@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col">
-    <hr class="mt-0.5 dark:border-cool-gray-700">
+    <hr
+      v-if="commentableType == 'post'"
+      class="mt-0.5 dark:border-cool-gray-700"
+    >
 
     <!-- Loading Spinner -->
     <div
@@ -31,7 +34,7 @@
 
     <!-- Load More Comment Button -->
     <div
-      v-show="!loadingMore && !loading && showLoadMoreCommentsButton"
+      v-show="!loadingMore && !loading && showLoadMoreCommentsButton && comments && comments.next_page_url"
       class="flex mt-3"
     >
       <button
@@ -40,6 +43,14 @@
       >
         {{ __("View previous comments") }}
       </button>
+    </div>
+
+    <!-- Show no comments -->
+    <div
+      v-if="!loading && comments && comments.data.length === 0"
+      class="flex justify-center pt-4 text-gray-500 dark:text-gray-400 text-sm"
+    >
+      {{ __("No comments yet") }}
     </div>
 
     <!-- User Comments -->
@@ -91,7 +102,7 @@
           :preserve-state="false"
           as="button"
           method="delete"
-          :href="route('post.comment.delete', [post.id, comment.id])"
+          :href="route(`${commentableType}.comment.delete`, [commentable.id, comment.id])"
           class="order-3 focus:outline-none"
         >
           <icon
@@ -143,7 +154,8 @@ export default {
     components: {Icon, UserDisplayname},
 
     props: {
-        post: Object
+        commentable: Object,
+        commentableType: String
     },
 
     setup() {
@@ -164,7 +176,7 @@ export default {
     },
 
     created() {
-        axios.get(route('post.comment.index', this.post.id)).then(response => {
+        axios.get(route(`${this.commentableType}.comment.index`, this.commentable.id)).then(response => {
             this.comments = response.data;
             this.comments.data.reverse();
         }).finally(() => {
@@ -193,7 +205,7 @@ export default {
 
             this.submitting = true;
             this.bodyerror = null;
-            axios.post(route('post.comment.store', this.post.id), {
+            axios.post(route(`${this.commentableType}.comment.store`, this.commentable.id), {
                 comment: this.commentBody
             }).then(response => {
                 if (response.status === 200) {

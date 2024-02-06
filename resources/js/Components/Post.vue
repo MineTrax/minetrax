@@ -140,7 +140,8 @@
 
     <comments
       v-if="showComments"
-      :post="post"
+      :commentable="post"
+      commentable-type="post"
     />
   </div>
 </template>

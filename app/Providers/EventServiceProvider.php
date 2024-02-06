@@ -5,13 +5,14 @@ namespace App\Providers;
 use App\Events\CustomFormSubmissionCreated;
 use App\Events\MinecraftPlayerEventCreated;
 use App\Events\MinecraftPlayerSessionCreated;
+use App\Events\NewsCommentCreated;
 use App\Listeners\NotifyStaffOnCustomFormSubmission;
+use App\Listeners\NotifyStaffOnNewsComment;
 use App\Listeners\UpdateStatsOnMinecraftPlayerEvent;
 use App\Listeners\UpsertPlayerOnSessionStart;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 use SocialiteProviders\Discord\DiscordExtendSocialite;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
@@ -37,7 +38,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         CustomFormSubmissionCreated::class => [
             NotifyStaffOnCustomFormSubmission::class,
-        ]
+        ],
+        NewsCommentCreated::class => [
+            NotifyStaffOnNewsComment::class,
+        ],
     ];
 
     /**

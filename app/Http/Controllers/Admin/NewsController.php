@@ -29,6 +29,7 @@ class NewsController extends Controller
                 'slug',
                 'published_at',
                 'is_pinned',
+                'is_commentable',
                 'type',
                 'created_at',
             ])
@@ -38,11 +39,12 @@ class NewsController extends Controller
                 'slug',
                 'published_at',
                 'is_pinned',
+                'is_commentable',
                 'type',
                 'created_at',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug'])),
             ])
-            ->allowedSorts(['id', 'title', 'created_at', 'published_at', 'is_pinned', 'type', 'slug'])
+            ->allowedSorts(['id', 'title', 'created_at', 'published_at', 'is_pinned', 'is_commentable', 'type', 'slug'])
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();
@@ -69,6 +71,7 @@ class NewsController extends Controller
             'body' => $request->body,
             'published_at' => $request->is_published ? now() : null,
             'is_pinned' => $request->is_pinned,
+            'is_commentable' => $request->is_commentable,
             'created_by' => $request->user()->id,
         ]);
 
@@ -114,6 +117,7 @@ class NewsController extends Controller
         }
         $news->type = $request->type;
         $news->is_pinned = $request->is_pinned;
+        $news->is_commentable = $request->is_commentable;
         $news->updated_by = $request->user()->id;
         $news->save();
 
