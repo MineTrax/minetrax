@@ -169,16 +169,29 @@
               </div>
             </div>
 
-            <div class="flex justify-end">
+            <div class="flex justify-end space-x-4">
               <inertia-link
+                v-tippy
+                as="a"
+                :href="route('skin-changer.show')"
+                class="mt-5 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-400 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 disabled:opacity-50"
+                :title="__('Change Skin of this player.')"
+              >
+                <PaintBrushIcon class="h-5 w-5" />
+              </inertia-link>
+
+              <inertia-link
+                v-tippy
+                v-confirm="{message: __('Are you sure you want to unlink this player from your account?')}"
                 as="button"
                 :preserve-scroll="true"
                 :preserve-state="false"
                 method="delete"
                 :href="route('account-link.delete', player.uuid)"
                 class="mt-5 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                :title="__('Unlink this player from your account.')"
               >
-                {{ __("Unlink") }}&nbsp;<span class="hidden md:block">&nbsp;{{ player.username }}</span>
+                <LockOpenIcon class="h-5 w-5" />
               </inertia-link>
             </div>
           </div>
@@ -193,12 +206,15 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Icon from '@/Components/Icon.vue';
 import * as skinview3d from 'skinview3d';
 import { useHelpers } from '@/Composables/useHelpers';
+import { LockOpenIcon, PaintBrushIcon } from '@heroicons/vue/24/solid';
 
 export default {
 
     components: {
         Icon,
         AppLayout,
+        LockOpenIcon,
+        PaintBrushIcon,
     },
     props: {
         linkedPlayers: Array,
@@ -214,7 +230,7 @@ export default {
                 canvas: document.getElementById(`skin_container_${player.uuid}`),
                 width: 200,
                 height: 300,
-                skin: route('player.skin.get', {uuid: player.uuid, username: player.username}),
+                skin: route('player.skin.get', {uuid: player.uuid, username: player.username, textureid: player.skin_texture_id}),
             });
             let control = skinview3d.createOrbitControls(skinViewer);
             control.enableRotate = true;

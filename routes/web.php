@@ -48,9 +48,9 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('/features', [\App\Http\Controllers\HomeController::class, 'features'])->name('features.list');
     Route::get('/version-check', [\App\Http\Controllers\HomeController::class, 'version'])->name('version.check');
 
-    Route::get('player/avatar/{uuid}/{username?}', [\App\Http\Controllers\PlayerController::class, 'getAvatarImage'])->name('player.avatar.get');
-    Route::get('player/skin/{uuid}/{username?}', [\App\Http\Controllers\PlayerController::class, 'getSkinImage'])->name('player.skin.get');
-    Route::get('player/render/{uuid}/{username?}', [\App\Http\Controllers\PlayerController::class, 'getRenderImage'])->name('player.render.get');
+    Route::get('player/avatar/{uuid}/{username?}/{textureid?}', [\App\Http\Controllers\PlayerController::class, 'getAvatarImage'])->name('player.avatar.get');
+    Route::get('player/skin/{uuid}/{username?}/{textureid?}', [\App\Http\Controllers\PlayerController::class, 'getSkinImage'])->name('player.skin.get');
+    Route::get('player/render/{uuid}/{username?}/{textureid?}', [\App\Http\Controllers\PlayerController::class, 'getRenderImage'])->name('player.render.get');
 
     Route::get('vote/{id}', [\App\Http\Controllers\HomeController::class, 'visitVotingSite'])->name('vote.visit');
 
@@ -109,6 +109,10 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     Route::get('account-link/verify/{uuid}/{server}', [\App\Http\Controllers\AccountLinkController::class, 'verify'])->name('account-link.verify');
     Route::delete('account-link/remove/{player:uuid}', [\App\Http\Controllers\AccountLinkController::class, 'unlink'])->name('account-link.delete')->middleware('password.confirm');
     Route::get('user/linked-players', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('linked-player.list')->withoutMiddleware(['verified-if-enabled']);
+
+    // Skin Changer
+    Route::get('user/player-skin-changer', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('skin-changer.show');
+    Route::post('user/player-skin-changer', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('skin-changer.update');
 
     // Server Chatlog
     Route::get('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'index'])->name('chatlog.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);

@@ -101,5 +101,7 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('delete custom_form_submissions');
 
         Permission::findOrCreate('view pulse_admin_dashboard');
+
+        Permission::findOrCreate('change any_player_skin');
     }
 }

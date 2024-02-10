@@ -23,12 +23,13 @@ class UpsertPlayerOnSessionStart
     public function handle(MinecraftPlayerSessionCreated $event): void
     {
         $minecraftPlayerSession = $event->minecraftPlayerSession;
+        $rawRequest = $event->rawRequest;
 
         $minecraftPlayer = MinecraftPlayer::where('player_uuid', $minecraftPlayerSession->player_uuid)
             ->where('server_id', $minecraftPlayerSession->server_id)
             ->first();
 
-        DB::transaction(function () use ($minecraftPlayerSession, $minecraftPlayer) {
+        DB::transaction(function () use ($minecraftPlayerSession, $minecraftPlayer, $rawRequest) {
             if (! $minecraftPlayer) {
 
                 $player = Player::where('uuid', $minecraftPlayerSession->player_uuid)->first();
@@ -44,6 +45,8 @@ class UpsertPlayerOnSessionStart
                         'last_minecraft_version' => $minecraftPlayerSession->minecraft_version,
                         'last_join_address' => $minecraftPlayerSession->join_address,
                         'position' => $maxPlayerPosition + 1,
+                        'skin_property' => $rawRequest['skin_property'] ?? null,
+                        'skin_texture_id' => $rawRequest['skin_texture_id'] ?? null,
                     ]);
                 } else {
                     $player->last_join_address = $minecraftPlayerSession->join_address ?? $player->last_join_address;
@@ -52,6 +55,8 @@ class UpsertPlayerOnSessionStart
                     $player->ip_address = $minecraftPlayerSession->player_ip_address;
                     $player->username = $minecraftPlayerSession->player_username;
                     $player->country_id = $minecraftPlayerSession->country_id;
+                    $player->skin_property = $rawRequest['skin_property'] ?? null;
+                    $player->skin_texture_id = $rawRequest['skin_texture_id'] ?? null;
                     $player->save();
                 }
 
@@ -69,6 +74,8 @@ class UpsertPlayerOnSessionStart
                     'vault_groups' => $minecraftPlayerSession->vault_groups,
                     'country_id' => $minecraftPlayerSession->country_id,
                     'player_id' => $player->id,
+                    'skin_property' => $rawRequest['skin_property'] ?? null,
+                    'skin_texture_id' => $rawRequest['skin_texture_id'] ?? null,
                 ]);
             } else {
                 $minecraftPlayer->last_join_address = $minecraftPlayerSession->join_address ?? $minecraftPlayer->last_join_address;
@@ -80,6 +87,8 @@ class UpsertPlayerOnSessionStart
                 $minecraftPlayer->vault_balance = $minecraftPlayerSession->vault_balance ?? $minecraftPlayer->vault_balance;
                 $minecraftPlayer->vault_groups = $minecraftPlayerSession->vault_groups ?? $minecraftPlayer->vault_groups;
                 $minecraftPlayer->country_id = $minecraftPlayerSession->country_id;
+                $minecraftPlayer->skin_property = $rawRequest['skin_property'] ?? null;
+                $minecraftPlayer->skin_texture_id = $rawRequest['skin_texture_id'] ?? null;
                 $minecraftPlayer->save();
 
                 $player = Player::where('uuid', $minecraftPlayerSession->player_uuid)->first();
@@ -89,6 +98,8 @@ class UpsertPlayerOnSessionStart
                 $player->ip_address = $minecraftPlayerSession->player_ip_address;
                 $player->username = $minecraftPlayerSession->player_username;
                 $player->country_id = $minecraftPlayerSession->country_id;
+                $player->skin_property = $rawRequest['skin_property'] ?? null;
+                $player->skin_texture_id = $rawRequest['skin_texture_id'] ?? null;
                 $player->save();
             }
 

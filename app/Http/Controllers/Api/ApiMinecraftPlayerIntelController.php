@@ -34,6 +34,8 @@ class ApiMinecraftPlayerIntelController extends Controller
             'session_started_at' => 'required|numeric',
             'is_op' => 'required|boolean',
             'players_world_stat_intel' => 'sometimes|nullable|array',
+            'skin_property' => 'sometimes|nullable|json',
+            'skin_texture_id' => 'sometimes|nullable|string',
         ]);
 
         $server = Server::where('id', $request->server_id)->firstOrFail();
@@ -240,6 +242,9 @@ class ApiMinecraftPlayerIntelController extends Controller
             'vault_groups' => 'sometimes|nullable|array',
             'inventory' => 'sometimes|nullable|json',
             'ender_chest' => 'sometimes|nullable|json',
+
+            'skin_property' => 'sometimes|nullable|json',
+            'skin_texture_id' => 'sometimes|nullable|string',
         ]);
 
         $inventory = $request->inventory ? json_decode($request->inventory) : null;

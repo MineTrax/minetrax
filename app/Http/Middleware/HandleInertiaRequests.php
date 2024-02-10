@@ -62,7 +62,7 @@ class HandleInertiaRequests extends Middleware
                 $shouldUseWebQuery = false;
                 $defaultQueryServer = Server::where('type', ServerType::Bungee)->select(['hostname', 'id'])->latest()->first();
                 if (!$defaultQueryServer) {
-                    $defaultQueryServer = Server::select(['id', 'hostname', 'webquery_port'])->orderBy('id')->first();
+                    $defaultQueryServer = Server::select(['id', 'hostname', 'webquery_port'])->orderByDesc('order')->orderBy('id')->first();
                     $shouldUseWebQuery = $defaultQueryServer?->webquery_port != null;
                 }
                 return [

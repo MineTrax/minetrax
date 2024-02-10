@@ -300,4 +300,16 @@ return [
     |
     */
     'max_post_feed_media_size_kb' => env('MAX_POST_FEED_MEDIA_SIZE_KB', 1024),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Skin Changer Feature.
+    |--------------------------------------------------------------------------
+    |
+    | This feature allows users to change their skins of linked players.
+    | Will work for those servers which have 'Enable Skin Changed` toggled on.
+    | This feature will only work if SkinsRestorer plugin is installed on server.
+    |
+    */
+    'player_skin_changer_enabled' => env('PLAYER_SKIN_CHANGER_ENABLED', true),
 ];

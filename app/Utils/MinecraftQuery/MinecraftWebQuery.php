@@ -12,6 +12,20 @@ class MinecraftWebQuery
     {
     }
 
+    /**
+     * Changes the player's skin.
+     *
+     * @param string $playerUuid
+     * @param string $changeCommandType - can be: 'url', 'username', 'custom', 'clear'
+     * @param string $value - the value can be: url -> 'https://minesk.in/7bd96e58ba7049e6abb4943425fe8766', username -> 'xinecraft', custom -> 'b64_encoded_skin_value:::b64_encoded_skin_signature'
+     */
+    public function setPlayerSkin($playerUuid, $changeCommandType, $value)
+    {
+        $param = $playerUuid . '½½½½' . $changeCommandType . '½½½½' . $value;
+        $status = $this->sendQuery('set-player-skin', $param);
+        return $status;
+    }
+
     public function sendChat($username, $message)
     {
         $param = $username . '½½½½' . $message;

@@ -3,6 +3,9 @@
 use App\Services\AskGptService;
 use App\Services\MinecraftApiService;
 use App\Services\MinecraftServerQueryService;
+use App\Settings\PluginSettings;
+use App\Utils\MinecraftQuery\MinecraftWebQuery;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -134,12 +137,24 @@ Route::get('username-to-uuid', function () {
 //    }
 //});
 
-Route::get('test-askdb', function(AskGptService $askDbService) {
+Route::get('test-askdb', function (AskGptService $askDbService) {
     $response = $askDbService->askDb('What is the name of the player with the highest score?');
     $converter = new GithubFlavoredMarkdownConverter();
-    $response = $converter->convertToHtml("## Hello World");
+    $response = $converter->convertToHtml($response);
 
     return [
-        'data' => $response->getContent()
+        'data' => $response->getContent(),
     ];
+});
+
+Route::get('test-player-skin', function (Illuminate\Http\Request $request) {
+
+    $server = \App\Models\Server::whereId(12)->first();
+    $player = \App\Models\Player::where('uuid', 'e77bfabe-5a39-32e5-b9c1-dd9b4bbda490')->first();
+
+    $webQuery = new MinecraftWebQuery($server->ip_address, $server->webquery_port);
+    // URL or name
+    $data = $webQuery->setPlayerSkin($player->uuid, 'username', 'https://google.com');
+
+    dd($data);
 });

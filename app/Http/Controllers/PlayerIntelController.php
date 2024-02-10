@@ -61,7 +61,7 @@ class PlayerIntelController extends Controller
 
         return Inertia::render('PlayerIntel/IndexSession', [
             'sessions' => $sessions,
-            'player' => $player->only(['id', 'uuid', 'username']),
+            'player' => $player->only(['id', 'uuid', 'username', 'skin_texture_id', 'avatar_url']),
             'filters' => request()->all(['perPage', 'sort', 'filter']),
             'canShowPlayerIntel' => true,
         ]);
@@ -78,7 +78,7 @@ class PlayerIntelController extends Controller
         $session->load([
             'country:id,name,iso_code',
             'server:id,name',
-            'minecraftPlayer:id,player_uuid,player_username,player_displayname',
+            'minecraftPlayer:id,player_uuid,player_username,player_displayname,skin_texture_id',
         ]);
 
         // event counters

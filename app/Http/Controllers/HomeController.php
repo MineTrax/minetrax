@@ -84,11 +84,13 @@ class HomeController extends Controller
         $chatServerList = Server::select(['id', 'name'])
             ->where('type', '!=', ServerType::Bungee)
             ->where('is_ingame_chat_enabled', true)
+            ->orderByDesc('order')
+            ->orderBy('id')
             ->get();
         $chatDefaultServerId = $chatServerList->first()?->id;
 
         // Top 10 Players
-        $top10Players = Player::select(['id', 'username', 'uuid', 'position', 'rating', 'total_score', 'last_seen_at', 'country_id', 'rank_id'])
+        $top10Players = Player::select(['id', 'username', 'uuid', 'skin_texture_id', 'position', 'rating', 'total_score', 'last_seen_at', 'country_id', 'rank_id'])
             ->with(['country:id,iso_code,flag,name', 'rank:id,shortname,name'])
             ->orderBy(\DB::raw('-`position`'), 'desc') // this sort with position but excludes the nulls
             ->orderByDesc('rating')

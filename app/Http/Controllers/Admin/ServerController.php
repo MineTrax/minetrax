@@ -49,7 +49,7 @@ class ServerController extends Controller
                 'order',
                 'country_id',
                 'last_scanned_at',
-                'created_at'
+                'created_at',
             ])
             ->with('country')
             ->allowedFilters([
@@ -66,7 +66,7 @@ class ServerController extends Controller
                 'country_id',
                 'last_scanned_at',
                 'created_at',
-                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'minecraft_version']))
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'minecraft_version'])),
             ])
             ->allowedSorts(['id', 'name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'type', 'minecraft_version', 'order', 'country_id', 'last_scanned_at', 'created_at'])
             ->defaultSort('-created_at')
@@ -75,7 +75,7 @@ class ServerController extends Controller
 
         return Inertia::render('Admin/Server/IndexServer', [
             'servers' => $servers,
-            'canCreateBungeeServer' => !$canCreateBungeeServer,
+            'canCreateBungeeServer' => ! $canCreateBungeeServer,
             'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
@@ -85,7 +85,7 @@ class ServerController extends Controller
         $this->authorize('create', Server::class);
 
         return Inertia::render('Admin/Server/CreateServer', [
-            "versionsArray" => ServerVersion::getValues()
+            'versionsArray' => ServerVersion::getValues(),
         ]);
     }
 
@@ -99,7 +99,7 @@ class ServerController extends Controller
         $this->authorize('create', Server::class);
 
         return Inertia::render('Admin/Server/CreateEditBungeeServer', [
-            "versionsArray" => ServerVersion::getValues()
+            'versionsArray' => ServerVersion::getValues(),
         ]);
     }
 
@@ -122,14 +122,14 @@ class ServerController extends Controller
             'is_server_intel_enabled' => $request->is_server_intel_enabled,
             'is_player_intel_enabled' => $request->is_player_intel_enabled,
             'is_ingame_chat_enabled' => $request->is_ingame_chat_enabled,
+            'order' => $request->order,
         ]);
-
 
         return Inertia::render('Admin/Server/AfterCreateSteps', [
             'server' => $server,
             'apiKey' => $pluginSettings->plugin_api_key,
             'apiSecret' => $pluginSettings->plugin_api_secret,
-            'apiHost' => config('app.url')
+            'apiHost' => config('app.url'),
         ])->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('New server added successfully')]]);
     }
 
@@ -211,8 +211,8 @@ class ServerController extends Controller
 
         return Inertia::render('Admin/Server/ShowServerStats', [
             'server' => $server,
-            "aggrMax" => $aggregatedMax,
-            "aggrTotal" => $aggregatedTotals
+            'aggrMax' => $aggregatedMax,
+            'aggrTotal' => $aggregatedTotals,
         ]);
     }
 
@@ -223,28 +223,30 @@ class ServerController extends Controller
         if (ServerType::Bungee()->is($server->type)) {
             return Inertia::render('Admin/Server/CreateEditBungeeServer', [
                 'server' => $server,
-                "versionsArray" => ServerVersion::getValues()
+                'versionsArray' => ServerVersion::getValues(),
             ]);
         }
 
         $serverData = [
             'id' => $server->id,
-            "name" => $server->name,
-            "join_port" => $server->join_port,
-            "query_port" => $server->query_port,
-            "webquery_port" => $server->webquery_port,
-            "minecraft_version" => $server->minecraft_version,
-            "type" => $server->type->value,
-            "hostname" => $server->hostname,
-            "ip_address" => $server->ip_address,
-            "is_server_intel_enabled" => $server->is_server_intel_enabled,
-            "is_player_intel_enabled" => $server->is_player_intel_enabled,
-            "is_ingame_chat_enabled" => $server->is_ingame_chat_enabled,
-            "settings" => $server->settings,
+            'name' => $server->name,
+            'join_port' => $server->join_port,
+            'query_port' => $server->query_port,
+            'webquery_port' => $server->webquery_port,
+            'minecraft_version' => $server->minecraft_version,
+            'type' => $server->type->value,
+            'hostname' => $server->hostname,
+            'ip_address' => $server->ip_address,
+            'is_server_intel_enabled' => $server->is_server_intel_enabled,
+            'is_player_intel_enabled' => $server->is_player_intel_enabled,
+            'is_ingame_chat_enabled' => $server->is_ingame_chat_enabled,
+            'settings' => $server->settings,
+            'order' => $server->order,
         ];
+
         return Inertia::render('Admin/Server/EditServer', [
             'server' => $serverData,
-            "versionsArray" => ServerVersion::getValues()
+            'versionsArray' => ServerVersion::getValues(),
         ]);
     }
 
@@ -276,9 +278,9 @@ class ServerController extends Controller
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:' . $server->id);
-        Cache::forget('server:query:' . $server->id);
-        Cache::forget('server:webquery:' . $server->id);
+        Cache::forget('server:ping:'.$server->id);
+        Cache::forget('server:query:'.$server->id);
+        Cache::forget('server:webquery:'.$server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Bungee server updated successfully')]]);
@@ -304,12 +306,13 @@ class ServerController extends Controller
         $server->is_server_intel_enabled = $request->is_server_intel_enabled;
         $server->is_player_intel_enabled = $request->is_player_intel_enabled;
         $server->is_ingame_chat_enabled = $request->is_ingame_chat_enabled;
+        $server->order = $request->order;
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:' . $server->id);
-        Cache::forget('server:query:' . $server->id);
-        Cache::forget('server:webquery:' . $server->id);
+        Cache::forget('server:ping:'.$server->id);
+        Cache::forget('server:query:'.$server->id);
+        Cache::forget('server:webquery:'.$server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Server updated successfully')]]);
@@ -332,7 +335,7 @@ class ServerController extends Controller
         $request->validate([
             'type' => ['required', 'in:kill,kick,mute,ban,broadcast,custom'],
             'context' => ['required', 'in:player,server'],
-            'params' => ['required', 'string']
+            'params' => ['required', 'string'],
         ]);
 
         $webQuery = new MinecraftWebQuery($server->ip_address, $server->webquery_port);
