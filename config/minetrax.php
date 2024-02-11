@@ -329,5 +329,5 @@ return [
     | Cooldown in seconds to wait before changing skin again. (per user)
     |
     */
-    'player_skin_changer_cooldown_in_seconds' => env('PLAYER_SKIN_CHANGER_COOLDOWN_IN_SECONDS', 30),
+    'player_skin_changer_cooldown_in_seconds' => env('PLAYER_SKIN_CHANGER_COOLDOWN_IN_SECONDS', 60),
 ];
