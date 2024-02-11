@@ -129,4 +129,19 @@ class MinecraftSkinUtils
             return $image->make($data);
         }, 60, true); // Cache lifetime is in minutes
     }
+
+    public static function uploadSkinToMineSkin($file, $skinType): array
+    {
+        $response = Http::attach('file', file_get_contents($file), $file->getClientOriginalName())
+            ->post('https://api.mineskin.org/generate/upload', [
+                'visibility' => 1,
+                'variant' => $skinType === 'alex' ? 'slim' : 'classic',
+            ]);
+
+        if ($response->failed()) {
+            throw new \Exception(\Arr::get($response->json(), 'error') ?? __('Failed to upload skin to MineSkin. Please try again later'));
+        }
+
+        return $response->json();
+    }
 }

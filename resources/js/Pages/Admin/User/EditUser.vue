@@ -385,7 +385,7 @@
                       class="col-span-6 sm:col-span-3"
                     >
                       <label
-                        for="badges"
+                        for="country"
                         class="block text-sm font-medium text-gray-700 dark:text-gray-400"
                       >{{ __("Country") }}</label>
                       <multiselect

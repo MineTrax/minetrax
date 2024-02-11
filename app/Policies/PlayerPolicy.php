@@ -48,4 +48,13 @@ class PlayerPolicy
 
         return false;
     }
+
+    public function changeSkin(User $user, Player $player)
+    {
+        if ($user->can('change any_player_skin')) {
+            return true;
+        }
+
+        return $user->players()->where('players.id', $player->id)->exists();
+    }
 }

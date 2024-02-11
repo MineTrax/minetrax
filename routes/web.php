@@ -111,8 +111,8 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     Route::get('user/linked-players', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('linked-player.list')->withoutMiddleware(['verified-if-enabled']);
 
     // Skin Changer
-    Route::get('user/player-skin-changer', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('skin-changer.show');
-    Route::post('user/player-skin-changer', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('skin-changer.update');
+    Route::get('user/change-player-skin', [\App\Http\Controllers\PlayerSkinController::class, 'showChangeSkin'])->name('change-player-skin.show');
+    Route::post('user/change-player-skin', [\App\Http\Controllers\PlayerSkinController::class, 'postChangeSkin'])->name('change-player-skin.update');
 
     // Server Chatlog
     Route::get('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'index'])->name('chatlog.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);

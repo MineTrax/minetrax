@@ -89,6 +89,7 @@ class HandleInertiaRequests extends Middleware
             'poweredByExtraLink' => config("minetrax.powered_by_extra_link"),
             "showHomeButton" => config("minetrax.show_home_button"),
             "showCookieConsent" => config("minetrax.cookie_consent_enabled") && !$request->cookie("laravel_cookie_consent"),
+            "playerSkinChangerEnabled" => config("minetrax.player_skin_changer_enabled"),
         ]);
     }
 }

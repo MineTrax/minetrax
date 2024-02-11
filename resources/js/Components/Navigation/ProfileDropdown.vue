@@ -86,6 +86,13 @@
           {{ __("Linked Players") }}
         </jet-dropdown-link>
 
+        <jet-dropdown-link
+          v-if="$page.props.playerSkinChangerEnabled"
+          :href="route('change-player-skin.show')"
+        >
+          {{ __("Change Player Skin") }}
+        </jet-dropdown-link>
+
         <div class="border-t border-gray-100 dark:border-cool-gray-700" />
 
         <!-- Authentication -->

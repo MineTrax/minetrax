@@ -171,9 +171,12 @@
 
             <div class="flex justify-end space-x-4">
               <inertia-link
+                v-if="$page.props.playerSkinChangerEnabled"
                 v-tippy
                 as="a"
-                :href="route('skin-changer.show')"
+                :href="route('change-player-skin.show', {
+                  player_uuid: player.uuid,
+                })"
                 class="mt-5 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-400 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 disabled:opacity-50"
                 :title="__('Change Skin of this player.')"
               >
