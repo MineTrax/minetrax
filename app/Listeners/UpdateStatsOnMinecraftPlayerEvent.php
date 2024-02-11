@@ -39,7 +39,7 @@ class UpdateStatsOnMinecraftPlayerEvent implements ShouldQueue
             return;
         }
 
-        DB::transaction(function () use ($minecraftPlayerEvent, $sessionEndedAt, $serverId, $banCountIncrement, $kickCountIncrement) {
+        DB::transaction(function () use ($minecraftPlayerEvent, $sessionEndedAt, $serverId, $banCountIncrement, $kickCountIncrement, $rawRequest) {
             // Update minecraft_player.
             MinecraftPlayer::where('player_uuid', $minecraftPlayerEvent->player_uuid)->where('server_id', '=', $serverId)
                 ->incrementEach([
@@ -76,6 +76,8 @@ class UpdateStatsOnMinecraftPlayerEvent implements ShouldQueue
                     'vault_balance' => $minecraftPlayerEvent->vault_balance,
                     'vault_groups' => $minecraftPlayerEvent->vault_groups,
                     'last_seen_at' => $sessionEndedAt ?? now(),
+                    'skin_property' => $rawRequest['skin_property'] ?? null,
+                    'skin_texture_id' => $rawRequest['skin_texture_id'] ?? null,
                 ]);
 
             // Update player
@@ -110,6 +112,8 @@ class UpdateStatsOnMinecraftPlayerEvent implements ShouldQueue
                     'ip_address' => $minecraftPlayerEvent->ip_address,
                     'username' => $minecraftPlayerEvent->player_username,
                     'last_seen_at' => $sessionEndedAt ?? now(),
+                    'skin_property' => $rawRequest['skin_property'] ?? null,
+                    'skin_texture_id' => $rawRequest['skin_texture_id'] ?? null,
                 ]);
         }, 5);
     }

@@ -10,6 +10,11 @@ defineProps({
         type: Boolean,
         required: true,
     },
+    canChangePlayerSkin: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 });
 
 </script>
@@ -34,6 +39,22 @@ defineProps({
     </div>
 
     <div class="flex space-x-4">
+      <li v-if="canChangePlayerSkin">
+        <Link
+          :href="
+            route('change-player-skin.show', {
+              player_uuid: player.uuid,
+            })
+          "
+          :class="{
+            'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900':
+              route().current('player.intel.session.index'),
+          }"
+          class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
+        >
+          {{ __("Change Skin") }}
+        </Link>
+      </li>
       <li v-if="canShowPlayerIntel">
         <Link
           :href="

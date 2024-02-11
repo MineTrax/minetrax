@@ -260,6 +260,7 @@
                   route('player.render.get', {
                     uuid: player.uuid,
                     username: player.username,
+                    textureid: player.skin_texture_id,
                     scale: 4,
                   })
                 "

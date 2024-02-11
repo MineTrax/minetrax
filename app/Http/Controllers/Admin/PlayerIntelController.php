@@ -65,7 +65,7 @@ class PlayerIntelController extends Controller
                 AllowedFilter::custom('q', new FilterMultipleFields(['player_uuid', 'player_username'])),
             ])
             ->groupBy(['player_id'])
-            ->with(['player:id,uuid,username', 'country:id,iso_code,flag,name'])
+            ->with(['player:id,uuid,username,skin_texture_id', 'country:id,iso_code,flag,name'])
             ->allowedSorts([
                 'id',
                 'player_username',

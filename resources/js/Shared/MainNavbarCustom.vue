@@ -196,6 +196,14 @@ export default {
           </jet-responsive-nav-link>
 
           <jet-responsive-nav-link
+            v-if="$page.props.playerSkinChangerEnabled"
+            :href="route('change-player-skin.show')"
+            :active="route().current('change-player-skin.show')"
+          >
+            {{ __("Change Player Skin") }}
+          </jet-responsive-nav-link>
+
+          <jet-responsive-nav-link
             :href="route('notification.index')"
             :active="route().current('notification.index')"
           >

@@ -52,16 +52,16 @@
         class="mt-3 text-gray-500 flex flex-wrap justify-center"
       >
         <div
-          v-for="(uuid, username) of playersList"
-          :key="uuid"
+          v-for="pl of playersList"
+          :key="pl.uuid"
           class="flex-shrink-0 mr-1 mb-1"
           :class="sizeClass"
         >
           <img
             v-tippy
-            :title="username"
-            :src="route('player.avatar.get', { uuid, username, size: 50 })"
-            :alt="username"
+            :title="pl.username"
+            :src="route('player.avatar.get', { uuid: pl.uuid, username: pl.username, textureid: pl.skin_texture_id, size: 50 })"
+            :alt="pl.username"
             class="focus:outline-none"
             :class="sizeClass"
           >
@@ -69,7 +69,7 @@
       </div>
 
       <div
-        v-if="!error && (!playersList || playersList.length <= 0)"
+        v-if="!error && !loading && (!playersList || playersList.length <= 0)"
         class="italic p-1 rounded text-center text-gray-400"
       >
         {{ __("No players online.") }}
@@ -91,7 +91,7 @@ const props = defineProps({
 });
 
 let serverInfo = ref({});
-let playersList = ref({});
+let playersList = ref([]);
 let loading = ref(true);
 let error = ref(null);
 let sizeClass = ref('w-5 h-5');
@@ -115,18 +115,20 @@ function getServerQuery() {
 function tryFetchUsingQuery(serverToQuery) {
     axios.get(route('server.query.get', serverToQuery.id)).then(data => {
         serverInfo.value = data.data.server_info;
-        playersList.value = data.data.players_list;
-
-        for (let pl in playersList.value) {
-            if (!playersList.value[pl]) {
-                playersList.value[pl] = '00000000-0000-0000-0000-000000000000';
-            }
+        playersList.value = [];
+        for (let pl in data.data.players_list) {
+            const player = {
+                username: pl,
+                uuid: data.data.players_list[pl] || '00000000-0000-0000-0000-000000000000',
+                skin_texture_id: null
+            };
+            playersList.value.push(player);
         }
 
         error.value = null;
 
         // Change avatar size according to number of people
-        if (Object.keys(playersList.value).length <= 5) {
+        if (playersList.value.length <= 5) {
             sizeClass.value = 'w-8 h-8';
         }
     }).catch(err => {
@@ -142,23 +144,26 @@ function tryFetchUsingWebQuery(serverToQuery) {
     axios.get(route('server.webquery.get', serverToQuery.id)).then(data => {
 
         if(data.data.length > 0) {
-            playersList.value = data.data.reduce((acc, cur) => {
-                acc[cur.username] = cur.id;
-                return acc;
-            }, {});
+            playersList.value = data.data.map(player => {
+                return {
+                    uuid: player.id,
+                    username: player.username,
+                    skin_texture_id: player.skin_texture_id
+                };
+            });
         }
         else {
             playersList.value = [];
         }
 
         serverInfo.value = {
-            Players: Object.keys(playersList.value).length,
+            Players: playersList.value.length,
         };
 
         error.value = null;
 
         // Change avatar size according to number of people
-        if (Object.keys(playersList.value).length <= 5) {
+        if (playersList.value.length <= 5) {
             sizeClass.value = 'w-8 h-8';
         }
     }).catch(err => {

@@ -230,6 +230,14 @@ return [
             'key' => 'route-custom-forms',
             'authenticated' => false,
         ],
+        [
+            'type' => 'route',
+            'name' => 'Change Player Skin',
+            'title' => 'Change Player Skin',
+            'route' => 'change-player-skin.show',
+            'key' => 'route-change-player-skin',
+            'authenticated' => true,
+        ],
     ],
 
     /*
@@ -300,4 +308,26 @@ return [
     |
     */
     'max_post_feed_media_size_kb' => env('MAX_POST_FEED_MEDIA_SIZE_KB', 1024),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Skin Changer Feature.
+    |--------------------------------------------------------------------------
+    |
+    | This feature allows users to change their skins of linked players.
+    | Will work for those servers which have 'Enable Skin Changed` toggled on.
+    | This feature will only work if SkinsRestorer plugin is installed on server.
+    |
+    */
+    'player_skin_changer_enabled' => env('PLAYER_SKIN_CHANGER_ENABLED', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cooldown in seconds for skin change.
+    |--------------------------------------------------------------------------
+    |
+    | Cooldown in seconds to wait before changing skin again. (per user)
+    |
+    */
+    'player_skin_changer_cooldown_in_seconds' => env('PLAYER_SKIN_CHANGER_COOLDOWN_IN_SECONDS', 30),
 ];

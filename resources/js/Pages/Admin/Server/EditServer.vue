@@ -22,7 +22,7 @@
               <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
                   <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-3">
+                    <div class="col-span-6 sm:col-span-2">
                       <x-input
                         id="name"
                         v-model="form.name"
@@ -35,7 +35,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-3">
+                    <div class="col-span-6 sm:col-span-2">
                       <x-input
                         id="hostname"
                         v-model="form.hostname"
@@ -44,6 +44,20 @@
                         :help="__('Publicly visible join address of the server. Eg: play.example.com')"
                         type="text"
                         name="hostname"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+
+                    <div class="col-span-6 sm:col-span-2">
+                      <x-input
+                        id="order"
+                        v-model="form.order"
+                        :label="__('Weight')"
+                        :error="form.errors.order"
+                        :help="__('Higher the weight, higher the priority. Eg: 1,3,10 etc. Can be left empty.')"
+                        type="number"
+                        name="order"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -157,6 +171,16 @@
                         name="is_ingame_chat_enabled"
                       />
                     </div>
+
+                    <div class="flex items-center col-span-6 sm:col-span-6">
+                      <x-checkbox
+                        id="is_skin_change_via_web_allowed"
+                        v-model="form.settings.is_skin_change_via_web_allowed"
+                        :label="__('Enable Skin Change via Web (SkinsRestorer)')"
+                        :help="__('Allow user to change their linked players skin via web for this server. This will require SkinsRestorer plugin to be installed on the server.')"
+                        name="is_skin_change_via_web_allowed"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
@@ -214,7 +238,10 @@ export default {
                 is_server_intel_enabled: this.server.is_server_intel_enabled,
                 is_player_intel_enabled: this.server.is_player_intel_enabled,
                 is_ingame_chat_enabled: this.server.is_ingame_chat_enabled,
-                settings: this.server.settings,
+                settings: {
+                    is_skin_change_via_web_allowed: this.server.settings?.is_skin_change_via_web_allowed,
+                },
+                order: this.server.order,
             }),
             typeArray: {
                 0: 'Paper',

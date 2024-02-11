@@ -6,6 +6,7 @@
       <PlayerSubMenu
         :player="player"
         :can-show-player-intel="canShowPlayerIntel"
+        :can-change-player-skin="canChangePlayerSkin"
       />
 
       <div
@@ -786,6 +787,7 @@ export default {
     props: {
         player: Object,
         canShowPlayerIntel: Boolean,
+        canChangePlayerSkin: Boolean,
     },
     setup() {
         const {secondsToHMS, formatTimeAgoToNow, formatToDayDateString} = useHelpers();
@@ -802,7 +804,7 @@ export default {
             canvas: document.getElementById('skin_container'),
             width: 300,
             height: 500,
-            skin: route('player.skin.get', {uuid: this.player.uuid, username: this.player.username}),
+            skin: route('player.skin.get', {uuid: this.player.uuid, username: this.player.username, textureid: this.player.skin_texture_id}),
         });
         let control = skinview3d.createOrbitControls(this.skinViewer);
         control.enableRotate = true;

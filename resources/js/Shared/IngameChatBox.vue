@@ -127,7 +127,7 @@
                 <div class="flex space-x-1 truncate">
                   <img
                     class="h-5"
-                    :src="route('player.avatar.get',{uuid: player.id, username: player.username, size:50})"
+                    :src="route('player.avatar.get',{uuid: player.id, username: player.username, textureid: player.skin_texture_id, size:50})"
                     alt="Player Avatar"
                   >
                   <inertia-link
@@ -237,7 +237,7 @@
           <span class="text-gray-800 underline">{{ __("Manage Player") }}</span>
           <img
             class="h-24 rounded"
-            :src="route('player.avatar.get',{uuid: actionModelCurrentPlayer.id, username: actionModelCurrentPlayer.username})"
+            :src="route('player.avatar.get',{uuid: actionModelCurrentPlayer.id, username: actionModelCurrentPlayer.username, textureid: actionModelCurrentPlayer.skin_texture_id})"
             alt="Player Avatar"
           >
           <span class="text-light-blue-600">{{ actionModelCurrentPlayer.username }}</span>

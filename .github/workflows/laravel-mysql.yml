@@ -34,16 +34,11 @@ jobs:
         run: |
           composer install --no-scripts
 
-      - name: Install npm dependencis
-        run: |
-          npm ci
-
       - name: Prepare Laravel Application
         run: |
           cp .env.example .env
           php artisan key:generate
           php artisan migrate -v
-          npm run prod
         env:
           DB_HOST: mysql
           REDIS_HOST: redis

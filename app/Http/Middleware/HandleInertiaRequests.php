@@ -62,7 +62,7 @@ class HandleInertiaRequests extends Middleware
                 $shouldUseWebQuery = false;
                 $defaultQueryServer = Server::where('type', ServerType::Bungee)->select(['hostname', 'id'])->latest()->first();
                 if (!$defaultQueryServer) {
-                    $defaultQueryServer = Server::select(['id', 'hostname', 'webquery_port'])->orderBy('id')->first();
+                    $defaultQueryServer = Server::select(['id', 'hostname', 'webquery_port'])->orderByDesc('order')->orderBy('id')->first();
                     $shouldUseWebQuery = $defaultQueryServer?->webquery_port != null;
                 }
                 return [
@@ -89,6 +89,7 @@ class HandleInertiaRequests extends Middleware
             'poweredByExtraLink' => config("minetrax.powered_by_extra_link"),
             "showHomeButton" => config("minetrax.show_home_button"),
             "showCookieConsent" => config("minetrax.cookie_consent_enabled") && !$request->cookie("laravel_cookie_consent"),
+            "playerSkinChangerEnabled" => config("minetrax.player_skin_changer_enabled"),
         ]);
     }
 }

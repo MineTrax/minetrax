@@ -56,6 +56,7 @@ class MinecraftPlayerSession extends BaseModel
 
     public function getAvatarUrlAttribute(): string
     {
+        // TODO: how can we add skin_texture_id here? Its not used anywhere yet though.
         return route('player.avatar.get', [$this->player_uuid, $this->player_username, 'size' => 100]);
     }
 }

@@ -45,6 +45,6 @@ class MinecraftPlayer extends BaseModel
 
     public function getAvatarUrlAttribute(): string
     {
-        return route('player.avatar.get', [$this->player_uuid, $this->player_username, 'size' => 100]);
+        return route('player.avatar.get', [$this->player_uuid, $this->player_username, $this->skin_texture_id, 'size' => 100]);
     }
 }

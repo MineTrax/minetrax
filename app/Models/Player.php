@@ -64,7 +64,7 @@ class Player extends BaseModel implements Searchable
     {
         // Someone username can be null
         $username = $this->username ?? $this->uuid;
-        return route('player.avatar.get', [$this->uuid, $username, 'size' => 100]);
+        return route('player.avatar.get', [$this->uuid, $username, $this->skin_texture_id, 'size' => 100]);
     }
 
     public function getIsActiveAttribute(): bool

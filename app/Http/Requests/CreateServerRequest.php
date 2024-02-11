@@ -50,6 +50,7 @@ class CreateServerRequest extends FormRequest
             'is_server_intel_enabled' => 'required|boolean',
             'is_player_intel_enabled' => 'required|boolean',
             'is_ingame_chat_enabled' => 'required|boolean',
+            'order' => 'required|numeric',
         ];
     }
 

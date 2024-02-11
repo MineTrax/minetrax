@@ -51,7 +51,7 @@ class AccountLinkController extends Controller
         }
 
         // Run command to give this player the reward according to Plugin setting if enabled
-        AccountLinkAfterSuccessCommandJob::dispatch($player, $server);
+        AccountLinkAfterSuccessCommandJob::dispatch($player, $user->id, $server);
 
         return redirect()->route('home')
             ->with(['toast' => ['type' => 'success', 'title' => __('Played linked successfully!'), 'body' => __('This player is now linked to your account.'), 'milliseconds' => 10000]]);

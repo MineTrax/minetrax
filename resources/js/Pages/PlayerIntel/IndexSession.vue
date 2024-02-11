@@ -136,7 +136,7 @@ const headerRow = [
                 <div class="flex-shrink-0 h-10 w-10">
                   <img
                     class="h-10 w-10"
-                    :src="item.avatar_url"
+                    :src="player?.avatar_url"
                     alt=""
                   >
                 </div>

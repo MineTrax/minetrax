@@ -167,7 +167,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
                         }
                         $player = $this->players()->first();
 
-                        return route('player.avatar.get', [$player->uuid, $player->username, 'size' => 150]);
+                        return route('player.avatar.get', [$player->uuid, $player->username, $player->skin_texture_id, 'size' => 150]);
                     default:
                         break;
                 }

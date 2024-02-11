@@ -6,21 +6,19 @@ use App\Models\MinecraftPlayer;
 use App\Models\Player;
 use App\Models\Rank;
 use App\Models\Server;
-use App\Services\MinecraftApiService;
 use App\Settings\PlayerSettings;
+use App\Utils\Helpers\MinecraftSkinUtils;
 use DB;
 use Exception;
 use Gate;
-use Http;
 use Illuminate\Http\Request;
-use Image;
 use Inertia\Inertia;
 
 class PlayerController extends Controller
 {
     public function index(Request $request, PlayerSettings $playerSettings): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        $players = Player::select(['id', 'username', 'rating', 'position', 'total_score', 'uuid', 'play_time', 'last_seen_at', 'first_seen_at', 'rank_id', 'country_id'])
+        $players = Player::select(['id', 'username', 'rating', 'position', 'total_score', 'uuid', 'play_time', 'last_seen_at', 'first_seen_at', 'rank_id', 'country_id', 'skin_texture_id'])
             ->with(['country:id,iso_code,flag,name', 'rank:id,shortname,name'])
             ->orderBy(DB::raw('-`position`'), 'desc') // this sort with position but excludes the nulls
             ->orderByDesc('rating')
@@ -45,7 +43,7 @@ class PlayerController extends Controller
         ]);
     }
 
-    public function show($player)
+    public function show($player, Request $request)
     {
         $player = Player::where('uuid', $player)->orWhere('username', $player)
             ->with(['rank:id,shortname,name', 'country:id,name,iso_code,flag'])->firstOrFail();
@@ -74,6 +72,10 @@ class PlayerController extends Controller
 
         // Can show player intel
         $canShowPlayerIntel = Gate::allows('viewIntel', $player);
+
+        // Can change player skin
+        $canPlayerChangeSkin = $request->user() && Gate::allows('changeSkin', $player);
+        $playerSkinChangerEnabled = config('minetrax.player_skin_changer_enabled');
 
         // filter out stuffs that are not used
         $player = $player->only([
@@ -111,134 +113,99 @@ class PlayerController extends Controller
             'favorite_server',
             'next_rank',
             'servers_count',
+            'skin_texture_id',
         ]);
 
         return Inertia::render('Player/ShowPlayer', [
             'player' => $player,
             'canShowPlayerIntel' => $canShowPlayerIntel,
+            'canChangePlayerSkin' => $playerSkinChangerEnabled && $canPlayerChangeSkin,
         ]);
     }
 
-    public function getAvatarImage(Request $request, $uuid, $username = null)
+    public function getAvatarImage(Request $request, $uuid, $username = null, $textureid = null)
     {
         $useUsernameForSkins = config('minetrax.use_username_for_skins');
-        $fetchAvatarFromUrlUsingCurl = config('minetrax.fetch_avatar_from_url_using_curl');
         $param = $useUsernameForSkins ? $username : $uuid;
         $size = $request->size ?? 100;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
         if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
-            $img = Image::make(public_path('images/alex.png'))->resize($size, $size);
+            $img = MinecraftSkinUtils::getDefaultSkinImage('avatar', $size);
 
             return $img->response('jpg');
         }
 
         try {
-            $img = Image::cache(function ($image) use ($param, $size, $fetchAvatarFromUrlUsingCurl) {
-                // try getting from third party service
-                $url = "https://minotar.net/avatar/$param";
-                if ($size) {
-                    $url = "https://minotar.net/avatar/{$param}/{$size}";
-                }
-                $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
-
-                return $image->make($data);
-            }, 60, true); // Cache lifetime is in minutes
-        } catch (Exception $exception) {
+            $mcHeadIdentifier = $textureid ?? $param;
+            $img = MinecraftSkinUtils::getSkinImageFromMcHeads('avatar', $mcHeadIdentifier, $size);
+        } catch (Exception $e) {
             try {
-                $img = Image::cache(function ($image) use ($param, $size, $useUsernameForSkins, $fetchAvatarFromUrlUsingCurl) {
-                    // try getting from third party service
-                    if ($useUsernameForSkins) {
-                        $uuid = MinecraftApiService::playerUsernameToUuid($param);
-                    } else {
-                        $uuid = $param;
-                    }
-                    $url = 'https://crafatar.com/avatars/'.$uuid.'?size='.$size;
-                    $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
-
-                    return $image->make($data);
-                }, 60, true); // Cache lifetime is in minutes
+                $img = MinecraftSkinUtils::getSkinImageFromMinotar('avatar', $param, $size);
             } catch (Exception $exception) {
-                $img = Image::make(public_path('images/alex.png'))->resize($size, $size);
+                try {
+                    $img = MinecraftSkinUtils::getSkinImageFromCrafatar('avatar', $param, $size);
+                } catch (Exception $exception) {
+                    $img = MinecraftSkinUtils::getDefaultSkinImage('avatar', $size);
+                }
             }
         }
 
         return $img->response('jpg');
     }
 
-    public function getSkinImage(Request $request, $uuid, $username = null)
+    public function getSkinImage(Request $request, $uuid, $username = null, $textureid = null)
     {
         $useUsernameForSkins = config('minetrax.use_username_for_skins');
-        $fetchAvatarFromUrlUsingCurl = config('minetrax.fetch_avatar_from_url_using_curl');
         $param = $useUsernameForSkins ? $username : $uuid;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
         if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
-            $img = Image::make(public_path('images/alex_skin.png'));
+            $img = MinecraftSkinUtils::getDefaultSkinImage('skin');
 
             return $img->response('jpg');
         }
 
         try {
-            $img = Image::cache(function ($image) use ($param, $fetchAvatarFromUrlUsingCurl) {
-                // try getting from third party service
-                $url = "https://minotar.net/skin/$param";
-                $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
-
-                return $image->make($data);
-            }, 60, true); // Cache lifetime is in minutes
-        } catch (Exception $exception) {
+            $mcHeadIdentifier = $textureid ?? $param;
+            $img = MinecraftSkinUtils::getSkinImageFromMcHeads('skin', $mcHeadIdentifier);
+        } catch (Exception $e) {
             try {
-                $img = Image::cache(function ($image) use ($param, $useUsernameForSkins, $fetchAvatarFromUrlUsingCurl) {
-                    // try getting from third party service
-                    if ($useUsernameForSkins) {
-                        $uuid = MinecraftApiService::playerUsernameToUuid($param);
-                    } else {
-                        $uuid = $param;
-                    }
-                    $url = 'https://crafatar.com/skins/'.$uuid;
-                    $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
-
-                    return $image->make($data);
-                }, 60, true); // Cache lifetime is in minutes
+                $img = MinecraftSkinUtils::getSkinImageFromMinotar('skin', $param);
             } catch (Exception $exception) {
-                $img = Image::make(public_path('images/alex_skin.png'));
+                try {
+                    $img = MinecraftSkinUtils::getSkinImageFromCrafatar('skin', $param);
+                } catch (Exception $exception) {
+                    $img = MinecraftSkinUtils::getDefaultSkinImage('skin');
+                }
             }
         }
 
         return $img->response('png');
     }
 
-    public function getRenderImage(Request $request, $uuid, $username = null)
+    public function getRenderImage(Request $request, $uuid, $username = null, $textureid = null)
     {
         $useUsernameForSkins = config('minetrax.use_username_for_skins');
-        $fetchAvatarFromUrlUsingCurl = config('minetrax.fetch_avatar_from_url_using_curl');
         $param = $useUsernameForSkins ? $username : $uuid;
         $scale = $request->scale;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
         if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
-            $img = Image::make(public_path('images/alex_render.png'));
+            $img = MinecraftSkinUtils::getDefaultSkinImage('render');
 
             return $img->response('jpg');
         }
 
         try {
-            $img = Image::cache(function ($image) use ($param, $scale, $useUsernameForSkins, $fetchAvatarFromUrlUsingCurl) {
-                // try getting from third party service
-                if ($useUsernameForSkins) {
-                    $uuid = MinecraftApiService::playerUsernameToUuid($param);
-                } else {
-                    $uuid = $param;
-                }
-
-                $url = 'https://crafatar.com/renders/body/'.$uuid.'?scale='.$scale;
-                $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
-
-                return $image->make($data);
-            }, 60, true); // Cache lifetime is in minutes
-        } catch (Exception $exception) {
-            $img = Image::make(public_path('images/alex_render.png'));
+            $mcHeadIdentifier = $textureid ?? $param;
+            $img = MinecraftSkinUtils::getSkinImageFromMcHeads('render', $mcHeadIdentifier, $scale);
+        } catch (Exception $e) {
+            try {
+                $img = MinecraftSkinUtils::getSkinImageFromCrafatar('render', $param, $scale);
+            } catch (Exception $exception) {
+                $img = MinecraftSkinUtils::getDefaultSkinImage('render');
+            }
         }
 
         return $img->response('png');

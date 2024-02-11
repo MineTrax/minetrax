@@ -9,7 +9,7 @@ class UserController extends Controller
 {
     public function showProfile(User $user): \Inertia\Response
     {
-        $user->loadCount('posts')->load(['country', 'players:id,uuid,username,position,rating,last_seen_at,rank_id,country_id'])
+        $user->loadCount('posts')->load(['country', 'players:id,uuid,username,skin_texture_id,position,rating,last_seen_at,rank_id,country_id'])
             ->makeHidden(['email', 'dob', 'gender', 'updated_at', 'provider_id', 'provider_name', 'two_factor_confirmed_at', 'settings']);
 
         return Inertia::render('User/ShowUser', [
