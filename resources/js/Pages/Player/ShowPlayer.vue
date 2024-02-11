@@ -6,6 +6,7 @@
       <PlayerSubMenu
         :player="player"
         :can-show-player-intel="canShowPlayerIntel"
+        :can-change-player-skin="canChangePlayerSkin"
       />
 
       <div
@@ -786,6 +787,7 @@ export default {
     props: {
         player: Object,
         canShowPlayerIntel: Boolean,
+        canChangePlayerSkin: Boolean,
     },
     setup() {
         const {secondsToHMS, formatTimeAgoToNow, formatToDayDateString} = useHelpers();

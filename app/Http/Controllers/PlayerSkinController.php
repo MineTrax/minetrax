@@ -23,6 +23,7 @@ class PlayerSkinController extends Controller
         }
 
         $linkedPlayers = $request->user()->players()->select('uuid', 'players.id', 'username')->get();
+        $selectedPlayerUuid = $request->query('player_uuid');
 
         // has servers which supports skin change feature.
         $hasServersWithFeature = Server::where('type', '!=', ServerType::Bungee)
@@ -31,14 +32,20 @@ class PlayerSkinController extends Controller
             });
 
         // Cooldown Check.
-        $isUserStaff = $request->user()->isStaffMember();
+        $isUserStaff = $request->user()->isStaffMember() || $request->user()->can('change any_player_skin');
         $cooldown = Cache::get('player_skin_changer_cooldown::user::'.$request->user()->id);
         if ($cooldown) {
             $cooldown = now()->diffInSeconds($cooldown->addSeconds(config('minetrax.player_skin_changer_cooldown_in_seconds')), false);
         }
 
+        // Special. Let Admin to change any player's skin.
+        $playerInLinked = $linkedPlayers->firstWhere('uuid', $selectedPlayerUuid);
+        if (! $playerInLinked && $selectedPlayerUuid && $request->user()->can('change any_player_skin')) {
+            $linkedPlayers = Player::select('uuid', 'id', 'username')->get();
+        }
+
         return Inertia::render('Player/ChangeSkin', [
-            'uuid' => $request->query('player_uuid'),
+            'uuid' => $selectedPlayerUuid,
             'players' => $linkedPlayers,
             'hasServersWithFeature' => $hasServersWithFeature,
             'cooldown' => $isUserStaff ? null : $cooldown,
@@ -69,7 +76,7 @@ class PlayerSkinController extends Controller
 
         // Cooldown Handling.
         $cooldown = Cache::get('player_skin_changer_cooldown::user::'.$request->user()->id);
-        $isUserStaff = $request->user()->isStaffMember();
+        $isUserStaff = $request->user()->isStaffMember() || $request->user()->can('change any_player_skin');
         if ($cooldown && ! $isUserStaff) {
             return redirect()->back()
                 ->with(['toast' => ['type' => 'danger', 'title' => __('Cooldown!'), 'body' => __('You can change skin once every :seconds seconds.', ['seconds' => $cooldownInSeconds]), 'milliseconds' => 10000]]);
