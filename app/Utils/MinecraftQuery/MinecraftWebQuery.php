@@ -48,6 +48,14 @@ class MinecraftWebQuery
         return $status;
     }
 
+    public function notifyAccountLinkSuccess($playerUuid, $userId)
+    {
+        $param = $playerUuid.'½½½½'.$userId;
+        $status = $this->sendQuery('account-link-success', $param);
+
+        return $status;
+    }
+
     public function sendBroadcast($message)
     {
         $status = $this->sendQuery('broadcast', $message);

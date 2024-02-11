@@ -7,7 +7,6 @@ use App\Models\Server;
 use App\Settings\PluginSettings;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -19,11 +18,8 @@ class AccountLinkAfterSuccessCommandJob implements ShouldQueue
 
     /**
      * Create a new job instance.
-     *
-     * @param Player $player
-     * @param Server $server
      */
-    public function __construct(private Player $player, private Server $server)
+    public function __construct(private Player $player, private $userId, private Server $server)
     {
         //
     }
@@ -38,6 +34,14 @@ class AccountLinkAfterSuccessCommandJob implements ShouldQueue
         $pluginSettings = app(PluginSettings::class);
         $webQuery = new MinecraftWebQuery($this->server->ip_address, $this->server->webquery_port);
 
+        // Notify server about account link success
+        try {
+            $webQuery->notifyAccountLinkSuccess($this->player->uuid, $this->userId);
+        } catch (\Exception $e) {
+            // If command fails then we need to notify user about it.
+            \Log::warning('AccountLinkAfterSuccessCommandJob:Notify: '.$e->getMessage());
+        }
+
         // Send Broadcast
         if ($pluginSettings->account_link_after_success_broadcast_message) {
             $rewardMessageString = \Str::replace('{PLAYER}', $this->player->username, $pluginSettings->account_link_after_success_broadcast_message);
@@ -45,7 +49,7 @@ class AccountLinkAfterSuccessCommandJob implements ShouldQueue
         }
 
         // If there is no command to send then return
-        if (!$pluginSettings->account_link_after_success_command) {
+        if (! $pluginSettings->account_link_after_success_command) {
             return;
         }
 
