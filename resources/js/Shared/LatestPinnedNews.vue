@@ -6,7 +6,7 @@
     <div
       v-for="news in newslist"
       :key="news.id"
-      class="bg-white dark:bg-cool-gray-800 rounded shadow flex justify-between"
+      class="flex justify-between bg-white rounded shadow dark:bg-cool-gray-800"
     >
       <div class="p-3 sm:px-5">
         <div class="text-xl">
@@ -18,22 +18,30 @@
               name="paper-clip"
             />
             <span
-              class="font-semibold uppercase text-sm tracking-wider"
+              class="text-sm font-semibold tracking-wider uppercase"
               :class="{ 'text-light-blue-400': news.type.value === 0, 'text-orange-500': news.type.value === 1, 'text-green-500': news.type.value === 2 }"
             >&nbsp;{{ news.type.key }}&nbsp;</span>
             <span
               v-tippy
               :content="formatToDayDateString(news.published_at)"
-              class="focus:outline-none text-sm text-gray-500 dark:text-gray-400 font-light leading-snug"
+              class="text-sm font-light leading-snug text-gray-500 focus:outline-none dark:text-gray-400"
             >{{
               formatTimeAgoToNow(news.published_at)
             }}
             </span>
-            <span class="text-sm text-gray-500 dark:text-gray-400 font-light leading-snug"> - {{ news.time_to_read }} read</span>
+            <span class="text-sm font-light leading-snug text-gray-500 dark:text-gray-400"> - {{ news.time_to_read }} read</span>
           </p>
+
+          <img
+            v-if="news.photo_url"
+            class="object-cover object-center h-auto mt-2 mb-2 rounded md:mb-4"
+            :src="news.photo_url"
+            alt="News Image"
+          >
+
           <inertia-link
             :href="route('news.show', news.slug)"
-            class="hover:text-light-blue-400 dark:text-gray-200 dark:hover:text-light-blue-400 duration-200"
+            class="duration-200 hover:text-light-blue-400 dark:text-gray-200 dark:hover:text-light-blue-400"
           >
             {{ news.title }}
           </inertia-link>
@@ -43,12 +51,6 @@
           v-html="news.body_md"
         />
       </div>
-      <img
-        v-if="news.photo_url"
-        class="h-auto w-2/5 object-cover object-center"
-        :src="news.photo_url"
-        alt="News Image"
-      >
     </div>
   </div>
 </template>
