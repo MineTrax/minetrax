@@ -342,18 +342,6 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-3">
-                      <x-checkbox
-                        id="verified"
-                        v-model="form.verified"
-                        :label="__('Verified User')"
-                        :help="__('Show a blue verified tick after username.')"
-                        name="verified"
-                        :error="form.errors.verified"
-                      />
-                    </div>
-
-
                     <div
                       v-if="can('assign badges')"
                       class="col-span-6 sm:col-span-3"
@@ -401,6 +389,32 @@
                       <jet-input-error
                         :message="form.errors.country_id"
                         class="mt-2"
+                      />
+                    </div>
+
+                    <div
+                      v-if="$page.props.localeSwitcherEnabled"
+                      class="col-span-6 sm:col-span-3"
+                    >
+                      <x-select
+                        id="locale"
+                        v-model="form.locale"
+                        name="locale"
+                        :error="form.errors.locale"
+                        :label="__('Language')"
+                        :placeholder="__('Select Language...')"
+                        :select-list="availableLocales"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-checkbox
+                        id="verified"
+                        v-model="form.verified"
+                        :label="__('Verified User')"
+                        :help="__('Show a blue verified tick after username.')"
+                        name="verified"
+                        :error="form.errors.verified"
                       />
                     </div>
 
@@ -506,10 +520,18 @@ export default {
                 country: this.userData.country,
                 country_id: this.userData.country_id,
                 password: '',
+                locale: this.userData.locale,
             }),
 
             photoPreview: null,
+            availableLocales : {}
         };
+    },
+
+    created() {
+        if (this.$page.props.localeSwitcherEnabled) {
+            this.getAvailableLocales();
+        }
     },
 
     methods: {
@@ -540,6 +562,17 @@ export default {
 
             reader.readAsDataURL(this.$refs.photo.files[0]);
         },
+
+        getAvailableLocales() {
+            axios.get(route('locale.list')).then(response => {
+                const locales = response.data;
+                locales.forEach(locale => {
+                    this.availableLocales[locale.code] = locale.display;
+                });
+            }).catch(error => {
+                console.log(error);
+            });
+        }
     },
 };
 </script>

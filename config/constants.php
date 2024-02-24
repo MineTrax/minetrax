@@ -197,4 +197,20 @@ return [
         'date',
         'datetime-local',
     ],
+
+    'locale_keymap' => [
+        'en' => ['name' => 'English', 'iso_code' => 'us', 'display' => 'English'],
+        'de' => ['name' => 'German', 'iso_code' => 'de', 'display' => 'Deutsch'],
+        'es' => ['name' => 'Spanish', 'iso_code' => 'es', 'display' => 'Español'],
+        'fr' => ['name' => 'French', 'iso_code' => 'fr', 'display' => 'Français'],
+        'hi' => ['name' => 'Hindi', 'iso_code' => 'in', 'display' => 'हिंदी'],
+        'it' => ['name' => 'Italian', 'iso_code' => 'it', 'display' => 'Italiano'],
+        'ja' => ['name' => 'Japanese', 'iso_code' => 'jp', 'display' => '日本語'],
+        'pl' => ['name' => 'Polish', 'iso_code' => 'pl', 'display' => 'Polski'],
+        'ru' => ['name' => 'Russian', 'iso_code' => 'ru', 'display' => 'Русский'],
+        'sk' => ['name' => 'Slovak', 'iso_code' => 'sk', 'display' => 'Slovenčina'],
+        'uk' => ['name' => 'Ukrainian', 'iso_code' => 'ua', 'display' => 'Українська'],
+        'zh-cn' => ['name' => 'Chinese (Simplified)', 'iso_code' => 'cn', 'display' => '简体中文'],
+        'zh-hk' => ['name' => 'Chinese (Hong Kong)', 'iso_code' => 'hk', 'display' => '繁體中文'],
+    ],
 ];

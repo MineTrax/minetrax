@@ -86,6 +86,14 @@ class PhpVarsToJsTransformer extends Component
             'key' => 'component-theme-switcher-01',
             'authenticated' => false,
         ],
+        [
+            'type' => 'component',
+            'name' => 'Language Switcher',
+            'title' => 'Language Switcher',
+            'component' => 'LocaleSelector',
+            'key' => 'component-language-switcher-01',
+            'authenticated' => false,
+        ],
     ];
 
     public function render()

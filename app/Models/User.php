@@ -50,6 +50,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         'user_setup_status',
         'last_login_at',
         'last_login_ip',
+        'locale',
     ];
 
     // For spatie/laravel-permissions https://github.com/spatie/laravel-permission/issues/1540

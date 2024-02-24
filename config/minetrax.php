@@ -133,6 +133,14 @@ return [
             'authenticated' => false,
         ],
         [
+            'type' => 'component',
+            'name' => 'Language Switcher',
+            'title' => 'Language Switcher',
+            'component' => 'LocaleSelector',
+            'key' => 'component-language-switcher',
+            'authenticated' => false,
+        ],
+        [
             'type' => 'route',
             'name' => 'Home',
             'title' => 'Home',

@@ -18,11 +18,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     {
         $maxProfilePhotoSize = config('auth.max_profile_photo_size_kb');
         $maxCoverPhotoSize = config('auth.max_cover_photo_size_kb');
+        $localeList = collect(config('constants.locale_keymap'))->keys()->toArray();
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             // 'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'photo' => ['nullable', 'image', 'max:' . $maxProfilePhotoSize],
-            'cover_image' => ['nullable', 'image', 'max:' . $maxCoverPhotoSize],
+            'photo' => ['nullable', 'image', 'max:'.$maxProfilePhotoSize],
+            'cover_image' => ['nullable', 'image', 'max:'.$maxCoverPhotoSize],
             'dob' => ['nullable', 'date', 'before:today'],
             'gender' => ['nullable', 'in:m,f,o'],
             'about' => ['nullable', 'string', 'max:255'],
@@ -38,6 +39,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'show_gender' => ['boolean'],
             'show_yob' => ['boolean'],
             'profile_photo_source' => ['nullable', 'in:gravatar,linked_player'],
+            'locale' => ['nullable', 'string', 'in:'.implode(',', $localeList)],
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
@@ -81,6 +83,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'about' => $input['about'],
                 'social_links' => $social_links,
                 'settings' => $settings,
+                'locale' => $input['locale'],
             ])->save();
         }
     }
@@ -120,6 +123,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'about' => $input['about'],
             'social_links' => $social_links,
             'settings' => $settings,
+            'locale' => $input['locale'],
         ])->save();
 
         $user->sendEmailVerificationNotification();

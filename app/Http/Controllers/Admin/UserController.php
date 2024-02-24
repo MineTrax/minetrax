@@ -10,14 +10,14 @@ use App\Models\Role;
 use App\Models\User;
 use App\Notifications\UserYouAreBanned;
 use App\Notifications\UserYouAreMuted;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Inertia\Inertia;
-use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\AllowedFilter;
 use App\Queries\Filters\FilterMultipleFields;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
+use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
 {
@@ -26,8 +26,9 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
         $perPage = request()->input('perPage', 10);
-        if ($perPage > 100)
+        if ($perPage > 100) {
             $perPage = 100;
+        }
 
         $users = QueryBuilder::for(User::class)->with('country:id,name,iso_code')
             ->allowedFilters([
@@ -39,7 +40,7 @@ class UserController extends Controller
                 'updated_at',
                 'country_id',
                 'last_login_at',
-                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username']))
+                AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username'])),
             ])
             ->allowedSorts(['id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at'])
             ->defaultSort('id')
@@ -148,6 +149,7 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
+        $localeList = collect(config('constants.locale_keymap'))->keys()->toArray();
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
@@ -172,6 +174,7 @@ class UserController extends Controller
             'badges' => ['sometimes', 'nullable', 'array', 'exists:badges,id'],
             'country_id' => ['required', 'exists:countries,id'],
             'password' => ['sometimes', 'nullable', 'string', Password::min(8)->uncompromised()],
+            'locale' => ['nullable', 'string', 'in:'.implode(',', $localeList)],
         ]);
 
         $social_links = [
@@ -200,11 +203,12 @@ class UserController extends Controller
         $user->settings = $settings;
         $user->about = $request->about ?? null;
         $user->country_id = $request->country_id;
+        $user->locale = $request->locale;
 
         // if verified_at was null and now verified is true then mark it as verified & vice versa
-        if ($request->verified && !$user->verified_at) {
+        if ($request->verified && ! $user->verified_at) {
             $user->verified_at = now();
-        } else if (!$request->verified && $user->verified_at) {
+        } elseif (! $request->verified && $user->verified_at) {
             $user->verified_at = null;
         }
 

@@ -81,6 +81,14 @@
     >
       <LightDarkSelector />
     </div>
+
+    <!--  Locale Selector Component -->
+    <div
+      v-if="item.type === 'component' && item.component === 'LocaleSelector' && $page.props.localeSwitcherEnabled"
+      class="hidden md:flex items-center"
+    >
+      <LocaleSelector />
+    </div>
   </template>
 </template>
 
@@ -94,6 +102,7 @@ import Search from '@/Shared/Search.vue';
 import { usePage } from '@inertiajs/vue3';
 import ProfileDropdown from '@/Components/Navigation/ProfileDropdown.vue';
 import LightDarkSelector from '@/Components/Navigation/LightDarkSelector.vue';
+import LocaleSelector from '@/Components/Navigation/LocaleSelector.vue';
 
 const user = computed(() => usePage().props?.auth?.user);
 

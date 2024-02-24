@@ -112,6 +112,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Available Locales
+    |--------------------------------------------------------------------------
+    |
+    | This array of locales will be used to determine the available locales
+    | for your application. All locales in this array will be made available to
+    | feature like language switcher, etc.
+    |
+    */
+
+    'available_locales' => env('AVAILABLE_LOCALES') ? explode(',', env('AVAILABLE_LOCALES')) : [],
+
+    /*
+    |--------------------------------------------------------------------------
     | Faker Locale
     |--------------------------------------------------------------------------
     |
@@ -212,7 +225,6 @@ return [
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
-
     ],
 
     /*

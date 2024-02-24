@@ -383,6 +383,21 @@
           name="about"
         />
       </div>
+
+      <div
+        v-if="$page.props.localeSwitcherEnabled"
+        class="col-span-6 sm:col-span-3"
+      >
+        <x-select
+          id="locale"
+          v-model="form.locale"
+          name="locale"
+          :error="form.errors.locale"
+          :label="__('Language')"
+          :placeholder="__('Select Language...')"
+          :select-list="availableLocales"
+        />
+      </div>
     </template>
 
     <template #actions>
@@ -430,7 +445,7 @@ export default {
         JetInputError,
         JetLabel,
         JetSecondaryButton,
-        DatePicker
+        DatePicker,
     },
 
     props: ['user'],
@@ -459,11 +474,19 @@ export default {
                 profile_photo_source: this.user.settings ? this.user.settings.profile_photo_source : null,
                 show_gender: this.user.settings ? !!+this.user.settings.show_gender : false,            // coz in old version, data store as string 1,0
                 show_yob: this.user.settings ? !!+this.user.settings.show_yob : false,                  // coz in old version, data store as string 1,0
+                locale: this.user.locale,
             }),
 
             photoPreview: null,
             coverImagePreview: null,
+            availableLocales : {}
         };
+    },
+
+    created() {
+        if (this.$page.props.localeSwitcherEnabled) {
+            this.getAvailableLocales();
+        }
     },
 
     methods: {
@@ -476,9 +499,16 @@ export default {
                 this.form.cover_image = this.$refs.coverImage.files[0];
             }
 
+            const localeChanged = this.form.locale !== this.user.locale;
+
             this.form.post(route('user-profile-information.update'), {
                 errorBag: 'updateProfileInformation',
-                preserveScroll: true
+                preserveScroll: true,
+                onSuccess: () => {
+                    if (localeChanged) {
+                        location.reload();
+                    }
+                }
             });
         },
 
@@ -523,6 +553,17 @@ export default {
                 onSuccess: () => (this.coverImagePreview = null),
             });
         },
+
+        getAvailableLocales() {
+            axios.get(route('locale.list')).then(response => {
+                const locales = response.data;
+                locales.forEach(locale => {
+                    this.availableLocales[locale.code] = locale.display;
+                });
+            }).catch(error => {
+                console.log(error);
+            });
+        }
 
     },
 };

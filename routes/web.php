@@ -67,6 +67,10 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('forms', [\App\Http\Controllers\CustomFormController::class, 'index'])->name('custom-form.index');
     Route::get('forms/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'show'])->name('custom-form.show');
     Route::post('forms/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'submit'])->name('custom-form.submit');
+
+    // Locale
+    Route::get('locale/list', [\App\Http\Controllers\LocaleController::class, 'getAvailableLocales'])->name('locale.list');
+    Route::post('locale/set', [\App\Http\Controllers\LocaleController::class, 'setLocale'])->name('locale.set');
 });
 
 /**

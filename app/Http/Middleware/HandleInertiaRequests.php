@@ -48,6 +48,7 @@ class HandleInertiaRequests extends Middleware
             'authHasPassword' => fn () => $request->user() ? $request->user()->password !== null : false,
             'appName' => config('app.name'),
             'locale' => fn () => app()->getLocale(),
+            'localeIsoCode' => fn () => config('constants.locale_keymap')[app()->getlocale()]['iso_code'],
             'toast' => fn () => $request->session()->get('toast'),
             'popstate' => \Str::uuid(),
             'permissions' => function () use ($request) {
@@ -90,6 +91,7 @@ class HandleInertiaRequests extends Middleware
             "showHomeButton" => config("minetrax.show_home_button"),
             "showCookieConsent" => config("minetrax.cookie_consent_enabled") && !$request->cookie("laravel_cookie_consent"),
             "playerSkinChangerEnabled" => config("minetrax.player_skin_changer_enabled"),
+            'localeSwitcherEnabled' => count(config('app.available_locales')) > 0,
         ]);
     }
 }
