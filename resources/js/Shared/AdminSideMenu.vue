@@ -259,6 +259,14 @@ const navItems = [
                 visible: true
             },
             {
+                label: 'SEO',
+                href: route('admin.setting.seo.show'),
+                active: route().current('admin.setting.seo.show'),
+                children: [],
+                icon: null,
+                visible: true
+            },
+            {
                 label: 'Dangerzone',
                 href: route('admin.setting.danger.show'),
                 active: route().current('admin.setting.danger.show'),

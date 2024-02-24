@@ -114,10 +114,17 @@ class PhpVarsToJsTransformer extends Component
         $navbar = $this->generateCustomNavbarData($navbarSettings);
         $footer = $navbarSettings->enable_custom_footer ? $navbarSettings->custom_footer_data : null;
 
+        $seoSettings = app(\App\Settings\SeoSettings::class);
+        $seo = [
+            'titleHome' => $seoSettings->title_home,
+            'titleSuffix' => $seoSettings->title_suffix,
+        ];
+
         return view('components.php-vars-to-js-transformer', [
             'pusher' => $pusher,
             'customnav' => $navbar,
             'customfooter' => $footer,
+            'seo' => $seo,
         ]);
     }
 

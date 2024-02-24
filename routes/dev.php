@@ -160,3 +160,9 @@ Route::get('test-player-skin', function (Illuminate\Http\Request $request) {
 
     dd($data);
 });
+
+Route::get('override', function () {
+
+    dd(trans());
+    dd(__('Profile Information'));
+});

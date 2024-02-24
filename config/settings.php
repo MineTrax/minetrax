@@ -12,6 +12,7 @@ return [
         \App\Settings\ThemeSettings::class,
         \App\Settings\PlayerSettings::class,
         \App\Settings\NavigationSettings::class,
+        \App\Settings\SeoSettings::class,
     ],
 
     /*

@@ -7,7 +7,27 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#38bdf8">
 
-    <title inertia>{{ config('app.name', 'MineTrax') }}</title>
+    @php
+    // SEO Favicon
+    $faviconPath = app(\App\Settings\SeoSettings::class)->favicon_path;
+    if ($faviconPath) {
+        echo '<link rel="icon" href="' . $faviconPath . '">';
+    }
+
+    // SEO Title
+    $titleHome = app(\App\Settings\SeoSettings::class)->title_home;
+    $titleSuffix = app(\App\Settings\SeoSettings::class)->title_suffix;
+    $title = $titleHome ?? config('app.name', 'MineTrax');
+    if ($titleSuffix) {
+        $title .= ' ' . $titleSuffix;
+    }
+    echo '<title inertia>' . $title . '</title>';
+    @endphp
+
+    {{-- SEO Meta Tags --}}
+    @foreach (app(\App\Settings\SeoSettings::class)->meta as $metaTag)
+    <meta name="{{ $metaTag['name'] }}" content="{{ $metaTag['content'] }}">
+    @endforeach
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap">
@@ -28,8 +48,22 @@
 
     </script>
 
+    {{-- SEO Inject At Head --}}
+    @php
+    $seoInjectAtHead = app(\App\Settings\SeoSettings::class)->inject_at_head;
+    if ($seoInjectAtHead) {
+        echo $seoInjectAtHead;
+    }
+    @endphp
 </head>
 <body class="font-sans antialiased bg-cool-gray-200 dark:bg-cool-gray-900">
+    {{-- SEO Inject at Body Start --}}
+    @php
+    $seoInjectAtBodyStart = app(\App\Settings\SeoSettings::class)->inject_at_body_start;
+    if ($seoInjectAtBodyStart) {
+        echo $seoInjectAtBodyStart;
+    }
+    @endphp
     {{--Show global loading indication till Vue take over--}}
     <div id="site-global-loader" class="flex h-screen justify-center items-center">
         @if (app(\App\Settings\ThemeSettings::class)->loading_gif)
@@ -45,5 +79,13 @@
     @inertia
     <x-translations></x-translations>
     <x-php-vars-to-js-transformer></x-php-vars-to-js-transformer>
+
+    {{-- SEO Inject At Body End --}}
+    @php
+    $seoInjectAtBodyEnd = app(\App\Settings\SeoSettings::class)->inject_at_body_end;
+    if ($seoInjectAtBodyEnd) {
+        echo $seoInjectAtBodyEnd;
+    }
+    @endphp
 </body>
 </html>

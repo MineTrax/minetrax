@@ -1,13 +1,31 @@
 <template>
-  <inertia-head :title="title ? `${title} - ${$page.props.appName}` : `${$page.props.appName} - ${__('Minecraft Servers & Players Tracking')}`">
+  <Head
+    :title="generatedTitle + ' ' + generatedTitleSuffix"
+  >
     <slot />
-  </inertia-head>
+  </Head>
 </template>
 
-<script>
-export default {
-    props: {
-        title: String,
-    },
-};
+<script setup>
+import { Head, usePage } from '@inertiajs/vue3';
+import {useTranslations} from '@/Composables/useTranslations';
+import { computed } from 'vue';
+const { __ } = useTranslations();
+
+const props = defineProps({
+    title: String,
+});
+
+const generatedTitle = computed(() => {
+    if (props.title) {
+        return props.title;
+    }
+
+    return window._seo?.titleHome ?? __('Minecraft Servers & Players Tracking');
+});
+
+const generatedTitleSuffix = computed(() => {
+    return window._seo?.titleSuffix ?? ' - ' + usePage().props.appName;
+});
+
 </script>

@@ -216,6 +216,8 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::post('setting/player/validate-score-expression', [\App\Http\Controllers\Admin\Settings\PlayerSettingController::class, 'validateScoreExpression'])->name('setting.player.validate-score-expression');
     Route::get('setting/navigation', [\App\Http\Controllers\Admin\Settings\NavigationSettingController::class, 'show'])->name('setting.navigation.show');
     Route::post('setting/navigation', [\App\Http\Controllers\Admin\Settings\NavigationSettingController::class, 'update'])->name('setting.navigation.update');
+    Route::get('setting/seo', [\App\Http\Controllers\Admin\Settings\SeoSettingController::class, 'show'])->name('setting.seo.show');
+    Route::post('setting/seo', [\App\Http\Controllers\Admin\Settings\SeoSettingController::class, 'update'])->name('setting.seo.update');
     Route::get('setting/danger', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'show'])->name('setting.danger.show');
     Route::delete('setting/danger/truncate-shouts', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateShouts'])->name('setting.danger.truncate.shouts');
     Route::delete('setting/danger/truncate-consolelogs', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateConsolelogs'])->name('setting.danger.truncate.consolelogs');
