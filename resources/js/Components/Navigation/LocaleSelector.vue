@@ -7,7 +7,7 @@
         class="flex items-center text-sm font-medium text-gray-400 hover:text-gray-300"
       >
         <img
-          :src="`/images/flags/flags-iso/shiny/48/${$page.props.localeIsoCode}.png`"
+          :src="`/images/flags/flags-iso/shiny/48/${$page.props.localeIsoCode.toUpperCase()}.png`"
           class="w-6 mr-2"
         >
       </button>
@@ -22,7 +22,7 @@
           @click="setLocale(locale.code)"
         >
           <img
-            :src="`/images/flags/flags-iso/shiny/48/${locale.iso_code}.png`"
+            :src="`/images/flags/flags-iso/shiny/48/${locale.iso_code.toUpperCase()}.png`"
             class="w-8 mr-2"
           >
           <span>{{ locale.display }}</span>
