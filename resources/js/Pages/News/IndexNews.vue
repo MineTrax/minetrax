@@ -53,6 +53,13 @@
                     news.type.key
                   }}</span>
 
+                  <img
+                    v-if="news.photo_url"
+                    class="w-full mb-5 rounded"
+                    :src="news.photo_url"
+                    alt="News Image"
+                  >
+
                   <inertia-link
                     as="a"
                     :href="route('news.show', news.slug)"
@@ -62,12 +69,6 @@
                       news.title
                     }}
                   </inertia-link>
-                  <img
-                    v-if="news.photo_url"
-                    class="float-right w-full md:w-1/2 ml-10 mb-5 md:mb-0"
-                    :src="news.photo_url"
-                    alt="News Image"
-                  >
                   <div class="flex w-full md:w-auto mb-5">
                     <img
                       :src="news.creator.profile_photo_url"
@@ -142,7 +143,7 @@ export default {
         ShoutBox,
         ServerStatusBox,
         AppLayout,
-        InfiniteScroll
+        InfiniteScroll,
     },
     props: {
         newses: Object,

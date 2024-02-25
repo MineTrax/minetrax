@@ -33,7 +33,7 @@ defineProps({
 
       <img
         v-if="news.photo_url"
-        class="float-right w-full mb-5 ml-10 rounded"
+        class="w-full mb-5 rounded"
         :src="news.photo_url"
         :alt="news.title"
       >
