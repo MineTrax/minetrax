@@ -23,6 +23,7 @@ test('profile information can be updated', function () {
         's_twitch_url' => 'https://twitch.com',
         's_website_url' => 'https://minecraft.com',
         'cover_image_url' => 'https://google.com/image.png',
+        'locale' => null,
     ]);
 
     $this->assertEquals('Test Name', $user->fresh()->name);
