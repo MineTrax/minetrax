@@ -72,4 +72,12 @@ class Helper
 
         return $r2[0]->count;
     }
+
+    public static function escapeLike($string)
+    {
+        $search = ['%', '_'];
+        $replace = ['\%', '\_'];
+
+        return str_replace($search, $replace, $string);
+    }
 }

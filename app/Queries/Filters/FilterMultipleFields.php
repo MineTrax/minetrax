@@ -2,6 +2,7 @@
 
 namespace App\Queries\Filters;
 
+use App\Utils\Helpers\Helper;
 use Spatie\QueryBuilder\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -15,7 +16,8 @@ class FilterMultipleFields implements Filter
 
         $query->where(function ($query) use ($fields, $value) {
             foreach ($fields as $field) {
-                $query->orWhere($field, 'LIKE', "%" . $value . "%");
+                $val = Helper::escapeLike($value);
+                $query->orWhere($field, 'LIKE', "%" . $val . "%");
             }
         });
 
