@@ -304,14 +304,31 @@ class GraphController extends Controller
 
         $fromDate = $request->query('from_date') ?? now()->subMonth();
         $toDate = $request->query('to_date') ?? now();
-        $query = DB::table('minecraft_server_live_infos')
-            ->selectRaw("ROUND(UNIX_TIMESTAMP(CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H:'), LPAD((MINUTE(created_at) DIV 5) * 5, 2, '0'), ':00')) * 1000) AS created_at_5min")
-            ->selectRaw('MAX(online_players) AS online_players')
-            ->groupBy('created_at_5min')
-            ->orderBy('created_at_5min')
+        $subquery = DB::table('minecraft_server_live_infos')
+            ->selectRaw('
+        ROUND(
+            UNIX_TIMESTAMP(
+                CONCAT(
+                    DATE_FORMAT(created_at, "%Y-%m-%d %H:"),
+                    LPAD((MINUTE(created_at) DIV 5) * 5, 2, "0"),
+                    ":00"
+                )
+            ) * 1000
+        ) AS created_at_5min,
+        MAX(online_players) AS max_online_players,
+        server_id
+    ')
             ->where('created_at', '>=', $fromDate)
             ->where('created_at', '<=', $toDate)
-            ->whereIn('server_id', $servers->pluck('id'));
+            ->whereIn('server_id', $servers->pluck('id'))
+            ->groupBy('created_at_5min', 'server_id');
+
+        $query = DB::table(DB::raw("({$subquery->toSql()}) as online_players_per_server"))
+            ->mergeBindings($subquery)
+            ->select('online_players_per_server.created_at_5min', DB::raw('SUM(online_players_per_server.max_online_players) AS total_max_online_players'))
+            ->groupBy('online_players_per_server.created_at_5min')
+            ->orderBy('online_players_per_server.created_at_5min', 'ASC');
+
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
             $item->created_at_5min = (int) $item->created_at_5min;
