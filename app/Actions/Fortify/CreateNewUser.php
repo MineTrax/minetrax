@@ -27,6 +27,11 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input)
     {
+        $disableEmailPasswordAuth = config('auth.disable_email_password_auth');
+        if ($disableEmailPasswordAuth) {
+            abort(403, __('Email/Password authentication is disabled.'));
+        }
+
         $countryId = $this->geolocationService->getCountryIdFromIP(request()->ip());
 
         Validator::make($input, [

@@ -73,6 +73,7 @@ class HandleInertiaRequests extends Middleware
             },
             'generalSettings' => fn (GeneralSettings $generalSettings) => $generalSettings->toArray(),
             'isImpersonating' => $request->user() && $request->user()->isImpersonating(),
+            'disableEmailPasswordAuth' => fn () => config('auth.disable_email_password_auth'),
             'enabledSocialAuths' => function () {
                 $enabledSocialLogins = [];
                 $enabledSocialLogins['github'] = config('services.github.oauth_enabled');

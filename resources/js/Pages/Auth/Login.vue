@@ -13,6 +13,7 @@
       </div>
 
       <form
+        v-if="!$page.props.disableEmailPasswordAuth"
         class="mt-5"
         @submit.prevent="submit"
       >
@@ -69,9 +70,8 @@
             {{ __("Login") }}
           </loading-button>
         </div>
-
-        <social-auth-buttons />
       </form>
+      <social-auth-buttons />
     </jet-authentication-card>
   </app-layout>
 </template>

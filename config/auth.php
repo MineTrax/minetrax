@@ -144,6 +144,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Disable Email/Password Authentication
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, this feature will disable email/password authentication.
+    | This means users can only login via social providers.
+    |
+    */
+    'disable_email_password_auth' => env('DISABLE_EMAIL_PASSWORD_AUTH', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Max Profile Photo Size (KB)
     |--------------------------------------------------------------------------
     |

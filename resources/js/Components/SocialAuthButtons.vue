@@ -5,7 +5,14 @@
   >
     <div class="flex justify-between items-center mt-3">
       <hr class="w-full dark:border-gray-600">
-      <span class="p-2 text-gray-400 dark:text-gray-500 whitespace-nowrap text-sm">{{ __("Or continue with") }}</span>
+      <span
+        v-if="!$page.props.disableEmailPasswordAuth"
+        class="p-2 text-gray-400 dark:text-gray-500 whitespace-nowrap text-sm"
+      >{{ __("Or continue with") }}</span>
+      <span
+        v-else
+        class="p-2 text-gray-400 dark:text-gray-500 whitespace-nowrap text-sm"
+      >{{ __("Continue with") }}</span>
       <hr class="w-full dark:border-gray-600">
     </div>
 
