@@ -69,13 +69,8 @@ class ServerIntelController extends Controller
             ->where('first_seen_at', '>=', now()->subWeek())
             ->distinct()->count('player_uuid');
 
-        // Peek Online Players
-        $peekOnlinePlayersCount = MinecraftServerLiveInfo::query()
-            ->when($selectedServers, function ($query, $selectedServers) {
-                $query->whereIn('server_id', $selectedServers);
-            })
-            ->where('created_at', '>=', now()->subWeek())
-            ->max('online_players') ?: 0;
+        // Peek Online Players Count
+        $peekOnlinePlayersCount = MinecraftServerLiveInfo::getOnlinePlayersCount($selectedServers, now()->subWeek());
 
         // Avg TPS
         $averageTps = MinecraftServerLiveInfo::select(['tps'])
@@ -309,10 +304,10 @@ class ServerIntelController extends Controller
             // NumbersData - last 24 hours, last week, last month, 3 months.
             $numbersData = [];
             // Max Online Players
-            $maxPlayers['last_24h'] = MinecraftServerLiveInfo::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subHours(24))->max('online_players') ?: 0;
-            $maxPlayers['last_7days'] = MinecraftServerLiveInfo::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subWeek())->max('online_players') ?: 0;
-            $maxPlayers['last_30days'] = MinecraftServerLiveInfo::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonth())->max('online_players') ?: 0;
-            $maxPlayers['last_90days'] = MinecraftServerLiveInfo::whereIn('server_id', $selectedServers->pluck('id'))->where('created_at', '>=', now()->subMonths(3))->max('online_players') ?: 0;
+            $maxPlayers['last_24h'] = MinecraftServerLiveInfo::getOnlinePlayersCount($selectedServers->pluck('id'), now()->subHours(24)) ?: 0;
+            $maxPlayers['last_7days'] = MinecraftServerLiveInfo::getOnlinePlayersCount($selectedServers->pluck('id'), now()->subWeek()) ?: 0;
+            $maxPlayers['last_30days'] = MinecraftServerLiveInfo::getOnlinePlayersCount($selectedServers->pluck('id'), now()->subMonth()) ?: 0;
+            $maxPlayers['last_90days'] = MinecraftServerLiveInfo::getOnlinePlayersCount($selectedServers->pluck('id'), now()->subMonths(3)) ?: 0;
             $numbersData['max_players'] = $maxPlayers;
 
             // Lowest TPS
@@ -406,11 +401,15 @@ class ServerIntelController extends Controller
 
         $countries = Country::withCount([
             'minecraftPlayers' => function ($query) use ($selectedServers) {
-                $query->when($selectedServers, function ($query, $selectedServers) {
-                    $query->whereIn('server_id', $selectedServers);
-                });
+                $query->select(DB::raw('COUNT(DISTINCT(player_uuid))'))
+                    ->when($selectedServers, function ($query, $selectedServers) {
+                        $query->whereIn('server_id', $selectedServers);
+                    });
             },
-        ])->get();
+        ])
+            ->orderBy('minecraft_players_count', 'desc')
+            ->get();
+
         $data = $countries->map(function ($country) {
             return [
                 'name' => $country->name,

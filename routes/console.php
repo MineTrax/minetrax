@@ -18,7 +18,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-
 // Reset SEO settings to default values.
 Artisan::command('settings:seo:reset', function () {
     $this->info('Resetting SEO settings to default values...');

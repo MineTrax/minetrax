@@ -257,22 +257,38 @@ class GraphController extends Controller
 
         $fromDate = $request->query('from_date') ?? now()->subWeek();
         $toDate = $request->query('to_date') ?? now();
-        $query = DB::table('minecraft_server_live_infos')
-            ->selectRaw("ROUND(UNIX_TIMESTAMP(CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d %H:'), LPAD((MINUTE(created_at) DIV 5) * 5, 2, '0'), ':00')) * 1000) AS created_at_5min")
+        $subquery = DB::table('minecraft_server_live_infos')
+            ->selectRaw('ROUND(UNIX_TIMESTAMP(CONCAT(DATE_FORMAT(created_at, "%Y-%m-%d %H:"), LPAD((MINUTE(created_at) DIV 5) * 5, 2, "0"), ":00")) * 1000) AS created_at_5min')
             ->selectRaw('MAX(online_players) AS online_players')
             ->selectRaw('MIN(tps) AS tps')
             ->selectRaw('MAX(cpu_load) AS cpu_load')
             ->selectRaw('MAX(used_memory) AS used_memory')
             ->selectRaw('MAX(chunks_loaded) AS chunks_loaded')
-            ->groupBy('created_at_5min')
-            ->orderBy('created_at_5min')
+            ->selectRaw('server_id')
             ->where('created_at', '>=', $fromDate)
             ->where('created_at', '<=', $toDate)
-            ->whereIn('server_id', $servers->pluck('id'));
+            ->whereIn('server_id', $servers->pluck('id'))
+            ->groupBy('created_at_5min', 'server_id');
+
+        $query = DB::table(DB::raw("({$subquery->toSql()}) as performance_per_server"))
+            ->mergeBindings($subquery)
+            ->select(
+                'performance_per_server.created_at_5min',
+                DB::raw('SUM(performance_per_server.online_players) AS online_players'),
+                DB::raw('AVG(performance_per_server.tps) AS tps'),
+                DB::raw('AVG(performance_per_server.cpu_load) AS cpu_load'),
+                DB::raw('SUM(performance_per_server.used_memory) AS used_memory'),
+                DB::raw('SUM(performance_per_server.chunks_loaded) AS chunks_loaded')
+            )
+            ->groupBy('performance_per_server.created_at_5min')
+            ->orderBy('performance_per_server.created_at_5min', 'ASC');
+
         $sqlData = $query->get();
         $sqlData = $sqlData->map(function ($item) {
             $item->created_at_5min = (int) $item->created_at_5min;
             $item->used_memory = round($item->used_memory / 1024); // Convert to MB
+            $item->tps = round($item->tps, 2);
+            $item->cpu_load = round($item->cpu_load, 2);
 
             return array_values(get_object_vars($item));
         })->toArray();
@@ -305,19 +321,9 @@ class GraphController extends Controller
         $fromDate = $request->query('from_date') ?? now()->subMonth();
         $toDate = $request->query('to_date') ?? now();
         $subquery = DB::table('minecraft_server_live_infos')
-            ->selectRaw('
-        ROUND(
-            UNIX_TIMESTAMP(
-                CONCAT(
-                    DATE_FORMAT(created_at, "%Y-%m-%d %H:"),
-                    LPAD((MINUTE(created_at) DIV 5) * 5, 2, "0"),
-                    ":00"
-                )
-            ) * 1000
-        ) AS created_at_5min,
-        MAX(online_players) AS max_online_players,
-        server_id
-    ')
+            ->selectRaw('ROUND(UNIX_TIMESTAMP(CONCAT(DATE_FORMAT(created_at, "%Y-%m-%d %H:"),LPAD((MINUTE(created_at) DIV 5) * 5, 2, "0"),":00")) * 1000) AS created_at_5min')
+            ->selectRaw('MAX(online_players) AS max_online_players')
+            ->selectRaw('server_id')
             ->where('created_at', '>=', $fromDate)
             ->where('created_at', '<=', $toDate)
             ->whereIn('server_id', $servers->pluck('id'))
@@ -363,10 +369,10 @@ class GraphController extends Controller
             $servers = Server::where('type', '!=', ServerType::Bungee())->get();
         }
 
-        $data = DB::table('minecraft_player_sessions')
-            ->selectRaw('COUNT(*) AS count, minecraft_version')
+        $data = DB::table('minecraft_players')
+            ->selectRaw('COUNT(DISTINCT player_uuid) AS count, last_minecraft_version')
             ->whereIn('server_id', $servers->pluck('id'))
-            ->groupBy('minecraft_version')
+            ->groupBy('last_minecraft_version')
             ->orderBy('count', 'desc')
             ->when($request->query('top'), function ($query, $top) {
                 return $query->limit($top);
@@ -374,7 +380,7 @@ class GraphController extends Controller
             ->get()
             ->map(function ($item) {
                 return [
-                    'name' => $item->minecraft_version ?? __('Unknown'),
+                    'name' => $item->last_minecraft_version ?? __('Unknown'),
                     'value' => $item->count,
                 ];
             });
@@ -402,10 +408,10 @@ class GraphController extends Controller
             $servers = Server::where('type', '!=', ServerType::Bungee())->get();
         }
 
-        $data = DB::table('minecraft_player_sessions')
-            ->selectRaw('COUNT(*) AS count, join_address')
+        $data = DB::table('minecraft_players')
+            ->selectRaw('COUNT(DISTINCT player_uuid) AS count, last_join_address')
             ->whereIn('server_id', $servers->pluck('id'))
-            ->groupBy('join_address')
+            ->groupBy('last_join_address')
             ->orderBy('count', 'desc')
             ->when($request->query('top'), function ($query, $top) {
                 return $query->limit($top);
@@ -413,7 +419,7 @@ class GraphController extends Controller
             ->get()
             ->map(function ($item) {
                 return [
-                    'name' => $item->join_address ?? __('Unknown'),
+                    'name' => $item->last_join_address ?? __('Unknown'),
                     'value' => $item->count,
                 ];
             });
@@ -444,7 +450,7 @@ class GraphController extends Controller
         $query = DB::table('minecraft_player_sessions')
             ->selectRaw('UNIX_TIMESTAMP(DATE(created_at)) AS unix_day')
             ->selectRaw('join_address')
-            ->selectRaw('COUNT(*) AS count')
+            ->selectRaw('COUNT(DISTINCT player_uuid) AS count')
             ->groupBy(['join_address', 'unix_day'])
             ->orderBy('unix_day')
             ->where('created_at', '>=', $fromDate)
@@ -519,7 +525,7 @@ class GraphController extends Controller
         $query = DB::table('minecraft_player_sessions')
             ->selectRaw('UNIX_TIMESTAMP(DATE(created_at)) AS unix_day')
             ->selectRaw('minecraft_version')
-            ->selectRaw('COUNT(*) AS count')
+            ->selectRaw('COUNT(DISTINCT player_uuid) AS count')
             ->groupBy(['minecraft_version', 'unix_day'])
             ->orderBy('unix_day')
             ->where('created_at', '>=', $fromDate)

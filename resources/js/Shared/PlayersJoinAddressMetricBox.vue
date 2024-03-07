@@ -63,7 +63,7 @@ onMounted(async () => {
         },
         series: [
             {
-                name: 'Count',
+                name: 'Players',
                 type: 'bar',
                 barWidth: '60%',
                 data: graphData.value.map((item) => item.value)
