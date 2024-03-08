@@ -205,9 +205,17 @@ const navItems = [
                 visible: can('read custom_forms')
             },
             {
-                label: 'User Submissions',
+                label: 'Submissions',
                 href: route('admin.custom-form-submission.index'),
                 active: route().current('admin.custom-form-submission.index'),
+                children: [],
+                icon: null,
+                visible: can('read custom_form_submissions')
+            },
+            {
+                label: 'Archived Submissions',
+                href: route('admin.custom-form-submission.index-archived'),
+                active: route().current('admin.custom-form-submission.index-archived'),
                 children: [],
                 icon: null,
                 visible: can('read custom_form_submissions')

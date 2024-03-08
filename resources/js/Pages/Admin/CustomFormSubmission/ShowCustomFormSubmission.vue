@@ -43,8 +43,42 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value);
       <div class="py-3 flex justify-between">
         <h3 class="text-xl font-extrabold text-gray-800 dark:text-gray-200">
           {{ __(":formtitle - Submission #:index", {index: submission.id, formtitle: submission.custom_form.title}) }}
+          <span
+            v-if="submission.deleted_at"
+            class="text-base text-orange-500 italic"
+          >
+            {{ __("(Archived)") }}
+          </span>
         </h3>
         <div class="flex gap-4">
+          <InertiaLink
+            v-if="can('archive custom_form_submissions') && !submission.deleted_at"
+            v-confirm="{
+              message:
+                'Archive this Custom Form Submission? It will move to archive section.',
+            }"
+            v-tippy
+            as="button"
+            method="POST"
+            :href="route('admin.custom-form-submission.archive', submission.id)"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-orange-500 border border-transparent rounded-md hover:bg-orange-700 active:bg-orange-900 focus:outline-none focus:border-orange-900 focus:shadow-outline-gray"
+          >
+            <span>{{ __("Archive") }}</span>
+          </InertiaLink>
+          <InertiaLink
+            v-if="can('delete custom_form_submissions') && submission.deleted_at"
+            v-confirm="{
+              message:
+                'Restore this Custom Form Submission? It will move back to submissions list.',
+            }"
+            v-tippy
+            as="button"
+            method="POST"
+            :href="route('admin.custom-form-submission.restore', submission.id)"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-500 border border-transparent rounded-md hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:shadow-outline-gray"
+          >
+            <span>{{ __("Restore") }}</span>
+          </InertiaLink>
           <InertiaLink
             v-if="can('delete custom_form_submissions')"
             v-confirm="{
@@ -60,7 +94,7 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value);
             <span>{{ __("Delete") }}</span>
           </InertiaLink>
           <InertiaLink
-            :href="route('admin.custom-form-submission.index')"
+            :href="submission.deleted_at ? route('admin.custom-form-submission.index-archived') : route('admin.custom-form-submission.index')"
             class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-400 border border-transparent rounded-md hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-400 focus:shadow-outline-gray dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-900 dark:focus:border-gray-700"
           >
             <span>{{ __("Back") }}</span>
@@ -155,6 +189,19 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value);
                   v-tippy
                   :title="formatTimeAgoToNow(submission.created_at)"
                 >{{ formatToDayDateString(submission.created_at) }}</span>
+              </div>
+            </li>
+
+            <li
+              v-if="submission.deleted_at"
+              class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400"
+            >
+              <div class="flex items-center justify-between w-full">
+                <span>{{ __("Archived At") }}</span>
+                <span
+                  v-tippy
+                  :title="formatTimeAgoToNow(submission.deleted_at)"
+                >{{ formatToDayDateString(submission.deleted_at) }}</span>
               </div>
             </li>
           </ul>

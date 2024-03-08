@@ -267,6 +267,9 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::delete('custom-form/{customForm}', [\App\Http\Controllers\Admin\CustomFormController::class, 'destroy'])->name('custom-form.delete');
 
     Route::get('custom-form-submission', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'index'])->name('custom-form-submission.index');
-    Route::get('custom-form-submission/{submission}', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'show'])->name('custom-form-submission.show');
-    Route::delete('custom-form-submission/{submission}', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'destroy'])->name('custom-form-submission.delete');
+    Route::get('custom-form-submission/archived', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'indexArchived'])->name('custom-form-submission.index-archived');
+    Route::get('custom-form-submission/{submission}', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'show'])->name('custom-form-submission.show')->withTrashed();
+    Route::delete('custom-form-submission/{submission}', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'destroy'])->name('custom-form-submission.delete')->withTrashed();
+    Route::post('custom-form-submission/{submission}/archive', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'archive'])->name('custom-form-submission.archive');
+    Route::post('custom-form-submission/{submission}/restore', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'restore'])->name('custom-form-submission.restore')->withTrashed();
 });

@@ -9,6 +9,8 @@ import { useAuthorizable } from '@/Composables/useAuthorizable';
 import {
     EyeIcon,
     TrashIcon,
+    ArchiveBoxArrowDownIcon,
+    ArrowUturnUpIcon,
 } from '@heroicons/vue/24/outline';
 import XSelect from '@/Components/Form/XSelect.vue';
 import { computed, ref, watch } from 'vue';
@@ -30,9 +32,19 @@ const props = defineProps({
     submissions: {
         type: Object,
     },
+    archived: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const headerRow = [
+    {
+        key: 'id',
+        label: __('ID'),
+        sortable: true,
+        class: 'text-left w-[5%]',
+    },
     {
         key: 'country_id',
         label: __('Country'),
@@ -53,7 +65,7 @@ const headerRow = [
     {
         key: 'created_at',
         label: __('Created At'),
-        class: 'text-right w-1/12',
+        class: 'text-right w-1/12 whitespace-nowrap',
         sortable: true,
     },
     {
@@ -63,6 +75,15 @@ const headerRow = [
         class: 'w-1/12 text-right',
     },
 ];
+
+if (props.archived) {
+    headerRow.splice(5, 0, {
+        key: 'deleted_at',
+        label: __('Archived At'),
+        class: 'text-right w-1/12 whitespace-nowrap',
+        sortable: true,
+    });
+}
 
 // Form Selector
 let selectedForms = ref(
@@ -91,12 +112,12 @@ watch(selectedForms, (newSelectedForms) => {
 
 <template>
   <AdminLayout>
-    <AppHead :title="__('Custom Form Submissions')" />
+    <AppHead :title="archived ? __('Archived Custom Form Submissions') : __('Custom Form Submissions')" />
 
     <div class="p-4 mx-auto space-y-4 px-10">
       <div class="flex items-center justify-between">
         <h3 class="text-xl font-extrabold text-gray-800 dark:text-gray-200">
-          {{ __("Form Submissions:") }}
+          {{ archived ? __("Archived Form Submissions:") : __("Form Submissions:") }}
           {{ showing ?? __("All Forms") }}
         </h3>
 
@@ -118,6 +139,11 @@ watch(selectedForms, (newSelectedForms) => {
           :filters="filters"
         >
           <template #default="{ item }">
+            <td
+              class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
+            >
+              {{ item.id }}
+            </td>
             <td
               class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
             >
@@ -176,10 +202,19 @@ watch(selectedForms, (newSelectedForms) => {
 
             <DtRowItem
               v-tippy
-              class="text-right"
+              class="text-right whitespace-nowrap"
               :content="formatToDayDateString(item.created_at)"
             >
               {{ formatTimeAgoToNow(item.created_at) }}
+            </DtRowItem>
+
+            <DtRowItem
+              v-if="archived"
+              v-tippy
+              class="text-right whitespace-nowrap"
+              :content="formatToDayDateString(item.deleted_at)"
+            >
+              {{ formatTimeAgoToNow(item.deleted_at) }}
             </DtRowItem>
 
             <td
@@ -193,6 +228,36 @@ watch(selectedForms, (newSelectedForms) => {
                 <EyeIcon class="inline-block w-5 h-5" />
               </InertiaLink>
               <InertiaLink
+                v-if="can('archive custom_form_submissions') && !archived"
+                v-confirm="{
+                  message:
+                    'Archive this Custom Form Submission? It will move to archive section.',
+                }"
+                v-tippy
+                as="button"
+                method="POST"
+                :href="route('admin.custom-form-submission.archive', item.id)"
+                class="inline-flex items-center justify-center text-orange-500 hover:text-orange-900 focus:outline-none"
+                :title="__('Archive Submission')"
+              >
+                <ArchiveBoxArrowDownIcon class="inline-block w-5 h-5" />
+              </InertiaLink>
+              <InertiaLink
+                v-if="can('delete custom_form_submissions') && archived"
+                v-confirm="{
+                  message:
+                    'Restore this Custom Form Submission? It will move back to submissions list.',
+                }"
+                v-tippy
+                as="button"
+                method="POST"
+                :href="route('admin.custom-form-submission.restore', item.id)"
+                class="inline-flex items-center justify-center text-green-500 hover:text-green-900 focus:outline-none"
+                :title="__('Restore Submission')"
+              >
+                <ArrowUturnUpIcon class="inline-block w-5 h-5" />
+              </InertiaLink>
+              <InertiaLink
                 v-if="can('delete custom_form_submissions')"
                 v-confirm="{
                   message:
@@ -203,7 +268,7 @@ watch(selectedForms, (newSelectedForms) => {
                 method="DELETE"
                 :href="route('admin.custom-form-submission.delete', item.id)"
                 class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
-                :title="__('Delete Custom Form')"
+                :title="__('Delete Submission')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />
               </InertiaLink>

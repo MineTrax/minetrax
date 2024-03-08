@@ -43,10 +43,24 @@ class CustomFormSubmissionPolicy
      */
     public function delete(User $user, CustomFormSubmission $customFormSubmission): bool
     {
-        if ($user->can('delete custom_form_submissions')) {
+        if ($user->can('archive custom_form_submissions')) {
             return true;
         }
 
         return false;
+    }
+
+    public function forceDelete(User $user, CustomFormSubmission $customFormSubmission)
+    {
+        if ($user->can('delete custom_form_submissions')) {
+            return true;
+        }
+    }
+
+    public function restore(User $user, CustomFormSubmission $customFormSubmission)
+    {
+        if ($user->can('delete custom_form_submissions')) {
+            return true;
+        }
     }
 }
