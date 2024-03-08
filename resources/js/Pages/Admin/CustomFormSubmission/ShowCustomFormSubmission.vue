@@ -27,7 +27,7 @@ const parsedData = computed(() => {
     });
 });
 
-const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value);
+const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value, true);
 </script>
 
 <template>

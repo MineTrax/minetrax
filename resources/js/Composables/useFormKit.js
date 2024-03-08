@@ -1,5 +1,5 @@
 export function useFormKit() {
-    const generateSchemaFromFieldsArray = (fields) => {
+    const generateSchemaFromFieldsArray = (fields, forViewOnly = false) => {
         const generated = fields.map((field) => {
             let f = {
                 $formkit: field.type == 'multiselect' ? 'select' : field.type,
@@ -20,6 +20,11 @@ export function useFormKit() {
             ) {
                 f.options = field.options?.split(',') ?? [];
             }
+
+            if (forViewOnly && field.type === 'text' && field.value?.length > 100) {
+                f.$formkit = 'textarea';
+            }
+
             return f;
         });
         return generated;
