@@ -59,7 +59,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.twitter"
         :href="route('social.login', 'twitter')"
-        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white text-light-blue-400 dark:bg-light-blue-400 hover:bg-gray-50 dark:hover:bg-light-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white text-sky-400 dark:bg-sky-400 hover:bg-gray-50 dark:hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 disabled:opacity-50"
       >
         <icon
           name="twitter"
