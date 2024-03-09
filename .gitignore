@@ -24,3 +24,5 @@ auth.json
 /bootstrap/ssr
 /public/build/*
 !/public/build/default/
+/public/theme-assets/*
+!/public/theme-assets/default/
