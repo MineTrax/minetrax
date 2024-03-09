@@ -22,3 +22,5 @@ _ide_helper_models.php
 /.vscode
 auth.json
 /bootstrap/ssr
+/public/build/*
+!/public/build/default/

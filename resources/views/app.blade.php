@@ -34,7 +34,7 @@
 
     <!-- Scripts -->
     @routes
-    @vite('resources/js/app.js')
+    @vite('resources/js/app.js', 'build/' . config('app.theme'))
     @inertiaHead
 
     <script>
