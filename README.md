@@ -40,6 +40,7 @@ MineTrax has lot of features, some of them are listed below:
  - Localization. Translate to any language you want.
  - Custom Navigation Menu. (Customize navbar as per your liking using drag and drop)
  - Custom Pages.
+ - Custom Theme
  - Dark Mode. Ofcoz (✿◠‿◠)
 
 ## Upcoming
@@ -47,7 +48,6 @@ MineTrax has lot of features, some of them are listed below:
  - Staff Recruitment System
  - Store System
  - Automated Server Events
- - Custom Theme
  - Rewards & Achievements
  - Advertisements & Monetisations
  - more...
