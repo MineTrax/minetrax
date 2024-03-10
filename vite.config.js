@@ -5,14 +5,15 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
 
-    const outDir = 'public/build/' + (env.APP_THEME || 'default');
-    const buildDirectory = 'build/' + (env.APP_THEME || 'default');
+    const theme = env.APP_THEME || 'default';
+    const outDir = 'public/build/' + theme;
+    const buildDirectory = 'build/' + theme;
     return {
         plugins: [
             laravel({
-                input: 'resources/js/app.js',
+                input:  `/resources/${theme}/js/app.js`,
                 buildDirectory: buildDirectory,
-                ssr: 'resources/js/ssr.js',
+                ssr: `/resources/${theme}/js/ssr.js`,
                 refresh: true,
             }),
             vue({
@@ -30,6 +31,11 @@ export default defineConfig(({ mode }) => {
         build: {
             chunkSizeWarningLimit: 2000,
             outDir: outDir,
-        }
+        },
+        resolve: {
+            alias: {
+                '@': '/resources/' + theme + '/js',
+            },
+        },
     };
 });

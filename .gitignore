@@ -26,3 +26,5 @@ auth.json
 !/public/build/default/
 /public/theme-assets/*
 !/public/theme-assets/default/
+/resources/*
+!/resources/default/
