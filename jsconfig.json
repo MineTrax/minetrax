@@ -1,6 +1,6 @@
 {
 	"include": [
-		"resources/js/**/*"
+		"resources/**/js/**/*"
 	],
 	"compilerOptions": {
 		"allowJs": true,
@@ -8,7 +8,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": [
-				"resources/js/*"
+				"resources/default/js/*"
 			]
 		}
 	}

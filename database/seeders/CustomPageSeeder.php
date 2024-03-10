@@ -19,31 +19,31 @@ class CustomPageSeeder extends Seeder
             return;
         }
 
-        $body = file_get_contents(resource_path('markdown/rules.md'));
+        $body = file_get_contents(resource_path('default/markdown/rules.md'));
         CustomPage::create([
             'title' => 'Rules',
             'path' => 'rules',
             'body' => $body,
             'is_visible' => true,
-            'is_in_navbar' => true
+            'is_in_navbar' => true,
         ]);
 
-        $body = file_get_contents(resource_path('markdown/policy.md'));
+        $body = file_get_contents(resource_path('default/markdown/policy.md'));
         CustomPage::create([
             'title' => 'Privacy Policy',
             'path' => 'privacy-policy',
             'body' => $body,
             'is_visible' => false,
-            'is_in_navbar' => true
+            'is_in_navbar' => true,
         ]);
 
-        $body = file_get_contents(resource_path('markdown/terms.md'));
+        $body = file_get_contents(resource_path('default/markdown/terms.md'));
         CustomPage::create([
             'title' => 'Terms of Service',
             'path' => 'terms',
             'body' => $body,
             'is_visible' => false,
-            'is_in_navbar' => true
+            'is_in_navbar' => true,
         ]);
     }
 }
