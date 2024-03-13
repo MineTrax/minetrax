@@ -70,14 +70,14 @@ class NavigationSettingController extends Controller
             'enable_sticky_header_menu' => 'required|boolean',
             'enable_custom_footer' => 'required|boolean',
             'custom_footer_data.site_moto' => 'nullable|string',
-            'custom_footer_data.style' => 'required_if:enable_custom_footer,true|in:variant_1,variant_2',
+            'custom_footer_data.style' => 'nullable|required_if:enable_custom_footer,true|in:variant_1,variant_2',
             'custom_footer_data.columns' => 'nullable|array',
             'custom_footer_data.columns.*' => 'nullable|array',
             'custom_footer_data.columns.*.title' => 'nullable|string',
             'custom_footer_data.columns.*.items' => 'nullable|array',
             'custom_footer_data.columns.*.items.*' => 'nullable|array',
             'custom_footer_data.columns.*.items.*.url' => 'nullable|string',
-            'custom_footer_data.columns.*.items.*.title' => 'required_with:custom_footer_data.columns.*.items.*.url|nullable|string',
+            'custom_footer_data.columns.*.items.*.title' => 'nullable|required_with:custom_footer_data.columns.*.items.*.url|nullable|string',
         ]);
 
         $navbarData = $request->input('custom_navbar_data');
