@@ -104,5 +104,7 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('view pulse_admin_dashboard');
 
         Permission::findOrCreate('change any_player_skin');
+
+        Permission::findOrCreate('delete players');
     }
 }

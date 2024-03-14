@@ -2,13 +2,16 @@
 import AppHead from '@/Components/AppHead.vue';
 import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import millify from 'millify';
+import { TrashIcon } from '@heroicons/vue/24/outline';
 
 const { __ } = useTranslations();
+const { can } = useAuthorizable();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } =
     useHelpers();
 
@@ -76,6 +79,12 @@ const headerRow = [
         key: 'last_seen_at',
         label: __('Last Seen'),
         sortable: true,
+    },
+    {
+        key: 'actions',
+        label: __('Actions'),
+        sortable: false,
+        class: 'w-1/12 text-right',
     },
 ];
 </script>
@@ -203,6 +212,26 @@ const headerRow = [
             >
               {{ formatTimeAgoToNow(item.last_seen_at) }}
             </DtRowItem>
+
+            <td
+              class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            >
+              <InertiaLink
+                v-if="can('delete players')"
+                v-confirm="{
+                  message:
+                    'This action will delete this player stats and unlink account if linked. Are you sure?',
+                }"
+                v-tippy
+                as="button"
+                method="DELETE"
+                :href="route('admin.intel.player.delete', item.player.uuid)"
+                class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                :title="__('Delete Player')"
+              >
+                <TrashIcon class="inline-block w-5 h-5" />
+              </InertiaLink>
+            </td>
           </template>
         </DataTable>
       </div>

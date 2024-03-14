@@ -57,4 +57,9 @@ class PlayerPolicy
 
         return $user->players()->where('players.id', $player->id)->exists();
     }
+
+    public function destroy(User $user, Player $player)
+    {
+        return $user->can('delete players');
+    }
 }
