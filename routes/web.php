@@ -179,7 +179,6 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('intel/server/playerbase/countries', [\App\Http\Controllers\Admin\ServerIntelController::class, 'getPlayerPerCountry'])->name('intel.server.playerbase.countries');
     Route::get('intel/player/list', [\App\Http\Controllers\Admin\PlayerIntelController::class, 'playersList'])->name('intel.player.list');
 
-    Route::post('intel/player/{player:uuid}/reset', [\App\Http\Controllers\Admin\PlayerController::class, 'reset'])->name('intel.player.reset');
     Route::delete('intel/player/{player:uuid}/delete', [\App\Http\Controllers\Admin\PlayerController::class, 'destroy'])->name('intel.player.delete');
 
     Route::get('rank', [\App\Http\Controllers\Admin\RankController::class, 'index'])->name('rank.index');

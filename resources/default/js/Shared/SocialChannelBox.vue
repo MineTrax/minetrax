@@ -163,9 +163,92 @@
         target="_blank"
         class="inline-block p-1 hover:bg-indigo-600 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
       >
-
         <icon
           name="discord"
+          class="h-8 w-8 p-1 fill-current"
+        />
+      </a>
+
+      <a
+        v-if="instagram"
+        v-tippy
+        :title="__('Instagram')"
+        :href="instagram"
+        target="_blank"
+        class="inline-block p-1 hover:bg-[#fe435e] text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
+      >
+        <icon
+          name="instagram"
+          class="h-8 w-8 p-1 fill-current"
+        />
+      </a>
+
+      <a
+        v-if="whatsapp"
+        v-tippy
+        :title="__('WhatsApp')"
+        :href="whatsapp"
+        target="_blank"
+        class="inline-block p-1 hover:bg-green-500 text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
+      >
+        <icon
+          name="whatsapp"
+          class="h-8 w-8 p-1 fill-current"
+        />
+      </a>
+
+      <a
+        v-if="telegram"
+        v-tippy
+        :title="__('Telegram')"
+        :href="telegram"
+        target="_blank"
+        class="inline-block p-1 hover:bg-[#38b5e4] text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
+      >
+        <icon
+          name="telegram"
+          class="h-8 w-8 p-1 fill-current"
+        />
+      </a>
+
+      <a
+        v-if="threads"
+        v-tippy
+        :title="__('Threads')"
+        :href="threads"
+        target="_blank"
+        class="inline-block p-1 hover:bg-[#000000] text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
+      >
+        <icon
+          name="threads"
+          class="h-8 w-8 p-1 fill-current"
+        />
+      </a>
+
+      <a
+        v-if="reddit"
+        v-tippy
+        :title="__('Reddit')"
+        :href="reddit"
+        target="_blank"
+        class="inline-block p-1 hover:bg-[#ef4623] text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
+      >
+        <icon
+          name="reddit"
+          class="h-8 w-8 p-1 fill-current"
+        />
+      </a>
+
+      <a
+        v-if="github"
+        v-tippy
+        :title="__('GitHub')"
+        :href="github"
+        target="_blank"
+        class="inline-block p-1 hover:bg-[#000000] text-gray-700 rounded hover:text-white transition duration-100 ease-in dark:text-gray-300 dark:hover:text-white"
+      >
+        <icon
+          name="github"
           class="h-8 w-8 p-1 fill-current"
         />
       </a>
@@ -177,7 +260,7 @@
 import Icon from '@/Components/Icon.vue';
 
 export default {
-    components: {Icon},
+    components: { Icon },
     props: {
         enabled: Boolean,
         showTitle: Boolean,
@@ -190,12 +273,34 @@ export default {
         discord: [String, null],
         tiktok: [String, null],
         linkedin: [String, null],
+        instagram: [String, null],
+        whatsapp: [String, null],
+        telegram: [String, null],
+        reddit: [String, null],
+        threads: [String, null],
+        github: [String, null],
     },
 
     computed: {
         show() {
-            return !!this.youtube || !!this.facebook || !!this.twitter || !!this.twitter || !!this.website || !!this.steam || !!this.discord || !!this.tiktok || !!this.linkedin;
-        }
-    }
+            return (
+                !!this.youtube ||
+                !!this.facebook ||
+                !!this.twitter ||
+                !!this.twitter ||
+                !!this.website ||
+                !!this.steam ||
+                !!this.discord ||
+                !!this.tiktok ||
+                !!this.linkedin ||
+                !!this.instagram ||
+                !!this.whatsapp ||
+                !!this.telegram ||
+                !!this.reddit ||
+                !!this.threads ||
+                !!this.github
+            );
+        },
+    },
 };
 </script>

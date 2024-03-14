@@ -243,7 +243,7 @@
                           </div>
                           <div
                             v-if="form.enable_socialbox"
-                            class="col-span-6 sm:col-span-6"
+                            class="col-span-6 sm:col-span-3"
                           >
                             <x-input
                               id="youtube_url"
@@ -259,7 +259,7 @@
                           </div>
                           <div
                             v-if="form.enable_socialbox"
-                            class="col-span-6 sm:col-span-6"
+                            class="col-span-6 sm:col-span-3"
                           >
                             <x-input
                               id="facebook_url"
@@ -275,7 +275,7 @@
                           </div>
                           <div
                             v-if="form.enable_socialbox"
-                            class="col-span-6 sm:col-span-6"
+                            class="col-span-6 sm:col-span-3"
                           >
                             <x-input
                               id="twitter_url"
@@ -291,7 +291,7 @@
                           </div>
                           <div
                             v-if="form.enable_socialbox"
-                            class="col-span-6 sm:col-span-6"
+                            class="col-span-6 sm:col-span-3"
                           >
                             <x-input
                               id="twitch_url"
@@ -307,7 +307,7 @@
                           </div>
                           <div
                             v-if="form.enable_socialbox"
-                            class="col-span-6 sm:col-span-6"
+                            class="col-span-6 sm:col-span-3"
                           >
                             <x-input
                               id="tiktok_url"
@@ -323,7 +323,7 @@
                           </div>
                           <div
                             v-if="form.enable_socialbox"
-                            class="col-span-6 sm:col-span-6"
+                            class="col-span-6 sm:col-span-3"
                           >
                             <x-input
                               id="linkedin_url"
@@ -334,6 +334,103 @@
                               type="text"
                               name="linkedin_url"
                               :help="__('Eg: https://www.linkedin.com/in/minecraft')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-input
+                              id="instagram_url"
+                              v-model="form.instagram_url"
+                              :label="__('Instagram URL')"
+                              :error="form.errors.instagram_url"
+                              autocomplete="instagram_url"
+                              type="text"
+                              name="instagram_url"
+                              :help="__('Eg: https://www.instagram.com/minecraft')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-input
+                              id="whatsapp_url"
+                              v-model="form.whatsapp_url"
+                              :label="__('WhatsApp URL')"
+                              :error="form.errors.whatsapp_url"
+                              autocomplete="whatsapp_url"
+                              type="text"
+                              name="whatsapp_url"
+                              :help="__('Eg: https://wa.me/123456789')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-input
+                              id="telegram_url"
+                              v-model="form.telegram_url"
+                              :label="__('Telegram URL')"
+                              :error="form.errors.telegram_url"
+                              autocomplete="telegram_url"
+                              type="text"
+                              name="telegram_url"
+                              :help="__('Eg: https://t.me/minecraft')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-input
+                              id="reddit_url"
+                              v-model="form.reddit_url"
+                              :label="__('Reddit URL')"
+                              :error="form.errors.reddit_url"
+                              autocomplete="reddit_url"
+                              type="text"
+                              name="reddit_url"
+                              :help="__('Eg: https://www.reddit.com/r/minecraft')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-input
+                              id="threads_url"
+                              v-model="form.threads_url"
+                              :label="__('Threads URL')"
+                              :error="form.errors.threads_url"
+                              autocomplete="threads_url"
+                              type="text"
+                              name="threads_url"
+                              :help="__('Eg: https://www.threads.net/@minecraft')"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
+
+                          <div
+                            v-if="form.enable_socialbox"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-input
+                              id="github_url"
+                              v-model="form.github_url"
+                              :label="__('GitHub URL')"
+                              :error="form.errors.github_url"
+                              autocomplete="github_url"
+                              type="text"
+                              name="github_url"
+                              :help="__('Eg: https://www.github.com/minetrax')"
                               help-error-flex="flex-col"
                             />
                           </div>
@@ -599,7 +696,12 @@ export default {
                 twitch_url: this.settings.twitch_url,
                 tiktok_url: this.settings.tiktok_url,
                 linkedin_url: this.settings.linkedin_url,
-                // threads_url: this.settings.threads_url,
+                instagram_url: this.settings.instagram_url,
+                whatsapp_url: this.settings.whatsapp_url,
+                telegram_url: this.settings.telegram_url,
+                reddit_url: this.settings.reddit_url,
+                threads_url: this.settings.threads_url,
+                github_url: this.settings.github_url,
                 discord_invite_url: this.settings.discord_invite_url,
                 enable_discordbox: this.settings.enable_discordbox,
                 discord_server_id: this.settings.discord_server_id,

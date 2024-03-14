@@ -42,7 +42,12 @@ class GeneralSettingController extends Controller
             'twitch_url' => 'nullable|url|max:255',
             'tiktok_url' => 'nullable|url|max:255',
             'linkedin_url' => 'nullable|url|max:255',
+            'instagram_url' => 'nullable|url|max:255',
+            'whatsapp_url' => 'nullable|url|max:255',
+            'telegram_url' => 'nullable|url|max:255',
+            'reddit_url' => 'nullable|url|max:255',
             'threads_url' => 'nullable|url|max:255',
+            'github_url' => 'nullable|url|max:255',
             'discord_invite_url' => 'nullable|url|max:255',
             'enable_discordbox' => 'required|boolean',
             'discord_server_id' => 'required_if:enable_discordbox,true|nullable|string|max:255',
@@ -81,8 +86,14 @@ class GeneralSettingController extends Controller
         $settings->twitch_url = $request->input('twitch_url');
         $settings->tiktok_url = $request->input('tiktok_url');
         $settings->linkedin_url = $request->input('linkedin_url');
+        $settings->instagram_url = $request->input('instagram_url');
+        $settings->whatsapp_url = $request->input('whatsapp_url');
+        $settings->telegram_url = $request->input('telegram_url');
+        $settings->reddit_url = $request->input('reddit_url');
+        $settings->threads_url = $request->input('threads_url');
+        $settings->github_url = $request->input('github_url');
+
         $settings->discord_invite_url = $request->input('discord_invite_url');
-        // $settings->threads_url = $request->input('threads_url');
 
         $settings->enable_discordbox = $request->input('enable_discordbox');
         $settings->discord_server_id = $request->input('discord_server_id');

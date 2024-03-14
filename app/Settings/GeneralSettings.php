@@ -33,6 +33,11 @@ class GeneralSettings extends Settings
     public ?string $tiktok_url;
     public ?string $linkedin_url;
     public ?string $threads_url;
+    public ?string $instagram_url;
+    public ?string $whatsapp_url;
+    public ?string $telegram_url;
+    public ?string $reddit_url;
+    public ?string $github_url;
     public ?string $discord_invite_url;
 
     public bool $enable_discordbox;

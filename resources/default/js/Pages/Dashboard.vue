@@ -63,6 +63,12 @@
           :linkedin="generalSettings.linkedin_url"
           :tiktok="generalSettings.tiktok_url"
           :discord="generalSettings.discord_invite_url"
+          :instagram="generalSettings.instagram_url"
+          :whatsapp="generalSettings.whatsapp_url"
+          :telegram="generalSettings.telegram_url"
+          :reddit="generalSettings.reddit_url"
+          :threads="generalSettings.threads_url"
+          :github="generalSettings.github_url"
         />
       </div>
     </div>
