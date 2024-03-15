@@ -13,7 +13,7 @@ class Country extends BaseModel
     protected $casts = [
         'currency' => 'json',
         'languages' => 'json',
-        'latlng' => 'array'
+        'latlng' => 'array',
     ];
 
     protected $appends = ['photo_path'];
@@ -33,11 +33,29 @@ class Country extends BaseModel
         return $this->hasMany(Server::class);
     }
 
+    // if config('app.hide_country') is set then return null for instance of Country
+    public function toArray()
+    {
+        $hideCounty = config('minetrax.hide_country_for_privacy');
+        if ($hideCounty) {
+            return [
+                'id' => 251,
+                'name' => __('Redacted for privacy'),
+                'iso_code' => null,
+                'flag' => null,
+                'photo_path' => url('/images/flags/flags-iso/shiny/48/_unknown.png'),
+            ];
+        }
+
+        return parent::toArray();
+    }
+
     public function getPhotoPathAttribute()
     {
-        if (!$this->iso_code) {
+        if (! $this->iso_code) {
             return url('/images/flags/flags-iso/shiny/48/_unknown.png');
         }
-        return url('/images/flags/flags-iso/shiny/48/'. $this->iso_code. '.png');
+
+        return url('/images/flags/flags-iso/shiny/48/'.$this->iso_code.'.png');
     }
 }

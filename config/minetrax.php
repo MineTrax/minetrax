@@ -338,4 +338,15 @@ return [
     |
     */
     'player_skin_changer_cooldown_in_seconds' => env('PLAYER_SKIN_CHANGER_COOLDOWN_IN_SECONDS', 60),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Hide Country of Player and User everywhere
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, hide country of player and user everywhere in side.
+    |
+    */
+    'hide_country_for_privacy' => env('HIDE_COUNTRY_FOR_PRIVACY', false),
 ];
