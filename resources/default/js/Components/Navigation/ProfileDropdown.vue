@@ -87,6 +87,12 @@
         </jet-dropdown-link>
 
         <jet-dropdown-link
+          :href="route('recruitment-submission.index')"
+        >
+          {{ __("My Applications") }}
+        </jet-dropdown-link>
+
+        <jet-dropdown-link
           v-if="$page.props.playerSkinChangerEnabled"
           :href="route('change-player-skin.show')"
         >

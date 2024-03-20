@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\CustomPage;
 use App\Models\Download;
+use App\Models\Recruitment;
 use App\Settings\GeneralSettings;
 use App\Settings\NavigationSettings;
 use Illuminate\Http\Request;
@@ -52,6 +53,23 @@ class NavigationSettingController extends Controller
                 ],
                 'is_open_in_new_tab' => false,
                 'key' => 'download-'.$item->id,
+            ];
+        }
+
+        // Recruitment which can be added
+        $recruitmentItems = Recruitment::select(['id', 'title', 'slug'])->get();
+        foreach ($recruitmentItems as $item) {
+            $availableNavItems[] = [
+                'type' => 'recruitment',
+                'name' => $item->title,
+                'title' => $item->title,
+                'id' => $item->id,
+                'route' => 'recruitment.show',
+                'route_params' => [
+                    'recruitment' => $item->slug,
+                ],
+                'is_open_in_new_tab' => false,
+                'key' => 'recruitment-'.$item->id,
             ];
         }
 

@@ -103,9 +103,9 @@
             <b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }})
           </span>
           <span v-else>
-            <b>An anonymous user</b>
+            <b>{{ __("An anonymous user") }}</b>
           </span>
-          submitted a custom form.
+          {{ __("submitted a custom form.") }}
         </p>
         <p class="text-xs">
           {{ formatTimeAgoToNow(notification.created_at) }}
@@ -126,6 +126,30 @@
       >
       <div class="m-1">
         <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) commented on a news.</p>
+        <p class="text-xs">
+          {{ formatTimeAgoToNow(notification.created_at) }}
+        </p>
+      </div>
+    </inertia-link>
+
+    <inertia-link
+      v-if="notification.type === 'App\\Notifications\\RecruitmentSubmissionCreatedNotification'"
+      as="div"
+      :href="route('admin.recruitment-submission.show', notification.data.id)"
+      class="flex cursor-pointer"
+    >
+      <img
+        :src="notification.data.causer.profile_photo_url"
+        alt="Profile Picture"
+        class="w-10 h-10 rounded-full m-1"
+      >
+      <div class="m-1">
+        <p>
+          <span>
+            <b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }})
+          </span>
+          {{ __("applied for a recruitment.") }}
+        </p>
         <p class="text-xs">
           {{ formatTimeAgoToNow(notification.created_at) }}
         </p>

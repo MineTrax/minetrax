@@ -2,23 +2,25 @@
 
 namespace App\Models;
 
+use App\Enums\CommentType;
 use App\Traits\HasCommentsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Comment extends BaseModel
 {
-    use HasFactory, HasCommentsTrait;
+    use HasCommentsTrait, HasFactory;
 
     protected $casts = [
-        'is_approved' => 'boolean'
+        'is_approved' => 'boolean',
+        'type' => CommentType::class,
     ];
 
     // Appends permission to each request
     public function toArray(): array
     {
         return parent::toArray() + [
-                'permissions' => $this->permissions(['delete'])
-            ];
+            'permissions' => $this->permissions(['delete']),
+        ];
     }
 
     public function scopeApproved($query)
@@ -57,9 +59,10 @@ class Comment extends BaseModel
     protected function getAuthModelName()
     {
 
-        if (!is_null(config('auth.providers.users.model'))) {
+        if (! is_null(config('auth.providers.users.model'))) {
             return config('auth.providers.users.model');
         }
+
         return User::class;
     }
 }

@@ -212,7 +212,7 @@ function removeNavItem(idx, list) {
                                     </p>
                                     <p>{{ element.name }}</p>
                                     <x-input
-                                      v-if="['custom-page', 'route', 'dropdown', 'download'].includes(element.type)"
+                                      v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
                                       v-model="element.title"
                                       label="Title"
                                       type="text"
@@ -242,7 +242,7 @@ function removeNavItem(idx, list) {
                                               {{ el.name }}
                                             </p>
                                             <x-input
-                                              v-if="['custom-page', 'route', 'dropdown', 'download'].includes(el.type)"
+                                              v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(el.type)"
                                               v-model="el.title"
                                               label="Title"
                                               type="text"
@@ -279,7 +279,7 @@ function removeNavItem(idx, list) {
                                     </p>
                                     <p>{{ element.name }}</p>
                                     <x-input
-                                      v-if="['custom-page', 'route', 'dropdown', 'download'].includes(element.type)"
+                                      v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
                                       v-model="element.title"
                                       label="Title"
                                       type="text"
@@ -309,7 +309,7 @@ function removeNavItem(idx, list) {
                                               {{ el.name }}
                                             </p>
                                             <x-input
-                                              v-if="['custom-page', 'route', 'dropdown', 'download'].includes(el.type)"
+                                              v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(el.type)"
                                               v-model="el.title"
                                               label="Title"
                                               type="text"
@@ -346,7 +346,7 @@ function removeNavItem(idx, list) {
                                     </p>
                                     <p>{{ element.name }}</p>
                                     <x-input
-                                      v-if="['custom-page', 'route', 'dropdown', 'download'].includes(element.type)"
+                                      v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
                                       v-model="element.title"
                                       label="Title"
                                       type="text"
@@ -376,7 +376,7 @@ function removeNavItem(idx, list) {
                                               {{ el.name }}
                                             </p>
                                             <x-input
-                                              v-if="['custom-page', 'route', 'dropdown', 'download'].includes(el.type)"
+                                              v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(el.type)"
                                               v-model="el.title"
                                               label="Title"
                                               type="text"

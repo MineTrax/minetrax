@@ -1,14 +1,14 @@
 <template>
   <AdminLayout>
-    <app-head title="Create Custom Form" />
+    <app-head title="Create Recruitment Form" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("Create Custom Form") }}
+          {{ __("Create Recruitment Form") }}
         </h1>
         <inertia-link
-          :href="route('admin.custom-form.index')"
+          :href="route('admin.recruitment.index')"
           class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
         >
           <span>{{ __("Cancel") }}</span>
@@ -18,7 +18,7 @@
       <div class="mt-10 sm:mt-0">
         <div class="md:grid md:grid-cols-6 md:gap-6">
           <div class="mt-5 md:mt-0 md:col-span-6">
-            <form @submit.prevent="createCustomForm">
+            <form @submit.prevent="createRecruitment">
               <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
                   <div class="grid grid-cols-6 gap-4">
@@ -26,9 +26,9 @@
                       <x-input
                         id="title"
                         v-model="form.title"
-                        :label="__('Title of Custom Form')
+                        :label="__('Title of this Recruitment')
                         "
-                        :help="__('Eg: Contact Us')"
+                        :help="__('Eg: Apply to be a Staff Member')"
                         :error="form.errors.title"
                         type="text"
                         name="title"
@@ -40,9 +40,9 @@
                       <x-input
                         id="slug"
                         v-model="form.slug"
-                        :label="__('Form Slug')"
+                        :label="__('Recruitment Slug')"
                         :help="__(
-                          'Only alphabet, number and dashes. Eg: contact-us'
+                          'Only alphabet, number and dashes. Eg: apply-to-be-a-staff-member'
                         )
                         "
                         :error="form.errors.slug"
@@ -57,9 +57,9 @@
                         id="status"
                         v-model="form.status"
                         name="status"
-                        :label="__('Form Status')"
+                        :label="__('Recruitment Status')"
                         :placeholder="__(
-                          'Select a status of form..'
+                          'Select a status of recruitment..'
                         )
                         "
                         :disable-null="true"
@@ -83,36 +83,30 @@
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
-                      <x-select
-                        id="can_create_submission"
-                        v-model="form.can_create_submission
+                      <x-input
+                        id="max_submission_per_user"
+                        v-model="form.max_submission_per_user"
+                        :label="__('Max Submission Per User')
                         "
-                        name="can_create_submission"
-                        :label="__(
-                          'Permission to Create Submission'
-                        )
-                        "
-                        :placeholder="__(
-                          'Select a who can create submittion for this form..'
-                        )
-                        "
-                        :disable-null="true"
-                        :select-list="canCreateSubmissionList
-                        "
+                        :help="__('How many times a user can reapply after rejection. Leave empty for no limit.')"
+                        :error="form.errors.max_submission_per_user"
+                        type="number"
+                        name="max_submission_per_user"
+                        help-error-flex="flex-row"
                       />
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
                       <x-input
-                        v-if="form.can_create_submission !== 'anyone'"
-                        id="max_submission_per_user"
-                        v-model="form.max_submission_per_user"
-                        :label="__('Max Submission Per User')
+                        v-if="form.max_submission_per_user != 1"
+                        id="submission_cooldown_in_seconds"
+                        v-model="form.submission_cooldown_in_seconds"
+                        :label="__('Submission Cooldown in Seconds')
                         "
-                        :help="__('Leave empty to allow unlimited submission per user.')"
-                        :error="form.errors.max_submission_per_user"
+                        :help="__('After how many seconds user can reapply this application. Leave empty for no cooldown.')"
+                        :error="form.errors.submission_cooldown_in_seconds"
                         type="number"
-                        name="max_submission_per_user"
+                        name="submission_cooldown_in_seconds"
                         help-error-flex="flex-row"
                       />
                     </div>
@@ -123,12 +117,66 @@
                         v-model="form.min_role_weight_to_view_submission"
                         :label="__('Min Staff Role Weight to View Submission')
                         "
-                        :help="__('Leave empty to allow any staff with view custom_form_submissions permission to view submissions.')"
+                        :help="__('Leave empty to allow any staff with [view recruitment_submissions] permission to view submissions.')"
                         :error="form.errors.min_role_weight_to_view_submission"
                         type="number"
                         name="min_role_weight_to_view_submission"
                         help-error-flex="flex-row"
                       />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="min_role_weight_to_vote_on_submission"
+                        v-model="form.min_role_weight_to_vote_on_submission"
+                        :label="__('Min Staff Role Weight to Vote on Submission')
+                        "
+                        :help="__('Leave empty to allow any staff with [vote recruitment_submissions] permission to vote on submissions.')"
+                        :error="form.errors.min_role_weight_to_vote_on_submission"
+                        type="number"
+                        name="min_role_weight_to_vote_on_submission"
+                        help-error-flex="flex-row"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-6">
+                      <x-input
+                        id="min_role_weight_to_act_on_submission"
+                        v-model="form.min_role_weight_to_act_on_submission"
+                        :label="__('Min Staff Role Weight to Act on Submission')
+                        "
+                        :help="__('Min staff role weight required to Approve/Reject on submission. Leave empty to allow any staff with [acton recruitment_submissions] permission to act on submissions.')"
+                        :error="form.errors.min_role_weight_to_act_on_submission"
+                        type="number"
+                        name="min_role_weight_to_act_on_submission"
+                        help-error-flex="flex-row"
+                      />
+                    </div>
+
+                    <div class="flex items-center col-span-6 sm:col-span-3">
+                      <fieldset>
+                        <div class="mt-4 flex space-x-4">
+                          <XCheckbox
+                            id="is_allow_messages_from_users"
+                            v-model="form.is_allow_messages_from_users
+                            "
+                            :label="__(
+                              'Enable Messages Feature'
+                            )
+                            "
+                            :help="__(
+                              'Enable messages feature for this recruitment. User & Staff will be able to send messages.'
+                            )
+                            "
+                            name="is_allow_messages_from_users"
+                          />
+                        </div>
+                        <jet-input-error
+                          :message="form.errors.is_allow_messages_from_users
+                          "
+                          class="mt-2"
+                        />
+                      </fieldset>
                     </div>
 
                     <div class="flex items-center col-span-6 sm:col-span-3">
@@ -143,7 +191,7 @@
                             )
                             "
                             :help="__(
-                              'Notify staff members (with view submission permission) when new submission is made for this form.'
+                              'Notify staff members (with view permission) when someone applies for this recruitment.'
                             )
                             "
                             name="is_notify_staff_on_submission"
@@ -161,26 +209,73 @@
                       <fieldset>
                         <div class="mt-4 flex space-x-4">
                           <XCheckbox
-                            id="is_visible_in_listing"
-                            v-model="form.is_visible_in_listing
+                            id="is_allow_only_player_linked_users"
+                            v-model="form.is_allow_only_player_linked_users
                             "
                             :label="__(
-                              'Is Visible in Listing'
+                              'Allow only Player Linked Users'
                             )
                             "
                             :help="__(
-                              'Allow this form to be listed in custom form listing page.'
+                              'Allow only users who have linked player to their account to apply.'
                             )
                             "
-                            name="is_visible_in_listing"
+                            name="is_allow_only_player_linked_users"
                           />
                         </div>
                         <jet-input-error
-                          :message="form.errors.is_visible_in_listing
+                          :message="form.errors.is_allow_only_player_linked_users
                           "
                           class="mt-2"
                         />
                       </fieldset>
+                    </div>
+
+                    <div class="flex items-center col-span-6 sm:col-span-3">
+                      <fieldset>
+                        <div class="mt-4 flex space-x-4">
+                          <XCheckbox
+                            id="is_allow_only_verified_users"
+                            v-model="form.is_allow_only_verified_users
+                            "
+                            :label="__(
+                              'Allow only Verified Users'
+                            )
+                            "
+                            :help="__(
+                              'Allow only verified users to apply for this recruitment.'
+                            )
+                            "
+                            name="is_allow_only_verified_users"
+                          />
+                        </div>
+                        <jet-input-error
+                          :message="form.errors.is_allow_only_verified_users
+                          "
+                          class="mt-2"
+                        />
+                      </fieldset>
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-select
+                        id="related_role_id"
+                        v-model="form.related_role_id
+                        "
+                        name="related_role_id"
+                        :label="__(
+                          'This Recruitment is Hiring for'
+                        )
+                        "
+                        :placeholder="__(
+                          'Not Applicable (None)'
+                        )
+                        "
+                        :disable-null="false"
+                        :select-list="roles
+                        "
+                        :help="__('If this recruitment is for hiring of a specific role, select the role here.')"
+                      />
                     </div>
 
                     <div class="flex-col col-span-6 space-y-1 sm:col-span-6">
@@ -388,7 +483,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    {{ __("Create Custom Form") }}
+                    {{ __("Create Recruitment") }}
                   </loading-button>
                 </div>
               </div>
@@ -439,17 +534,18 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import {useFormKit} from '@/Composables/useFormKit';
 import { kebabCase } from 'lodash';
 
-const formStatusList = {
-    draft: 'Draft - Form is under development and not visible to users',
-    active: 'Active - Form is actively accepting submissions',
-    disabled: 'Disabled - Form is disabled for new submissions',
-    archived: 'Archived - Form is archived and not visible to users',
-};
+defineProps({
+    roles: {
+        type: Array,
+        required: true,
+    },
+});
 
-const canCreateSubmissionList = {
-    anyone: 'Anyone - Anyone including Guest can submit this form',
-    auth: 'Auth Only - Only registered users can submit this form',
-    staff: 'Staff Only - Only staff members (is_staff) can submit this form',
+const formStatusList = {
+    draft: 'Draft - Recruitment is under development and not visible to users',
+    active: 'Active - Recruitment is actively accepting submissions',
+    disabled: 'Disabled - Recruitment is disabled for new submissions',
+    archived: 'Archived - Recruitment is archived and not visible to users',
 };
 
 const formFieldType = {
@@ -482,46 +578,47 @@ const form = useForm({
     slug: '',
     status: 'draft',
     description: '',
-    can_create_submission: 'anyone',
     max_submission_per_user: null,
+    submission_cooldown_in_seconds: null,
+    is_allow_only_player_linked_users: false,
+    is_allow_only_verified_users: false,
+    is_allow_messages_from_users: true,
     min_role_weight_to_view_submission: null,
+    min_role_weight_to_vote_on_submission: null,
+    min_role_weight_to_act_on_submission: null,
     is_notify_staff_on_submission: true,
-    is_visible_in_listing: true,
+    related_role_id: null,
     fields: [
         {
-            type: 'text',
-            label: 'Name',
-            name: 'name',
+            type: 'number',
+            label: 'Years of Experience',
+            name: 'experience',
             placeholder: null,
             help: null,
-            validation: 'required|length:3,100',
+            validation: 'required|number',
             options: null,
         },
         {
-            type: 'select',
-            label: 'Type',
-            name: 'select',
+            type: 'textarea',
+            label: 'Tell us about yourself',
+            name: 'aboutme',
             placeholder: null,
-            help: null,
-            validation: 'required',
-            options: 'Type1,Type2,Type3',
+            help: 'Write about your experience, skills, and why you want to join us.',
+            validation: 'required|string',
+            options: null,
         },
     ],
 });
 
 let easyMDE = null;
 
-const createCustomForm = () => {
+const createRecruitment = () => {
     form.description = easyMDE.value();
     form.fields.map(item => {
         item.name = item.label.toLowerCase().replace(/ /g, '_');
     });
 
-    if (form.can_create_submission === 'anyone') {
-        form.max_submission_per_user = null;
-    }
-
-    form.post(route('admin.custom-form.store'), {});
+    form.post(route('admin.recruitment.store'), {});
 };
 
 onMounted(() => {

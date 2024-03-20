@@ -17,6 +17,8 @@ use App\Models\Server;
 use App\Models\Session;
 use App\Models\Shout;
 use App\Models\User;
+use App\Policies\RecruitmentPolicy;
+use App\Policies\RecruitmentSubmissionPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -43,6 +45,8 @@ class AuthServiceProvider extends ServiceProvider
         Download::class => \App\Policies\DownloadPolicy::class,
         CustomForm::class => \App\Policies\CustomFormPolicy::class,
         CustomFormSubmission::class => \App\Policies\CustomFormSubmissionPolicy::class,
+        RecruitmentPolicy::class => \App\Policies\RecruitmentPolicy::class,
+        RecruitmentSubmissionPolicy::class => \App\Policies\RecruitmentSubmissionPolicy::class,
     ];
 
     /**
@@ -53,9 +57,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         // Super Admin can do anything even if that permission is missing for him.
-        Gate::before(function ($user, $ability) {
-            return $user->hasRole(Role::SUPER_ADMIN_ROLE_NAME) ? true : null;
-        });
+        // TODO: Uncomment
+        // Gate::before(function ($user, $ability) {
+        //     return $user->hasRole(Role::SUPER_ADMIN_ROLE_NAME) ? true : null;
+        // });
 
         Gate::define('viewPulse', function (User $user) {
             return $user->can('view pulse_admin_dashboard');

@@ -68,6 +68,10 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('forms/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'show'])->name('custom-form.show');
     Route::post('forms/{customForm:slug}', [\App\Http\Controllers\CustomFormController::class, 'submit'])->name('custom-form.submit');
 
+    // Recruitment (Public)
+    Route::get('recruitments', [\App\Http\Controllers\RecruitmentController::class, 'index'])->name('recruitment.index');
+    Route::get('recruitments/{recruitment:slug}', [\App\Http\Controllers\RecruitmentController::class, 'show'])->name('recruitment.show');
+
     // Locale
     Route::get('locale/list', [\App\Http\Controllers\LocaleController::class, 'getAvailableLocales'])->name('locale.list');
     Route::post('locale/set', [\App\Http\Controllers\LocaleController::class, 'setLocale'])->name('locale.set');
@@ -121,6 +125,14 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     // Server Chatlog
     Route::get('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'index'])->name('chatlog.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);
     Route::post('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'sendToServer'])->name('chatlog.send')->middleware(['forbid-muted-user', 'throttle:chat']);
+
+    // Recruitment (Authenticated)
+    Route::post('recruitments/{recruitment:slug}', [\App\Http\Controllers\RecruitmentController::class, 'submit'])->name('recruitment.submit');
+    Route::get('recruitments/submissions/my', [\App\Http\Controllers\RecruitmentSubmissionController::class, 'index'])->name('recruitment-submission.index');
+    Route::get('recruitments/{recruitment:slug}/submissions/{submission}', [\App\Http\Controllers\RecruitmentSubmissionController::class, 'show'])->name('recruitment-submission.show');
+    Route::post('recruitments/{recruitment:slug}/submissions/{submission}/withdraw', [\App\Http\Controllers\RecruitmentSubmissionController::class, 'withdraw'])->name('recruitment-submission.withdraw');
+    Route::get('recruitments/{recruitment:slug}/submissions/{submission}/messages', [\App\Http\Controllers\RecruitmentSubmissionController::class, 'indexMessages'])->name('recruitment-submission.message.index');
+    Route::post('recruitments/{recruitment:slug}/submissions/{submission}/messages', [\App\Http\Controllers\RecruitmentSubmissionController::class, 'postMessage'])->name('recruitment-submission.message.store')->middleware('throttle:chat');
 });
 
 /**
@@ -274,4 +286,22 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::delete('custom-form-submission/{submission}', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'destroy'])->name('custom-form-submission.delete')->withTrashed();
     Route::post('custom-form-submission/{submission}/archive', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'archive'])->name('custom-form-submission.archive');
     Route::post('custom-form-submission/{submission}/restore', [\App\Http\Controllers\Admin\CustomFormSubmissionController::class, 'restore'])->name('custom-form-submission.restore')->withTrashed();
+
+    Route::get('recruitment', [\App\Http\Controllers\Admin\RecruitmentController::class, 'index'])->name('recruitment.index');
+    Route::get('recruitment/create', [\App\Http\Controllers\Admin\RecruitmentController::class, 'create'])->name('recruitment.create');
+    Route::post('recruitment', [\App\Http\Controllers\Admin\RecruitmentController::class, 'store'])->name('recruitment.store');
+    Route::get('recruitment/{recruitment}', [\App\Http\Controllers\Admin\RecruitmentController::class, 'show'])->name('recruitment.show'); // TODO
+    Route::get('recruitment/{recruitment}/edit', [\App\Http\Controllers\Admin\RecruitmentController::class, 'edit'])->name('recruitment.edit');
+    Route::put('recruitment/{recruitment}', [\App\Http\Controllers\Admin\RecruitmentController::class, 'update'])->name('recruitment.update');
+    Route::delete('recruitment/{recruitment}', [\App\Http\Controllers\Admin\RecruitmentController::class, 'destroy'])->name('recruitment.delete');
+
+    Route::get('recruitment-submission/open', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'indexOpen'])->name('recruitment-submission.index-open');
+    Route::get('recruitment-submission/closed', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'indexClosed'])->name('recruitment-submission.index-closed');
+    Route::get('recruitment-submission/{submission}', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'show'])->name('recruitment-submission.show');
+    Route::delete('recruitment-submission/{submission}', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'destroy'])->name('recruitment-submission.delete');
+    Route::post('recruitment-submission/{submission}/act', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'act'])->name('recruitment-submission.act');
+
+    Route::get('recruitment-submission/{submission}/message', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'indexMessages'])->name('recruitment-submission.message.index');
+    Route::post('recruitment-submission/{submission}/message', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'postMessage'])->name('recruitment-submission.message.store')->middleware('throttle:chat');
+    Route::delete('recruitment-submission/{submission}/message/{message}', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'deleteMessage'])->name('recruitment-submission.message.delete');
 });

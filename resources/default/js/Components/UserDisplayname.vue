@@ -17,7 +17,11 @@ defineProps({
     showUsername: {
         type: Boolean,
         default: false
-    }
+    },
+    showBadges: {
+        type: Boolean,
+        default: true
+    },
 });
 </script>
 
@@ -36,7 +40,7 @@ defineProps({
     > @{{ user.username }}</span>
 
     <Icon
-      v-if="user.verified_at"
+      v-if="user.verified_at && showBadges"
       v-tippy
       name="verified-check-fill"
       :title="__('Verified Account')"
@@ -44,7 +48,7 @@ defineProps({
       :class="iconClass"
     />
     <Icon
-      v-if="user.is_staff"
+      v-if="user.is_staff && showBadges"
       v-tippy
       name="shield-check-fill"
       :title="__('Staff Member')"
@@ -52,7 +56,7 @@ defineProps({
       :class="iconClass"
     />
     <Icon
-      v-if="user.muted_at"
+      v-if="user.muted_at && showBadges"
       v-tippy
       name="volume-off-fill"
       :title="__('Muted User')"
@@ -60,7 +64,7 @@ defineProps({
       :class="iconClass"
     />
 
-    <template v-if="user.sticky_badges && user.sticky_badges.length > 0">
+    <template v-if="user.sticky_badges && user.sticky_badges.length > 0 && showBadges">
       <img
         v-for="badge in user.sticky_badges"
         :key="badge.id"

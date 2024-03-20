@@ -45,8 +45,8 @@ const clickHandler = function (event, el, binding) {
         reverseButtons: true,
         focusCancel: true,
         returnFocus: false,
-        confirmButtonColor: '#ed3f20',
-        cancelButtonColor: '#909090',
+        confirmButtonColor: options.confirmButtonColor || '#ed3f20',
+        cancelButtonColor: options.cancelButtonColor || '#909090',
     }).then(result => {
         if (result.isConfirmed) getThenCallback(binding, el);
     }).catch(e => {

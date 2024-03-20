@@ -169,6 +169,14 @@ class PhpVarsToJsTransformer extends Component
                     ],
                     [
                         'type' => 'route',
+                        'name' => 'Recruitments',
+                        'title' => 'Recruitments',
+                        'route' => 'recruitment.index',
+                        'key' => 'route-recruitments-01',
+                        'authenticated' => false,
+                    ],
+                    [
+                        'type' => 'route',
                         'name' => 'Custom Forms',
                         'title' => 'Forms',
                         'route' => 'custom-form.index',

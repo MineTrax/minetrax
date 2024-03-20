@@ -13,7 +13,8 @@ import {
     TrophyIcon,
     CloudArrowDownIcon,
     ClipboardDocumentListIcon,
-    BugAntIcon
+    BugAntIcon,
+    AcademicCapIcon,
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
@@ -191,6 +192,38 @@ const navItems = [
         children: [],
         icon: CircleStackIcon,
         visible: canWild('ask_db')
+    },
+    {
+        label: 'Recruitments',
+        active: false,
+        children: [
+            {
+                label: 'List Recruitment Forms',
+                href: route('admin.recruitment.index'),
+                active: route().current('admin.recruitment.index'),
+                children: [],
+                icon: null,
+                visible: can('read recruitments')
+            },
+            {
+                label: 'Open Requests',
+                href: route('admin.recruitment-submission.index-open'),
+                active: route().current('admin.recruitment-submission.index-open'),
+                children: [],
+                icon: null,
+                visible: can('read recruitment_submissions')
+            },
+            {
+                label: 'Closed Requests',
+                href: route('admin.recruitment-submission.index-closed'),
+                active: route().current('admin.recruitment-submission.index-closed'),
+                children: [],
+                icon: null,
+                visible: can('read recruitment_submissions')
+            },
+        ],
+        icon: AcademicCapIcon,
+        visible: canWild('recruitments')
     },
     {
         label: 'Custom Forms',
