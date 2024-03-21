@@ -35,6 +35,9 @@ const props = defineProps({
     userLastActiveSubmission: {
         type: Object,
     },
+    userLastApprovedSubmission: {
+        type: Object,
+    }
 });
 
 const formSchema = useFormKit().generateSchemaFromFieldsArray(
@@ -214,6 +217,46 @@ watchEffect(() => {
                   "
                 >
                   {{ __("View Application") }}
+                </InertiaLink>
+              </div>
+            </template>
+          </AlertCard>
+
+          <AlertCard
+            v-if="userLastApprovedSubmission"
+            text-color="text-orange-800 dark:text-orange-500"
+            border-color="border-orange-500"
+          >
+            {{ __("Already approved in past! Wanna apply again?") }}
+            <template #body>
+              <p>
+                {{
+                  __(
+                    "You have already applied to this application in past. Approved on :date.",
+                    {
+                      date: formatToDayDateString(
+                        userLastApprovedSubmission.updated_at
+                      ),
+                    }
+                  )
+                }}
+              </p>
+              <p>
+                {{ __("You may wanna check that before applying again.") }}
+              </p>
+
+              <div class="flex mt-2">
+                <InertiaLink
+                  class="p-2 border border-orange-800 dark:border-orange-500 rounded text-orange-800 dark:text-orange-500 hover:bg-orange-200 dark:hover:bg-orange-900"
+                  :href="
+                    route('recruitment-submission.show', {
+                      recruitment: recruitment.slug,
+                      submission:
+                        userLastApprovedSubmission.id,
+                    })
+                  "
+                >
+                  {{ __("View Approved Application") }}
                 </InertiaLink>
               </div>
             </template>

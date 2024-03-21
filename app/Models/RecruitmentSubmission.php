@@ -13,6 +13,7 @@ class RecruitmentSubmission extends BaseModel
     protected $casts = [
         'data' => 'array',
         'status' => RecruitmentSubmissionStatus::class,
+        'last_act_at' => 'datetime',
     ];
 
     public function recruitment()

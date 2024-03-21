@@ -75,6 +75,12 @@ class RecruitmentController extends Controller
                 RecruitmentSubmissionStatus::INPROGRESS,
             ])->latest()->first();
         }
+        $userLastApprovedSubmission = null;
+        if ($userSubmissionsCount > 0) {
+            $userLastApprovedSubmission = $recruitment->submissions()
+                ->where('user_id', $user->id)
+                ->where('status', RecruitmentSubmissionStatus::APPROVED)->latest()->first();
+        }
 
         return Inertia::render('Recruitment/ShowRecruitment', [
             'recruitment' => $recruitment->append('description_html'),
@@ -85,6 +91,7 @@ class RecruitmentController extends Controller
             'userSubmissionsCount' => $userSubmissionsCount,
             'secondsSinceLastSubmission' => $secondsSinceLastSubmission,
             'userLastActiveSubmission' => $lastActiveSubmission,
+            'userLastApprovedSubmission' => $userLastApprovedSubmission,
         ]);
     }
 
