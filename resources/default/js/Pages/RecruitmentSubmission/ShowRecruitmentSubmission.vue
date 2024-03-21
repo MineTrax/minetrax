@@ -16,6 +16,8 @@ import { ref } from 'vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import { startCase } from 'lodash';
+import AlertCard from '@/Components/AlertCard.vue';
+import { CheckCircleIcon } from '@heroicons/vue/24/solid';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
@@ -74,6 +76,19 @@ const withdrawForm = useForm({
           </Link>
         </div>
       </div>
+
+      <AlertCard
+        v-if="submission.status.value === 'pending'"
+        title-class="flex items-center"
+        text-color="text-green-600 dark:text-green-400"
+        border-color="border-green-500"
+      >
+        {{ __("Success! A staff will soon review your application. Please be patience.") }}
+        <template #icon>
+          <CheckCircleIcon class="h-6 w-6 text-green-500 mr-2" />
+        </template>
+      </AlertCard>
+
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="flex w-full gap-4 flex-col md:flex-row">
           <div class="md:w-1/2 space-y-4">
@@ -218,7 +233,7 @@ const withdrawForm = useForm({
     >
       <template #title>
         <h3 class="text-lg font-bold">
-          {{ __("Withdraw Application") }}
+          {{ __("Withdraw & Cancel Application") }}
         </h3>
         <p
           v-if="submission.recruitment.submission_cooldown_in_seconds"
@@ -233,7 +248,7 @@ const withdrawForm = useForm({
       <template #content>
         <XTextarea
           v-model="withdrawForm.reason"
-          :label="__('Reason for Withdrawing')"
+          :label="__('Please provide a reason for withdrawing.')"
           :error="withdrawForm.errors.reason"
         />
       </template>
