@@ -71,47 +71,53 @@ const closeModal = () => {
 </script>
 
 <template>
-    <span>
-        <span @click="startConfirmingPassword">
-            <slot />
-        </span>
-
-        <JetDialogModal :show="confirmingPassword" @close="closeModal">
-            <template #title>
-                {{ title }}
-            </template>
-
-            <template #content>
-                {{ content }}
-
-                <div class="mt-4">
-                    <JetInput
-                        ref="passwordInput"
-                        v-model="form.password"
-                        type="password"
-                        class="mt-1 block w-3/4"
-                        :placeholder="__('Password')"
-                        @keyup.enter="confirmPassword"
-                    />
-
-                    <JetInputError :message="form.error" class="mt-2" />
-                </div>
-            </template>
-
-            <template #footer>
-                <JetSecondaryButton @click="closeModal">
-                    {{ __("Cancel") }}
-                </JetSecondaryButton>
-
-                <JetButton
-                    class="ml-3"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                    @click="confirmPassword"
-                >
-                    {{ button }}
-                </JetButton>
-            </template>
-        </JetDialogModal>
+  <span>
+    <span @click="startConfirmingPassword">
+      <slot />
     </span>
+
+    <JetDialogModal
+      :show="confirmingPassword"
+      @close="closeModal"
+    >
+      <template #title>
+        {{ title }}
+      </template>
+
+      <template #content>
+        {{ content }}
+
+        <div class="mt-4">
+          <JetInput
+            ref="passwordInput"
+            v-model="form.password"
+            type="password"
+            class="mt-1 block w-3/4"
+            :placeholder="__('Password')"
+            @keyup.enter="confirmPassword"
+          />
+
+          <JetInputError
+            :message="form.error"
+            class="mt-2"
+          />
+        </div>
+      </template>
+
+      <template #footer>
+        <JetSecondaryButton @click="closeModal">
+          {{ __("Cancel") }}
+        </JetSecondaryButton>
+
+        <JetButton
+          class="ml-3"
+          :class="{ 'opacity-25': form.processing }"
+          :disabled="form.processing"
+          @click="confirmPassword"
+        >
+          {{ button }}
+        </JetButton>
+      </template>
+    </JetDialogModal>
+  </span>
 </template>
