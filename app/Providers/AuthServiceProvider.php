@@ -57,10 +57,9 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         // Super Admin can do anything even if that permission is missing for him.
-        // TODO: Uncomment
-        // Gate::before(function ($user, $ability) {
-        //     return $user->hasRole(Role::SUPER_ADMIN_ROLE_NAME) ? true : null;
-        // });
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole(Role::SUPER_ADMIN_ROLE_NAME) ? true : null;
+        });
 
         Gate::define('viewPulse', function (User $user) {
             return $user->can('view pulse_admin_dashboard');

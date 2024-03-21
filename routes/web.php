@@ -290,7 +290,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('recruitment', [\App\Http\Controllers\Admin\RecruitmentController::class, 'index'])->name('recruitment.index');
     Route::get('recruitment/create', [\App\Http\Controllers\Admin\RecruitmentController::class, 'create'])->name('recruitment.create');
     Route::post('recruitment', [\App\Http\Controllers\Admin\RecruitmentController::class, 'store'])->name('recruitment.store');
-    Route::get('recruitment/{recruitment}', [\App\Http\Controllers\Admin\RecruitmentController::class, 'show'])->name('recruitment.show'); // TODO
+    Route::get('recruitment/{recruitment}', [\App\Http\Controllers\Admin\RecruitmentController::class, 'show'])->name('recruitment.show');
     Route::get('recruitment/{recruitment}/edit', [\App\Http\Controllers\Admin\RecruitmentController::class, 'edit'])->name('recruitment.edit');
     Route::put('recruitment/{recruitment}', [\App\Http\Controllers\Admin\RecruitmentController::class, 'update'])->name('recruitment.update');
     Route::delete('recruitment/{recruitment}', [\App\Http\Controllers\Admin\RecruitmentController::class, 'destroy'])->name('recruitment.delete');
