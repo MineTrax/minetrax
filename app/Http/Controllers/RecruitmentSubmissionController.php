@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\CommentType;
 use App\Enums\RecruitmentSubmissionStatus;
+use App\Events\RecruitmentSubmissionCommentCreated;
 use App\Events\RecruitmentSubmissionStatusChanged;
 use App\Models\Recruitment;
 use App\Models\RecruitmentSubmission;
@@ -142,7 +143,7 @@ class RecruitmentSubmissionController extends Controller
         $comment = $submission->comment($request->message, CommentType::RECRUITMENT_APPLICANT_MESSAGE);
 
         // Fire event
-        // NewsCommentCreated::dispatch($comment, $news, $request->user());
+        RecruitmentSubmissionCommentCreated::dispatch($comment, $submission, $request->user());
 
         return response()->json([
             'status' => 'ok',

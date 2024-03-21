@@ -2,13 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Enums\RecruitmentSubmissionStatus;
-use App\Events\RecruitmentSubmissionStatusChanged;
+use App\Enums\CommentType;
+use App\Events\RecruitmentSubmissionCommentCreated;
 use App\Models\User;
-use App\Notifications\RecruitmentSubmissionStatusChangedNotification;
+use App\Notifications\RecruitmentSubmissionCommentCreatedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NotifyUsersOnRecruitmentSubmissionStatusChanged implements ShouldQueue
+class NotifyUsersOnRecruitmentSubmissionCommentCreated implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -21,11 +21,12 @@ class NotifyUsersOnRecruitmentSubmissionStatusChanged implements ShouldQueue
     /**
      * Handle the event.
      */
-    public function handle(RecruitmentSubmissionStatusChanged $event): void
+    public function handle(RecruitmentSubmissionCommentCreated $event): void
     {
+        $comment = $event->comment;
         $recruitment = $event->submission->recruitment;
 
-        if ($event->submission->status == RecruitmentSubmissionStatus::WITHDRAWN) { // Notify Staff
+        if ($comment->type == CommentType::RECRUITMENT_APPLICANT_MESSAGE) { // Notify Staff
             if (! $recruitment->is_notify_staff_on_submission) {
                 return;
             }
@@ -37,12 +38,12 @@ class NotifyUsersOnRecruitmentSubmissionStatusChanged implements ShouldQueue
                     continue;
                 }
                 $user->notify(
-                    new RecruitmentSubmissionStatusChangedNotification($event->submission, $event->causer, $event->previousStatus)
+                    new RecruitmentSubmissionCommentCreatedNotification($comment, $event->submission, $event->causer)
                 );
             }
-        } else { // Notify Applicant!
+        } else if ($comment->type == CommentType::RECRUITMENT_STAFF_MESSAGE) { // Notify Applicant!
             $event->submission->user->notify(
-                new RecruitmentSubmissionStatusChangedNotification($event->submission, $event->causer, $event->previousStatus)
+                new RecruitmentSubmissionCommentCreatedNotification($comment, $event->submission, $event->causer)
             );
         }
     }

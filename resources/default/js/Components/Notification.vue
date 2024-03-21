@@ -1,12 +1,17 @@
 <template>
   <div
-    :class="{'bg-light-blue-50 rounded dark:bg-cool-gray-600 dark:bg-opacity-25' : notification.read_at == null}"
+    :class="{
+      'bg-light-blue-50 rounded dark:bg-cool-gray-600 dark:bg-opacity-25':
+        notification.read_at == null,
+    }"
     @click="markAsRead"
   >
     <inertia-link
-      v-if="notification.type === 'App\\Notifications\\PostCommentedByUser'"
+      v-if="
+        notification.type === 'App\\Notifications\\PostCommentedByUser'
+      "
       as="div"
-      :href="route('post.show',notification.data.post_id)"
+      :href="route('post.show', notification.data.post_id)"
       class="flex cursor-pointer"
     >
       <img
@@ -15,7 +20,10 @@
         class="w-10 h-10 rounded-full m-1"
       >
       <div class="m-1">
-        <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) commented on your post.</p>
+        <p>
+          <b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) commented on
+          your post.
+        </p>
         <p class="text-xs">
           {{ formatTimeAgoToNow(notification.created_at) }}
         </p>
@@ -25,7 +33,7 @@
     <inertia-link
       v-if="notification.type === 'App\\Notifications\\PostLikedByUser'"
       as="div"
-      :href="route('post.show',notification.data.post_id)"
+      :href="route('post.show', notification.data.post_id)"
       class="flex cursor-pointer"
     >
       <img
@@ -34,7 +42,9 @@
         class="w-10 h-10 rounded-full m-1"
       >
       <div class="m-1">
-        <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) liked your post.</p>
+        <p>
+          <b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) liked your post.
+        </p>
         <p class="text-xs">
           {{ formatTimeAgoToNow(notification.created_at) }}
         </p>
@@ -53,7 +63,9 @@
         class="w-10 h-10 rounded-full m-1"
       >
       <div class="m-1">
-        <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) muted you.</p>
+        <p>
+          <b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) muted you.
+        </p>
         <p class="text-xs">
           {{ formatTimeAgoToNow(notification.created_at) }}
         </p>
@@ -72,7 +84,9 @@
         class="w-10 h-10 rounded-full m-1"
       >
       <div class="m-1">
-        <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) banned you.</p>
+        <p>
+          <b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) banned you.
+        </p>
         <p class="text-xs">
           {{ formatTimeAgoToNow(notification.created_at) }}
         </p>
@@ -80,9 +94,14 @@
     </inertia-link>
 
     <inertia-link
-      v-if="notification.type === 'App\\Notifications\\CustomFormSubmissionCreatedNotification'"
+      v-if="
+        notification.type ===
+          'App\\Notifications\\CustomFormSubmissionCreatedNotification'
+      "
       as="div"
-      :href="route('admin.custom-form-submission.show', notification.data.id)"
+      :href="
+        route('admin.custom-form-submission.show', notification.data.id)
+      "
       class="flex cursor-pointer"
     >
       <img
@@ -114,9 +133,12 @@
     </inertia-link>
 
     <inertia-link
-      v-if="notification.type === 'App\\Notifications\\NewsCommentedByUserNotification'"
+      v-if="
+        notification.type ===
+          'App\\Notifications\\NewsCommentedByUserNotification'
+      "
       as="div"
-      :href="route('news.show',notification.data.news.slug)"
+      :href="route('news.show', notification.data.news.slug)"
       class="flex cursor-pointer"
     >
       <img
@@ -125,7 +147,10 @@
         class="w-10 h-10 rounded-full m-1"
       >
       <div class="m-1">
-        <p><b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) commented on a news.</p>
+        <p>
+          <b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }}) commented on a
+          news.
+        </p>
         <p class="text-xs">
           {{ formatTimeAgoToNow(notification.created_at) }}
         </p>
@@ -133,9 +158,14 @@
     </inertia-link>
 
     <inertia-link
-      v-if="notification.type === 'App\\Notifications\\RecruitmentSubmissionCreatedNotification'"
+      v-if="
+        notification.type ===
+          'App\\Notifications\\RecruitmentSubmissionCreatedNotification'
+      "
       as="div"
-      :href="route('admin.recruitment-submission.show', notification.data.id)"
+      :href="
+        route('admin.recruitment-submission.show', notification.data.id)
+      "
       class="flex cursor-pointer"
     >
       <img
@@ -157,15 +187,20 @@
     </inertia-link>
 
     <inertia-link
-      v-if="notification.type === 'App\\Notifications\\RecruitmentSubmissionStatusChangedNotification'"
+      v-if="
+        notification.type ===
+          'App\\Notifications\\RecruitmentSubmissionStatusChangedNotification'
+      "
       as="div"
       :href="
-        notification.data.status == 'withdrawn' ?
-          route('admin.recruitment-submission.show', notification.data.id)
-          :
-          route('recruitment-submission.show', {
-            'recruitment': notification.data.recruitment.slug,
-            'submission' : notification.data.id
+        notification.data.for_staff
+          ? route(
+            'admin.recruitment-submission.show',
+            notification.data.id
+          )
+          : route('recruitment-submission.show', {
+            recruitment: notification.data.recruitment.slug,
+            submission: notification.data.id,
           })
       "
       class="flex cursor-pointer"
@@ -204,6 +239,47 @@
         </p>
       </div>
     </inertia-link>
+
+    <inertia-link
+      v-if="
+        notification.type ===
+          'App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification'
+      "
+      as="div"
+      :href="
+        notification.data.for_staff
+          ? route(
+            'admin.recruitment-submission.show',
+            notification.data.submission_id
+          )
+          : route('recruitment-submission.show', {
+            recruitment: notification.data.recruitment.slug,
+            submission: notification.data.submission_id,
+          })
+      "
+      class="flex cursor-pointer"
+    >
+      <img
+        :src="notification.data.causer.profile_photo_url"
+        alt="Profile Picture"
+        class="w-10 h-10 rounded-full m-1"
+      >
+      <div class="m-1">
+        <p>
+          <span v-if="notification.data.for_staff">
+            {{ __("New message received on a recruitment application.") }}
+          </span>
+          <span v-else>
+            {{ __("Your application has a new message from @:username", {
+              username: notification.data.causer.username
+            }) }}
+          </span>
+        </p>
+        <p class="text-xs">
+          {{ formatTimeAgoToNow(notification.created_at) }}
+        </p>
+      </div>
+    </inertia-link>
   </div>
 </template>
 
@@ -216,16 +292,16 @@ export default {
         notification: Object,
     },
     setup() {
-        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
-        return {formatTimeAgoToNow, formatToDayDateString};
+        const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
+        return { formatTimeAgoToNow, formatToDayDateString };
     },
 
     methods: {
         markAsRead() {
             axios.post(route('notification.mark-as-read'), {
-                notifications: [this.notification.id]
+                notifications: [this.notification.id],
             });
-        }
-    }
+        },
+    },
 };
 </script>

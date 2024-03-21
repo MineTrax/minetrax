@@ -6,11 +6,13 @@ use App\Events\CustomFormSubmissionCreated;
 use App\Events\MinecraftPlayerEventCreated;
 use App\Events\MinecraftPlayerSessionCreated;
 use App\Events\NewsCommentCreated;
+use App\Events\RecruitmentSubmissionCommentCreated;
 use App\Events\RecruitmentSubmissionCreated;
 use App\Events\RecruitmentSubmissionStatusChanged;
 use App\Listeners\NotifyStaffOnCustomFormSubmission;
 use App\Listeners\NotifyStaffOnNewsComment;
 use App\Listeners\NotifyStaffOnRecruitmentSubmission;
+use App\Listeners\NotifyUsersOnRecruitmentSubmissionCommentCreated;
 use App\Listeners\NotifyUsersOnRecruitmentSubmissionStatusChanged;
 use App\Listeners\UpdateStatsOnMinecraftPlayerEvent;
 use App\Listeners\UpsertPlayerOnSessionStart;
@@ -51,6 +53,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         RecruitmentSubmissionStatusChanged::class => [
             NotifyUsersOnRecruitmentSubmissionStatusChanged::class,
+        ],
+        RecruitmentSubmissionCommentCreated::class => [
+            NotifyUsersOnRecruitmentSubmissionCommentCreated::class,
         ],
     ];
 

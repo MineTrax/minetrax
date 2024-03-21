@@ -187,11 +187,11 @@
                             v-model="form.is_notify_staff_on_submission
                             "
                             :label="__(
-                              'Notify Staff on Submission'
+                              'Notify Staff on Event'
                             )
                             "
                             :help="__(
-                              'Notify staff members (with view permission) when someone applies for this recruitment.'
+                              'Notify staff (with view permission) when application created/withdrawn or message from user.'
                             )
                             "
                             name="is_notify_staff_on_submission"

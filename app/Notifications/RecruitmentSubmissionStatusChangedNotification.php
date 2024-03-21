@@ -105,6 +105,8 @@ class RecruitmentSubmissionStatusChangedNotification extends Notification implem
      */
     public function toArray(object $notifiable): array
     {
+        $forStaff = $this->submission->status == RecruitmentSubmissionStatus::WITHDRAWN ? true : false;
+
         return [
             'id' => $this->submission->id,
             'status' => $this->submission->status,
@@ -113,6 +115,7 @@ class RecruitmentSubmissionStatusChangedNotification extends Notification implem
             'recruitment' => $this->submission->recruitment->only('id', 'title', 'slug'),
             'applicant' => $this->submission?->user?->only('id', 'name', 'username', 'profile_photo_url'),
             'causer' => $this->causer->only('id', 'name', 'username', 'profile_photo_url'),
+            'for_staff' => $forStaff,
         ];
     }
 }
