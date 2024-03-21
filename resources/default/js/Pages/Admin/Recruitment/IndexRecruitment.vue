@@ -42,7 +42,13 @@ const headerRow = [
     {
         key: 'is_notify_staff_on_submission',
         sortable: true,
-        label: __('Notify Staff on Submit'),
+        label: __('Notify Staff'),
+        class: 'whitespace-nowrap',
+    },
+    {
+        key: 'is_allow_messages_from_users',
+        sortable: true,
+        label: __('Messaging'),
         class: 'whitespace-nowrap',
     },
     {
@@ -130,6 +136,21 @@ const headerRow = [
           >
             <Icon
               v-if="item.is_notify_staff_on_submission"
+              class="text-green-500 focus:outline-none"
+              name="check-circle"
+            />
+            <Icon
+              v-else
+              class="text-red-500"
+              name="cross-circle"
+            />
+          </td>
+
+          <td
+            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+          >
+            <Icon
+              v-if="item.is_allow_messages_from_users"
               class="text-green-500 focus:outline-none"
               name="check-circle"
             />
