@@ -37,6 +37,7 @@ class Recruitment extends BaseModel
     {
         return $this->hasMany(RecruitmentSubmission::class)->whereIn('status', [
             RecruitmentSubmissionStatus::PENDING,
+            RecruitmentSubmissionStatus::INPROGRESS,
             RecruitmentSubmissionStatus::ONHOLD,
         ]);
     }
@@ -45,6 +46,7 @@ class Recruitment extends BaseModel
     {
         return $this->hasMany(RecruitmentSubmission::class)->whereNotIn('status', [
             RecruitmentSubmissionStatus::PENDING,
+            RecruitmentSubmissionStatus::INPROGRESS,
             RecruitmentSubmissionStatus::ONHOLD,
         ]);
     }

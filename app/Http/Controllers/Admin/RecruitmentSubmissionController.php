@@ -60,11 +60,8 @@ class RecruitmentSubmissionController extends Controller
             ->when($selectedRecruitments, function ($query, $selectedRecruitments) {
                 $query->whereIn('recruitment_id', $selectedRecruitments);
             })
-            ->with(['user:id,name,username', 'recruitment' => function ($q) use ($maxRoleWeightOfStaffMember) {
-                $q->select(['id', 'title', 'status', 'slug', 'min_role_weight_to_view_submission'])
-                    ->where('min_role_weight_to_view_submission', '<=', $maxRoleWeightOfStaffMember)
-                    ->orWhereNull('min_role_weight_to_view_submission');
-            }])
+            ->whereIn('recruitment_id', $recruitments->keys())
+            ->with(['user:id,name,username', 'recruitment'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
@@ -124,11 +121,8 @@ class RecruitmentSubmissionController extends Controller
             ->when($selectedRecruitments, function ($query, $selectedRecruitments) {
                 $query->whereIn('recruitment_id', $selectedRecruitments);
             })
-            ->with(['user:id,name,username', 'recruitment' => function ($q) use ($maxRoleWeightOfStaffMember) {
-                $q->select(['id', 'title', 'status', 'slug', 'min_role_weight_to_view_submission'])
-                    ->where('min_role_weight_to_view_submission', '<=', $maxRoleWeightOfStaffMember)
-                    ->orWhereNull('min_role_weight_to_view_submission');
-            }])
+            ->whereIn('recruitment_id', $recruitments->keys())
+            ->with(['user:id,name,username', 'recruitment'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
@@ -153,7 +147,7 @@ class RecruitmentSubmissionController extends Controller
 
         $submission->load([
             'user:id,name,username',
-            'recruitment:id,title,status,slug,is_allow_messages_from_users',
+            'recruitment',
             'lastActor:id,name,username',
         ]);
         $submission['i_can_act'] = $request->user()->can('actOn', $submission);

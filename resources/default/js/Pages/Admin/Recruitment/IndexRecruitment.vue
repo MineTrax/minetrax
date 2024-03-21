@@ -182,6 +182,7 @@ const headerRow = [
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
             <InertiaLink
+              v-if="['active', 'disabled'].includes(item.status.value)"
               v-tippy
               as="a"
               :href="route('recruitment.show', item.slug)"

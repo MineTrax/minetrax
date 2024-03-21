@@ -72,6 +72,12 @@ class RecruitmentSubmissionPolicy
             return false;
         }
 
+        $roleWeight = $recruitmentSubmission->recruitment->min_role_weight_to_act_on_submission;
+        $userRoleWeight = $user->maxRoleWeight();
+        if ($roleWeight && $userRoleWeight < $roleWeight) {
+            return false;
+        }
+
         if ($user->can('acton recruitment_submissions')) {
             return true;
         }
