@@ -22,7 +22,7 @@
             id="password"
             v-model="form.password"
             :label="__('Password')"
-            :required="true"
+            :required="false"
             autocomplete="current-password"
             :error="form.errors.password"
             :autofocus="true"
