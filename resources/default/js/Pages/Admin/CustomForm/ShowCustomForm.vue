@@ -61,7 +61,7 @@ defineProps({
 
           <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
             <div class="flex items-center justify-between w-full">
-              <span>{{ __("Slug") }}</span>
+              <span>{{ __("Url Slug") }}</span>
               <div>
                 {{ form.slug }}
               </div>

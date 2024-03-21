@@ -103,6 +103,10 @@ export default {
             if(this.error) {
                 return 'text-red-400';
             } else {
+                if (this.disabled) {
+                    return 'text-gray-400 dark:text-gray-600';
+                }
+
                 return 'text-gray-500';
             }
         }

@@ -121,7 +121,7 @@
                       <x-input
                         id="min_role_weight_to_view_submission"
                         v-model="form.min_role_weight_to_view_submission"
-                        :label="__('Role Weight to View Submission')
+                        :label="__('Min Staff Role Weight to View Submission')
                         "
                         :help="__('Leave empty to allow any staff with view custom_form_submissions permission to view submissions.')"
                         :error="form.errors.min_role_weight_to_view_submission"

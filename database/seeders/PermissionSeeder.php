@@ -106,5 +106,14 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('change any_player_skin');
 
         Permission::findOrCreate('delete players');
+
+        Permission::findOrCreate('create recruitments');
+        Permission::findOrCreate('read recruitments');
+        Permission::findOrCreate('update recruitments');
+        Permission::findOrCreate('delete recruitments');
+        Permission::findOrCreate('read recruitment_submissions');
+        Permission::findOrCreate('acton recruitment_submissions'); // Accept, Reject, etc.
+        Permission::findOrCreate('delete recruitment_submissions');
+        Permission::findOrCreate('delete recruitment_submission_messages');
     }
 }

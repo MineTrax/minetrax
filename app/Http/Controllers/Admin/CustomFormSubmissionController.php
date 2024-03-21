@@ -50,11 +50,8 @@ class CustomFormSubmissionController extends Controller
             ->when($selectedForms, function ($query, $selectedForms) {
                 $query->whereIn('custom_form_id', $selectedForms);
             })
-            ->with(['user:id,name,username', 'country:id,iso_code,flag,name', 'customForm' => function ($q) use ($maxRoleWeightOfStaffMember) {
-                $q->select(['id', 'title', 'status', 'slug', 'min_role_weight_to_view_submission'])
-                    ->where('min_role_weight_to_view_submission', '<=', $maxRoleWeightOfStaffMember)
-                    ->orWhereNull('min_role_weight_to_view_submission');
-            }])
+            ->whereIn('custom_form_id', $customForms->keys())
+            ->with(['user:id,name,username', 'country:id,iso_code,flag,name', 'customForm'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
@@ -111,11 +108,8 @@ class CustomFormSubmissionController extends Controller
             ->when($selectedForms, function ($query, $selectedForms) {
                 $query->whereIn('custom_form_id', $selectedForms);
             })
-            ->with(['user:id,name,username', 'country:id,iso_code,flag,name', 'customForm' => function ($q) use ($maxRoleWeightOfStaffMember) {
-                $q->select(['id', 'title', 'status', 'slug', 'min_role_weight_to_view_submission'])
-                    ->where('min_role_weight_to_view_submission', '<=', $maxRoleWeightOfStaffMember)
-                    ->orWhereNull('min_role_weight_to_view_submission');
-            }])
+            ->whereIn('custom_form_id', $customForms->keys())
+            ->with(['user:id,name,username', 'country:id,iso_code,flag,name', 'customForm'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,

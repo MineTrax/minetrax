@@ -240,6 +240,22 @@ return [
         ],
         [
             'type' => 'route',
+            'name' => 'Recruitments',
+            'title' => 'Recruitments',
+            'route' => 'recruitment.index',
+            'key' => 'route-recruitments',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'My Recruitment Applications',
+            'title' => 'My Applications',
+            'route' => 'recruitment-submission.index',
+            'key' => 'route-recruitment-submission',
+            'authenticated' => true,
+        ],
+        [
+            'type' => 'route',
             'name' => 'Change Player Skin',
             'title' => 'Change Player Skin',
             'route' => 'change-player-skin.show',
@@ -338,4 +354,14 @@ return [
     |
     */
     'player_skin_changer_cooldown_in_seconds' => env('PLAYER_SKIN_CHANGER_COOLDOWN_IN_SECONDS', 60),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Hide Country of Player and User everywhere
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, hide country of player and user everywhere in side.
+    |
+    */
+    'hide_country_for_privacy' => env('HIDE_COUNTRY_FOR_PRIVACY', false),
 ];

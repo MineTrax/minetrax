@@ -196,6 +196,13 @@ export default {
           </jet-responsive-nav-link>
 
           <jet-responsive-nav-link
+            :href="route('recruitment-submission.index')"
+            :active="route().current('recruitment-submission.index')"
+          >
+            {{ __("My Applications") }}
+          </jet-responsive-nav-link>
+
+          <jet-responsive-nav-link
             v-if="$page.props.playerSkinChangerEnabled"
             :href="route('change-player-skin.show')"
             :active="route().current('change-player-skin.show')"

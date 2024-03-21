@@ -46,7 +46,6 @@ class Post extends BaseModel implements ReactableInterface, HasMedia
     {
         static::deleted(function ($post) {
             $post->loveReactant()->delete();
-            $post->comments()->delete();
         });
     }
 }

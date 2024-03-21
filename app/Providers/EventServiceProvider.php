@@ -6,8 +6,14 @@ use App\Events\CustomFormSubmissionCreated;
 use App\Events\MinecraftPlayerEventCreated;
 use App\Events\MinecraftPlayerSessionCreated;
 use App\Events\NewsCommentCreated;
+use App\Events\RecruitmentSubmissionCommentCreated;
+use App\Events\RecruitmentSubmissionCreated;
+use App\Events\RecruitmentSubmissionStatusChanged;
 use App\Listeners\NotifyStaffOnCustomFormSubmission;
 use App\Listeners\NotifyStaffOnNewsComment;
+use App\Listeners\NotifyStaffOnRecruitmentSubmission;
+use App\Listeners\NotifyUsersOnRecruitmentSubmissionCommentCreated;
+use App\Listeners\NotifyUsersOnRecruitmentSubmissionStatusChanged;
 use App\Listeners\UpdateStatsOnMinecraftPlayerEvent;
 use App\Listeners\UpsertPlayerOnSessionStart;
 use Illuminate\Auth\Events\Registered;
@@ -28,7 +34,7 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         SocialiteWasCalled::class => [
-            DiscordExtendSocialite::class
+            DiscordExtendSocialite::class,
         ],
         MinecraftPlayerSessionCreated::class => [
             UpsertPlayerOnSessionStart::class,
@@ -41,6 +47,15 @@ class EventServiceProvider extends ServiceProvider
         ],
         NewsCommentCreated::class => [
             NotifyStaffOnNewsComment::class,
+        ],
+        RecruitmentSubmissionCreated::class => [
+            NotifyStaffOnRecruitmentSubmission::class,
+        ],
+        RecruitmentSubmissionStatusChanged::class => [
+            NotifyUsersOnRecruitmentSubmissionStatusChanged::class,
+        ],
+        RecruitmentSubmissionCommentCreated::class => [
+            NotifyUsersOnRecruitmentSubmissionCommentCreated::class,
         ],
     ];
 

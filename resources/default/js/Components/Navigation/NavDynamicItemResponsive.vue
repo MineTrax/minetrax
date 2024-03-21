@@ -2,7 +2,7 @@
   <template v-if="shouldRender">
     <!--  Routes-->
     <ResponsiveNavLink
-      v-if="item.type === 'route' || item.type === 'custom-page' || item.type === 'download'"
+      v-if="item.type === 'route' || item.type === 'custom-page' || item.type === 'download' || item.type === 'recruitment'"
       :href="route(item.route, item.route_params ?? null)"
       :active="route().current(item.route, item.route_params ?? null)"
     >
