@@ -61,6 +61,9 @@ class RecruitmentSubmissionController extends Controller
     public function show(Request $request, Recruitment $recruitment, RecruitmentSubmission $submission)
     {
         $this->authorize('view', $submission);
+        if ($submission->user_id != $request->user()->id) {
+            return abort(403);
+        }
 
         $submission->load([
             'user:id,name,username',

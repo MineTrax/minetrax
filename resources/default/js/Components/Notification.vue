@@ -155,6 +155,55 @@
         </p>
       </div>
     </inertia-link>
+
+    <inertia-link
+      v-if="notification.type === 'App\\Notifications\\RecruitmentSubmissionStatusChangedNotification'"
+      as="div"
+      :href="
+        notification.data.status == 'withdrawn' ?
+          route('admin.recruitment-submission.show', notification.data.id)
+          :
+          route('recruitment-submission.show', {
+            'recruitment': notification.data.recruitment.slug,
+            'submission' : notification.data.id
+          })
+      "
+      class="flex cursor-pointer"
+    >
+      <img
+        :src="notification.data.causer.profile_photo_url"
+        alt="Profile Picture"
+        class="w-10 h-10 rounded-full m-1"
+      >
+      <div class="m-1">
+        <p>
+          <span>
+            <b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }})
+          </span>
+          <span v-if="notification.data.status == 'withdrawn'">
+            {{ __(" has withdrawn his application.") }}
+          </span>
+          <span v-else-if="notification.data.status == 'rejected'">
+            {{ __(" rejected your application.") }}
+          </span>
+          <span v-else-if="notification.data.status == 'approved'">
+            {{ __(" approved your application.") }}
+          </span>
+          <span v-else-if="notification.data.status == 'onhold'">
+            {{ __(" has put your application on-hold.") }}
+          </span>
+          <span v-else-if="notification.data.status == 'inprogress'">
+            {{ __(" has started processing your application.") }}
+          </span>
+          <span v-else>
+            {{ __(" has changed status of your application") }}
+          </span>
+        </p>
+        <p class="text-xs">
+          {{ formatTimeAgoToNow(notification.created_at) }}
+        </p>
+      </div>
+    </inertia-link>
   </div>
 </template>
 

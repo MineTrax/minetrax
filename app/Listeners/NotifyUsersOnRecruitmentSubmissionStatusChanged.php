@@ -4,6 +4,8 @@ namespace App\Listeners;
 
 use App\Enums\RecruitmentSubmissionStatus;
 use App\Events\RecruitmentSubmissionStatusChanged;
+use App\Models\User;
+use App\Notifications\RecruitmentSubmissionStatusChangedNotification;
 
 class NotifyUsersOnRecruitmentSubmissionStatusChanged
 {
@@ -22,11 +24,25 @@ class NotifyUsersOnRecruitmentSubmissionStatusChanged
     {
         $recruitment = $event->submission->recruitment;
 
-        // Notify staff if status is changed to `withdrawn`. (is its done by applicant)
-        if ($event->submission->status === RecruitmentSubmissionStatus::WITHDRAWN) {
-            // Notify all concerned staff.
-        } else {
-            // Notify the applicant if approved,rejected,onhold,inprogress.
+        if ($event->submission->status == RecruitmentSubmissionStatus::WITHDRAWN) { // Notify Staff
+            if (! $recruitment->is_notify_staff_on_submission) {
+                return;
+            }
+
+            $users = User::permission(['read recruitment_submissions'])->get();
+            $roleWeight = $recruitment->min_role_weight_to_view_submission;
+            foreach ($users as $user) {
+                if ($roleWeight && $user->maxRoleWeight() < $roleWeight) {
+                    continue;
+                }
+                $user->notify(
+                    new RecruitmentSubmissionStatusChangedNotification($event->submission, $event->causer, $event->previousStatus)
+                );
+            }
+        } else { // Notify Applicant!
+            $event->submission->user->notify(
+                new RecruitmentSubmissionStatusChangedNotification($event->submission, $event->causer, $event->previousStatus)
+            );
         }
     }
 }

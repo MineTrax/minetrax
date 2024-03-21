@@ -35,13 +35,14 @@ class RecruitmentSubmissionCreatedNotification extends Notification implements S
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $submissionBy = $this->submission->user->name.' (@'.$this->submission->user->username.')';
+        $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
 
         return (new MailMessage)
             ->subject(__('[Notification] New recruitment application received.'))
-            ->line('A new submission has been received for recruitment - '.$this->submission->recruitment->title)
+            ->line('A new application has been received for recruitment - '.$this->submission->recruitment->title)
             ->action('View Application', route('admin.recruitment-submission.show', [$this->submission->id]))
-            ->line('Applicant: '.$submissionBy);
+            ->line('Applicant: '.$applicant)
+            ->line('Recruitment: '.$this->submission->recruitment->title);
     }
 
     /**
@@ -54,6 +55,7 @@ class RecruitmentSubmissionCreatedNotification extends Notification implements S
         return [
             'id' => $this->submission->id,
             'recruitment' => $this->submission->recruitment->only('id', 'title', 'slug'),
+            'applicant' => $this->submission?->user?->only('id', 'name', 'username', 'profile_photo_url'),
             'causer' => $this->submission?->user?->only('id', 'name', 'username', 'profile_photo_url'),
         ];
     }
