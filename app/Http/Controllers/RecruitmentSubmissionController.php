@@ -71,7 +71,12 @@ class RecruitmentSubmissionController extends Controller
             'recruitment:id,title,status,slug,is_allow_messages_from_users,submission_cooldown_in_seconds',
             'lastActor:id,name,username',
         ]);
-        $submission['i_can_withdraw'] = $request->user()->can('withdraw', $submission);
+        $submission['i_can_withdraw'] = $request->user()->can('withdraw', $submission)
+                                                 && in_array($submission->status, [
+                                                     RecruitmentSubmissionStatus::PENDING,
+                                                     RecruitmentSubmissionStatus::INPROGRESS,
+                                                     RecruitmentSubmissionStatus::ONHOLD,
+                                                 ]);
         $submission['i_can_send_message'] = $request->user()->can('sendMessage', $submission)
                                                  && $submission->recruitment->is_allow_messages_from_users
                                                  && in_array($submission->status, [
