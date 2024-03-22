@@ -253,7 +253,7 @@ const rejectForm = useForm({
         </div>
 
 
-        <div class="flex-grow px-3 py-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800 md:px-10 md:py-5 no-disabled-effect">
+        <div class="md:w-1/2 px-3 py-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800 md:px-10 md:py-5 no-disabled-effect">
           <FormKit
             :disabled="true"
             type="form"
