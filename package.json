@@ -9,7 +9,7 @@
         "@codemirror/lang-html": "^6.4.1",
         "@formkit/icons": "^1.4.0",
         "@formkit/vue": "^1.4.0",
-        "@headlessui/vue": "^1.7.16",
+        "@headlessui/vue": "^1.7.19",
         "@heroicons/vue": "^2.0.18",
         "@inertiajs/vue3": "^1.0.11",
         "@tailwindcss/forms": "^0.5.3",
