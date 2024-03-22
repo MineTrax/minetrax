@@ -6,7 +6,7 @@
         "prod": "vite build"
     },
     "devDependencies": {
-        "@codemirror/lang-html": "^6.4.1",
+        "@codemirror/lang-html": "^6.4.8",
         "@formkit/icons": "^1.4.0",
         "@formkit/vue": "^1.4.0",
         "@headlessui/vue": "^1.7.16",
