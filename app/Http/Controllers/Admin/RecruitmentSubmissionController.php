@@ -150,8 +150,18 @@ class RecruitmentSubmissionController extends Controller
             'recruitment',
             'lastActor:id,name,username',
         ]);
-        $submission['i_can_act'] = $request->user()->can('actOn', $submission);
-        $submission['i_can_delete'] = $request->user()->can('delete', $submission);
+        $submission['i_can_act'] = $request->user()->can('actOn', $submission)
+                                            && in_array($submission->status, [
+                                                RecruitmentSubmissionStatus::PENDING,
+                                                RecruitmentSubmissionStatus::INPROGRESS,
+                                                RecruitmentSubmissionStatus::ONHOLD,
+                                            ]);
+        $submission['i_can_delete'] = $request->user()->can('delete', $submission)
+                                            && in_array($submission->status, [
+                                                RecruitmentSubmissionStatus::APPROVED,
+                                                RecruitmentSubmissionStatus::REJECTED,
+                                                RecruitmentSubmissionStatus::WITHDRAWN,
+                                            ]);
         $submission['i_can_send_message'] = in_array($submission->status, [
             RecruitmentSubmissionStatus::PENDING,
             RecruitmentSubmissionStatus::INPROGRESS,
