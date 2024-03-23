@@ -16,6 +16,12 @@ const twitterUrl = generalSettings?.twitter_url;
 const twitchUrl = generalSettings?.twitch_url;
 const tiktokUrl = generalSettings?.tiktok_url;
 const linkedinUrl = generalSettings?.linkedin_url;
+const threadsUrl = generalSettings.threads_url;
+const instagramUrl = generalSettings.instagram_url;
+const whatsappUrl = generalSettings.whatsapp_url;
+const telegramUrl = generalSettings.telegram_url;
+const redditUrl = generalSettings.reddit_url;
+const githubUrl = generalSettings.github_url;
 
 let customFooterColumns = [];
 if(customFooterData?.style == 'variant_1') {
@@ -129,6 +135,73 @@ if(customFooterData?.style == 'variant_1') {
             >
               <Icon
                 name="twitch"
+                class="w-5 h-5 fill-current"
+              />
+            </a>
+
+            <a
+              v-if="threadsUrl"
+              target="_blank"
+              :href="threadsUrl"
+              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+            >
+              <Icon
+                name="threads"
+                class="w-5 h-5 fill-current"
+              />
+            </a>
+            <a
+              v-if="instagramUrl"
+              target="_blank"
+              :href="instagramUrl"
+              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+            >
+              <Icon
+                name="instagram"
+                class="w-5 h-5 fill-current"
+              />
+            </a>
+            <a
+              v-if="whatsappUrl"
+              target="_blank"
+              :href="whatsappUrl"
+              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+            >
+              <Icon
+                name="whatsapp"
+                class="w-5 h-5 fill-current"
+              />
+            </a>
+            <a
+              v-if="telegramUrl"
+              target="_blank"
+              :href="telegramUrl"
+              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+            >
+              <Icon
+                name="telegram"
+                class="w-5 h-5 fill-current"
+              />
+            </a>
+            <a
+              v-if="redditUrl"
+              target="_blank"
+              :href="redditUrl"
+              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+            >
+              <Icon
+                name="reddit"
+                class="w-5 h-5 fill-current"
+              />
+            </a>
+            <a
+              v-if="githubUrl"
+              target="_blank"
+              :href="githubUrl"
+              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+            >
+              <Icon
+                name="github"
                 class="w-5 h-5 fill-current"
               />
             </a>
@@ -312,6 +385,102 @@ if(customFooterData?.style == 'variant_1') {
               <span class="sr-only">Twitch</span>
               <Icon
                 name="twitch"
+                class="h-6 w-6 fill-current"
+              />
+            </a>
+          </li>
+          <li
+            v-if="threadsUrl"
+          >
+            <a
+              :href="threadsUrl"
+              rel="noreferrer"
+              target="_blank"
+              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+            >
+              <span class="sr-only">Threads</span>
+              <Icon
+                name="threads"
+                class="h-6 w-6 fill-current"
+              />
+            </a>
+          </li>
+          <li
+            v-if="instagramUrl"
+          >
+            <a
+              :href="instagramUrl"
+              rel="noreferrer"
+              target="_blank"
+              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+            >
+              <span class="sr-only">Instagram</span>
+              <Icon
+                name="instagram"
+                class="h-6 w-6 fill-current"
+              />
+            </a>
+          </li>
+          <li
+            v-if="whatsappUrl"
+          >
+            <a
+              :href="whatsappUrl"
+              rel="noreferrer"
+              target="_blank"
+              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+            >
+              <span class="sr-only">WhatsApp</span>
+              <Icon
+                name="whatsapp"
+                class="h-6 w-6 fill-current"
+              />
+            </a>
+          </li>
+          <li
+            v-if="telegramUrl"
+          >
+            <a
+              :href="telegramUrl"
+              rel="noreferrer"
+              target="_blank"
+              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+            >
+              <span class="sr-only">Telegram</span>
+              <Icon
+                name="telegram"
+                class="h-6 w-6 fill-current"
+              />
+            </a>
+          </li>
+          <li
+            v-if="redditUrl"
+          >
+            <a
+              :href="redditUrl"
+              rel="noreferrer"
+              target="_blank"
+              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+            >
+              <span class="sr-only">Reddit</span>
+              <Icon
+                name="reddit"
+                class="h-6 w-6 fill-current"
+              />
+            </a>
+          </li>
+          <li
+            v-if="githubUrl"
+          >
+            <a
+              :href="githubUrl"
+              rel="noreferrer"
+              target="_blank"
+              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+            >
+              <span class="sr-only">Github</span>
+              <Icon
+                name="github"
                 class="h-6 w-6 fill-current"
               />
             </a>
