@@ -48,7 +48,7 @@ class HandleInertiaRequests extends Middleware
             'authHasPassword' => fn () => $request->user() ? $request->user()->password !== null : false,
             'appName' => config('app.name'),
             'locale' => fn () => app()->getLocale(),
-            'localeIsoCode' => fn () => config('constants.locale_keymap')[app()->getlocale()]['iso_code'],
+            'localeIsoCode' => fn () => array_key_exists(app()->getLocale(), config('constants.locale_keymap')) ? config('constants.locale_keymap')[app()->getlocale()]['iso_code'] : '_unknown',
             'toast' => fn () => $request->session()->get('toast'),
             'popstate' => \Str::uuid(),
             'permissions' => function () use ($request) {

@@ -212,5 +212,6 @@ return [
         'uk' => ['name' => 'Ukrainian', 'iso_code' => 'ua', 'display' => 'Українська'],
         'zh-cn' => ['name' => 'Chinese (Simplified)', 'iso_code' => 'cn', 'display' => '简体中文'],
         'zh-hk' => ['name' => 'Chinese (Hong Kong)', 'iso_code' => 'hk', 'display' => '繁體中文'],
+        'hu' => ['name' => 'Hungarian', 'iso_code' => 'hu', 'display' => 'Hungarian'],
     ],
 ];

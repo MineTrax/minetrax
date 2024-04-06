@@ -12,10 +12,19 @@ class LocaleController extends Controller
         $localeList = config('constants.locale_keymap');
 
         $localeMap = collect($availableLocales)->map(function ($locale) use ($localeList) {
-            return [
-                'code' => $locale,
-                ...$localeList[$locale],
-            ];
+            if (array_key_exists($locale, $localeList)) {
+                return [
+                    'code' => $locale,
+                    ...$localeList[$locale],
+                ];
+            } else {
+                return [
+                    'code' => $locale,
+                    'name' => $locale,
+                    'iso_code' => '_unknown',
+                    'display' => $locale,
+                ];
+            }
         });
 
         return response()->json($localeMap);
