@@ -64,7 +64,6 @@
         "nunomaduro/phpinsights": "dev-master",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.1",
-        "laravel/sail": "^1.16.2",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
         "pestphp/pest": "^2.0",
