@@ -1,15 +1,18 @@
-FROM node:20 as build_frontend
+FROM composer:2 as build_composer
 
 WORKDIR /app
 COPY . /app
+RUN composer install --no-dev --ignore-platform-reqs --no-interaction
+
+
+FROM node:20 as build_frontend
+
+WORKDIR /app
+COPY --from=build_composer /app /app
 RUN npm install
 RUN npm run prod
 RUN rm -rf node_modules
 
-FROM composer:2 as build_composer
-WORKDIR /app
-COPY --from=build_frontend /app /app
-RUN composer install --no-dev --ignore-platform-reqs --no-interaction
 
 FROM ubuntu:22.04
 
@@ -70,7 +73,7 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # PROJECT FILES OWNERSHIP AND PERMISSIONS
 RUN chown -R forge:forge /var/www
-COPY --from=build_composer --chown=forge:forge /app /var/www/html
+COPY --from=build_frontend --chown=forge:forge /app /var/www/html
 
 RUN chmod a+x docker-run
 
