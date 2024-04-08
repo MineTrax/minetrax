@@ -33,7 +33,13 @@ function server() {
     migrate
     optimize_local
     storagelink
+    fixpermissions
     /usr/bin/supervisord
+}
+
+function fixpermissions() {
+    chmod -R 775 storage/* bootstrap/cache
+    chown -R forge:forge .
 }
 
 function optimize_local() {
@@ -133,6 +139,8 @@ function artisan() {
 
 function optimize() {
     docker compose exec -uforge minetrax ./docker-run.sh optimize_local
+    docker compose down
+    docker compose up -d
 }
 
 function buildfrontend() {
