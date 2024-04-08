@@ -23,7 +23,7 @@ services:
             DB_HOST: mysql
             REDIS_HOST: redis
         ports:
-            - 80:80
+            - ${APP_PORT:-80}:80
         volumes:
             - ./.env:/var/www/html/.env
             - ./storage/app:/var/www/html/storage/app
