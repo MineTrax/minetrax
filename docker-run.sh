@@ -19,6 +19,7 @@ function help {
     echo "3. logs -> view docker compose logs"
     echo "4. artisan -> run artisan command. Eg: auth:password:reset"
     echo "5. optimize -> Clear cache and optimize (run this if you change .env)"
+    echo "6. buildfrontend -> Rebuild frontend assets using npm"
     echo "Eg: ./docker-run.sh update"
     echo "Eg: ./docker-run.sh artisan auth:password:reset superadmin"
 }
@@ -132,6 +133,11 @@ function artisan() {
 
 function optimize() {
     docker compose exec -uforge minetrax ./docker-run.sh optimize_local
+}
+
+function buildfrontend() {
+    docker compose exec -uforge minetrax npm i
+    docker compose exec -uforge minetrax npm run prod
 }
 
 TIMEFORMAT="Task completed in %3lR"

@@ -5,15 +5,6 @@ COPY . /app
 RUN composer install --no-dev --ignore-platform-reqs --no-interaction
 
 
-FROM node:20 as build_frontend
-
-WORKDIR /app
-COPY --from=build_composer /app /app
-RUN npm install --no-audit
-RUN npm run prod
-RUN rm -rf node_modules
-
-
 FROM ubuntu:22.04
 
 ARG PHP_VERSION=8.3
@@ -42,8 +33,9 @@ RUN apt-get update \
        php$PHP_VERSION-xml php$PHP_VERSION-zip php$PHP_VERSION-bcmath \
        php$PHP_VERSION-intl php$PHP_VERSION-readline \
        php$PHP_VERSION-msgpack php$PHP_VERSION-igbinary php$PHP_VERSION-redis \
-    && apt-get update \
     && apt-get install -y mysql-client \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -73,7 +65,7 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # PROJECT FILES OWNERSHIP AND PERMISSIONS
 RUN chown -R forge:forge /var/www
-COPY --from=build_frontend --chown=forge:forge /app /var/www/html
+COPY --from=build_composer --chown=forge:forge /app /var/www/html
 
 # Change line endings to LF
 RUN find /var/www/html -type f -exec dos2unix {} \;
