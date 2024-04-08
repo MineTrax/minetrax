@@ -78,8 +78,8 @@ COPY --from=build_frontend --chown=forge:forge /app /var/www/html
 # Change line endings to LF
 RUN find /var/www/html -type f -exec dos2unix {} \;
 
-RUN chmod a+x docker-run
+RUN chmod a+x docker-run.sh
 
 EXPOSE 80
 
-ENTRYPOINT [ "./docker-run" ]
+ENTRYPOINT [ "./docker-run.sh" ]
