@@ -17,7 +17,7 @@ services:
             context: .
             dockerfile: ./docker/Dockerfile
         command: ["server"]
-        image: minetrax:${TAG:-latest}
+        image: '${COMPOSE_PROJECT_NAME}/minetrax:${TAG:-latest}'
         restart: always
         environment:
             DB_HOST: mysql
