@@ -138,9 +138,9 @@ function artisan() {
 }
 
 function optimize() {
-    docker compose exec -uforge minetrax ./docker-run.sh optimize_local
     docker compose down
     docker compose up -d
+    docker compose exec -uforge minetrax ./docker-run.sh optimize_local
 }
 
 function buildfrontend() {
