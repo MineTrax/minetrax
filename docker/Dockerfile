@@ -27,7 +27,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
     && apt-get install -y nano vim cron nginx \
-       gnupg gosu curl ca-certificates zip unzip git supervisor libcap2-bin libpng-dev python2 sendmail redis-tools \
+       gnupg gosu curl ca-certificates zip unzip git supervisor libcap2-bin libpng-dev python2 sendmail redis-tools dos2unix \
     && mkdir -p ~/.gnupg \
     && chmod 600 ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
@@ -74,6 +74,9 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # PROJECT FILES OWNERSHIP AND PERMISSIONS
 RUN chown -R forge:forge /var/www
 COPY --from=build_frontend --chown=forge:forge /app /var/www/html
+
+# Change line endings to LF
+RUN find /var/www/html -type f -exec dos2unix {} \;
 
 RUN chmod a+x docker-run
 

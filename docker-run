@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # Inspired on https://github.com/adriancooney/Taskfile
 
