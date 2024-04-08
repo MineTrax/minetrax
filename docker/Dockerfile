@@ -9,7 +9,7 @@ FROM node:20 as build_frontend
 
 WORKDIR /app
 COPY --from=build_composer /app /app
-RUN npm ci --no-audit
+RUN npm install --no-audit
 RUN npm run prod
 RUN rm -rf node_modules
 
