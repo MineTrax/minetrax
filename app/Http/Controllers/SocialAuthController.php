@@ -79,7 +79,7 @@ class SocialAuthController extends Controller
                         'access_token' => $token->plainTextToken,
                     ]);
                 } else {
-                    Auth::login($user);
+                    Auth::login($user, true);
 
                     return redirect()->route('home');
                 }
@@ -118,7 +118,7 @@ class SocialAuthController extends Controller
                     'access_token' => $token->plainTextToken,
                 ]);
             } else {
-                Auth::login($user);
+                Auth::login($user, true);
 
                 return redirect()->route('home');
             }
