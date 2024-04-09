@@ -125,6 +125,7 @@ class PlayerController extends Controller
 
     public function getAvatarImage(Request $request, $uuid, $username = null, $textureid = null)
     {
+        $username = strtolower($username);
         $useUsernameForSkins = config('minetrax.use_username_for_skins');
         $param = $useUsernameForSkins ? $username : $uuid;
         $size = $request->size ?? 100;
@@ -156,6 +157,7 @@ class PlayerController extends Controller
 
     public function getSkinImage(Request $request, $uuid, $username = null, $textureid = null)
     {
+        $username = strtolower($username);
         $useUsernameForSkins = config('minetrax.use_username_for_skins');
         $param = $useUsernameForSkins ? $username : $uuid;
 
@@ -186,6 +188,7 @@ class PlayerController extends Controller
 
     public function getRenderImage(Request $request, $uuid, $username = null, $textureid = null)
     {
+        $username = strtolower($username);
         $useUsernameForSkins = config('minetrax.use_username_for_skins');
         $param = $useUsernameForSkins ? $username : $uuid;
         $scale = $request->scale;
