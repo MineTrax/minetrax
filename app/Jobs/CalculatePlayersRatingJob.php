@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Models\MinecraftPlayer;
 use App\Models\Player;
 use App\Models\Rank;
 use App\Models\Server;
-use App\Services\MinecraftServerQueryService;
 use App\Settings\PlayerSettings;
 use App\Settings\PluginSettings;
 use App\Utils\PlayerRating\PlayerRatingCalculator;
@@ -52,7 +52,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
         foreach ($playersList as $player) {
             $player->rating = $this->calculatePlayerRating($player, $minScore, $maxScore, $playerSettings, $serversIds);
             if ($pluginSettings->enable_sync_player_ranks_from_server && $server) {
-                $player->rank_id = $this->calculatePlayerRankIdFromServerWebQuery($server->ip_address, $server->webquery_port, $player);
+                $player->rank_id = $this->calculatePlayerRankIdFromMinecraftPlayerServerData($player, $server);
             } else {
                 $player->rank_id = $this->calculatePlayerRankIdFromScore($player);
             }
@@ -117,17 +117,17 @@ class CalculatePlayersRatingJob implements ShouldQueue
         return $rankId;
     }
 
-    private function calculatePlayerRankIdFromServerWebQuery($serverHost, $serverPort, $player): ?int
+    private function calculatePlayerRankIdFromMinecraftPlayerServerData($player, $server): ?int
     {
         $rankId = null;
 
         try {
-            $minecraftQueryService = app(MinecraftServerQueryService::class);
-            $playerGroups = $minecraftQueryService->getPlayerGroupWithPluginWebQueryProtocol($serverHost, $serverPort, $player->uuid);
+            $playerGroups = MinecraftPlayer::where('player_uuid', $player->uuid)
+                ->where('server_id', $server->id)
+                ->first()?->vault_groups;
 
-            if ($playerGroups && $playerGroups['groups']) {
-                $rankId = Rank::whereIn('shortname', $playerGroups['groups'])
-                    ->orderByDesc('weight')->first()?->id;
+            if ($playerGroups) {
+                $rankId = Rank::whereIn('shortname', $playerGroups)->orderByDesc('weight')->first()?->id;
             }
         } catch (\Exception $e) {
             Log::critical($e);
