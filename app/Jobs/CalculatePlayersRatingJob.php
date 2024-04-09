@@ -124,6 +124,7 @@ class CalculatePlayersRatingJob implements ShouldQueue
         try {
             $playerGroups = MinecraftPlayer::where('player_uuid', $player->uuid)
                 ->where('server_id', $server->id)
+                ->select('vault_groups')
                 ->first()?->vault_groups;
 
             if ($playerGroups) {
