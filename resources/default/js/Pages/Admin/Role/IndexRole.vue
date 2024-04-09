@@ -105,7 +105,7 @@ const headerRow = [
           <td>
             <div class="flex-shrink-0">
               <img
-                class=""
+                class="max-h-8"
                 :src="item.photo_url"
                 :alt="__('Role Image')"
               >

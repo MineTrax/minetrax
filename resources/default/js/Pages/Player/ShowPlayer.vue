@@ -81,7 +81,7 @@
               :alt="player.rank.name"
               :src="player.rank.photo_url"
               :title="__('Rank: :rank', {rank: player.rank.name})"
-              class="h-12 w-12 focus:outline-none"
+              class="h-12 focus:outline-none"
             >
             <p
               v-else

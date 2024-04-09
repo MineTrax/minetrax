@@ -11,7 +11,7 @@
             <tr>
               <th
                 scope="col"
-                class="p-1 text-left text-xs font-bold text-center uppercase tracking-wider"
+                class="p-1 text-left text-xs font-bold uppercase tracking-wider"
               >
                 {{ __("#") }}
               </th>
@@ -20,12 +20,6 @@
                 class="p-1 text-left text-xs font-bold uppercase tracking-wider"
               >
                 {{ __("Flag") }}
-              </th>
-              <th
-                scope="col"
-                class="p-1 text-left text-xs font-bold uppercase tracking-wider"
-              >
-                {{ __("Rank") }}
               </th>
               <th
                 scope="col"
@@ -73,24 +67,6 @@
                       class="h-6 w-6"
                       :src="player.country.photo_path"
                       :alt="player.country.name"
-                    >
-                  </div>
-                </div>
-              </td>
-              <td class="p-1">
-                <div
-                  v-if="player.rank"
-                  class="flex items-center"
-                >
-                  <div
-                    v-tippy
-                    class="flex-shrink-0 h-6 w-6 focus:outline-none"
-                    :content="player.rank.name"
-                  >
-                    <img
-                      class="h-6 w-6"
-                      :src="player.rank.photo_url"
-                      alt=""
                     >
                   </div>
                 </div>

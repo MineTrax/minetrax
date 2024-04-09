@@ -182,11 +182,11 @@
                           >
                             <div
                               v-tippy
-                              class="flex-shrink-0 h-10 w-10 focus:outline-none"
+                              class="flex-shrink-0 focus:outline-none"
                               :content="player.rank.name"
                             >
                               <img
-                                class="h-10 w-10"
+                                class="max-h-12 max-w-12"
                                 :src="player.rank.photo_url"
                                 alt=""
                               >

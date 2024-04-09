@@ -56,7 +56,7 @@
                       >
                         <span
                           class="block w-2/5 h-12"
-                          :style="'background-size: fill; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'"
+                          :style="'background-size: fill; background-repeat: no-repeat; background-size: contain; background-image: url(\'' + photoPreview + '\');'"
                         />
                       </div>
 

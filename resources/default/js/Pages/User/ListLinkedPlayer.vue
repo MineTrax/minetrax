@@ -130,7 +130,7 @@
                   :src="player.rank.photo_url"
                   :alt="player.rank.name"
                   :title="player.rank.name"
-                  class="h-8 w-8 focus:outline-none"
+                  class="max-h-12 max-w-12 focus:outline-none"
                 >
               </div>
             </div>

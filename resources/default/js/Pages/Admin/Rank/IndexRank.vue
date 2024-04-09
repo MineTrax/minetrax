@@ -111,7 +111,7 @@ const headerRow = [
           <td class="px-4">
             <div class="">
               <img
-                class="h-10 w-10"
+                class="max-h-12 max-w-12"
                 :src="item.photo_url"
                 :alt="__('Rank Image')"
               >

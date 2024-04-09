@@ -106,8 +106,8 @@
                         class="mt-2"
                       >
                         <span
-                          class="block w-20 h-20 rounded-full"
-                          :style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'"
+                          class="block h-20"
+                          :style="'background-size: contain; background-repeat: no-repeat; background-image: url(\'' + photoPreview + '\');'"
                         />
                       </div>
 

@@ -218,7 +218,7 @@
                   :src="role.photo_url"
                   :alt="role.display_name"
                   :content="role.display_name"
-                  class="focus:outline-none max-h-16"
+                  class="focus:outline-none max-h-8"
                 >
               </div>
               <div class="flex justify-end mr-4">
@@ -344,7 +344,7 @@
                       :src="player.rank.photo_url"
                       :alt="player.rank.name"
                       :title="player.rank.name"
-                      class="w-8 h-8 focus:outline-none"
+                      class="max-h-12 max-w-12 focus:outline-none"
                     >
                   </div>
                 </div>
