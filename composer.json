@@ -23,6 +23,7 @@
         "guzzlehttp/guzzle": "^7.4",
         "inertiajs/inertia-laravel": "^0.6.0",
         "intervention/imagecache": "^2.5",
+        "laravel-notification-channels/discord": "^1.6",
         "laravel/framework": "^10.0",
         "laravel/jetstream": "^4.0",
         "laravel/pulse": "^1.0@beta",

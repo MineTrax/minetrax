@@ -19,7 +19,16 @@
         </div>
 
         <div>
-          <update-notification-preferences-form :user="$page.props.auth.user" />
+          <update-notification-preferences-form
+            class="mt-10 sm:mt-0"
+            :user="$page.props.auth.user"
+          />
+
+          <jet-section-border />
+        </div>
+
+        <div>
+          <linked-social-accounts-form class="mt-10 sm:mt-0" />
 
           <jet-section-border />
         </div>
@@ -63,6 +72,7 @@ import TwoFactorAuthenticationForm from './TwoFactorAuthenticationForm.vue';
 import UpdatePasswordForm from './UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './UpdateProfileInformationForm.vue';
 import UpdateNotificationPreferencesForm from '@/Pages/Profile/UpdateNotificationPreferencesForm.vue';
+import LinkedSocialAccountsForm from '@/Pages/Profile/LinkedSocialAccountsForm.vue';
 
 export default {
 
@@ -75,6 +85,7 @@ export default {
         TwoFactorAuthenticationForm,
         UpdatePasswordForm,
         UpdateProfileInformationForm,
+        LinkedSocialAccountsForm,
     },
     props: ['sessions'],
 };

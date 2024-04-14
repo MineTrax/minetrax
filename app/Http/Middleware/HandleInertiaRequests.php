@@ -79,7 +79,7 @@ class HandleInertiaRequests extends Middleware
                 $enabledSocialLogins['github'] = config('services.github.oauth_enabled');
                 $enabledSocialLogins['google'] = config('services.google.oauth_enabled');
                 $enabledSocialLogins['facebook'] = config('services.facebook.oauth_enabled');
-                $enabledSocialLogins['twitter'] = config('services.twitter.oauth_enabled');
+                $enabledSocialLogins['twitter'] = config('services.twitter-oauth-2.oauth_enabled');
                 $enabledSocialLogins['discord'] = config('services.discord.oauth_enabled');
                 return $enabledSocialLogins;
             },

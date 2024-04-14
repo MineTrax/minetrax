@@ -49,6 +49,7 @@ class RecruitmentSubmissionController extends Controller
             'status',
             'user_id',
             'created_at',
+            'updated_at',
         ];
         $selectedRecruitments = $request->query('forms') ?? null;
         $submissions = QueryBuilder::for(RecruitmentSubmission::class)
@@ -110,6 +111,7 @@ class RecruitmentSubmissionController extends Controller
             'status',
             'user_id',
             'created_at',
+            'updated_at',
         ];
         $selectedRecruitments = $request->query('forms') ?? null;
         $submissions = QueryBuilder::for(RecruitmentSubmission::class)
@@ -129,7 +131,7 @@ class RecruitmentSubmissionController extends Controller
                 AllowedFilter::custom('q', new FilterMultipleFields(['data', 'status'])),
             ])
             ->allowedSorts($fields)
-            ->defaultSort('-created_at')
+            ->defaultSort('-updated_at')
             ->paginate($perPage)
             ->withQueryString();
 
@@ -239,6 +241,9 @@ class RecruitmentSubmissionController extends Controller
         ]);
 
         $comment = $submission->comment($request->message, $request->type);
+        if ($request->type != CommentType::RECRUITMENT_STAFF_WHISPER) {
+            $submission->touch();
+        }
 
         // Fire event
         RecruitmentSubmissionCommentCreated::dispatch($comment, $submission, $request->user());

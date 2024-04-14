@@ -222,8 +222,9 @@ return [
         /*
          * Package Service Providers...
          */
-        \Torann\GeoIP\GeoIPServiceProvider::class,
-        \SocialiteProviders\Manager\ServiceProvider::class,
+        Torann\GeoIP\GeoIPServiceProvider::class,
+        SocialiteProviders\Manager\ServiceProvider::class,
+        NotificationChannels\Discord\DiscordServiceProvider::class,
 
         /*
          * Application Service Providers...

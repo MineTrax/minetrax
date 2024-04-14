@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\SocialAccount;
 use App\Models\User;
 use App\Services\GeolocationService;
 use App\Utils\Helpers\Helper;
@@ -10,6 +11,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use NotificationChannels\Discord\Discord;
+use Log;
 use Route;
 
 class SocialAuthController extends Controller
@@ -20,6 +23,9 @@ class SocialAuthController extends Controller
 
     public function redirect($provider, Request $request)
     {
+        if ($provider === 'twitter') {
+            $provider = 'twitter-oauth-2';
+        }
         if ($request->wantsJson()) {
             $redirectUrl = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
 
@@ -34,6 +40,10 @@ class SocialAuthController extends Controller
 
     public function handleCallback($provider, Request $request)
     {
+        if ($provider === 'twitter') {
+            $provider = 'twitter-oauth-2';
+        }
+        $allowAnyProviderAuth = config('auth.any_provider_social_auth');
         $socialUser = null;
         try {
             if ($request->wantsJson()) {
@@ -43,78 +53,118 @@ class SocialAuthController extends Controller
             }
 
             // If there is no email or name address then error
-            if (! $socialUser->getEmail() && ! $socialUser->getName()) {
+            if (! $socialUser->getEmail() || ! $socialUser->getName()) {
                 return redirect()->route('login')
                     ->with(['toast' => ['type' => 'danger', 'title' => __('Unable to fetch your email address or name.'), 'milliseconds' => 7000]]);
             }
 
-            // Check if user already exists
-            $user = User::where('email', $socialUser->getEmail())->first();
-
-            $allowAnyProviderAuth = config('auth.any_provider_social_auth');
-            // If user exists and has different provider then return error about it
-            if ($user && ! $allowAnyProviderAuth && ($socialUser->getId() != $user->provider_id || $provider != $user->provider_name)) {
-                $providerHelper = $user->provider_name ? ucfirst($user->provider_name) : ' with password';
-                if ($request->wantsJson()) {
-                    return response()->json(['message' => __('Provider mismatch. You used a different provider while registration. Maybe try :provider?', ['provider' => $providerHelper])], 422);
-                }
-
-                return redirect()->route('login')
-                    ->with(['toast' => ['type' => 'danger', 'title' => __('Provider mismatch. You used a different provider while registration. Maybe try :provider?', ['provider' => $providerHelper]), 'milliseconds' => 7000]]);
+            $socialAccount = SocialAccount::where('provider', $provider)->where('provider_id', $socialUser->getId())->first();
+            $user = $socialAccount?->user;
+            if (! $user) {
+                $user = User::where('email', $socialUser->getEmail())->first();
             }
 
-            // else generate and token if wants json else login with session
             if ($user) {
-                $user->update([
-                    'last_login_at' => now(),
-                    'last_login_ip' => request()->ip(),
-                ]);
-
-                if ($request->wantsJson()) {
-                    // Generate token
-                    $token = $user->createToken('default');
-
-                    return response()->json([
-                        'token_type' => 'Bearer',
-                        'access_token' => $token->plainTextToken,
+                if ($socialAccount) {
+                    $socialAccount->update([
+                        'name' => $socialUser->getName(),
+                        'nickname' => $socialUser->getNickname(),
+                        'email' => $socialUser->getEmail(),
+                        'avatar_path' => $socialUser->getAvatar(),
+                        'extra' => $socialUser?->user,
+                        // oauth
+                        'token' => $socialUser->token,
+                        // v2
+                        'refresh_token' => $socialUser?->refreshToken,
+                        'expires_at' => $socialUser?->expiresIn,
+                        // v1
+                        'secret' => $socialUser?->tokenSecret,
+                    ]);
+                    $user->update([
+                        'last_login_at' => now(),
+                        'last_login_ip' => request()->ip(),
+                    ]);
+                } elseif (! $socialAccount && $allowAnyProviderAuth) {
+                    $socialAccount = $user->socialAccounts()->create([
+                        'provider' => $provider,
+                        'provider_id' => $socialUser->getId(),
+                        'name' => $socialUser->getName(),
+                        'nickname' => $socialUser->getNickname(),
+                        'email' => $socialUser->getEmail(),
+                        'avatar_path' => $socialUser->getAvatar(),
+                        'extra' => $socialUser?->user,
+                        // oauth
+                        'token' => $socialUser->token,
+                        // v2
+                        'refresh_token' => $socialUser?->refreshToken,
+                        'expires_at' => $socialUser?->expiresIn,
+                        // v1
+                        'secret' => $socialUser?->tokenSecret,
+                    ]);
+                    $user->update([
+                        'last_login_at' => now(),
+                        'last_login_ip' => request()->ip(),
                     ]);
                 } else {
-                    Auth::login($user, true);
+                    if ($request->wantsJson()) {
+                        return response()->json(['message' => __('Provider mismatch. You used a different provider while registration.')], 422);
+                    }
 
-                    return redirect()->route('home');
+                    return redirect()->route('login')
+                        ->with(['toast' => ['type' => 'danger', 'title' => __('Provider mismatch. You used a different provider while registration.'), 'milliseconds' => 7000]]);
                 }
+            } else {
+                // Before creating new user check if registration feature is disabled.
+                if (! Route::has('register')) {
+                    return redirect()->route('login')
+                        ->with(['toast' => ['type' => 'danger', 'title' => __('New user registration is disabled!'), 'milliseconds' => 5000]]);
+                }
+
+                // Create user
+                $countryId = $this->geolocationService->getCountryIdFromIP(request()->ip());
+                $data = [
+                    'username' => Helper::uniqidReal(),
+                    'name' => $socialUser->getName(),
+                    'email' => $socialUser->getEmail(),
+                    'password' => null,
+                    'country_id' => $countryId,
+                    'email_verified_at' => now(),
+                    'last_login_at' => now(),
+                    'last_login_ip' => request()->ip(),
+                ];
+                $user = User::create($data);
+                $user->assignRole(Role::DEFAULT_ROLE_NAME);
+                $socialAccount = $user->socialAccounts()->create([
+                    'provider' => $provider,
+                    'provider_id' => $socialUser->getId(),
+                    'name' => $socialUser->getName(),
+                    'nickname' => $socialUser->getNickname(),
+                    'email' => $socialUser->getEmail(),
+                    'avatar_path' => $socialUser->getAvatar(),
+                    'extra' => $socialUser?->user,
+                    // oauth
+                    'token' => $socialUser->token,
+                    // v2
+                    'refresh_token' => $socialUser?->refreshToken,
+                    'expires_at' => $socialUser?->expiresIn,
+                    // v1
+                    'secret' => $socialUser?->tokenSecret,
+                ]);
+                event(new Registered($user));
             }
 
-            // Before creating new user check if registration feature is disabled.
-            if (! Route::has('register')) {
-                return redirect()->route('login')
-                    ->with(['toast' => ['type' => 'danger', 'title' => __('New user registration is disabled!'), 'milliseconds' => 5000]]);
+            // If OAuth was discord, then check if user has discord_private_channel_id , if not then create one and update user.
+            if ($provider === 'discord' && ! $user->discord_private_channel_id) {
+                $this->updateDiscordPrivateChannel($user, $socialUser);
             }
 
-            $countryId = $this->geolocationService->getCountryIdFromIP(request()->ip());
-            // Create user if not exists
-            $data = [
-                'username' => Helper::uniqidReal(),
-                'name' => $socialUser->getName(),
-                'email' => $socialUser->getEmail(),
-                'provider_name' => $provider,
-                'provider_id' => $socialUser->getId(),
-                'password' => null,
-                'country_id' => $countryId,
-                'email_verified_at' => now(),
-                'last_login_at' => now(),
-                'last_login_ip' => request()->ip(),
-            ];
-            $user = User::create($data);
-            $user->assignRole(Role::DEFAULT_ROLE_NAME);
-            event(new Registered($user));
-            // Return created user with token if wantsJson else login and redirect
+            // Authenticate and return.
             if ($request->wantsJson()) {
+                // Generate token
                 $token = $user->createToken('default');
 
                 return response()->json([
-                    'message' => __('Registration Successful'),
-                    'data' => $user,
+                    'token_type' => 'Bearer',
                     'access_token' => $token->plainTextToken,
                 ]);
             } else {
@@ -122,7 +172,6 @@ class SocialAuthController extends Controller
 
                 return redirect()->route('home');
             }
-
         } catch (\Exception $e) {
             if ($request->wantsJson()) {
                 return response()->json(['message' => __('Unable to fetch user details from :provider', ['provider' => ucfirst($provider)])], 422);
@@ -130,6 +179,44 @@ class SocialAuthController extends Controller
 
             return redirect()->route('login')
                 ->with(['toast' => ['type' => 'danger', 'title' => __('Unable to fetch user details from :provider', ['provider' => ucfirst($provider)]), 'milliseconds' => 7000]]);
+        }
+    }
+
+    private function updateDiscordPrivateChannel($user, $socialUser)
+    {
+        $botEnabled = config('services.discord.token');
+        if (! $botEnabled) {
+            return;
+        }
+
+        try {
+            $channelId = app(Discord::class)->getPrivateChannel($socialUser->getId());
+            $user->update([
+                'discord_user_id' => $socialUser->getId(),
+                'discord_private_channel_id' => $channelId,
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e);
+        }
+    }
+
+    public function indexLinked(Request $request)
+    {
+        $user = $request->user();
+
+        return $user->socialAccounts()->get();
+    }
+
+    public function unlinkAccount(Request $request, SocialAccount $socialAccount)
+    {
+        $user = $request->user();
+
+        $user->socialAccounts()->where('id', $socialAccount->id)->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => __('Social account unlink successful')], 200);
+        } else {
+            return redirect()->back()->with(['toast' => ['type' => 'success', 'title' => __('Social account unlink successful')]]);
         }
     }
 }

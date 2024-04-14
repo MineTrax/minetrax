@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Discord\DiscordMessage;
 
 class PostLikedByUser extends Notification implements ShouldQueue
 {
@@ -18,7 +19,7 @@ class PostLikedByUser extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return $notifiable->notificationPreferences()['like_on_post'] ?? ['database'];
+        return $notifiable->notificationPreferencesFor('like_on_post');
     }
 
     public function toMail($notifiable)
@@ -26,7 +27,7 @@ class PostLikedByUser extends Notification implements ShouldQueue
         return (new MailMessage)->markdown('mail.post.liked-by-user', [
             'causer' => $this->causer,
             'postId' => $this->postId,
-            'name' => $notifiable->name
+            'name' => $notifiable->name,
         ])
             ->subject(__('[Notification] Someone liked your post'));
     }
@@ -35,7 +36,24 @@ class PostLikedByUser extends Notification implements ShouldQueue
     {
         return [
             'post_id' => $this->postId,
-            'causer' => $this->causer->only('id', 'name', 'username', 'profile_photo_url')
+            'causer' => $this->causer->only('id', 'name', 'username', 'profile_photo_url'),
         ];
+    }
+
+    public function toDiscord($notifiable)
+    {
+        $causer = $this->causer->name;
+
+        return DiscordMessage::create()->embed([
+            'title' => __('[Notification] :user liked your post', [
+                'user' => $causer,
+            ]),
+            'type' => 'rich',
+            'url' => route('post.show', $this->postId),
+            'timestamp' => now()->toIso8601String(),
+            'footer' => [
+                'text' => $causer,
+            ],
+        ]);
     }
 }

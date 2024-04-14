@@ -191,7 +191,7 @@ class PostController extends Controller
         $comment = $post->comment($request->comment);
 
         if ($post->user->id != $request->user()->id) {
-            $post->user->notify(new PostCommentedByUser($post->id, $comment->id, $request->user()));
+            $post->user->notify(new PostCommentedByUser($post->id, $comment, $request->user()));
         }
 
         return response()->json([

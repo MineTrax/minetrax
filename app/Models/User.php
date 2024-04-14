@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Commentator;
 use App\Traits\CanCommentTrait;
+use Arr;
 use Cog\Contracts\Love\Reacterable\Models\Reacterable as ReacterableInterface;
 use Cog\Laravel\Love\Reacterable\Models\Traits\Reacterable;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -18,6 +19,7 @@ use Laravel\Fortify\Features;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use NotificationChannels\Discord\DiscordChannel;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Searchable\Searchable;
 
@@ -51,6 +53,8 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         'last_login_at',
         'last_login_ip',
         'locale',
+        'discord_user_id',
+        'discord_private_channel_id',
     ];
 
     // For spatie/laravel-permissions https://github.com/spatie/laravel-permission/issues/1540
@@ -347,6 +351,41 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         return $data;
     }
 
+    public function notificationPreferencesFor($type)
+    {
+        $notificationPrefs = $this->notificationPreferences();
+        $preferenceArray = array_key_exists($type, $notificationPrefs) ? $notificationPrefs[$type] : [];
+
+        $channels = [];
+
+        // empty = default, we will keep default as enabled.
+        if (! $preferenceArray) {
+            $channels = [
+                'database',
+                'mail',
+                'discord',
+            ];
+        } else {
+            $channels = $preferenceArray;
+        }
+
+        $canSendToDiscord = (bool) config('services.discord.token') && $this->discord_private_channel_id;
+        if (! $canSendToDiscord) {
+            $channels = array_diff($channels, ['discord']);
+        }
+
+        // replace `discord` with DiscordChannel::class
+        $channels = Arr::map($channels, function (string $value) {
+            if ($value === 'discord') {
+                return DiscordChannel::class;
+            }
+
+            return $value;
+        });
+
+        return $channels;
+    }
+
     public function badges()
     {
         return $this->morphToMany(Badge::class, 'badgeable')->orderBy('sort_order')->withTimestamps();
@@ -370,5 +409,15 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     public function maxRoleWeight()
     {
         return $this->roles->sortByDesc([['weight', 'desc']])?->first()?->weight ?? null;
+    }
+
+    public function socialAccounts()
+    {
+        return $this->hasMany(SocialAccount::class);
+    }
+
+    public function routeNotificationForDiscord()
+    {
+        return $this->discord_private_channel_id;
     }
 }

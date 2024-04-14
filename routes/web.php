@@ -108,6 +108,8 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     Route::post('auth/user/post-registration-setup', [\App\Http\Controllers\UserProfileController::class, 'postRegistrationSetup'])->name('auth.post-reg-setup')->withoutMiddleware(['redirect-uncompleted-user', 'verified-if-enabled']);
     Route::delete('auth/user/remove-cover', [\App\Http\Controllers\UserProfileController::class, 'deleteCoverImage'])->name('current-user-cover.destroy');
     Route::put('auth/user/notification-preferences', [\App\Http\Controllers\UserProfileController::class, 'putUpdateNotificationPreference'])->name('auth.put-notification-preferences')->withoutMiddleware('verified-if-enabled');
+    Route::get('auth/user/social-accounts', [\App\Http\Controllers\SocialAuthController::class, 'indexLinked'])->name('auth.social-account.index')->withoutMiddleware('verified-if-enabled');
+    Route::delete('auth/user/social-accounts/{socialAccount}', [\App\Http\Controllers\SocialAuthController::class, 'unlinkAccount'])->name('auth.social-account.delete')->withoutMiddleware('verified-if-enabled');
 
     // Notifications
     Route::get('user/notification', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notification.index')->withoutMiddleware(['redirect-uncompleted-user', 'verified-if-enabled']);

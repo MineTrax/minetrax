@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Discord\DiscordMessage;
 
 class CustomFormSubmissionCreatedNotification extends Notification implements ShouldQueue
 {
@@ -27,7 +28,7 @@ class CustomFormSubmissionCreatedNotification extends Notification implements Sh
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return $notifiable->notificationPreferencesFor('custom_form_submission_created');
     }
 
     /**
@@ -36,11 +37,16 @@ class CustomFormSubmissionCreatedNotification extends Notification implements Sh
     public function toMail(object $notifiable): MailMessage
     {
         $submissionBy = $this->submission->user ? $this->submission->user->name : 'Anonymous User';
+
         return (new MailMessage)
             ->subject(__('[Notification] New submission received for a custom form'))
-            ->line('A new submission has been received for custom form - ' . $this->submission->customForm->title)
+            ->line(
+                __('A new submission has been received for custom form - :title', [
+                    'title' => $this->submission->customForm->title,
+                ])
+            )
             ->action('View Submission', route('admin.custom-form-submission.show', [$this->submission->id]))
-            ->line('Submission by: ' . $submissionBy);
+            ->line('Submission by: '.$submissionBy);
     }
 
     /**
@@ -55,5 +61,25 @@ class CustomFormSubmissionCreatedNotification extends Notification implements Sh
             'form' => $this->submission->customForm->only('id', 'title', 'slug'),
             'causer' => $this->submission?->user?->only('id', 'name', 'username', 'profile_photo_url'),
         ];
+    }
+
+    public function toDiscord($notifiable)
+    {
+        $submissionBy = $this->submission->user ? $this->submission->user->name : 'Anonymous User';
+
+        return DiscordMessage::create()->embed([
+            'title' => __('[Notification] New submission received for a custom form'),
+            'description' => __('A new submission has been received for custom form - :title', [
+                'title' => $this->submission->customForm->title,
+            ]),
+            'type' => 'rich',
+            'url' => route('admin.custom-form-submission.show', [$this->submission->id]),
+            'timestamp' => now()->toIso8601String(),
+            'footer' => [
+                'text' => __('Submission by: :user', [
+                    'user' => $submissionBy,
+                ]),
+            ],
+        ]);
     }
 }

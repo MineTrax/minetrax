@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Discord\DiscordMessage;
 
 class RecruitmentSubmissionCreatedNotification extends Notification implements ShouldQueue
 {
@@ -27,7 +28,7 @@ class RecruitmentSubmissionCreatedNotification extends Notification implements S
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return $notifiable->notificationPreferencesFor('recruitment_submission_created');
     }
 
     /**
@@ -58,5 +59,33 @@ class RecruitmentSubmissionCreatedNotification extends Notification implements S
             'applicant' => $this->submission?->user?->only('id', 'name', 'username', 'profile_photo_url'),
             'causer' => $this->submission?->user?->only('id', 'name', 'username', 'profile_photo_url'),
         ];
+    }
+
+    public function toDiscord($notifiable)
+    {
+        $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
+
+        return DiscordMessage::create()->embed([
+            'title' => __('[Notification] New recruitment application received.'),
+            'description' => 'A new application has been received for recruitment - '.$this->submission->recruitment->title,
+            'type' => 'rich',
+            'url' => route('admin.recruitment-submission.show', [$this->submission->id]),
+            'fields' => [
+                [
+                    'name' => 'Applicant',
+                    'value' => $applicant,
+                    'inline' => true,
+                ],
+                [
+                    'name' => 'Recruitment',
+                    'value' => $this->submission->recruitment->title,
+                    'inline' => false,
+                ],
+            ],
+            'timestamp' => now()->toIso8601String(),
+            'footer' => [
+                'text' => $applicant,
+            ],
+        ]);
     }
 }

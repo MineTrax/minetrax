@@ -63,6 +63,12 @@ const headerRow = [
         sortable: true,
     },
     {
+        key: 'updated_at',
+        label: __('Updated At'),
+        class: 'text-right w-1/12 whitespace-nowrap',
+        sortable: true,
+    },
+    {
         key: 'actions',
         label: __('Actions'),
         sortable: false,
@@ -191,6 +197,14 @@ watch(selectedForms, (newSelectedForms) => {
               :content="formatToDayDateString(item.created_at)"
             >
               {{ formatTimeAgoToNow(item.created_at) }}
+            </DtRowItem>
+
+            <DtRowItem
+              v-tippy
+              class="text-right whitespace-nowrap"
+              :content="formatToDayDateString(item.updated_at)"
+            >
+              {{ formatTimeAgoToNow(item.updated_at) }}
             </DtRowItem>
 
             <td

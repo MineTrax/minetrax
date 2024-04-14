@@ -11,7 +11,7 @@ class UserProfileController extends Controller
     {
         $request->validate([
             'username' => ['required', 'string', 'max:30', 'alpha_dash',
-                Rule::unique('users')->ignore($request->user()->id)
+                Rule::unique('users')->ignore($request->user()->id),
             ],
         ]);
 
@@ -32,24 +32,50 @@ class UserProfileController extends Controller
 
     public function putUpdateNotificationPreference(Request $request)
     {
+        $validNotificationType = ['database', 'mail', 'discord'];
         \Validator::make($request->all(), [
-            'like_on_post__email' => 'boolean',
-            'comment_on_post__email' => 'boolean',
-            'you_are_muted__email' => 'boolean',
-            'you_are_banned__email' => 'boolean'
+            'like_on_post' => 'required|array',
+            'like_on_post.*' => Rule::in($validNotificationType),
+            'comment_on_post' => 'required|array',
+            'comment_on_post.*' => Rule::in($validNotificationType),
+            'you_are_muted' => 'required|array',
+            'you_are_muted.*' => Rule::in($validNotificationType),
+            'you_are_banned' => 'required|array',
+            'you_are_banned.*' => Rule::in($validNotificationType),
+            'recruitment_submission_comment_created' => 'required|array',
+            'recruitment_submission_comment_created.*' => Rule::in($validNotificationType),
+            'recruitment_submission_status_changed' => 'required|array',
+            'recruitment_submission_status_changed.*' => Rule::in($validNotificationType),
+            'custom_form_submission_created' => 'required|array',
+            'custom_form_submission_created.*' => Rule::in($validNotificationType),
+            'news_commented_by_user' => 'required|array',
+            'news_commented_by_user.*' => Rule::in($validNotificationType),
+            'recruitment_submission_created' => 'required|array',
+            'recruitment_submission_created.*' => Rule::in($validNotificationType),
         ])->validateWithBag('updateNotificationPreference');
 
-        $likeOnPost = $request->like_on_post__email ? ['database', 'mail'] : ['database'];
-        $commentOnPost = $request->comment_on_post__email ? ['database', 'mail'] : ['database'];
-        $youAreMuted = $request->you_are_muted__email ? ['database', 'mail'] : ['database'];
-        $youAreBanned = $request->you_are_banned__email ? ['database', 'mail'] : ['database'];
+        $likeOnPost = $request->like_on_post ?: $validNotificationType;
+        $commentOnPost = $request->comment_on_post ?: $validNotificationType;
+        $youAreMuted = $request->you_are_muted ?: $validNotificationType;
+        $youAreBanned = $request->you_are_banned ?: $validNotificationType;
+        $recruitmentSubmissionCommentCreated = $request->recruitment_submission_comment_created ?: $validNotificationType;
+        $recruitmentSubmissionStatusChanged = $request->recruitment_submission_status_changed ?: $validNotificationType;
+        $customFormSubmissionCreated = $request->custom_form_submission_created ?: $validNotificationType;
+        $newsCommentedByUser = $request->news_commented_by_user ?: $validNotificationType;
+        $recruitmentSubmissionCreated = $request->recruitment_submission_created ?: $validNotificationType;
+
         $notificationSettings = [
             'notifications' => [
                 'like_on_post' => $likeOnPost,
                 'comment_on_post' => $commentOnPost,
                 'you_are_muted' => $youAreMuted,
-                'you_are_banned' => $youAreBanned
-            ]
+                'you_are_banned' => $youAreBanned,
+                'recruitment_submission_comment_created' => $recruitmentSubmissionCommentCreated,
+                'recruitment_submission_status_changed' => $recruitmentSubmissionStatusChanged,
+                'custom_form_submission_created' => $customFormSubmissionCreated,
+                'news_commented_by_user' => $newsCommentedByUser,
+                'recruitment_submission_created' => $recruitmentSubmissionCreated,
+            ],
         ];
 
         $user = $request->user();

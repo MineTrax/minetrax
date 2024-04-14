@@ -146,6 +146,7 @@ class RecruitmentSubmissionController extends Controller
         ]);
 
         $comment = $submission->comment($request->message, CommentType::RECRUITMENT_APPLICANT_MESSAGE);
+        $submission->touch();
 
         // Fire event
         RecruitmentSubmissionCommentCreated::dispatch($comment, $submission, $request->user());

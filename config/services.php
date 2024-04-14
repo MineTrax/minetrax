@@ -45,7 +45,7 @@ return [
         'redirect' => env('GOOGLE_AUTH_REDIRECT'),
     ],
 
-    'twitter' => [
+    'twitter-oauth-2' => [
         'oauth_enabled' => env('TWITTER_OAUTH_ENABLED'),
         'client_id' => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
@@ -68,5 +68,8 @@ return [
         // optional
         'allow_gif_avatars' => (bool)env('DISCORD_AVATAR_GIF', true),
         'avatar_default_extension' => env('DISCORD_EXTENSION_DEFAULT', 'jpg'), // only pick from jpg, png, webp
+
+        // bot
+        'token' => env('DISCORD_BOT_TOKEN'),
     ],
 ];

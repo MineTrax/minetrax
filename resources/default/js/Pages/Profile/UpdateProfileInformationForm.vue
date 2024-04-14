@@ -471,7 +471,7 @@ export default {
                 s_website_url: this.user?.social_links?.s_website_url ?? null,
                 about: this.user.about,
 
-                profile_photo_source: this.user.settings ? this.user.settings.profile_photo_source : null,
+                profile_photo_source: this.user.settings && this.user.settings.profile_photo_source ? this.user.settings.profile_photo_source : null,
                 show_gender: this.user.settings ? !!+this.user.settings.show_gender : false,            // coz in old version, data store as string 1,0
                 show_yob: this.user.settings ? !!+this.user.settings.show_yob : false,                  // coz in old version, data store as string 1,0
                 locale: this.user.locale,

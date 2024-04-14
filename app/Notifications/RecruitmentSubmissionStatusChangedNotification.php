@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Discord\DiscordMessage;
 
 class RecruitmentSubmissionStatusChangedNotification extends Notification implements ShouldQueue
 {
@@ -32,7 +33,7 @@ class RecruitmentSubmissionStatusChangedNotification extends Notification implem
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return $notifiable->notificationPreferencesFor('recruitment_submission_status_changed');
     }
 
     /**
@@ -41,7 +42,76 @@ class RecruitmentSubmissionStatusChangedNotification extends Notification implem
     public function toMail(object $notifiable): MailMessage
     {
         $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
+        [$title, $body, $route] = $this->generateTitleBodyRoute($applicant);
 
+        return (new MailMessage)
+            ->subject($title)
+            ->line($body)
+            ->action('View Application', $route)
+            ->line('Applicant: '.$applicant)
+            ->line('Status: '.ucfirst($this->submission->status->value))
+            ->lineIf($this->submission->last_act_reason, 'Reason: '.$this->submission->last_act_reason)
+            ->line('Recruitment: '.$this->submission->recruitment->title);
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
+    {
+        $forStaff = $this->submission->status == RecruitmentSubmissionStatus::WITHDRAWN ? true : false;
+
+        return [
+            'id' => $this->submission->id,
+            'status' => $this->submission->status,
+            'previous_status' => $this->previousStatus,
+            'last_act_reason' => $this->submission->last_act_reason,
+            'recruitment' => $this->submission->recruitment->only('id', 'title', 'slug'),
+            'applicant' => $this->submission?->user?->only('id', 'name', 'username', 'profile_photo_url'),
+            'causer' => $this->causer->only('id', 'name', 'username', 'profile_photo_url'),
+            'for_staff' => $forStaff,
+        ];
+    }
+
+    public function toDiscord($notifiable)
+    {
+        $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
+        [$title, $body, $route, $causer] = $this->generateTitleBodyRoute($applicant);
+
+        return DiscordMessage::create()->embed([
+            'title' => $title,
+            'description' => $body,
+            'type' => 'rich',
+            'url' => $route,
+            'fields' => [
+                [
+                    'name' => 'Applicant',
+                    'value' => $applicant,
+                    'inline' => true,
+                ],
+                [
+                    'name' => 'Status',
+                    'value' => ucfirst($this->submission->status->value),
+                    'inline' => true,
+                ],
+                [
+                    'name' => 'Recruitment',
+                    'value' => $this->submission->recruitment->title,
+                    'inline' => false,
+                ],
+            ],
+            'timestamp' => now()->toIso8601String(),
+            'footer' => [
+                'text' => $causer,
+            ],
+        ]);
+    }
+
+    private function generateTitleBodyRoute($applicant): array
+    {
+        $title = $body = $route = $causer = '';
         if ($this->submission->status == RecruitmentSubmissionStatus::WITHDRAWN) {
             $title = __('[Notification] An application withdrawn by user.');
             $body = __(':applicant has withdrawn his application for :recruitment.', [
@@ -88,34 +158,6 @@ class RecruitmentSubmissionStatusChangedNotification extends Notification implem
             }
         }
 
-        return (new MailMessage)
-            ->subject($title)
-            ->line($body)
-            ->action('View Application', $route)
-            ->line('Applicant: '.$applicant)
-            ->line('Status: '.ucfirst($this->submission->status->value))
-            ->lineIf($this->submission->last_act_reason, 'Reason: '.$this->submission->last_act_reason)
-            ->line('Recruitment: '.$this->submission->recruitment->title);
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        $forStaff = $this->submission->status == RecruitmentSubmissionStatus::WITHDRAWN ? true : false;
-
-        return [
-            'id' => $this->submission->id,
-            'status' => $this->submission->status,
-            'previous_status' => $this->previousStatus,
-            'last_act_reason' => $this->submission->last_act_reason,
-            'recruitment' => $this->submission->recruitment->only('id', 'title', 'slug'),
-            'applicant' => $this->submission?->user?->only('id', 'name', 'username', 'profile_photo_url'),
-            'causer' => $this->causer->only('id', 'name', 'username', 'profile_photo_url'),
-            'for_staff' => $forStaff,
-        ];
+        return [$title, $body, $route, $causer];
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Discord\DiscordMessage;
 
 class RecruitmentSubmissionCommentCreatedNotification extends Notification implements ShouldQueue
 {
@@ -30,7 +31,7 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return $notifiable->notificationPreferencesFor('recruitment_submission_comment_created');
     }
 
     /**
@@ -38,29 +39,8 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $causer = $this->causer->name.' (@'.$this->causer->username.')';
         $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
-
-        if ($this->comment->type == CommentType::RECRUITMENT_APPLICANT_MESSAGE) {
-            // Sent to staffs
-            $title = __('[Notification] New message received on a recruitment application.');
-            $body = __(':causer sent new message on his application for :recruitment:', [
-                'causer' => $causer,
-                'recruitment' => $this->submission->recruitment->title,
-            ]);
-            $route = route('admin.recruitment-submission.show', [$this->submission->id]);
-        } elseif ($this->comment->type == CommentType::RECRUITMENT_STAFF_MESSAGE) {
-            // Sent to applicant
-            $title = __('[Notification] Your application has a new message.');
-            $body = __(':causer sent you a message on your application for :recruitment:', [
-                'causer' => $causer,
-                'recruitment' => $this->submission->recruitment->title,
-            ]);
-            $route = route('recruitment-submission.show', [
-                'recruitment' => $this->submission->recruitment->slug,
-                'submission' => $this->submission->id,
-            ]);
-        }
+        [$title, $body, $route] = $this->generateTitleBodyRoute();
 
         return (new MailMessage)
             ->subject($title)
@@ -93,5 +73,72 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
             'applicant' => $this->submission?->user?->only('id', 'name', 'username', 'profile_photo_url'),
             'for_staff' => $forStaff,
         ];
+    }
+
+    public function toDiscord($notifiable)
+    {
+        $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
+        [$title, $body, $route, $causer] = $this->generateTitleBodyRoute();
+
+        return DiscordMessage::create()->embed([
+            'title' => $title,
+            'description' => $body,
+            'type' => 'rich',
+            'url' => $route,
+            'fields' => [
+                [
+                    'name' => 'Message',
+                    'value' => $this->comment->comment,
+                    'inline' => false,
+                ],
+                [
+                    'name' => 'Applicant',
+                    'value' => $applicant,
+                    'inline' => true,
+                ],
+                [
+                    'name' => 'Status',
+                    'value' => ucfirst($this->submission->status->value),
+                    'inline' => true,
+                ],
+                [
+                    'name' => 'Recruitment',
+                    'value' => $this->submission->recruitment->title,
+                    'inline' => false,
+                ],
+            ],
+            'timestamp' => now()->toIso8601String(),
+            'footer' => [
+                'text' => $causer,
+            ],
+        ]);
+    }
+
+    private function generateTitleBodyRoute(): array
+    {
+        $title = $body = $route = '';
+        $causer = $this->causer->name.' (@'.$this->causer->username.')';
+        if ($this->comment->type == CommentType::RECRUITMENT_APPLICANT_MESSAGE) {
+            // Sent to staffs
+            $title = __('[Notification] New message received on a recruitment application.');
+            $body = __(':causer sent new message on his application for :recruitment:', [
+                'causer' => $causer,
+                'recruitment' => $this->submission->recruitment->title,
+            ]);
+            $route = route('admin.recruitment-submission.show', [$this->submission->id]);
+        } elseif ($this->comment->type == CommentType::RECRUITMENT_STAFF_MESSAGE) {
+            // Sent to applicant
+            $title = __('[Notification] Your application has a new message.');
+            $body = __(':causer sent you a message on your application for :recruitment:', [
+                'causer' => $causer,
+                'recruitment' => $this->submission->recruitment->title,
+            ]);
+            $route = route('recruitment-submission.show', [
+                'recruitment' => $this->submission->recruitment->slug,
+                'submission' => $this->submission->id,
+            ]);
+        }
+
+        return [$title, $body, $route, $causer];
     }
 }

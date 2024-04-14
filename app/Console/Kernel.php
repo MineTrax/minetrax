@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
         $playerFetcherInterval = config('minetrax.players_fetcher_cron_interval') ?? 'hourly';
         $schedule->job(new CalculatePlayersJob)->{$playerFetcherInterval}();
 
-        $schedule->command('telescope:prune --hours=48')->daily();
+        $schedule->command('telescope:prune')->daily();
         $schedule->command('queue:prune-batches --hours=48 --unfinished=72')->daily();
         $schedule->command('model:prune')->daily();
         $schedule->command('cache:prune-stale-tags')->hourly();
