@@ -69,7 +69,7 @@ class RecruitmentSubmissionController extends Controller
                 AllowedFilter::custom('q', new FilterMultipleFields(['data', 'status'])),
             ])
             ->allowedSorts($fields)
-            ->defaultSort('-created_at')
+            ->defaultSort('-updated_at')
             ->paginate($perPage)
             ->withQueryString();
 
