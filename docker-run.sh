@@ -20,7 +20,7 @@ function help {
     echo "4. artisan -> run artisan command. Eg: auth:password:reset"
     echo "5. optimize -> Clear cache and optimize (run this if you change .env)"
     echo "6. buildfrontend -> Rebuild frontend assets using npm"
-    echo "Eg: ./docker-run.sh update"
+    echo "Eg: ./docker-run.sh up"
     echo "Eg: ./docker-run.sh artisan auth:password:reset superadmin"
 }
 
@@ -88,6 +88,7 @@ function keygen() {
 
 function generate_or_check_key() {
     local app_key=$(grep '^APP_KEY=' .env | cut -d'=' -f2)
+    app_key=$(echo "$app_key" | tr -d '[:space:]')
     if [[ -n $app_key ]]; then
         echo "Key already exists. Skipping key generation..."
     else
