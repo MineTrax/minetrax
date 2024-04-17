@@ -36,6 +36,8 @@ else
 	git pull origin main
 fi
 
+export COMPOSER_ALLOW_SUPERUSER=1 #not that important but it clears the root user request log from composer
+
 yes | composer install
 
 php artisan migrate --force --seed
