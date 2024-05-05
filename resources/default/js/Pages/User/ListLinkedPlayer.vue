@@ -4,15 +4,15 @@
       :title="__('Your Linked Players')"
     />
 
-    <div class="py-3 px-2 md:py-12 md:px-10 max-w-6xl mx-auto space-y-4">
+    <div class="max-w-6xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
       <div
-        class="mb-4 bg-white dark:bg-cool-gray-800 border-t-4 border-light-blue-500 rounded-b text-light-blue-900 dark:text-light-blue-400 px-4 py-3 shadow"
+        class="px-4 py-3 mb-4 bg-white border-t-4 rounded-b shadow dark:bg-cool-gray-800 border-light-blue-500 text-light-blue-900 dark:text-light-blue-400"
         role="alert"
       >
         <div class="flex">
           <div class="py-1">
             <svg
-              class="fill-current h-6 w-6 text-light-blue-500 mr-4"
+              class="w-6 h-6 mr-4 fill-current text-light-blue-500"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
             >
@@ -21,7 +21,7 @@
               />
             </svg>
           </div>
-          <div>
+          <div class="w-full">
             <p class="font-bold">
               {{ __("You can link upto :count :player to your account! ( :left available )", {
                 count: maxPlayerPerUser,
@@ -29,23 +29,74 @@
                 left: maxPlayerPerUser - linkedPlayers.length
               }) }}
             </p>
-            <p class="text-sm">
-              {{ __("Initiate the process by joining the server and typing /account-link in chat. A link will be generated, click on that link and your player will added to your account.") }}
-            </p>
+            <div class="flex flex-col items-center mt-2 text-sm">
+              <p class="text-gray-500 dark:text-gray-400">
+                {{ __("To link a player to your account, join server and type '/link :otp' in your chat.", {
+                  otp: currentLinkOtp?.otp
+                }) }}
+              </p>
+              <h1
+                :class="{
+                  'line-through': otpExpiryCountdownSeconds <= 0
+                }"
+                class="font-mono text-6xl font-extrabold tracking-widest text-center text-black dark:text-white"
+              >
+                {{ currentLinkOtp?.otp }}
+              </h1>
+
+              <copy-to-clipboard v-slot="props">
+                <button
+                  v-tippy
+                  :title="__('Click to Copy')"
+                  type="button"
+                  class="p-2 mt-3 font-semibold text-center font-mono tracking-wider text-gray-600 transition duration-150 ease-in-out border border-gray-200 rounded w-full md:w-1/2 dark:border-gray-700 dark:text-gray-300 hover:text-light-blue-500 dark:hover:text-light-blue-400 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900 hover:border-light-blue-500 dark:hover:border-cool-gray-800 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 focus:outline-none"
+                  @click="props.copy('/link ' + currentLinkOtp?.otp)"
+                >
+                  <span v-if="props.status !== 'copied'">
+                    {{ '/link ' + currentLinkOtp?.otp }}
+                  </span>
+                  <span v-else>
+                    {{ __("Copied!") }}
+                  </span>
+                </button>
+              </copy-to-clipboard>
+
+              <p
+                v-if="otpExpiryCountdownSeconds > 0"
+                class="italic dark:text-gray-400 mt-4"
+              >
+                {{ __("This OTP will expire in :seconds seconds.", {
+                  seconds: otpExpiryCountdownSeconds
+                }) }}
+              </p>
+              <div v-else>
+                <p class="dark:text-gray-400 mt-4">
+                  {{ __("This OTP has expired. Refresh the page to get a new OTP.") }}
+
+                  <inertia-link
+                    as="button"
+                    :href="route('linked-player.list')"
+                    class="dark:text-sky-400 dark:hover:text-sky-500 text-sky-500 hover:text-sky-700 hover:underline"
+                  >
+                    {{ __("Click here to refresh.") }}
+                  </inertia-link>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
 
       <div
-        class="md:grid gap-4 space-y-2 md:space-y-0"
+        class="gap-4 space-y-2 md:grid md:space-y-0"
         :class="linkedPlayers.length > 1 ? 'grid-cols-2' : 'grid-cols-1 place-items-center'"
       >
         <div
           v-if="linkedPlayers.length <= 0"
-          class="pt-5 pb-5 pr-10 flex justify-center"
+          class="flex justify-center pt-5 pb-5 pr-10"
         >
-          <p class="text-red-500 italic">
+          <p class="italic text-red-500">
             {{ __("No players linked to your account right now.") }}
           </p>
         </div>
@@ -53,7 +104,7 @@
         <div
           v-for="player in linkedPlayers"
           :key="player.uuid"
-          class="shadow pt-5 pb-5 pr-10 bg-white dark:bg-cool-gray-800 rounded flex justify-center"
+          class="flex justify-center pt-5 pb-5 pr-10 bg-white rounded shadow dark:bg-cool-gray-800"
         >
           <!-- <img :src="`https://crafatar.com/renders/body/${player.uuid}?scale=7`" :alt="player.username"> -->
           <canvas :id="`skin_container_${player.uuid}`" />
@@ -62,7 +113,7 @@
               <inertia-link
                 as="a"
                 :href="route('player.show', player.uuid)"
-                class="font-bold text-lg text-light-blue-400 hover:text-light-blue-500"
+                class="text-lg font-bold text-light-blue-400 hover:text-light-blue-500"
               >
                 {{ player.username }}
               </inertia-link>
@@ -75,16 +126,16 @@
               <p class="font-bold dark:text-gray-400">
                 {{ __("Position") }}:
               </p>
-              <div class="flex items-center space-x-2 text-center text-sm text-light-blue-400 font-extrabold">
+              <div class="flex items-center space-x-2 text-sm font-extrabold text-center text-light-blue-400">
                 <span
                   v-if="player.position"
-                  class="border-2 rounded text-lg px-2 border-light-blue-300 bg-light-blue-50 dark:bg-cool-gray-800"
+                  class="px-2 text-lg border-2 rounded border-light-blue-300 bg-light-blue-50 dark:bg-cool-gray-800"
                 >
                   {{ player.position }}
                 </span>
                 <span
                   v-else
-                  class="italic text-sm text-gray-500 dark:text-gray-400"
+                  class="text-sm italic text-gray-500 dark:text-gray-400"
                 >{{ __("None") }}</span>
               </div>
             </div>
@@ -102,7 +153,7 @@
               />
               <p
                 v-else
-                class="italic text-sm text-gray-500 dark:text-gray-400"
+                class="text-sm italic text-gray-500 dark:text-gray-400"
               >
                 {{ __("None") }}
               </p>
@@ -120,7 +171,7 @@
                 </p>
                 <p
                   v-else
-                  class="italic text-sm text-gray-500 dark:text-gray-400"
+                  class="text-sm italic text-gray-500 dark:text-gray-400"
                 >
                   {{ __("None") }}
                 </p>
@@ -177,10 +228,10 @@
                 :href="route('change-player-skin.show', {
                   player_uuid: player.uuid,
                 })"
-                class="mt-5 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-400 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 disabled:opacity-50"
+                class="inline-flex justify-center px-4 py-2 mt-5 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-sky-400 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 disabled:opacity-50"
                 :title="__('Change Skin of this player.')"
               >
-                <PaintBrushIcon class="h-5 w-5" />
+                <PaintBrushIcon class="w-5 h-5" />
               </inertia-link>
 
               <inertia-link
@@ -191,10 +242,10 @@
                 :preserve-state="false"
                 method="delete"
                 :href="route('account-link.delete', player.uuid)"
-                class="mt-5 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                class="inline-flex justify-center px-4 py-2 mt-5 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
                 :title="__('Unlink this player from your account.')"
               >
-                <LockOpenIcon class="h-5 w-5" />
+                <LockOpenIcon class="w-5 h-5" />
               </inertia-link>
             </div>
           </div>
@@ -210,6 +261,7 @@ import Icon from '@/Components/Icon.vue';
 import * as skinview3d from 'skinview3d';
 import { useHelpers } from '@/Composables/useHelpers';
 import { LockOpenIcon, PaintBrushIcon } from '@heroicons/vue/24/solid';
+import CopyToClipboard from '@/Components/CopyToClipboard.vue';
 
 export default {
 
@@ -218,14 +270,30 @@ export default {
         AppLayout,
         LockOpenIcon,
         PaintBrushIcon,
+        CopyToClipboard,
     },
     props: {
         linkedPlayers: Array,
-        maxPlayerPerUser: Number
+        maxPlayerPerUser: Number,
+        currentLinkOtp: Object,
     },
     setup() {
         const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
         return {formatTimeAgoToNow, formatToDayDateString};
+    },
+    data() {
+        return {
+            skinViewers: [],
+            otpExpiryCountdownInterval: null,
+            otpExpiryCountdownSeconds: this.currentLinkOtp?.expires_at ? Math.floor((new Date(this.currentLinkOtp.expires_at).getTime() - new Date().getTime()) / 1000) : null,
+        };
+    },
+    unmounted() {
+        for (const skinViewer of this.skinViewers) {
+            skinViewer.dispose();
+        }
+
+        clearInterval(this.otpExpiryCountdownInterval);
     },
     mounted() {
         for (const player of this.linkedPlayers) {
@@ -235,15 +303,26 @@ export default {
                 height: 300,
                 skin: route('player.skin.get', {uuid: player.uuid, username: player.username, textureid: player.skin_texture_id}),
             });
-            let control = skinview3d.createOrbitControls(skinViewer);
-            control.enableRotate = true;
-            control.enableZoom = false;
-            control.enablePan = false;
-            let walk = skinViewer.animations.add(skinview3d.WalkingAnimation);
-            walk.speed = 0.1;
-            let rotate = skinViewer.animations.add(skinview3d.RotatingAnimation);
-            rotate.speed = 0.5;
+            skinViewer.autoRotate = true;
+            skinViewer.animation = new skinview3d.WalkingAnimation();
+            skinViewer.animation.speed = 0.1;
+            skinViewer.autoRotateSpeed = 0.5;
+            this.skinViewers.push(skinViewer);
         }
+
+        this.startOtpExpiryCountdown();
     },
+    methods: {
+        startOtpExpiryCountdown() {
+            if (this.otpExpiryCountdownSeconds > 0) {
+                this.otpExpiryCountdownInterval = setInterval(() => {
+                    this.otpExpiryCountdownSeconds--;
+                    if (this.otpExpiryCountdownSeconds <= 0) {
+                        clearInterval(this.otpExpiryCountdownInterval);
+                    }
+                }, 1000);
+            }
+        },
+    }
 };
 </script>

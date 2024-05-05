@@ -102,7 +102,7 @@ function storagelink() {
 
 function up() {
     # Try taking pull, if dont work then prompt for stash
-    if git pull origin main; then
+    if git pull; then
         echo "${Green}Git pull successful! Continuing update..."
     else
         echo "${Yellow}Warning! You have local changes which will get lost. Type Y to continue, N to cancel update."
@@ -114,7 +114,7 @@ function up() {
         fi
 
         git stash
-        git pull origin main
+        git pull
     fi
 
     # Stop container

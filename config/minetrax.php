@@ -364,4 +364,14 @@ return [
     |
     */
     'hide_country_for_privacy' => env('HIDE_COUNTRY_FOR_PRIVACY', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Disable Player Unlinking
+    |--------------------------------------------------------------------------
+    |
+    | Don't allow users to unlink their player accounts.
+    |
+    */
+    'disable_player_unlinking' => env('DISABLE_PLAYER_UNLINKING', false),
 ];

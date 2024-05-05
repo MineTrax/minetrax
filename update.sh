@@ -20,7 +20,7 @@ php artisan view:clear
 php artisan optimize:clear
 
 # Try taking pull, if dont work then prompt for stash
-if git pull origin main; then
+if git pull; then
 	echo "${Green}Git pull successful! Continuing update..."
 else
 	echo "${Yellow}Warning! You have local changes which will get lost. Type Y to continue, N to cancel update."
@@ -33,10 +33,10 @@ else
 	fi
 
 	git stash
-	git pull origin main
+	git pull
 fi
 
-export COMPOSER_ALLOW_SUPERUSER=1 #not that important but it clears the root user request log from composer
+export COMPOSER_ALLOW_SUPERUSER=1 # not that important but it clears the root user request log from composer
 
 yes | composer install
 

@@ -31,7 +31,6 @@ onMounted(async () => {
     if (props.topCount) {
         params['top'] = props.topCount;
     }
-    console.log('params', params);
 
     const response = await axios.get(route('admin.graph.player-join-addresses', params));
     isLoading.value = false;

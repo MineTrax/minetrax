@@ -80,4 +80,17 @@ class Helper
 
         return str_replace($search, $replace, $string);
     }
+
+    public static function generateNumericOtp(int $length = 6): string
+    {
+        $i = 0;
+        $otp = "";
+
+        while ($i < $length) {
+            $otp .= random_int(0, 9);
+            $i++;
+        }
+
+        return $otp;
+    }
 }

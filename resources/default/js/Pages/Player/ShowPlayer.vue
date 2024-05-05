@@ -806,25 +806,24 @@ export default {
             height: 500,
             skin: route('player.skin.get', {uuid: this.player.uuid, username: this.player.username, textureid: this.player.skin_texture_id}),
         });
-        let control = skinview3d.createOrbitControls(this.skinViewer);
-        control.enableRotate = true;
-        control.enableZoom = false;
-        control.enablePan = false;
-        let walk = this.skinViewer.animations.add(skinview3d.WalkingAnimation);
-        walk.speed = 0.1;
-        let rotate = this.skinViewer.animations.add(skinview3d.RotatingAnimation);
-        rotate.speed = 0.5;
+        this.skinViewer.autoRotate = true;
+        this.skinViewer.animation = new skinview3d.WalkingAnimation();
+        this.skinViewer.animation.speed = 0.1;
+        this.skinViewer.autoRotateSpeed = 0.5;
+    },
+    unmounted() {
+        this.skinViewer.dispose();
     },
 
     methods: {
         toggle3dPlayerAnimation: function () {
             if (this.playerAnimationEnabled) {
                 // Disable Animation
-                this.skinViewer.animations.paused = true;
+                this.skinViewer.animation.paused = true;
                 this.playerAnimationEnabled = false;
             } else {
                 // Enable Animation
-                this.skinViewer.animations.paused = false;
+                this.skinViewer.animation.paused = false;
                 this.playerAnimationEnabled = true;
             }
         },

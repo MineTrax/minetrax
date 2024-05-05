@@ -116,7 +116,6 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     Route::post('user/notification/read', [\App\Http\Controllers\NotificationController::class, 'postMarkAsRead'])->name('notification.mark-as-read')->withoutMiddleware('verified-if-enabled');
 
     // Account Linker
-    Route::get('account-link/verify/{uuid}/{server}', [\App\Http\Controllers\AccountLinkController::class, 'verify'])->name('account-link.verify');
     Route::delete('account-link/remove/{player:uuid}', [\App\Http\Controllers\AccountLinkController::class, 'unlink'])->name('account-link.delete')->middleware('password.confirm');
     Route::get('user/linked-players', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('linked-player.list')->withoutMiddleware(['verified-if-enabled']);
 

@@ -344,7 +344,7 @@
             v-model="commandText"
             :disabled="sendingCommand"
             aria-label="Commander"
-            class="block w-full mt-1 bg-gray-100 border-none rounded focus:ring-gray-300 dark:focus:ring-gray-700 sm:text-sm disabled:opacity-50 dark:bg-cool-gray-900 dark:text-gray-200 focus:bg-white"
+            class="block w-full mt-1 bg-gray-100 border-none rounded focus:ring-gray-300 dark:focus:ring-gray-700 sm:text-sm disabled:opacity-50 dark:bg-cool-gray-900 dark:text-gray-200 focus:bg-white dark:focus:bg-cool-gray-900"
             type="text"
             :placeholder="__('Type a command and press Enter to run...')"
           >
