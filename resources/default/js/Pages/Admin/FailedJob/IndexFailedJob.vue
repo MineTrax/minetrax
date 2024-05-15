@@ -155,10 +155,10 @@ const headerRow = [
               <ArrowPathIcon class="inline-block w-5 h-5" />
             </InertiaLink>
             <InertiaLink
-              v-if="can('delete ranks')"
+              v-if="can('delete failed_jobs')"
               v-confirm="{
                 message:
-                  'Are you sure you want to delete this Rank permanently?',
+                  'Are you sure you want to delete this Job permanently?',
               }"
               v-tippy
               as="button"
