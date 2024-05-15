@@ -102,6 +102,11 @@ const closeModal = () => {
             class="mt-2"
           />
         </div>
+
+
+        <span class="text-gray-500 text-xs italic">
+          {{ __("Continue with empty password if you have no password.") }}
+        </span>
       </template>
 
       <template #footer>

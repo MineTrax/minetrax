@@ -29,6 +29,10 @@
             type="password"
             name="password"
           />
+
+          <span class="text-gray-500 text-xs italic">
+            {{ __("Continue with empty password if you have no password.") }}
+          </span>
         </div>
 
         <div class="flex justify-end mt-4">

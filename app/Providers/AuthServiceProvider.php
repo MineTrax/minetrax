@@ -8,17 +8,18 @@ use App\Models\CustomForm;
 use App\Models\CustomFormSubmission;
 use App\Models\CustomPage;
 use App\Models\Download;
+use App\Models\FailedJob;
 use App\Models\News;
 use App\Models\Poll;
 use App\Models\Post;
 use App\Models\Rank;
+use App\Models\Recruitment;
+use App\Models\RecruitmentSubmission;
 use App\Models\Role;
 use App\Models\Server;
 use App\Models\Session;
 use App\Models\Shout;
 use App\Models\User;
-use App\Policies\RecruitmentPolicy;
-use App\Policies\RecruitmentSubmissionPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -45,8 +46,9 @@ class AuthServiceProvider extends ServiceProvider
         Download::class => \App\Policies\DownloadPolicy::class,
         CustomForm::class => \App\Policies\CustomFormPolicy::class,
         CustomFormSubmission::class => \App\Policies\CustomFormSubmissionPolicy::class,
-        RecruitmentPolicy::class => \App\Policies\RecruitmentPolicy::class,
-        RecruitmentSubmissionPolicy::class => \App\Policies\RecruitmentSubmissionPolicy::class,
+        Recruitment::class => \App\Policies\RecruitmentPolicy::class,
+        RecruitmentSubmission::class => \App\Policies\RecruitmentSubmissionPolicy::class,
+        FailedJob::class => \App\Policies\FailedJobPolicy::class,
     ];
 
     /**

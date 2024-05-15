@@ -322,6 +322,14 @@ const navItems = [
     {
         label: 'Debug', href: '#', active: false, children: [
             {
+                label: 'Failed Jobs',
+                href: route('admin.failed-job.index'),
+                active: route().current('admin.failed-job.index'),
+                children: [],
+                icon: null,
+                visible: can('read failed_jobs')
+            },
+            {
                 label: 'Pulse',
                 href: '/admin/pulse',
                 active: false,

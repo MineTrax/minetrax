@@ -305,4 +305,8 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('recruitment-submission/{submission}/message', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'indexMessages'])->name('recruitment-submission.message.index');
     Route::post('recruitment-submission/{submission}/message', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'postMessage'])->name('recruitment-submission.message.store')->middleware('throttle:chat');
     Route::delete('recruitment-submission/{submission}/message/{message}', [\App\Http\Controllers\Admin\RecruitmentSubmissionController::class, 'deleteMessage'])->name('recruitment-submission.message.delete');
+
+    Route::get('failed-job', [\App\Http\Controllers\Admin\FailedJobController::class, 'index'])->name('failed-job.index');
+    Route::post('failed-job/retry', [\App\Http\Controllers\Admin\FailedJobController::class, 'retry'])->name('failed-job.retry');
+    Route::delete('failed-job/clear', [\App\Http\Controllers\Admin\FailedJobController::class, 'destroy'])->name('failed-job.clear');
 });
