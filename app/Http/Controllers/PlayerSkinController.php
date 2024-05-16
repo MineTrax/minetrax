@@ -92,10 +92,11 @@ class PlayerSkinController extends Controller
             case 'upload':
                 try {
                     $response = MinecraftSkinUtils::uploadSkinToMineSkin($request->file, $request->skin_type);
-                    $param['value'] = $response['data']['texture']['value'];
-                    $param['signature'] = $response['data']['texture']['signature'];
+                    $value = $response['data']['texture']['value'];
+                    $signature = $response['data']['texture']['signature'];
+                    $payload = $value.':::'.$signature;
                     foreach ($servers as $server) {
-                        ChangePlayerSkinJob::dispatch($server, $request->player_uuid, 'upload', $param);
+                        ChangePlayerSkinJob::dispatch($server, $request->player_uuid, 'upload', $payload);
                     }
                 } catch (\Exception $e) {
                     throw ValidationException::withMessages(['file' => $e->getMessage()]);

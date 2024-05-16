@@ -72,7 +72,7 @@ class AuthenticateApiKey
         if ($timestampMs && VALIDATE_SIGNATURE) {
             $timestamp = $timestampMs / 1000;
             $currentTimestamp = now()->timestamp;
-            $requestAge = $currentTimestamp - $timestamp;
+            $requestAge = abs($currentTimestamp - $timestamp);
             if ($requestAge > REQUEST_MAX_AGE_THRESHOLD_SECONDS) {
                 return response()->json([
                     'status' => 'error',

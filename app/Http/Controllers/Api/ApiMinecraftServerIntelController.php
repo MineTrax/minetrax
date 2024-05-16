@@ -18,7 +18,7 @@ class ApiMinecraftServerIntelController extends ApiController
             'data.server_id' => 'required|int|exists:servers,id',
             'data.online_players' => 'required|int',
             'data.max_players' => 'required|int',
-            'data.tps' => 'required|numeric',
+            'data.tps' => 'nullable|numeric',
             'data.max_memory' => 'required|int',
             'data.total_memory' => 'required|int',
             'data.free_memory' => 'required|int',
@@ -26,7 +26,7 @@ class ApiMinecraftServerIntelController extends ApiController
             'data.cpu_load' => 'required|numeric',
             'data.uptime' => 'required|int',
             'data.free_disk_in_kb' => 'required|numeric',
-            'data.world_data' => 'required|array',
+            'data.world_data' => 'nullable|array',
             'data.motd' => 'nullable|string',
             'data.server_version' => 'required|string',
             'data.server_session_id' => 'present|nullable|string',
@@ -44,7 +44,7 @@ class ApiMinecraftServerIntelController extends ApiController
                     'server_id' => $request->input('data.server_id'),
                     'online_players' => $request->input('data.online_players'),
                     'max_players' => $request->input('data.max_players'),
-                    'tps' => $request->input('data.tps'),
+                    'tps' => $request->input('data.tps') ?? 0,
                     'max_memory' => $request->input('data.max_memory'),
                     'total_memory' => $request->input('data.total_memory'),
                     'free_memory' => $request->input('data.free_memory'),
@@ -60,7 +60,7 @@ class ApiMinecraftServerIntelController extends ApiController
                 ]);
 
                 // Create MinecraftServerWorld if not exists and record its MinecraftWorldLiveInfo
-                $worlds = $request->input('data.world_data');
+                $worlds = $request->input('data.world_data') ?? [];
                 foreach ($worlds as $world) {
                     $worldEntity = MinecraftServerWorld::updateOrCreate([
                         'server_id' => $request->input('data.server_id'),
