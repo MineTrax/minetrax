@@ -86,7 +86,7 @@ watchEffect(() => {
             });
 
         // Only do webquery if server is not bungee.
-        if (server.type.value !== 5 && server.webquery_port) {
+        if (server.webquery_port) {
             axios
                 .get(route('server.webquery.get', server.id))
                 .then(() => {

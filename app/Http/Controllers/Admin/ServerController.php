@@ -69,7 +69,7 @@ class ServerController extends Controller
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'minecraft_version'])),
             ])
             ->allowedSorts(['id', 'name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'type', 'minecraft_version', 'order', 'country_id', 'last_scanned_at', 'created_at'])
-            ->defaultSort('-created_at')
+            ->defaultSort('-order')
             ->paginate($perPage)
             ->withQueryString();
 
@@ -133,7 +133,7 @@ class ServerController extends Controller
         ])->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('New server added successfully')]]);
     }
 
-    public function storeBungee(Request $request, GeolocationService $geolocationService)
+    public function storeBungee(Request $request, GeolocationService $geolocationService, PluginSettings $pluginSettings)
     {
         $alreadyHasBungee = Server::where('type', ServerType::Bungee)->exists();
         if ($alreadyHasBungee) {
@@ -147,14 +147,16 @@ class ServerController extends Controller
             'ip_address' => 'required|ip',
             'join_port' => 'required|numeric|min:0|max:65535',
             'query_port' => 'required|numeric|min:0|max:65535',
-            'webquery_port' => 'nullable|numeric|min:0|max:65535',
+            'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled',
             'name' => 'required',
             'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
+            'settings' => 'sometimes',
+            'is_server_intel_enabled' => 'required|boolean',
         ]);
 
         $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
 
-        Server::create([
+        $server = Server::create([
             'ip_address' => $request->ip_address,
             'join_port' => $request->join_port,
             'query_port' => $request->query_port,
@@ -164,11 +166,17 @@ class ServerController extends Controller
             'minecraft_version' => $request->minecraft_version,
             'type' => ServerType::Bungee,
             'country_id' => $countryId,
+            'is_server_intel_enabled' => $request->is_server_intel_enabled,
+            'settings' => $request->settings,
             'created_by' => $request->user()->id,
         ]);
 
-        return redirect()->route('admin.server.index')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Bungee server added successfully')]]);
+        return Inertia::render('Admin/Server/AfterCreateSteps', [
+            'server' => $server,
+            'apiKey' => $pluginSettings->plugin_api_key,
+            'apiSecret' => $pluginSettings->plugin_api_secret,
+            'apiHost' => config('app.url'),
+        ])->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Proxy server added successfully')]]);
     }
 
     public function show(Server $server)
@@ -259,9 +267,11 @@ class ServerController extends Controller
             'ip_address' => 'required|ip',
             'join_port' => 'required|numeric|min:0|max:65535',
             'query_port' => 'required|numeric|min:0|max:65535',
-            'webquery_port' => 'nullable|numeric|min:0|max:65535',
+            'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled',
             'name' => 'required',
             'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
+            'settings' => 'sometimes',
+            'is_server_intel_enabled' => 'required|boolean',
         ]);
 
         $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
@@ -273,6 +283,8 @@ class ServerController extends Controller
         $server->minecraft_version = $request->minecraft_version;
         $server->hostname = $request->hostname;
         $server->ip_address = $request->ip_address;
+        $server->settings = $request->settings;
+        $server->is_server_intel_enabled = $request->is_server_intel_enabled;
         $server->country_id = $countryId;
         $server->updated_by = $request->user()->id;
         $server->save();
@@ -283,7 +295,7 @@ class ServerController extends Controller
         Cache::forget('server:webquery:'.$server->id);
 
         return redirect()->route('admin.server.index')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Bungee server updated successfully')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Server updated successfully')]]);
     }
 
     public function update(UpdateServerRequest $request, Server $server, GeolocationService $geolocationService)

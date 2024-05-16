@@ -92,10 +92,10 @@ class ServerController extends Controller
 
             $queryData = $queryService->getServerStatusWithPluginWebQueryProtocol($server->ip_address, $server->webquery_port);
 
-            $queryData = $queryData->map(function ($player) use ($geolocationService) {
-                $player->country = $geolocationService->getCountryFromIP($player->ip_address);
-                $player->is_in_db = Player::whereUuid($player->id)->exists();
-                unset($player->ip_address);
+            $queryData['players'] = $queryData->get('players')->map(function ($player) use ($geolocationService) {
+                $player['country'] = $geolocationService->getCountryFromIP($player->get('ip_address'));
+                $player['is_in_db'] = Player::whereUuid($player->get('id'))->exists();
+                unset($player['ip_address']);
                 return $player;
             });
 

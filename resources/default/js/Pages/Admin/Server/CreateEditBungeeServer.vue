@@ -9,10 +9,10 @@
       :title="__('Edit Bungee Server: :name', {name: server.name})"
     />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto">
+    <div class="py-12 px-10 max-w-5xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ isCreateOperation ? __('Add Bungee Server') : __('Edit Bungee Server: :name', {name: server.name}) }}
+          {{ isCreateOperation ? __('Add Bungee/Velocity Server') : __('Edit Bungee/Velocity Server: :name', {name: server.name}) }}
         </h1>
         <inertia-link
           :href="route('admin.server.index')"
@@ -23,19 +23,7 @@
       </div>
 
       <div class="mt-10 sm:mt-0">
-        <div class="md:grid md:grid-cols-3 md:gap-6">
-          <div class="md:col-span-1">
-            <div class="px-4 sm:px-0">
-              <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                {{ __("Overview") }}
-              </h3>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                {{ __("Minetrax only support adding one bungee server. This server will be used to show online players and server status. All sensitive information will be encrypted.") }}
-                <br><br>
-                {{ __("Please note Proxy servers don't need Minetrax.jar plugin. Only install them on actual servers like spigot, bukkit etc.") }}
-              </p>
-            </div>
-          </div>
+        <div class="">
           <div class="mt-5 md:mt-0 md:col-span-2">
             <form @submit.prevent="postForm">
               <div class="shadow overflow-hidden sm:rounded-md">
@@ -69,7 +57,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-3">
+                    <div class="col-span-6 sm:col-span-2">
                       <x-input
                         id="ip_address"
                         v-model="form.ip_address"
@@ -83,7 +71,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-3">
+                    <div class="col-span-6 sm:col-span-2">
                       <x-input
                         id="join_port"
                         v-model="form.join_port"
@@ -97,7 +85,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-3">
+                    <div class="col-span-6 sm:col-span-2">
                       <x-input
                         id="query_port"
                         v-model="form.query_port"
@@ -111,19 +99,22 @@
                       />
                     </div>
 
-                    <!-- <div class="col-span-6 sm:col-span-2">
-                      <x-input
-                        id="webquery_port"
-                        v-model="form.webquery_port"
-                        :label="__('Webquery Port')"
-                        :error="form.errors.webquery_port"
-                        autocomplete="webquery_port"
-                        type="text"
-                        name="webquery_port"
-                        :help="__('Eg: 25585')"
-                        help-error-flex="flex-col"
-                      />
-                    </div> -->
+                    <div class="col-span-6 sm:col-span-6">
+                      <div class="grid grid-cols-2 gap-6">
+                        <x-input
+                          id="webquery_port"
+                          v-model="form.webquery_port"
+                          :label="__('Webquery Port')"
+                          :error="form.errors.webquery_port"
+                          type="text"
+                          name="webquery_port"
+                          help-error-flex="flex-col"
+                        />
+                        <div class="text-xs text-gray-400 flex items-center">
+                          {{ __("WebQuery port is a new port which MineTrax plugin will open for secure connection between server and web. Enter a port value which is available and can be open. Eg: 25569") }}
+                        </div>
+                      </div>
+                    </div>
 
                     <div class="col-span-6 sm:col-span-3">
                       <x-select
@@ -137,6 +128,28 @@
                         :disable-null="true"
                       />
                     </div>
+
+
+                    <div class="flex items-center col-span-6 sm:col-span-6">
+                      <x-checkbox
+                        id="is_server_intel_enabled"
+                        v-model="form.is_server_intel_enabled"
+                        :label="__('Enable Server Intel / Analytics')"
+                        :help="__('If enabled, server analytics data (performance metric, join activity etc) will be captured for this server via plugin.')"
+                        name="is_server_intel_enabled"
+                      />
+                    </div>
+
+
+                    <div class="flex items-center col-span-6 sm:col-span-6">
+                      <x-checkbox
+                        id="is_skin_change_via_web_allowed"
+                        v-model="form.settings.is_skin_change_via_web_allowed"
+                        :label="__('Enable Skin Change via Web (SkinsRestorer)')"
+                        :help="__('Allow user to change their linked players skin via web for this server. This will require SkinsRestorer plugin to be installed on the server.')"
+                        name="is_skin_change_via_web_allowed"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
@@ -145,7 +158,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    {{ isCreateOperation ? __("Add Bungee Server") : __("Edit Bungee Server") }}
+                    {{ isCreateOperation ? __("Add Server") : __("Edit Server") }}
                   </loading-button>
                 </div>
               </div>
@@ -161,6 +174,7 @@
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
+import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 
@@ -169,7 +183,8 @@ export default {
         AdminLayout,
         XSelect,
         LoadingButton,
-        XInput
+        XInput,
+        XCheckbox,
     },
     props: {
         server: {
@@ -188,7 +203,11 @@ export default {
                 query_port: this.server?.query_port,
                 webquery_port: this.server?.webquery_port,
                 minecraft_version: this.server?.minecraft_version,
-                hostname: this.server?.hostname
+                hostname: this.server?.hostname,
+                is_server_intel_enabled: this.server?.is_server_intel_enabled ?? true,
+                settings: {
+                    is_skin_change_via_web_allowed: this.server?.settings?.is_skin_change_via_web_allowed ?? true,
+                }
             }),
         };
     },
