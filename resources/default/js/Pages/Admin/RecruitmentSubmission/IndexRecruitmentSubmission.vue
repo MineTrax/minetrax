@@ -12,6 +12,7 @@ import { computed, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { pickBy } from 'lodash';
 import RecruitmentStatusBadge from '@/Shared/RecruitmentStatusBadge.vue';
+import UserDisplayname from '@/Components/UserDisplayname.vue';
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
@@ -55,6 +56,18 @@ const headerRow = [
         key: 'status',
         label: __('Status'),
         sortable: true,
+    },
+    {
+        key: 'last_act_at',
+        sortable: true,
+        label: __('Last Actor'),
+        class: 'text-right',
+    },
+    {
+        key: 'last_comment_at',
+        sortable: true,
+        label: __('Last Comment'),
+        class: 'text-right',
     },
     {
         key: 'created_at',
@@ -184,11 +197,59 @@ watch(selectedForms, (newSelectedForms) => {
             </td>
 
             <DtRowItem>
-              {{ item.recruitment.title }}
+              <p
+                v-tippy
+                :title="item.recruitment.title"
+                class="truncate w-32"
+              >
+                {{ item.recruitment.title }}
+              </p>
             </DtRowItem>
 
             <DtRowItem>
               <RecruitmentStatusBadge :status="item.status.value" />
+            </DtRowItem>
+
+            <DtRowItem
+              class="text-right whitespace-nowrap"
+            >
+              <UserDisplayname
+                v-if="item.last_actor"
+                text-class="text-sm text-gray-700 dark:text-gray-400"
+                :user="item.last_actor"
+                :show-badges="true"
+              >
+                <div class="text-xs text-gray-400 dark:text-gray-500">
+                  {{ formatTimeAgoToNow(item.last_act_at) }}
+                </div>
+              </UserDisplayname>
+              <span
+                v-else
+                class="text-gray-400 text-sm italic"
+              >
+                {{ __('None') }}
+              </span>
+            </DtRowItem>
+
+            <DtRowItem
+              class="text-right whitespace-nowrap"
+            >
+              <UserDisplayname
+                v-if="item.last_commentor"
+                text-class="text-sm text-gray-700 dark:text-gray-400"
+                :user="item.last_commentor"
+                :show-badges="true"
+              >
+                <div class="text-xs text-gray-400 dark:text-gray-500">
+                  {{ formatTimeAgoToNow(item.last_comment_at) }}
+                </div>
+              </UserDisplayname>
+              <span
+                v-else
+                class="text-gray-400 text-sm italic"
+              >
+                {{ __('None') }}
+              </span>
             </DtRowItem>
 
             <DtRowItem
