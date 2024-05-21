@@ -151,7 +151,16 @@ const headerRow = [
           </DtRowItem>
 
           <DtRowItem>
-            {{ item.email }}
+            <div>
+              {{ item.email }}
+            </div>
+            <div
+              v-if="item.discord_user_id"
+              class="text-xs whitespace-nowrap"
+            >
+              {{ __('Discord ID') }}:
+              {{ item.discord_user_id }}
+            </div>
           </DtRowItem>
           <DtRowItem class="whitespace-nowrap">
             <span
