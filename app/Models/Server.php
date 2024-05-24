@@ -21,6 +21,10 @@ class Server extends BaseModel
         'last_scanned_at' => 'datetime',
     ];
 
+    protected $hidden = [
+        'pivot',
+    ];
+
     public function minecraftPlayers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(MinecraftPlayer::class);
@@ -39,6 +43,11 @@ class Server extends BaseModel
     public function serverConsolelog(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ServerConsolelog::class);
+    }
+
+    public function commands(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Command::class);
     }
 
     public function getAggregatedTotalJsonStats()
