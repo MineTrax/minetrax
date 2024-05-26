@@ -99,6 +99,7 @@ class AccountLinkAfterSuccessCommandJob implements ShouldQueue
             'params' => $params,
             'status' => CommandQueueStatus::PENDING,
             'max_attempts' => $command->max_attempts,
+            'player_uuid' => $this->player->uuid,
             'user_id' => $this->userId,
             'player_id' => $this->player->id,
             'tag' => $command->tag,

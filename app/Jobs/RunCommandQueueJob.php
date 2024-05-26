@@ -34,7 +34,7 @@ class RunCommandQueueJob implements ShouldQueue
             CommandQueueStatus::FAILED,
             CommandQueueStatus::DEFERRED,
         ])) {
-            Log::info('DEFERRED! CommandQueue '.$this->commandQueue->id.' is not in pending, failed or deferred status');
+            Log::info('SKIPPED! CommandQueue '.$this->commandQueue->id.' is not in pending, failed or deferred status');
 
             return;
         }
@@ -56,7 +56,7 @@ class RunCommandQueueJob implements ShouldQueue
                 'status' => CommandQueueStatus::CANCELLED,
                 'output' => 'Server does not have webquery port',
             ]);
-            Log::info('CANCELLED! CommandQueue '.$this->commandQueue->id.' is cancelled because server does not have webquery port');
+            // Log::info('CANCELLED! CommandQueue '.$this->commandQueue->id.' is cancelled because server does not have webquery port');
 
             return;
         }
@@ -64,7 +64,7 @@ class RunCommandQueueJob implements ShouldQueue
         try {
             $webQuery = new MinecraftWebQuery($server->ip_address, $server->webquery_port);
             if ($isPlayerOnlineRequired) {
-                $playerUuid = $this->commandQueue->params['player_uuid'];
+                $playerUuid = $this->commandQueue->player_uuid;
                 $isOnline = $webQuery->checkPlayerOnline($playerUuid);
 
                 if (! $isOnline) {
@@ -72,7 +72,7 @@ class RunCommandQueueJob implements ShouldQueue
                         'status' => CommandQueueStatus::DEFERRED,
                         'output' => 'Player not online',
                     ]);
-                    Log::info('DEFERRED! CommandQueue '.$this->commandQueue->id.' is deferred because player is not online');
+                    // Log::info('DEFERRED! CommandQueue '.$this->commandQueue->id.' is deferred because player is not online');
 
                     return;
                 }
@@ -85,7 +85,7 @@ class RunCommandQueueJob implements ShouldQueue
                 'last_attempt_at' => now(),
                 'attempts' => $this->commandQueue->attempts + 1,
             ]);
-            Log::info('COMPLETED! CommandQueue '.$this->commandQueue->id.' is completed');
+            // Log::info('COMPLETED! CommandQueue '.$this->commandQueue->id.' is completed');
         } catch (\Exception $e) {
             $this->commandQueue->update([
                 'status' => CommandQueueStatus::FAILED,
@@ -93,7 +93,7 @@ class RunCommandQueueJob implements ShouldQueue
                 'last_attempt_at' => now(),
                 'attempts' => $this->commandQueue->attempts + 1,
             ]);
-            Log::error('OOPS! CommandQueue '.$this->commandQueue->id.' failed: '.$e->getMessage());
+            // Log::error('OOPS! CommandQueue '.$this->commandQueue->id.' failed: '.$e->getMessage());
         }
     }
 }

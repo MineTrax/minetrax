@@ -52,8 +52,9 @@ return new class extends Migration
             $table->timestamp('last_attempt_at')->nullable();
             $table->text('output')->nullable();
             $table->string('tag')->nullable();
+            $table->string('player_uuid')->nullable()->index(); // if command is run on player (used to check player online in deferred command)
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete(); // causer
-            $table->foreignId('player_id')->nullable()->constrained()->nullOnDelete(); // if command is run on player (used to check & run command on player when joined)
+            $table->foreignId('player_id')->nullable()->constrained()->nullOnDelete(); // if command is run on player (helpful for analytics)
             $table->timestamps();
         });
     }

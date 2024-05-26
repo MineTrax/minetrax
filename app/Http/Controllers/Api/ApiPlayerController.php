@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\RunDeferredPlayerCommandQueuesJob;
 use App\Models\Player;
 use Illuminate\Http\Request;
 
@@ -134,6 +135,9 @@ class ApiPlayerController extends ApiController
             $responseData['country'] = $player->country ?? null;
             $responseData['profile_link'] = route('player.show', [$player->uuid]);
         }
+
+        // Queue Job to check if any pending command queue exists for this player then run it.
+        RunDeferredPlayerCommandQueuesJob::dispatch($requestUuid);
 
         return $this->success($responseData, 'Ok');
     }
