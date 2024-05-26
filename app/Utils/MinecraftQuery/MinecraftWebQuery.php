@@ -84,6 +84,20 @@ class MinecraftWebQuery
         return $status;
     }
 
+    public function checkPlayerOnline($playerUuid): bool
+    {
+        if (! Str::isUuid($playerUuid)) {
+            throw new \Exception(__('Provided UUID is not valid.'));
+        }
+
+        $payload = [
+            'player_uuid' => $playerUuid,
+        ];
+        $status = $this->sendQuery('check-player-online', $payload);
+
+        return $status['data'];
+    }
+
     public function sendQuery($type, array $data = [])
     {
         $encrypted = $this->makePayload($type, $data);

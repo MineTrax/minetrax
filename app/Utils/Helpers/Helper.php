@@ -84,7 +84,7 @@ class Helper
     public static function generateNumericOtp(int $length = 6): string
     {
         $i = 0;
-        $otp = "";
+        $otp = '';
 
         while ($i < $length) {
             $otp .= random_int(0, 9);
@@ -92,5 +92,14 @@ class Helper
         }
 
         return $otp;
+    }
+
+    public static function replacePlaceholders(string $content, array $placeholders): string
+    {
+        foreach ($placeholders as $key => $value) {
+            $content = str_ireplace('{'.$key.'}', $value, $content);
+        }
+
+        return $content;
     }
 }

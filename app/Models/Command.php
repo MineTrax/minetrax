@@ -18,4 +18,9 @@ class Command extends BaseModel
     {
         return $this->belongsToMany(Server::class);
     }
+
+    public function scopeEnabled()
+    {
+        return $this->where('is_enabled', true);
+    }
 }

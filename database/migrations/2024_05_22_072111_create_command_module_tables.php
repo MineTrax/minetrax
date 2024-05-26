@@ -42,12 +42,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('command_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('server_id')->constrained()->cascadeOnDelete();
-            $table->text('command');
-            $table->string('status')->index(); // pending, running, failed, completed
+            $table->text('parsed_command');
+            $table->string('config')->nullable();
+            $table->json('params')->nullable();
+            $table->string('status')->index(); // pending, running, failed, completed, cancelled, deferred
             $table->timestamp('execute_at')->nullable()->index(); // support for delayed commands, null if immediate
+            $table->integer('max_attempts')->nullable();
             $table->integer('attempts')->default(0);
             $table->timestamp('last_attempt_at')->nullable();
             $table->text('output')->nullable();
+            $table->string('tag')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete(); // causer
             $table->foreignId('player_id')->nullable()->constrained()->nullOnDelete(); // if command is run on player (used to check & run command on player when joined)
             $table->timestamps();

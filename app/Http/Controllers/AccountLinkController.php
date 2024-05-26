@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\AccountUnlinkAfterSuccessCommandJob;
 use App\Models\Player;
 use App\Settings\PluginSettings;
 use App\Utils\Helpers\AccountLinkUtils;
@@ -48,6 +49,9 @@ class AccountLinkController extends Controller
             $user->verified_at = null;
             $user->save();
         }
+
+        // Dispatch unlink after success commands
+        AccountUnlinkAfterSuccessCommandJob::dispatch($player, $user->id);
 
         // Return redirect back with flash
         return redirect()->back()

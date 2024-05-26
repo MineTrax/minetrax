@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CommandQueueStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CommandQueue extends BaseModel
@@ -11,6 +12,9 @@ class CommandQueue extends BaseModel
     protected $casts = [
         'execute_at' => 'datetime',
         'last_attempt_at' => 'datetime',
+        'params' => 'array',
+        'config' => 'array',
+        'status' => CommandQueueStatus::class,
     ];
 
     public function command()

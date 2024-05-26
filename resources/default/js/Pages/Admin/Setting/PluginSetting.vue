@@ -112,6 +112,7 @@
                           >
                             <legend class="text-sm text-gray-700 font-bold dark:font-semibold dark:text-gray-300">
                               {{ __("Account Link Success Commands") }}
+                              <span class="text-xs font-light text-gray-400">{{ __("(runs when a player is linked to account)") }}</span>
                             </legend>
 
                             <div class="w-full space-y-2">
@@ -211,22 +212,22 @@
 
                                     <div class="flex-1 flex col-span-2 space-x-2">
                                       <x-checkbox
-                                        :id="`is_player_online_requierd_${index}`"
+                                        :id="`link.is_player_online_required_${index}`"
                                         v-model="command.config.is_player_online_required"
                                         :label="__('Require player to be online')"
                                         :help="__('This command should only run if player is online on running server. If not online it will be queued to run when player comes online.')"
-                                        :name="`is_player_online_requierd_${index}`"
+                                        :name="`link.is_player_online_required_${index}`"
                                         :error="form.errors[
                                           `account_link_after_success_commands.${index}.config.is_player_online_required`
                                         ]"
                                       />
 
                                       <x-checkbox
-                                        :id="`is_run_only_first_link_${index}`"
+                                        :id="`link.is_run_only_first_link_${index}`"
                                         v-model="command.config.is_run_only_first_link"
-                                        :name="`is_run_only_first_link_${index}`"
+                                        :name="`link.is_run_only_first_link_${index}`"
                                         :label="__('Run on first link only')"
-                                        :help="__('This command should only run if given player is getting linked to first time. (Eg: This wont run if player get unlinked and then linked again)')"
+                                        :help="__('This command should only run if given player is getting linked for first time. (Eg: This wont run if player get unlinked and then linked again)')"
                                         :error="form.errors[
                                           `account_link_after_success_commands.${index}.config.is_run_only_first_link`
                                         ]"
@@ -257,13 +258,171 @@
                                   @click="addAccountLinkCommand"
                                 >
                                   {{
-                                    __("Add New Command")
+                                    __("Add New Link Command")
                                   }}
                                 </button>
                               </div>
                             </div>
                           </div>
 
+                          <div
+                            v-show="form.enable_account_link"
+                            class="flex-col col-span-6 space-y-1 sm:col-span-6"
+                          >
+                            <legend class="text-sm text-gray-700 font-bold dark:font-semibold dark:text-gray-300">
+                              {{ __("Account Unlink Success Commands") }}
+                              <span class="text-xs font-light text-gray-400">{{ __("(runs when a player is unlinked from account)") }}</span>
+                            </legend>
+
+                            <div class="w-full space-y-2">
+                              <div class="flex flex-col items-end">
+                                <h3 class="text-gray-700 dark:text-gray-300 text-sm font-semibold">
+                                  {{ __("Available Placeholders") }}
+                                </h3>
+                                <ol class="text-sm text-right text-gray-600 dark:text-gray-400">
+                                  <li>
+                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player which is unlinked.") }}
+                                  </li>
+                                  <li>
+                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player which is unlinked.") }}
+                                  </li>
+                                </ol>
+                              </div>
+
+                              <div class="flex space-x-4">
+                                <div class="w-5" />
+                                <label
+                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                >{{
+                                  __("Command") }}
+                                </label>
+                                <label
+                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                >{{
+                                  __("Run on servers") }}
+                                </label>
+                              </div>
+
+                              <div
+                                v-for="(
+                                  command, index
+                                ) in form.account_unlink_after_success_commands"
+                                :key="index"
+                                class="flex flex-col pb-2"
+                              >
+                                <div class="flex space-x-4">
+                                  <button
+                                    type="button"
+                                    class="focus:outline-none group"
+                                    @click="
+                                      removeAccountUnlinkCommand(index)
+                                    "
+                                  >
+                                    <Icon
+                                      class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                      name="trash"
+                                    />
+                                  </button>
+
+                                  <div class="grid grid-cols-2 gap-2 w-full">
+                                    <div class="flex-1">
+                                      <input
+                                        v-model="command.command"
+                                        class="block p-2.5 dark:bg-cool-gray-900 dark:text-gray-300 w-full dark:border-gray-700 border-gray-200 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        :placeholder="`Enter Command #${index + 1}`"
+                                        type="text"
+                                      >
+                                      <span
+                                        v-if="
+                                          form.errors[
+                                            `account_unlink_after_success_commands.${index}.command`
+                                          ]
+                                        "
+                                        class="text-red-500 text-sm"
+                                      >
+                                        {{
+                                          form.errors[
+                                            `account_unlink_after_success_commands.${index}.command`
+                                          ]
+                                        }}
+                                      </span>
+                                    </div>
+                                    <div class="flex-1">
+                                      <Multiselect
+                                        v-model="command.servers"
+                                        class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        :options="serversForAccountLink"
+                                        :custom-label="serversForAccountLinkCustomLabel"
+                                        track-by="id"
+                                        :multiple="true"
+                                        :close-on-select="false"
+                                        :clear-on-select="false"
+                                        :searchable="false"
+                                        :placeholder="__('Leave empty to run on all servers')+'...'"
+                                      />
+                                      <p class="text-sm text-red-500 mt-0.5">
+                                        {{
+                                          form.errors[
+                                            `account_unlink_after_success_commands.${index}.servers`
+                                          ]
+                                        }}
+                                      </p>
+                                    </div>
+
+                                    <div class="flex-1 flex col-span-2 space-x-2">
+                                      <x-checkbox
+                                        :id="`unlink.is_player_online_required_${index}`"
+                                        v-model="command.config.is_player_online_required"
+                                        :label="__('Require player to be online')"
+                                        :help="__('This command should only run if player is online on running server. If not online it will be queued to run when player comes online.')"
+                                        :name="`unlink.is_player_online_required_${index}`"
+                                        :error="form.errors[
+                                          `account_unlink_after_success_commands.${index}.config.is_player_online_required`
+                                        ]"
+                                      />
+
+                                      <x-checkbox
+                                        :id="`unlink.is_run_only_first_unlink_${index}`"
+                                        v-model="command.config.is_run_only_first_unlink"
+                                        :name="`unlink.is_run_only_first_unlink_${index}`"
+                                        :label="__('Run on first unlink only')"
+                                        :help="__('This command should only run if given player is getting unlinked for first time. (Eg: This wont run if player was linked and unlinked before)')"
+                                        :error="form.errors[
+                                          `account_unlink_after_success_commands.${index}.config.is_run_only_first_unlink`
+                                        ]"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div
+                                v-if="form.account_unlink_after_success_commands.length <= 0"
+                                class="text-gray-500 text-sm italic text-center pt-2"
+                              >
+                                {{ __("No commands on account unlink.") }}
+                              </div>
+
+                              <p
+                                v-if="form.errors.account_unlink_after_success_commands"
+                                class="text-sm text-red-400 text-center"
+                              >
+                                {{ form.errors.account_unlink_after_success_commands }}
+                              </p>
+
+                              <div class="flex justify-center pt-5">
+                                <button
+                                  type="button"
+                                  class="p-2 w-1/3 text-sm text-light-blue-500 rounded border border-light-blue-500 focus:outline-none hover:text-light-blue-300 hover:border-light-blue-300 transition ease-in-out duration-150"
+                                  @click="addAccountUnlinkCommand"
+                                >
+                                  {{
+                                    __("Add New Unlink Command")
+                                  }}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
 
                           <div class="flex items-center col-span-6 sm:col-span-6">
                             <x-checkbox
@@ -331,6 +490,7 @@ const { __ } = useTranslations();
 const props = defineProps({
     settings: Object,
     settingsAccountLinkAfterSuccessCommands: Array,
+    settingsAccountUnlinkAfterSuccessCommands: Array,
     serversForRankSync: Object,
     serversForAccountLink: Object,
 });
@@ -343,6 +503,7 @@ const form = useForm({
     enable_sync_player_ranks_from_server: props.settings.enable_sync_player_ranks_from_server,
     sync_player_ranks_from_server_id: props.settings.sync_player_ranks_from_server_id,
     account_link_after_success_commands: props.settingsAccountLinkAfterSuccessCommands,
+    account_unlink_after_success_commands: props.settingsAccountUnlinkAfterSuccessCommands,
 });
 
 
@@ -365,10 +526,27 @@ function serversForAccountLinkCustomLabel({name, hostname}) {
     return `${name} - ${hostname}`;
 }
 
+
+function addAccountUnlinkCommand() {
+    form.account_unlink_after_success_commands.push({
+        command: '',
+        servers: [],
+        config: {
+            is_player_online_required: false,
+            is_run_only_first_unlink: false,
+        }
+    });
+}
+
+function removeAccountUnlinkCommand(index) {
+    form.account_unlink_after_success_commands.splice(index, 1);
+}
+
 // Method to save plugin settings
 const savePluginSetting = () => {
     form.post(route('admin.setting.plugin.update'), {
         preserveScroll: true,
+        preserveState: false,
     });
 };
 </script>

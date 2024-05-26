@@ -18,6 +18,8 @@ class PluginSettings extends Settings
 
     public array $account_link_after_success_commands;
 
+    public array $account_unlink_after_success_commands;
+
     public bool $enable_sync_player_ranks_from_server;
 
     public ?int $sync_player_ranks_from_server_id;
