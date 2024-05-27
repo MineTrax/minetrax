@@ -7,7 +7,7 @@ import { computed } from 'vue';
 import { FormKitSchema } from '@formkit/vue';
 import {useFormKit} from '@/Composables/useFormKit';
 import RecruitmentMessagesBox from '@/Shared/RecruitmentMessagesBox.vue';
-import RecruitmentStatusBadge from '@/Shared/RecruitmentStatusBadge.vue';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import { useForm } from '@inertiajs/vue3';
@@ -65,7 +65,7 @@ const rejectForm = useForm({
               recruitmenttitle: submission.recruitment.title,
             })
           }}
-          <RecruitmentStatusBadge :status="submission.status.value" />
+          <CommonStatusBadge :status="submission.status.value" />
         </h3>
         <div class="flex gap-4">
           <InertiaLink
@@ -160,7 +160,7 @@ const rejectForm = useForm({
               <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
                 <div class="flex items-center justify-between w-full">
                   <span>{{ __("Submission Status") }}</span>
-                  <RecruitmentStatusBadge :status="submission.status.value" />
+                  <CommonStatusBadge :status="submission.status.value" />
                 </div>
               </li>
 

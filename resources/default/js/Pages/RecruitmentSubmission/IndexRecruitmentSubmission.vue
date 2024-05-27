@@ -7,7 +7,7 @@ import {useHelpers} from '@/Composables/useHelpers';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
-import RecruitmentStatusBadge from '@/Shared/RecruitmentStatusBadge.vue';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -106,7 +106,7 @@ const headerRow = [
             </DtRowItem>
 
             <DtRowItem>
-              <RecruitmentStatusBadge :status="item.status.value" />
+              <CommonStatusBadge :status="item.status.value" />
             </DtRowItem>
 
             <DtRowItem

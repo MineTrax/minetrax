@@ -11,7 +11,7 @@ import XSelect from '@/Components/Form/XSelect.vue';
 import { computed, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { pickBy } from 'lodash';
-import RecruitmentStatusBadge from '@/Shared/RecruitmentStatusBadge.vue';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
 
 const { can } = useAuthorizable();
@@ -207,7 +207,7 @@ watch(selectedForms, (newSelectedForms) => {
             </DtRowItem>
 
             <DtRowItem>
-              <RecruitmentStatusBadge :status="item.status.value" />
+              <CommonStatusBadge :status="item.status.value" />
             </DtRowItem>
 
             <DtRowItem

@@ -27,6 +27,7 @@ class RunAwaitingCommandQueuesJob implements ShouldQueue
      */
     public function handle(): void
     {
+        // FAILED
         $failedCommands = CommandQueue::where('status', CommandQueueStatus::FAILED)
             ->whereNotNull('max_attempts')
             ->whereColumn('attempts', '<', 'max_attempts')
@@ -40,6 +41,7 @@ class RunAwaitingCommandQueuesJob implements ShouldQueue
             RunCommandQueueJob::dispatch($command);
         }
 
+        // DELAYED
         $awaitingCommands = CommandQueue::where('status', CommandQueueStatus::PENDING)
             ->whereNotNull('execute_at')
             ->where('execute_at', '<=', now())

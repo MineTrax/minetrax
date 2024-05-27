@@ -309,4 +309,10 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('failed-job', [\App\Http\Controllers\Admin\FailedJobController::class, 'index'])->name('failed-job.index');
     Route::post('failed-job/retry', [\App\Http\Controllers\Admin\FailedJobController::class, 'retry'])->name('failed-job.retry');
     Route::delete('failed-job/clear', [\App\Http\Controllers\Admin\FailedJobController::class, 'destroy'])->name('failed-job.clear');
+
+    Route::get('command-queue', [\App\Http\Controllers\Admin\CommandQueueController::class, 'index'])->name('command-queue.index');
+    Route::get('command-queue/create', [\App\Http\Controllers\Admin\CommandQueueController::class, 'create'])->name('command-queue.create');
+    Route::post('command-queue', [\App\Http\Controllers\Admin\CommandQueueController::class, 'store'])->name('command-queue.store');
+    Route::delete('command-queue', [\App\Http\Controllers\Admin\CommandQueueController::class, 'destroy'])->name('command-queue.delete');
+    Route::post('command-queue/retry', [\App\Http\Controllers\Admin\CommandQueueController::class, 'retry'])->name('command-queue.retry');
 });

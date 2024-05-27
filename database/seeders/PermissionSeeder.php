@@ -119,5 +119,9 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('read failed_jobs');
         Permission::findOrCreate('delete failed_jobs');
         Permission::findOrCreate('retry failed_jobs');
+
+        Permission::findOrCreate('create command_queues');
+        Permission::findOrCreate('read command_queues');
+        Permission::findOrCreate('delete command_queues');
     }
 }

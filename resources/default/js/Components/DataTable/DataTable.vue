@@ -1,6 +1,8 @@
 <script setup>
 import Icon from '@/Components/Icon.vue';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+import Multiselect from 'vue-multiselect';
 import { reactive, watch } from 'vue';
 import DtPagination from './DtPagination.vue';
 import { router } from '@inertiajs/vue3';
@@ -62,9 +64,26 @@ watch(filters, throttle(
 ));
 
 const showFilterResetButton = computed(() => {
-    return filters.filter.q || filters.sort || filters.perPage != 10;
+    if (filters.sort) {
+        return true;
+    }
+
+    if (filters.perPage != 10) {
+        return true;
+    }
+
+    for (let f in filters.filter) {
+        if (filters.filter[f]) {
+            return true;
+        }
+    }
+
+    return false;
 });
 function resetFilters() {
+    for (let f in filters.filter) {
+        delete filters.filter[f];
+    }
     filters.filter.q = '';
     filters.sort = '';
     filters.perPage = 10;
@@ -157,23 +176,102 @@ function toggleSorting(key) {
                       v-for="th in header"
                       :key="th.key"
                       scope="col"
-                      class="px-4 py-3 text-xs font-semibold text-gray-400 dark:text-gray-300 uppercase text-left"
+                      class="px-4 py-3 text-xs font-semibold text-gray-400 dark:text-gray-300 text-left"
                       :class="[
-                        th.sortable ? 'cursor-pointer' : '',
                         th.class ? th.class : '',
                       ]"
-                      @click="th.sortable ? toggleSorting(th.key) : null"
                     >
-                      <div class="inline-flex items-center">
-                        {{ th.label }}
-                        <Icon
-                          v-if="th.sortable"
-                          :name="sortedField === th.key ? (sortedDirection === 'asc' ? 'sort-up' : 'sort-down') : 'sort-updown'"
-                          class="w-3 h-3 ml-1 inline-block text-gray-400 dark:text-gray-300"
+                      <div class="flex items-center">
+                        <Popover
+                          v-if="th.filterable"
+                        >
+                          <PopoverButton class="focus:outline-none">
+                            <Icon
+                              v-if="filters.filter[th.filterable.key ?? th.key]"
+                              name="funnel-fill"
+                              class="h-4 cursor-pointer mr-1 inline-block text-green-500 dark:text-green-500 hover:text-gray-700 dark:hover:text-white"
+                            />
+                            <Icon
+                              v-else
+                              name="funnel-outline"
+                              class="h-4 cursor-pointer mr-1 inline-block text-gray-400 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
+                            />
+                          </PopoverButton>
+
+                          <transition
+                            enter-active-class="transition duration-200 ease-out"
+                            enter-from-class="translate-y-1 opacity-0"
+                            enter-to-class="translate-y-0 opacity-100"
+                            leave-active-class="transition duration-150 ease-in"
+                            leave-from-class="translate-y-0 opacity-100"
+                            leave-to-class="translate-y-1 opacity-0"
+                          >
+                            <PopoverPanel
+                              v-slot="{ close }"
+                              class="absolute z-10 min-w-64 p-4 bg-gray-700 shadow border border-gray-600 rounded"
+                            >
+                              <h3 class="font-semibold text-sm mb-1">
+                                {{ __("Filter by :column", {
+                                  column: th.label,
+                                }) }}
+                              </h3>
+
+                              <div>
+                                <input
+                                  v-if="th.filterable.type === 'text'"
+                                  v-model="filters.filter[th.filterable.key ?? th.key]"
+                                  class="block p-2 dark:bg-cool-gray-900 dark:text-gray-300 w-full dark:border-gray-700 border-gray-200 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                  :placeholder="`Enter ${th.label}...`"
+                                  type="text"
+                                >
+                                <Multiselect
+                                  v-if="['multiselect', 'select'].includes(th.filterable.type)"
+                                  v-model="filters.filter[th.filterable.key ?? th.key]"
+                                  class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                  :options="th.filterable.options"
+                                  :multiple="th.filterable.type === 'multiselect'"
+                                  :close-on-select="th.filterable.type === 'select'"
+                                  :limit="1"
+                                  :clear-on-select="false"
+                                  :searchable="false"
+                                  :placeholder="`Select ${th.label}...`"
+                                />
+
+                                <button
+                                  class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none disabled:opacity-50"
+                                  :disabled="!filters.filter[th.filterable.key ?? th.key]"
+                                  type="button"
+                                  @click="() => {
+                                    if (!filters.filter[th.filterable.key ?? th.key]) {
+                                      return;
+                                    }
+                                    delete filters.filter[th.filterable.key ?? th.key]
+                                    close()
+                                  }"
+                                >
+                                  {{ __("Clear") }}
+                                </button>
+                              </div>
+                            </PopoverPanel>
+                          </transition>
+                        </Popover>
+                        <div
+                          class="inline-flex items-center uppercase"
                           :class="[
-                            sortedField === th.key ? 'text-light-blue-500 dark:text-light-blue-400' : '',
+                            th.sortable ? 'cursor-pointer' : '',
                           ]"
-                        />
+                          @click="th.sortable ? toggleSorting(th.key) : null"
+                        >
+                          {{ th.label }}
+                          <Icon
+                            v-if="th.sortable"
+                            :name="sortedField === th.key ? (sortedDirection === 'asc' ? 'sort-up' : 'sort-down') : 'sort-updown'"
+                            class="w-3 h-3 ml-1 inline-block text-gray-400 dark:text-gray-300"
+                            :class="[
+                              sortedField === th.key ? 'text-light-blue-500 dark:text-light-blue-400' : '',
+                            ]"
+                          />
+                        </div>
                       </div>
                     </th>
                   </slot>

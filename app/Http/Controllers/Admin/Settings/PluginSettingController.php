@@ -98,7 +98,7 @@ class PluginSettingController extends Controller
                     $created = Command::create([
                         'command' => $command['command'],
                         'name' => 'Account Link Command',
-                        'tag' => 'account_link_command',
+                        'tag' => 'account_link',
                         'description' => null,
                         'is_enabled' => true,
                         'is_run_on_all_servers' => $isRunOnAllServers,
@@ -151,7 +151,7 @@ class PluginSettingController extends Controller
                     $created = Command::create([
                         'command' => $command['command'],
                         'name' => 'Account Unlink Command',
-                        'tag' => 'account_unlink_command',
+                        'tag' => 'account_unlink',
                         'description' => null,
                         'is_enabled' => true,
                         'is_run_on_all_servers' => $isRunOnAllServers,

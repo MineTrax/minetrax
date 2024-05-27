@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Badge;
+use App\Models\CommandQueue;
 use App\Models\Comment;
 use App\Models\CustomForm;
 use App\Models\CustomFormSubmission;
@@ -49,6 +50,7 @@ class AuthServiceProvider extends ServiceProvider
         Recruitment::class => \App\Policies\RecruitmentPolicy::class,
         RecruitmentSubmission::class => \App\Policies\RecruitmentSubmissionPolicy::class,
         FailedJob::class => \App\Policies\FailedJobPolicy::class,
+        CommandQueue::class => \App\Policies\CommandQueuePolicy::class,
     ];
 
     /**
