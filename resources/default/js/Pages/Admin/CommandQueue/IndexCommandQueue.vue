@@ -105,7 +105,7 @@ const headerRow = [
         <div class="flex">
           <InertiaLink
             v-if="can('create command_queues')"
-            v-confirm="{message: 'Are you sure you wanna retry all failed command queues? Please note that failed commands automatically get retried till they reach the max attempts.'}"
+            v-confirm="{message: 'Are you sure you wanna retry all failed & cancelled command queues? Please note that failed commands automatically get retried till they reach the max attempts.'}"
             :href="route('admin.command-queue.retry')"
             method="post"
             as="button"
