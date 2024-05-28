@@ -86,6 +86,6 @@ class FailedJobController extends Controller
         }
 
         return redirect()->route('admin.failed-job.index')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted!'), 'body' => __('Failed jobs have been deleted!')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted!')]]);
     }
 }
