@@ -195,11 +195,11 @@ const navItems = [
         visible: canWild('ask_db')
     },
     {
-        label: 'Recruitments',
+        label: 'Applicatons',
         active: false,
         children: [
             {
-                label: 'List Recruitment Forms',
+                label: 'List Application Forms',
                 href: route('admin.recruitment.index'),
                 active: route().current('admin.recruitment.index'),
                 children: [],

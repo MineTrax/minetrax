@@ -49,7 +49,7 @@ const headerRow = [
     },
     {
         key: 'recruitment_id',
-        label: __('Recruitment'),
+        label: __('Application'),
         sortable: true,
     },
     {
@@ -119,8 +119,8 @@ watch(selectedForms, (newSelectedForms) => {
     <AppHead
       :title="
         closed
-          ? __('Closed Request - Recruitments')
-          : __('Open Requests - Recruitments')
+          ? __('Closed Request - Applications')
+          : __('Open Requests - Applications')
       "
     />
 
@@ -131,10 +131,10 @@ watch(selectedForms, (newSelectedForms) => {
         >
           {{
             closed
-              ? __("Closed Recruitment Submissions:")
-              : __("Open Recruitment Submissions:")
+              ? __("Closed Requests:")
+              : __("Open Requests:")
           }}
-          {{ showing ?? __("All Recruitments") }}
+          {{ showing ?? __("All Applications") }}
         </h3>
 
         <x-select
@@ -142,7 +142,7 @@ watch(selectedForms, (newSelectedForms) => {
           v-model="selectedForms"
           name="selectForms"
           :select-list="forms"
-          :placeholder="__('All Recruitments')"
+          :placeholder="__('All Applications')"
           class="w-48 max-w-48 dark:border dark:rounded dark:border-gray-700"
         />
       </div>
@@ -290,7 +290,7 @@ watch(selectedForms, (newSelectedForms) => {
                 "
                 v-confirm="{
                   message:
-                    'Delete this Recruitment Submission? This action cannot be undone.',
+                    'Delete this Request? This action cannot be undone.',
                 }"
                 v-tippy
                 as="button"

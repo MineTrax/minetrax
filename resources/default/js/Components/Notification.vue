@@ -178,7 +178,7 @@
           <span>
             <b>{{ notification.data.causer.name }}</b>(@{{ notification.data.causer.username }})
           </span>
-          {{ __("applied for a recruitment.") }}
+          {{ __("created a new application request.") }}
         </p>
         <p class="text-xs">
           {{ formatTimeAgoToNow(notification.created_at) }}
@@ -267,10 +267,10 @@
       <div class="m-1">
         <p>
           <span v-if="notification.data.for_staff">
-            {{ __("New message received on a recruitment application.") }}
+            {{ __("New message received on an application request.") }}
           </span>
           <span v-else>
-            {{ __("Your application has a new message from @:username", {
+            {{ __("Your application request received a new message from @:username", {
               username: notification.data.causer.username
             }) }}
           </span>

@@ -48,7 +48,7 @@ const rejectForm = useForm({
 <template>
   <AdminLayout>
     <AppHead
-      :title="__(':user application for :recruitmenttitle #:index - Recruitments', {
+      :title="__(':user application for :recruitmenttitle #:index - Applications', {
         user: submission.user.name,
         index: submission.id,
         recruitmenttitle: submission.recruitment.title,
@@ -128,7 +128,7 @@ const rejectForm = useForm({
 
               <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
                 <div class="flex items-center justify-between w-full">
-                  <span>{{ __("Recruitment") }}</span>
+                  <span>{{ __("Application") }}</span>
                   <span>{{ submission.recruitment.title }}</span>
                 </div>
               </li>
@@ -156,10 +156,9 @@ const rejectForm = useForm({
                 </div>
               </li>
 
-
               <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
                 <div class="flex items-center justify-between w-full">
-                  <span>{{ __("Submission Status") }}</span>
+                  <span>{{ __("Request Status") }}</span>
                   <CommonStatusBadge :status="submission.status.value" />
                 </div>
               </li>
@@ -221,7 +220,7 @@ const rejectForm = useForm({
                   confirmButtonColor: 'green',
                   icon: 'success',
                   message:
-                    'Approve this application? This action cannot be undone.',
+                    'Approve this request? This action cannot be undone.',
                 }"
                 as="button"
                 method="POST"

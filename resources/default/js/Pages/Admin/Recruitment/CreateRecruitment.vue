@@ -1,11 +1,11 @@
 <template>
   <AdminLayout>
-    <app-head title="Create Recruitment Form" />
+    <app-head title="Create Application Form" />
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("Create Recruitment Form") }}
+          {{ __("Create Application Form") }}
         </h1>
         <inertia-link
           :href="route('admin.recruitment.index')"
@@ -26,7 +26,7 @@
                       <x-input
                         id="title"
                         v-model="form.title"
-                        :label="__('Title of this Recruitment')
+                        :label="__('Title of this Application')
                         "
                         :help="__('Eg: Apply to be a Staff Member')"
                         :error="form.errors.title"
@@ -40,7 +40,7 @@
                       <x-input
                         id="slug"
                         v-model="form.slug"
-                        :label="__('Recruitment Slug')"
+                        :label="__('Application Slug for URL')"
                         :help="__(
                           'Only alphabet, number and dashes. Eg: apply-to-be-a-staff-member'
                         )
@@ -57,9 +57,9 @@
                         id="status"
                         v-model="form.status"
                         name="status"
-                        :label="__('Recruitment Status')"
+                        :label="__('Application Status')"
                         :placeholder="__(
-                          'Select a status of recruitment..'
+                          'Select a status of application..'
                         )
                         "
                         :disable-null="true"
@@ -165,7 +165,7 @@
                             )
                             "
                             :help="__(
-                              'Enable messages feature for this recruitment. User & Staff will be able to send messages.'
+                              'Enable messages feature for this application. User & Staff will be able to send messages.'
                             )
                             "
                             name="is_allow_messages_from_users"
@@ -243,7 +243,7 @@
                             )
                             "
                             :help="__(
-                              'Allow only verified users to apply for this recruitment.'
+                              'Allow only verified users to apply for this application.'
                             )
                             "
                             name="is_allow_only_verified_users"
@@ -264,7 +264,7 @@
                         "
                         name="related_role_id"
                         :label="__(
-                          'This Recruitment is Hiring for'
+                          'This Application is Hiring for'
                         )
                         "
                         :placeholder="__(
@@ -274,7 +274,7 @@
                         :disable-null="false"
                         :select-list="roles
                         "
-                        :help="__('If this recruitment is for hiring of a specific role, select the role here.')"
+                        :help="__('If this application is for hiring of a specific role, select the role here.')"
                       />
                     </div>
 
@@ -483,7 +483,7 @@
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
                     type="submit"
                   >
-                    {{ __("Create Recruitment") }}
+                    {{ __("Create Application Form") }}
                   </loading-button>
                 </div>
               </div>
@@ -542,10 +542,10 @@ defineProps({
 });
 
 const formStatusList = {
-    draft: 'Draft - Recruitment is under development and not visible to users',
-    active: 'Active - Recruitment is actively accepting submissions',
-    disabled: 'Disabled - Recruitment is disabled for new submissions',
-    archived: 'Archived - Recruitment is archived and not visible to users',
+    draft: 'Draft - Application is under development and not visible to users',
+    active: 'Active - Application is actively accepting submissions',
+    disabled: 'Disabled - Application is disabled for new submissions',
+    archived: 'Archived - Application is archived and not visible to users',
 };
 
 const formFieldType = {

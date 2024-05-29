@@ -47,11 +47,11 @@ class RecruitmentSubmissionStatusChangedNotification extends Notification implem
         return (new MailMessage)
             ->subject($title)
             ->line($body)
-            ->action('View Application', $route)
+            ->action('View Request', $route)
             ->line('Applicant: '.$applicant)
             ->line('Status: '.ucfirst($this->submission->status->value))
             ->lineIf($this->submission->last_act_reason, 'Reason: '.$this->submission->last_act_reason)
-            ->line('Recruitment: '.$this->submission->recruitment->title);
+            ->line('Application: '.$this->submission->recruitment->title);
     }
 
     /**
@@ -97,7 +97,7 @@ class RecruitmentSubmissionStatusChangedNotification extends Notification implem
                     'inline' => true,
                 ],
                 [
-                    'name' => 'Recruitment',
+                    'name' => 'Application',
                     'value' => $this->submission->recruitment->title,
                     'inline' => false,
                 ],
@@ -113,8 +113,8 @@ class RecruitmentSubmissionStatusChangedNotification extends Notification implem
     {
         $title = $body = $route = $causer = '';
         if ($this->submission->status == RecruitmentSubmissionStatus::WITHDRAWN) {
-            $title = __('[Notification] An application withdrawn by user.');
-            $body = __(':applicant has withdrawn his application for :recruitment.', [
+            $title = __('[Notification] An application request withdrawn by user.');
+            $body = __(':applicant has withdrawn his application request for :recruitment.', [
                 'applicant' => $applicant,
                 'recruitment' => $this->submission->recruitment->title,
             ]);
@@ -128,29 +128,29 @@ class RecruitmentSubmissionStatusChangedNotification extends Notification implem
             $causer = $this->causer->name.' (@'.$this->causer->username.')';
             switch ($this->submission->status) {
                 case RecruitmentSubmissionStatus::INPROGRESS:
-                    $title = __('[Notification] Your Application status has changed.');
-                    $body = __(':causer has started processing your application for :recruitment.', [
+                    $title = __('[Notification] Your Application request status has changed.');
+                    $body = __(':causer has started processing your application request for :recruitment.', [
                         'causer' => $causer,
                         'recruitment' => $this->submission->recruitment->title,
                     ]);
                     break;
                 case RecruitmentSubmissionStatus::ONHOLD:
-                    $title = __('[Notification] Your Application status has changed.');
-                    $body = __(':causer has put on-hold your application for :recruitment.', [
+                    $title = __('[Notification] Your Application request status has changed.');
+                    $body = __(':causer has put on-hold your application request for :recruitment.', [
                         'causer' => $causer,
                         'recruitment' => $this->submission->recruitment->title,
                     ]);
                     break;
                 case RecruitmentSubmissionStatus::APPROVED:
-                    $title = __('[Notification] Congratulations! Your Application has been Approved.');
-                    $body = __(':causer has approved your application for :recruitment.', [
+                    $title = __('[Notification] Congratulations! Your Application request has been Approved.');
+                    $body = __(':causer has approved your application request for :recruitment.', [
                         'causer' => $causer,
                         'recruitment' => $this->submission->recruitment->title,
                     ]);
                     break;
                 case RecruitmentSubmissionStatus::REJECTED:
-                    $title = __('[Notification] Sorry! Your Application has been Rejected.');
-                    $body = __(':causer has rejected your application for :recruitment.', [
+                    $title = __('[Notification] Sorry! Your Application request has been Rejected.');
+                    $body = __(':causer has rejected your application request for :recruitment.', [
                         'causer' => $causer,
                         'recruitment' => $this->submission->recruitment->title,
                     ]);

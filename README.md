@@ -49,7 +49,7 @@ MineTrax has lot of features, some of them are listed below:
 
 ## Upcoming
  - Ban Management System
- - Staff Recruitment System
+ - Application System (for staff recruitment and other applications)
  - Store System
  - Automated Server Events
  - Rewards & Achievements

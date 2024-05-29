@@ -60,7 +60,7 @@ class NavigationSettingController extends Controller
         $recruitmentItems = Recruitment::select(['id', 'title', 'slug'])->get();
         foreach ($recruitmentItems as $item) {
             $availableNavItems[] = [
-                'type' => 'recruitment',
+                'type' => 'application',
                 'name' => $item->title,
                 'title' => $item->title,
                 'id' => $item->id,
@@ -69,7 +69,7 @@ class NavigationSettingController extends Controller
                     'recruitment' => $item->slug,
                 ],
                 'is_open_in_new_tab' => false,
-                'key' => 'recruitment-'.$item->id,
+                'key' => 'application-'.$item->id,
             ];
         }
 

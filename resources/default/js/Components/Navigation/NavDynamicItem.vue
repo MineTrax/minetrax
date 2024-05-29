@@ -16,7 +16,7 @@
 
     <!--  CustomPage -->
     <div
-      v-if="['custom-page', 'download', 'recruitment'].includes(item.type)"
+      v-if="['custom-page', 'download', 'recruitment', 'application'].includes(item.type)"
       class="hidden md:flex"
     >
       <NavLink

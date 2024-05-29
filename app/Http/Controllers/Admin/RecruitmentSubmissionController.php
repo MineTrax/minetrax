@@ -190,7 +190,7 @@ class RecruitmentSubmissionController extends Controller
         $submission->delete();
 
         return redirect()->route('admin.recruitment-submission.index-closed')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Recruitment Submission deleted successfully')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Request deleted successfully')]]);
     }
 
     public function act(Request $request, RecruitmentSubmission $submission)
@@ -222,7 +222,7 @@ class RecruitmentSubmissionController extends Controller
         RecruitmentSubmissionStatusChanged::dispatch($submission, $request->user(), $previousStatus);
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __('Action Successful'), 'body' => __('Recruitment Submission action has been completed successfully')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Action Successful'), 'body' => __('Request action has been completed successfully')]]);
     }
 
     public function indexMessages(Request $request, RecruitmentSubmission $submission)

@@ -79,12 +79,12 @@ const headerRow = [
 
 <template>
   <AdminLayout>
-    <app-head :title="__('Manage Recruitment Forms')" />
+    <app-head :title="__('Manage Application Forms')" />
 
     <div class="px-10 py-8 mx-auto text-gray-400">
       <div class="flex justify-between mb-4">
         <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
-          {{ __("Manage Recruitment Forms") }}
+          {{ __("Manage Application Forms") }}
         </h1>
         <div class="flex">
           <InertiaLink
@@ -93,7 +93,7 @@ const headerRow = [
             class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
           >
             <span>{{ __("Create") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Recruitment") }}</span>
+            <span class="hidden md:inline">&nbsp;{{ __("Application Form") }}</span>
           </InertiaLink>
         </div>
       </div>
@@ -206,7 +206,7 @@ const headerRow = [
               as="a"
               :href="route('admin.recruitment.edit', item.id)"
               class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit Recruitment Form')"
+              :title="__('Edit Application Form')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
             </InertiaLink>
@@ -214,14 +214,14 @@ const headerRow = [
               v-if="can('delete recruitments')"
               v-confirm="{
                 message:
-                  'Deleting this Recruitment will also delete all its applications. Are you sure you want to delete this recruitment form & its applications permanently?',
+                  'Deleting this Application Form will also delete all its requests. Are you sure you want to delete this application form & its requests permanently?',
               }"
               v-tippy
               as="button"
               method="DELETE"
               :href="route('admin.recruitment.delete', item.id)"
               class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
-              :title="__('Delete Recruitment')"
+              :title="__('Delete Application Form')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
             </InertiaLink>

@@ -113,7 +113,7 @@ class RecruitmentSubmissionController extends Controller
         RecruitmentSubmissionStatusChanged::dispatch($submission, $request->user(), $previousStatus);
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __('Withdraw Successful'), 'body' => __('Recruitment Submission withdrawn successfully')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Withdraw Successful'), 'body' => __('Application Request withdrawn successfully')]]);
     }
 
     public function indexMessages(Request $request, Recruitment $recruitment, RecruitmentSubmission $submission)

@@ -52,12 +52,12 @@ const headerRow = [
 
 <template>
   <AppLayout>
-    <AppHead :title="__('Recruitments')" />
+    <AppHead :title="__('Application Forms')" />
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("Recruitments") }}
+          {{ __("Application Forms") }}
         </h1>
         <div class="flex space-x-2">
           <Link

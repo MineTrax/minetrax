@@ -30,7 +30,7 @@ const headerRow = [
     },
     {
         key: 'recruitment_id',
-        label: __('Recruitment'),
+        label: __('Application'),
         sortable: true,
     },
     {
@@ -62,12 +62,12 @@ const headerRow = [
 
 <template>
   <AppLayout>
-    <AppHead :title="__('My Recruitment Applications')" />
+    <AppHead :title="__('My Application Requests')" />
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-lg md:text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("My Recruitment Applications") }}
+          {{ __("My Application Requests") }}
         </h1>
         <div class="flex space-x-2">
           <Link
