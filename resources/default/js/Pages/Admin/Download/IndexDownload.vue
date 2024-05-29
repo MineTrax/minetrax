@@ -29,6 +29,9 @@ const headerRow = [
         key: 'name',
         sortable: true,
         label: __('Name'),
+        filterable: {
+            type: 'text',
+        },
     },
     {
         key: 'is_active',
