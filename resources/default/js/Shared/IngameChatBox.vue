@@ -365,6 +365,7 @@ export default {
             }
             this.serverId = newId;
             this.getChatListForServer(newId);
+            this.shouldDisplayPlayerList = true;
 
             clearInterval(this.playerListQueryInterval);
             this.getPlayerListForServer(newId);
