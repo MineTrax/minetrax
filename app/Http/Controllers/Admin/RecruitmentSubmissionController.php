@@ -70,6 +70,9 @@ class RecruitmentSubmissionController extends Controller
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
+                'user.name',
+                'lastActor.name',
+                'lastCommentor.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data', 'status'])),
             ])
             ->allowedSorts($fields)
@@ -136,6 +139,9 @@ class RecruitmentSubmissionController extends Controller
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
+                'user.name',
+                'lastActor.name',
+                'lastCommentor.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data', 'status'])),
             ])
             ->allowedSorts($fields)

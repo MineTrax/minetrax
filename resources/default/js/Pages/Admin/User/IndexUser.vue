@@ -42,20 +42,29 @@ const headerRow = [
     {
         key: 'name',
         label: __('Name'),
-        sortable: true,
         class: 'w-3/12',
+        sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'username',
         label: __('Username'),
-        sortable: true,
         class: 'w-2/12',
+        sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'email',
         label: __('Email'),
-        sortable: true,
         class: 'w-2/12',
+        sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'created_at',
@@ -66,8 +75,12 @@ const headerRow = [
     {
         key: 'role_id',
         label: __('Role'),
-        sortable: false,
         class: 'w-2/12',
+        sortable: false,
+        filterable: {
+            key: 'roles.display_name',
+            type: 'text'
+        }
     },
     {
         key: 'flags',

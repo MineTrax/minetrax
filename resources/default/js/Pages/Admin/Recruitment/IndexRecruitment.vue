@@ -33,11 +33,18 @@ const headerRow = [
         key: 'title',
         sortable: true,
         label: __('Title'),
+        filterable: {
+            type: 'text',
+        },
     },
     {
         key: 'status',
         label: __('Status'),
         sortable: true,
+        filterable: {
+            type: 'multiselect',
+            options: ['draft', 'active', 'disabled', 'archived'],
+        }
     },
     {
         key: 'is_notify_staff_on_submission',

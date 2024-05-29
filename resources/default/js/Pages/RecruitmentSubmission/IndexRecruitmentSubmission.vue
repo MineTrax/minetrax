@@ -37,6 +37,10 @@ const headerRow = [
         key: 'status',
         label: __('Status'),
         sortable: true,
+        filterable: {
+            type: 'multiselect',
+            options: ['pending', 'inprogress', 'approved', 'rejected', 'withdrawn', 'onhold'],
+        }
     },
     {
         key: 'created_at',

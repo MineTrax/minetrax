@@ -83,6 +83,9 @@ const headerRow = [
         key: 'output',
         label: __('Output'),
         sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'actions',

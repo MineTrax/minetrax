@@ -21,8 +21,11 @@ defineProps({
 const headerRow = [
     {
         key: 'title',
-        sortable: true,
         label: __('Title'),
+        sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'flags',
@@ -35,6 +38,10 @@ const headerRow = [
         label: __('Status'),
         sortable: true,
         class: 'w-1/12 hidden text-right md:table-cell',
+        filterable: {
+            type: 'multiselect',
+            options: ['active', 'disabled']
+        }
     },
     {
         key: 'created_at',

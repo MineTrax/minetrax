@@ -22,6 +22,9 @@ const headerRow = [
         key: 'title',
         sortable: true,
         label: __('Title'),
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'flags',
@@ -32,8 +35,12 @@ const headerRow = [
     {
         key: 'status',
         label: __('Status'),
-        sortable: true,
         class: 'w-1/12 hidden text-right md:table-cell whitespace-nowrap',
+        sortable: true,
+        filterable: {
+            type: 'multiselect',
+            options: ['active', 'disabled'],
+        }
     },
     {
         key: 'updated_at',

@@ -40,6 +40,7 @@ class UserController extends Controller
                 'updated_at',
                 'country_id',
                 'last_login_at',
+                'roles.display_name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username'])),
             ])
             ->allowedSorts(['id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at'])

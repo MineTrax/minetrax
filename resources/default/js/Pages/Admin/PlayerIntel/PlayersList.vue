@@ -64,11 +64,32 @@ const headerRow = [
         key: 'last_join_address',
         label: __('Join Address'),
         sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'last_minecraft_version',
         label: __('MC Version'),
         sortable: true,
+        filterable: {
+            type: 'multiselect',
+            options: [
+                '1.20',
+                '1.19',
+                '1.18',
+                '1.17',
+                '1.16',
+                '1.15',
+                '1.14',
+                '1.13',
+                '1.12',
+                '1.11',
+                '1.10',
+                '1.9',
+                '1.8',
+            ]
+        }
     },
     {
         key: 'first_seen_at',

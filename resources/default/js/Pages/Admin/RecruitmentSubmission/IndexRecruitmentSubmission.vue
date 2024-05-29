@@ -46,6 +46,10 @@ const headerRow = [
         sortable: true,
         label: __('Applicant'),
         class: 'w-3/12',
+        filterable: {
+            key: 'user.name',
+            type: 'text',
+        }
     },
     {
         key: 'recruitment_id',
@@ -56,18 +60,30 @@ const headerRow = [
         key: 'status',
         label: __('Status'),
         sortable: true,
+        filterable: {
+            type: 'multiselect',
+            options: ['pending', 'inprogress', 'approved', 'rejected', 'withdrawn', 'onhold'],
+        }
     },
     {
         key: 'last_act_at',
         sortable: true,
         label: __('Last Actor'),
         class: 'text-right',
+        filterable: {
+            key: 'lastActor.name',
+            type: 'text',
+        }
     },
     {
         key: 'last_comment_at',
         sortable: true,
         label: __('Last Comment'),
         class: 'text-right',
+        filterable: {
+            key: 'lastCommentor.name',
+            type: 'text',
+        }
     },
     {
         key: 'created_at',

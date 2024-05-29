@@ -181,7 +181,7 @@ function toggleSorting(key) {
                         th.class ? th.class : '',
                       ]"
                     >
-                      <div class="flex items-center">
+                      <div class="inline-flex items-center">
                         <Popover
                           v-if="th.filterable"
                         >

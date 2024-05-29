@@ -38,6 +38,15 @@ const headerRow = [
         key: 'type',
         label: __('Type'),
         sortable: true,
+        filterable: {
+            type: 'multiselect',
+            options: [
+                'player-leave',
+                'server-broadcast',
+                'join-join',
+                'player-chat',
+            ]
+        }
     },
     {
         key: 'server_id',

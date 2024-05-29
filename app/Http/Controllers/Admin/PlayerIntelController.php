@@ -62,6 +62,8 @@ class PlayerIntelController extends Controller
                 'country_id',
                 'last_seen_at',
                 'first_seen_at',
+                'last_join_address',
+                'last_minecraft_version',
                 AllowedFilter::custom('q', new FilterMultipleFields(['player_uuid', 'player_username'])),
             ])
             ->groupBy(['player_id'])
