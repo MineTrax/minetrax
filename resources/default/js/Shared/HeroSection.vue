@@ -15,7 +15,6 @@
       v-if="settings.home_hero_bg_particles"
       id="tsparticles"
       class="absolute w-full h-full"
-      :particles-init="particlesInit"
       :options="particleOptions"
     />
 
@@ -131,17 +130,11 @@ import axios from 'axios';
 import { usePage } from '@inertiajs/vue3';
 import { useClipboard } from '@vueuse/core';
 const { copy, copied, isSupported } = useClipboard({ legacy: true });
-import { loadFull } from 'tsparticles';
 
 const props = defineProps({
     settings: Object, // This is Theme Settings
     server: Object,
 });
-
-const particlesInit = async engine => {
-    //await loadFull(engine);
-    await loadFull(engine);
-};
 
 const serverInfo = ref({});
 const loading = ref(true);
