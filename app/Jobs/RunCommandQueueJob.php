@@ -49,7 +49,7 @@ class RunCommandQueueJob implements ShouldQueue
             'server',
             'command',
         ]);
-        $isPlayerOnlineRequired = $this->commandQueue->config['is_player_online_required'];
+        $isPlayerOnlineRequired = $this->commandQueue->config ? $this->commandQueue->config['is_player_online_required'] : false;
         $server = $this->commandQueue->server;
         if (! $server->webquery_port) {
             $this->commandQueue->update([
