@@ -40,9 +40,10 @@ class ApiAccountLinkController extends ApiController
 
         // Check if current user has enough available slot to link the player.
         $user = User::where('id', $valid['user_id'])->first();
-        $max_slots = $pluginSettings->max_players_link_per_account; // Total number of players that can be linked to account
-        if ($user->players()->count() >= $max_slots) {
-            $this->error(__('You already have max :max_slots players linked!', ['max_slots' => $max_slots]), 'max-players-reached');
+        $maxSlots = $pluginSettings->max_players_link_per_account; // Total number of players that can be linked to account
+        $linkedPlayers = $user->players()->count(); // Number of players already linked to account
+        if ($linkedPlayers >= $maxSlots) {
+            return $this->error(__('You already have max :max_slots players linked!', ['max_slots' => $maxSlots]), 'max-players-reached');
         }
 
         // Link player to user
