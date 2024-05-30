@@ -12,12 +12,12 @@ White='\033[0;37m'        # White
 
 # Clear the caches
 php artisan down
-php artisan clear
+php artisan route:clear
 php artisan cache:clear
 php artisan config:clear
-php artisan route:clear
 php artisan view:clear
 php artisan optimize:clear
+php artisan clear
 
 # Try taking pull, if dont work then prompt for stash
 if git pull; then
