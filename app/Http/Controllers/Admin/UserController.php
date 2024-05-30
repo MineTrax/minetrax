@@ -41,6 +41,7 @@ class UserController extends Controller
                 'country_id',
                 'last_login_at',
                 'roles.display_name',
+                'country.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username'])),
             ])
             ->allowedSorts(['id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at'])
@@ -48,7 +49,10 @@ class UserController extends Controller
             ->paginate($perPage)
             ->withQueryString();
 
+        $countries = Country::select(['id', 'name'])->get()->pluck('name');
+
         return Inertia::render('Admin/User/IndexUser', [
+            'countries' => $countries,
             'users' => $users,
             'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);

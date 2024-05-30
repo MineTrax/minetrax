@@ -97,7 +97,8 @@
                         v-model:value="form.started_at"
                         :placeholder="__('Poll Starts At')"
                         class="w-full"
-                        value-type="format"
+                        value-type="date"
+                        format="YYYY-MM-DD hh:mm:ss A"
                         type="datetime"
                         input-class="border-gray-300 h-14 p-3 text-sm pt-7 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
                       />
@@ -117,7 +118,8 @@
                         v-model:value="form.closed_at"
                         :placeholder="__('Poll Ends At')"
                         class="w-full"
-                        value-type="format"
+                        value-type="date"
+                        format="YYYY-MM-DD hh:mm:ss A"
                         type="datetime"
                         input-class="border-gray-300 h-14 p-3 text-sm pt-7 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
                       />

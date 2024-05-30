@@ -15,9 +15,12 @@ const { can } = useAuthorizable();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } =
     useHelpers();
 
-defineProps({
+const props = defineProps({
     serverList: {
         type: Object,
+    },
+    countries: {
+        type: Array,
     },
     filters: {
         type: Object,
@@ -33,12 +36,21 @@ const headerRow = [
         label: __('Flag'),
         sortable: true,
         class: 'text-left',
+        filterable: {
+            key: 'country.name',
+            type: 'multiselect',
+            options: props.countries,
+            searchable: true,
+        }
     },
     {
         key: 'player_username',
         label: __('Username'),
         sortable: true,
         class: 'text-left',
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'server_play_count',

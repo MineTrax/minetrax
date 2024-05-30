@@ -101,9 +101,10 @@ class CommandQueueController extends Controller
         }
 
         $commandQueueList = collect();
+        $executeAt = $request->input('execute_at') ?? null;
         foreach ($servers as $server) {
             if ($request->input('scope') == 'global') {
-                $created = $this->createCommandQueue($request->input('command'), null, null, $server->id, $request->user()->id);
+                $created = $this->createCommandQueue($request->input('command'), $executeAt, null, null, $server->id, $request->user()->id);
                 $commandQueueList->push($created);
             } else {
                 $playerScope = $request->input('players.scope');
@@ -129,24 +130,24 @@ class CommandQueueController extends Controller
                     $config = [
                         'is_player_online_required' => $request->input('players.is_player_online_required'),
                     ];
-                    $created = $this->createCommandQueue($request->input('command'), $config, $player, $server->id, $request->user()->id);
+                    $created = $this->createCommandQueue($request->input('command'), $executeAt, $config, $player, $server->id, $request->user()->id);
                     $commandQueueList->push($created);
                 }
             }
         }
 
         // Dispatch jobs.
-        $ranCount = 0;
-        foreach ($commandQueueList as $commandQueue) {
-            RunCommandQueueJob::dispatch($commandQueue);
-            $ranCount++;
+        if ($executeAt == null) {
+            foreach ($commandQueueList as $commandQueue) {
+                RunCommandQueueJob::dispatch($commandQueue);
+            }
         }
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __(':count Commands Scheduled!', ['count' => $ranCount]), 'body' => __('Commands has been scheduled for execution. Check the status in Command History.'), 'milliseconds' => 5000]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __(':count Commands Scheduled!', ['count' => $commandQueueList->count()]), 'body' => __('Commands has been scheduled for execution. Check the status in Command History.'), 'milliseconds' => 5000]]);
     }
 
-    private function createCommandQueue($rawCommand, $config, $player, $serverId, $userId)
+    private function createCommandQueue($rawCommand, $executeAt, $config, $player, $serverId, $userId)
     {
         $params = [];
         if ($player) {
@@ -167,6 +168,7 @@ class CommandQueueController extends Controller
             'player_uuid' => $player ? $player->uuid : null,
             'user_id' => $userId,
             'player_id' => $player ? $player->id : null,
+            'execute_at' => $executeAt,
             'tag' => 'run_command',
         ]);
 

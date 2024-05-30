@@ -19,7 +19,8 @@ const { can } = useAuthorizable();
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
 
-defineProps({
+const props = defineProps({
+    countries: Array,
     users: Object,
     filters: Object,
 });
@@ -34,6 +35,12 @@ const headerRow = [
     {
         key: 'flag',
         label: __('Flag'),
+        filterable: {
+            key: 'country.name',
+            type: 'multiselect',
+            options: props.countries,
+            searchable: true,
+        }
     },
     {
         key: 'avatar',

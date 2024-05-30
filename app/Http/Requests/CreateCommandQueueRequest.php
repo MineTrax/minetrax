@@ -26,6 +26,7 @@ class CreateCommandQueueRequest extends FormRequest
         return [
             'scope' => 'required|string|in:global,player',
             'command' => 'required|string',
+            'execute_at' => 'nullable|date|after:now',
             'servers' => 'nullable|array',
             'servers.*.id' => 'required|int|exists:servers,id',
             'players' => 'required_if:scope,player|array',

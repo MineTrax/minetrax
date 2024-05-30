@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('recruitment_submissions', function (Blueprint $table) {
-            $table->dropColumn('last_comment_by');
+            $table->dropConstrainedForeignId('last_comment_by');
             $table->dropColumn('last_comment_at');
         });
     }

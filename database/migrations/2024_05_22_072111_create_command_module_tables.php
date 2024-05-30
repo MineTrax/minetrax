@@ -20,6 +20,8 @@ return new class extends Migration
             $table->boolean('is_run_on_all_servers')->default(false); // if command should run on all servers.
             $table->integer('max_attempts')->nullable();
             $table->json('config')->nullable();
+            $table->boolean('is_scheduled')->default(false); // if command is repeating scheduled task.
+            $table->string('scheduled_cron')->nullable(); // if command is scheduled task (cron expression)
             $table->string('tag')->nullable();
             $table->timestamps();
         });

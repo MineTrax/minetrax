@@ -11,6 +11,7 @@ class Command extends BaseModel
     protected $casts = [
         'is_enabled' => 'boolean',
         'is_run_on_all_servers' => 'boolean',
+        'is_scheduled' => 'boolean',
         'config' => 'array',
     ];
 

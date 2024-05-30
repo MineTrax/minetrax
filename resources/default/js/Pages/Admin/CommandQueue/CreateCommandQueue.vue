@@ -101,6 +101,29 @@
                   </div>
 
                   <div class="col-span-6 sm:col-span-6">
+                    <p
+                      class="mb-2 text-gray-700 dark:text-gray-300 font-semibold"
+                    >
+                      {{ __("Servers to run on") }}
+                    </p>
+                    <Multiselect
+                      v-model="form.servers"
+                      class="block w-full border-gray-900 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                      :options="servers"
+                      :custom-label="serversCustomLabel"
+                      track-by="id"
+                      :multiple="true"
+                      :close-on-select="false"
+                      :clear-on-select="false"
+                      :searchable="false"
+                      :placeholder="__('Leave empty to run on all servers')+'...'"
+                    />
+                    <p class="text-sm text-red-500 mt-0.5">
+                      {{ form.errors.servers }}
+                    </p>
+                  </div>
+
+                  <div class="col-span-6 sm:col-span-6">
                     <div
                       v-if="form.scope === 'player'"
                       class="flex flex-col items-end mb-2"
@@ -130,38 +153,31 @@
                     />
                   </div>
 
-                  <div class="col-span-6 sm:col-span-6">
-                    <p
-                      class="mb-2 text-gray-700 dark:text-gray-300 font-semibold"
-                    >
-                      {{ __("Servers to run on") }}
-                    </p>
-                    <Multiselect
-                      v-model="form.servers"
-                      class="block w-full border-gray-900 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
-                      :options="servers"
-                      :custom-label="serversCustomLabel"
-                      track-by="id"
-                      :multiple="true"
-                      :close-on-select="false"
-                      :clear-on-select="false"
-                      :searchable="false"
-                      :placeholder="__('Leave empty to run on all servers')+'...'"
+                  <div class="col-span-6 sm:col-span-6 relative">
+                    <DatePicker
+                      id="execute_at"
+                      v-model:value="form.execute_at"
+                      :placeholder="__('Leave empty to run immediately without any delay')+'...'"
+                      class="w-full"
+                      value-type="date"
+                      type="datetime"
+                      format="YYYY-MM-DD hh:mm:ss A"
+                      input-class="border-gray-300 h-14 p-3 text-sm pt-7 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
                     />
-                    <p class="text-sm text-red-500 mt-0.5">
-                      {{ form.errors.servers }}
-                    </p>
+                    <label
+                      for="execute_at"
+                      class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-gray-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
+                    >{{ __("Run at") }}</label>
+                    <jet-input-error
+                      :message="form.errors.execute_at"
+                      class="mt-2"
+                    />
                   </div>
 
                   <div
                     v-if="form.scope === 'player'"
                     class="col-span-6 sm:col-span-6"
                   >
-                    <p
-                      class="mb-2 text-gray-700 dark:text-gray-300 font-semibold"
-                    >
-                      {{ __("Players to run on") }}
-                    </p>
                     <XSelect
                       id="players.scope"
                       v-model="form.players.scope"
@@ -185,12 +201,12 @@
                       v-model="form.players.id"
                       class="block w-full border-gray-900 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
                       :options="players"
-                      label="username"
+                      :custom-label="playersCustomLabel"
                       track-by="id"
                       :multiple="true"
                       :close-on-select="false"
                       :clear-on-select="false"
-                      :searchable="false"
+                      :searchable="true"
                       :placeholder="__('Select players to run command on')+'...'"
                     />
                     <p class="text-sm text-red-500 mt-0.5">
@@ -243,6 +259,8 @@ import XSelect from '@/Components/Form/XSelect.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import { useForm } from '@inertiajs/vue3';
 import Multiselect from 'vue-multiselect';
+import DatePicker from 'vue-datepicker-next';
+import JetInputError from '@/Jetstream/InputError.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 const { __ } = useTranslations();
 
@@ -265,6 +283,7 @@ const playerRunScopeList = {
 const form = useForm({
     scope: 'global',
     command: '',
+    execute_at: null,
     servers: [],
     players: {
         scope: 'all',
@@ -277,11 +296,15 @@ function serversCustomLabel({name, hostname}) {
     return `${name} - ${hostname}`;
 }
 
+function playersCustomLabel({username, uuid}) {
+    return `${username} - ${uuid}`;
+}
+
 const submitRunCommandForm = () => {
     form.post(route('admin.command-queue.store'), {
         preserveScroll: true,
         onSuccess: () => {
-            form.reset('command', 'servers', 'players');
+            form.reset('command', 'servers', 'players', 'execute_at');
         },
     });
 };

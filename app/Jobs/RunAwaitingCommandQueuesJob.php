@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class RunAwaitingCommandQueuesJob implements ShouldQueue
 {
@@ -37,6 +38,8 @@ class RunAwaitingCommandQueuesJob implements ShouldQueue
             })
             ->limit(50)
             ->get();
+
+        Log::info('[RunAwaitingCommandQueuesJob] Running Failed commands: '.$failedCommands->count());
         foreach ($failedCommands as $command) {
             RunCommandQueueJob::dispatch($command);
         }
@@ -47,6 +50,8 @@ class RunAwaitingCommandQueuesJob implements ShouldQueue
             ->where('execute_at', '<=', now())
             ->limit(50)
             ->get();
+
+        Log::info('[RunAwaitingCommandQueuesJob] Running Delayed commands: '.$awaitingCommands->count());
         foreach ($awaitingCommands as $command) {
             RunCommandQueueJob::dispatch($command);
         }

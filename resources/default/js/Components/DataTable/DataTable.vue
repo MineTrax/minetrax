@@ -233,7 +233,7 @@ function toggleSorting(key) {
                                   :close-on-select="th.filterable.type === 'select'"
                                   :limit="1"
                                   :clear-on-select="false"
-                                  :searchable="false"
+                                  :searchable="th.filterable.searchable ?? false"
                                   :placeholder="`Select ${th.label}...`"
                                 />
 
