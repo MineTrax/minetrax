@@ -7,7 +7,7 @@ use App\Utils\Helpers\CryptoUtils;
 use Closure;
 use Illuminate\Http\Request;
 
-const REQUEST_MAX_AGE_THRESHOLD_SECONDS = 60; // 60 seconds
+const REQUEST_MAX_AGE_THRESHOLD_SECONDS = 600; // servers can be out of sync against NTP servers by various minutes so give some buffer .
 const VALIDATE_SIGNATURE = true; // For testing purposes, we can disable signature validation.
 
 class AuthenticateApiKey
@@ -73,6 +73,8 @@ class AuthenticateApiKey
             $timestamp = $timestampMs / 1000;
             $currentTimestamp = now()->timestamp;
             $requestAge = abs($currentTimestamp - $timestamp);
+            \Log::info('local timestamp: '.now()->timestamp.' - server timestamp: '.$timestampMs);
+            \Log::info('Request Age: '.$requestAge);
             if ($requestAge > REQUEST_MAX_AGE_THRESHOLD_SECONDS) {
                 return response()->json([
                     'status' => 'error',
