@@ -6,11 +6,11 @@ use App\Enums\CommandQueueStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCommandQueueRequest;
 use App\Jobs\RunCommandQueueJob;
+use App\Jobs\RunCommandQueuesFromRequestJob;
 use App\Models\CommandQueue;
 use App\Models\Player;
 use App\Models\Server;
 use App\Queries\Filters\FilterMultipleFields;
-use App\Utils\Helpers\Helper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -88,91 +88,10 @@ class CommandQueueController extends Controller
 
     public function store(CreateCommandQueueRequest $request)
     {
-        // Select servers.
-        $servers = [];
-        if (empty($request->servers)) {
-            $servers = Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->get();
-        } else {
-            $serverIds = collect($request->servers)->pluck('id');
-            $servers = Server::select(['id', 'name', 'hostname'])
-                ->whereIn('id', $serverIds)
-                ->whereNotNull('webquery_port')
-                ->get();
-        }
-
-        $commandQueueList = collect();
-        $executeAt = $request->input('execute_at') ?? null;
-        foreach ($servers as $server) {
-            if ($request->input('scope') == 'global') {
-                $created = $this->createCommandQueue($request->input('command'), $executeAt, null, null, $server->id, $request->user()->id);
-                $commandQueueList->push($created);
-            } else {
-                $playerScope = $request->input('players.scope');
-
-                switch ($playerScope) {
-                    case 'all':
-                        $players = Player::select(['id', 'uuid', 'username'])->get();
-                        break;
-                    case 'linked':
-                        $players = Player::whereHas('users')->select(['id', 'uuid', 'username'])->get();
-                        break;
-                    case 'unlinked':
-                        $players = Player::whereDoesntHave('users')->select(['id', 'uuid', 'username'])->get();
-                        break;
-                    case 'custom':
-                        $playerIds = collect($request->input('players.id'))->pluck('id');
-                        $players = Player::select(['id', 'uuid', 'username'])->whereIn('id', $playerIds)->get();
-                        break;
-                }
-
-                // Create command for each player.
-                foreach ($players as $player) {
-                    $config = [
-                        'is_player_online_required' => $request->input('players.is_player_online_required'),
-                    ];
-                    $created = $this->createCommandQueue($request->input('command'), $executeAt, $config, $player, $server->id, $request->user()->id);
-                    $commandQueueList->push($created);
-                }
-            }
-        }
-
-        // Dispatch jobs.
-        if ($executeAt == null) {
-            foreach ($commandQueueList as $commandQueue) {
-                RunCommandQueueJob::dispatch($commandQueue);
-            }
-        }
+        RunCommandQueuesFromRequestJob::dispatch($request->collect(), $request->user()->id);
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __(':count Commands Scheduled!', ['count' => $commandQueueList->count()]), 'body' => __('Commands has been scheduled for execution. Check the status in Command History.'), 'milliseconds' => 5000]]);
-    }
-
-    private function createCommandQueue($rawCommand, $executeAt, $config, $player, $serverId, $userId)
-    {
-        $params = [];
-        if ($player) {
-            $params = [
-                'player_uuid' => $player->uuid,
-                'player_username' => $player->username,
-            ];
-        }
-        $parsedCommandString = Helper::replacePlaceholders($rawCommand, $params);
-        $commandQueue = CommandQueue::create([
-            'server_id' => $serverId,
-            'command_id' => null,
-            'parsed_command' => $parsedCommandString,
-            'config' => $config,
-            'params' => $params,
-            'status' => CommandQueueStatus::PENDING,
-            'max_attempts' => 1,
-            'player_uuid' => $player ? $player->uuid : null,
-            'user_id' => $userId,
-            'player_id' => $player ? $player->id : null,
-            'execute_at' => $executeAt,
-            'tag' => 'run_command',
-        ]);
-
-        return $commandQueue;
+            ->with(['toast' => ['type' => 'success', 'title' => __('Commands Scheduled!'), 'body' => __('Commands has been scheduled for execution. Check the status in Command History.'), 'milliseconds' => 5000]]);
     }
 
     public function destroy(Request $request)
