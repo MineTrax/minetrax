@@ -64,7 +64,7 @@ class CommandQueueController extends Controller
             ])
             ->allowedSorts($fields)
             ->defaultSort('-updated_at')
-            ->paginate($perPage)
+            ->simplePaginate($perPage)
             ->withQueryString();
 
         return Inertia::render('Admin/CommandQueue/IndexCommandQueue', [

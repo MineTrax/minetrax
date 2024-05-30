@@ -88,6 +88,12 @@ const headerRow = [
         }
     },
     {
+        key: 'created_at',
+        sortable: true,
+        label: __('Created'),
+        class: 'whitespace-nowrap',
+    },
+    {
         key: 'actions',
         label: __('Actions'),
         sortable: false,
@@ -228,6 +234,17 @@ const headerRow = [
             >
               {{ __("none") }}
             </span>
+          </DtRowItem>
+
+
+          <DtRowItem>
+            <div
+              v-tippy
+              class="text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap"
+              :title="formatToDayDateString(item.created_at)"
+            >
+              {{ formatTimeAgoToNow(item.created_at) }}
+            </div>
           </DtRowItem>
 
           <td
