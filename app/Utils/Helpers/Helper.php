@@ -102,4 +102,28 @@ class Helper
 
         return $content;
     }
+
+    public static function compareVersions($version1, $version2)
+    {
+        // Split the version strings by the dot character.
+        $parts1 = explode('.', $version1);
+        $parts2 = explode('.', $version2);
+
+        // Compare each part of the version numbers.
+        for ($i = 0; $i < 3; $i++) {
+            // Convert parts to integers for numerical comparison.
+            $v1 = isset($parts1[$i]) ? (int) $parts1[$i] : 0;
+            $v2 = isset($parts2[$i]) ? (int) $parts2[$i] : 0;
+
+            // Compare the current parts.
+            if ($v1 > $v2) {
+                return 1;
+            } elseif ($v1 < $v2) {
+                return -1;
+            }
+        }
+
+        // If all parts are equal, return 0.
+        return 0;
+    }
 }
