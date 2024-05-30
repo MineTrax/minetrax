@@ -9,14 +9,17 @@ class MinecraftServerLiveInfo extends BaseModel
 {
     use HasFactory;
 
-    public static function getOnlinePlayersCount($serverIds, $endDate)
+    public static function getOnlinePlayersCount($serverIds, $greaterDate, $lesserDate = null)
     {
         $subquery = DB::table('minecraft_server_live_infos')
             ->selectRaw('ROUND(UNIX_TIMESTAMP(CONCAT(DATE_FORMAT(created_at, "%Y-%m-%d %H:"),LPAD((MINUTE(created_at) DIV 5) * 5, 2, "0"),":00")) * 1000) AS created_at_5min')
             ->selectRaw('MAX(online_players) AS max_online_players')
             ->selectRaw('server_id')
-            ->when($endDate, function ($query, $endDate) {
-                return $query->where('created_at', '>=', $endDate);
+            ->when($greaterDate, function ($query, $greaterDate) {
+                return $query->where('created_at', '>=', $greaterDate);
+            })
+            ->when($lesserDate, function ($query, $lesserDate) {
+                return $query->where('created_at', '<', $lesserDate);
             })
             ->when($serverIds, function ($query, $serverIds) {
                 return $query->whereIn('server_id', $serverIds);

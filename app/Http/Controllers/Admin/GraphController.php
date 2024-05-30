@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
+use App\Models\MinecraftServerLiveInfo;
 use App\Models\Server;
 use Cache;
 use Carbon\CarbonImmutable;
@@ -185,14 +186,8 @@ class GraphController extends Controller
             $averagePlayerPingChangePercent = (($averagePlayerPingCurrentMonth - $averagePlayerPingPreviousMonth) / ($averagePlayerPingPreviousMonth == 0 ? 1 : $averagePlayerPingPreviousMonth)) * 100;
 
             // Peek Online Players.
-            $peekOnlinePlayersPreviousMonth = DB::table('minecraft_server_live_infos')
-                ->where('created_at', '>=', $previousMonth->startOfMonth())
-                ->where('created_at', '<', $previousMonth->endOfMonth())
-                ->max('online_players') ?? 0;
-            $peekOnlinePlayersCurrentMonth = DB::table('minecraft_server_live_infos')
-                ->where('created_at', '>=', $currentMonth->startOfMonth())
-                ->where('created_at', '<', $currentMonth->endOfMonth())
-                ->max('online_players') ?? 0;
+            $peekOnlinePlayersPreviousMonth = MinecraftServerLiveInfo::getOnlinePlayersCount(null, $previousMonth->startOfMonth(), $previousMonth->endOfMonth()) ?? 0;
+            $peekOnlinePlayersCurrentMonth = MinecraftServerLiveInfo::getOnlinePlayersCount(null, $currentMonth->startOfMonth(), $currentMonth->endOfMonth()) ?? 0;
             $peekOnlinePlayersChangePercent = (($peekOnlinePlayersCurrentMonth - $peekOnlinePlayersPreviousMonth) / ($peekOnlinePlayersPreviousMonth == 0 ? 1 : $peekOnlinePlayersPreviousMonth)) * 100;
 
             return [
