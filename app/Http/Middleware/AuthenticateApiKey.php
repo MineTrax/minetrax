@@ -73,8 +73,6 @@ class AuthenticateApiKey
             $timestamp = $timestampMs / 1000;
             $currentTimestamp = now()->timestamp;
             $requestAge = abs($currentTimestamp - $timestamp);
-            \Log::info('local timestamp: '.now()->timestamp.' - server timestamp: '.$timestampMs);
-            \Log::info('Request Age: '.$requestAge);
             if ($requestAge > REQUEST_MAX_AGE_THRESHOLD_SECONDS) {
                 return response()->json([
                     'status' => 'error',
