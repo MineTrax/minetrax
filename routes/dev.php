@@ -2,6 +2,7 @@
 
 use App\Jobs\AccountLinkAfterSuccessCommandJob;
 use App\Jobs\AccountUnlinkAfterSuccessCommandJob;
+use App\Jobs\RunAwaitingCommandQueuesJob;
 use App\Models\Player;
 use App\Models\Server;
 use App\Services\AskGptService;
@@ -177,4 +178,31 @@ Route::get('test-unlink', function () {
     $player = Player::first();
     $userId = request()->user()->id;
     AccountUnlinkAfterSuccessCommandJob::dispatch($player, $userId);
+});
+
+Route::get('test-runlater', function () {
+    RunAwaitingCommandQueuesJob::dispatch();
+});
+
+Route::get('memory', function () {
+    $players = Player::select(['id', 'uuid', 'username'])->get();
+    foreach ($players as $p) {
+        \Log::info('memory: '.memory_get_usage() / 1024 / 1024);
+        echo 'memory: '.memory_get_usage() / 1024 / 1024;
+        echo PHP_EOL;
+    }
+
+    foreach ($players as $p) {
+        // \Log::info('memory: '.memory_get_usage() / 1024 / 1024);
+        echo 'memory: '.memory_get_usage() / 1024 / 1024;
+        echo PHP_EOL;
+    }
+
+    foreach ($players as $p) {
+        // \Log::info('memory: '.memory_get_usage() / 1024 / 1024);
+        echo 'memory: '.memory_get_usage() / 1024 / 1024;
+        echo PHP_EOL;
+    }
+
+    return memory_get_peak_usage() / 1024 / 1024;
 });
