@@ -374,4 +374,15 @@ return [
     |
     */
     'disable_player_unlinking' => env('DISABLE_PLAYER_UNLINKING', false),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Hide Next Rank of Player.
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, next rank of player won't be shown in player profile.
+    |
+    */
+    'hide_player_next_rank' => env('HIDE_PLAYER_NEXT_RANK', false),
 ];
