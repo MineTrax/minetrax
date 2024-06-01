@@ -237,16 +237,18 @@ function getServerWebQueryStatus(serverId) {
           </DtRowItem>
 
           <DtRowItem>
-            <div class="text-sm text-gray-900 dark:text-gray-300">
-              {{ item.ip_address }} : {{ item.join_port }}
-            </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-              {{
-                __("WebQuery: :webquery_port", {
-                  webquery_port:
-                    item.webquery_port || __("not set"),
-                })
-              }}
+            <div class="group">
+              <div class="text-sm filter blur-sm text-gray-900 dark:text-gray-300 group-hover:blur-none duration-300 cursor-text">
+                {{ item.ip_address }} : {{ item.join_port }}
+              </div>
+              <div class="text-sm text-gray-500 dark:text-gray-400 filter blur-sm group-hover:blur-none duration-300 cursor-text">
+                {{
+                  __("WebQuery: :webquery_port", {
+                    webquery_port:
+                      item.webquery_port || __("not set"),
+                  })
+                }}
+              </div>
             </div>
           </DtRowItem>
 
