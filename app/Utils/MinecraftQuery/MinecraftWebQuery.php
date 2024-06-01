@@ -103,11 +103,11 @@ class MinecraftWebQuery
         $encrypted = $this->makePayload($type, $data);
 
         $factory = new \Socket\Raw\Factory();
-        $socket = $factory->createClient("tcp://{$this->HOST}:{$this->PORT}", 5);
+        $socket = $factory->createClient("tcp://{$this->HOST}:{$this->PORT}", 10);
         $text = $encrypted."\n";
         $socket->write($text);
         // Timeout after 5 seconds for webquery in case of no response
-        socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, ['sec' => 5, 'usec' => 0]);
+        socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, ['sec' => 10, 'usec' => 0]);
         $buf = $socket->read(102400);
         $socket->close();
 
