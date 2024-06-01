@@ -147,7 +147,7 @@ class ServerController extends Controller
             'ip_address' => 'required|ip',
             'join_port' => 'required|numeric|min:0|max:65535',
             'query_port' => 'required|numeric|min:0|max:65535',
-            'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled',
+            'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled|different:join_port',
             'name' => 'required',
             'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
             'settings' => 'sometimes',
@@ -170,6 +170,11 @@ class ServerController extends Controller
             'settings' => $request->settings,
             'created_by' => $request->user()->id,
         ]);
+
+        if (! $request->webquery_port) {
+            return redirect()->route('admin.server.index')
+                ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Proxy server added successfully')]]);
+        }
 
         return Inertia::render('Admin/Server/AfterCreateSteps', [
             'server' => $server,
@@ -267,7 +272,7 @@ class ServerController extends Controller
             'ip_address' => 'required|ip',
             'join_port' => 'required|numeric|min:0|max:65535',
             'query_port' => 'required|numeric|min:0|max:65535',
-            'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled',
+            'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled|different:join_port',
             'name' => 'required',
             'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
             'settings' => 'sometimes',
