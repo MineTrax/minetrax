@@ -174,13 +174,27 @@ watch(selectedForms, (newSelectedForms) => {
             <td
               class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
             >
-              {{ item.id }}
+              <InertiaLink
+                as="a"
+                :href="
+                  route(
+                    'admin.recruitment-submission.show',
+                    item.id
+                  )
+                "
+                class="hover:text-sky-500"
+              >
+                {{ item.id }}
+              </InertiaLink>
             </td>
 
             <td class="px-4">
               <InertiaLink
                 :href="
-                  route('user.public.get', item.user.username)
+                  route(
+                    'admin.recruitment-submission.show',
+                    item.id
+                  )
                 "
                 class="flex items-center"
               >

@@ -17,17 +17,20 @@ class AccountLinkController extends Controller
 
         $currentLinkOtp = AccountLinkUtils::generateOtp($request->user()->id);
 
+        $isUnlinkingDisabled = config('minetrax.disable_player_unlinking');
+
         return Inertia::render('User/ListLinkedPlayer', [
             'linkedPlayers' => $linkedPlayers,
             'maxPlayerPerUser' => $pluginSettings->max_players_link_per_account,
             'currentLinkOtp' => $currentLinkOtp,
+            'isUnlinkingDisabled' => $isUnlinkingDisabled,
         ]);
     }
 
     public function unlink(Player $player, Request $request)
     {
-        $unlinkingDisabled = config('minetrax.disable_player_unlinking');
-        if ($unlinkingDisabled) {
+        $isUnlinkingDisabled = config('minetrax.disable_player_unlinking');
+        if ($isUnlinkingDisabled) {
             return redirect()->back()
                 ->with(['toast' => ['type' => 'danger', 'title' => __('Player unlinking disabled!'), 'body' => __('Player unlinking is disabled by the administrator.'), 'milliseconds' => 10000]]);
         }

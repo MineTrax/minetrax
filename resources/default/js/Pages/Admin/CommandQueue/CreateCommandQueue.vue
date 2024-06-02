@@ -133,10 +133,10 @@
                       </h3>
                       <ol class="text-sm text-right text-gray-600 dark:text-gray-400">
                         <li>
-                          <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player the command is running on.") }}
+                          <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player.") }}
                         </li>
                         <li>
-                          <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player the command is running on.") }}
+                          <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player.") }}
                         </li>
                       </ol>
                     </div>
@@ -149,6 +149,7 @@
                       :error="form.errors.command"
                       type="text"
                       name="command"
+                      :help="form.scope == 'player' ? __('Eg: give {PLAYER_USERNAME} diamond 64') : __('Eg: broadcast Hello world!')"
                       help-error-flex="flex-row"
                     />
                   </div>
@@ -274,7 +275,7 @@ defineProps({
 });
 
 const playerRunScopeList = {
-    all: 'All - for every player in system',
+    all: 'All - for every player in the web',
     linked: 'Linked Only - for every player who are linked to a user account',
     unlinked: 'Unlinked Only - for every player who are not linked to a user account',
     custom: 'Custom - select players from dropdown',

@@ -4,15 +4,24 @@
       :title="__('Your Linked Players')"
     />
 
-    <div class="max-w-6xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
+    <div
+      class="max-w-6xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10"
+    >
       <div
-        class="px-4 py-3 mb-4 bg-white border-t-4 rounded-b shadow dark:bg-cool-gray-800 border-light-blue-500 text-light-blue-900 dark:text-light-blue-400"
+        class="px-4 py-3 mb-4 bg-white border-t-4 rounded-b shadow dark:bg-cool-gray-800"
+        :class="{
+          'border-sky-500 text-sky-900 dark:text-sky-400': linkSlotsLeft > 0,
+          'border-orange-500 opacity-35 text-orange-900 dark:text-orange-400': linkSlotsLeft <= 0
+        }"
         role="alert"
       >
         <div class="flex">
           <div class="py-1">
             <svg
               class="w-6 h-6 mr-4 fill-current text-light-blue-500"
+              :class="{
+                'text-orange-500': linkSlotsLeft <= 0
+              }"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
             >
@@ -23,11 +32,18 @@
           </div>
           <div class="w-full">
             <p class="font-bold">
-              {{ __("You can link upto :count :player to your account! ( :left available )", {
-                count: maxPlayerPerUser,
-                player: maxPlayerPerUser === 1 ? __('player'): __('players'),
-                left: maxPlayerPerUser - linkedPlayers.length
-              }) }}
+              <span
+                v-if="linkSlotsLeft > 0"
+              >
+                {{ __("You can link upto :count :player to your account! ( :left available )", {
+                  count: maxPlayerPerUser,
+                  player: maxPlayerPerUser === 1 ? __('player'): __('players'),
+                  left: linkSlotsLeft
+                }) }}
+              </span>
+              <span v-else>
+                {{ __("You have already linked maximum number of players to your account!") }}
+              </span>
             </p>
             <div class="flex flex-col items-center mt-2 text-sm">
               <p class="text-gray-500 dark:text-gray-400">
@@ -235,6 +251,7 @@
               </inertia-link>
 
               <inertia-link
+                v-if="!isUnlinkingDisabled"
                 v-tippy
                 v-confirm="{message: __('Are you sure you want to unlink this player from your account?')}"
                 as="button"
@@ -276,6 +293,7 @@ export default {
         linkedPlayers: Array,
         maxPlayerPerUser: Number,
         currentLinkOtp: Object,
+        isUnlinkingDisabled: Boolean,
     },
     setup() {
         const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
@@ -287,6 +305,11 @@ export default {
             otpExpiryCountdownInterval: null,
             otpExpiryCountdownSeconds: this.currentLinkOtp?.expires_at ? Math.floor((new Date(this.currentLinkOtp.expires_at).getTime() - new Date().getTime()) / 1000) : null,
         };
+    },
+    computed: {
+        linkSlotsLeft () {
+            return this.maxPlayerPerUser - this.linkedPlayers.length;
+        }
     },
     unmounted() {
         for (const skinViewer of this.skinViewers) {
