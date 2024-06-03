@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\ResetUserPasswordCommand;
 use App\Jobs\CalculatePlayersJob;
+use App\Jobs\RunAwaitingCommandQueuesJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
     {
         $playerFetcherInterval = config('minetrax.players_fetcher_cron_interval') ?? 'hourly';
         $schedule->job(new CalculatePlayersJob)->{$playerFetcherInterval}();
+        $schedule->job(new RunAwaitingCommandQueuesJob)->everyMinute();
 
         $schedule->command('telescope:prune')->daily();
         $schedule->command('queue:prune-batches --hours=48 --unfinished=72')->daily();

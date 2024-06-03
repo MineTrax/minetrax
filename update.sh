@@ -12,15 +12,15 @@ White='\033[0;37m'        # White
 
 # Clear the caches
 php artisan down
-php artisan clear
+php artisan route:clear
 php artisan cache:clear
 php artisan config:clear
-php artisan route:clear
 php artisan view:clear
 php artisan optimize:clear
+php artisan clear
 
 # Try taking pull, if dont work then prompt for stash
-if git pull origin main; then
+if git pull; then
 	echo "${Green}Git pull successful! Continuing update..."
 else
 	echo "${Yellow}Warning! You have local changes which will get lost. Type Y to continue, N to cancel update."
@@ -33,10 +33,10 @@ else
 	fi
 
 	git stash
-	git pull origin main
+	git pull
 fi
 
-export COMPOSER_ALLOW_SUPERUSER=1 #not that important but it clears the root user request log from composer
+export COMPOSER_ALLOW_SUPERUSER=1 # not that important but it clears the root user request log from composer
 
 yes | composer install
 

@@ -121,7 +121,7 @@
             <tr>
               <td>
                 {{
-                  __("Recruitment submission status changed")
+                  __("Application request status changed")
                 }}
               </td>
               <td class="text-center">
@@ -150,7 +150,7 @@
             <tr>
               <td>
                 {{
-                  __("New message in recruitment submission")
+                  __("New message in application request")
                 }}
               </td>
               <td class="text-center">
@@ -186,7 +186,7 @@
               </tr>
               <tr>
                 <td>
-                  {{ __("Recruitment submission received") }}
+                  {{ __("Application request received") }}
                 </td>
                 <td class="text-center">
                   <input

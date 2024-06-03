@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Jobs\RunDeferredPlayerCommandQueuesJob;
 use App\Models\Player;
 use Illuminate\Http\Request;
 
-class ApiPlayerController extends Controller
+class ApiPlayerController extends ApiController
 {
     /**
      * Whois Detail of a Player.
@@ -25,20 +25,24 @@ class ApiPlayerController extends Controller
     public function postWhoisPlayer(Request $request)
     {
         $request->validate([
-            'username' => ['required_without:uuid', 'string', 'min:3'],
-            'uuid' => ['required_without:username', 'uuid'],
-            'ip_address' => ['sometimes', 'nullable', 'ip'],
+            'data' => ['required', 'array'],
+            'data.username' => ['required_without:data.uuid', 'string', 'min:3'],
+            'data.uuid' => ['required_without:data.username', 'uuid'],
+            'data.ip_address' => ['sometimes', 'nullable', 'ip'],
+            'data.only_exact_result' => ['sometimes', 'nullable', 'boolean'],
         ]);
 
-        $username = $request->uuid ?? $request->username;
-        $columnName = $request->uuid ? 'uuid' : 'username';
+        $username = $request->input('data.uuid') ?? $request->input('data.username');
+        $columnName = $request->input('data.uuid') ? 'uuid' : 'username';
+        $onlyExactResult = $request->input('data.only_exact_result');
+        $ipAddress = $request->input('data.ip_address');
 
         // Count the number of matches and return 1 if there is an exact match
         $playerFoundCount = Player::where($columnName, 'LIKE', $username)->whereNotNull($columnName)->count();
-        if ($playerFoundCount && $request->only_exact_result) {
+        if ($playerFoundCount && $onlyExactResult) {
             $playerFoundCount = 1;
         }
-        if (! $playerFoundCount && ! $request->only_exact_result) {
+        if (! $playerFoundCount && ! $onlyExactResult) {
             $playerFoundCount = Player::where($columnName, 'LIKE', '%'.$username.'%')->whereNotNull($columnName)->count();
         }
 
@@ -81,8 +85,8 @@ class ApiPlayerController extends Controller
 
         // IF IP IS SENT THEN RETURN ITS WHOIS INFORMATION
         $geoResponse = null;
-        if ($request->ip_address) {
-            $country = geoip($request->ip_address);
+        if ($ipAddress) {
+            $country = geoip($ipAddress);
             $geoResponse = [
                 'ip' => $country->ip,
                 'iso_code' => $country->iso_code,
@@ -93,29 +97,29 @@ class ApiPlayerController extends Controller
         }
         $whoisData['geo'] = $geoResponse;
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Ok',
-            'data' => $whoisData,
-        ]);
+        return $this->success($whoisData, 'Ok');
     }
 
     public function postFetchPlayerData(Request $request)
     {
         $request->validate([
-            'uuid' => ['required', 'uuid'],
-            'username' => ['required', 'string', 'min:3'],
+            'data' => ['required', 'array'],
+            'data.uuid' => ['required', 'uuid'],
+            'data.username' => ['required', 'string', 'min:3'],
         ]);
 
+        $requestUuid = $request->input('data.uuid');
+        $requestUsername = $request->input('data.username');
+
         $responseData = [
-            'uuid' => $request->uuid,
-            'username' => $request->username,
+            'uuid' => $requestUuid,
+            'username' => $requestUsername,
             'is_verified' => false,
             'daily_rewards_claimed_at' => null,
             'player_id' => null,
         ];
 
-        $player = Player::where('uuid', $request->uuid)
+        $player = Player::where('uuid', $requestUuid)
             ->with(['users:id,name,username,profile_photo_path,verified_at', 'rank:id,shortname,name', 'country:id,name,iso_code'])
             ->first();
 
@@ -132,6 +136,9 @@ class ApiPlayerController extends Controller
             $responseData['profile_link'] = route('player.show', [$player->uuid]);
         }
 
-        return response()->json($responseData);
+        // Queue Job to check if any pending command queue exists for this player then run it.
+        RunDeferredPlayerCommandQueuesJob::dispatch($requestUuid);
+
+        return $this->success($responseData, 'Ok');
     }
 }

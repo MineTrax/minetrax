@@ -11,6 +11,7 @@ use App\Models\Session;
 use App\Models\User;
 use App\Settings\GeneralSettings;
 use App\Settings\ThemeSettings;
+use App\Utils\Helpers\Helper;
 use Cache;
 use Http;
 use Illuminate\Http\Request;
@@ -158,21 +159,25 @@ class HomeController extends Controller
     {
         $myVersion = config('app.version');
 
-        $latestVersion = Http::withoutVerifying()->timeout(5)->get(
-            'https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws',
-            [
-                'version' => $myVersion,
-                'from' => 'web',
-                'appName' => config('app.name'),
-                'appUrl' => config('app.url'),
-            ]
-        )->json();
+        $latestVersion = Cache::remember('verion_check', 60, function () use ($myVersion) {
+            return Http::withoutVerifying()->timeout(5)->get(
+                'https://e74gvrc5hpiyr7wojet23ursau0ehgxd.lambda-url.eu-central-1.on.aws',
+                [
+                    'version' => $myVersion,
+                    'from' => 'web',
+                    'appName' => config('app.name'),
+                    'appUrl' => config('app.url'),
+                ]
+            )->json();
+        });
+
         $latestVersion = $latestVersion['web'];
 
+        $isUpToDate = Helper::compareVersions($myVersion, $latestVersion);
         $response = [
             'my_version' => $myVersion,
             'latest_version' => $latestVersion,
-            'is_uptodate' => $myVersion == $latestVersion,
+            'is_uptodate' => $isUpToDate >= 0,
         ];
 
         return response()->json($response);

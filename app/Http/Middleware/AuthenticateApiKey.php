@@ -3,37 +3,83 @@
 namespace App\Http\Middleware;
 
 use App\Settings\PluginSettings;
+use App\Utils\Helpers\CryptoUtils;
 use Closure;
 use Illuminate\Http\Request;
 
+const REQUEST_MAX_AGE_THRESHOLD_SECONDS = 600; // servers can be out of sync against NTP servers by various minutes so give some buffer .
+const VALIDATE_SIGNATURE = true; // For testing purposes, we can disable signature validation.
+
 class AuthenticateApiKey
 {
-
-    public function __construct(public PluginSettings $pluginSettings) {}
+    public function __construct(public PluginSettings $pluginSettings)
+    {
+    }
 
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$this->pluginSettings->enable_api) {
+        if (! $this->pluginSettings->enable_api) {
             return response()->json([
-                'message' => 'API Access is Disabled'
+                'status' => 'error',
+                'type' => 'api_disabled',
+                'message' => 'API Access is Disabled. Please enable it from Admin > Settings > Plugins.',
             ], 422);
         }
 
         // Get from either header X-API-KEY and X-API-SECRET or from body api_key and api_secret
-        $apiKey = $request->input('api_key') ?? $request->header('X-API-KEY');
-        $apiSecret = $request->input('api_secret') ?? $request->header('X-API-SECRET');
+        $apiKey = $request->header('X-API-KEY') ?? $request->input('x_api_key');
+        $requestSignature = $request->header('X-SIGNATURE') ?? $request->input('x_signature');
 
-        if ($apiKey != $this->pluginSettings->plugin_api_key || $apiSecret != $this->pluginSettings->plugin_api_secret) {
+        // Validate API Key
+        if ($apiKey != $this->pluginSettings->plugin_api_key) {
             return response()->json([
-                'message' => 'Please provide valid API credentials'
+                'status' => 'error',
+                'type' => 'invalid_credentials',
+                'message' => 'Please provide valid API credentials.',
             ], 401);
+        }
+
+        if (! $requestSignature) {
+            return response()->json([
+                'status' => 'error',
+                'type' => 'signature_missing',
+                'message' => 'Request Signature is missing.',
+            ], 401);
+        }
+
+        // Validate Signature
+        if ($request->method() == 'GET') {
+            $signaturePayload = $request->getUri();
+        } else {
+            $signaturePayload = $request->getContent();
+        }
+        $signatureValid = CryptoUtils::validateHmacSignature($signaturePayload, $requestSignature, $this->pluginSettings->plugin_api_secret);
+        if (! $signatureValid && VALIDATE_SIGNATURE) {
+            return response()->json([
+                'status' => 'error',
+                'type' => 'invalid_signature',
+                'message' => 'Invalid Request Signature.',
+            ], 401);
+        }
+
+        // Validate Request Age if provided
+        $timestampMs = $request->get('timestamp');
+        if ($timestampMs && VALIDATE_SIGNATURE) {
+            $timestamp = $timestampMs / 1000;
+            $currentTimestamp = now()->timestamp;
+            $requestAge = abs($currentTimestamp - $timestamp);
+            if ($requestAge > REQUEST_MAX_AGE_THRESHOLD_SECONDS) {
+                return response()->json([
+                    'status' => 'error',
+                    'type' => 'request_expired',
+                    'message' => 'Request is too old.',
+                ], 401);
+            }
         }
 
         return $next($request);

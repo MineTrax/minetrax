@@ -39,11 +39,11 @@ class RecruitmentSubmissionCreatedNotification extends Notification implements S
         $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
 
         return (new MailMessage)
-            ->subject(__('[Notification] New recruitment application received.'))
-            ->line('A new application has been received for recruitment - '.$this->submission->recruitment->title)
-            ->action('View Application', route('admin.recruitment-submission.show', [$this->submission->id]))
+            ->subject(__('[Notification] New application request received.'))
+            ->line('A new request has been received for application - '.$this->submission->recruitment->title)
+            ->action('View Request', route('admin.recruitment-submission.show', [$this->submission->id]))
             ->line('Applicant: '.$applicant)
-            ->line('Recruitment: '.$this->submission->recruitment->title);
+            ->line('Application: '.$this->submission->recruitment->title);
     }
 
     /**
@@ -66,8 +66,8 @@ class RecruitmentSubmissionCreatedNotification extends Notification implements S
         $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
 
         return DiscordMessage::create()->embed([
-            'title' => __('[Notification] New recruitment application received.'),
-            'description' => 'A new application has been received for recruitment - '.$this->submission->recruitment->title,
+            'title' => __('[Notification] New application request received.'),
+            'description' => 'A new request has been received for application - '.$this->submission->recruitment->title,
             'type' => 'rich',
             'url' => route('admin.recruitment-submission.show', [$this->submission->id]),
             'fields' => [
@@ -77,7 +77,7 @@ class RecruitmentSubmissionCreatedNotification extends Notification implements S
                     'inline' => true,
                 ],
                 [
-                    'name' => 'Recruitment',
+                    'name' => 'Application',
                     'value' => $this->submission->recruitment->title,
                     'inline' => false,
                 ],

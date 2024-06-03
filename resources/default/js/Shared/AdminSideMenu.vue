@@ -15,6 +15,7 @@ import {
     ClipboardDocumentListIcon,
     BugAntIcon,
     AcademicCapIcon,
+    CommandLineIcon,
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
@@ -194,11 +195,11 @@ const navItems = [
         visible: canWild('ask_db')
     },
     {
-        label: 'Recruitments',
+        label: 'Applicatons',
         active: false,
         children: [
             {
-                label: 'List Recruitment Forms',
+                label: 'List Application Forms',
                 href: route('admin.recruitment.index'),
                 active: route().current('admin.recruitment.index'),
                 children: [],
@@ -256,6 +257,30 @@ const navItems = [
         ],
         icon: ClipboardDocumentListIcon,
         visible: canWild('custom_forms')
+    },
+    {
+        label: 'Commands',
+        active: false,
+        children: [
+            {
+                label: 'Run Command',
+                href: route('admin.command-queue.create'),
+                active: route().current('admin.command-queue.create'),
+                children: [],
+                icon: null,
+                visible: can('create command_queues')
+            },
+            {
+                label: 'Command History',
+                href: route('admin.command-queue.index'),
+                active: route().current('admin.command-queue.index'),
+                children: [],
+                icon: null,
+                visible: can('read command_queues')
+            },
+        ],
+        icon: CommandLineIcon,
+        visible: canWild('command_queues')
     },
     {
         label: 'Settings', href: '#', active: false, children: [
@@ -321,6 +346,14 @@ const navItems = [
     },
     {
         label: 'Debug', href: '#', active: false, children: [
+            {
+                label: 'Failed Jobs',
+                href: route('admin.failed-job.index'),
+                active: route().current('admin.failed-job.index'),
+                children: [],
+                icon: null,
+                visible: can('read failed_jobs')
+            },
             {
                 label: 'Pulse',
                 href: '/admin/pulse',

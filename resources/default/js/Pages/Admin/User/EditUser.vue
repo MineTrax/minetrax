@@ -153,7 +153,7 @@
                       <x-checkbox
                         id="show_yob"
                         v-model="form.show_yob"
-                        :label="__('Show Your of Birth')"
+                        :label="__('Show Year of Birth')"
                         :help="__('Show Year of Birth in your public profile.')"
                         name="show_yob"
                         :error="form.errors.show_yob"

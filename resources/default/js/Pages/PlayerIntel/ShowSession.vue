@@ -393,7 +393,7 @@ activeTime = Math.max(activeTime, 0);
               </td>
               <td class="text-right">
                 <a
-                  class="hover:text-light-blue-400 hover:underline"
+                  class="hover:text-light-blue-400 hover:underline filter blur-sm hover:blur-none duration-300"
                   target="_blank"
                   :href="`https://whois.domaintools.com/${criticalInfo.player_ip_address}`"
                 >
@@ -473,7 +473,7 @@ activeTime = Math.max(activeTime, 0);
               <td class="whitespace-nowrap">
                 {{ __("World Location") }}
               </td>
-              <td class="text-right">
+              <td class="text-right filter blur-sm hover:blur-none duration-300">
                 {{ worldLocation }}
               </td>
             </tr>

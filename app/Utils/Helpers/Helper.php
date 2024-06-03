@@ -80,4 +80,50 @@ class Helper
 
         return str_replace($search, $replace, $string);
     }
+
+    public static function generateNumericOtp(int $length = 6): string
+    {
+        $i = 0;
+        $otp = '';
+
+        while ($i < $length) {
+            $otp .= random_int(0, 9);
+            $i++;
+        }
+
+        return $otp;
+    }
+
+    public static function replacePlaceholders(string $content, array $placeholders): string
+    {
+        foreach ($placeholders as $key => $value) {
+            $content = str_ireplace('{'.$key.'}', $value, $content);
+        }
+
+        return $content;
+    }
+
+    public static function compareVersions($version1, $version2)
+    {
+        // Split the version strings by the dot character.
+        $parts1 = explode('.', $version1);
+        $parts2 = explode('.', $version2);
+
+        // Compare each part of the version numbers.
+        for ($i = 0; $i < 3; $i++) {
+            // Convert parts to integers for numerical comparison.
+            $v1 = isset($parts1[$i]) ? (int) $parts1[$i] : 0;
+            $v2 = isset($parts2[$i]) ? (int) $parts2[$i] : 0;
+
+            // Compare the current parts.
+            if ($v1 > $v2) {
+                return 1;
+            } elseif ($v1 < $v2) {
+                return -1;
+            }
+        }
+
+        // If all parts are equal, return 0.
+        return 0;
+    }
 }

@@ -74,7 +74,7 @@ watchEffect(() => {
         disabledErrorMessage.value = {
             title: __('Application Closed!'),
             body: __(
-                'This recruitment form is currently closed. Please check back later.'
+                'This application form is currently closed. Please check back later.'
             ),
         };
         formDisabled.value = true;
@@ -83,7 +83,7 @@ watchEffect(() => {
     if (!usePage().props?.auth?.user) {
         disabledErrorMessage.value = {
             title: __('Login or Register to Apply!'),
-            body: __('You need to be logged in to apply to this recruitment.'),
+            body: __('You need to be logged in to apply to this application.'),
         };
         formDisabled.value = true;
     }
@@ -99,7 +99,7 @@ watchEffect(() => {
         disabledErrorMessage.value = {
             title: __('Max Submissions Reached!'),
             body: __(
-                'You have reached the maximum number of submissions for this recruitment.'
+                'You have reached the maximum number of submissions for this application.'
             ),
         };
         formDisabled.value = true;
@@ -130,7 +130,7 @@ watchEffect(() => {
         disabledErrorMessage.value = {
             title: __('Account Verification Required!'),
             body: __(
-                'Only verified users can apply to this recruitment. Please verify your account.'
+                'Only verified users can apply to this application. Please verify your account.'
             ),
         };
         formDisabled.value = true;
@@ -143,7 +143,7 @@ watchEffect(() => {
         disabledErrorMessage.value = {
             title: __('Account Linking Required!'),
             body: __(
-                'Only users with linked players can apply to this recruitment. Please link a player to your account.'
+                'Only users with linked players can apply to this application. Please link a player to your account.'
             ),
         };
         formDisabled.value = true;
@@ -195,7 +195,7 @@ watchEffect(() => {
               <p>
                 {{
                   __(
-                    "You have an active application for this recruitment. Applied on :date.",
+                    "You have an active request for this application. Applied on :date.",
                     {
                       date: formatToDayDateString(
                         userLastActiveSubmission.created_at
@@ -216,7 +216,7 @@ watchEffect(() => {
                     })
                   "
                 >
-                  {{ __("View Application") }}
+                  {{ __("View Request") }}
                 </InertiaLink>
               </div>
             </template>
@@ -256,7 +256,7 @@ watchEffect(() => {
                     })
                   "
                 >
-                  {{ __("View Approved Application") }}
+                  {{ __("View Approved Request") }}
                 </InertiaLink>
               </div>
             </template>
@@ -291,7 +291,7 @@ watchEffect(() => {
               >
                 {{
                   __(
-                    "You can apply to this recruitment :count more time(s).",
+                    "You can apply to this application :count more time(s).",
                     {
                       count:
                         recruitment.max_submission_per_user -

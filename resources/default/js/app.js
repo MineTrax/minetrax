@@ -12,8 +12,9 @@ import VueTippy from 'vue-tippy';
 import translations from '@/Mixins/translations.js';
 import confirmDirective from './Directives/confirm.js';
 import Swal from 'sweetalert2';
-import Particles from 'vue3-particles';
+import Particles from '@tsparticles/vue3';
 import AppHead from '@/Components/AppHead.vue';
+import { loadFull } from 'tsparticles';
 
 createInertiaApp({
     title: (title) => `${title}`,
@@ -48,7 +49,11 @@ createInertiaApp({
         // remove the global loader with id site-global-loader
         document.getElementById('site-global-loader').remove();
 
-        VueApp.use(Particles);
+        VueApp.use(Particles, {
+            init: async engine => {
+                await loadFull(engine);
+            },
+        });
 
         return VueApp.mount(el);
     },

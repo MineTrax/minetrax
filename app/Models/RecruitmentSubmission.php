@@ -14,6 +14,7 @@ class RecruitmentSubmission extends BaseModel
         'data' => 'array',
         'status' => RecruitmentSubmissionStatus::class,
         'last_act_at' => 'datetime',
+        'last_comment_at' => 'datetime',
     ];
 
     public function recruitment()
@@ -29,5 +30,10 @@ class RecruitmentSubmission extends BaseModel
     public function lastActor()
     {
         return $this->belongsTo(User::class, 'last_act_by');
+    }
+
+    public function lastCommentor()
+    {
+        return $this->belongsTo(User::class, 'last_comment_by');
     }
 }

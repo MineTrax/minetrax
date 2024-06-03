@@ -46,10 +46,10 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
             ->subject($title)
             ->line($body)
             ->line('"'.$this->comment->comment.'"')
-            ->action('View Application', $route)
+            ->action('View Request', $route)
             ->line('Applicant: '.$applicant)
             ->line('Status: '.ucfirst($this->submission->status->value))
-            ->line('Recruitment: '.$this->submission->recruitment->title);
+            ->line('Application: '.$this->submission->recruitment->title);
     }
 
     /**
@@ -102,7 +102,7 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
                     'inline' => true,
                 ],
                 [
-                    'name' => 'Recruitment',
+                    'name' => 'Application',
                     'value' => $this->submission->recruitment->title,
                     'inline' => false,
                 ],
@@ -120,16 +120,16 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
         $causer = $this->causer->name.' (@'.$this->causer->username.')';
         if ($this->comment->type == CommentType::RECRUITMENT_APPLICANT_MESSAGE) {
             // Sent to staffs
-            $title = __('[Notification] New message received on a recruitment application.');
-            $body = __(':causer sent new message on his application for :recruitment:', [
+            $title = __('[Notification] New message received on a application request.');
+            $body = __(':causer sent new message on his application request for :recruitment:', [
                 'causer' => $causer,
                 'recruitment' => $this->submission->recruitment->title,
             ]);
             $route = route('admin.recruitment-submission.show', [$this->submission->id]);
         } elseif ($this->comment->type == CommentType::RECRUITMENT_STAFF_MESSAGE) {
             // Sent to applicant
-            $title = __('[Notification] Your application has a new message.');
-            $body = __(':causer sent you a message on your application for :recruitment:', [
+            $title = __('[Notification] Your application request has a new message.');
+            $body = __(':causer sent you a message on your application request for :recruitment:', [
                 'causer' => $causer,
                 'recruitment' => $this->submission->recruitment->title,
             ]);

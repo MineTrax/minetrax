@@ -3,6 +3,7 @@
 namespace App\Utils\MinecraftQuery;
 
 use App\Settings\PluginSettings;
+use App\Utils\Helpers\CryptoUtils;
 use Illuminate\Encryption\Encrypter;
 use Str;
 
@@ -20,56 +21,58 @@ class MinecraftWebQuery
      */
     public function setPlayerSkin(string $playerUuid, string $changeCommandType, $value = null)
     {
-        // If commandType is custom we need to send two request to set skin and signature due to WebQuery byte limit.
-        if ($changeCommandType === 'upload') {
-            $skinValue = $value['value'];
-            $param = $playerUuid.'½½½½'.'upload:init'.'½½½½'.$skinValue;
-            $status = $this->sendQuery('set-player-skin', $param);
-            if ($status['status'] === 'err') {
-                throw new \Exception(__('Oh Jeez! Something went wrong. Please try again later.'));
-            }
-            $value = $value['signature'];
-        }
+        try {
+            $payload = [
+                'player_uuid' => $playerUuid,
+                'change_command_type' => $changeCommandType,
+                'value' => $value,
+            ];
+            $status = $this->sendQuery('set-player-skin', $payload);
 
-        $param = $playerUuid.'½½½½'.$changeCommandType.'½½½½'.$value;
-        $status = $this->sendQuery('set-player-skin', $param);
-        if ($status['status'] === 'err') {
+            return $status;
+        } catch (\Exception $e) {
             throw new \Exception(__('Error setting player skin. Please make sure provided skin is valid.'));
         }
-
-        return $status;
     }
 
     public function sendChat($username, $message)
     {
-        $param = $username.'½½½½'.$message;
-        $status = $this->sendQuery('user-say', $param);
+        $payload = [
+            'username' => $username,
+            'message' => $message,
+        ];
+        $status = $this->sendQuery('user-say', $payload);
 
         return $status;
     }
 
     public function notifyAccountLinkSuccess($playerUuid, $userId)
     {
-        $param = $playerUuid.'½½½½'.$userId;
-        $status = $this->sendQuery('account-link-success', $param);
+        $payload = [
+            'player_uuid' => $playerUuid,
+            'user_id' => $userId,
+        ];
+        $status = $this->sendQuery('account-link-success', $payload);
 
         return $status;
     }
 
     public function sendBroadcast($message)
     {
-        $status = $this->sendQuery('broadcast', $message);
+        $payload = [
+            'message' => $message,
+        ];
+        $status = $this->sendQuery('broadcast', $payload);
 
         return $status;
     }
 
     public function runCommand($command, $params = null)
     {
-        if ($params) {
-            $status = $this->sendQuery('command', $command.' '.$params);
-        } else {
-            $status = $this->sendQuery('command', $command);
-        }
+        $payload = [
+            'command' => $params ? $command.' '.$params : $command,
+        ];
+        $status = $this->sendQuery('command', $payload);
 
         return $status;
     }
@@ -81,54 +84,79 @@ class MinecraftWebQuery
         return $status;
     }
 
-    public function getPlayerGroups($playerUuid)
+    public function checkPlayerOnline($playerUuid): bool
     {
-        $status = $this->sendQuery('get-player-groups', $playerUuid);
+        if (! Str::isUuid($playerUuid)) {
+            throw new \Exception(__('Provided UUID is not valid.'));
+        }
 
-        return $status;
+        $payload = [
+            'player_uuid' => $playerUuid,
+        ];
+        $status = $this->sendQuery('check-player-online', $payload);
+
+        return $status['data'];
     }
 
-    public function sendQuery($type, $params = null)
+    public function sendQuery($type, array $data = [])
     {
+        $encrypted = $this->makePayload($type, $data);
+
         $factory = new \Socket\Raw\Factory();
-        $socket = $factory->createClient("tcp://{$this->HOST}:{$this->PORT}", 2.5);
-        $encryptedCommand = $this->makeEncryptedString($type, $params);
-        $text = $encryptedCommand."\n";
+        $socket = $factory->createClient("tcp://{$this->HOST}:{$this->PORT}", 10);
+        $text = $encrypted."\n";
         $socket->write($text);
         // Timeout after 5 seconds for webquery in case of no response
-        socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, ['sec' => 5, 'usec' => 0]);
+        socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, ['sec' => 10, 'usec' => 0]);
         $buf = $socket->read(102400);
         $socket->close();
 
-        return [
-            'status' => trim($buf),
-        ];
+        $response = json_decode(trim($buf), true);
+
+        if ($response['status'] != 'ok') {
+            throw new \Exception(__('WebQuery failed for unknown reasons. Please check minecraft server logs.'));
+        }
+
+        $pluginSettings = app(PluginSettings::class);
+        $apiKey = $pluginSettings->plugin_api_key;
+        $response['data'] = json_decode($this->decryptEncryptedString($response['data'], $apiKey), true);
+
+        return $response;
     }
 
-    public function makeEncryptedString(string $type, ?string $params = null): string
+    public function makePayload($type, array $data = [])
     {
+        // Get the API Key and Secret from the plugin settings.
         $pluginSettings = app(PluginSettings::class);
         $apiKey = $pluginSettings->plugin_api_key;
         $apiSecret = Str::substr($pluginSettings->plugin_api_secret, 0, 32);
 
-        $string = [
-            'api_key' => $apiKey,
-            'type' => $type,
-            'params' => $params,
-        ];
-        $string = json_encode($string);
+        // Sign the data using Secret Key.
+        $data['timestamp'] = now()->getTimestampMs();
+        $data['type'] = $type;
+        $stringData = json_encode($data);
+        $dataSignature = CryptoUtils::generateHmacSignature($stringData, $apiSecret);
+        $payload = [];
+        $payload['payload'] = $stringData;
+        $payload['signature'] = $dataSignature;
 
-        $newEncrypter = new Encrypter(($apiSecret), 'AES-256-CBC');
+        // Encrypt the payload using the API Key.
+        $encrypted = $this->makeEncryptedString($payload, $apiKey);
 
-        return $newEncrypter->encryptString($string);
+        return $encrypted;
     }
 
-    public function decryptEncryptedString(string $string): string
+    public function makeEncryptedString(array $payload, string $apiKey): string
     {
-        $pluginSettings = app(PluginSettings::class);
+        $stringPayload = json_encode($payload);
+        $newEncrypter = new Encrypter(($apiKey), 'AES-256-CBC');
 
-        $apiSecret = Str::substr($pluginSettings->plugin_api_secret, 0, 32);
-        $newEncrypter = new Encrypter(($apiSecret), 'AES-256-CBC');
+        return $newEncrypter->encryptString($stringPayload);
+    }
+
+    public function decryptEncryptedString(string $string, string $apiKey): string
+    {
+        $newEncrypter = new Encrypter(($apiKey), 'AES-256-CBC');
 
         return $newEncrypter->decryptString($string);
     }

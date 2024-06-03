@@ -115,5 +115,16 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('acton recruitment_submissions'); // Accept, Reject, etc.
         Permission::findOrCreate('delete recruitment_submissions');
         Permission::findOrCreate('delete recruitment_submission_messages');
+
+        Permission::findOrCreate('read failed_jobs');
+        Permission::findOrCreate('delete failed_jobs');
+        Permission::findOrCreate('retry failed_jobs');
+
+        Permission::findOrCreate('create command_queues');
+        Permission::findOrCreate('read command_queues');
+        Permission::findOrCreate('delete command_queues');
+
+        Permission::findOrCreate('link any_players');
+        Permission::findOrCreate('unlink any_players');
     }
 }

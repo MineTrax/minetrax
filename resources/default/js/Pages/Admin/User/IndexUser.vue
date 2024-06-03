@@ -19,7 +19,8 @@ const { can } = useAuthorizable();
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
 
-defineProps({
+const props = defineProps({
+    countries: Array,
     users: Object,
     filters: Object,
 });
@@ -34,6 +35,12 @@ const headerRow = [
     {
         key: 'flag',
         label: __('Flag'),
+        filterable: {
+            key: 'country.name',
+            type: 'multiselect',
+            options: props.countries,
+            searchable: true,
+        }
     },
     {
         key: 'avatar',
@@ -42,20 +49,29 @@ const headerRow = [
     {
         key: 'name',
         label: __('Name'),
-        sortable: true,
         class: 'w-3/12',
+        sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'username',
         label: __('Username'),
-        sortable: true,
         class: 'w-2/12',
+        sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'email',
         label: __('Email'),
-        sortable: true,
         class: 'w-2/12',
+        sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'created_at',
@@ -66,8 +82,12 @@ const headerRow = [
     {
         key: 'role_id',
         label: __('Role'),
-        sortable: false,
         class: 'w-2/12',
+        sortable: false,
+        filterable: {
+            key: 'roles.display_name',
+            type: 'text'
+        }
     },
     {
         key: 'flags',
@@ -151,7 +171,16 @@ const headerRow = [
           </DtRowItem>
 
           <DtRowItem>
-            {{ item.email }}
+            <div>
+              {{ item.email }}
+            </div>
+            <div
+              v-if="item.discord_user_id"
+              class="text-xs whitespace-nowrap"
+            >
+              {{ __('Discord ID') }}:
+              {{ item.discord_user_id }}
+            </div>
           </DtRowItem>
           <DtRowItem class="whitespace-nowrap">
             <span

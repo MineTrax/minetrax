@@ -365,6 +365,7 @@ export default {
             }
             this.serverId = newId;
             this.getChatListForServer(newId);
+            this.shouldDisplayPlayerList = true;
 
             clearInterval(this.playerListQueryInterval);
             this.getPlayerListForServer(newId);
@@ -460,7 +461,7 @@ export default {
 
         getPlayerListForServer(sId) {
             axios.get(route('server.webquery.get', sId)).then(data => {
-                this.playersList = data.data;
+                this.playersList = data.data.players;
                 this.isWebQuerySuccess = true;
             }).catch(() => {
                 this.shouldDisplayPlayerList = false;

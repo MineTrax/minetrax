@@ -266,3 +266,15 @@ body.swal2-shown > [aria-hidden="true"] {
 .multiselect .multiselect__option--selected {
     @apply dark:bg-gray-700 dark:text-gray-300
 }
+
+.multiselect__tag {
+    @apply bg-sky-500
+}
+
+.multiselect__option--highlight {
+    @apply bg-sky-500
+}
+
+.multiselect__option--highlight::after {
+    @apply bg-sky-500
+}

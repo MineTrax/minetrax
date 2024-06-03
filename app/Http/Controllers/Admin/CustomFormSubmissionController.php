@@ -55,6 +55,7 @@ class CustomFormSubmissionController extends Controller
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
+                'user.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data'])),
             ])
             ->allowedSorts($fields)
@@ -113,6 +114,7 @@ class CustomFormSubmissionController extends Controller
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
+                'user.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data'])),
             ])
             ->allowedSorts($fields)

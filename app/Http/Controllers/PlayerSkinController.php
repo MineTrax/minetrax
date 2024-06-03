@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ServerType;
 use App\Jobs\ChangePlayerSkinJob;
 use App\Models\Player;
 use App\Models\Server;
@@ -26,10 +25,9 @@ class PlayerSkinController extends Controller
         $selectedPlayerUuid = $request->query('player_uuid');
 
         // has servers which supports skin change feature.
-        $hasServersWithFeature = Server::where('type', '!=', ServerType::Bungee)
-            ->select('settings')->get()->some(function ($server) {
-                return $server->getSettingsKey('is_skin_change_via_web_allowed');
-            });
+        $hasServersWithFeature = Server::select('settings')->get()->some(function ($server) {
+            return $server->getSettingsKey('is_skin_change_via_web_allowed');
+        });
 
         // Cooldown Check.
         $isUserStaff = $request->user()->isStaffMember() || $request->user()->can('change any_player_skin');
@@ -84,7 +82,7 @@ class PlayerSkinController extends Controller
         Cache::put('player_skin_changer_cooldown::user::'.$request->user()->id, now(), $cooldownInSeconds);
 
         // get servers which supports skin change feature.
-        $servers = Server::where('type', '!=', ServerType::Bungee)->get()->filter(function ($server) {
+        $servers = Server::get()->filter(function ($server) {
             return $server->getSettingsKey('is_skin_change_via_web_allowed');
         });
 
@@ -92,10 +90,11 @@ class PlayerSkinController extends Controller
             case 'upload':
                 try {
                     $response = MinecraftSkinUtils::uploadSkinToMineSkin($request->file, $request->skin_type);
-                    $param['value'] = $response['data']['texture']['value'];
-                    $param['signature'] = $response['data']['texture']['signature'];
+                    $value = $response['data']['texture']['value'];
+                    $signature = $response['data']['texture']['signature'];
+                    $payload = $value.':::'.$signature;
                     foreach ($servers as $server) {
-                        ChangePlayerSkinJob::dispatch($server, $request->player_uuid, 'upload', $param);
+                        ChangePlayerSkinJob::dispatch($server, $request->player_uuid, 'upload', $payload);
                     }
                 } catch (\Exception $e) {
                     throw ValidationException::withMessages(['file' => $e->getMessage()]);
@@ -112,7 +111,6 @@ class PlayerSkinController extends Controller
                 }
                 break;
             case 'reset':
-                // queue for all servers
                 foreach ($servers as $server) {
                     ChangePlayerSkinJob::dispatch($server, $request->player_uuid, 'reset', null);
                 }

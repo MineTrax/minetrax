@@ -21,6 +21,9 @@ const headerRow = [
         key: 'name',
         sortable: true,
         label: __('Name'),
+        filterable: {
+            type: 'text',
+        },
     },
     {
         key: 'download_count',

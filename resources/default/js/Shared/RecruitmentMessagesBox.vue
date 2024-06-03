@@ -8,7 +8,7 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
 import Icon from '@/Components/Icon.vue';
-import RecruitmentStatusBadge from './RecruitmentStatusBadge.vue';
+import CommonStatusBadge from './CommonStatusBadge.vue';
 
 const { purifyAndLinkifyText, formatTimeAgoToNow, formatToDayDateString } =
     useHelpers();
@@ -213,7 +213,7 @@ const pollServerForNewMessages = () => {
               <span class="mr-1">
                 {{ __(" changed application status to ") }}
               </span>
-              <RecruitmentStatusBadge :status="comment.comment" />
+              <CommonStatusBadge :status="comment.comment" />
               <span
                 v-tippy
                 class="inline ml-1 text-xs text-gray-500 dark:text-gray-400 focus:outline-none"

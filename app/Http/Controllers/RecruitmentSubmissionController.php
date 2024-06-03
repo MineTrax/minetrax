@@ -113,7 +113,7 @@ class RecruitmentSubmissionController extends Controller
         RecruitmentSubmissionStatusChanged::dispatch($submission, $request->user(), $previousStatus);
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __('Withdraw Successful'), 'body' => __('Recruitment Submission withdrawn successfully')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Withdraw Successful'), 'body' => __('Application Request withdrawn successfully')]]);
     }
 
     public function indexMessages(Request $request, Recruitment $recruitment, RecruitmentSubmission $submission)
@@ -146,7 +146,10 @@ class RecruitmentSubmissionController extends Controller
         ]);
 
         $comment = $submission->comment($request->message, CommentType::RECRUITMENT_APPLICANT_MESSAGE);
-        $submission->touch();
+        $submission->update([
+            'last_comment_by' => $request->user()->id,
+            'last_comment_at' => now(),
+        ]);
 
         // Fire event
         RecruitmentSubmissionCommentCreated::dispatch($comment, $submission, $request->user());

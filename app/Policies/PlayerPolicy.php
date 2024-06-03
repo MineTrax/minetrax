@@ -62,4 +62,9 @@ class PlayerPolicy
     {
         return $user->can('delete players');
     }
+
+    public function unlink(User $user, Player $player)
+    {
+        return $user->can('unlink any_players');
+    }
 }

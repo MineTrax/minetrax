@@ -240,16 +240,16 @@ return [
         ],
         [
             'type' => 'route',
-            'name' => 'Recruitments',
-            'title' => 'Recruitments',
+            'name' => 'Applications',
+            'title' => 'Applications',
             'route' => 'recruitment.index',
-            'key' => 'route-recruitments',
+            'key' => 'route-applications',
             'authenticated' => false,
         ],
         [
             'type' => 'route',
-            'name' => 'My Recruitment Applications',
-            'title' => 'My Applications',
+            'name' => 'My Application Requests',
+            'title' => 'My Application Requests',
             'route' => 'recruitment-submission.index',
             'key' => 'route-recruitment-submission',
             'authenticated' => true,
@@ -364,4 +364,25 @@ return [
     |
     */
     'hide_country_for_privacy' => env('HIDE_COUNTRY_FOR_PRIVACY', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Disable Player Unlinking
+    |--------------------------------------------------------------------------
+    |
+    | Don't allow users to unlink their player accounts.
+    |
+    */
+    'disable_player_unlinking' => env('DISABLE_PLAYER_UNLINKING', false),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Hide Next Rank of Player.
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, next rank of player won't be shown in player profile.
+    |
+    */
+    'hide_player_next_rank' => env('HIDE_PLAYER_NEXT_RANK', false),
 ];

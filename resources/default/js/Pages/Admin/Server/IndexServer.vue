@@ -36,6 +36,9 @@ const headerRow = [
         key: 'name',
         sortable: true,
         label: __('Name'),
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'ip_address',
@@ -78,28 +81,52 @@ watchEffect(() => {
     props.servers.data.forEach((server) => {
         axios
             .get(route('server.ping.get', server.id))
-            .then(() => {
-                nextTick(() => (serverStatus[server.id] = 1));
+            .then((data) => {
+                nextTick(() => {
+                    serverStatus[server.id] = {
+                        online: 1,
+                        players: data.data?.players?.online,
+                        max: data.data?.players?.max
+                    };
+                });
             })
             .catch(() => {
-                nextTick(() => (serverStatus[server.id] = -1));
+                nextTick(() => (serverStatus[server.id] = { online: 0 }));
             });
 
-        // Only do webquery if server is not bungee.
-        if (server.type.value !== 5 && server.webquery_port) {
+        // Only do webquery if server has webquery port set
+        if (server.webquery_port) {
             axios
                 .get(route('server.webquery.get', server.id))
-                .then(() => {
-                    nextTick(() => (serverWebQueryStatus[server.id] = 1));
+                .then((data) => {
+                    nextTick(() => {
+                        serverWebQueryStatus[server.id] = {
+                            online: 1,
+                            players: data.data?.online_players,
+                            max: data.data?.max_players
+                        };
+                    });
                 })
                 .catch(() => {
-                    nextTick(() => (serverWebQueryStatus[server.id] = -1));
+                    nextTick(() => (serverWebQueryStatus[server.id] = {
+                        online: 0
+                    }));
                 });
         } else {
-            serverWebQueryStatus[server.id] = 0;
+            serverWebQueryStatus[server.id] = {
+                online: -1
+            };
         }
     });
 });
+
+function getServerStatus(serverId) {
+    return serverStatus[serverId] || null;
+}
+
+function getServerWebQueryStatus(serverId) {
+    return serverWebQueryStatus[serverId] || null;
+}
 </script>
 
 <template>
@@ -210,16 +237,18 @@ watchEffect(() => {
           </DtRowItem>
 
           <DtRowItem>
-            <div class="text-sm text-gray-900 dark:text-gray-300">
-              {{ item.ip_address }} : {{ item.join_port }}
-            </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-              {{
-                __("WebQuery: :webquery_port", {
-                  webquery_port:
-                    item.webquery_port || __("not set"),
-                })
-              }}
+            <div class="group">
+              <div class="text-sm filter blur-sm text-gray-900 dark:text-gray-300 group-hover:blur-none duration-300 cursor-text">
+                {{ item.ip_address }} : {{ item.join_port }}
+              </div>
+              <div class="text-sm text-gray-500 dark:text-gray-400 filter blur-sm group-hover:blur-none duration-300 cursor-text">
+                {{
+                  __("WebQuery: :webquery_port", {
+                    webquery_port:
+                      item.webquery_port || __("not set"),
+                  })
+                }}
+              </div>
             </div>
           </DtRowItem>
 
@@ -230,34 +259,47 @@ watchEffect(() => {
           <td class="px-4 space-y-1 whitespace-nowrap">
             <div class="flex">
               <span
-                v-if="serverStatus[item.id] === 1"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-opacity-25 dark:text-green-400"
-              >{{ __("Server Online") }}</span>
-              <span
-                v-else-if="serverStatus[item.id] === -1"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-opacity-25 dark:text-red-400"
-              >{{ __("Server Offline") }}</span>
-              <span
-                v-else
+                v-if="!getServerStatus(item.id)"
                 class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-opacity-25 dark:text-gray-400"
               >{{ __("Loading") }}...</span>
+              <span
+                v-else-if="getServerStatus(item.id).online === 1"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-opacity-25 dark:text-green-400"
+              >
+                {{ __("Server") }}
+                🟢
+                {{ getServerStatus(item.id).players + '/' + getServerStatus(item.id).max }}
+              </span>
+              <span
+                v-else-if="getServerStatus(item.id).online === 0"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-opacity-25 dark:text-red-400"
+              >
+                {{ __("Server") }}
+                🔴
+              </span>
             </div>
             <div class="flex">
               <span
-                v-if="serverWebQueryStatus[item.id] === 1"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-opacity-25 dark:text-green-400"
-              >{{ __("WebQuery Online") }}</span>
-              <span
-                v-else-if="serverWebQueryStatus[item.id] === -1"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-opacity-25 dark:text-red-400"
-              >{{ __("WebQuery Offline") }}</span>
-              <span
-                v-else-if="serverWebQueryStatus[item.id] === 0"
-              />
-              <span
-                v-else
+                v-if="!getServerWebQueryStatus(item.id)"
                 class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-opacity-25 dark:text-gray-400"
               >{{ __("Loading") }}...</span>
+              <span
+                v-else-if="getServerWebQueryStatus(item.id).online === 1"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-opacity-25 dark:text-green-400"
+              >{{ __("WebQuery") }}
+                🟢
+                {{ getServerWebQueryStatus(item.id).players + '/' + getServerWebQueryStatus(item.id).max }}
+              </span>
+              <span
+                v-else-if="getServerWebQueryStatus(item.id).online === 0"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-opacity-25 dark:text-red-400"
+              >
+                {{ __("WebQuery") }}
+                🔴
+              </span>
+              <span
+                v-else-if="getServerWebQueryStatus(item.id).online === -1"
+              />
             </div>
           </td>
 

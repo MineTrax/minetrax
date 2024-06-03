@@ -245,7 +245,7 @@ class RecruitmentController extends Controller
         ]);
 
         return redirect()->route('admin.recruitment.index')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Recruitment Form is created successfully')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Application Form is created successfully')]]);
     }
 
     public function edit(Recruitment $recruitment)
@@ -283,7 +283,7 @@ class RecruitmentController extends Controller
         $recruitment->save();
 
         return redirect()->route('admin.recruitment.index')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Recruitment Form updated successfully')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Application Form updated successfully')]]);
     }
 
     public function destroy(Recruitment $recruitment)
@@ -293,6 +293,6 @@ class RecruitmentController extends Controller
         $recruitment->delete();
 
         return redirect()->route('admin.recruitment.index')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Recruitment Form has been deleted permanently')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Application Form has been deleted permanently')]]);
     }
 }

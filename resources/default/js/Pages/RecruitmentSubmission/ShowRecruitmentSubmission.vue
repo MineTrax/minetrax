@@ -8,7 +8,7 @@ import { computed } from 'vue';
 import { FormKitSchema } from '@formkit/vue';
 import {useFormKit} from '@/Composables/useFormKit';
 import RecruitmentMessagesBox from '@/Shared/RecruitmentMessagesBox.vue';
-import RecruitmentStatusBadge from '@/Shared/RecruitmentStatusBadge.vue';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import { useForm } from '@inertiajs/vue3';
@@ -48,7 +48,7 @@ const withdrawForm = useForm({
 <template>
   <AppLayout>
     <AppHead
-      :title="__('Your application for :recruitmenttitle #:index - Recruitments', {
+      :title="__('Your application request for :recruitmenttitle #:index - Applications', {
         index: submission.id,
         recruitmenttitle: submission.recruitment.title,
       })"
@@ -65,7 +65,7 @@ const withdrawForm = useForm({
               })
             }}
           </span>
-          <RecruitmentStatusBadge :status="submission.status.value" />
+          <CommonStatusBadge :status="submission.status.value" />
         </h1>
         <div class="flex space-x-2">
           <Link
@@ -105,7 +105,7 @@ const withdrawForm = useForm({
 
                 <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
                   <div class="flex items-center justify-between w-full">
-                    <span>{{ __("Recruitment") }}</span>
+                    <span>{{ __("Application") }}</span>
                     <span>{{ submission.recruitment.title }}</span>
                   </div>
                 </li>
@@ -136,8 +136,8 @@ const withdrawForm = useForm({
 
                 <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
                   <div class="flex items-center justify-between w-full">
-                    <span>{{ __("Submission Status") }}</span>
-                    <RecruitmentStatusBadge :status="submission.status.value" />
+                    <span>{{ __("Request Status") }}</span>
+                    <CommonStatusBadge :status="submission.status.value" />
                   </div>
                 </li>
 

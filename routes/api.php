@@ -21,7 +21,7 @@ Route::middleware(['auth.api-key'])->group(function () {
     Route::post('v1/server/chat', [\App\Http\Controllers\Api\ApiServerChatlogController::class, 'store'])->name('api.server.chat');
     Route::post('v1/server/console', [\App\Http\Controllers\Api\ApiServerConsolelogController::class, 'store'])->name('api.server.console');
 
-    Route::post('v1/account-link/init', [\App\Http\Controllers\Api\ApiAccountLinkController::class, 'init'])->name('api.account-link.init');
+    Route::post('v1/account-link/verify', [\App\Http\Controllers\Api\ApiAccountLinkController::class, 'verify'])->name('api.account-link.verify');
 
     Route::post('v1/player/whois', [\App\Http\Controllers\Api\ApiPlayerController::class, 'postWhoisPlayer'])->name('api.player.whois');
     Route::post('v1/player/data', [\App\Http\Controllers\Api\ApiPlayerController::class, 'postFetchPlayerData'])->name('api.player.data');

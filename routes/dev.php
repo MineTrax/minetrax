@@ -1,8 +1,12 @@
 <?php
 
+use App\Jobs\AccountLinkAfterSuccessCommandJob;
+use App\Jobs\AccountUnlinkAfterSuccessCommandJob;
+use App\Jobs\RunAwaitingCommandQueuesJob;
+use App\Models\Player;
+use App\Models\Server;
 use App\Services\AskGptService;
 use App\Services\MinecraftApiService;
-use App\Services\MinecraftServerQueryService;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -95,16 +99,6 @@ Route::get('crypt', function () {
     socket_close($sock);
 });
 
-Route::get('webquery/{uuid}', function (Illuminate\Http\Request $request) {
-
-    $server = \App\Models\Server::whereId(2)->first();
-
-    $minecraftQueryService = app(MinecraftServerQueryService::class);
-    $playerGroups = $minecraftQueryService->getPlayerGroupWithPluginWebQueryProtocol($server->ip_address, $server->webquery_port, $request->uuid);
-
-    dd($playerGroups);
-});
-
 Route::get('/encryptstring', function () {
     $query = new \App\Utils\MinecraftQuery\MinecraftWebQuery('127.0.0.1', 1123);
     $string = $query->makeEncryptedString('console_cmd', 'Xinecraft');
@@ -165,4 +159,27 @@ Route::get('override', function () {
 
     dd(trans());
     dd(__('Profile Information'));
+});
+
+Route::get('webquery-v2', function () {
+    $webQuery = new MinecraftWebQuery('127.0.0.1', 25569);
+
+    dd($webQuery->checkPlayerOnline('5fdf7a97-97db-3328-bc78-814b0bf4bcf1'));
+});
+
+Route::get('test-link', function () {
+    $player = Player::first();
+    $userId = request()->user()->id;
+    $server = Server::find(2);
+    AccountLinkAfterSuccessCommandJob::dispatch($player, $userId, $server);
+});
+
+Route::get('test-unlink', function () {
+    $player = Player::first();
+    $userId = request()->user()->id;
+    AccountUnlinkAfterSuccessCommandJob::dispatch($player, $userId);
+});
+
+Route::get('test-runlater', function () {
+    RunAwaitingCommandQueuesJob::dispatch();
 });

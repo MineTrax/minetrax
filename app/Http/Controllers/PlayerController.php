@@ -49,15 +49,20 @@ class PlayerController extends Controller
             ->with(['rank:id,shortname,name', 'country:id,name,iso_code,flag'])->firstOrFail();
 
         // next rank
-        $currentRank = $player->rank()->first();
-        if ($currentRank) {
-            $player->next_rank = Rank::select(['id', 'shortname', 'name'])
-                ->where('weight', '>=', $currentRank->weight)
-                ->where('id', '!=', $currentRank->id)
-                ->orderBy('weight')
-                ->first()?->name;
+        $hideNextRank = config('minetrax.hide_player_next_rank');
+        if ($hideNextRank) {
+            $player->next_rank = null;
         } else {
-            $player->next_rank = Rank::select(['id', 'shortname', 'name'])->orderBy('weight')->first()?->name;
+            $currentRank = $player->rank()->first();
+            if ($currentRank) {
+                $player->next_rank = Rank::select(['id', 'shortname', 'name'])
+                    ->where('weight', '>=', $currentRank->weight)
+                    ->where('id', '!=', $currentRank->id)
+                    ->orderBy('weight')
+                    ->first()?->name;
+            } else {
+                $player->next_rank = Rank::select(['id', 'shortname', 'name'])->orderBy('weight')->first()?->name;
+            }
         }
 
         // Servers Count

@@ -56,6 +56,10 @@ const headerRow = [
         sortable: true,
         label: __('User'),
         class: 'w-3/12',
+        filterable: {
+            key: 'user.name',
+            type: 'text',
+        },
     },
     {
         key: 'custom_form_id',

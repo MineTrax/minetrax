@@ -46,6 +46,10 @@ class RecruitmentSubmissionController extends Controller
         $fields = [
             'id',
             'recruitment_id',
+            'last_act_by',
+            'last_act_at',
+            'last_comment_by',
+            'last_comment_at',
             'status',
             'user_id',
             'created_at',
@@ -62,10 +66,13 @@ class RecruitmentSubmissionController extends Controller
                 $query->whereIn('recruitment_id', $selectedRecruitments);
             })
             ->whereIn('recruitment_id', $recruitments->keys())
-            ->with(['user:id,name,username', 'recruitment'])
+            ->with(['user:id,name,username', 'recruitment', 'lastActor:id,username,name,profile_photo_path,verified_at,settings', 'lastCommentor:id,username,name,profile_photo_path,verified_at,settings'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
+                'user.name',
+                'lastActor.name',
+                'lastCommentor.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data', 'status'])),
             ])
             ->allowedSorts($fields)
@@ -108,6 +115,10 @@ class RecruitmentSubmissionController extends Controller
         $fields = [
             'id',
             'recruitment_id',
+            'last_act_by',
+            'last_act_at',
+            'last_comment_by',
+            'last_comment_at',
             'status',
             'user_id',
             'created_at',
@@ -124,10 +135,13 @@ class RecruitmentSubmissionController extends Controller
                 $query->whereIn('recruitment_id', $selectedRecruitments);
             })
             ->whereIn('recruitment_id', $recruitments->keys())
-            ->with(['user:id,name,username', 'recruitment'])
+            ->with(['user:id,name,username', 'recruitment', 'lastActor:id,name,username', 'lastCommentor:id,name,username'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
+                'user.name',
+                'lastActor.name',
+                'lastCommentor.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data', 'status'])),
             ])
             ->allowedSorts($fields)
@@ -182,7 +196,7 @@ class RecruitmentSubmissionController extends Controller
         $submission->delete();
 
         return redirect()->route('admin.recruitment-submission.index-closed')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Recruitment Submission deleted successfully')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Request deleted successfully')]]);
     }
 
     public function act(Request $request, RecruitmentSubmission $submission)
@@ -214,7 +228,7 @@ class RecruitmentSubmissionController extends Controller
         RecruitmentSubmissionStatusChanged::dispatch($submission, $request->user(), $previousStatus);
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __('Action Successful'), 'body' => __('Recruitment Submission action has been completed successfully')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Action Successful'), 'body' => __('Request action has been completed successfully')]]);
     }
 
     public function indexMessages(Request $request, RecruitmentSubmission $submission)
@@ -242,7 +256,10 @@ class RecruitmentSubmissionController extends Controller
 
         $comment = $submission->comment($request->message, $request->type);
         if ($request->type != CommentType::RECRUITMENT_STAFF_WHISPER) {
-            $submission->touch();
+            $submission->update([
+                'last_comment_by' => $request->user()->id,
+                'last_comment_at' => now(),
+            ]);
         }
 
         // Fire event

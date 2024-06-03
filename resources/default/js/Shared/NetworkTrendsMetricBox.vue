@@ -171,7 +171,7 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                   </td>
                   <td
                     class="p-4 text-sm whitespace-nowrap"
-                    :class="{'text-red-500 font-semibold' : data.avg_afktime.change < 0, 'text-green-500 font-semibold' : data.avg_afktime.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.avg_afktime.change == 0}"
+                    :class="{'text-green-500 font-semibold' : data.avg_afktime.change < 0, 'text-red-500 font-semibold' : data.avg_afktime.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.avg_afktime.change == 0}"
                   >
                     {{ data.avg_afktime.change }}%
                   </td>
@@ -193,7 +193,7 @@ const { data, isFinished, isLoading, error } = useAxios(route('admin.graph.netwo
                   </td>
                   <td
                     class="p-4 text-sm whitespace-nowrap"
-                    :class="{'text-red-500 font-semibold' : data.avg_player_ping.change < 0, 'text-green-500 font-semibold' : data.avg_player_ping.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.avg_player_ping.change == 0}"
+                    :class="{'text-green-500 font-semibold' : data.avg_player_ping.change < 0, 'text-red-500 font-semibold' : data.avg_player_ping.change > 0, 'text-gray-500 dark:text-gray-400 font-normal' : data.avg_player_ping.change == 0}"
                   >
                     {{ data.avg_player_ping.change }}%
                   </td>

@@ -11,7 +11,8 @@ import XSelect from '@/Components/Form/XSelect.vue';
 import { computed, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { pickBy } from 'lodash';
-import RecruitmentStatusBadge from '@/Shared/RecruitmentStatusBadge.vue';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
+import UserDisplayname from '@/Components/UserDisplayname.vue';
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
@@ -45,16 +46,44 @@ const headerRow = [
         sortable: true,
         label: __('Applicant'),
         class: 'w-3/12',
+        filterable: {
+            key: 'user.name',
+            type: 'text',
+        }
     },
     {
         key: 'recruitment_id',
-        label: __('Recruitment'),
+        label: __('Application'),
         sortable: true,
     },
     {
         key: 'status',
         label: __('Status'),
         sortable: true,
+        filterable: {
+            type: 'multiselect',
+            options: ['pending', 'inprogress', 'approved', 'rejected', 'withdrawn', 'onhold'],
+        }
+    },
+    {
+        key: 'last_act_at',
+        sortable: true,
+        label: __('Last Actor'),
+        class: 'text-right',
+        filterable: {
+            key: 'lastActor.name',
+            type: 'text',
+        }
+    },
+    {
+        key: 'last_comment_at',
+        sortable: true,
+        label: __('Last Comment'),
+        class: 'text-right',
+        filterable: {
+            key: 'lastCommentor.name',
+            type: 'text',
+        }
     },
     {
         key: 'created_at',
@@ -106,8 +135,8 @@ watch(selectedForms, (newSelectedForms) => {
     <AppHead
       :title="
         closed
-          ? __('Closed Request - Recruitments')
-          : __('Open Requests - Recruitments')
+          ? __('Closed Request - Applications')
+          : __('Open Requests - Applications')
       "
     />
 
@@ -118,10 +147,10 @@ watch(selectedForms, (newSelectedForms) => {
         >
           {{
             closed
-              ? __("Closed Recruitment Submissions:")
-              : __("Open Recruitment Submissions:")
+              ? __("Closed Requests:")
+              : __("Open Requests:")
           }}
-          {{ showing ?? __("All Recruitments") }}
+          {{ showing ?? __("All Applications") }}
         </h3>
 
         <x-select
@@ -129,7 +158,7 @@ watch(selectedForms, (newSelectedForms) => {
           v-model="selectedForms"
           name="selectForms"
           :select-list="forms"
-          :placeholder="__('All Recruitments')"
+          :placeholder="__('All Applications')"
           class="w-48 max-w-48 dark:border dark:rounded dark:border-gray-700"
         />
       </div>
@@ -145,13 +174,27 @@ watch(selectedForms, (newSelectedForms) => {
             <td
               class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
             >
-              {{ item.id }}
+              <InertiaLink
+                as="a"
+                :href="
+                  route(
+                    'admin.recruitment-submission.show',
+                    item.id
+                  )
+                "
+                class="hover:text-sky-500"
+              >
+                {{ item.id }}
+              </InertiaLink>
             </td>
 
             <td class="px-4">
               <InertiaLink
                 :href="
-                  route('user.public.get', item.user.username)
+                  route(
+                    'admin.recruitment-submission.show',
+                    item.id
+                  )
                 "
                 class="flex items-center"
               >
@@ -184,11 +227,59 @@ watch(selectedForms, (newSelectedForms) => {
             </td>
 
             <DtRowItem>
-              {{ item.recruitment.title }}
+              <p
+                v-tippy
+                :title="item.recruitment.title"
+                class="truncate w-32"
+              >
+                {{ item.recruitment.title }}
+              </p>
             </DtRowItem>
 
             <DtRowItem>
-              <RecruitmentStatusBadge :status="item.status.value" />
+              <CommonStatusBadge :status="item.status.value" />
+            </DtRowItem>
+
+            <DtRowItem
+              class="text-right whitespace-nowrap"
+            >
+              <UserDisplayname
+                v-if="item.last_actor"
+                text-class="text-sm text-gray-700 dark:text-gray-400"
+                :user="item.last_actor"
+                :show-badges="true"
+              >
+                <div class="text-xs text-gray-400 dark:text-gray-500">
+                  {{ formatTimeAgoToNow(item.last_act_at) }}
+                </div>
+              </UserDisplayname>
+              <span
+                v-else
+                class="text-gray-400 text-sm italic"
+              >
+                {{ __('None') }}
+              </span>
+            </DtRowItem>
+
+            <DtRowItem
+              class="text-right whitespace-nowrap"
+            >
+              <UserDisplayname
+                v-if="item.last_commentor"
+                text-class="text-sm text-gray-700 dark:text-gray-400"
+                :user="item.last_commentor"
+                :show-badges="true"
+              >
+                <div class="text-xs text-gray-400 dark:text-gray-500">
+                  {{ formatTimeAgoToNow(item.last_comment_at) }}
+                </div>
+              </UserDisplayname>
+              <span
+                v-else
+                class="text-gray-400 text-sm italic"
+              >
+                {{ __('None') }}
+              </span>
             </DtRowItem>
 
             <DtRowItem
@@ -229,7 +320,7 @@ watch(selectedForms, (newSelectedForms) => {
                 "
                 v-confirm="{
                   message:
-                    'Delete this Recruitment Submission? This action cannot be undone.',
+                    'Delete this Request? This action cannot be undone.',
                 }"
                 v-tippy
                 as="button"

@@ -42,7 +42,7 @@ const submissionCountByStatusData = {
 <template>
   <AdminLayout>
     <AppHead
-      :title="__(':title Intel - Recruitments', {
+      :title="__(':title Intel - Application Form', {
         title: recruitment.title,
       })"
     />
@@ -94,7 +94,7 @@ const submissionCountByStatusData = {
 
           <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
             <div class="flex items-center justify-between w-full">
-              <span>{{ __("This recruitment hiring for") }}</span>
+              <span>{{ __("This application hiring for") }}</span>
               <span>{{ recruitment.related_role ? recruitment.related_role.display_name : __("not applicable") }}</span>
             </div>
           </li>

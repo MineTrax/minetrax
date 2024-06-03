@@ -31,13 +31,20 @@ const headerRow = [
     },
     {
         key: 'title',
-        sortable: true,
         label: __('Title'),
+        sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'status',
         label: __('Status'),
         sortable: true,
+        filterable: {
+            type: 'multiselect',
+            options: ['draft', 'active', 'disabled', 'archived'],
+        }
     },
     {
         key: 'can_create_submission',

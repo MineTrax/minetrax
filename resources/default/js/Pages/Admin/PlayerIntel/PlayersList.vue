@@ -15,9 +15,12 @@ const { can } = useAuthorizable();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } =
     useHelpers();
 
-defineProps({
+const props = defineProps({
     serverList: {
         type: Object,
+    },
+    countries: {
+        type: Array,
     },
     filters: {
         type: Object,
@@ -33,12 +36,21 @@ const headerRow = [
         label: __('Flag'),
         sortable: true,
         class: 'text-left',
+        filterable: {
+            key: 'country.name',
+            type: 'multiselect',
+            options: props.countries,
+            searchable: true,
+        }
     },
     {
         key: 'player_username',
         label: __('Username'),
         sortable: true,
         class: 'text-left',
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'server_play_count',
@@ -64,11 +76,32 @@ const headerRow = [
         key: 'last_join_address',
         label: __('Join Address'),
         sortable: true,
+        filterable: {
+            type: 'text',
+        }
     },
     {
         key: 'last_minecraft_version',
         label: __('MC Version'),
         sortable: true,
+        filterable: {
+            type: 'multiselect',
+            options: [
+                '1.20',
+                '1.19',
+                '1.18',
+                '1.17',
+                '1.16',
+                '1.15',
+                '1.14',
+                '1.13',
+                '1.12',
+                '1.11',
+                '1.10',
+                '1.9',
+                '1.8',
+            ]
+        }
     },
     {
         key: 'first_seen_at',

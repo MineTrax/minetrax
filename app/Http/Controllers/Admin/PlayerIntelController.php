@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\MinecraftPlayer;
 use App\Models\Server;
 use App\Queries\Filters\FilterMultipleFields;
@@ -62,6 +63,9 @@ class PlayerIntelController extends Controller
                 'country_id',
                 'last_seen_at',
                 'first_seen_at',
+                'last_join_address',
+                'last_minecraft_version',
+                'country.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['player_uuid', 'player_username'])),
             ])
             ->groupBy(['player_id'])
@@ -86,10 +90,13 @@ class PlayerIntelController extends Controller
             ->paginate($perPage)
             ->withQueryString();
 
+        $countries = Country::select(['id', 'name'])->get()->pluck('name');
+
         return Inertia::render('Admin/PlayerIntel/PlayersList', [
             'filters' => request()->all(['servers']),
             'serverList' => $serverList,
             'data' => $data,
+            'countries' => $countries,
         ]);
     }
 }
