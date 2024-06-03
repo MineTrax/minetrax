@@ -193,6 +193,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('intel/player/list', [\App\Http\Controllers\Admin\PlayerIntelController::class, 'playersList'])->name('intel.player.list');
 
     Route::delete('intel/player/{player:uuid}/delete', [\App\Http\Controllers\Admin\PlayerController::class, 'destroy'])->name('intel.player.delete');
+    Route::delete('player/{player:uuid}/unlink', [\App\Http\Controllers\Admin\PlayerController::class, 'unlink'])->name('player.unlink');
 
     Route::get('rank', [\App\Http\Controllers\Admin\RankController::class, 'index'])->name('rank.index');
     Route::get('rank/create', [\App\Http\Controllers\Admin\RankController::class, 'create'])->name('rank.create');

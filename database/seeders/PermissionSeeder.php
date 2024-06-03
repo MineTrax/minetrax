@@ -123,5 +123,8 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('create command_queues');
         Permission::findOrCreate('read command_queues');
         Permission::findOrCreate('delete command_queues');
+
+        Permission::findOrCreate('link any_players');
+        Permission::findOrCreate('unlink any_players');
     }
 }

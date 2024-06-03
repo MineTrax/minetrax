@@ -646,7 +646,7 @@
                         {{ __("Claimed By") }}
                       </p>
                     </div>
-                    <p>
+                    <p class="flex items-start space-x-2">
                       <inertia-link
                         v-if="player.owner"
                         class="font-bold text-light-blue-400 hover:text-light-blue-600"
@@ -659,6 +659,23 @@
                         v-else
                         class="italic text-gray-500"
                       >{{ __("None") }}</span>
+
+
+                      <InertiaLink
+                        v-if="can('unlink any_players') && player.owner"
+                        v-confirm="{
+                          message:
+                            'Are you sure you want to unlink this player from current user?',
+                        }"
+                        v-tippy
+                        as="button"
+                        method="DELETE"
+                        :href="route('admin.player.unlink', player.uuid)"
+                        class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                        :title="__('Unlink Player')"
+                      >
+                        <LockOpenIcon class="inline-block w-5 h-5" />
+                      </InertiaLink>
                     </p>
                   </div>
                   <div class="flex justify-between">
@@ -769,64 +786,61 @@
   </app-layout>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Icon from '@/Components/Icon.vue';
 import * as skinview3d from 'skinview3d';
-import {useHelpers} from '@/Composables/useHelpers';
+import { useHelpers } from '@/Composables/useHelpers';
 import millify from 'millify';
 import PlayerSubMenu from '@/Shared/PlayerSubMenu.vue';
+import { LockOpenIcon } from '@heroicons/vue/24/outline';
+import { useTranslations } from '@/Composables/useTranslations';
+import { useAuthorizable } from '@/Composables/useAuthorizable';
 
-export default {
+const { __ } = useTranslations();
+const { can } = useAuthorizable();
 
-    components: {
-        PlayerSubMenu,
-        Icon,
-        AppLayout,
-    },
-    props: {
-        player: Object,
-        canShowPlayerIntel: Boolean,
-        canChangePlayerSkin: Boolean,
-    },
-    setup() {
-        const {secondsToHMS, formatTimeAgoToNow, formatToDayDateString} = useHelpers();
-        return {secondsToHMS, formatTimeAgoToNow, formatToDayDateString, millify};
-    },
-    data() {
-        return {
-            playerAnimationEnabled: true,
-            skinViewer: null,
-        };
-    },
-    mounted() {
-        this.skinViewer = new skinview3d.SkinViewer({
-            canvas: document.getElementById('skin_container'),
-            width: 300,
-            height: 500,
-            skin: route('player.skin.get', {uuid: this.player.uuid, username: this.player.username, textureid: this.player.skin_texture_id}),
-        });
-        this.skinViewer.autoRotate = true;
-        this.skinViewer.animation = new skinview3d.WalkingAnimation();
-        this.skinViewer.animation.speed = 0.1;
-        this.skinViewer.autoRotateSpeed = 0.5;
-    },
-    unmounted() {
-        this.skinViewer.dispose();
-    },
+const props = defineProps({
+    player: Object,
+    canShowPlayerIntel: Boolean,
+    canChangePlayerSkin: Boolean,
+});
 
-    methods: {
-        toggle3dPlayerAnimation: function () {
-            if (this.playerAnimationEnabled) {
-                // Disable Animation
-                this.skinViewer.animation.paused = true;
-                this.playerAnimationEnabled = false;
-            } else {
-                // Enable Animation
-                this.skinViewer.animation.paused = false;
-                this.playerAnimationEnabled = true;
-            }
-        },
-    },
+const { secondsToHMS, formatTimeAgoToNow, formatToDayDateString } = useHelpers();
+
+const playerAnimationEnabled = ref(true);
+let skinViewer = null;
+
+onMounted(() => {
+    skinViewer = new skinview3d.SkinViewer({
+        canvas: document.getElementById('skin_container'),
+        width: 300,
+        height: 500,
+        skin: route('player.skin.get', { uuid: props.player.uuid, username: props.player.username, textureid: props.player.skin_texture_id }),
+    });
+    skinViewer.autoRotate = true;
+    skinViewer.animation = new skinview3d.WalkingAnimation();
+    skinViewer.animation.speed = 0.1;
+    skinViewer.autoRotateSpeed = 0.5;
+});
+
+onUnmounted(() => {
+    if (skinViewer) {
+        skinViewer.dispose();
+    }
+});
+
+const toggle3dPlayerAnimation = () => {
+    if (playerAnimationEnabled.value) {
+        // Disable Animation
+        skinViewer.animation.paused = true;
+        playerAnimationEnabled.value = false;
+    } else {
+        // Enable Animation
+        skinViewer.animation.paused = false;
+        playerAnimationEnabled.value = true;
+    }
 };
+
 </script>
