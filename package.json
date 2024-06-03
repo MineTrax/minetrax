@@ -41,7 +41,7 @@
         "tsparticles": "^3.4.0",
         "v-calendar": "^3.0.0-alpha.8",
         "vform": "^2.1.2",
-        "vite": "^4.4.9",
+        "vite": "^4.5.3",
         "vue": "^3.3.4",
         "vue-codemirror": "^6.1.1",
         "vue-datepicker-next": "^1.0.2",
