@@ -108,4 +108,24 @@ class ServerController extends Controller
             return response()->json(['message' => __('Web Query Failed')], 500);
         }
     }
+
+    public function pingServerWithWebQueryProtocol(Server $server, MinecraftServerQueryService $queryService, GeolocationService $geolocationService)
+    {
+        try {
+            // Check if we got cache
+            $hasCache = Cache::get('server:webping:' . $server->id);
+            if ($hasCache) {
+                return json_decode($hasCache, true);
+            }
+
+            $queryData = $queryService->getServerPingWithPluginWebQueryProtocol($server->ip_address, $server->webquery_port);
+            if ($queryData) {
+                Cache::put('server:webping:' . $server->id, json_encode($queryData), 60);
+            }
+
+            return ($queryData);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => __('Web Query Failed')], 500);
+        }
+    }
 }

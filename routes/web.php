@@ -32,7 +32,8 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
 
     Route::get('server/{server}/ping', [\App\Http\Controllers\ServerController::class, 'pingServer'])->name('server.ping.get');
     Route::get('server/{server}/query', [\App\Http\Controllers\ServerController::class, 'queryServer'])->name('server.query.get');
-    Route::get('server/{server}/webquery', [\App\Http\Controllers\ServerController::class, 'queryServerWithWebQueryProtocol'])->name('server.webquery.get');
+    Route::get('server/{server}/webping', [\App\Http\Controllers\ServerController::class, 'pingServerWithWebQueryProtocol'])->name('server.webquery.ping');
+    Route::get('server/{server}/webquery', [\App\Http\Controllers\ServerController::class, 'queryServerWithWebQueryProtocol'])->name('server.webquery.status');
 
     Route::get('@{user:username}', [\App\Http\Controllers\UserController::class, 'showProfile'])->name('user.public.get');
     Route::get('/staff-members', [\App\Http\Controllers\UserController::class, 'indexStaff'])->name('staff.index');

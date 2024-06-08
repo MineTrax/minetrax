@@ -84,6 +84,13 @@ class MinecraftWebQuery
         return $status;
     }
 
+    public function getPing()
+    {
+        $data = $this->sendQuery('ping');
+
+        return $data;
+    }
+
     public function checkPlayerOnline($playerUuid): bool
     {
         if (! Str::isUuid($playerUuid)) {

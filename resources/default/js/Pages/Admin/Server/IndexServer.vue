@@ -97,7 +97,7 @@ watchEffect(() => {
         // Only do webquery if server has webquery port set
         if (server.webquery_port) {
             axios
-                .get(route('server.webquery.get', server.id))
+                .get(route('server.webquery.ping', server.id))
                 .then((data) => {
                     nextTick(() => {
                         serverWebQueryStatus[server.id] = {

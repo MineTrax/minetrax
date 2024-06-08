@@ -158,7 +158,7 @@ function tryFetchUsingQuery(serverToQuery) {
 
 function tryFetchUsingWebQuery(serverToQuery) {
     axios
-        .get(route('server.webquery.get', serverToQuery.id))
+        .get(route('server.webquery.status', serverToQuery.id))
         .then((data) => {
             if (data.data.players.length > 0) {
                 playersList.value = data.data.players.map((player) => {
