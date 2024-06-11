@@ -19,7 +19,7 @@ class ResyncPlayersTableJob implements ShouldQueue, ShouldBeUnique
      */
     public function __construct()
     {
-        //
+        $this->onQueue('longtask');
     }
 
     /**
