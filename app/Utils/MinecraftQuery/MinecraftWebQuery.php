@@ -84,6 +84,13 @@ class MinecraftWebQuery
         return $status;
     }
 
+    public function getPing()
+    {
+        $data = $this->sendQuery('ping');
+
+        return $data;
+    }
+
     public function checkPlayerOnline($playerUuid): bool
     {
         if (! Str::isUuid($playerUuid)) {
@@ -103,12 +110,16 @@ class MinecraftWebQuery
         $encrypted = $this->makePayload($type, $data);
 
         $factory = new \Socket\Raw\Factory();
-        $socket = $factory->createClient("tcp://{$this->HOST}:{$this->PORT}", 10);
+        $socket = $factory->createClient("tcp://{$this->HOST}:{$this->PORT}", 5);
         $text = $encrypted."\n";
         $socket->write($text);
-        // Timeout after 5 seconds for webquery in case of no response
-        socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, ['sec' => 10, 'usec' => 0]);
-        $buf = $socket->read(102400);
+        // Timeout after 10 seconds for webquery in case of no response
+        socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, ['sec' => 5, 'usec' => 0]);
+        // read while we get data
+        $buf = '';
+        while ($read = $socket->read(4096)) {
+            $buf .= $read;
+        }
         $socket->close();
 
         $response = json_decode(trim($buf), true);

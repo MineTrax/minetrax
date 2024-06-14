@@ -113,4 +113,13 @@ class MinecraftServerQueryService
 
         return $data;
     }
+
+    public function getServerPingWithPluginWebQueryProtocol($serverHost, $serverPort)
+    {
+        $webQuery = new MinecraftWebQuery($serverHost, $serverPort);
+        $data = $webQuery->getPing();
+        $data = collect($data['data'])->recursive();
+
+        return $data;
+    }
 }

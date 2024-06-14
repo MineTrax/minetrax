@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateServerRequest;
 use App\Http\Requests\UpdateServerRequest;
 use App\Jobs\CalculatePlayersJob;
-use App\Jobs\ResyncPlayersTableJob;
+use App\Jobs\DeleteServerJob;
 use App\Models\MinecraftPlayer;
 use App\Models\Server;
 use App\Queries\Filters\FilterMultipleFields;
@@ -49,6 +49,7 @@ class ServerController extends Controller
                 'order',
                 'country_id',
                 'last_scanned_at',
+                'settings',
                 'created_at',
             ])
             ->with('country')
@@ -339,12 +340,12 @@ class ServerController extends Controller
     {
         $this->authorize('delete', $server);
 
-        $server->delete();
-
-        ResyncPlayersTableJob::dispatch();
+        $server->settings = array_merge($server->settings, ['is_deleting' => true]);
+        $server->save();
+        DeleteServerJob::dispatch($server);
 
         return redirect()->back()
-            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Server has been deleted permanently')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deletion Started'), 'body' => __('Server deletion has been started. It may take sometime to complete depending on number of players.')]]);
     }
 
     public function postSendCommandToServer(Server $server, Request $request)

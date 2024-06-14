@@ -460,7 +460,7 @@ export default {
         },
 
         getPlayerListForServer(sId) {
-            axios.get(route('server.webquery.get', sId)).then(data => {
+            axios.get(route('server.webquery.status', sId)).then(data => {
                 this.playersList = data.data.players;
                 this.isWebQuerySuccess = true;
             }).catch(() => {

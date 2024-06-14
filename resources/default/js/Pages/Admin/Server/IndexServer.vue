@@ -97,7 +97,7 @@ watchEffect(() => {
         // Only do webquery if server has webquery port set
         if (server.webquery_port) {
             axios
-                .get(route('server.webquery.get', server.id))
+                .get(route('server.webquery.ping', server.id))
                 .then((data) => {
                     nextTick(() => {
                         serverWebQueryStatus[server.id] = {
@@ -319,41 +319,53 @@ function getServerWebQueryStatus(serverId) {
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
-              v-tippy
-              as="a"
-              :title="__('View Server Intel')"
-              :href="route('admin.server.show', item.id)"
-              class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+            <div v-if="item?.settings?.is_deleting">
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-opacity-25 dark:text-red-400"
+              >
+                {{ __("Deleting...") }}
+              </span>
+            </div>
+            <div
+              v-else
+              class="flex space-x-2"
             >
-              <EyeIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
-              v-if="can('update servers')"
-              v-tippy
-              as="a"
-              :href="route('admin.server.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit Server')"
-            >
-              <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
-              v-if="can('delete servers')"
-              v-confirm="{
-                title: 'Delete Server?',
-                message:
-                  'Are you sure you want to delete this Server permanently? Deleting a Server will also delete all of its associated data including all of its Player & Server Intel data. This action cannot be undone.',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.server.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
-              :title="__('Delete Server')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+              <InertiaLink
+                v-tippy
+                as="a"
+                :title="__('View Server Intel')"
+                :href="route('admin.server.show', item.id)"
+                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              >
+                <EyeIcon class="inline-block w-5 h-5" />
+              </InertiaLink>
+              <InertiaLink
+                v-if="can('update servers')"
+                v-tippy
+                as="a"
+                :href="route('admin.server.edit', item.id)"
+                class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+                :title="__('Edit Server')"
+              >
+                <PencilSquareIcon class="inline-block w-5 h-5" />
+              </InertiaLink>
+              <InertiaLink
+                v-if="can('delete servers')"
+                v-confirm="{
+                  title: 'Delete Server?',
+                  message:
+                    'Are you sure you want to delete this Server permanently? Deleting a Server will also delete all of its associated data including all of its Player & Server Intel data. This action cannot be undone.',
+                }"
+                v-tippy
+                as="button"
+                method="DELETE"
+                :href="route('admin.server.delete', item.id)"
+                class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                :title="__('Delete Server')"
+              >
+                <TrashIcon class="inline-block w-5 h-5" />
+              </InertiaLink>
+            </div>
           </td>
         </template>
       </DataTable>
