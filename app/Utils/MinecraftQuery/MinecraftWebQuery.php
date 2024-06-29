@@ -31,7 +31,7 @@ class MinecraftWebQuery
 
             return $status;
         } catch (\Exception $e) {
-            throw new \Exception(__('Error setting player skin. Please make sure provided skin is valid.'));
+            throw new \Exception($e->getMessage());
         }
     }
 
