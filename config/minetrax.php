@@ -23,19 +23,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Use Legacy FTP Driver
-    |--------------------------------------------------------------------------
-    |
-    | If enabled, while querying server for stats the fetcher will use legacy FTP driver.
-    | This is useful in-game your gameserver is hosted in panel with only FTP support and
-    | normal FTP driver is not working.
-    | Eg: Multicraft FTP Server, FileZilla FTP Server
-    |
-    */
-    'use_legacy_ftp_driver' => env('USE_LEGACY_FTP_DRIVER', false),
-
-    /*
-    |--------------------------------------------------------------------------
     | Mark user verified when a player account is linked
     |--------------------------------------------------------------------------
     |
