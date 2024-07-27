@@ -173,6 +173,7 @@ class SocialAuthController extends Controller
                 return redirect()->route('home');
             }
         } catch (\Exception $e) {
+            Log::error($e);
             if ($request->wantsJson()) {
                 return response()->json(['message' => __('Unable to fetch user details from :provider', ['provider' => ucfirst($provider)])], 422);
             }
