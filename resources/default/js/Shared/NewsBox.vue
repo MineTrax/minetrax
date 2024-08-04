@@ -45,7 +45,7 @@
         </div>
         <img
           v-if="news.photo_url"
-          class="h-16 w-20 rounded"
+          class="h-16 w-20 rounded object-contain"
           :src="news.photo_url"
           alt="News Image"
         >
