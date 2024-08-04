@@ -54,7 +54,7 @@
         "symfony/http-client": "^6.2",
         "symfony/yaml": "^6.1",
         "tanmuhittin/laravel-google-translate": "^2.1",
-        "tightenco/ziggy": "^1.0",
+        "tightenco/ziggy": "^2.0",
         "torann/geoip": "^3.0",
         "xpaw/php-minecraft-query": "^4.0",
         "xpaw/php-source-query-class": "^2.1"
