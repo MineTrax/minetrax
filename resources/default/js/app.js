@@ -6,7 +6,7 @@ import { plugin as formKitPlugin, defaultConfig as formKitDefaultConfig } from '
 import formKitConfig from '/formkit.config.js';
 import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ZiggyVue } from '../../../vendor/tightenco/ziggy/dist/vue.m';
+import { ZiggyVue } from '../../../vendor/tightenco/ziggy';
 
 import VueTippy from 'vue-tippy';
 import translations from '@/Mixins/translations.js';
