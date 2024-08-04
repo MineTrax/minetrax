@@ -10,11 +10,11 @@
       <template #trigger>
         <button
           v-if="$page.props.jetstream.managesProfilePhotos"
-          class="flex text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 items-center text-sm font-semibold transition duration-150 ease-in-out border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 dark:focus:border-cool-gray-700"
+          class="flex text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 pl-2 items-center text-sm font-semibold transition duration-150 ease-in-out border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 dark:focus:border-cool-gray-700"
         >
           {{ $page.props.auth.user.name }}
           <img
-            class="h-8 w-8 ml-0.5 rounded-full object-cover"
+            class="h-8 w-8 ml-2 rounded-full object-cover"
             :src="$page.props.auth.user.profile_photo_url"
             :alt="$page.props.auth.user.name"
           >
