@@ -22,11 +22,14 @@ class UserController extends Controller
         $staffsWithRole = User::with(['roles'])
             ->whereHas('roles', function ($query) {
                 $query->where('is_staff', true)
-                    ->where('is_hidden_from_staff_list', false)
-                    ->orderByDesc('weight');
+                    ->where('is_hidden_from_staff_list', false);
             })
             ->select(['id', 'name', 'username', 'profile_photo_path', 'verified_at'])
             ->get();
+
+        $staffsWithRole = $staffsWithRole->sortByDesc(function($staff, $key) {
+            return $staff->roles->sortBy('weight')->first()->weight;
+        })->values()->all();
 
         return Inertia::render('User/IndexStaff', [
             'staffs' => $staffsWithRole,
