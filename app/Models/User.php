@@ -411,6 +411,11 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         return $this->roles->sortByDesc([['weight', 'desc']])?->first()?->weight ?? null;
     }
 
+    public function isSuperAdmin()
+    {
+        return $this->hasRole(Role::SUPER_ADMIN_ROLE_NAME);
+    }
+
     public function socialAccounts()
     {
         return $this->hasMany(SocialAccount::class);

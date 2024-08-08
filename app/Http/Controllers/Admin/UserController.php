@@ -179,7 +179,7 @@ class UserController extends Controller
             'badges' => ['sometimes', 'nullable', 'array', 'exists:badges,id'],
             'country_id' => ['required', 'exists:countries,id'],
             'password' => ['sometimes', 'nullable', 'string', Password::min(8)->uncompromised()],
-            'locale' => ['nullable', 'string', 'in:'.implode(',', $localeList)],
+            'locale' => ['nullable', 'string', 'in:' . implode(',', $localeList)],
         ]);
 
         $social_links = [
@@ -211,9 +211,9 @@ class UserController extends Controller
         $user->locale = $request->locale;
 
         // if verified_at was null and now verified is true then mark it as verified & vice versa
-        if ($request->verified && ! $user->verified_at) {
+        if ($request->verified && !$user->verified_at) {
             $user->verified_at = now();
-        } elseif (! $request->verified && $user->verified_at) {
+        } elseif (!$request->verified && $user->verified_at) {
             $user->verified_at = null;
         }
 
@@ -225,7 +225,10 @@ class UserController extends Controller
 
         // Sync the role only if user has ability to assign roles
         if ($request->user()->can('assign roles')) {
-            $user->syncRoles([$request->role]);
+            $role = Role::where('name', $request->role)->firstOrFail();
+            if ($request->user()->isSuperAdmin() || $role->weight < $request->user()->maxRoleWeight()) {
+                $user->syncRoles([$request->role]);
+            }
         }
 
         // Sync Badges
