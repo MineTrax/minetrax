@@ -6,6 +6,7 @@ use App\Enums\ServerType;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\MinecraftPlayer;
+use App\Models\Player;
 use App\Models\Server;
 use App\Queries\Filters\FilterMultipleFields;
 use Illuminate\Http\Request;
@@ -15,13 +16,10 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class PlayerIntelController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:view player_intel_critical');
-    }
-
     public function playersList(Request $request)
     {
+        $this->authorize('viewAnyIntel', Player::class);
+
         $request->validate([
             'servers' => 'sometimes|nullable|array',
             'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
@@ -89,6 +87,14 @@ class PlayerIntelController extends Controller
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();
+
+        if ($request->user()->cannot('view player_intel_critical')) {
+            $data->makeHidden([
+                'last_join_address',
+                'vault_balance',
+                'last_minecraft_version'
+            ]);
+        }
 
         $countries = Country::select(['id', 'name'])->get()->pluck('name');
 

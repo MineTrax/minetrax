@@ -16,6 +16,25 @@ class PlayerPolicy
         //
     }
 
+    public function viewAnyIntel(?User $user)
+    {
+        $showPlayerIntelTo = app(PlayerSettings::class)?->show_player_intel_to;
+
+        if ($showPlayerIntelTo === 'all') {
+            return true;
+        }
+
+        if ($showPlayerIntelTo === 'staff') {
+            return $user && $user->isStaffMember();
+        }
+
+        if ($showPlayerIntelTo === 'login') {
+            return (bool) $user;
+        }
+
+        return false;
+    }
+
     public function viewIntel(?User $user, Player $player)
     {
         $showPlayerIntelTo = app(PlayerSettings::class)?->show_player_intel_to;
