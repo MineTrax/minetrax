@@ -138,7 +138,7 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
-        $rolesList = Role::query()->pluck('display_name', 'name');
+        $rolesList = Role::query()->orderByDesc('weight')->pluck('display_name', 'name');
         $badgesList = Badge::query()->get(['name', 'id']);
         $countryList = Country::get(['name', 'id']);
 
