@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use OpenAI\Client;
 
-const MAX_TABLES_BEFORE_PERFORMING_LOOKUP = 500;
+const MAX_TABLES_BEFORE_PERFORMING_LOOKUP = 1000;
 const STRICT_MODE = true;
 const MAX_COMPLETION_TOKENS = 1000;
 
@@ -62,8 +62,9 @@ class AskGptService
 
     protected function queryOpenAi(string $systemPrompt, string $userPrompt, string|null $stop = null, float $temperature = 0.0)
     {
+        $askDbAiModel = config('minetrax.askdb_ai_model');
         $completions = $this->client->chat()->create([
-            'model' => 'gpt-3.5-turbo-0125',
+            'model' => $askDbAiModel,
             'messages' => [
                 ['role' => 'system', 'content' => $systemPrompt],
                 ['role' => 'user', 'content' => $userPrompt],

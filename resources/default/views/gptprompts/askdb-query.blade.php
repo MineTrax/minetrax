@@ -3,7 +3,7 @@ Given an input question, create a syntactically correct {{ $dialect }} query to 
 {{ $dialect }} has sql_mode=only_full_group_by
 Current Time is {{ now() }}
 
-Response should only include SQL query.
+Response should only include SQL query. Don't include any formatting or comments.
 
 Only use the following tables and columns:
 
