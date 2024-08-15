@@ -172,4 +172,15 @@ return [
     |
     */
     'max_cover_photo_size_kb' => env('MAX_USER_COVER_PHOTO_SIZE_KB', 1024),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enforce Two Factor Authentication for Staff Members
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, this feature will enforce two factor authentication for staff members.
+    | Without enabling 2FA, staff members won't be able to access the admin panel.
+    |
+    */
+    'enforce_2fa_for_staff' => env('ENFORCE_2FA_FOR_STAFF', false),
 ];

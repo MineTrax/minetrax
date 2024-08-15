@@ -28,6 +28,17 @@ class StaffMember
             return redirect()->back();
         }
 
+        $enforce2fa = config('auth.enforce_2fa_for_staff');
+        if ($enforce2fa && !$user->hasEnabledTwoFactorAuthentication()) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => __('Two Factor Authentication is required to access this resource.')
+                ], 403);
+            }
+            return redirect()->route('profile.show')
+                ->with(['toast' => ['type' => 'warning', 'title' => __('Enable Two Factor Authentication'), 'body' => __('2FA should be enabled to access this resource.'), 'milliseconds' => 7000]]);
+        }
+
         return $next($request);
     }
 }
