@@ -80,6 +80,8 @@ class NewsController extends Controller
             $news->addMediaFromRequest('photo')->toMediaCollection('news');
         }
 
+        \Notification::send($request->user(), new \App\Notifications\NewsCreatedNotification($news));
+
         return redirect()->route('admin.news.show', $news->id)
             ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('News is created successfully')]]);
     }
