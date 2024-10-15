@@ -6,7 +6,7 @@ use BenSampo\Enum\Enum;
 
 final class PlayerPunishmentType extends Enum
 {
-    const BAN = 'PLAYER_BAN';
+    const PLAYER_BAN = 'PLAYER_BAN';
     const IP_BAN = 'IP_BAN';
     const COMPOSITE_BAN = 'COMPOSITE_BAN';
     const PLAYER_MUTE = 'PLAYER_MUTE';
