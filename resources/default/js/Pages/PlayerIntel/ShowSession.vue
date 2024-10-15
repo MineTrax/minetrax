@@ -395,7 +395,7 @@ activeTime = Math.max(activeTime, 0);
                 <a
                   class="hover:text-light-blue-400 hover:underline filter blur-sm hover:blur-none duration-300"
                   target="_blank"
-                  :href="`https://whois.domaintools.com/${criticalInfo.player_ip_address}`"
+                  :href="`https://check-host.net/ip-info?host=${criticalInfo.player_ip_address}`"
                 >
                   {{ criticalInfo.player_ip_address }}
                 </a>
