@@ -71,5 +71,6 @@ return [
 
         // bot
         'token' => env('DISCORD_BOT_TOKEN'),
+        'news_webhook_url' => env('NEWS_DISCORD_WEBHOOK_URL'),
     ],
 ];
