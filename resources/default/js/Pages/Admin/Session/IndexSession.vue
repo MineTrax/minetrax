@@ -120,7 +120,7 @@ const headerRow = [
               <a
                 class="hover:underline"
                 target="_blank"
-                :href="`https://whois.domaintools.com/${item.ip_address}`"
+                :href="`https://check-host.net/ip-info?host=${item.ip_address}`"
               >{{ item.ip_address }}</a>
             </div>
           </DtRowItem>
