@@ -126,5 +126,11 @@ class PermissionSeeder extends Seeder
 
         Permission::findOrCreate('link any_players');
         Permission::findOrCreate('unlink any_players');
+
+        Permission::findOrCreate('view banwarden_punishments');
+        Permission::findOrCreate('view banwarden_punishments_critical');
+        Permission::findOrCreate('create banwarden_punishments');
+        Permission::findOrCreate('update banwarden_punishments');
+        Permission::findOrCreate('delete banwarden_punishments');
     }
 }

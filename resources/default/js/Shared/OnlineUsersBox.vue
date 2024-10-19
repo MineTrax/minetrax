@@ -12,7 +12,7 @@
         <inertia-link
           v-for="user in onlineMembers"
           :key="user.id"
-          as="div"
+          as="a"
           :href="route('user.public.get', user.user.username)"
           class="cursor-pointer flex mr-2 items-center text-light-blue-500 hover:underline"
           :style="[user.user.roles[0].color ? {color: user.user.roles[0].color} : null]"

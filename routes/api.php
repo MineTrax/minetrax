@@ -33,6 +33,10 @@ Route::middleware(['auth.api-key'])->group(function () {
     Route::post('v1/intel/player/report/death', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postReportDeath'])->name('api.intel.player.report.death');
     // Route::post('v1/intel/player/report/pve-kill', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postReportPveKill'])->name('api.intel.player.report.pve');  POSTPONED because if a player do xp farming it will cause too much load and create too much data? we will see
 
+    // BanWarden
+    Route::post('v1/banwarden/sync/punishment', [\App\Http\Controllers\Api\ApiBanWardenController::class, 'postSyncPunishments'])->name('api.banwarden.sync.punishment');
+    Route::post('v1/banwarden/report/punishment', [\App\Http\Controllers\Api\ApiBanWardenController::class, 'postReportPunishment'])->name('api.banwarden.report.punishment');
+
     Route::post('v1/intel/server/report', [\App\Http\Controllers\Api\ApiMinecraftServerIntelController::class, 'postReport'])->name('api.intel.server.report');
     // Intel APIs ends
 });

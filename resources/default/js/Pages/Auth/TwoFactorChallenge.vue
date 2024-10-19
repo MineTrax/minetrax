@@ -28,7 +28,7 @@
             v-model="form.code"
             type="text"
             inputmode="numeric"
-            class="mt-1 block w-full"
+            class="mt-1 block w-full dark:text-gray-200"
             autofocus
             autocomplete="one-time-code"
           />
@@ -44,7 +44,7 @@
             ref="recovery_code"
             v-model="form.recovery_code"
             type="text"
-            class="mt-1 block w-full"
+            class="mt-1 block w-full dark:text-gray-200"
             autocomplete="one-time-code"
           />
         </div>
@@ -52,7 +52,7 @@
         <div class="flex items-center justify-end mt-4">
           <button
             type="button"
-            class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer"
+            class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer dark:text-gray-400 dark:hover:text-gray-200"
             @click.prevent="toggleRecovery"
           >
             <template v-if="! recovery">

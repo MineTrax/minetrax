@@ -155,7 +155,7 @@ export default {
         class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700"
       >
         <inertia-link
-          as="div"
+          as="a"
           :href="route('user.public.get', $page.props.auth.user.username)"
           class="flex items-center px-4"
         >

@@ -73,7 +73,7 @@ class RecruitmentSubmissionController extends Controller
                 'user.name',
                 'lastActor.name',
                 'lastCommentor.name',
-                AllowedFilter::custom('q', new FilterMultipleFields(['data', 'status'])),
+                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'data', 'status'])),
             ])
             ->allowedSorts($fields)
             ->defaultSort('-updated_at')
@@ -142,7 +142,7 @@ class RecruitmentSubmissionController extends Controller
                 'user.name',
                 'lastActor.name',
                 'lastCommentor.name',
-                AllowedFilter::custom('q', new FilterMultipleFields(['data', 'status'])),
+                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'data', 'status'])),
             ])
             ->allowedSorts($fields)
             ->defaultSort('-updated_at')

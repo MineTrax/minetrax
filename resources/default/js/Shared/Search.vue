@@ -45,7 +45,7 @@
             v-for="user in usersList"
             id="user"
             :key="user.username"
-            as="div"
+            as="a"
             :href="route('user.public.get', user.username)"
             class="flex px-2 py-1 justify-between hover:bg-light-blue-100 dark:hover:bg-cool-gray-900 rounded cursor-pointer"
           >
@@ -97,7 +97,7 @@
             v-for="player in playersList"
             id="player"
             :key="player.uuid"
-            as="div"
+            as="a"
             :href="route('player.show', player.uuid)"
             class="flex justify-between px-2 py-1 hover:bg-light-blue-100 dark:hover:bg-cool-gray-900 rounded cursor-pointer"
           >

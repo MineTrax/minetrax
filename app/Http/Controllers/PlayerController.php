@@ -133,6 +133,7 @@ class PlayerController extends Controller
         $username = strtolower($username);
         $useUsernameForSkins = config('minetrax.use_username_for_skins');
         $param = $useUsernameForSkins ? $username : $uuid;
+        $param = $username ?: $uuid;
         $size = $request->size ?? 100;
 
         // If we got invalid uuid, and we are not using username for skins, return alex

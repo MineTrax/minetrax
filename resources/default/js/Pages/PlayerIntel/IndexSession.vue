@@ -142,7 +142,7 @@ const headerRow = [
                 </div>
                 <div class="ml-4">
                   <InertiaLink
-                    as="div"
+                    as="a"
                     :href="route('player.intel.session.show', {
                       player: item.player_uuid,
                       session: item.id,

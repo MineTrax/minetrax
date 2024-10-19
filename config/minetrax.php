@@ -263,14 +263,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | AskDB AI Model
+    | OpenAI AI Model
     |--------------------------------------------------------------------------
     |
-    | Name of the AI model to use for AskDB feature. Currently OpenAI models are supported.
+    | Name of the AI model to use for OpenAI query. Currently OpenAI models are supported.
     | Eg: gpt-4o, gpt-4o-mini.
     |
     */
-    'askdb_ai_model' => env('ASKDB_AI_MODEL', 'gpt-4o-mini'),
+    'openai_ai_model' => env('OPENAI_AI_MODEL', 'gpt-4o-mini'),
 
     /*
     |--------------------------------------------------------------------------
@@ -383,4 +383,15 @@ return [
     |
     */
     'hide_player_next_rank' => env('HIDE_PLAYER_NEXT_RANK', false),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BanWarden AI Insights Enabled
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, BanWarden will use AI to generate insights for punishments.
+    |
+    */
+    'banwarden_ai_insights_enabled' => env('BANWARDEN_AI_INSIGHTS_ENABLED', true) && env('OPENAI_API_KEY'),
 ];

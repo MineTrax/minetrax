@@ -38,7 +38,20 @@
                         autocomplete="name"
                         type="text"
                         name="name"
-                        :help="__('Eg: My Bungee Server')"
+                        :help="__('Publicly visible name of the server (e.g., My Bungee Server etc.).')"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="server_identifier"
+                        v-model="form.settings.server_identifier"
+                        :label="__('Server Identifier')"
+                        :help="__('Unique identifier for the server, used for identification in proxy configurations and ban management plugins (e.g., proxy, bungee, network1, etc.).')"
+                        :error="form.errors['settings.server_identifier']"
+                        type="text"
+                        name="server_identifier"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -53,6 +66,19 @@
                         type="text"
                         name="hostname"
                         :help="__('Eg: play-my-bungee-server.com')"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="order"
+                        v-model="form.order"
+                        :label="__('Weight')"
+                        :error="form.errors.order"
+                        :help="__('Higher the weight, higher the priority. Eg: 1,3,10 etc. Can be left empty.')"
+                        type="number"
+                        name="order"
                         help-error-flex="flex-col"
                       />
                     </div>
@@ -150,6 +176,16 @@
                         name="is_skin_change_via_web_allowed"
                       />
                     </div>
+
+                    <div class="flex items-center col-span-6 sm:col-span-6">
+                      <x-checkbox
+                        id="is_banwarden_enabled"
+                        v-model="form.settings.is_banwarden_enabled"
+                        :label="__('Enable BanWarden')"
+                        :help="__('BanWarden allows you to manage all your punishments (bans, mutes, kicks etc) from the web. This requires a ban plugin to be installed on the server Eg: LiteBans, LibertyBans etc.')"
+                        name="is_banwarden_enabled"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
@@ -206,8 +242,11 @@ export default {
                 hostname: this.server?.hostname,
                 is_server_intel_enabled: this.server?.is_server_intel_enabled ?? true,
                 settings: {
+                    server_identifier: this.server?.settings?.server_identifier ?? null,
                     is_skin_change_via_web_allowed: this.server?.settings?.is_skin_change_via_web_allowed ?? true,
-                }
+                    is_banwarden_enabled: !this.server ? true : this.server?.settings?.is_banwarden_enabled ?? false,
+                },
+                order: this.server?.order,
             }),
         };
     },

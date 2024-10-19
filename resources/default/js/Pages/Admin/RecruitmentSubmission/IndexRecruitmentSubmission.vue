@@ -40,6 +40,10 @@ const headerRow = [
         label: __('ID'),
         sortable: true,
         class: 'text-left w-[5%]',
+        filterable: {
+            key: 'id',
+            type: 'text',
+        }
     },
     {
         key: 'user_id',

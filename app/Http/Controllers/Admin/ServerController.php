@@ -151,8 +151,12 @@ class ServerController extends Controller
             'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled|different:join_port',
             'name' => 'required',
             'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
-            'settings' => 'sometimes',
             'is_server_intel_enabled' => 'required|boolean',
+            'settings' => 'sometimes',
+            'settings.server_identifier' => 'nullable|alpha_dash',
+            'settings.is_skin_change_via_web_allowed' => 'required|boolean',
+            'settings.is_banwarden_enabled' => 'required|boolean',
+            'order' => 'nullable|numeric',
         ]);
 
         $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
@@ -170,6 +174,7 @@ class ServerController extends Controller
             'is_server_intel_enabled' => $request->is_server_intel_enabled,
             'settings' => $request->settings,
             'created_by' => $request->user()->id,
+            'order' => $request->order,
         ]);
 
         if (! $request->webquery_port) {
@@ -276,8 +281,12 @@ class ServerController extends Controller
             'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled|different:join_port',
             'name' => 'required',
             'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
-            'settings' => 'sometimes',
             'is_server_intel_enabled' => 'required|boolean',
+            'settings' => 'sometimes',
+            'settings.server_identifier' => 'nullable|alpha_dash',
+            'settings.is_skin_change_via_web_allowed' => 'required|boolean',
+            'settings.is_banwarden_enabled' => 'required|boolean',
+            'order' => 'nullable|numeric',
         ]);
 
         $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
@@ -292,6 +301,7 @@ class ServerController extends Controller
         $server->settings = $request->settings;
         $server->is_server_intel_enabled = $request->is_server_intel_enabled;
         $server->country_id = $countryId;
+        $server->order = $request->order;
         $server->updated_by = $request->user()->id;
         $server->save();
 

@@ -48,6 +48,10 @@ class UpdateServerRequest extends FormRequest
             'is_server_intel_enabled' => 'required|boolean',
             'is_player_intel_enabled' => 'required|boolean',
             'is_ingame_chat_enabled' => 'required|boolean',
+            'order' => 'nullable|numeric',
+            'settings.server_identifier' => 'nullable|alpha_dash',
+            'settings.is_skin_change_via_web_allowed' => 'required|boolean',
+            'settings.is_banwarden_enabled' => 'required|boolean',
         ];
     }
 

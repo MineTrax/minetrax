@@ -323,6 +323,7 @@
                         label="Role"
                         :placeholder="__('Select role')"
                         :select-list="rolesList"
+                        :disabled="!can('assign roles')"
                       />
                       <!--                                        <jet-label for="role" value="Role"/>-->
                       <!--                                        <multiselect v-model="form.role" deselect-label="Can't remove" track-by="id" label="display_name" placeholder="Select role" :options="rolesList" :searchable="false" :allow-empty="false"></multiselect>-->

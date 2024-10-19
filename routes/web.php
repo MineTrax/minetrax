@@ -62,7 +62,7 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     // Download file
     Route::get('download', [\App\Http\Controllers\DownloadController::class, 'index'])->name('download.index');
     Route::get('download/{download:slug}', [\App\Http\Controllers\DownloadController::class, 'show'])->name('download.show');
-    Route::get('download/{download:slug}/download', [\App\Http\Controllers\DownloadController::class, 'download'])->name('download.download');
+    Route::get('download/{download:slug}/download/{any?}', [\App\Http\Controllers\DownloadController::class, 'download'])->where('any', '.*')->name('download.download');
 
     // Custom Form
     Route::get('forms', [\App\Http\Controllers\CustomFormController::class, 'index'])->name('custom-form.index');
@@ -76,6 +76,13 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     // Locale
     Route::get('locale/list', [\App\Http\Controllers\LocaleController::class, 'getAvailableLocales'])->name('locale.list');
     Route::post('locale/set', [\App\Http\Controllers\LocaleController::class, 'setLocale'])->name('locale.set');
+
+    // BanWarden
+    Route::get('player/punishments', [\App\Http\Controllers\BanWardenController::class, 'index'])->name('player.punishment.index');
+    Route::get('player/punishments/{playerPunishment:id}', [\App\Http\Controllers\BanWardenController::class, 'show'])->name('player.punishment.show');
+    Route::get('player/punishments/{playerPunishment:id}/history', [\App\Http\Controllers\BanWardenController::class, 'indexLastPunishments'])->name('player.punishment.show.history');
+    Route::get('player/punishments/{playerPunishment:id}/sessions', [\App\Http\Controllers\BanWardenController::class, 'indexLastSessions'])->name('player.punishment.show.session');
+    Route::get('player/punishments/{playerPunishment:id}/alts', [\App\Http\Controllers\BanWardenController::class, 'indexAlts'])->name('player.punishment.show.alt');
 });
 
 /**

@@ -103,7 +103,7 @@ const navItems = [
                 active: route().current('admin.intel.player.list'),
                 children: [],
                 icon: null,
-                visible: canWild('player_intel_critical')
+                visible: true
             },
             {
                 label: 'Player Ranks',
@@ -115,7 +115,7 @@ const navItems = [
             },
         ],
         icon: TrophyIcon,
-        visible: canWild('player_intel_critical') || canWild('ranks')
+        visible: true
     },
     {
         label: 'Users', href: '#', active: false, children: [
@@ -224,7 +224,7 @@ const navItems = [
             },
         ],
         icon: AcademicCapIcon,
-        visible: canWild('recruitments')
+        visible: canWild('recruitments') || canWild('recruitment_submissions')
     },
     {
         label: 'Custom Forms',
@@ -256,7 +256,7 @@ const navItems = [
             },
         ],
         icon: ClipboardDocumentListIcon,
-        visible: canWild('custom_forms')
+        visible: canWild('custom_forms') || canWild('custom_form_submissions')
     },
     {
         label: 'Commands',

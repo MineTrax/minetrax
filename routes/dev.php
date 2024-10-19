@@ -2,6 +2,7 @@
 
 use App\Jobs\AccountLinkAfterSuccessCommandJob;
 use App\Jobs\AccountUnlinkAfterSuccessCommandJob;
+use App\Jobs\GeneratePunishmentInsightsJob;
 use App\Jobs\RunAwaitingCommandQueuesJob;
 use App\Models\Player;
 use App\Models\Server;
@@ -182,4 +183,22 @@ Route::get('test-unlink', function () {
 
 Route::get('test-runlater', function () {
     RunAwaitingCommandQueuesJob::dispatch();
+});
+
+Route::get('test-json-query', function () {
+    $originServerName = 'litebans';
+    $originServer = Server::where('settings->server_identifier', $originServerName)
+        ->orWhere('name', $originServerName)
+        ->first();
+
+    dd($originServer);
+});
+
+Route::get('ban-insights', function () {
+
+    $punishment = \App\Models\PlayerPunishment::find(1044);
+
+    GeneratePunishmentInsightsJob::dispatch($punishment);
+
+    return 'done';
 });

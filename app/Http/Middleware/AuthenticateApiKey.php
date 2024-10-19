@@ -8,12 +8,13 @@ use Closure;
 use Illuminate\Http\Request;
 
 const REQUEST_MAX_AGE_THRESHOLD_SECONDS = 600; // servers can be out of sync against NTP servers by various minutes so give some buffer .
-const VALIDATE_SIGNATURE = true; // For testing purposes, we can disable signature validation.
 
 class AuthenticateApiKey
 {
+    private bool $VALIDATE_SIGNATURE;
     public function __construct(public PluginSettings $pluginSettings)
     {
+        $this->VALIDATE_SIGNATURE = app()->isLocal() && app()->hasDebugModeEnabled() ? false : true;
     }
 
     /**
@@ -59,7 +60,7 @@ class AuthenticateApiKey
             $signaturePayload = $request->getContent();
         }
         $signatureValid = CryptoUtils::validateHmacSignature($signaturePayload, $requestSignature, $this->pluginSettings->plugin_api_secret);
-        if (! $signatureValid && VALIDATE_SIGNATURE) {
+        if (! $signatureValid && $this->VALIDATE_SIGNATURE) {
             return response()->json([
                 'status' => 'error',
                 'type' => 'invalid_signature',
@@ -69,7 +70,7 @@ class AuthenticateApiKey
 
         // Validate Request Age if provided
         $timestampMs = $request->get('timestamp');
-        if ($timestampMs && VALIDATE_SIGNATURE) {
+        if ($timestampMs && $this->VALIDATE_SIGNATURE) {
             $timestamp = $timestampMs / 1000;
             $currentTimestamp = now()->timestamp;
             $requestAge = abs($currentTimestamp - $timestamp);

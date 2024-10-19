@@ -15,6 +15,7 @@ import { ref } from 'vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import { startCase } from 'lodash';
+import { ArrowLeftCircleIcon } from '@heroicons/vue/24/outline';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -83,10 +84,23 @@ const rejectForm = useForm({
             <span>{{ __("Delete") }}</span>
           </InertiaLink>
           <InertiaLink
-            :href="['pending', 'onhold', 'inprogress'].includes(submission.status.value) ? route('admin.recruitment-submission.index-open') : route('admin.recruitment-submission.index-closed')"
+            :href="route('admin.recruitment-submission.index-open')"
             class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-400 border border-transparent rounded-md hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-400 focus:shadow-outline-gray dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-900 dark:focus:border-gray-700"
           >
-            <span>{{ __("Back") }}</span>
+            <span class="flex items-center justify-center">
+              <ArrowLeftCircleIcon class="h-4 mr-2" />
+              {{ __("Open") }}
+            </span>
+          </InertiaLink>
+
+          <InertiaLink
+            :href="route('admin.recruitment-submission.index-closed')"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-400 border border-transparent rounded-md hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-400 focus:shadow-outline-gray dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-900 dark:focus:border-gray-700"
+          >
+            <span class="flex items-center justify-center">
+              <ArrowLeftCircleIcon class="h-4 mr-2" />
+              {{ __("Closed") }}
+            </span>
           </InertiaLink>
         </div>
       </div>
