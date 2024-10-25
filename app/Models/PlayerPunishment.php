@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Enums\PlayerPunishmentType;
 use App\Traits\HasCommentsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class PlayerPunishment extends BaseModel
+class PlayerPunishment extends BaseModel implements HasMedia
 {
-    use HasFactory, HasCommentsTrait;
+    use HasFactory, HasCommentsTrait, InteractsWithMedia;
 
     protected $casts = [
         'type' => PlayerPunishmentType::class,
@@ -27,6 +29,11 @@ class PlayerPunishment extends BaseModel
 
     protected $hidden = [
         'ip_address',
+        'plugin_name',
+        'plugin_punishment_id',
+        'meta',
+        'origin_server_name',
+        'origin_server_id',
     ];
 
     public function scopeStatus($query, $status)
@@ -57,6 +64,10 @@ class PlayerPunishment extends BaseModel
 
     public function getMaskedIpAddressAttribute()
     {
+        $hideCounty = config('minetrax.hide_country_for_privacy');
+        if ($hideCounty) {
+            return 'xx.xx.xx.xx';
+        }
         return preg_replace('/(\d{1,3})\.\d{1,3}\.\d{1,3}\.\d{1,3}/', '$1.xx.xx.xx', $this->ip_address);
     }
 

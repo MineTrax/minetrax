@@ -13,12 +13,14 @@ use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 
-// TODO: Remove all critical data from the response.
 class BanWardenController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', PlayerPunishment::class);
+
         $perPage = request()->input('perPage', 10);
         if ($perPage > 100) {
             $perPage = 100;
@@ -95,8 +97,11 @@ class BanWardenController extends Controller
         ]);
     }
 
-    public function show(PlayerPunishment $playerPunishment)
+    public function show(PlayerPunishment $playerPunishment, Request $request)
     {
+        $this->authorize('view', $playerPunishment);
+        $canViewCritical = Gate::allows('viewCritical', $playerPunishment);
+
         $playerPunishment->load([
             'country:id,name,iso_code',
             'victimPlayer:id,uuid,username,skin_texture_id',
@@ -110,15 +115,31 @@ class BanWardenController extends Controller
             GeneratePunishmentInsightsJob::dispatch($playerPunishment);
         }
 
-        // return $responseProps;
         $playerPunishment->victimPlayer?->append('render_url');
-        return Inertia::render('BanWarden/ShowPunishment', [
+        $playerPunishment->makeVisibleIf(
+            $canViewCritical,
+            [
+                'ip_address',
+                'plugin_punishment_id',
+                'origin_server_name',
+            ]
+        );
+        $response = [
             'punishment' => $playerPunishment,
-        ]);
+            'permissions' => [
+                'canViewSessions' => Gate::allows('viewAnyIntel', Player::class),
+                'canViewAlts' => Gate::allows('viewAlts', $playerPunishment),
+                'canViewCritical' => $canViewCritical,
+            ],
+        ];
+        return Inertia::render('BanWarden/ShowPunishment', $response);
     }
 
     public function indexLastPunishments(PlayerPunishment $playerPunishment)
     {
+        $this->authorize('view', $playerPunishment);
+        $canViewCritical = Gate::allows('viewCritical', $playerPunishment);
+
         $perPage = request()->query('perPage', 10);
         if ($perPage > 100) {
             $perPage = 100;
@@ -134,7 +155,12 @@ class BanWardenController extends Controller
                 ->where('uuid', $playerPunishment->uuid)
                 ->where('id', '!=', $playerPunishment->id)
                 ->orderByDesc('start_at')
-                ->simplePaginate($perPage);
+                ->simplePaginate($perPage)
+                ->through(fn($punishment) => $punishment->makeVisibleIf($canViewCritical, [
+                    'ip_address',
+                    'plugin_punishment_id',
+                    'origin_server_name',
+                ]));
         } else {
             $lastPunishments = PlayerPunishment::with([
                 'country:id,name,iso_code',
@@ -145,7 +171,12 @@ class BanWardenController extends Controller
                 ->where('ip_address', 'LIKE', $playerPunishment->ip_address)
                 ->where('id', '!=', $playerPunishment->id)
                 ->orderByDesc('start_at')
-                ->simplePaginate($perPage);
+                ->simplePaginate($perPage)
+                ->through(fn($punishment) => $punishment->makeVisibleIf($canViewCritical, [
+                    'ip_address',
+                    'plugin_punishment_id',
+                    'origin_server_name',
+                ]));
         }
 
         return $lastPunishments;
@@ -153,6 +184,9 @@ class BanWardenController extends Controller
 
     public function indexLastSessions(PlayerPunishment $playerPunishment)
     {
+        $this->authorize('viewAnyIntel', Player::class);
+        $canViewCritical = Gate::allows('viewCritical', $playerPunishment);
+
         $perPage = request()->query('perPage', 5);
         if ($perPage > 100) {
             $perPage = 100;
@@ -164,18 +198,14 @@ class BanWardenController extends Controller
                 ->where('session_started_at', '<=', $playerPunishment->start_at)
                 ->orderByDesc('session_started_at')
                 ->simplePaginate($perPage)
-                ->through(function ($session) {
-                    return $session->makeVisible('player_ip_address');
-                });
+                ->through(fn($session) => $session->makeVisibleIf($canViewCritical, 'player_ip_address'));
         } else {
             $pastSessions = MinecraftPlayerSession::with(['country:id,name,iso_code', 'server:id,name'])
                 ->where('player_ip_address', 'LIKE', $playerPunishment->ip_address)
                 ->where('session_started_at', '<=', $playerPunishment->start_at)
                 ->orderByDesc('session_started_at')
                 ->simplePaginate($perPage)
-                ->through(function ($session) {
-                    return $session->makeVisible('player_ip_address');
-                });
+                ->through(fn($session) => $session->makeVisibleIf($canViewCritical, 'player_ip_address'));
         }
 
         return $pastSessions;
@@ -183,9 +213,18 @@ class BanWardenController extends Controller
 
     public function indexAlts(PlayerPunishment $playerPunishment)
     {
+        $this->authorize('viewAlts', $playerPunishment);
+        $canViewCritical = Gate::allows('viewCritical', $playerPunishment);
+
         $perPage = request()->query('perPage', 5);
         if ($perPage > 100) {
             $perPage = 100;
+        }
+
+        if (!$playerPunishment->ip_address) {
+            return (object) [
+                'data' => [],
+            ];
         }
 
         $firstTwoOctets = explode('.', $playerPunishment->ip_address);
@@ -200,9 +239,7 @@ class BanWardenController extends Controller
             ->withCount('punishments')
             ->orderByDesc('last_seen_at')
             ->simplePaginate($perPage)
-            ->through(function ($player) {
-                return $player->makeVisible('ip_address');
-            });
+            ->through(fn($player) => $player->makeVisibleIf($canViewCritical, 'ip_address'));
 
         return $players;
     }

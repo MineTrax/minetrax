@@ -16,6 +16,7 @@ const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers()
 
 defineProps({
     punishment: Object,
+    permissions: Object,
 });
 
 const punishmentHistoryHeaders = [
@@ -345,7 +346,7 @@ const altHeaders = [
                 {{ __("IP Address") }}
               </p>
               <p class="font-bold">
-                {{ punishment.masked_ip_address || __("None") }}
+                {{ punishment.ip_address || punishment.masked_ip_address || __("None") }}
               </p>
             </div>
             <div>
@@ -409,7 +410,7 @@ const altHeaders = [
                 {{ __("Notes") }}
               </p>
               <p class="mt-1 font-bold leading-normal">
-                {{ punishment.notes ?? __("None") }}
+                {{ punishment.notes ?? __("-") }}
               </p>
             </div>
             <div>
@@ -546,10 +547,28 @@ const altHeaders = [
                   {{ __("Pardon Reason") }}
                 </p>
                 <p class="mt-1 font-bold leading-normal">
-                  {{ punishment.removed_reason ?? __("None") }}
+                  {{ punishment.removed_reason ?? __("-") }}
                 </p>
               </div>
             </template>
+
+            <div v-if="punishment.plugin_punishment_id">
+              <p class="font-semibold text-gray-500">
+                {{ __("Plugin Punishment ID") }}
+              </p>
+              <p class="font-bold">
+                {{ punishment.plugin_punishment_id }}
+              </p>
+            </div>
+
+            <div v-if="punishment.origin_server_name">
+              <p class="font-semibold text-gray-500">
+                {{ __("Origin Server") }}
+              </p>
+              <p class="font-bold">
+                {{ punishment.origin_server_name }}
+              </p>
+            </div>
           </div>
           <div class="w-full p-2 bg-white rounded shadow dark:bg-cool-gray-800 md:p-5 md:col-span-1">
             <h3 class="col-span-3 text-lg font-bold text-gray-500 dark:text-gray-400">
@@ -797,8 +816,8 @@ const altHeaders = [
                 </td>
 
                 <DtRowItem class="text-center">
-                  <span v-if="item.masked_ip_address">
-                    {{ item.masked_ip_address }}
+                  <span v-if="item.ip_address || item.masked_ip_address">
+                    {{ item.ip_address || item.masked_ip_address }}
                   </span>
                   <span
                     v-else
@@ -922,7 +941,9 @@ const altHeaders = [
         <!-- Punishment History End -->
 
         <!-- Past Sessions Start -->
-        <div>
+        <div
+          v-if="permissions['canViewSessions']"
+        >
           <h3 class="mb-2 text-2xl font-bold text-gray-500 dark:text-gray-300">
             {{ __("Last 5 Sessions") }}
             <span class="text-sm">
@@ -984,7 +1005,7 @@ const altHeaders = [
                     v-tippy
                     class="whitespace-nowrap"
                   >
-                    {{ item.player_ip_address }}
+                    {{ item.player_ip_address || '-' }}
                   </span>
                 </DtRowItem>
 
@@ -1051,7 +1072,9 @@ const altHeaders = [
         <!-- Past Sessions End -->
 
         <!-- Possible Alts Start -->
-        <div>
+        <div
+          v-if="permissions['canViewAlts']"
+        >
           <h3 class="mb-2 text-2xl font-bold text-gray-500 dark:text-gray-300">
             {{ __("Possible Alts") }}
             <span class="text-sm">
@@ -1126,7 +1149,7 @@ const altHeaders = [
                     v-tippy
                     class="whitespace-nowrap"
                   >
-                    {{ item.ip_address }}
+                    {{ item.ip_address || '-' }}
                   </span>
                 </DtRowItem>
 

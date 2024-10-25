@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\BanWardenPlayerPardoned;
+use App\Events\BanWardenPlayerPunished;
+use App\Jobs\GeneratePunishmentInsightsJob;
 use App\Models\Player;
 use App\Models\PlayerPunishment;
 use App\Models\Server;
@@ -40,9 +43,10 @@ class ApiBanWardenController extends ApiController
             'data.punishments.*.from_event' => 'required|in:punish,pardon,sync',
         ]);
 
+        $banwardenEnabledInConfig = config('minetrax.banwarden_enabled');
         $server = Server::where('id', $request->input('data.server_id'))->firstOrFail();
-        if (!$server->settings['is_banwarden_enabled']) {
-            return $this->error(__('BanWarden is disabled on this server. Please enable it from web.'), 'banwarden_disabled', 403);
+        if (!$banwardenEnabledInConfig || !$server->settings['is_banwarden_enabled']) {
+            return $this->error(__('BanWarden is disabled globally or on this server.'), 'banwarden_disabled', 403);
         }
 
         DB::beginTransaction();
@@ -150,12 +154,12 @@ class ApiBanWardenController extends ApiController
             'data.from_event' => 'required|in:punish,pardon,sync',
         ]);
 
+        $banwardenEnabledInConfig = config('minetrax.banwarden_enabled');
         $server = Server::where('id', $request->input('data.server_id'))->firstOrFail();
-        if (!$server->settings['is_banwarden_enabled']) {
-            return $this->error(__('BanWarden is disabled on this server. Please enable it from web.'), 'banwarden_disabled', 403);
+        if (!$banwardenEnabledInConfig || !$server->settings['is_banwarden_enabled']) {
+            return $this->error(__('BanWarden is disabled globally or on this server.'), 'banwarden_disabled', 403);
         }
 
-        DB::beginTransaction();
         try {
             $punishment = $request->input('data');
             $playerUuid = Str::isUuid($punishment['uuid']) ? $punishment['uuid'] : null;
@@ -192,7 +196,7 @@ class ApiBanWardenController extends ApiController
             $forGeoIp = str_replace(['%', '*'], '0', $punishment['ip_address']);
             $countryId = $geolocationService->getCountryIdFromIP($forGeoIp);
 
-            PlayerPunishment::updateOrCreate([
+            $punishment = PlayerPunishment::updateOrCreate([
                 'type' => $punishment['type'],
                 'plugin_punishment_id' => $punishment['plugin_punishment_id'],
                 'plugin_name' => $punishment['plugin_name'],
@@ -218,16 +222,24 @@ class ApiBanWardenController extends ApiController
                 'removed_at' => $removedAtDate,
             ]);
 
-            // TODO: Report and FireEvent accordingly if its Punish or Pardon event.
+            // Dispatch Events
+            if ($punishment->from_event == 'punish') {
+                BanWardenPlayerPunished::dispatch($punishment);
+            } else if ($punishment->from_event == 'pardon') {
+                BanWardenPlayerPardoned::dispatch($punishment);
+            }
 
-            DB::commit();
+            // AI Insights
+            $insightEnabled = config('minetrax.banwarden_ai_insights_enabled');
+            if ($insightEnabled && !$punishment->insights) {
+                GeneratePunishmentInsightsJob::dispatch($punishment);
+            }
 
             // Forget Metrics Cache
             Cache::forget('banwarden.public.metrics');
 
             return $this->success(null, __('Punishment reported successfully.'));
         } catch (\Exception $e) {
-            DB::rollBack();
             \Log::error($e);
 
             return $this->error(__('Failed to report punishment: :message', [

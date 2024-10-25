@@ -385,6 +385,39 @@ return [
     'hide_player_next_rank' => env('HIDE_PLAYER_NEXT_RANK', false),
 
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable BanWarden
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, BanWarden feature will be enabled.
+    | BanWarden is a powerful ban management system that allows you to view insights about punishments, and manage them.
+    |
+    */
+    'banwarden_enabled' => env('BANWARDEN_ENABLED', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | BanWarden Show Public
+    |--------------------------------------------------------------------------
+    |
+    | Show banwarden punishments page to everyone.
+    | If set to false, only authenticated users with banwarden permission will be able to view punishments.
+    |
+    */
+    'banwarden_show_public' => env('BANWARDEN_SHOW_PUBLIC', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | BanWarden Control From Web
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, staff can control banwarden punishments from web. If disabled, staff can only view punishments.
+    |
+    */
+    'banwarden_allow_control_from_web' => env('BANWARDEN_ALLOW_CONTROL_FROM_WEB', true),
+
     /*
     |--------------------------------------------------------------------------
     | BanWarden AI Insights Enabled

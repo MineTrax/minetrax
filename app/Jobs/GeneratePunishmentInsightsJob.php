@@ -111,21 +111,25 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         $lastSessionsJsonString = json_encode($pastSessions);
 
         // Possible Alts
-        $firstTwoOctets = explode('.', $this->punishment->ip_address);
-        $firstTwoOctets = $firstTwoOctets[0] . '.' . $firstTwoOctets[1] . '.%';
-        $altUuids = MinecraftPlayerSession::distinct()->select('player_uuid')
-            ->where('player_uuid', '!=', $this->punishment->uuid)
-            ->where('player_ip_address', 'LIKE', $firstTwoOctets)
-            ->pluck('player_uuid');
-        $players = Player::select(['id', 'uuid', 'username', 'skin_texture_id', 'first_seen_at', 'last_seen_at', 'country_id', 'ip_address', 'play_time'])
-            ->whereIn('uuid', $altUuids)
-            ->with('country:id,name,iso_code')
-            ->withCount('punishments')
-            ->orderByDesc('last_seen_at')
-            ->limit(10)
-            ->get()
-            ->makeVisible('ip_address');
-        $possibleAltsJsonString = json_encode($players);
+        if (!$this->punishment->ip_address) {
+            $altPlayers = [];
+        } else {
+            $firstTwoOctets = explode('.', $this->punishment->ip_address);
+            $firstTwoOctets = $firstTwoOctets[0] . '.' . $firstTwoOctets[1] . '.%';
+            $altUuids = MinecraftPlayerSession::distinct()->select('player_uuid')
+                ->where('player_uuid', '!=', $this->punishment->uuid)
+                ->where('player_ip_address', 'LIKE', $firstTwoOctets)
+                ->pluck('player_uuid');
+            $altPlayers = Player::select(['id', 'uuid', 'username', 'skin_texture_id', 'first_seen_at', 'last_seen_at', 'country_id', 'ip_address', 'play_time'])
+                ->whereIn('uuid', $altUuids)
+                ->with('country:id,name,iso_code')
+                ->withCount('punishments')
+                ->orderByDesc('last_seen_at')
+                ->limit(10)
+                ->get()
+                ->makeVisible('ip_address');
+        }
+        $possibleAltsJsonString = json_encode($altPlayers);
 
         $systemPrompt = view('gptprompts.punishment-insights');
         $question = <<<QUESTION
@@ -151,6 +155,14 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
                 'status' => 'generated',
                 ...$responseData,
             ],
+        ]);
+    }
+
+    // on failure, set insights to null
+    public function failed(): void
+    {
+        $this->punishment->update([
+            'insights' => null,
         ]);
     }
 }
