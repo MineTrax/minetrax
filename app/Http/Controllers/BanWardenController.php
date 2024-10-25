@@ -20,6 +20,7 @@ class BanWardenController extends Controller
     public function index()
     {
         $this->authorize('viewAny', PlayerPunishment::class);
+        $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
 
         $perPage = request()->input('perPage', 10);
         if ($perPage > 100) {
@@ -69,9 +70,11 @@ class BanWardenController extends Controller
             ->allowedSorts($fields)
             ->defaultSort('-id')
             ->simplePaginate(perPage: $perPage)
-            ->through(function ($punishment) {
-                return $punishment->makeHidden('ip_address');
-            })
+            ->through(fn($punishment) => $punishment->makeVisibleIf($canViewCritical, [
+                'ip_address',
+                'plugin_punishment_id',
+                'origin_server_name',
+            ]))
             ->withQueryString();
 
         $countries = Country::select(['id', 'name'])->get()->pluck('name');
@@ -100,7 +103,7 @@ class BanWardenController extends Controller
     public function show(PlayerPunishment $playerPunishment, Request $request)
     {
         $this->authorize('view', $playerPunishment);
-        $canViewCritical = Gate::allows('viewCritical', $playerPunishment);
+        $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
 
         $playerPunishment->load([
             'country:id,name,iso_code',
@@ -138,7 +141,7 @@ class BanWardenController extends Controller
     public function indexLastPunishments(PlayerPunishment $playerPunishment)
     {
         $this->authorize('view', $playerPunishment);
-        $canViewCritical = Gate::allows('viewCritical', $playerPunishment);
+        $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
 
         $perPage = request()->query('perPage', 10);
         if ($perPage > 100) {
@@ -185,7 +188,7 @@ class BanWardenController extends Controller
     public function indexLastSessions(PlayerPunishment $playerPunishment)
     {
         $this->authorize('viewAnyIntel', Player::class);
-        $canViewCritical = Gate::allows('viewCritical', $playerPunishment);
+        $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
 
         $perPage = request()->query('perPage', 5);
         if ($perPage > 100) {
@@ -214,7 +217,7 @@ class BanWardenController extends Controller
     public function indexAlts(PlayerPunishment $playerPunishment)
     {
         $this->authorize('viewAlts', $playerPunishment);
-        $canViewCritical = Gate::allows('viewCritical', $playerPunishment);
+        $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
 
         $perPage = request()->query('perPage', 5);
         if ($perPage > 100) {

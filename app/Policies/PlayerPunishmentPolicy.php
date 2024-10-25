@@ -68,7 +68,7 @@ class PlayerPunishmentPolicy
     /**
      * Determine whether the user can view alts of the model.
      */
-    public function viewCritical(User $user, PlayerPunishment $playerPunishment): bool
+    public function viewCritical(User $user): bool
     {
         if ($user->can('read banwarden_punishments_critical')) {
             return true;

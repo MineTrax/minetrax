@@ -316,8 +316,8 @@ const headerRow = [
             </td>
 
             <DtRowItem class="text-center">
-              <span v-if="item.masked_ip_address">
-                {{ item.masked_ip_address }}
+              <span v-if="item.ip_address || item.masked_ip_address">
+                {{ item.ip_address || item.masked_ip_address }}
               </span>
               <span
                 v-else
