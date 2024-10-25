@@ -249,6 +249,14 @@ return [
             'key' => 'route-change-player-skin',
             'authenticated' => true,
         ],
+        [
+            'type' => 'route',
+            'name' => 'Punishments',
+            'title' => 'Punishments',
+            'route' => 'player.punishment.index',
+            'key' => 'route-punishments',
+            'authenticated' => false,
+        ],
     ],
 
     /*
