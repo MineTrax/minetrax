@@ -2,7 +2,7 @@
   <app-layout>
     <app-head :title="__(':title - News', {title: news.title})" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
+    <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex justify-end mb-8">
         <div class="flex">
           <inertia-link
