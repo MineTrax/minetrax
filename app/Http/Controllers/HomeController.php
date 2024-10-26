@@ -124,6 +124,7 @@ class HomeController extends Controller
                 'show_discord_box_in_home_hero' => $themeSettings->show_discord_box_in_home_hero,
                 'home_hero_bg_particles' => $themeSettings->home_hero_bg_particles,
             ],
+            'bedrockIpPort' => $generalSettings->bedrock_ip_port,
         ]);
     }
 

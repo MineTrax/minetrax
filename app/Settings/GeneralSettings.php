@@ -50,6 +50,8 @@ class GeneralSettings extends Settings
     public ?string $header_broadcast_url;
     public bool $enable_topplayersbox;
 
+    public ?string $bedrock_ip_port;
+
     public static function group(): string
     {
         return 'general';

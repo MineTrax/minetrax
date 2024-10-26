@@ -7,11 +7,25 @@
       />
     </div>
   </div>
+  <div v-if="bedrockIpPort" class="mt-4 text-center">
+    <button
+      @click="copyToClipboard(bedrockIpPort)"
+      class="px-4 py-2 font-semibold text-white bg-indigo-600 rounded hover:bg-indigo-700"
+    >
+      Copy Bedrock IP:Port
+    </button>
+  </div>
 </template>
 
 <script>
-
 export default {
-    props: ['htmlData']
+  props: ['htmlData', 'bedrockIpPort'],
+  methods: {
+    copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard');
+      });
+    },
+  },
 };
 </script>
