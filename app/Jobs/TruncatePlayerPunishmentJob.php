@@ -2,15 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Models\ServerChatlog;
+use App\Models\PlayerPunishment;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Cache;
 
-class TruncateServerChatlogsJob implements ShouldQueue
+class TruncatePlayerPunishmentJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -27,10 +28,10 @@ class TruncateServerChatlogsJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Cache::put('dangerzone::truncate_chatlogs', now(), 3600 * 24);
+        Cache::put('dangerzone::truncate_player_punishments', now(), 3600 * 24);
 
-        ServerChatlog::truncate();
+        PlayerPunishment::query()->delete();
 
-        Cache::forget('dangerzone::truncate_chatlogs');
+        Cache::forget('dangerzone::truncate_player_punishments');
     }
 }

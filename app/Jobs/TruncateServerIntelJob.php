@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Cache;
 
 class TruncateServerIntelJob implements ShouldQueue
 {
@@ -29,11 +30,15 @@ class TruncateServerIntelJob implements ShouldQueue
      */
     public function handle(): void
     {
+        Cache::put('dangerzone::truncate_server_intel_data', now(), 3600 * 24);
+
         DB::transaction(function () {
             // Delete server intel.
             MinecraftWorldLiveInfo::query()->delete();
             MinecraftServerWorld::query()->delete();
             MinecraftServerLiveInfo::query()->delete();
         }, 3);
+
+        Cache::forget('dangerzone::truncate_server_intel_data');
     }
 }

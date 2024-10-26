@@ -15,10 +15,12 @@ import PlayersPerServerMetricBox from '@/Shared/PlayersPerServerMetricBox.vue';
 import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
 import NetworkTrendsMetricBox from '@/Shared/NetworkTrendsMetricBox.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 import PlayersJoinAddressMetricBox from '@/Shared/PlayersJoinAddressMetricBox.vue';
 import PlayersMinecraftVersionMetricBox from '@/Shared/PlayersMinecraftVersionMetricBox.vue';
 
 const {can} = useAuthorizable();
+const {formatTimeAgoToNow} = useHelpers();
 
 defineProps({
     kpiTotalUsers: Number,
@@ -39,6 +41,8 @@ defineProps({
     kpiPostCreatedForInterval: Number,
     kpiTotalPostsPercent: Number,
     kpiTotalComments: Number,
+
+    queueLastProcessed: String,
 });
 </script>
 
@@ -122,7 +126,7 @@ defineProps({
           change-desc="in last 7 days"
           :icon="FireIcon"
           icon-class="text-red-500 bg-red-100 dark:bg-red-500 dark:text-white"
-          description="Jobs failed to run."
+          :description="`Last Run: ${queueLastProcessed ? formatTimeAgoToNow(queueLastProcessed) : __('not yet')}`"
         />
       </div>
 

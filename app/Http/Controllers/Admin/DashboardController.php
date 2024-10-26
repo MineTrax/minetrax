@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Cache;
 
 class DashboardController extends Controller
 {
@@ -65,6 +66,8 @@ class DashboardController extends Controller
                 'kpiPostCreatedForInterval' => $kpiPostCreatedForInterval,
                 'kpiTotalPostsPercent' => $kpiTotalPostsPercent,
                 'kpiTotalComments' => $kpiTotalComments,
+
+                'queueLastProcessed' => Cache::get('queue_last_processed'),
             ];
         }
 

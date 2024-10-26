@@ -16,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Cache;
 
 class TruncatePlayerIntelJob implements ShouldQueue
 {
@@ -34,6 +35,8 @@ class TruncatePlayerIntelJob implements ShouldQueue
      */
     public function handle(): void
     {
+        Cache::put('dangerzone::truncate_player_intel_data', now(), 3600 * 24);
+
         DB::transaction(function () {
             // Delete player intel.
             MinecraftPlayerDeath::query()->delete();
@@ -45,5 +48,7 @@ class TruncatePlayerIntelJob implements ShouldQueue
             MinecraftPlayer::query()->delete();
             Player::query()->delete();
         }, 3);
+
+        Cache::forget('dangerzone::truncate_player_intel_data');
     }
 }
