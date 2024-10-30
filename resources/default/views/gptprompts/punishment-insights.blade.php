@@ -9,3 +9,7 @@ Response SHOULD BE a valid JSON in the following format (DONT INCLUDE ANYTHING E
 {"score": 50,"insights": ["Insight 1","Insight 2","Insight 3","Insight 4","Insight 5"]}
 
 Current Time is {{ now() }}
+
+@if($locale != 'en')
+Generate Response in Locale: {{ $locale }}
+@endif

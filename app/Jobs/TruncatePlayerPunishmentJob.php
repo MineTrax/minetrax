@@ -20,7 +20,7 @@ class TruncatePlayerPunishmentJob implements ShouldQueue
      */
     public function __construct()
     {
-        //
+        $this->onQueue('longtask');
     }
 
     /**
@@ -30,7 +30,9 @@ class TruncatePlayerPunishmentJob implements ShouldQueue
     {
         Cache::put('dangerzone::truncate_player_punishments', now(), 3600 * 24);
 
-        PlayerPunishment::query()->delete();
+        PlayerPunishment::lazyById()->each(function ($punishment) {
+            $punishment->delete();
+        });
 
         Cache::forget('dangerzone::truncate_player_punishments');
     }

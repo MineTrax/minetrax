@@ -43,7 +43,7 @@ class ApiBanWardenController extends ApiController
             'data.punishments.*.from_event' => 'required|in:punish,pardon,sync',
         ]);
 
-        $banwardenEnabledInConfig = config('minetrax.banwarden_enabled');
+        $banwardenEnabledInConfig = config('minetrax.banwarden.enabled');
         $server = Server::where('id', $request->input('data.server_id'))->firstOrFail();
         if (!$banwardenEnabledInConfig || !$server->settings['is_banwarden_enabled']) {
             return $this->error(__('BanWarden is disabled globally or on this server.'), 'banwarden_disabled', 403);
@@ -154,7 +154,7 @@ class ApiBanWardenController extends ApiController
             'data.from_event' => 'required|in:punish,pardon,sync',
         ]);
 
-        $banwardenEnabledInConfig = config('minetrax.banwarden_enabled');
+        $banwardenEnabledInConfig = config('minetrax.banwarden.enabled');
         $server = Server::where('id', $request->input('data.server_id'))->firstOrFail();
         if (!$banwardenEnabledInConfig || !$server->settings['is_banwarden_enabled']) {
             return $this->error(__('BanWarden is disabled globally or on this server.'), 'banwarden_disabled', 403);
@@ -222,17 +222,17 @@ class ApiBanWardenController extends ApiController
                 'removed_at' => $removedAtDate,
             ]);
 
+            // AI Insights
+            $insightEnabled = config('minetrax.banwarden.ai_insights_enabled');
+            if ($insightEnabled && !$punishment->insights) {
+                GeneratePunishmentInsightsJob::dispatch($punishment);
+            }
+
             // Dispatch Events
             if ($punishment->from_event == 'punish') {
                 BanWardenPlayerPunished::dispatch($punishment);
             } else if ($punishment->from_event == 'pardon') {
                 BanWardenPlayerPardoned::dispatch($punishment);
-            }
-
-            // AI Insights
-            $insightEnabled = config('minetrax.banwarden_ai_insights_enabled');
-            if ($insightEnabled && !$punishment->insights) {
-                GeneratePunishmentInsightsJob::dispatch($punishment);
             }
 
             // Forget Metrics Cache

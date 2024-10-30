@@ -37,7 +37,7 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         }
 
         // return if ai insights is disabled
-        if (!config('minetrax.banwarden_ai_insights_enabled')) {
+        if (!config('minetrax.banwarden.ai_insights_enabled')) {
             return;
         }
 
@@ -131,7 +131,9 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         }
         $possibleAltsJsonString = json_encode($altPlayers);
 
-        $systemPrompt = view('gptprompts.punishment-insights');
+        $systemPrompt = view('gptprompts.punishment-insights', [
+            'locale' => config('app.locale'),
+        ]);
         $question = <<<QUESTION
         Punishment Details:
         $punishmentJsonString

@@ -130,7 +130,7 @@ class PhpVarsToJsTransformer extends Component
 
             $leftNavbar = self::DEFAULT_NAV_LEFT;
             // Add BanWarden to navbar if enabled
-            if (config('minetrax.banwarden_enabled')) {
+            if (config('minetrax.banwarden.enabled')) {
                 $leftNavbar[] = [
                     'type' => 'route',
                     'name' => 'Punishments',

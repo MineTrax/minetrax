@@ -10,7 +10,7 @@ class PlayerPunishmentPolicy
 {
     public function before(?User $user): ?bool
     {
-        $banwardenEnabled = config('minetrax.banwarden_enabled');
+        $banwardenEnabled = config('minetrax.banwarden.enabled');
         if (!$banwardenEnabled) {
             return false;
         }
@@ -23,7 +23,7 @@ class PlayerPunishmentPolicy
      */
     public function viewAny(?User $user): bool
     {
-        $banwardenPublic = config('minetrax.banwarden_show_public');
+        $banwardenPublic = config('minetrax.banwarden.show_public');
         if ($banwardenPublic) {
             return true;
         }
@@ -40,7 +40,7 @@ class PlayerPunishmentPolicy
      */
     public function view(?User $user, PlayerPunishment $playerPunishment): bool
     {
-        $banwardenPublic = config('minetrax.banwarden_show_public');
+        $banwardenPublic = config('minetrax.banwarden.show_public');
         if ($banwardenPublic) {
             return true;
         }
@@ -57,7 +57,7 @@ class PlayerPunishmentPolicy
      */
     public function viewAlts(User $user, PlayerPunishment $playerPunishment): bool
     {
-        $banwardenPublic = config('minetrax.banwarden_show_public');
+        $banwardenPublic = config('minetrax.banwarden.show_public');
         if ($user->isStaffMember() && ($user->can('read banwarden_punishments') || $banwardenPublic)) {
             return true;
         }
@@ -107,6 +107,25 @@ class PlayerPunishmentPolicy
     public function delete(User $user, PlayerPunishment $playerPunishment): bool
     {
         if ($user->can('delete banwarden_punishments')) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public function viewEvidence(User $user): bool
+    {
+        if ($user->can('read banwarden_punishments_evidence')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function createEvidence(User $user): bool
+    {
+        if ($user->can('create banwarden_punishments_evidence')) {
             return true;
         }
 

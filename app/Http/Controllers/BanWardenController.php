@@ -113,7 +113,7 @@ class BanWardenController extends Controller
         ]);
 
         // Generate insights if enabled and not already generated
-        $insightEnabled = config('minetrax.banwarden_ai_insights_enabled');
+        $insightEnabled = config('minetrax.banwarden.ai_insights_enabled');
         if ($insightEnabled && !$playerPunishment->insights) {
             GeneratePunishmentInsightsJob::dispatch($playerPunishment);
         }
@@ -127,14 +127,22 @@ class BanWardenController extends Controller
                 'origin_server_name',
             ]
         );
+        $canViewEvidence = Gate::allows('viewEvidence', PlayerPunishment::class);
+        if ($canViewEvidence) {
+            $playerPunishment->append('evidences');
+        }
         $response = [
             'punishment' => $playerPunishment,
             'permissions' => [
                 'canViewSessions' => Gate::allows('viewAnyIntel', Player::class),
                 'canViewAlts' => Gate::allows('viewAlts', $playerPunishment),
                 'canViewCritical' => $canViewCritical,
+                'canViewEvidence' => $canViewEvidence,
+                'canCreateEvidence' => Gate::allows('createEvidence', PlayerPunishment::class)
+                    && $playerPunishment->evidences->count() < config('minetrax.banwarden.evidence_max_count'),
             ],
         ];
+
         return Inertia::render('BanWarden/ShowPunishment', $response);
     }
 
@@ -245,5 +253,46 @@ class BanWardenController extends Controller
             ->through(fn($player) => $player->makeVisibleIf($canViewCritical, 'ip_address'));
 
         return $players;
+    }
+
+
+    public function showEvidence(PlayerPunishment $playerPunishment, $evidence, Request $request)
+    {
+        $this->authorize('viewEvidence', $playerPunishment);
+
+        $media = $playerPunishment->getMedia('punishment-evidence')->find($evidence);
+        if (!$media) {
+            abort(404);
+        }
+
+        return $media->toInlineResponse($request);
+    }
+
+    public function createEvidence(PlayerPunishment $playerPunishment, Request $request)
+    {
+        $this->authorize('createEvidence', PlayerPunishment::class);
+
+        $evidenceAllowedMimetypes = config('minetrax.banwarden.evidence_allowed_mimetypes');
+        $evidenceMaxSizeKb = config('minetrax.banwarden.evidence_max_size_kb');
+        $evidenceMaxCount = config('minetrax.banwarden.evidence_max_count');
+        $request->validate([
+            'file' => [
+                'required',
+                'file',
+                'mimes:' . $evidenceAllowedMimetypes,
+                'max:' . $evidenceMaxSizeKb,
+            ]
+        ]);
+
+        $previousEvidences = $playerPunishment->evidences;
+        if ($previousEvidences->count() >= $evidenceMaxCount) {
+            return redirect()->back()
+                ->with(['toast' => ['type' => 'error', 'title' => __('Upload Failed'), 'body' => __('You can only upload up to :count evidence files', ['count' => $evidenceMaxCount])]]);
+        }
+
+        $playerPunishment->addMediaFromRequest('file')->toMediaCollection('punishment-evidence');
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'title' => __('Upload Successful'), 'body' => __('Evidence uploaded successfully')]]);
     }
 }

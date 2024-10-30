@@ -36,6 +36,18 @@ class PlayerPunishment extends BaseModel implements HasMedia
         'origin_server_id',
     ];
 
+    public function registerMediaCollections(): void
+    {
+        $banwardenModuleDisk = config('minetrax.banwarden.module_disk');
+        $this->addMediaCollection('punishment-evidence')
+            ->useDisk($banwardenModuleDisk);
+    }
+
+    public function getEvidencesAttribute()
+    {
+        return $this->getMedia('punishment-evidence');
+    }
+
     public function scopeStatus($query, $status)
     {
         if ($status === 'active') {

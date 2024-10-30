@@ -1,20 +1,22 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import AppHead from '@/Components/AppHead.vue';
-import {Link} from '@inertiajs/vue3';
+import {Link, useForm} from '@inertiajs/vue3';
 import {useTranslations} from '@/Composables/useTranslations';
 import {useHelpers} from '@/Composables/useHelpers';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
+import { EyeIcon, DocumentMagnifyingGlassIcon, PlusSmallIcon } from '@heroicons/vue/24/outline';
 import ArrayTable from '@/Components/DataTable/ArrayTable.vue';
 import Chart from '@/Components/Dashboard/Chart.vue';
+import LoadingSpinner from '@/Components/LoadingSpinner.vue';
+import { ref } from 'vue';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
 
 
-defineProps({
+const props = defineProps({
     punishment: Object,
     permissions: Object,
 });
@@ -197,6 +199,23 @@ const altHeaders = [
 ];
 
 
+
+const fileRef = ref(null);
+const uploadEvidenceForm = useForm({
+    file: null,
+});
+
+const triggerEvidenceUploadInput = () => {
+    fileRef.value.click();
+};
+
+const handleEvidenceUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    uploadEvidenceForm.file = file;
+    uploadEvidenceForm.post(route('player.punishment.evidence.store', props.punishment.id));
+};
 
 </script>
 
@@ -556,7 +575,7 @@ const altHeaders = [
               <p class="font-semibold text-gray-500">
                 {{ __("Plugin Punishment ID") }}
               </p>
-              <p class="font-bold">
+              <p class="font-bold mt-1 leading-normal">
                 {{ punishment.plugin_punishment_id }}
               </p>
             </div>
@@ -565,9 +584,64 @@ const altHeaders = [
               <p class="font-semibold text-gray-500">
                 {{ __("Origin Server") }}
               </p>
-              <p class="font-bold">
+              <p class="font-bold mt-0.5 leading-normal">
                 {{ punishment.origin_server_name }}
               </p>
+            </div>
+
+            <!-- Evidence -->
+            <div v-if="permissions['canViewEvidence']">
+              <p class="font-semibold text-gray-500">
+                {{ __("Uploaded Evidence") }}
+              </p>
+              <p v-if="punishment.evidences <= 0 && !permissions['canCreateEvidence']">
+                {{ "-" }}
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <a
+                  v-for="evidence in punishment.evidences"
+                  :key="evidence.id"
+                  v-tippy
+                  :title="evidence.file_name"
+                  target="_blank"
+                  :href="route('player.punishment.evidence.show', {
+                    playerPunishment: punishment.id,
+                    evidence: evidence.id
+                  })"
+                  class="p-1.5 dark:bg-gray-900 bg-gray-200 rounded"
+                >
+                  <DocumentMagnifyingGlassIcon class="w-6 h-6 p-0.5" />
+                </a>
+                <input
+                  v-if="permissions['canCreateEvidence']"
+                  ref="fileRef"
+                  type="file"
+                  class="hidden"
+                  @input="handleEvidenceUpload"
+                >
+                <button
+                  v-if="permissions['canCreateEvidence']"
+                  :disabled="uploadEvidenceForm.processing"
+                  class="p-1.5 dark:bg-gray-900 bg-gray-200 rounded"
+                  @click="triggerEvidenceUploadInput"
+                >
+                  <PlusSmallIcon
+                    v-if="!uploadEvidenceForm.processing"
+                    class="w-6 h-6 p-0.5"
+                  />
+                  <LoadingSpinner
+                    :loading="uploadEvidenceForm.processing"
+                    class="w-6 h-6 p-1"
+                  />
+                </button>
+
+                <p
+                  v-if="uploadEvidenceForm.errors.file"
+                  class="text-xs text-red-400"
+                >
+                  {{ uploadEvidenceForm.errors.file }}
+                </p>
+              </div>
             </div>
           </div>
           <div class="w-full p-2 bg-white rounded shadow dark:bg-cool-gray-800 md:p-5 md:col-span-1">
@@ -655,7 +729,7 @@ const altHeaders = [
                     data: [
                       {
                         value: punishment.insights?.score / 100 ?? 0,
-                        name: 'Score'
+                        name: __('Score')
                       }
                     ]
                   }
@@ -669,7 +743,7 @@ const altHeaders = [
               v-if="punishment.insights && punishment.insights.insights"
               class="flex items-center justify-center"
             >
-              <ul class="text-sm leading-9 list-disc">
+              <ul class="text-sm leading-9 list-disc list-inside">
                 <li
                   v-for="insight in punishment.insights?.insights"
                   :key="insight"

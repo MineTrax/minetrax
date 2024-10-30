@@ -393,46 +393,71 @@ return [
     'hide_player_next_rank' => env('HIDE_PLAYER_NEXT_RANK', false),
 
 
-
     /*
     |--------------------------------------------------------------------------
-    | Enable BanWarden
+    | BanWarden
     |--------------------------------------------------------------------------
     |
-    | If enabled, BanWarden feature will be enabled.
     | BanWarden is a powerful ban management system that allows you to view insights about punishments, and manage them.
     |
     */
-    'banwarden_enabled' => env('BANWARDEN_ENABLED', true),
+    'banwarden' => [
 
-    /*
-    |--------------------------------------------------------------------------
-    | BanWarden Show Public
-    |--------------------------------------------------------------------------
-    |
-    | Show banwarden punishments page to everyone.
-    | If set to false, only authenticated users with banwarden permission will be able to view punishments.
-    |
-    */
-    'banwarden_show_public' => env('BANWARDEN_SHOW_PUBLIC', true),
+        /*
+        |--------------------------------------------------------------------------
+        | If enabled, BanWarden feature will be enabled.
+        |--------------------------------------------------------------------------
+        */
+        'enabled' => env('BANWARDEN_ENABLED', true),
 
-    /*
-    |--------------------------------------------------------------------------
-    | BanWarden Control From Web
-    |--------------------------------------------------------------------------
-    |
-    | If enabled, staff can control banwarden punishments from web. If disabled, staff can only view punishments.
-    |
-    */
-    'banwarden_allow_control_from_web' => env('BANWARDEN_ALLOW_CONTROL_FROM_WEB', true),
+        /*
+        |--------------------------------------------------------------------------
+        | Show banwarden punishments page to everyone.
+        | If set to false, only authenticated users with banwarden permission will be able to view punishments.
+        |--------------------------------------------------------------------------
+        */
+        'show_public' => env('BANWARDEN_SHOW_PUBLIC', true),
 
-    /*
-    |--------------------------------------------------------------------------
-    | BanWarden AI Insights Enabled
-    |--------------------------------------------------------------------------
-    |
-    | If enabled, BanWarden will use AI to generate insights for punishments.
-    |
-    */
-    'banwarden_ai_insights_enabled' => env('BANWARDEN_AI_INSIGHTS_ENABLED', true) && env('OPENAI_API_KEY'),
+        /*
+        |--------------------------------------------------------------------------
+        | If enabled, staff can control banwarden punishments from web. If disabled, staff can only view punishments.
+        |--------------------------------------------------------------------------
+        */
+        'allow_control_from_web' => env('BANWARDEN_ALLOW_CONTROL_FROM_WEB', true),
+
+        /*
+        |--------------------------------------------------------------------------
+        | If enabled, BanWarden will use AI to generate insights for punishments.
+        |--------------------------------------------------------------------------
+        */
+        'ai_insights_enabled' => env('BANWARDEN_AI_INSIGHTS_ENABLED', true) && env('OPENAI_API_KEY'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Disk to use to store all files of Banwarden Module.
+        |--------------------------------------------------------------------------
+        */
+        'module_disk' => env('BANWARDEN_MODULE_DISK', 'private'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Allowed mime types for evidence files.
+        |--------------------------------------------------------------------------
+        */
+        'evidence_allowed_mimetypes' => env('BANWARDEN_EVIDENCE_ALLOWED_MIMETYPES', 'jpg,png,gif,bmp,webp,mp4,avi,mov,mkv,webm,zip,rar'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Maximum allowed count for evidence files per punishment.
+        |--------------------------------------------------------------------------
+        */
+        'evidence_max_count' => env('BANWARDEN_EVIDENCE_MAX_COUNT', 2),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Maximum allowed size for evidence files in kilobytes. Default: 50MB
+        |--------------------------------------------------------------------------
+        */
+        'evidence_max_size_kb' => env('BANWARDEN_EVIDENCE_MAX_SIZE_KB', 51200),
+    ],
 ];
