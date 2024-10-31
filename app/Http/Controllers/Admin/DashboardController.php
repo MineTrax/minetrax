@@ -21,28 +21,28 @@ class DashboardController extends Controller
         $responseData = [];
         if ($request->user()->can('view admin_dashboard')) {
             // KPI for total users
-            $kpiTotalUsers = User::count();
+            $kpiTotalUsers = Helper::fastCount('users');
             $kpiUserCreatedForInterval = User::where('created_at', '>=', Carbon::now()->subDays(7))->count();
             $totalUsersMinusInterval = $kpiTotalUsers - $kpiUserCreatedForInterval ?: 1;
             $kpiTotalUserPercent = $kpiTotalUsers !== 0 ? ($kpiUserCreatedForInterval / $totalUsersMinusInterval) * 100 : 0;
             $kpiUserLastSeenForInterval = User::where('last_login_at', '>=', Carbon::now()->subDays(7))->count();
 
             // KPI for total players
-            $kpiTotalPlayers = Player::count();
+            $kpiTotalPlayers = Player::fastCount();
             $kpiPlayerCreatedForInterval = Player::where('created_at', '>=', Carbon::now()->subDays(7))->count();
             $totalPlayersMinusInterval = $kpiTotalPlayers - $kpiPlayerCreatedForInterval ?: 1;
             $kpiTotalPlayersPercent = $kpiTotalPlayers !== 0 ? ($kpiPlayerCreatedForInterval / $totalPlayersMinusInterval) * 100 : 0;
             $kpiPlayerLastSeenForInterval = Player::where('last_seen_at', '>=', Carbon::now()->subDays(7))->count();
 
             // KPI for total posts
-            $kpiTotalPosts = Post::count();
+            $kpiTotalPosts = Post::fastCount();
             $kpiPostCreatedForInterval = Post::where('created_at', '>=', Carbon::now()->subDays(7))->count();
             $totalPostCreatedMinusInterval = $kpiTotalPosts - $kpiPostCreatedForInterval ?: 1;
             $kpiTotalPostsPercent = $kpiTotalPosts !== 0 ? ($kpiPostCreatedForInterval / $totalPostCreatedMinusInterval) * 100 : 0;
-            $kpiTotalComments = Comment::count();
+            $kpiTotalComments = Comment::fastCount();
 
             // KPI for total failed jobs
-            $kpiTotalFailedJobs = DB::table('failed_jobs')->count();
+            $kpiTotalFailedJobs = Helper::fastCount('failed_jobs');
             $kpiFailedJobsForInterval = DB::table('failed_jobs')->where('failed_at', '>=', Carbon::now()->subDays(7))->count();
             $totalFailedJobsMinusInterval = $kpiTotalFailedJobs - $kpiFailedJobsForInterval ?: 1;
             $kpiTotalFailedJobPercent = $kpiTotalFailedJobs !== 0 ? ($kpiFailedJobsForInterval / $totalFailedJobsMinusInterval) * 100 : 0;

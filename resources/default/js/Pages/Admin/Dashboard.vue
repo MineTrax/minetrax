@@ -70,7 +70,7 @@ defineProps({
         <KpiOverviewCardForDashboard
           class="flex-1"
           title="Registered Users"
-          :value="millify(kpiTotalUsers)"
+          :value="kpiTotalUsers"
           :sub-value="kpiUserCreatedForInterval"
           :change="kpiTotalUserPercent"
           change-desc="in last 7 days"
