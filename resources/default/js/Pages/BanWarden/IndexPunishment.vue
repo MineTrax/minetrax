@@ -221,7 +221,7 @@ const headerRow = [
               </Link>
             </DtRowItem>
 
-            <td class="px-3 py-4 whitespace-nowrap">
+            <td class="px-4 py-3 whitespace-nowrap">
               <div class="flex items-center">
                 <div
                   v-tippy
@@ -243,7 +243,7 @@ const headerRow = [
               />
             </DtRowItem>
 
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-4 py-3 whitespace-nowrap">
               <div v-if="item.uuid && item.victim_player">
                 <div
                   class="flex items-center"
@@ -327,7 +327,7 @@ const headerRow = [
               </span>
             </DtRowItem>
 
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-4 py-3 whitespace-nowrap">
               <div v-if="item.creator_uuid">
                 <div
                   class="flex items-center"
@@ -418,7 +418,7 @@ const headerRow = [
             </DtRowItem>
 
             <td
-              class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+              class="px-4 py-3 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
               <InertiaLink
                 v-tippy
