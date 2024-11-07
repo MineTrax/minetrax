@@ -420,6 +420,14 @@ return [
 
         /*
         |--------------------------------------------------------------------------
+        | Show masked IP to everyone.
+        | If set to false, only staff members will be able to view masked IP.
+        |--------------------------------------------------------------------------
+        */
+        'show_masked_ip_public' => env('BANWARDEN_SHOW_MASKED_IP_PUBLIC', false),
+
+        /*
+        |--------------------------------------------------------------------------
         | If enabled, staff can control banwarden punishments from web. If disabled, staff can only view punishments.
         |--------------------------------------------------------------------------
         */

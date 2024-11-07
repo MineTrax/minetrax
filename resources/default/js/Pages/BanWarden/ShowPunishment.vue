@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import AppHead from '@/Components/AppHead.vue';
-import {Link, useForm} from '@inertiajs/vue3';
+import {Link, useForm, usePage} from '@inertiajs/vue3';
 import {useTranslations} from '@/Composables/useTranslations';
 import {useHelpers} from '@/Composables/useHelpers';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
@@ -21,6 +21,7 @@ const props = defineProps({
     permissions: Object,
 });
 
+const canShowMaskedIp = usePage().props.banwarden?.canShowMaskedIp;
 const punishmentHistoryHeaders = [
     {
         key: 'id',
@@ -45,12 +46,14 @@ const punishmentHistoryHeaders = [
         sortable: true,
         label: __('Player'),
     },
-    {
-        key: 'ip_address',
-        sortable: true,
-        label: __('IP Address'),
-        class: 'text-center',
-    },
+    ...(canShowMaskedIp ? [
+        {
+            key: 'ip_address',
+            sortable: true,
+            label: __('IP Address'),
+            class: 'text-center',
+        },
+    ] : []),
     {
         key: 'creator_username',
         sortable: true,
@@ -360,7 +363,9 @@ const handleEvidenceUpload = (event) => {
                 {{ punishment.is_ipban ? __("Yes") : __("No") }}
               </p>
             </div>
-            <div>
+            <div
+              v-if="canShowMaskedIp"
+            >
               <p class="font-semibold text-gray-500">
                 {{ __("IP Address") }}
               </p>
@@ -889,7 +894,10 @@ const handleEvidenceUpload = (event) => {
                   </div>
                 </td>
 
-                <DtRowItem class="text-center">
+                <DtRowItem
+                  v-if="canShowMaskedIp"
+                  class="text-center"
+                >
                   <span v-if="item.ip_address || item.masked_ip_address">
                     {{ item.ip_address || item.masked_ip_address }}
                   </span>

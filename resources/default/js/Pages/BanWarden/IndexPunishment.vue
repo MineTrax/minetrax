@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import AppHead from '@/Components/AppHead.vue';
-import {Link} from '@inertiajs/vue3';
+import {Link, usePage} from '@inertiajs/vue3';
 import {useTranslations} from '@/Composables/useTranslations';
 import {useHelpers} from '@/Composables/useHelpers';
 import DataTable from '@/Components/DataTable/DataTable.vue';
@@ -19,6 +19,7 @@ const props = defineProps({
     metrics: Object,
 });
 
+const canShowMaskedIp = usePage().props.banwarden?.canShowMaskedIp;
 const headerRow = [
     {
         key: 'id',
@@ -62,12 +63,12 @@ const headerRow = [
             key: 'victimPlayer.username',
         }
     },
-    {
+    ...(canShowMaskedIp ? [{
         key: 'ip_address',
         sortable: false,
         label: __('IP Address'),
         class: 'text-center',
-    },
+    }] : []), // Only include ip if canShowMaskedIp is true
     {
         key: 'creator_username',
         sortable: false,
@@ -315,7 +316,10 @@ const headerRow = [
               </div>
             </td>
 
-            <DtRowItem class="text-center">
+            <DtRowItem
+              v-if="canShowMaskedIp"
+              class="text-center"
+            >
               <span v-if="item.ip_address || item.masked_ip_address">
                 {{ item.ip_address || item.masked_ip_address }}
               </span>

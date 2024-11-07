@@ -21,6 +21,7 @@ class BanWardenController extends Controller
     {
         $this->authorize('viewAny', PlayerPunishment::class);
         $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
+        $canShowMaskedIp = config('minetrax.banwarden.show_masked_ip_public') ? true : auth()?->user()?->isStaffMember();
 
         $perPage = request()->input('perPage', 10);
         if ($perPage > 100) {
@@ -74,7 +75,7 @@ class BanWardenController extends Controller
                 'ip_address',
                 'plugin_punishment_id',
                 'origin_server_name',
-            ]))
+            ])->makeHiddenIf(!$canShowMaskedIp, ['masked_ip_address']))
             ->withQueryString();
 
         $countries = Country::select(['id', 'name'])->get()->pluck('name');
@@ -104,6 +105,7 @@ class BanWardenController extends Controller
     {
         $this->authorize('view', $playerPunishment);
         $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
+        $canShowMaskedIp = config('minetrax.banwarden.show_masked_ip_public') ? true : auth()?->user()?->isStaffMember();
 
         $playerPunishment->load([
             'country:id,name,iso_code',
@@ -131,6 +133,9 @@ class BanWardenController extends Controller
         if ($canViewEvidence) {
             $playerPunishment->append('evidences');
         }
+        if (!$canShowMaskedIp) {
+            $playerPunishment->makeHidden('masked_ip_address');
+        }
         $response = [
             'punishment' => $playerPunishment,
             'permissions' => [
@@ -150,6 +155,7 @@ class BanWardenController extends Controller
     {
         $this->authorize('view', $playerPunishment);
         $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
+        $canShowMaskedIp = config('minetrax.banwarden.show_masked_ip_public') ? true : auth()?->user()?->isStaffMember();
 
         $perPage = request()->query('perPage', 10);
         if ($perPage > 100) {
@@ -171,7 +177,7 @@ class BanWardenController extends Controller
                     'ip_address',
                     'plugin_punishment_id',
                     'origin_server_name',
-                ]));
+                ])->makeHiddenIf(!$canShowMaskedIp, ['masked_ip_address']));
         } else {
             $lastPunishments = PlayerPunishment::with([
                 'country:id,name,iso_code',
