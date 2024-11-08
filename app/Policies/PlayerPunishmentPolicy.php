@@ -28,7 +28,7 @@ class PlayerPunishmentPolicy
             return true;
         }
 
-        if ($user->can('read banwarden_punishments')) {
+        if ($user?->can('read banwarden_punishments')) {
             return true;
         }
 
@@ -45,7 +45,7 @@ class PlayerPunishmentPolicy
             return true;
         }
 
-        if ($user->can('read banwarden_punishments')) {
+        if ($user?->can('read banwarden_punishments')) {
             return true;
         }
 

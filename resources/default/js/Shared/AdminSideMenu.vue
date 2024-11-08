@@ -19,6 +19,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import SideNavItem from '@/Components/Navigation/SideNavItem.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
+import { usePage } from '@inertiajs/vue3';
 const { canWild, hasRole, can } = useAuthorizable();
 
 defineProps({
@@ -112,6 +113,14 @@ const navItems = [
                 children: [],
                 icon: null,
                 visible: canWild('ranks')
+            },
+            {
+                label: 'Punishments',
+                href: route('player.punishment.index'),
+                active: route().current('player.punishment.index'),
+                children: [],
+                icon: null,
+                visible: usePage().props?.banwarden?.enabled,
             },
         ],
         icon: TrophyIcon,

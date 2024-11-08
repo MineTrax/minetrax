@@ -98,6 +98,8 @@ class HandleInertiaRequests extends Middleware
             'playerSkinChangerEnabled' => config('minetrax.player_skin_changer_enabled'),
             'localeSwitcherEnabled' => count(config('app.available_locales')) > 0,
             'banwarden' => [
+                'enabled' => config('minetrax.banwarden.enabled'),
+                'showPublic' => config('minetrax.banwarden.show_public'),
                 'canShowMaskedIp' => config('minetrax.banwarden.show_masked_ip_public') ? true : $request->user()?->isStaffMember(),
             ],
         ]);
