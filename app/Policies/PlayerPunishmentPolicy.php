@@ -131,4 +131,13 @@ class PlayerPunishmentPolicy
 
         return false;
     }
+
+    public function deleteEvidence(User $user): bool
+    {
+        if ($user->can('delete banwarden_punishments_evidence')) {
+            return true;
+        }
+
+        return false;
+    }
 }

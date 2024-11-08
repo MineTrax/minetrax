@@ -11,6 +11,7 @@ import ArrayTable from '@/Components/DataTable/ArrayTable.vue';
 import Chart from '@/Components/Dashboard/Chart.vue';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import { ref } from 'vue';
+import { XCircleIcon } from '@heroicons/vue/24/solid';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
@@ -580,7 +581,7 @@ const handleEvidenceUpload = (event) => {
               <p class="font-semibold text-gray-500">
                 {{ __("Plugin Punishment ID") }}
               </p>
-              <p class="font-bold mt-1 leading-normal">
+              <p class="mt-1 font-bold leading-normal">
                 {{ punishment.plugin_punishment_id }}
               </p>
             </div>
@@ -603,20 +604,45 @@ const handleEvidenceUpload = (event) => {
                 {{ "-" }}
               </p>
               <div class="flex flex-wrap gap-2">
-                <a
+                <div
                   v-for="evidence in punishment.evidences"
                   :key="evidence.id"
-                  v-tippy
-                  :title="evidence.file_name"
-                  target="_blank"
-                  :href="route('player.punishment.evidence.show', {
-                    playerPunishment: punishment.id,
-                    evidence: evidence.id
-                  })"
-                  class="p-1.5 dark:bg-gray-900 bg-gray-200 rounded"
+                  class="p-1.5 relative dark:bg-gray-900 bg-gray-200 rounded group"
                 >
-                  <DocumentMagnifyingGlassIcon class="w-6 h-6 p-0.5" />
-                </a>
+                  <a
+                    v-tippy
+                    target="_blank"
+                    :title="__('View :file', {
+                      file: evidence.file_name
+                    })"
+                    :href="route('player.punishment.evidence.show', {
+                      playerPunishment: punishment.id,
+                      evidence: evidence.id
+                    })"
+                  >
+                    <DocumentMagnifyingGlassIcon class="w-6 h-6 p-0.5" />
+                  </a>
+
+                  <Link
+                    v-if="permissions['canDeleteEvidence']"
+                    v-confirm="{
+                      message:
+                        'Are you sure you want to delete this evidence?',
+                    }"
+                    v-tippy
+                    as="button"
+                    class="block"
+                    method="DELETE"
+                    :href="route('player.punishment.evidence.delete', {
+                      playerPunishment: punishment.id,
+                      evidence: evidence.id
+                    })"
+                  >
+                    <XCircleIcon
+                      class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-red-400 absolute -top-2 -right-2 w-5 h-5 p-0.5 text-gray-500 dark:text-gray-200 cursor-pointer"
+                    />
+                  </Link>
+                </div>
                 <input
                   v-if="permissions['canCreateEvidence']"
                   ref="fileRef"

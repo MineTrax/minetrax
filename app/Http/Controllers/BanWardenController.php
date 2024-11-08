@@ -145,6 +145,7 @@ class BanWardenController extends Controller
                 'canViewEvidence' => $canViewEvidence,
                 'canCreateEvidence' => Gate::allows('createEvidence', PlayerPunishment::class)
                     && $playerPunishment->evidences->count() < config('minetrax.banwarden.evidence_max_count'),
+                'canDeleteEvidence' => Gate::allows('deleteEvidence', PlayerPunishment::class),
             ],
         ];
 
@@ -300,5 +301,20 @@ class BanWardenController extends Controller
 
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Upload Successful'), 'body' => __('Evidence uploaded successfully')]]);
+    }
+
+    public function deleteEvidence(PlayerPunishment $playerPunishment, $evidence)
+    {
+        $this->authorize('deleteEvidence', PlayerPunishment::class);
+
+        $media = $playerPunishment->getMedia('punishment-evidence')->find($evidence);
+        if (!$media) {
+            abort(404);
+        }
+
+        $media->delete();
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'title' => __('Delete Successful'), 'body' => __('Evidence deleted successfully')]]);
     }
 }

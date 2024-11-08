@@ -146,6 +146,7 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
 
     // BanWarden (Authenticated)
     Route::post('player/punishments/{playerPunishment:id}/evidence', [\App\Http\Controllers\BanWardenController::class, 'createEvidence'])->name('player.punishment.evidence.store');
+    Route::delete('player/punishments/{playerPunishment:id}/evidence/{evidence}', [\App\Http\Controllers\BanWardenController::class, 'deleteEvidence'])->name('player.punishment.evidence.delete');
 });
 
 /**
