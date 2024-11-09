@@ -113,7 +113,7 @@ const formDisabled = computed(() => {
 
       <div
         as="div"
-        class="w-full p-6 text-gray-500 rounded-lg bg-gray-50 text-medium dark:text-gray-400 dark:bg-gray-800"
+        class="w-full p-6 text-gray-500 rounded-lg text-medium dark:text-gray-400 bg-white shadow dark:bg-gray-800"
       >
         <form
           class="w-full mt-4"
