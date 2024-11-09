@@ -203,6 +203,14 @@ export default {
           </jet-responsive-nav-link>
 
           <jet-responsive-nav-link
+            v-if="$page.props?.pluginSettings?.playerPasswordResetEnabled"
+            :href="route('reset-player-password.show')"
+            :active="route().current('reset-player-password.show')"
+          >
+            {{ __("Reset Player Password") }}
+          </jet-responsive-nav-link>
+
+          <jet-responsive-nav-link
             v-if="$page.props.playerSkinChangerEnabled"
             :href="route('change-player-skin.show')"
             :active="route().current('change-player-skin.show')"

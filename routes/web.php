@@ -132,6 +132,10 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     Route::get('user/change-player-skin', [\App\Http\Controllers\PlayerSkinController::class, 'showChangeSkin'])->name('change-player-skin.show');
     Route::post('user/change-player-skin', [\App\Http\Controllers\PlayerSkinController::class, 'postChangeSkin'])->name('change-player-skin.update');
 
+    // Player Password Reset
+    Route::get('user/reset-player-password', [\App\Http\Controllers\PlayerPasswordResetController::class, 'show'])->name('reset-player-password.show');
+    Route::post('user/reset-player-password', [\App\Http\Controllers\PlayerPasswordResetController::class, 'update'])->name('reset-player-password.update');
+
     // Server Chatlog
     Route::get('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'index'])->name('chatlog.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);
     Route::post('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'sendToServer'])->name('chatlog.send')->middleware(['forbid-muted-user', 'throttle:chat']);

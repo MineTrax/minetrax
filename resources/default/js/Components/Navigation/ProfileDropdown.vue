@@ -93,6 +93,13 @@
         </jet-dropdown-link>
 
         <jet-dropdown-link
+          v-if="$page.props?.pluginSettings?.playerPasswordResetEnabled"
+          :href="route('reset-player-password.show')"
+        >
+          {{ __("Reset Player Password") }}
+        </jet-dropdown-link>
+
+        <jet-dropdown-link
           v-if="$page.props.playerSkinChangerEnabled"
           :href="route('change-player-skin.show')"
         >

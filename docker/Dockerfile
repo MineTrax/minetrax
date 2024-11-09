@@ -1,4 +1,4 @@
-FROM composer:2 as build_composer
+FROM composer:2 AS build_composer
 
 WORKDIR /app
 COPY . /app

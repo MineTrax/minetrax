@@ -238,6 +238,19 @@
 
             <div class="flex justify-end space-x-4">
               <inertia-link
+                v-if="$page.props?.pluginSettings?.playerPasswordResetEnabled"
+                v-tippy
+                as="a"
+                :href="route('reset-player-password.show', {
+                  player_uuid: player.uuid,
+                })"
+                class="inline-flex justify-center px-4 py-2 mt-5 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-gray-400 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 disabled:opacity-50"
+                :title="__('Reset Password of this player.')"
+              >
+                <LockClosedIcon class="w-5 h-5" />
+              </inertia-link>
+
+              <inertia-link
                 v-if="$page.props.playerSkinChangerEnabled"
                 v-tippy
                 as="a"
@@ -262,7 +275,7 @@
                 class="inline-flex justify-center px-4 py-2 mt-5 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
                 :title="__('Unlink this player from your account.')"
               >
-                <LockOpenIcon class="w-5 h-5" />
+                <BookmarkSlashIcon class="w-5 h-5" />
               </inertia-link>
             </div>
           </div>
@@ -277,7 +290,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Icon from '@/Components/Icon.vue';
 import * as skinview3d from 'skinview3d';
 import { useHelpers } from '@/Composables/useHelpers';
-import { LockOpenIcon, PaintBrushIcon } from '@heroicons/vue/24/solid';
+import { PaintBrushIcon, BookmarkSlashIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
 import CopyToClipboard from '@/Components/CopyToClipboard.vue';
 
 export default {
@@ -285,9 +298,10 @@ export default {
     components: {
         Icon,
         AppLayout,
-        LockOpenIcon,
         PaintBrushIcon,
         CopyToClipboard,
+        BookmarkSlashIcon,
+        LockClosedIcon
     },
     props: {
         linkedPlayers: Array,

@@ -77,6 +77,15 @@ class PlayerPolicy
         return $user->players()->where('players.id', $player->id)->exists();
     }
 
+    public function resetPassword(User $user, Player $player)
+    {
+        if ($user->can('reset any_player_password')) {
+            return true;
+        }
+
+        return $user->players()->where('players.id', $player->id)->exists();
+    }
+
     public function destroy(User $user, Player $player)
     {
         return $user->can('delete players');

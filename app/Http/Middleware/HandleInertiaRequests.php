@@ -7,6 +7,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Server;
 use App\Settings\GeneralSettings;
+use App\Settings\PluginSettings;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Route;
@@ -102,6 +103,11 @@ class HandleInertiaRequests extends Middleware
                 'showPublic' => config('minetrax.banwarden.show_public'),
                 'canShowMaskedIp' => config('minetrax.banwarden.show_masked_ip_public') ? true : $request->user()?->isStaffMember(),
             ],
+            'pluginSettings' => function (PluginSettings $pluginSettings) {
+                return [
+                    'playerPasswordResetEnabled' => $pluginSettings->enable_player_password_reset,
+                ];
+            }
         ]);
     }
 }
