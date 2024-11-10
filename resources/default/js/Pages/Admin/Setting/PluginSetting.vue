@@ -615,7 +615,7 @@
                               >
                                 {{ __("No commands added. Please add at least one command, as required by your authentication plugin, for password reset functionality.") }}
                                 <br>
-                                {{ __("Eg: nlogin changepass {PLAYER_UUID} {PASSWORD}") }}
+                                {{ __("Eg: nlogin changepass {PLAYER_USERNAME} {PASSWORD}") }}
                               </div>
 
                               <p

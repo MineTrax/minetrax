@@ -64,7 +64,7 @@ class PlayerPasswordResetController extends Controller
         Cache::put('player_password_reset::user::' . $request->user()->id, now(), $cooldownInSeconds);
 
         // Fire Job to reset password.
-        PlayerPasswordResetCommandJob::dispatch(
+        PlayerPasswordResetCommandJob::dispatchSync(
             $player,
             $request->user()->id,
             $request->new_password,
