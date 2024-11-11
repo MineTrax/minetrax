@@ -27,7 +27,7 @@ class PlayerPasswordResetCommandJob implements ShouldQueue
         private Player $player,
         private $userId,
         private string $password,
-        private string $reason,
+        private $reason = null,
     ) {
         //
     }
@@ -67,13 +67,20 @@ class PlayerPasswordResetCommandJob implements ShouldQueue
             'player_username' => $this->player->username,
             'password' => $this->password,
         ];
+
         $parsedCommandString = Helper::replacePlaceholders($command->command, $params);
         $params['reason'] = $this->reason;
+
+        $viewableParsedCommand = str_ireplace('{password}', '********', $command->command);
+        $viewableParsedCommand = Helper::replacePlaceholders($viewableParsedCommand, $params);
         $commandQueue = CommandQueue::create([
             'server_id' => $server->id,
             'command_id' => $command->id,
             'parsed_command' => $parsedCommandString,
-            'config' => $command->config,
+            'config' => [
+                ...$command->config,
+                'viewable_parsed_command' => $viewableParsedCommand,
+            ],
             'params' => $params,
             'status' => CommandQueueStatus::PENDING,
             'max_attempts' => $command->max_attempts,

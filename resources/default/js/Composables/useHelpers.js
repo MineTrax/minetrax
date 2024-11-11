@@ -2,7 +2,7 @@ import Autolinker from 'autolinker';
 import DOMPurify from 'dompurify';
 import { format, formatDistanceToNowStrict } from 'date-fns';
 import * as locale from 'date-fns/locale';
-import {usePage} from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 
 export function useHelpers() {
     const page = usePage();
@@ -15,7 +15,7 @@ export function useHelpers() {
         const m = Math.floor(s / 60);
         s -= m * 60;
         const tmp = [];
-        (d) && tmp.push(d + 'd');
+        d && tmp.push(d + 'd');
         (d || h) && tmp.push(h + 'h');
         (d || h || m) && tmp.push(m + 'm');
 
@@ -36,7 +36,7 @@ export function useHelpers() {
             urls: {
                 schemeMatches: true,
                 wwwMatches: true,
-                tldMatches: true
+                tldMatches: true,
             },
             email: true,
             phone: true,
@@ -48,7 +48,7 @@ export function useHelpers() {
             newWindow: true,
             truncate: {
                 length: 0,
-                location: 'end'
+                location: 'end',
             },
             className: 'autolink',
             replaceFn: function (match) {
@@ -57,7 +57,7 @@ export function useHelpers() {
                 case 'mention':
                     return `<a class='autolink autolink-mention' href='/@${match.getMention()}'>@${match.getMention()}</a>`;
                 }
-            }
+            },
         });
         return autoLinker.link(purifiedText);
     }
@@ -66,7 +66,10 @@ export function useHelpers() {
         let myLocale = locale[page.props.locale] || locale['enUS'];
         let formattedDate = null;
         try {
-            formattedDate = formatDistanceToNowStrict(new Date(dateString), { addSuffix: addSuffix, locale: myLocale });
+            formattedDate = formatDistanceToNowStrict(new Date(dateString), {
+                addSuffix: addSuffix,
+                locale: myLocale,
+            });
         } catch (e) {
             console.log('[formatTimeAgoToNow] Failed!');
         }
@@ -77,11 +80,33 @@ export function useHelpers() {
         let formattedDate = null;
         let myLocale = locale[page.props.locale] || locale['enUS'];
         try {
-            formattedDate = format(new Date(dateString), 'E, do MMM yyyy, h:mm aaa', { locale: myLocale });
+            formattedDate = format(
+                new Date(dateString),
+                'E, do MMM yyyy, h:mm aaa',
+                { locale: myLocale }
+            );
         } catch (e) {
             console.log('[formatToDayDateString] Failed!');
         }
         return formattedDate;
+    }
+
+    function generateRandomString(length) {
+        const uppercase = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Excludes I, O, and L
+        const lowercase = 'abcdefghijkmnpqrstuvwxyz'; // Excludes l
+        const numbers = '23456789'; // Excludes 0 and 1
+        const allCharacters = uppercase + lowercase + numbers;
+
+        let password = '';
+
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(
+                Math.random() * allCharacters.length
+            );
+            password += allCharacters[randomIndex];
+        }
+
+        return password;
     }
 
     return {
@@ -89,7 +114,7 @@ export function useHelpers() {
         purifyText,
         purifyAndLinkifyText,
         formatTimeAgoToNow,
-        formatToDayDateString
+        formatToDayDateString,
+        generateRandomString,
     };
 }
-

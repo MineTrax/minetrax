@@ -83,6 +83,10 @@ class PlayerPolicy
             return true;
         }
 
+        if ($user->can('cannot player_password_reset')) {
+            return false;
+        }
+
         return $user->players()->where('players.id', $player->id)->exists();
     }
 

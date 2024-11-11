@@ -134,5 +134,7 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('read banwarden_punishments_evidence');
         Permission::findOrCreate('create banwarden_punishments_evidence');
         Permission::findOrCreate('delete banwarden_punishments_evidence');
+
+        Permission::findOrCreate('cannot player_password_reset');
     }
 }

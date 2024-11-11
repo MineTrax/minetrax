@@ -65,6 +65,14 @@ class CommandQueueController extends Controller
             ->allowedSorts($fields)
             ->defaultSort('-updated_at')
             ->simplePaginate($perPage)
+            ->through(function ($commandQueue) {
+                if ($commandQueue->tag === 'player_password_reset') {
+                    $commandQueue->parsed_command = array_key_exists('viewable_parsed_command', $commandQueue->config)
+                        ? $commandQueue->config['viewable_parsed_command']
+                        : $commandQueue->parsed_command;
+                }
+                return $commandQueue;
+            })
             ->withQueryString();
 
         return Inertia::render('Admin/CommandQueue/IndexCommandQueue', [

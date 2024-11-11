@@ -7,6 +7,9 @@ import { useForm } from '@inertiajs/vue3';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import AlertCard from '@/Components/AlertCard.vue';
 import { computed } from 'vue';
+import { ArrowPathIcon } from '@heroicons/vue/24/solid';
+import { useHelpers } from '@/Composables/useHelpers';
+const { generateRandomString } = useHelpers();
 
 const props = defineProps({
     uuid: {
@@ -20,6 +23,9 @@ const props = defineProps({
     cooldown: {
         type: Number,
     },
+    cannotPlayerPasswordReset: {
+        type: Boolean,
+    }
 });
 
 let selectedPlayer = ref(props.players[0]);
@@ -45,7 +51,7 @@ const submitForm = () => {
 };
 
 const formDisabled = computed(() => {
-    return form.processing || !selectedPlayer.value;
+    return form.processing || !selectedPlayer.value || props.cannotPlayerPasswordReset;
 });
 
 </script>
@@ -111,6 +117,20 @@ const formDisabled = computed(() => {
         {{ __("No linked players found. Please link a player to your account.") }}
       </AlertCard>
 
+      <AlertCard
+        v-if="cannotPlayerPasswordReset"
+        text-color="text-red-800 dark:text-red-500"
+        border-color="border-red-500"
+      >
+        {{ __("Your are not allowed to reset your player passwords.") }}
+
+        <template #body>
+          <p class="text-sm">
+            {{ __("Site administrator has explicitly disabled this feature for your role. Contact for more information.") }}
+          </p>
+        </template>
+      </AlertCard>
+
       <div
         as="div"
         class="w-full p-6 text-gray-500 rounded-lg text-medium dark:text-gray-400 bg-white shadow dark:bg-gray-800"
@@ -120,27 +140,29 @@ const formDisabled = computed(() => {
           @submit.prevent="submitForm"
         >
           <div class="grid grid-cols-6 gap-6">
-            <div class="col-span-6 sm:col-span-3">
+            <div class="col-span-6 sm:col-span-6 flex space-x-2">
               <x-input
                 id="new_password"
                 v-model="form.new_password"
                 :label="__('New Password')"
                 :error="form.errors.new_password"
-                type="password"
+                type="text"
                 name="new_password"
                 help-error-flex="flex-row"
               />
-            </div>
 
-            <div class="col-span-6 sm:col-span-3">
-              <x-input
-                id="new_password_confirmation"
-                v-model="form.new_password_confirmation"
-                :label="__('Confirm Password')"
-                type="password"
-                name="new_password_confirmation"
-                help-error-flex="flex-row"
-              />
+              <div>
+                <button
+                  type="button"
+                  class="inline-flex items-center px-4 py-4 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest whitespace-nowrap shadow-sm hover:text-gray-500 focus:outline-none active:text-gray-800 active:mt-0.5 active:bg-gray-50 transition ease-in-out duration-150 dark:bg-cool-gray-700 dark:text-gray-200 dark:border-gray-800 dark:hover:text-white dark:hover:bg-cool-gray-600"
+                  @click="form.new_password = generateRandomString(16)"
+                >
+                  <ArrowPathIcon class="inline h-5 w-5 mr-1" />
+                  <span class="hidden md:block">
+                    {{ __("Generate Secure Password") }}
+                  </span>
+                </button>
+              </div>
             </div>
 
             <div class="col-span-6 sm:col-span-6">
@@ -160,7 +182,7 @@ const formDisabled = computed(() => {
           <div class="mt-6">
             <LoadingButton
               :loading="form.processing"
-              class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+              class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
               :disabled="formDisabled"
               type="submit"
             >

@@ -33,6 +33,7 @@ class PlayerPasswordResetController extends Controller
             'uuid' => $selectedPlayerUuid,
             'players' => $linkedPlayers,
             'cooldown' => $cooldown,
+            'cannotPlayerPasswordReset' => $request->user()->hasPermissionTo('cannot player_password_reset'),
         ]);
     }
 
@@ -47,7 +48,7 @@ class PlayerPasswordResetController extends Controller
 
         $request->validate([
             'player_uuid' => 'required|uuid|exists:players,uuid',
-            'new_password' => ['required', 'string', 'confirmed', Password::min(8)->uncompromised()],
+            'new_password' => ['required', 'string', Password::min(8)->uncompromised()],
             'reason' => 'nullable|string|max:255',
         ]);
 
@@ -74,6 +75,7 @@ class PlayerPasswordResetController extends Controller
         // redirect back.
         return redirect()->back()
             ->with([
+                'success' => true,
                 'toast' => [
                     'type' => 'success',
                     'title' => __('Action Successful!'),
