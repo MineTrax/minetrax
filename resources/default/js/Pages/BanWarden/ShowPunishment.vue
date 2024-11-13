@@ -32,7 +32,7 @@ const punishmentHistoryHeaders = [
     },
     {
         key: 'country_id',
-        label: __(''),
+        label: '',
         sortable: true,
         class: 'text-left w-12',
     },
@@ -83,7 +83,7 @@ const punishmentHistoryHeaders = [
     },
     {
         key: 'actions',
-        label: __(''),
+        label: '',
         sortable: false,
         class: 'w-1 text-right',
     },
@@ -142,7 +142,7 @@ const sessionHeaders = [
     },
     {
         key: 'actions',
-        label: __(''),
+        label: '',
         sortable: false,
         class: 'w-1 text-right',
     },
@@ -196,7 +196,7 @@ const altHeaders = [
     },
     {
         key: 'actions',
-        label: __(''),
+        label: '',
         sortable: false,
         class: 'w-1 text-right',
     },

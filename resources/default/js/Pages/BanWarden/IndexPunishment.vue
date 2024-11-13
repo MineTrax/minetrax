@@ -29,7 +29,7 @@ const headerRow = [
     },
     {
         key: 'country_id',
-        label: __(''),
+        label: '',
         sortable: true,
         class: 'text-left w-12',
         filterable: {
@@ -110,7 +110,7 @@ const headerRow = [
     },
     {
         key: 'actions',
-        label: __(''),
+        label: '',
         sortable: false,
         class: 'w-1 text-right',
     },
