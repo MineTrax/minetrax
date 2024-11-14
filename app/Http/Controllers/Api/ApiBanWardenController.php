@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use Cache;
 
 class ApiBanWardenController extends ApiController
@@ -45,7 +46,8 @@ class ApiBanWardenController extends ApiController
 
         $banwardenEnabledInConfig = config('minetrax.banwarden.enabled');
         $server = Server::where('id', $request->input('data.server_id'))->firstOrFail();
-        if (!$banwardenEnabledInConfig || !$server->settings['is_banwarden_enabled']) {
+        $banwardenEnabledForServer = Arr::get($server->settings, 'is_banwarden_enabled', false);
+        if (!$banwardenEnabledInConfig || !$banwardenEnabledForServer) {
             return $this->error(__('BanWarden is disabled globally or on this server.'), 'banwarden_disabled', 403);
         }
 
@@ -156,7 +158,8 @@ class ApiBanWardenController extends ApiController
 
         $banwardenEnabledInConfig = config('minetrax.banwarden.enabled');
         $server = Server::where('id', $request->input('data.server_id'))->firstOrFail();
-        if (!$banwardenEnabledInConfig || !$server->settings['is_banwarden_enabled']) {
+        $banwardenEnabledForServer = Arr::get($server->settings, 'is_banwarden_enabled', false);
+        if (!$banwardenEnabledInConfig || !$banwardenEnabledForServer) {
             return $this->error(__('BanWarden is disabled globally or on this server.'), 'banwarden_disabled', 403);
         }
 
