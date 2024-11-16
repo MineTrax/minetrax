@@ -149,6 +149,7 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     Route::post('applications/{recruitment:slug}/submissions/{submission}/messages', [\App\Http\Controllers\RecruitmentSubmissionController::class, 'postMessage'])->name('recruitment-submission.message.store')->middleware('throttle:chat');
 
     // BanWarden (Authenticated)
+    Route::delete('player/punishments/{playerPunishment:id}', [\App\Http\Controllers\BanWardenController::class, 'pardon'])->name('player.punishment.pardon');
     Route::post('player/punishments/{playerPunishment:id}/evidence', [\App\Http\Controllers\BanWardenController::class, 'createEvidence'])->name('player.punishment.evidence.store');
     Route::delete('player/punishments/{playerPunishment:id}/evidence/{evidence}', [\App\Http\Controllers\BanWardenController::class, 'deleteEvidence'])->name('player.punishment.evidence.delete');
 });

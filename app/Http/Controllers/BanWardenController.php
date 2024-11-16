@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\GeneratePunishmentInsightsJob;
+use App\Jobs\PardonPlayerPunishmentJob;
 use App\Models\Country;
 use App\Models\MinecraftPlayerSession;
 use App\Models\Player;
@@ -136,6 +137,7 @@ class BanWardenController extends Controller
         if (!$canShowMaskedIp) {
             $playerPunishment->makeHidden('masked_ip_address');
         }
+        $allowControlFromWeb = config('minetrax.banwarden.allow_control_from_web');
         $response = [
             'punishment' => $playerPunishment,
             'permissions' => [
@@ -146,6 +148,7 @@ class BanWardenController extends Controller
                 'canCreateEvidence' => Gate::allows('createEvidence', PlayerPunishment::class)
                     && $playerPunishment->evidences->count() < config('minetrax.banwarden.evidence_max_count'),
                 'canDeleteEvidence' => Gate::allows('deleteEvidence', PlayerPunishment::class),
+                'canPardon' => $allowControlFromWeb && Gate::allows('delete', $playerPunishment),
             ],
         ];
 
@@ -316,5 +319,28 @@ class BanWardenController extends Controller
 
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Delete Successful'), 'body' => __('Evidence deleted successfully')]]);
+    }
+
+    public function pardon(PlayerPunishment $playerPunishment, Request $request)
+    {
+        $request->validate([
+            'reason' => 'nullable|string|max:255',
+        ]);
+
+        $this->authorize('delete', $playerPunishment);
+
+        try {
+            PardonPlayerPunishmentJob::dispatchSync($playerPunishment, $request->input('reason'));
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return redirect()->back()
+                ->with(['toast' => ['type' => 'error', 'title' => __('Pardon Failed'), 'body' => 'Failed to execute pardon job to due webquery issue.']]);
+        }
+
+        $playerPunishment->removed_by = auth()->id();
+        $playerPunishment->save();
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'title' => __('Pardon Successful'), 'body' => __('Reloading in 5 seconds to reflect changes'), 'milliseconds' => 5000]]);
     }
 }

@@ -106,7 +106,8 @@ class PlayerPunishmentPolicy
      */
     public function delete(User $user, PlayerPunishment $playerPunishment): bool
     {
-        if ($user->can('delete banwarden_punishments')) {
+        $allowControlFromWeb = config('minetrax.banwarden.allow_control_from_web');
+        if ($allowControlFromWeb && $user->can('delete banwarden_punishments')) {
             return true;
         }
 

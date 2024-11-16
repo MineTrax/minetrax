@@ -10,8 +10,12 @@ import { EyeIcon, DocumentMagnifyingGlassIcon, PlusSmallIcon } from '@heroicons/
 import ArrayTable from '@/Components/DataTable/ArrayTable.vue';
 import Chart from '@/Components/Dashboard/Chart.vue';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
+import JetDialogModal from '@/Jetstream/DialogModal.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import { ref } from 'vue';
 import { XCircleIcon } from '@heroicons/vue/24/solid';
+import XInput from '@/Components/Form/XInput.vue';
+import LoadingButton from '@/Components/LoadingButton.vue';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
@@ -221,6 +225,17 @@ const handleEvidenceUpload = (event) => {
     uploadEvidenceForm.post(route('player.punishment.evidence.store', props.punishment.id));
 };
 
+
+const showingPardonForm = ref(false);
+const pardonForm = useForm({
+    reason: '',
+});
+
+function reloadPageWithTimeout() {
+    setTimeout(() => {
+        location.reload();
+    }, 5000);
+}
 </script>
 
 <template>
@@ -228,7 +243,7 @@ const handleEvidenceUpload = (event) => {
     <AppHead :title="__('Punishments')" />
 
     <div class="px-2 py-4 mx-auto md:py-12 md:px-10 max-w-7xl">
-      <div class="flex justify-between mb-8">
+      <div class="flex flex-col md:flex-row justify-between mb-8">
         <div class="flex items-center">
           <h1 class="text-lg font-bold text-gray-500 md:text-3xl dark:text-gray-300">
             {{ __("Punishment #:id", {
@@ -244,6 +259,22 @@ const handleEvidenceUpload = (event) => {
               status="permanent"
             />
           </span>
+        </div>
+
+        <div class="flex space-x-2">
+          <button
+            v-if="permissions['canPardon'] && punishment.is_active"
+            class="inline-flex items-center px-4 py-2 bg-green-500 dark:bg-cool-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-600 active:bg-green-700 focus:outline-none focus:border-green-800 focus:shadow-outline-green transition ease-in-out duration-150"
+            @click="showingPardonForm = true"
+          >
+            <span>{{ __("Pardon") }}</span>
+          </button>
+          <Link
+            :href="route('player.punishment.index')"
+            class="hidden md:inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          >
+            <span>{{ __("Back") }}</span>
+          </Link>
         </div>
       </div>
       <div class="flex flex-col space-y-8 text-gray-800 dark:text-gray-300">
@@ -1309,5 +1340,49 @@ const handleEvidenceUpload = (event) => {
         <!-- Possible Alts End -->
       </div>
     </div>
+
+    <JetDialogModal
+      :show="showingPardonForm"
+      @close="showingPardonForm = false"
+    >
+      <template #title>
+        <h3 class="text-lg font-bold">
+          {{ __("Pardon") }}
+        </h3>
+      </template>
+
+      <template #content>
+        <XInput
+          v-model="pardonForm.reason"
+          :label="__('Please provide a reason..')"
+          :error="pardonForm.errors.reason"
+        />
+      </template>
+
+      <template #footer>
+        <JetSecondaryButton
+          class="mr-2"
+          @click="showingPardonForm = false"
+        >
+          {{ __("Cancel") }}
+        </JetSecondaryButton>
+        <LoadingButton
+          :loading="pardonForm.processing"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-500 border border-transparent rounded-md hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:shadow-outline-gray"
+          @click="() => {
+            pardonForm.delete(route('player.punishment.pardon', {
+              playerPunishment: punishment.id,
+            }), {
+              onSuccess: () => {
+                showingPardonForm = false;
+                reloadPageWithTimeout();
+              },
+            })
+          }"
+        >
+          {{ __("Pardon") }}
+        </LoadingButton>
+      </template>
+    </JetDialogModal>
   </AppLayout>
 </template>
