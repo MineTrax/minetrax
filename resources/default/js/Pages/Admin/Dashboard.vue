@@ -24,13 +24,13 @@ const {formatTimeAgoToNow} = useHelpers();
 
 defineProps({
     kpiTotalUsers: Number,
+    kpiTotalVerifiedUsers: Number,
     kpiUserCreatedForInterval: Number,
-    kpiUserLastSeenForInterval: Number,
     kpiTotalUserPercent: Number,
 
     kpiTotalPlayers: Number,
+    kpiTotalLinkedPlayers: Number,
     kpiPlayerCreatedForInterval: Number,
-    kpiPlayerLastSeenForInterval: Number,
     kpiTotalPlayersPercent: Number,
 
     kpiTotalFailedJobs: Number,
@@ -76,7 +76,7 @@ defineProps({
           change-desc="in last 7 days"
           :icon="UserPlusIcon"
           icon-class="text-light-blue-500 bg-light-blue-100 dark:bg-light-blue-500 dark:text-white"
-          :description="`Active: ${kpiUserLastSeenForInterval} users`"
+          :description="`Total Verified: ${kpiTotalVerifiedUsers} users`"
         />
 
         <KpiOverviewCardForDashboard
@@ -88,7 +88,7 @@ defineProps({
           change-desc="in last 7 days"
           :icon="UserIcon"
           icon-class="text-green-500 bg-green-100 dark:bg-green-500 dark:text-white"
-          :description="`Active: ${kpiPlayerLastSeenForInterval} players`"
+          :description="`Total Linked: ${kpiTotalLinkedPlayers} players`"
         />
 
         <KpiOverviewCardForDashboard

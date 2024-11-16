@@ -44,6 +44,7 @@ class UserController extends Controller
                 'country.name',
                 'discord_user_id',
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username', 'discord_user_id'])),
+                AllowedFilter::scope('is_verified'),
             ])
             ->allowedSorts(['id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at'])
             ->defaultSort('id')
@@ -51,9 +52,11 @@ class UserController extends Controller
             ->withQueryString();
 
         $countries = Country::select(['id', 'name'])->get()->pluck('name');
+        $roles = Role::select(['id', 'display_name'])->pluck('display_name');
 
         return Inertia::render('Admin/User/IndexUser', [
             'countries' => $countries,
+            'roles' => $roles,
             'users' => $users,
             'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);

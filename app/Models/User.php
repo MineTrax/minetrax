@@ -425,4 +425,9 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     {
         return $this->discord_private_channel_id;
     }
+
+    public function scopeIsVerified($query, $bool = true)
+    {
+        return $query->where('verified_at', $bool ? '!=' : '=', null);
+    }
 }

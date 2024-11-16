@@ -21,6 +21,7 @@ const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
 
 const props = defineProps({
     countries: Array,
+    roles: Array,
     users: Object,
     filters: Object,
 });
@@ -51,9 +52,23 @@ const headerRow = [
         label: __('Name'),
         class: 'w-3/12',
         sortable: true,
-        filterable: {
-            type: 'text',
-        }
+        filterable: [
+            {
+                type: 'text',
+                key: 'name',
+                label: __('Name'),
+            },
+            {
+                key: 'is_verified',
+                type: 'select',
+                options: [
+                    'true',
+                    'false'
+                ],
+                searchable: false,
+                label: __('Verified'),
+            }
+        ]
     },
     {
         key: 'username',
@@ -86,7 +101,9 @@ const headerRow = [
         sortable: false,
         filterable: {
             key: 'roles.display_name',
-            type: 'text'
+            type: 'multiselect',
+            options: props.roles,
+            searchable: true,
         }
     },
     {
