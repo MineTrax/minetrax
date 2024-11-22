@@ -262,13 +262,13 @@ function reloadPageWithTimeout() {
         </div>
 
         <div class="flex space-x-2">
-          <button
+          <!-- <button
             v-if="permissions['canPardon'] && punishment.is_active"
             class="inline-flex items-center px-4 py-2 bg-green-500 dark:bg-cool-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-600 active:bg-green-700 focus:outline-none focus:border-green-800 focus:shadow-outline-green transition ease-in-out duration-150"
             @click="showingPardonForm = true"
           >
             <span>{{ __("Pardon") }}</span>
-          </button>
+          </button> -->
           <Link
             :href="route('player.punishment.index')"
             class="hidden md:inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
