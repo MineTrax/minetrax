@@ -10,6 +10,8 @@ use App\Utils\Helpers\Helper;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
+use Laravel\Fortify\Features;
 use Laravel\Socialite\Facades\Socialite;
 use NotificationChannels\Discord\Discord;
 use Log;
@@ -53,14 +55,14 @@ class SocialAuthController extends Controller
             }
 
             // If there is no email or name address then error
-            if (! $socialUser->getEmail() || ! $socialUser->getName()) {
+            if (!$socialUser->getEmail() || !$socialUser->getName()) {
                 return redirect()->route('login')
                     ->with(['toast' => ['type' => 'danger', 'title' => __('Unable to fetch your email address or name.'), 'milliseconds' => 7000]]);
             }
 
             $socialAccount = SocialAccount::where('provider', $provider)->where('provider_id', $socialUser->getId())->first();
             $user = $socialAccount?->user;
-            if (! $user) {
+            if (!$user) {
                 $user = User::where('email', $socialUser->getEmail())->first();
             }
 
@@ -84,7 +86,7 @@ class SocialAuthController extends Controller
                         'last_login_at' => now(),
                         'last_login_ip' => request()->ip(),
                     ]);
-                } elseif (! $socialAccount && $allowAnyProviderAuth) {
+                } elseif (!$socialAccount && $allowAnyProviderAuth) {
                     $socialAccount = $user->socialAccounts()->create([
                         'provider' => $provider,
                         'provider_id' => $socialUser->getId(),
@@ -115,7 +117,7 @@ class SocialAuthController extends Controller
                 }
             } else {
                 // Before creating new user check if registration feature is disabled.
-                if (! Route::has('register')) {
+                if (!Route::has('register')) {
                     return redirect()->route('login')
                         ->with(['toast' => ['type' => 'danger', 'title' => __('New user registration is disabled!'), 'milliseconds' => 5000]]);
                 }
@@ -154,7 +156,7 @@ class SocialAuthController extends Controller
             }
 
             // If OAuth was discord, then check if user has discord_private_channel_id , if not then create one and update user.
-            if ($provider === 'discord' && ! $user->discord_private_channel_id) {
+            if ($provider === 'discord' && !$user->discord_private_channel_id) {
                 $this->updateDiscordPrivateChannel($user, $socialUser);
             }
 
@@ -168,6 +170,18 @@ class SocialAuthController extends Controller
                     'access_token' => $token->plainTextToken,
                 ]);
             } else {
+                // Check if 2FA enabled for user then redirect to challenge.
+                if (Features::enabled(Features::twoFactorAuthentication()) && $user->hasEnabledTwoFactorAuthentication()) {
+                    $request->session()->put([
+                        'login.id' => $user->getKey(),
+                        'login.remember' => true,
+                    ]);
+                    TwoFactorAuthenticationChallenged::dispatch($user);
+                    return $request->wantsJson()
+                        ? response()->json(['two_factor' => true])
+                        : redirect()->route('two-factor.login');
+                }
+
                 Auth::login($user, true);
 
                 return redirect()->route('home');
@@ -186,7 +200,7 @@ class SocialAuthController extends Controller
     private function updateDiscordPrivateChannel($user, $socialUser)
     {
         $botEnabled = config('services.discord.token');
-        if (! $botEnabled) {
+        if (!$botEnabled) {
             return;
         }
 

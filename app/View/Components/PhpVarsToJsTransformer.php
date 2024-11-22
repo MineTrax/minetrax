@@ -25,14 +25,6 @@ class PhpVarsToJsTransformer extends Component
             'key' => 'route-stats-01',
             'authenticated' => false,
         ],
-        [
-            'type' => 'route',
-            'name' => 'Polls',
-            'title' => 'Polls',
-            'route' => 'poll.index',
-            'key' => 'route-polls-01',
-            'authenticated' => false,
-        ],
     ];
 
     const DEFAULT_NAV_RIGHT = [
@@ -99,7 +91,7 @@ class PhpVarsToJsTransformer extends Component
     public function render()
     {
         $useWebsockets = config('broadcasting.default') == 'pusher' || config('broadcasting.default') == 'ably';
-        $useWebsockets = $useWebsockets && config('broadcasting.connections.'.config('broadcasting.default').'.key');
+        $useWebsockets = $useWebsockets && config('broadcasting.connections.' . config('broadcasting.default') . '.key');
 
         $pusher = [
             'USE_WEBSOCKETS' => $useWebsockets,
@@ -133,16 +125,36 @@ class PhpVarsToJsTransformer extends Component
         $customNavbarEnabled = $navbarSettings->enable_custom_navbar;
 
         // If custom navbar is disabled, generate default navbar
-        if (! $customNavbarEnabled) {
+        if (!$customNavbarEnabled) {
             $customPagesInNavbar = CustomPage::visible()->navbar()->select(['id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_open_in_new_tab'])->get();
 
             $leftNavbar = self::DEFAULT_NAV_LEFT;
+            // Add BanWarden to navbar if enabled
+            if (config('minetrax.banwarden.enabled') && config('minetrax.banwarden.show_public')) {
+                $leftNavbar[] = [
+                    'type' => 'route',
+                    'name' => 'Punishments',
+                    'title' => 'Punishments',
+                    'route' => 'player.punishment.index',
+                    'key' => 'route-punishments-01',
+                    'authenticated' => false,
+                ];
+            }
+
             $dropdownList = [
                 'type' => 'dropdown',
                 'name' => 'Dropdown',
                 'title' => 'Others',
                 'key' => 'dropdown-others-01',
                 'children' => [
+                    [
+                        'type' => 'route',
+                        'name' => 'Polls',
+                        'title' => 'Polls',
+                        'route' => 'poll.index',
+                        'key' => 'route-polls-01',
+                        'authenticated' => false,
+                    ],
                     [
                         'type' => 'route',
                         'name' => 'News',
@@ -198,7 +210,7 @@ class PhpVarsToJsTransformer extends Component
                         'path' => $page->path,
                     ],
                     'is_open_in_new_tab' => $page->is_open_in_new_tab,
-                    'key' => 'custom-page-'.$page->id.'-01',
+                    'key' => 'custom-page-' . $page->id . '-01',
                 ];
             }
             $leftNavbar[] = $dropdownList;

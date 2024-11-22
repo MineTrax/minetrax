@@ -11,7 +11,7 @@ class CustomPageController extends Controller
     public function show(CustomPage $customPage)
     {
         if (!$customPage->is_visible) {
-            if (!request()->user() || !request()->user()->is_staff) {
+            if (!request()->user() || !request()->user()->isStaffMember()) {
                 abort(404);
             }
         }

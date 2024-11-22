@@ -16,6 +16,25 @@ class PlayerPolicy
         //
     }
 
+    public function viewAnyIntel(?User $user)
+    {
+        $showPlayerIntelTo = app(PlayerSettings::class)?->show_player_intel_to;
+
+        if ($showPlayerIntelTo === 'all') {
+            return true;
+        }
+
+        if ($showPlayerIntelTo === 'staff') {
+            return $user && $user->isStaffMember();
+        }
+
+        if ($showPlayerIntelTo === 'login') {
+            return (bool) $user;
+        }
+
+        return false;
+    }
+
     public function viewIntel(?User $user, Player $player)
     {
         $showPlayerIntelTo = app(PlayerSettings::class)?->show_player_intel_to;
@@ -53,6 +72,19 @@ class PlayerPolicy
     {
         if ($user->can('change any_player_skin')) {
             return true;
+        }
+
+        return $user->players()->where('players.id', $player->id)->exists();
+    }
+
+    public function resetPassword(User $user, Player $player)
+    {
+        if ($user->can('reset any_player_password')) {
+            return true;
+        }
+
+        if ($user->can('cannot player_password_reset')) {
+            return false;
         }
 
         return $user->players()->where('players.id', $player->id)->exists();

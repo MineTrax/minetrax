@@ -24,12 +24,12 @@
               <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
                   <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-2">
+                    <div class="col-span-6 sm:col-span-3">
                       <x-input
                         id="name"
                         v-model="form.name"
                         :label="__('Server Name')"
-                        :help="__('This name will help to identify this server. Eg: Survival, Skyblock, etc.')"
+                        :help="__('Publicly visible name of the server (e.g., Survival, Skyblock, Lifesteal, Practice, etc.).')"
                         :error="form.errors.name"
                         type="text"
                         name="name"
@@ -37,7 +37,20 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-2">
+                    <div class="col-span-6 sm:col-span-3">
+                      <x-input
+                        id="server_identifier"
+                        v-model="form.settings.server_identifier"
+                        :label="__('Server Identifier')"
+                        :help="__('Unique identifier for the server, used for identification in proxy configurations and ban management plugins (e.g., s1, server1, lifesteal, survival1, proxy, etc.).')"
+                        :error="form.errors['settings.server_identifier']"
+                        type="text"
+                        name="server_identifier"
+                        help-error-flex="flex-col"
+                      />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
                       <x-input
                         id="hostname"
                         v-model="form.hostname"
@@ -50,7 +63,7 @@
                       />
                     </div>
 
-                    <div class="col-span-6 sm:col-span-2">
+                    <div class="col-span-6 sm:col-span-3">
                       <x-input
                         id="order"
                         v-model="form.order"
@@ -182,6 +195,16 @@
                         name="is_skin_change_via_web_allowed"
                       />
                     </div>
+
+                    <div class="flex items-center col-span-6 sm:col-span-6">
+                      <x-checkbox
+                        id="is_banwarden_enabled"
+                        v-model="form.settings.is_banwarden_enabled"
+                        :label="__('Enable BanWarden')"
+                        :help="__('BanWarden allows you to manage all your punishments (bans, mutes, kicks etc) from the web. This requires a ban plugin to be installed on the server Eg: LiteBans, LibertyBans etc.')"
+                        name="is_banwarden_enabled"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
@@ -237,7 +260,9 @@ export default {
                 is_player_intel_enabled: true,
                 is_ingame_chat_enabled: true,
                 settings: {
-                    is_skin_change_via_web_allowed: true
+                    server_identifier: null, // Eg: s1, server1, lifesteal, survival1, proxy etc
+                    is_skin_change_via_web_allowed: true,
+                    is_banwarden_enabled: true,
                 }
             }),
             typeArray: {

@@ -30,6 +30,11 @@ class Server extends BaseModel
         return $this->hasMany(MinecraftPlayer::class);
     }
 
+    public function minecraftPlayerSessions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(MinecraftPlayerSession::class);
+    }
+
     public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Country::class);
@@ -48,6 +53,16 @@ class Server extends BaseModel
     public function commands(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Command::class);
+    }
+
+    public function serverLiveInfos(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(MinecraftServerLiveInfo::class);
+    }
+
+    public function serverWorlds(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(MinecraftServerWorld::class);
     }
 
     public function getAggregatedTotalJsonStats()

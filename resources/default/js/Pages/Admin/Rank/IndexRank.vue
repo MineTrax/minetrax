@@ -6,10 +6,13 @@ import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import AlertCard from '@/Components/AlertCard.vue';
+import { useStorage } from '@vueuse/core';
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
+const showPlayerRankSyncAlert = useStorage('show-player-rank-sync-alert', true);
 
 defineProps({
     ranks: Object,
@@ -70,6 +73,53 @@ const headerRow = [
     <app-head :title="__('Manage Player Ranks')" />
 
     <div class="px-10 py-8 mx-auto text-gray-400">
+      <AlertCard
+        v-if="showPlayerRankSyncAlert"
+        :close-button="true"
+        text-color="text-light-blue-800 dark:text-light-blue-500"
+        border-color="border-light-blue-500"
+        @close="showPlayerRankSyncAlert = false"
+      >
+        {{ __("Do you know! MineTrax can also sync rank from server instead of calculating using algorithm.") }}
+        <template #body>
+          <p class="text-gray-600 dark:text-gray-400">
+            {{
+              __(
+                "If you want to sync player rank from your minecraft server, follow the steps below:"
+              )
+            }}
+          </p>
+          <ul class="text-gray-600 list-disc list-inside dark:text-gray-400">
+            <li>
+              {{
+
+                __("Create a rank for each rank you have in your server and want to sync. Make sure Short Name matches the rank identifier in your server.")
+              }}
+            </li>
+            <li>
+              {{
+
+                __("Enable the 'Sync Rank' option from Admin > Settings > Plugin > Enable Player Rank Sync.")
+              }}
+            </li>
+            <li>
+              {{
+
+                __("Done! Wait for some time and your player ranks will be synced automatically.")
+              }}
+            </li>
+          </ul>
+
+          <p class="italic text-gray-400 dark:text-gray-500">
+            {{
+              __(
+                "Note: This is optional feature. You can safely close this alert if you don't want to use it. You can always do it later."
+              )
+            }}
+          </p>
+        </template>
+      </AlertCard>
+
       <div class="flex justify-between mb-4">
         <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
           {{ __("Manage Player Ranks") }}
@@ -81,7 +131,7 @@ const headerRow = [
             method="post"
             as="button"
             :href="route('admin.rank.reset')"
-            class="mr-2 inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-red-600 border border-transparent rounded-md hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red"
           >
             {{ __("Reset to Default Ranks") }}
           </InertiaLink>

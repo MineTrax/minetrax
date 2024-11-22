@@ -270,7 +270,7 @@ const pollServerForNewMessages = () => {
                   }"
               >
                 <InertiaLink
-                  as="div"
+                  as="a"
                   class="hover:cursor-pointer hover:underline"
                   :href="
                     route(

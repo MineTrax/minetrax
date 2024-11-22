@@ -7,6 +7,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Server;
 use App\Settings\GeneralSettings;
+use App\Settings\PluginSettings;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Route;
@@ -44,14 +45,14 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request)
     {
         return array_merge(parent::share($request), [
-            'authHasPassword' => fn () => $request->user() ? $request->user()->password !== null : false,
+            'authHasPassword' => fn() => $request->user() ? $request->user()->password !== null : false,
             'appName' => config('app.name'),
-            'locale' => fn () => app()->getLocale(),
-            'localeIsoCode' => fn () => array_key_exists(app()->getLocale(), config('constants.locale_keymap')) ? config('constants.locale_keymap')[app()->getlocale()]['iso_code'] : '_unknown',
-            'toast' => fn () => $request->session()->get('toast'),
+            'locale' => fn() => app()->getLocale(),
+            'localeIsoCode' => fn() => array_key_exists(app()->getLocale(), config('constants.locale_keymap')) ? config('constants.locale_keymap')[app()->getlocale()]['iso_code'] : '_unknown',
+            'toast' => fn() => $request->session()->get('toast'),
             'popstate' => \Str::uuid(),
             'permissions' => function () use ($request) {
-                if (! $request->user()) {
+                if (!$request->user()) {
                     return [];
                 }
 
@@ -64,7 +65,7 @@ class HandleInertiaRequests extends Middleware
             'defaultQueryServer' => function () {
                 $shouldUseWebQuery = false;
                 $defaultQueryServer = Server::where('type', ServerType::Bungee)->select(['hostname', 'id', 'webquery_port'])->latest()->first();
-                if (! $defaultQueryServer) {
+                if (!$defaultQueryServer) {
                     $defaultQueryServer = Server::select(['id', 'hostname', 'webquery_port'])->orderByDesc('order')->orderBy('id')->first();
                 }
                 $shouldUseWebQuery = $defaultQueryServer?->webquery_port != null;
@@ -74,9 +75,9 @@ class HandleInertiaRequests extends Middleware
                     'shouldUseWebQuery' => $shouldUseWebQuery,
                 ];
             },
-            'generalSettings' => fn (GeneralSettings $generalSettings) => $generalSettings->toArray(),
+            'generalSettings' => fn(GeneralSettings $generalSettings) => $generalSettings->toArray(),
             'isImpersonating' => $request->user() && $request->user()->isImpersonating(),
-            'disableEmailPasswordAuth' => fn () => config('auth.disable_email_password_auth'),
+            'disableEmailPasswordAuth' => fn() => config('auth.disable_email_password_auth'),
             'enabledSocialAuths' => function () {
                 $enabledSocialLogins = [];
                 $enabledSocialLogins['github'] = config('services.github.oauth_enabled');
@@ -94,9 +95,19 @@ class HandleInertiaRequests extends Middleware
             'poweredByExtraName' => config('minetrax.powered_by_extra_name'),
             'poweredByExtraLink' => config('minetrax.powered_by_extra_link'),
             'showHomeButton' => config('minetrax.show_home_button'),
-            'showCookieConsent' => config('minetrax.cookie_consent_enabled') && ! $request->cookie('laravel_cookie_consent'),
+            'showCookieConsent' => config('minetrax.cookie_consent_enabled') && !$request->cookie('laravel_cookie_consent'),
             'playerSkinChangerEnabled' => config('minetrax.player_skin_changer_enabled'),
             'localeSwitcherEnabled' => count(config('app.available_locales')) > 0,
+            'banwarden' => [
+                'enabled' => config('minetrax.banwarden.enabled'),
+                'showPublic' => config('minetrax.banwarden.show_public'),
+                'canShowMaskedIp' => config('minetrax.banwarden.show_masked_ip_public') ? true : $request->user()?->isStaffMember(),
+            ],
+            'pluginSettings' => function (PluginSettings $pluginSettings) {
+                return [
+                    'playerPasswordResetEnabled' => $pluginSettings->enable_player_password_reset,
+                ];
+            }
         ]);
     }
 }

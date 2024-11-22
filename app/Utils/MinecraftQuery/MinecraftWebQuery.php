@@ -2,6 +2,7 @@
 
 namespace App\Utils\MinecraftQuery;
 
+use App\Enums\PlayerPunishmentType;
 use App\Settings\PluginSettings;
 use App\Utils\Helpers\CryptoUtils;
 use Illuminate\Encryption\Encrypter;
@@ -11,6 +12,18 @@ class MinecraftWebQuery
 {
     public function __construct(public $HOST, public $PORT)
     {
+    }
+
+    public function banwardenPardon(PlayerPunishmentType $type, string $victim, string $reason = null)
+    {
+        $payload = [
+            'type' => $type->value,
+            'victim' => $victim,
+            'reason' => $reason,
+        ];
+        $status = $this->sendQuery('banwarden-pardon', $payload);
+
+        return $status;
     }
 
     /**
@@ -31,7 +44,7 @@ class MinecraftWebQuery
 
             return $status;
         } catch (\Exception $e) {
-            throw new \Exception(__('Error setting player skin. Please make sure provided skin is valid.'));
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -70,7 +83,7 @@ class MinecraftWebQuery
     public function runCommand($command, $params = null)
     {
         $payload = [
-            'command' => $params ? $command.' '.$params : $command,
+            'command' => $params ? $command . ' ' . $params : $command,
         ];
         $status = $this->sendQuery('command', $payload);
 
@@ -93,7 +106,7 @@ class MinecraftWebQuery
 
     public function checkPlayerOnline($playerUuid): bool
     {
-        if (! Str::isUuid($playerUuid)) {
+        if (!Str::isUuid($playerUuid)) {
             throw new \Exception(__('Provided UUID is not valid.'));
         }
 
@@ -110,11 +123,11 @@ class MinecraftWebQuery
         $encrypted = $this->makePayload($type, $data);
 
         $factory = new \Socket\Raw\Factory();
-        $socket = $factory->createClient("tcp://{$this->HOST}:{$this->PORT}", 5);
-        $text = $encrypted."\n";
+        $socket = $factory->createClient("tcp://{$this->HOST}:{$this->PORT}", 10);
+        $text = $encrypted . "\n";
         $socket->write($text);
         // Timeout after 10 seconds for webquery in case of no response
-        socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, ['sec' => 5, 'usec' => 0]);
+        socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, ['sec' => 10, 'usec' => 0]);
         // read while we get data
         $buf = '';
         while ($read = $socket->read(4096)) {

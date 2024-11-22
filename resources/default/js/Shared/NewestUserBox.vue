@@ -5,7 +5,7 @@
         {{ __("Newest User") }}
       </h3>
       <inertia-link
-        as="div"
+        as="a"
         :href="route('user.public.get', user.username)"
         class="cursor-pointer flex space-x-2 border dark:border-gray-700 rounded-tl-md rounded-tr-xl rounded-b-3xl p-2 items-center hover:border-light-blue-400 dark:hover:border-light-blue-400"
       >

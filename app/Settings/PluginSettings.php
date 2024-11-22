@@ -24,6 +24,12 @@ class PluginSettings extends Settings
 
     public ?int $sync_player_ranks_from_server_id;
 
+    public bool $enable_player_password_reset;
+
+    public array $player_password_reset_commands;
+
+    public int $player_password_reset_cooldown_in_seconds;
+
     public static function group(): string
     {
         return 'plugin';

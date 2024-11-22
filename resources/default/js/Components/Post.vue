@@ -14,7 +14,7 @@
         <div class="ml-2 mt-0.5">
           <inertia-link
             class="cursor-pointer hover:underline dark:text-gray-300"
-            as="div"
+            as="a"
             :href="route('user.public.get', post.user.username)"
           >
             <user-displayname

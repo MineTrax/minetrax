@@ -177,17 +177,15 @@ function toggleSorting(key) {
                       :key="th.key"
                       scope="col"
                       class="px-4 py-3 text-xs font-semibold text-left text-gray-400 dark:text-gray-300"
-                      :class="[
-                        th.class ? th.class : '',
-                      ]"
+                      :class="[th.class ? th.class : '']"
                     >
                       <div class="inline-flex items-center">
-                        <Popover
-                          v-if="th.filterable"
-                        >
+                        <Popover v-if="th.filterable">
                           <PopoverButton class="focus:outline-none">
                             <Icon
-                              v-if="filters.filter[th.filterable.key ?? th.key]"
+                              v-if="Array.isArray(th.filterable)
+                                ? th.filterable.some(filter => filters.filter[filter.key ?? th.key])
+                                : filters.filter[th.filterable.key ?? th.key]"
                               name="funnel-fill"
                               class="inline-block h-4 mr-1 text-green-500 cursor-pointer dark:text-green-500 hover:text-gray-700 dark:hover:text-white"
                             />
@@ -211,55 +209,100 @@ function toggleSorting(key) {
                               class="absolute z-10 p-4 text-gray-800 bg-white border border-gray-200 rounded shadow dark:text-gray-300 min-w-64 dark:bg-gray-700 dark:border-gray-600"
                             >
                               <h3 class="mb-1 text-sm font-semibold">
-                                {{ __("Filter by :column", {
-                                  column: th.label,
-                                }) }}
+                                {{ Array.isArray(th.filterable)
+                                  ?
+                                    th.filterable.title ?? null
+                                  : th.filterable.title ?? __("Filters for :column", { column: th.label }) }}
                               </h3>
 
                               <div>
-                                <input
-                                  v-if="th.filterable.type === 'text'"
-                                  v-model="filters.filter[th.filterable.key ?? th.key]"
-                                  class="block w-full p-2 border-gray-200 rounded-md shadow-sm dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-700 focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
-                                  :placeholder="`Enter ${th.label}...`"
-                                  type="text"
-                                >
-                                <Multiselect
-                                  v-if="['multiselect', 'select'].includes(th.filterable.type)"
-                                  v-model="filters.filter[th.filterable.key ?? th.key]"
-                                  class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
-                                  :options="th.filterable.options"
-                                  :multiple="th.filterable.type === 'multiselect'"
-                                  :close-on-select="th.filterable.type === 'select'"
-                                  :limit="1"
-                                  :clear-on-select="false"
-                                  :searchable="th.filterable.searchable ?? false"
-                                  :placeholder="`Select ${th.label}...`"
-                                />
-
-                                <button
-                                  class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none disabled:opacity-50"
-                                  :disabled="!filters.filter[th.filterable.key ?? th.key]"
-                                  type="button"
-                                  @click="() => {
-                                    if (!filters.filter[th.filterable.key ?? th.key]) {
-                                      return;
-                                    }
-                                    delete filters.filter[th.filterable.key ?? th.key]
-                                    close()
-                                  }"
-                                >
-                                  {{ __("Clear") }}
-                                </button>
+                                <!-- If: Array Filterable -->
+                                <template v-if="Array.isArray(th.filterable)">
+                                  <div
+                                    v-for="filter in th.filterable"
+                                    :key="filter.key ?? th.key"
+                                    class="mb-4"
+                                  >
+                                    <h4 class="mb-1 text-sm font-medium">
+                                      {{ filter.title ?? __("Filters for :column", { column: filter.label }) }}
+                                    </h4>
+                                    <input
+                                      v-if="filter.type === 'text'"
+                                      v-model="filters.filter[filter.key ?? th.key]"
+                                      class="block w-full p-2 border-gray-200 rounded-md shadow-sm dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-700 focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                      :placeholder="`Enter ${filter.title ?? filter.label}...`"
+                                      type="text"
+                                    >
+                                    <Multiselect
+                                      v-if="['multiselect', 'select'].includes(filter.type)"
+                                      v-model="filters.filter[filter.key ?? th.key]"
+                                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                      :options="filter.options"
+                                      :multiple="filter.type === 'multiselect'"
+                                      :close-on-select="filter.type === 'select'"
+                                      :limit="1"
+                                      :clear-on-select="false"
+                                      :searchable="filter.searchable ?? false"
+                                      :placeholder="`Select ${filter.title ?? filter.label}...`"
+                                    />
+                                    <button
+                                      class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none disabled:opacity-50"
+                                      :disabled="!filters.filter[filter.key ?? th.key]"
+                                      type="button"
+                                      @click="() => {
+                                        if (!filters.filter[filter.key ?? th.key]) {
+                                          return;
+                                        }
+                                        delete filters.filter[filter.key ?? th.key];
+                                      }"
+                                    >
+                                      {{ __("Clear") }}
+                                    </button>
+                                  </div>
+                                </template>
+                                <!-- Else: Single Object -->
+                                <template v-else>
+                                  <input
+                                    v-if="th.filterable.type === 'text'"
+                                    v-model="filters.filter[th.filterable.key ?? th.key]"
+                                    class="block w-full p-2 border-gray-200 rounded-md shadow-sm dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-700 focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                    :placeholder="`Enter ${th.label}...`"
+                                    type="text"
+                                  >
+                                  <Multiselect
+                                    v-if="['multiselect', 'select'].includes(th.filterable.type)"
+                                    v-model="filters.filter[th.filterable.key ?? th.key]"
+                                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                    :options="th.filterable.options"
+                                    :multiple="th.filterable.type === 'multiselect'"
+                                    :close-on-select="th.filterable.type === 'select'"
+                                    :limit="1"
+                                    :clear-on-select="false"
+                                    :searchable="th.filterable.searchable ?? false"
+                                    :placeholder="`Select ${th.label}...`"
+                                  />
+                                  <button
+                                    class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none disabled:opacity-50"
+                                    :disabled="!filters.filter[th.filterable.key ?? th.key]"
+                                    type="button"
+                                    @click="() => {
+                                      if (!filters.filter[th.filterable.key ?? th.key]) {
+                                        return;
+                                      }
+                                      delete filters.filter[th.filterable.key ?? th.key];
+                                      close();
+                                    }"
+                                  >
+                                    {{ __("Clear") }}
+                                  </button>
+                                </template>
                               </div>
                             </PopoverPanel>
                           </transition>
                         </Popover>
                         <div
                           class="inline-flex items-center uppercase"
-                          :class="[
-                            th.sortable ? 'cursor-pointer' : '',
-                          ]"
+                          :class="[th.sortable ? 'cursor-pointer' : '']"
                           @click="th.sortable ? toggleSorting(th.key) : null"
                         >
                           {{ th.label }}
@@ -277,6 +320,7 @@ function toggleSorting(key) {
                   </slot>
                 </tr>
               </thead>
+
               <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 <tr
                   v-for="item in data.data"

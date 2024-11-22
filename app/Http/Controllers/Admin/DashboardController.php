@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Cache;
 
 class DashboardController extends Controller
 {
@@ -24,14 +25,14 @@ class DashboardController extends Controller
             $kpiUserCreatedForInterval = User::where('created_at', '>=', Carbon::now()->subDays(7))->count();
             $totalUsersMinusInterval = $kpiTotalUsers - $kpiUserCreatedForInterval ?: 1;
             $kpiTotalUserPercent = $kpiTotalUsers !== 0 ? ($kpiUserCreatedForInterval / $totalUsersMinusInterval) * 100 : 0;
-            $kpiUserLastSeenForInterval = User::where('last_login_at', '>=', Carbon::now()->subDays(7))->count();
+            $kpiTotalVerifiedUsers = User::isVerified(true)->count();
 
             // KPI for total players
             $kpiTotalPlayers = Player::fastCount();
             $kpiPlayerCreatedForInterval = Player::where('created_at', '>=', Carbon::now()->subDays(7))->count();
             $totalPlayersMinusInterval = $kpiTotalPlayers - $kpiPlayerCreatedForInterval ?: 1;
             $kpiTotalPlayersPercent = $kpiTotalPlayers !== 0 ? ($kpiPlayerCreatedForInterval / $totalPlayersMinusInterval) * 100 : 0;
-            $kpiPlayerLastSeenForInterval = Player::where('last_seen_at', '>=', Carbon::now()->subDays(7))->count();
+            $kpiTotalLinkedPlayers = Player::whereHas('users')->count();
 
             // KPI for total posts
             $kpiTotalPosts = Post::fastCount();
@@ -48,13 +49,13 @@ class DashboardController extends Controller
 
             $responseData = [
                 'kpiTotalUsers' => $kpiTotalUsers,
+                'kpiTotalVerifiedUsers' => $kpiTotalVerifiedUsers,
                 'kpiUserCreatedForInterval' => $kpiUserCreatedForInterval,
-                'kpiUserLastSeenForInterval' => $kpiUserLastSeenForInterval,
                 'kpiTotalUserPercent' => $kpiTotalUserPercent,
 
                 'kpiTotalPlayers' => $kpiTotalPlayers,
+                'kpiTotalLinkedPlayers' => $kpiTotalLinkedPlayers,
                 'kpiPlayerCreatedForInterval' => $kpiPlayerCreatedForInterval,
-                'kpiPlayerLastSeenForInterval' => $kpiPlayerLastSeenForInterval,
                 'kpiTotalPlayersPercent' => $kpiTotalPlayersPercent,
 
                 'kpiTotalFailedJobs' => $kpiTotalFailedJobs,
@@ -65,6 +66,8 @@ class DashboardController extends Controller
                 'kpiPostCreatedForInterval' => $kpiPostCreatedForInterval,
                 'kpiTotalPostsPercent' => $kpiTotalPostsPercent,
                 'kpiTotalComments' => $kpiTotalComments,
+
+                'queueLastProcessed' => Cache::get('queue_last_processed'),
             ];
         }
 

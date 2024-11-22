@@ -23,19 +23,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Use Legacy FTP Driver
-    |--------------------------------------------------------------------------
-    |
-    | If enabled, while querying server for stats the fetcher will use legacy FTP driver.
-    | This is useful in-game your gameserver is hosted in panel with only FTP support and
-    | normal FTP driver is not working.
-    | Eg: Multicraft FTP Server, FileZilla FTP Server
-    |
-    */
-    'use_legacy_ftp_driver' => env('USE_LEGACY_FTP_DRIVER', false),
-
-    /*
-    |--------------------------------------------------------------------------
     | Mark user verified when a player account is linked
     |--------------------------------------------------------------------------
     |
@@ -262,6 +249,14 @@ return [
             'key' => 'route-change-player-skin',
             'authenticated' => true,
         ],
+        [
+            'type' => 'route',
+            'name' => 'Punishments',
+            'title' => 'Punishments',
+            'route' => 'player.punishment.index',
+            'key' => 'route-punishments',
+            'authenticated' => false,
+        ],
     ],
 
     /*
@@ -273,6 +268,17 @@ return [
     |
     */
     'askdb_enabled' => env('ASKDB_ENABLED', false) && env('OPENAI_API_KEY'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | OpenAI AI Model
+    |--------------------------------------------------------------------------
+    |
+    | Name of the AI model to use for OpenAI query. Currently OpenAI models are supported.
+    | Eg: gpt-4o, gpt-4o-mini.
+    |
+    */
+    'openai_ai_model' => env('OPENAI_AI_MODEL', 'gpt-4o-mini'),
 
     /*
     |--------------------------------------------------------------------------
@@ -385,4 +391,81 @@ return [
     |
     */
     'hide_player_next_rank' => env('HIDE_PLAYER_NEXT_RANK', false),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BanWarden
+    |--------------------------------------------------------------------------
+    |
+    | BanWarden is a powerful ban management system that allows you to view insights about punishments, and manage them.
+    |
+    */
+    'banwarden' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | If enabled, BanWarden feature will be enabled.
+        |--------------------------------------------------------------------------
+        */
+        'enabled' => env('BANWARDEN_ENABLED', true),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Show banwarden punishments page to everyone.
+        | If set to false, only authenticated users with banwarden permission will be able to view punishments.
+        |--------------------------------------------------------------------------
+        */
+        'show_public' => env('BANWARDEN_SHOW_PUBLIC', true),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Show masked IP to everyone.
+        | If set to false, only staff members will be able to view masked IP.
+        |--------------------------------------------------------------------------
+        */
+        'show_masked_ip_public' => env('BANWARDEN_SHOW_MASKED_IP_PUBLIC', false),
+
+        /*
+        |--------------------------------------------------------------------------
+        | If enabled, staff can control banwarden punishments from web. If disabled, staff can only view punishments.
+        |--------------------------------------------------------------------------
+        */
+        'allow_control_from_web' => env('BANWARDEN_ALLOW_CONTROL_FROM_WEB', true),
+
+        /*
+        |--------------------------------------------------------------------------
+        | If enabled, BanWarden will use AI to generate insights for punishments.
+        |--------------------------------------------------------------------------
+        */
+        'ai_insights_enabled' => env('BANWARDEN_AI_INSIGHTS_ENABLED', true) && env('OPENAI_API_KEY'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Disk to use to store all files of Banwarden Module.
+        |--------------------------------------------------------------------------
+        */
+        'module_disk' => env('BANWARDEN_MODULE_DISK', 'private'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Allowed mime types for evidence files.
+        |--------------------------------------------------------------------------
+        */
+        'evidence_allowed_mimetypes' => env('BANWARDEN_EVIDENCE_ALLOWED_MIMETYPES', 'jpg,png,gif,bmp,webp,mp4,avi,mov,mkv,webm,zip,rar'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Maximum allowed count for evidence files per punishment.
+        |--------------------------------------------------------------------------
+        */
+        'evidence_max_count' => env('BANWARDEN_EVIDENCE_MAX_COUNT', 2),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Maximum allowed size for evidence files in kilobytes. Default: 50MB
+        |--------------------------------------------------------------------------
+        */
+        'evidence_max_size_kb' => env('BANWARDEN_EVIDENCE_MAX_SIZE_KB', 51200),
+    ],
 ];

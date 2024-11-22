@@ -126,5 +126,15 @@ class PermissionSeeder extends Seeder
 
         Permission::findOrCreate('link any_players');
         Permission::findOrCreate('unlink any_players');
+
+        Permission::findOrCreate('read banwarden_punishments'); // Only come into effect if BANWARDEN_SHOW_PUBLIC is set to false.
+        Permission::findOrCreate('read banwarden_punishments_critical');
+        Permission::findOrCreate('create banwarden_punishments'); // punish
+        Permission::findOrCreate('delete banwarden_punishments'); // pardon
+        Permission::findOrCreate('read banwarden_punishments_evidence');
+        Permission::findOrCreate('create banwarden_punishments_evidence');
+        Permission::findOrCreate('delete banwarden_punishments_evidence');
+
+        Permission::findOrCreate('cannot player_password_reset');
     }
 }

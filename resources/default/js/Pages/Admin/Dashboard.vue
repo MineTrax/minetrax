@@ -15,20 +15,22 @@ import PlayersPerServerMetricBox from '@/Shared/PlayersPerServerMetricBox.vue';
 import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
 import NetworkTrendsMetricBox from '@/Shared/NetworkTrendsMetricBox.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
+import { useHelpers } from '@/Composables/useHelpers';
 import PlayersJoinAddressMetricBox from '@/Shared/PlayersJoinAddressMetricBox.vue';
 import PlayersMinecraftVersionMetricBox from '@/Shared/PlayersMinecraftVersionMetricBox.vue';
 
 const {can} = useAuthorizable();
+const {formatTimeAgoToNow} = useHelpers();
 
 defineProps({
     kpiTotalUsers: Number,
+    kpiTotalVerifiedUsers: Number,
     kpiUserCreatedForInterval: Number,
-    kpiUserLastSeenForInterval: Number,
     kpiTotalUserPercent: Number,
 
     kpiTotalPlayers: Number,
+    kpiTotalLinkedPlayers: Number,
     kpiPlayerCreatedForInterval: Number,
-    kpiPlayerLastSeenForInterval: Number,
     kpiTotalPlayersPercent: Number,
 
     kpiTotalFailedJobs: Number,
@@ -39,6 +41,8 @@ defineProps({
     kpiPostCreatedForInterval: Number,
     kpiTotalPostsPercent: Number,
     kpiTotalComments: Number,
+
+    queueLastProcessed: String,
 });
 </script>
 
@@ -66,13 +70,13 @@ defineProps({
         <KpiOverviewCardForDashboard
           class="flex-1"
           title="Registered Users"
-          :value="millify(kpiTotalUsers)"
+          :value="kpiTotalUsers"
           :sub-value="kpiUserCreatedForInterval"
           :change="kpiTotalUserPercent"
           change-desc="in last 7 days"
           :icon="UserPlusIcon"
           icon-class="text-light-blue-500 bg-light-blue-100 dark:bg-light-blue-500 dark:text-white"
-          :description="`Active: ${kpiUserLastSeenForInterval} users`"
+          :description="`Total Verified: ${kpiTotalVerifiedUsers} users`"
         />
 
         <KpiOverviewCardForDashboard
@@ -84,7 +88,7 @@ defineProps({
           change-desc="in last 7 days"
           :icon="UserIcon"
           icon-class="text-green-500 bg-green-100 dark:bg-green-500 dark:text-white"
-          :description="`Active: ${kpiPlayerLastSeenForInterval} players`"
+          :description="`Total Linked: ${kpiTotalLinkedPlayers} players`"
         />
 
         <KpiOverviewCardForDashboard
@@ -122,7 +126,7 @@ defineProps({
           change-desc="in last 7 days"
           :icon="FireIcon"
           icon-class="text-red-500 bg-red-100 dark:bg-red-500 dark:text-white"
-          description="Jobs failed to run."
+          :description="`Last Run: ${queueLastProcessed ? formatTimeAgoToNow(queueLastProcessed) : __('not yet')}`"
         />
       </div>
 

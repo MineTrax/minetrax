@@ -7,8 +7,18 @@
       :settings="themeSettings"
     />
 
-    <div class="grid grid-cols-none gap-4 px-2 py-4 mx-auto md:grid-cols-4 md:gap-6 md:py-12 md:px-10 md:px-6 lg:px-16 max-w-screen-2xl">
-      <div class="order-1 col-span-1 space-y-4 md:order-none">
+    <div class="flex flex-col md:flex-row gap-4 px-2 py-4 mx-auto md:gap-6 md:py-12 md:px-10 lg:px-16 max-w-screen-2xl justify-center">
+      <!-- Left Column -->
+      <div
+        v-if="
+          generalSettings.enable_mcserver_onlineplayersbox ||
+            generalSettings.enable_voteforserverbox ||
+            generalSettings.enable_didyouknowbox ||
+            generalSettings.enable_discordbox ||
+            generalSettings.enable_donation_box
+        "
+        class="w-full order-1 md:order-none md:w-1/4 space-y-4 flex-shrink-0"
+      >
         <online-players-box v-if="generalSettings.enable_mcserver_onlineplayersbox" />
         <voting-sites-box
           :votingsites="generalSettings.voteforserverbox_content"
@@ -22,7 +32,9 @@
         />
         <donation-box />
       </div>
-      <div class="order-3 col-span-1 space-y-4 md:col-span-2 md:order-none">
+
+      <!-- Middle Column -->
+      <div class="w-full order-3 md:order-none md:w-2/4 space-y-4 flex-shrink-0 flex-grow">
         <VerifyYourEmailBox v-if="$page.props.jetstream.hasEmailVerification && $page.props.auth.user && $page.props.auth.user.email_verified_at === null" />
         <version-check v-if="$page.props.auth.user && isStaff($page.props.auth.user)" />
         <welcome-box
@@ -41,7 +53,19 @@
         <latest-pinned-news :newslist="pinnedNewsList" />
         <post-list-box v-if="generalSettings.enable_status_feed" />
       </div>
-      <div class="order-2 col-span-1 space-y-4 md:order-none">
+
+      <!-- Right Column -->
+      <div
+        v-if="
+          generalSettings.enable_mcserver_statuspingbox ||
+            generalSettings.enable_shoutbox ||
+            newslist.length > 0 ||
+            generalSettings.enable_onlineuserbox ||
+            generalSettings.enable_newuserbox ||
+            generalSettings.enable_socialbox
+        "
+        class="w-full order-2 md:order-none md:w-1/4 space-y-4 flex-shrink-0"
+      >
         <server-status-box />
         <shout-box />
         <news-box :newslist="newslist" />
@@ -76,6 +100,7 @@
 </template>
 
 <script>
+// Script section remains unchanged
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NewsBox from '@/Shared/NewsBox.vue';
 import ShoutBox from '@/Shared/ShoutBox.vue';
@@ -148,4 +173,3 @@ export default {
     }
 };
 </script>
-

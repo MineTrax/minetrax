@@ -69,7 +69,7 @@
             :class="{'border border-gray-300 dark:border-gray-700': $page.props.auth.user && $page.props.auth.user.id === comment.user_id}"
           >
             <inertia-link
-              as="div"
+              as="a"
               class="hover:cursor-pointer hover:underline"
               :href="route('user.public.get', comment.commentator.username)"
             >

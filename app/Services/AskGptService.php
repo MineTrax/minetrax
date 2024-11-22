@@ -7,15 +7,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use OpenAI\Client;
 
-const MAX_TABLES_BEFORE_PERFORMING_LOOKUP = 500;
+const MAX_TABLES_BEFORE_PERFORMING_LOOKUP = 1000;
 const STRICT_MODE = true;
-const MAX_COMPLETION_TOKENS = 1000;
 
 class AskGptService
 {
     protected string $connection;
 
-    public function __construct(protected Client $client)
+    public function __construct(protected OpenAiService $openAiService)
     {
         $this->connection = config('database.default');
     }
@@ -30,7 +29,7 @@ class AskGptService
 
         $systemPrompt = $this->buildSystemPromptForAskDb('gptprompts.askdb-result', $question, $query, $result);
 
-        $answer = $this->queryOpenAi($systemPrompt, $question, null, 0.5);
+        $answer = $this->openAiService->simpleChat($systemPrompt, $question, null, 0.5);
 
         return Str::of($answer)
             ->trim()
@@ -41,7 +40,7 @@ class AskGptService
     {
         $systemPrompt = $this->buildSystemPromptForAskDb('gptprompts.askdb-query', $question);
 
-        $query = $this->queryOpenAi($systemPrompt, $question);
+        $query = $this->openAiService->simpleChat($systemPrompt, $question);
         $query = Str::of($query)
             ->trim()
             ->trim('"');
@@ -52,28 +51,12 @@ class AskGptService
         return $query;
     }
 
-    public function chatBot(string $message)
+    public function chatBot(string $message): string
     {
         $systemPrompt = $this->buildSystemPromptForChat();
-        $answer = $this->queryOpenAi($systemPrompt, $message, null, 0.7);
+        $answer = $this->openAiService->simpleChat($systemPrompt, $message, null, 0.7);
 
         return Str::of($answer)->trim();
-    }
-
-    protected function queryOpenAi(string $systemPrompt, string $userPrompt, string|null $stop = null, float $temperature = 0.0)
-    {
-        $completions = $this->client->chat()->create([
-            'model' => 'gpt-3.5-turbo-0125',
-            'messages' => [
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $userPrompt],
-            ],
-            'temperature' => $temperature,
-            'max_tokens' => MAX_COMPLETION_TOKENS,
-            'stop' => $stop,
-        ]);
-
-        return $completions->choices[0]->message->content;
     }
 
     protected function buildSystemPromptForAskDb(string $promptView, string $question, string $query = null, string $result = null): string
@@ -99,7 +82,7 @@ class AskGptService
 
     protected function evaluateQuery(string $query)
     {
-        $rawQuery =DB::raw($query)->getValue(DB::connection($this->connection)->getQueryGrammar());
+        $rawQuery = DB::raw($query)->getValue(DB::connection($this->connection)->getQueryGrammar());
         return DB::connection($this->connection)->select($rawQuery) ?? new \stdClass();
     }
 
@@ -146,7 +129,7 @@ class AskGptService
         ]);
         $prompt = rtrim($prompt, PHP_EOL);
 
-        $matchingTablesResult = $this->queryOpenAi($prompt, 'Relevant Table Names:', "\n");
+        $matchingTablesResult = $this->openAiService->simpleChat($prompt, 'Relevant Table Names:', "\n");
 
         $matchingTables = Str::of($matchingTablesResult)
             ->explode(',')

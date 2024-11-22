@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pulse\Facades\Pulse;
 
@@ -28,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Pulse::users(function ($ids) {
-            return User::findMany($ids)->map(fn ($user) => [
+            return User::findMany($ids)->map(fn($user) => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'extra' => $user->email,
@@ -45,6 +48,11 @@ class AppServiceProvider extends ServiceProvider
 
                 return $value;
             });
+        });
+
+        // Queue Status
+        Queue::after(function (JobProcessed $event) {
+            Cache::set('queue_last_processed', now());
         });
     }
 }

@@ -192,8 +192,8 @@
                                       <Multiselect
                                         v-model="command.servers"
                                         class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
-                                        :options="serversForAccountLink"
-                                        :custom-label="serversForAccountLinkCustomLabel"
+                                        :options="serversWithWebquery"
+                                        :custom-label="serversWithWebqueryCustomLabel"
                                         track-by="id"
                                         :multiple="true"
                                         :close-on-select="false"
@@ -351,8 +351,8 @@
                                       <Multiselect
                                         v-model="command.servers"
                                         class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
-                                        :options="serversForAccountLink"
-                                        :custom-label="serversForAccountLinkCustomLabel"
+                                        :options="serversWithWebquery"
+                                        :custom-label="serversWithWebqueryCustomLabel"
                                         track-by="id"
                                         :multiple="true"
                                         :close-on-select="false"
@@ -450,6 +450,194 @@
                               :select-list="serversForRankSync"
                             />
                           </div>
+
+
+                          <div class="flex items-center col-span-6 sm:col-span-3">
+                            <x-checkbox
+                              id="enable_player_password_reset"
+                              v-model="form.enable_player_password_reset"
+                              :label="__('Enable Player Password Reset')"
+                              :help="__('Enable this to allow user to reset their linked players password from website.')"
+                              name="enable_player_password_reset"
+                              :error="form.errors.enable_player_password_reset"
+                            />
+                          </div>
+
+                          <div
+                            v-show="form.enable_player_password_reset"
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-input
+                              id="player_password_reset_cooldown_in_seconds"
+                              v-model="form.player_password_reset_cooldown_in_seconds"
+                              :label="__('Password Reset Cooldown (in seconds)')"
+                              :help="__('Number of seconds player have to wait before resetting password again.')"
+                              type="number"
+                              name="player_password_reset_cooldown_in_seconds"
+                              :error="form.errors.player_password_reset_cooldown_in_seconds"
+                              help-error-flex="flex-col"
+                            />
+                          </div>
+
+                          <div
+                            v-show="form.enable_player_password_reset"
+                            class="flex-col col-span-6 space-y-1 sm:col-span-6"
+                          >
+                            <legend class="text-sm text-gray-700 font-bold dark:font-semibold dark:text-gray-300">
+                              {{ __("Player Password Reset Commands") }}
+                              <span class="text-xs font-light text-gray-400">{{ __("(run when user try to reset his linked player password)") }}</span>
+                            </legend>
+
+                            <div class="w-full space-y-2">
+                              <div class="flex flex-col items-end">
+                                <h3 class="text-gray-700 dark:text-gray-300 text-sm font-semibold">
+                                  {{ __("Available Placeholders") }}
+                                </h3>
+                                <ol class="text-sm text-right text-gray-600 dark:text-gray-400">
+                                  <li>
+                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player whose password is being reset.") }}
+                                  </li>
+                                  <li>
+                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player whose password is being reset.") }}
+                                  </li>
+                                  <li>
+                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PASSWORD}</code> - {{ __("New validated password entered by user.") }}
+                                  </li>
+                                </ol>
+                              </div>
+
+                              <div class="flex space-x-4">
+                                <div class="w-5" />
+                                <label
+                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                >{{
+                                  __("Command") }}
+                                </label>
+                                <label
+                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                >{{
+                                  __("Run on servers") }}
+                                </label>
+                              </div>
+
+                              <div
+                                v-for="(
+                                  command, index
+                                ) in form.player_password_reset_commands"
+                                :key="index"
+                                class="flex flex-col pb-2"
+                              >
+                                <div class="flex space-x-4">
+                                  <button
+                                    type="button"
+                                    class="focus:outline-none group"
+                                    @click="
+                                      removePlayerPasswordResetCommand(index)
+                                    "
+                                  >
+                                    <Icon
+                                      class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                      name="trash"
+                                    />
+                                  </button>
+
+                                  <div class="grid grid-cols-2 gap-2 w-full">
+                                    <div class="flex-1">
+                                      <input
+                                        v-model="command.command"
+                                        class="block p-2.5 dark:bg-cool-gray-900 dark:text-gray-300 w-full dark:border-gray-700 border-gray-200 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        :placeholder="`Enter Command #${index + 1}`"
+                                        type="text"
+                                      >
+                                      <span
+                                        v-if="
+                                          form.errors[
+                                            `player_password_reset_commands.${index}.command`
+                                          ]
+                                        "
+                                        class="text-red-500 text-sm"
+                                      >
+                                        {{
+                                          form.errors[
+                                            `player_password_reset_commands.${index}.command`
+                                          ]
+                                        }}
+                                      </span>
+                                    </div>
+                                    <div class="flex-1">
+                                      <Multiselect
+                                        v-model="command.servers"
+                                        class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        :options="serversWithWebquery"
+                                        :custom-label="serversWithWebqueryCustomLabel"
+                                        track-by="id"
+                                        :multiple="true"
+                                        :close-on-select="false"
+                                        :clear-on-select="false"
+                                        :searchable="false"
+                                        :placeholder="__('Leave empty to run on all servers')+'...'"
+                                      />
+                                      <p class="text-sm text-red-500 mt-0.5">
+                                        {{
+                                          form.errors[
+                                            `player_password_reset_commands.${index}.servers`
+                                          ]
+                                        }}
+                                      </p>
+                                    </div>
+
+                                    <div class="flex-1 flex col-span-2 space-x-2">
+                                      <x-checkbox
+                                        :id="`link.is_player_online_required_${index}`"
+                                        v-model="command.config.is_player_online_required"
+                                        :label="__('Require player to be online')"
+                                        :help="__('This command should only run if player is online on running server. If not online it will be queued to run when player comes online.')"
+                                        :name="`link.is_player_online_required_${index}`"
+                                        :error="form.errors[
+                                          `player_password_reset_commands.${index}.config.is_player_online_required`
+                                        ]"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div
+                                v-if="form.errors.player_password_reset_commands && form.player_password_reset_commands.length <= 0"
+                                class="text-red-500 text-sm italic text-center pt-2"
+                              >
+                                {{ form.errors.player_password_reset_commands }}
+                              </div>
+
+                              <div
+                                v-if="form.player_password_reset_commands.length <= 0"
+                                class="text-gray-500 text-sm italic text-center pt-2"
+                              >
+                                {{ __("No commands added. Please add at least one command, as required by your authentication plugin, for password reset functionality.") }}
+                                <br>
+                                {{ __("Eg: nlogin changepass {PLAYER_USERNAME} {PASSWORD}") }}
+                              </div>
+
+                              <p
+                                v-if="form.errors.account_link_after_success_commands"
+                                class="text-sm text-red-400 text-center"
+                              >
+                                {{ form.errors.account_link_after_success_commands }}
+                              </p>
+
+                              <div class="flex justify-center pt-5">
+                                <button
+                                  type="button"
+                                  class="p-2 w-1/3 text-sm text-light-blue-500 rounded border border-light-blue-500 focus:outline-none hover:text-light-blue-300 hover:border-light-blue-300 transition ease-in-out duration-150"
+                                  @click="addPlayerPasswordResetCommand"
+                                >
+                                  {{
+                                    __("Add Password Reset Command")
+                                  }}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
@@ -491,8 +679,9 @@ const props = defineProps({
     settings: Object,
     settingsAccountLinkAfterSuccessCommands: Array,
     settingsAccountUnlinkAfterSuccessCommands: Array,
+    settingsPlayerPasswordResetCommands: Array,
     serversForRankSync: Object,
-    serversForAccountLink: Object,
+    serversWithWebquery: Object,
 });
 
 // useForm setup
@@ -504,6 +693,9 @@ const form = useForm({
     sync_player_ranks_from_server_id: props.settings.sync_player_ranks_from_server_id,
     account_link_after_success_commands: props.settingsAccountLinkAfterSuccessCommands,
     account_unlink_after_success_commands: props.settingsAccountUnlinkAfterSuccessCommands,
+    enable_player_password_reset: props.settings.enable_player_password_reset,
+    player_password_reset_cooldown_in_seconds: props.settings.player_password_reset_cooldown_in_seconds,
+    player_password_reset_commands: props.settingsPlayerPasswordResetCommands,
 });
 
 
@@ -522,7 +714,7 @@ function removeAccountLinkCommand(index) {
     form.account_link_after_success_commands.splice(index, 1);
 }
 
-function serversForAccountLinkCustomLabel({name, hostname}) {
+function serversWithWebqueryCustomLabel({name, hostname}) {
     return `${name} - ${hostname}`;
 }
 
@@ -542,11 +734,30 @@ function removeAccountUnlinkCommand(index) {
     form.account_unlink_after_success_commands.splice(index, 1);
 }
 
+function addPlayerPasswordResetCommand() {
+    form.player_password_reset_commands.push({
+        command: '',
+        servers: [],
+        config: {
+            is_player_online_required: false,
+        }
+    });
+}
+
+function removePlayerPasswordResetCommand(index) {
+    form.player_password_reset_commands.splice(index, 1);
+}
+
 // Method to save plugin settings
 const savePluginSetting = () => {
     form.post(route('admin.setting.plugin.update'), {
         preserveScroll: true,
-        preserveState: false,
+        onSuccess: () => {
+            this.$inertia.replace(route('admin.setting.plugin.show'), {
+                preserveState: false,
+                preserveScroll: true,
+            });
+        }
     });
 };
 </script>

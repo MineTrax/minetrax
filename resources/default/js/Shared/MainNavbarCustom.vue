@@ -155,7 +155,7 @@ export default {
         class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700"
       >
         <inertia-link
-          as="div"
+          as="a"
           :href="route('user.public.get', $page.props.auth.user.username)"
           class="flex items-center px-4"
         >
@@ -200,6 +200,14 @@ export default {
             :active="route().current('recruitment-submission.index')"
           >
             {{ __("My Applications") }}
+          </jet-responsive-nav-link>
+
+          <jet-responsive-nav-link
+            v-if="$page.props?.pluginSettings?.playerPasswordResetEnabled"
+            :href="route('reset-player-password.show')"
+            :active="route().current('reset-player-password.show')"
+          >
+            {{ __("Reset Player Password") }}
           </jet-responsive-nav-link>
 
           <jet-responsive-nav-link

@@ -411,6 +411,11 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         return $this->roles->sortByDesc([['weight', 'desc']])?->first()?->weight ?? null;
     }
 
+    public function isSuperAdmin()
+    {
+        return $this->hasRole(Role::SUPER_ADMIN_ROLE_NAME);
+    }
+
     public function socialAccounts()
     {
         return $this->hasMany(SocialAccount::class);
@@ -419,5 +424,10 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     public function routeNotificationForDiscord()
     {
         return $this->discord_private_channel_id;
+    }
+
+    public function scopeIsVerified($query, $bool = true)
+    {
+        return $query->where('verified_at', $bool ? '!=' : '=', null);
     }
 }

@@ -253,7 +253,7 @@ function getServerWebQueryStatus(serverId) {
           </DtRowItem>
 
           <DtRowItem>
-            {{ item.type.key }}
+            {{ item.type.key == 'Bungee' ? __('Proxy') : item.type.key }}
           </DtRowItem>
 
           <td class="px-4 space-y-1 whitespace-nowrap">

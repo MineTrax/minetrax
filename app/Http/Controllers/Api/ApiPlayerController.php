@@ -42,8 +42,8 @@ class ApiPlayerController extends ApiController
         if ($playerFoundCount && $onlyExactResult) {
             $playerFoundCount = 1;
         }
-        if (! $playerFoundCount && ! $onlyExactResult) {
-            $playerFoundCount = Player::where($columnName, 'LIKE', '%'.$username.'%')->whereNotNull($columnName)->count();
+        if (!$playerFoundCount && !$onlyExactResult) {
+            $playerFoundCount = Player::where($columnName, 'LIKE', '%' . $username . '%')->whereNotNull($columnName)->count();
         }
 
         $whoisData['count'] = $playerFoundCount;
@@ -53,7 +53,7 @@ class ApiPlayerController extends ApiController
             case 0:
                 break;
             case 1:
-                $player = Player::with('users:id,name,username')->where($columnName, 'LIKE', '%'.$username.'%')->whereNotNull($columnName)->orderBy('position')->first();
+                $player = Player::with('users:id,name,username')->where($columnName, 'LIKE', '%' . $username . '%')->whereNotNull($columnName)->orderBy('position')->first();
                 if ($player->users->count()) {
                     $player->user = $player->users->first();
                     unset($player->users);
@@ -61,7 +61,7 @@ class ApiPlayerController extends ApiController
                 $players = $players->push($player);
                 break;
             default:
-                $players = Player::where($columnName, 'LIKE', '%'.$username.'%')->whereNotNull($columnName)->limit(10)->orderBy('position')->get();
+                $players = Player::where($columnName, 'LIKE', '%' . $username . '%')->whereNotNull($columnName)->limit(10)->orderBy('position')->get();
                 break;
         }
 
@@ -77,7 +77,7 @@ class ApiPlayerController extends ApiController
                     'last_seen_at' => $pl->last_seen_at?->diffForHumans(),
                     'rank' => $pl->rank ? $pl->rank->name : null,
                     'country' => $pl->country ? $pl->country->name : 'Terra Incognita',
-                    'user' => $pl->user ? '@'.$pl->user->username : null,
+                    'user' => $pl->user ? '@' . $pl->user->username : null,
                     'url' => route('player.show', [$pl->username ?? $pl->uuid]),
                 ];
             });
@@ -128,6 +128,11 @@ class ApiPlayerController extends ApiController
             $responseData['player_id'] = $player->id;
             $responseData['rating'] = $player->rating;
             $responseData['total_score'] = $player->total_score;
+            $responseData['total_mob_kills'] = $player->total_mob_kills;
+            $responseData['total_player_kills'] = $player->total_player_kills;
+            $responseData['total_deaths'] = $player->total_deaths;
+            $responseData['play_time'] = $player->play_time;
+            $responseData['afk_time'] = $player->afk_time;
             $responseData['position'] = $player->position;
             $responseData['first_seen_at'] = $player->first_seen_at?->diffForHumans();
             $responseData['last_seen_at'] = $player->last_seen_at?->diffForHumans();

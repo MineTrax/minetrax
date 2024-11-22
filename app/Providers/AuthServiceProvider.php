@@ -11,6 +11,7 @@ use App\Models\CustomPage;
 use App\Models\Download;
 use App\Models\FailedJob;
 use App\Models\News;
+use App\Models\PlayerPunishment;
 use App\Models\Poll;
 use App\Models\Post;
 use App\Models\Rank;
@@ -51,6 +52,7 @@ class AuthServiceProvider extends ServiceProvider
         RecruitmentSubmission::class => \App\Policies\RecruitmentSubmissionPolicy::class,
         FailedJob::class => \App\Policies\FailedJobPolicy::class,
         CommandQueue::class => \App\Policies\CommandQueuePolicy::class,
+        PlayerPunishment::class => \App\Policies\PlayerPunishmentPolicy::class,
     ];
 
     /**

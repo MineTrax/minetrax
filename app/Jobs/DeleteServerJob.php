@@ -27,8 +27,16 @@ class DeleteServerJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->server->delete();
+        $this->server->minecraftPlayerSessions()->delete();
+        $this->server->minecraftPlayers()->delete();
 
-        ResyncPlayersTableJob::dispatch();
+        $this->server->serverLiveInfos()->delete();
+        $this->server->serverWorlds()->delete();
+        $this->server->serverChatlog()->delete();
+        $this->server->serverConsolelog()->delete();
+
+        ResyncPlayersTableJob::dispatchSync();
+
+        $this->server->delete();
     }
 }

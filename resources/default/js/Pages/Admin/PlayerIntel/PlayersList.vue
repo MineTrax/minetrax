@@ -173,7 +173,7 @@ const headerRow = [
                 <div class="ml-4">
                   <inertia-link
                     v-tippy
-                    as="div"
+                    as="a"
                     :href="route('player.show', item.player.uuid)"
                     class="text-sm font-medium text-gray-900 dark:text-gray-200 focus:outline-none cursor-pointer hover:underline"
                     :content="item.player.uuid"

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin\Settings;
 
+use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Controller;
 use App\Jobs\TruncatePlayerIntelJob;
+use App\Jobs\TruncatePlayerPunishmentJob;
 use App\Jobs\TruncateServerChatlogsJob;
 use App\Jobs\TruncateServerConsolelogsJob;
 use App\Jobs\TruncateServerIntelJob;
@@ -23,7 +25,16 @@ class DangerSettingController extends Controller
 
     public function show(): \Inertia\Response
     {
-        return Inertia::render('Admin/Setting/DangerSetting');
+        return Inertia::render('Admin/Setting/DangerSetting', [
+            'inProgressList' => [
+                'truncateShouts' => Cache::get('dangerzone::truncate_shouts'),
+                'truncateConsolelogs' => Cache::get('dangerzone::truncate_consolelogs'),
+                'truncateChatlogs' => Cache::get('dangerzone::truncate_chatlogs'),
+                'truncatePlayerIntelData' => Cache::get('dangerzone::truncate_player_intel_data'),
+                'truncateServerIntelData' => Cache::get('dangerzone::truncate_server_intel_data'),
+                'truncatePlayerPunishments' => Cache::get('dangerzone::truncate_player_punishments'),
+            ]
+        ]);
     }
 
     public function truncateShouts(Request $request): \Illuminate\Http\RedirectResponse
@@ -31,6 +42,8 @@ class DangerSettingController extends Controller
         Log::alert('TRUNCATE_SHOUTS', [
             'causer' => $request->user()->username,
         ]);
+
+        Cache::put('dangerzone::truncate_shouts', now(), 3600 * 24);
         TruncateShoutsJob::dispatch();
 
         return redirect()->back()
@@ -42,6 +55,8 @@ class DangerSettingController extends Controller
         Log::alert('TRUNCATE_CONSOLELOGS', [
             'causer' => $request->user()->username,
         ]);
+
+        Cache::put('dangerzone::truncate_consolelogs', now(), 3600 * 24);
         TruncateServerConsolelogsJob::dispatch();
 
         return redirect()->back()
@@ -53,6 +68,8 @@ class DangerSettingController extends Controller
         Log::alert('TRUNCATE_CHATLOGS', [
             'causer' => $request->user()->username,
         ]);
+
+        Cache::put('dangerzone::truncate_chatlogs', now(), 3600 * 24);
         TruncateServerChatlogsJob::dispatch();
 
         return redirect()->back()
@@ -64,6 +81,8 @@ class DangerSettingController extends Controller
         Log::alert('TRUNCATE_PLAYER_INTEL', [
             'causer' => $request->user()->username,
         ]);
+
+        Cache::put('dangerzone::truncate_player_intel_data', now(), 3600 * 24);
         TruncatePlayerIntelJob::dispatch();
 
         return redirect()->back()
@@ -75,9 +94,24 @@ class DangerSettingController extends Controller
         Log::alert('TRUNCATE_SERVER_INTEL', [
             'causer' => $request->user()->username,
         ]);
+
+        Cache::put('dangerzone::truncate_server_intel_data', now(), 3600 * 24);
         TruncateServerIntelJob::dispatch();
 
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'milliseconds' => 10000, 'title' => __('Queued Successfully! Server Analytics data will be deleted shortly. It may take upto 1 minute to complete.')]]);
+    }
+
+    public function truncatePlayerPunishments(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        Log::alert('TRUNCATE_PLAYER_PUNISHMENTS', [
+            'causer' => $request->user()->username,
+        ]);
+
+        Cache::put('dangerzone::truncate_player_punishments', now(), 3600 * 24);
+        TruncatePlayerPunishmentJob::dispatch();
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'milliseconds' => 10000, 'title' => __('Queued Successfully! Player Punishments data will be deleted shortly. It may take upto few minute to complete.')]]);
     }
 }

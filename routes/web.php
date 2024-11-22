@@ -62,7 +62,7 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     // Download file
     Route::get('download', [\App\Http\Controllers\DownloadController::class, 'index'])->name('download.index');
     Route::get('download/{download:slug}', [\App\Http\Controllers\DownloadController::class, 'show'])->name('download.show');
-    Route::get('download/{download:slug}/download', [\App\Http\Controllers\DownloadController::class, 'download'])->name('download.download');
+    Route::get('download/{download:slug}/download/{any?}', [\App\Http\Controllers\DownloadController::class, 'download'])->where('any', '.*')->name('download.download');
 
     // Custom Form
     Route::get('forms', [\App\Http\Controllers\CustomFormController::class, 'index'])->name('custom-form.index');
@@ -76,6 +76,14 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     // Locale
     Route::get('locale/list', [\App\Http\Controllers\LocaleController::class, 'getAvailableLocales'])->name('locale.list');
     Route::post('locale/set', [\App\Http\Controllers\LocaleController::class, 'setLocale'])->name('locale.set');
+
+    // BanWarden
+    Route::get('player/punishments', [\App\Http\Controllers\BanWardenController::class, 'index'])->name('player.punishment.index');
+    Route::get('player/punishments/{playerPunishment:id}', [\App\Http\Controllers\BanWardenController::class, 'show'])->name('player.punishment.show');
+    Route::get('player/punishments/{playerPunishment:id}/history', [\App\Http\Controllers\BanWardenController::class, 'indexLastPunishments'])->name('player.punishment.show.history');
+    Route::get('player/punishments/{playerPunishment:id}/sessions', [\App\Http\Controllers\BanWardenController::class, 'indexLastSessions'])->name('player.punishment.show.session');
+    Route::get('player/punishments/{playerPunishment:id}/alts', [\App\Http\Controllers\BanWardenController::class, 'indexAlts'])->name('player.punishment.show.alt');
+    Route::get('player/punishments/{playerPunishment:id}/evidence/{evidence}', [\App\Http\Controllers\BanWardenController::class, 'showEvidence'])->name('player.punishment.evidence.show');
 });
 
 /**
@@ -117,12 +125,16 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     Route::post('user/notification/read', [\App\Http\Controllers\NotificationController::class, 'postMarkAsRead'])->name('notification.mark-as-read')->withoutMiddleware('verified-if-enabled');
 
     // Account Linker
-    Route::delete('account-link/remove/{player:uuid}', [\App\Http\Controllers\AccountLinkController::class, 'unlink'])->name('account-link.delete')->middleware('password.confirm');
+    Route::delete('account-link/remove/{player:uuid}', [\App\Http\Controllers\AccountLinkController::class, 'unlink'])->name('account-link.delete');
     Route::get('user/linked-players', [\App\Http\Controllers\AccountLinkController::class, 'listMyPlayers'])->name('linked-player.list')->withoutMiddleware(['verified-if-enabled']);
 
     // Skin Changer
     Route::get('user/change-player-skin', [\App\Http\Controllers\PlayerSkinController::class, 'showChangeSkin'])->name('change-player-skin.show');
     Route::post('user/change-player-skin', [\App\Http\Controllers\PlayerSkinController::class, 'postChangeSkin'])->name('change-player-skin.update');
+
+    // Player Password Reset
+    Route::get('user/reset-player-password', [\App\Http\Controllers\PlayerPasswordResetController::class, 'show'])->name('reset-player-password.show');
+    Route::post('user/reset-player-password', [\App\Http\Controllers\PlayerPasswordResetController::class, 'update'])->name('reset-player-password.update');
 
     // Server Chatlog
     Route::get('chatlog/{server}', [\App\Http\Controllers\ServerChatlogController::class, 'index'])->name('chatlog.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);
@@ -135,6 +147,11 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     Route::post('applications/{recruitment:slug}/submissions/{submission}/withdraw', [\App\Http\Controllers\RecruitmentSubmissionController::class, 'withdraw'])->name('recruitment-submission.withdraw');
     Route::get('applications/{recruitment:slug}/submissions/{submission}/messages', [\App\Http\Controllers\RecruitmentSubmissionController::class, 'indexMessages'])->name('recruitment-submission.message.index');
     Route::post('applications/{recruitment:slug}/submissions/{submission}/messages', [\App\Http\Controllers\RecruitmentSubmissionController::class, 'postMessage'])->name('recruitment-submission.message.store')->middleware('throttle:chat');
+
+    // BanWarden (Authenticated)
+    Route::delete('player/punishments/{playerPunishment:id}', [\App\Http\Controllers\BanWardenController::class, 'pardon'])->name('player.punishment.pardon');
+    Route::post('player/punishments/{playerPunishment:id}/evidence', [\App\Http\Controllers\BanWardenController::class, 'createEvidence'])->name('player.punishment.evidence.store');
+    Route::delete('player/punishments/{playerPunishment:id}/evidence/{evidence}', [\App\Http\Controllers\BanWardenController::class, 'deleteEvidence'])->name('player.punishment.evidence.delete');
 });
 
 /**
@@ -176,7 +193,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::post('server-bungee', [\App\Http\Controllers\Admin\ServerController::class, 'storeBungee'])->name('server-bungee.store');
     Route::get('server/{server}', [\App\Http\Controllers\Admin\ServerController::class, 'show'])->name('server.show');
     Route::get('server/{server}/consolelogs', [\App\Http\Controllers\Admin\ServerController::class, 'getServerConsoleLogs'])->name('server.consolelogs.index');
-    Route::get('server/{server}/edit', [\App\Http\Controllers\Admin\ServerController::class, 'edit'])->name('server.edit')->middleware('password.confirm');
+    Route::get('server/{server}/edit', [\App\Http\Controllers\Admin\ServerController::class, 'edit'])->name('server.edit');
     Route::put('server/{server}', [\App\Http\Controllers\Admin\ServerController::class, 'update'])->name('server.update');
     Route::put('server/{server}/bungee', [\App\Http\Controllers\Admin\ServerController::class, 'updateBungee'])->name('server.update.bungee');
     Route::delete('server/{server}', [\App\Http\Controllers\Admin\ServerController::class, 'destroy'])->name('server.delete')->middleware('password.confirm');
@@ -241,6 +258,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::delete('setting/danger/truncate-chatlogs', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateChatlogs'])->name('setting.danger.truncate.chatlogs');
     Route::delete('setting/danger/truncate-serverintel', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncatePlayerIntelData'])->name('setting.danger.truncate.playerintel');
     Route::delete('setting/danger/truncate-playerintel', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateServerIntelData'])->name('setting.danger.truncate.serverintel');
+    Route::delete('setting/danger/truncate-playerpunishments', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncatePlayerPunishments'])->name('setting.danger.truncate.playerpunishments');
 
     Route::get('poll', [\App\Http\Controllers\Admin\PollController::class, 'index'])->name('poll.index');
     Route::get('poll/create', [\App\Http\Controllers\Admin\PollController::class, 'create'])->name('poll.create');

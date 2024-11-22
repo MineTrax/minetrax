@@ -27,19 +27,23 @@ class PluginSettingController extends Controller
                 return '#'.$value->id.' - '.$value->name.' - '.$value->hostname;
             });
 
-        $serversForAccountLink = Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->get();
+        $serversWithWebquery = Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->get();
         $accountLinkAfterSuccessCommands = Command::select('id', 'command', 'is_run_on_all_servers', 'config')
             ->whereIn('id', $settings->account_link_after_success_commands)->with('servers:id,name,hostname')->get();
 
         $accountUnlinkAfterSuccessCommands = Command::select('id', 'command', 'is_run_on_all_servers', 'config')
             ->whereIn('id', $settings->account_unlink_after_success_commands)->with('servers:id,name,hostname')->get();
 
+        $playerPasswordResetCommands = Command::select('id', 'command', 'is_run_on_all_servers', 'config')
+            ->whereIn('id', $settings->player_password_reset_commands)->with('servers:id,name,hostname')->get();
+
         return Inertia::render('Admin/Setting/PluginSetting', [
             'settings' => $settings->toArray(),
             'settingsAccountLinkAfterSuccessCommands' => $accountLinkAfterSuccessCommands,
             'settingsAccountUnlinkAfterSuccessCommands' => $accountUnlinkAfterSuccessCommands,
+            'settingsPlayerPasswordResetCommands' => $playerPasswordResetCommands,
             'serversForRankSync' => $serversForRankSync,
-            'serversForAccountLink' => $serversForAccountLink,
+            'serversWithWebquery' => $serversWithWebquery,
         ]);
     }
 
@@ -76,6 +80,15 @@ class PluginSettingController extends Controller
             'account_unlink_after_success_commands.*.config' => ['required', 'array'],
             'account_unlink_after_success_commands.*.config.is_player_online_required' => ['required', 'boolean'],
             'account_unlink_after_success_commands.*.config.is_run_only_first_unlink' => ['required', 'boolean'],
+
+            'enable_player_password_reset' => ['required', 'boolean'],
+            'player_password_reset_cooldown_in_seconds' => ['required', 'integer', 'min:0'],
+            'player_password_reset_commands' => ['nullable', 'array', 'required_if:enable_player_password_reset,true'],
+            'player_password_reset_commands.*.id' => ['nullable', 'integer', 'exists:commands,id'],
+            'player_password_reset_commands.*.command' => ['required', 'string'],
+            'player_password_reset_commands.*.servers' => ['nullable', 'array'],
+            'player_password_reset_commands.*.config' => ['required', 'array'],
+            'player_password_reset_commands.*.config.is_player_online_required' => ['required', 'boolean'],
         ]);
 
         $settings->enable_api = $request->enable_api;
@@ -83,6 +96,8 @@ class PluginSettingController extends Controller
         $settings->max_players_link_per_account = $request->max_players_link_per_account;
         $settings->enable_sync_player_ranks_from_server = $request->enable_sync_player_ranks_from_server;
         $settings->sync_player_ranks_from_server_id = $request->sync_player_ranks_from_server_id;
+        $settings->enable_player_password_reset = $request->enable_player_password_reset;
+        $settings->player_password_reset_cooldown_in_seconds = $request->player_password_reset_cooldown_in_seconds;
 
         // account link commands
         $existingAccountLinkCommands = $settings->account_link_after_success_commands;
@@ -188,6 +203,59 @@ class PluginSettingController extends Controller
         } else {
             $settings->account_unlink_after_success_commands = [];
             Command::whereIn('id', $existingAccountUnlinkCommands)->delete();
+        }
+
+        // player password reset commands
+        $existingPlayerPasswordResetCommands = $settings->player_password_reset_commands;
+        $updatedPlayerPasswordResetCommands = [];
+        if ($request->player_password_reset_commands) {
+            foreach ($request->player_password_reset_commands as $command) {
+                $id = array_key_exists('id', $command) ? $command['id'] : null;
+                $isRunOnAllServers = count($command['servers']) > 0 ? false : true;
+                $serverIds = Arr::pluck($command['servers'], 'id');
+
+                // If there isn't any id, then it's a new command. add to database.
+                if (! $id) {
+                    $created = Command::create([
+                        'command' => $command['command'],
+                        'name' => 'Player Password Reset Command',
+                        'tag' => 'player_password_reset',
+                        'description' => null,
+                        'is_enabled' => true,
+                        'is_run_on_all_servers' => $isRunOnAllServers,
+                        'max_attempts' => 1,
+                        'config' => $command['config'],
+                    ]);
+                    $created->servers()->sync($serverIds);
+                    $updatedPlayerPasswordResetCommands[] = $created->id;
+                }
+                // If there is an id, then it's an existing command. update it.
+                else {
+                    $found = Command::where('id', $id)->first();
+                    if (! $found) {
+                        continue;
+                    }
+                    $found->update([
+                        'command' => $command['command'],
+                        'is_run_on_all_servers' => $isRunOnAllServers,
+                        'config' => $command['config'],
+                    ]);
+
+                    $found->servers()->sync($serverIds);
+                    $updatedPlayerPasswordResetCommands[] = $id;
+                }
+            }
+
+            // Finally, find all IDs from existing commands that are not in the updated commands and delete them.
+            $deletedPCommands = array_diff($existingPlayerPasswordResetCommands, $updatedPlayerPasswordResetCommands);
+            if (count($deletedPCommands) > 0) {
+                Command::whereIn('id', $deletedPCommands)->delete();
+            }
+
+            $settings->player_password_reset_commands = $updatedPlayerPasswordResetCommands;
+        } else {
+            $settings->player_password_reset_commands = [];
+            Command::whereIn('id', $existingPlayerPasswordResetCommands)->delete();
         }
 
         $settings->save();

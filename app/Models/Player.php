@@ -60,11 +60,23 @@ class Player extends BaseModel implements Searchable
         return $this->belongsToMany(User::class, 'player_user')->withTimestamps();
     }
 
+    public function punishments(): HasMany
+    {
+        return $this->hasMany(PlayerPunishment::class, 'player_id');
+    }
+
     public function getAvatarUrlAttribute(): string
     {
         // Someone username can be null
         $username = $this->username ?? $this->uuid;
         return route('player.avatar.get', [$this->uuid, $username, $this->skin_texture_id, 'size' => 100]);
+    }
+
+    public function getRenderUrlAttribute(): string
+    {
+        // Someone username can be null
+        $username = $this->username ?? $this->uuid;
+        return route('player.render.get', [$this->uuid, $username, $this->skin_texture_id]);
     }
 
     public function getIsActiveAttribute(): bool
