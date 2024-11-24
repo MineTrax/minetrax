@@ -211,15 +211,26 @@
               </div>
               <!-- Rank -->
               <div>
-                <img
+                <div
                   v-for="role of profileUser.roles"
                   :key="role.id"
-                  v-tippy
-                  :src="role.photo_url"
-                  :alt="role.display_name"
-                  :content="role.display_name"
-                  class="focus:outline-none max-h-8"
                 >
+                  <img
+                    v-if="role.photo_url"
+                    v-tippy
+                    :src="role.photo_url"
+                    :alt="role.display_name"
+                    :content="role.display_name"
+                    class="focus:outline-none max-h-8"
+                  >
+                  <div
+                    v-else
+                    class="inline-flex mt-2 font-bold uppercase leading-5 p-1.5 bg-sky-400 text-white rounded-sm"
+                    :style="`background-color: ${role.color};`"
+                  >
+                    {{ role.display_name }}
+                  </div>
+                </div>
               </div>
               <div class="flex justify-end mr-4">
                 <p

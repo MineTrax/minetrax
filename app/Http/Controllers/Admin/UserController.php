@@ -40,9 +40,9 @@ class UserController extends Controller
                 'updated_at',
                 'country_id',
                 'last_login_at',
-                'roles.display_name',
                 'country.name',
                 'discord_user_id',
+                AllowedFilter::exact('roles.display_name'),
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username', 'discord_user_id'])),
                 AllowedFilter::scope('is_verified'),
             ])
