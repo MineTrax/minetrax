@@ -117,4 +117,9 @@ class Server extends BaseModel
     {
         return Arr::dot($this->settings)[$key] ?? $default;
     }
+
+    public function getMaskedIpAddressAttribute()
+    {
+        return preg_replace('/(\d{1,3})\.\d{1,3}\.\d{1,3}\.\d{1,3}/', '$1.xx.xx.xx', $this->ip_address);
+    }
 }
