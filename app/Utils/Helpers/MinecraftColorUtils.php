@@ -21,7 +21,7 @@ class MinecraftColorUtils
     const EMPTY_TAGS = '/<[^\/>]*>([\s]?)*<\/[^>]*>/';
     const LINE_BREAK = '<br />';
 
-    static private $colors = array(
+    static private $colors = [
         '0' => '000000', //Black
         '1' => '0000AA', //Dark Blue
         '2' => '00AA00', //Dark Green
@@ -38,7 +38,7 @@ class MinecraftColorUtils
         'd' => 'FF55FF', //Light Purple
         'e' => 'FFFF55', //Yellow
         'f' => 'FFFFFF'  //White
-    );
+    ];
 
 //    static private $colorsLight = array(
 //        '0' => '000000', //Black
@@ -59,16 +59,16 @@ class MinecraftColorUtils
 //        'f' => 'FFFFFF'  //White
 //    );
 
-    static private $formatting = array(
+    static private $formatting = [
         'k' => '',                               //Obfuscated
         'l' => 'font-weight: bold;',             //Bold
         'm' => 'text-decoration: line-through;', //Strikethrough
         'n' => 'text-decoration: underline;',    //Underline
         'o' => 'font-style: italic;',            //Italic
         'r' => ''                                //Reset
-    );
+    ];
 
-    static private $css_classnames = array(
+    static private $css_classnames = [
         '0' => 'black',
         '1' => 'dark-blue',
         '2' => 'dark-green',
@@ -90,7 +90,7 @@ class MinecraftColorUtils
         'm' => 'line-strikethrough',
         'n' => 'underline',
         'o' => 'italic'
-    );
+    ];
 
     static private function UFT8Encode($text) {
         //Encode the text in UTF-8, but only if it's not already.
@@ -218,7 +218,7 @@ class MinecraftColorUtils
 
         //Replace \n with <br />
         if ($line_break_element)
-            $text = str_replace(array('\n', "\n"), self::LINE_BREAK, $text);
+            $text = str_replace(['\n', "\n"], self::LINE_BREAK, $text);
 
         //Return the text without empty HTML tags. Only to clean up bad color formatting from the user.
         return preg_replace(self::EMPTY_TAGS, '', $text);

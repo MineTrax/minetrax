@@ -166,24 +166,24 @@ class MinecraftPing
         {
             $Data = Explode( "\x00", $Data );
 
-            return Array(
+            return [
                 'HostName'   => $Data[ 3 ],
                 'Players'    => IntVal( $Data[ 4 ] ),
                 'MaxPlayers' => IntVal( $Data[ 5 ] ),
                 'Protocol'   => IntVal( $Data[ 1 ] ),
                 'Version'    => $Data[ 2 ]
-            );
+            ];
         }
 
         $Data = Explode( "\xA7", $Data );
 
-        return Array(
+        return [
             'HostName'   => SubStr( $Data[ 0 ], 0, -1 ),
             'Players'    => isset( $Data[ 1 ] ) ? IntVal( $Data[ 1 ] ) : 0,
             'MaxPlayers' => isset( $Data[ 2 ] ) ? IntVal( $Data[ 2 ] ) : 0,
             'Protocol'   => 0,
             'Version'    => '1.3'
-        );
+        ];
     }
 
     private function ReadVarInt( )

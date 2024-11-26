@@ -94,7 +94,7 @@ class MineStat
     private function connect()
     {
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $this->timeout, 'usec' => 0));
+        socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => $this->timeout, 'usec' => 0]);
         if($this->socket === false)
             return MineStat::RETURN_CONNFAIL;
 

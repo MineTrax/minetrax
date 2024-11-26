@@ -119,7 +119,7 @@ class MinecraftQuery
         }
 
         $Last = '';
-        $Info = Array( );
+        $Info = [ ];
 
         $Data    = SubStr( $Data, 11 ); // splitnum + 2 int
         $Data    = Explode( "\x00\x00\x01player_\x00\x00", $Data );
@@ -134,7 +134,7 @@ class MinecraftQuery
 
         // Array with known keys in order to validate the result
         // It can happen that server sends custom strings containing bad things (who can know!)
-        $Keys = Array(
+        $Keys = [
             'hostname'   => 'HostName',
             'gametype'   => 'GameType',
             'version'    => 'Version',
@@ -145,7 +145,7 @@ class MinecraftQuery
             'hostport'   => 'HostPort',
             'hostip'     => 'HostIp',
             'game_id'    => 'GameName'
-        );
+        ];
 
         foreach( $Data as $Key => $Value )
         {
