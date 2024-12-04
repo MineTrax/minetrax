@@ -79,8 +79,6 @@ class PlayerPasswordResetController extends Controller
                 'toast' => [
                     'type' => 'success',
                     'title' => __('Action Successful!'),
-                    'body' => __('Password reset request has been queued. It will complete in a few seconds.'),
-                    'milliseconds' => 15000,
                 ]
             ]);
     }

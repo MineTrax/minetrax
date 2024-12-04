@@ -3,11 +3,11 @@ import Multiselect from 'vue-multiselect';
 import XInput from '@/Components/Form/XInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import AlertCard from '@/Components/AlertCard.vue';
 import { computed } from 'vue';
-import { ArrowPathIcon } from '@heroicons/vue/24/solid';
+import { ArrowPathIcon, CheckCircleIcon } from '@heroicons/vue/24/solid';
 import { useHelpers } from '@/Composables/useHelpers';
 const { generateRandomString } = useHelpers();
 
@@ -51,7 +51,11 @@ const submitForm = () => {
 };
 
 const formDisabled = computed(() => {
-    return form.processing || !selectedPlayer.value || props.cannotPlayerPasswordReset;
+    return form.processing || !selectedPlayer.value || props.cannotPlayerPasswordReset || props.cooldown > 0;
+});
+
+const success = computed(() => {
+    return usePage().props?.toast?.type === 'success';
 });
 
 </script>
@@ -100,13 +104,21 @@ const formDisabled = computed(() => {
       </p>
 
       <AlertCard
-        v-if="cooldown"
-        text-color="text-yellow-800 dark:text-yellow-500"
-        border-color="border-yellow-500"
+        v-if="success"
+        text-color="text-green-800 dark:text-green-500"
+        border-color="border-green-500"
       >
-        {{ __("You are on a cooldown! Please wait for :cooldown seconds before you can try again.", {
-          cooldown: cooldown
-        }) }}
+        <template #icon>
+          <CheckCircleIcon class="fill-current h-6 w-6 text-green-500 mr-4" />
+        </template>
+        <h2 class="text-xl">
+          {{ __("Password changed successfully!") }}
+        </h2>
+        <template #body>
+          <p class="text-sm">
+            {{ ("Your player password has been changed successfully. You can now join the server with new password.") }}
+          </p>
+        </template>
       </AlertCard>
 
       <AlertCard
@@ -189,6 +201,13 @@ const formDisabled = computed(() => {
               {{ __("Reset Player Password") }}
             </LoadingButton>
           </div>
+
+          <span
+            v-if="props.cooldown > 0"
+            class="text-xs text-orange-500 dark:text-orange-500 flex mt-2"
+          >
+            {{ __("You are on a cooldown because you have recently changed your password. Refresh the page and try again after :cooldown seconds.", { cooldown: props.cooldown }) }}
+          </span>
         </form>
       </div>
     </div>
