@@ -71,7 +71,9 @@ class RoleController extends Controller
 
         $role->givePermissionTo($request->permissions);
 
-        $role->addMediaFromRequest('photo')->toMediaCollection('role');
+        if ($request->photo) {
+            $role->addMediaFromRequest('photo')->toMediaCollection('role');
+        }
 
         return redirect()->route('admin.role.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('New Role is created successfully')]]);

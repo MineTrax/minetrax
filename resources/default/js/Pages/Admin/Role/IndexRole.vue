@@ -7,6 +7,7 @@ import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
+import { Link } from '@inertiajs/vue3';
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
@@ -105,10 +106,18 @@ const headerRow = [
           <td>
             <div class="flex-shrink-0">
               <img
+                v-if="item.photo_url"
                 class="max-h-8"
                 :src="item.photo_url"
                 :alt="__('Role Image')"
               >
+              <div
+                v-else
+                class="inline-flex font-bold uppercase leading-5 p-1.5 bg-sky-400 text-white rounded-sm"
+                :style="`background-color: ${item.color};`"
+              >
+                {{ item.display_name }}
+              </div>
             </div>
           </td>
 
@@ -131,7 +140,16 @@ const headerRow = [
           </td>
 
           <DtRowItem>
-            {{ item.users_count }}
+            <Link
+              class="hover:text-blue-400"
+              :href="
+                route('admin.user.index', {
+                  filter: { 'roles.display_name' : item.display_name}
+                })
+              "
+            >
+              {{ item.users_count }}
+            </Link>
           </DtRowItem>
 
           <DtRowItem>

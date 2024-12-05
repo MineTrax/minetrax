@@ -72,11 +72,12 @@ class ServerController extends Controller
             ->allowedSorts(['id', 'name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'type', 'minecraft_version', 'order', 'country_id', 'last_scanned_at', 'created_at'])
             ->defaultSort('-order')
             ->paginate($perPage)
+            ->through(fn($server) => $server->append('masked_ip_address')->makeHidden('ip_address'))
             ->withQueryString();
 
         return Inertia::render('Admin/Server/IndexServer', [
             'servers' => $servers,
-            'canCreateBungeeServer' => ! $canCreateBungeeServer,
+            'canCreateBungeeServer' => !$canCreateBungeeServer,
             'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
@@ -177,7 +178,7 @@ class ServerController extends Controller
             'order' => $request->order,
         ]);
 
-        if (! $request->webquery_port) {
+        if (!$request->webquery_port) {
             return redirect()->route('admin.server.index')
                 ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Proxy server added successfully')]]);
         }
@@ -306,9 +307,9 @@ class ServerController extends Controller
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:'.$server->id);
-        Cache::forget('server:query:'.$server->id);
-        Cache::forget('server:webquery:'.$server->id);
+        Cache::forget('server:ping:' . $server->id);
+        Cache::forget('server:query:' . $server->id);
+        Cache::forget('server:webquery:' . $server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Server updated successfully')]]);
@@ -338,9 +339,9 @@ class ServerController extends Controller
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:'.$server->id);
-        Cache::forget('server:query:'.$server->id);
-        Cache::forget('server:webquery:'.$server->id);
+        Cache::forget('server:ping:' . $server->id);
+        Cache::forget('server:query:' . $server->id);
+        Cache::forget('server:webquery:' . $server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Server updated successfully')]]);

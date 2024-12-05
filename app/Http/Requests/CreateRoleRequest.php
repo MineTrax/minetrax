@@ -30,7 +30,7 @@ class CreateRoleRequest extends FormRequest
             'display_name' => 'required|string|max:255',
             'is_staff' => 'required|boolean',
             'is_hidden_from_staff_list' => 'required|boolean',
-            'photo' => 'required|image|max:300',
+            'photo' => 'nullable|image|max:300',
             'weight' => 'required|integer',
             'web_message_format' => 'nullable|string|max:255',
             'permissions' => 'sometimes|nullable|array|exists:permissions,name'

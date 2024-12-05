@@ -33,7 +33,7 @@ class Role extends \Spatie\Permission\Models\Role implements HasMedia
 
     public function getPhotoUrlAttribute()
     {
-        $photo_url = url('images/default-roles/'.$this->name.'.png');
+        $photo_url = null;
         if ($this->getFirstMediaUrl('role')) {
             $photo_url = $this->getFirstMediaUrl('role');
         }

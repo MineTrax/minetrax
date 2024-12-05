@@ -19,7 +19,7 @@ class CreateMinecraftPlayerPvpKillsTable extends Migration
             $table->uuid('victim_uuid')->index();
             $table->string('killer_username');
             $table->string('victim_username');
-            $table->timestamp('killed_at');
+            $table->timestamp('killed_at')->nullable();
             $table->string('weapon')->nullable();
             $table->json('world_location')->nullable();
 

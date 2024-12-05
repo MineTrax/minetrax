@@ -19,7 +19,7 @@ class CreateMinecraftPlayerMobKillsTable extends Migration
             $table->string('player_username');
             $table->string('mob_id');
             $table->string('mob_name');
-            $table->timestamp('killed_at');
+            $table->timestamp('killed_at')->nullable();
             $table->string('weapon')->nullable();
             $table->json('world_location')->nullable();
 
