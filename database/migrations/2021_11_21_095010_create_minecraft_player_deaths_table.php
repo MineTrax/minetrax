@@ -23,7 +23,7 @@ class CreateMinecraftPlayerDeathsTable extends Migration
 
             $table->string('killer_entity_id')->nullable();    // If killed by mob: Entity id
             $table->string('killer_entity_name')->nullable();    // If killed by mob: Entity name
-            $table->timestamp('died_at');
+            $table->timestamp('died_at')->nullable();
             $table->string('world_location')->nullable();
 
             $table->foreignId('session_id')->constrained('minecraft_player_sessions')->onDelete('cascade');

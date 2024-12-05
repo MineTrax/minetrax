@@ -19,7 +19,7 @@ class CreateMinecraftPlayerSessionsTable extends Migration
             $table->uuid('player_uuid')->index();
             $table->string('player_username');
             $table->string('player_displayname')->nullable();
-            $table->timestamp('session_started_at');
+            $table->timestamp('session_started_at')->nullable();
             $table->timestamp('session_ended_at')->nullable();
             $table->integer('mob_kills')->default(0);
             $table->integer('player_kills')->default(0);

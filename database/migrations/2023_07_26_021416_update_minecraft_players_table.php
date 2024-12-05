@@ -50,7 +50,7 @@ return new class extends Migration
             $table->double('pvp_damage_given')->nullable()->default(0);
             $table->double('pvp_damage_taken')->nullable()->default(0);
 
-            $table->timestamp('first_seen_at');
+            $table->timestamp('first_seen_at')->nullable();
             $table->timestamp('last_seen_at')->nullable();
             $table->string('last_minecraft_version')->nullable();
             $table->string('last_join_address')->nullable();
