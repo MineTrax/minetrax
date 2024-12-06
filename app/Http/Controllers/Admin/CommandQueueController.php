@@ -113,7 +113,7 @@ class CommandQueueController extends Controller
 
         $commandQueue->delete();
 
-        return redirect()->route('admin.command-queue.index')
+        return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted!')]]);
     }
 
@@ -141,7 +141,7 @@ class CommandQueueController extends Controller
             RunCommandQueueJob::dispatch($commandQueue);
         }
 
-        return redirect()->route('admin.command-queue.index')
+        return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Retried!'), 'body' => __('Command has been queued for retrying! Refresh the page after few seconds to check the status.')]]);
     }
 }
