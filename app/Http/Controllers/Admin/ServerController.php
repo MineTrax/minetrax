@@ -204,7 +204,7 @@ class ServerController extends Controller
         $serverAggrData['active_players'] = (string) MinecraftPlayer::where('server_id', $server->id)->where('last_seen_at', '>=', now()->subDays(30))->count();
 
         return Inertia::render('Admin/Server/ShowServer', [
-            'server' => $server->load(['country']),
+            'server' => $server->load(['country'])->append('masked_ip_address')->makeHidden('ip_address'),
             'serverAggrData' => $serverAggrData,
         ]);
     }
