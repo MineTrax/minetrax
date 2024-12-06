@@ -161,7 +161,7 @@ class BanWardenController extends Controller
         $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
         $canShowMaskedIp = config('minetrax.banwarden.show_masked_ip_public') ? true : auth()?->user()?->isStaffMember();
 
-        $perPage = request()->query('perPage', 10);
+        $perPage = request()->query('perPage', 5);
         if ($perPage > 100) {
             $perPage = 100;
         }
