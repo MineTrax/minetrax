@@ -137,10 +137,10 @@ class PlayerController extends Controller
         $size = $request->size ?? 100;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = MinecraftSkinUtils::getDefaultSkinImage('avatar', $size);
 
-            return $img->response('jpg');
+            return $this->streamImage($img);
         }
 
         try {
@@ -158,7 +158,7 @@ class PlayerController extends Controller
             }
         }
 
-        return $img->response('jpg');
+        return $this->streamImage($img);
     }
 
     public function getSkinImage(Request $request, $uuid, $username = null, $textureid = null)
@@ -168,10 +168,10 @@ class PlayerController extends Controller
         $param = $useUsernameForSkins ? $username : $uuid;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = MinecraftSkinUtils::getDefaultSkinImage('skin');
 
-            return $img->response('jpg');
+            return $this->streamImage($img, 'png');
         }
 
         try {
@@ -189,7 +189,7 @@ class PlayerController extends Controller
             }
         }
 
-        return $img->response('png');
+        return $this->streamImage($img, 'png');
     }
 
     public function getRenderImage(Request $request, $uuid, $username = null, $textureid = null)
@@ -200,10 +200,10 @@ class PlayerController extends Controller
         $scale = $request->scale;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = MinecraftSkinUtils::getDefaultSkinImage('render');
 
-            return $img->response('jpg');
+            return $this->streamImage($img, 'png');
         }
 
         try {
@@ -217,6 +217,18 @@ class PlayerController extends Controller
             }
         }
 
-        return $img->response('png');
+        return $this->streamImage($img, 'png');
+    }
+
+    private function streamImage($img, $imageType = 'jpeg')
+    {
+        $contentType = "image/{$imageType}";
+        return response()->stream(function () use ($img, $imageType) {
+            if ($imageType == 'png') {
+                echo $img->toPng();
+            } else {
+                echo $img->toJpeg();
+            }
+        }, 200, ['Content-Type' => $contentType]);
     }
 }

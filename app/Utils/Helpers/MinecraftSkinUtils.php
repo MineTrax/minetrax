@@ -3,8 +3,9 @@
 namespace App\Utils\Helpers;
 
 use App\Services\MinecraftApiService;
+use Intervention\Image\Laravel\Facades\Image;
 use Http;
-use Intervention\Image\Facades\Image;
+use Cache;
 
 class MinecraftSkinUtils
 {
@@ -23,7 +24,7 @@ class MinecraftSkinUtils
             default:
                 throw new \Exception('Invalid type');
         }
-        $image = Image::make($imagePath);
+        $image = Image::read($imagePath);
         if ($size) {
             $image->resize($size, $size);
         }
@@ -33,8 +34,6 @@ class MinecraftSkinUtils
 
     public static function getSkinImageFromMinotar($type, $identifier, $size = null)
     {
-        $fetchAvatarFromUrlUsingCurl = config('minetrax.fetch_avatar_from_url_using_curl');
-
         switch ($type) {
             case 'avatar':
                 $url = "https://minotar.net/avatar/$identifier";
@@ -51,17 +50,13 @@ class MinecraftSkinUtils
                 throw new \Exception('Invalid type');
         }
 
-        $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
-
-        return Image::cache(function ($image) use ($data) {
-            return $image->make($data);
-        }, 60, true); // Cache lifetime is in minutes
+        $data = self::httpGetWithCache($url);
+        return Image::read($data);
     }
 
     public static function getSkinImageFromCrafatar($type, $identifier, $size = null)
     {
         $useUsernameForSkins = config('minetrax.use_username_for_skins');
-        $fetchAvatarFromUrlUsingCurl = config('minetrax.fetch_avatar_from_url_using_curl');
 
         switch ($type) {
             case 'avatar':
@@ -70,7 +65,7 @@ class MinecraftSkinUtils
                 } else {
                     $uuid = $identifier;
                 }
-                $url = 'https://crafatar.com/avatars/'.$uuid.'?size='.$size;
+                $url = 'https://crafatar.com/avatars/' . $uuid . '?size=' . $size;
                 break;
             case 'skin':
                 if ($useUsernameForSkins) {
@@ -78,7 +73,7 @@ class MinecraftSkinUtils
                 } else {
                     $uuid = $identifier;
                 }
-                $url = 'https://crafatar.com/skins/'.$uuid;
+                $url = 'https://crafatar.com/skins/' . $uuid;
                 break;
             case 'render':
                 if ($useUsernameForSkins) {
@@ -86,22 +81,17 @@ class MinecraftSkinUtils
                 } else {
                     $uuid = $identifier;
                 }
-                $url = 'https://crafatar.com/renders/body/'.$uuid.'?scale='.$size;
+                $url = 'https://crafatar.com/renders/body/' . $uuid . '?scale=' . $size;
             default:
                 throw new \Exception('Invalid type');
         }
 
-        $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
-
-        return Image::cache(function ($image) use ($data) {
-            return $image->make($data);
-        }, 60, true); // Cache lifetime is in minutes
+        $data = self::httpGetWithCache($url);
+        return Image::read($data);
     }
 
     public static function getSkinImageFromMcHeads($type, $identifier, $size = null)
     {
-        $fetchAvatarFromUrlUsingCurl = config('minetrax.fetch_avatar_from_url_using_curl');
-
         switch ($type) {
             case 'avatar':
                 $url = "https://mc-heads.net/avatar/$identifier";
@@ -123,11 +113,8 @@ class MinecraftSkinUtils
                 throw new \Exception('Invalid type');
         }
 
-        $data = $fetchAvatarFromUrlUsingCurl ? Http::get($url)->body() : $url;
-
-        return Image::cache(function ($image) use ($data) {
-            return $image->make($data);
-        }, 60, true); // Cache lifetime is in minutes
+        $data = self::httpGetWithCache($url);
+        return Image::read($data);
     }
 
     public static function uploadSkinToMineSkin($file, $skinType): array
@@ -143,5 +130,13 @@ class MinecraftSkinUtils
         }
 
         return $response->json();
+    }
+
+    private static function httpGetWithCache($url)
+    {
+        $key = "imagecache::{$url}";
+        return Cache::store('file')->remember($key, 60, function () use ($url) {
+            return Http::get($url)->body();
+        });
     }
 }
