@@ -32,6 +32,6 @@ class CreateMinecraftPlayerAdvancementsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('minecraft_player_advancements');
+        Schema::dropIfExists('json_minecraft_player_advancements');
     }
 }

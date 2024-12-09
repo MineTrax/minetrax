@@ -79,6 +79,6 @@ class CreateMinecraftPlayerStatsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('minecraft_player_stats');
+        Schema::dropIfExists('json_minecraft_player_stats');
     }
 }
