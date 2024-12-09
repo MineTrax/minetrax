@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('type');
             $table->text('key');
             match ($driver = $connection->getDriverName()) {
-                'mysql' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
+                'mysql', 'mariadb' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
                 'pgsql' => $table->uuid('key_hash')->storedAs('md5("key")::uuid'),
                 default => throw new RuntimeException("Unsupported database driver [{$driver}]."),
             };
@@ -46,7 +46,7 @@ return new class extends Migration
             $table->string('type');
             $table->text('key');
             match ($driver = $connection->getDriverName()) {
-                'mysql' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
+                'mysql', 'mariadb' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
                 'pgsql' => $table->uuid('key_hash')->storedAs('md5("key")::uuid'),
                 default => throw new RuntimeException("Unsupported database driver [{$driver}]."),
             };
@@ -65,7 +65,7 @@ return new class extends Migration
             $table->string('type');
             $table->text('key');
             match ($driver = $connection->getDriverName()) {
-                'mysql' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
+                'mysql', 'mariadb' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
                 'pgsql' => $table->uuid('key_hash')->storedAs('md5("key")::uuid'),
                 default => throw new RuntimeException("Unsupported database driver [{$driver}]."),
             };

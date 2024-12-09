@@ -15,7 +15,7 @@ class CreateMinecraftPlayerEventsTable extends Migration
     {
         Schema::create('minecraft_player_events', function (Blueprint $table) {
             $table->id();
-            $table->uuid('player_uuid')->index();
+            $table->char('player_uuid', 36)->index(); // uuid
             $table->string('player_username');
             $table->string('ip_address')->nullable();
             $table->integer('player_ping')->nullable();

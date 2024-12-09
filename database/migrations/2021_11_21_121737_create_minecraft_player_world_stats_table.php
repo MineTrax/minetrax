@@ -15,7 +15,7 @@ class CreateMinecraftPlayerWorldStatsTable extends Migration
     {
         Schema::create('minecraft_player_world_stats', function (Blueprint $table) {
             $table->id();
-            $table->uuid('player_uuid')->index();
+            $table->char('player_uuid', 36)->index();
             $table->integer('survival_time')->default(0);
             $table->integer('creative_time')->default(0);
             $table->integer('adventure_time')->default(0);

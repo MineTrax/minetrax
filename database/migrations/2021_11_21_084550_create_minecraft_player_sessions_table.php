@@ -15,8 +15,8 @@ class CreateMinecraftPlayerSessionsTable extends Migration
     {
         Schema::create('minecraft_player_sessions', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
-            $table->uuid('player_uuid')->index();
+            $table->char('uuid', 36)->unique(); // uuid
+            $table->char('player_uuid', 36)->index(); // uuid
             $table->string('player_username');
             $table->string('player_displayname')->nullable();
             $table->timestamp('session_started_at')->nullable();

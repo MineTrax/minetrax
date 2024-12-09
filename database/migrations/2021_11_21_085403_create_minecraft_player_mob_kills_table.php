@@ -15,7 +15,7 @@ class CreateMinecraftPlayerMobKillsTable extends Migration
     {
         Schema::create('minecraft_player_mob_kills', function (Blueprint $table) {
             $table->id();
-            $table->uuid('player_uuid')->index();
+            $table->char('player_uuid', 36)->index(); // uuid
             $table->string('player_username');
             $table->string('mob_id');
             $table->string('mob_name');

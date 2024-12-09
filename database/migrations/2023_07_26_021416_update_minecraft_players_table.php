@@ -17,7 +17,7 @@ return new class extends Migration
         // Create new table with same name.
         Schema::create('minecraft_players', function(Blueprint $table) {
             $table->id();
-            $table->uuid('player_uuid')->index();
+            $table->char('player_uuid', 36)->index(); // uuid
             $table->string('player_username')->index()->nullable();
             $table->string('player_displayname')->nullable();
             $table->string('player_ip_address')->nullable();

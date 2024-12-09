@@ -17,7 +17,7 @@ class CreateServerChatlogsTable extends Migration
             $table->id();
             $table->foreignId('server_id')->nullable()->constrained('servers')->cascadeOnDelete();
             $table->text('data')->nullable();
-            $table->uuid('causer_uuid')->nullable();
+            $table->char('causer_uuid', 36)->nullable(); // uuid
             $table->string('causer_username')->nullable();
             $table->string('channel')->nullable(); // Eg: global, admin
             $table->string('type')->nullable();  // Eg: chat, death, etc
