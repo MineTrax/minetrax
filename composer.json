@@ -29,7 +29,7 @@
         "laravel/socialite": "^5.5",
         "laravel/telescope": "^5.0",
         "laravel/tinker": "^2.7",
-        "league/commonmark": "^2.5",
+        "league/commonmark": "^2.6",
         "league/flysystem-aws-s3-v3": "^3.29",
         "league/flysystem-ftp": "^3.29",
         "league/flysystem-sftp-v3": "^3.29",
