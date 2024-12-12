@@ -64,7 +64,7 @@ class RecruitmentController extends Controller
         $userLastSubmission = $user ? $recruitment->submissions()->where('user_id', $user->id)->latest()->first() : null;
         $secondsSinceLastSubmission = null;
         if ($userLastSubmission) {
-            $secondsSinceLastSubmission = now()->diffInSeconds($userLastSubmission->updated_at);
+            $secondsSinceLastSubmission = $userLastSubmission->updated_at->diffInSeconds(now());
         }
 
         $lastActiveSubmission = null;
