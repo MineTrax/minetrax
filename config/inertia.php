@@ -59,4 +59,15 @@ return [
 
     ],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Vite Prefetch
+    |--------------------------------------------------------------------------
+    |
+    | This option configures if Vite should prefetch assets for Inertia pages.
+    |
+    */
+    'vite_prefetch' => env('VITE_PREFETCH', false),
+
 ];

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pulse\Facades\Pulse;
+use Illuminate\Support\Facades\Vite;
 use DB;
 
 class AppServiceProvider extends ServiceProvider
@@ -57,6 +58,11 @@ class AppServiceProvider extends ServiceProvider
         Queue::after(function (JobProcessed $event) {
             Cache::set('queue_last_processed', now());
         });
+
+        // Vite Prefetch
+        if (config('inertia.vite_prefetch')) {
+            Vite::prefetch(concurrency: 3);
+        }
     }
 
     private function configureCommands()
