@@ -31,6 +31,17 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'resend' => [
+        'key' => env('RESEND_KEY'),
+    ],
+
+    'slack' => [
+        'notifications' => [
+            'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
+            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+        ],
+    ],
+
     'github' => [
         'oauth_enabled' => env('GITHUB_OAUTH_ENABLED'),
         'client_id' => env('GITHUB_CLIENT_ID'),
@@ -66,7 +77,7 @@ return [
         'redirect' => env('DISCORD_REDIRECT_URI'),
 
         // optional
-        'allow_gif_avatars' => (bool)env('DISCORD_AVATAR_GIF', true),
+        'allow_gif_avatars' => (bool) env('DISCORD_AVATAR_GIF', true),
         'avatar_default_extension' => env('DISCORD_EXTENSION_DEFAULT', 'jpg'), // only pick from jpg, png, webp
 
         // bot
