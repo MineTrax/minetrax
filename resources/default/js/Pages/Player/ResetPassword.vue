@@ -9,7 +9,7 @@ import AlertCard from '@/Components/AlertCard.vue';
 import { computed } from 'vue';
 import { ArrowPathIcon, CheckCircleIcon } from '@heroicons/vue/24/solid';
 import { useHelpers } from '@/Composables/useHelpers';
-const { generateRandomString } = useHelpers();
+const { generateRandomString, secondsToHMS } = useHelpers();
 
 const props = defineProps({
     uuid: {
@@ -156,6 +156,7 @@ const success = computed(() => {
               <x-input
                 id="new_password"
                 v-model="form.new_password"
+                :disabled="formDisabled"
                 :label="__('New Password')"
                 :error="form.errors.new_password"
                 type="text"
@@ -165,8 +166,9 @@ const success = computed(() => {
 
               <div>
                 <button
+                  :disabled="formDisabled"
                   type="button"
-                  class="inline-flex items-center px-4 py-4 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest whitespace-nowrap shadow-sm hover:text-gray-500 focus:outline-none active:text-gray-800 active:mt-0.5 active:bg-gray-50 transition ease-in-out duration-150 dark:bg-cool-gray-700 dark:text-gray-200 dark:border-gray-800 dark:hover:text-white dark:hover:bg-cool-gray-600"
+                  class="inline-flex items-center px-4 py-4 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest whitespace-nowrap shadow-sm hover:text-gray-500 focus:outline-none active:text-gray-800 active:mt-0.5 active:bg-gray-50 transition ease-in-out duration-150 dark:bg-cool-gray-700 dark:text-gray-200 dark:border-gray-800 dark:hover:text-white dark:hover:bg-cool-gray-600 disabled:active:mt-0 disabled:cursor-not-allowed disabled:opacity-50"
                   @click="form.new_password = generateRandomString(16)"
                 >
                   <ArrowPathIcon class="inline h-5 w-5 mr-1" />
@@ -181,6 +183,7 @@ const success = computed(() => {
               <x-input
                 id="reason"
                 v-model="form.reason"
+                :disabled="formDisabled"
                 :label="__('Reason')"
                 :error="form.errors.reason"
                 type="text"
@@ -204,9 +207,9 @@ const success = computed(() => {
 
           <span
             v-if="props.cooldown > 0"
-            class="text-xs text-orange-500 dark:text-orange-500 flex mt-2"
+            class="text-sm text-orange-500 dark:text-orange-500 flex mt-2"
           >
-            {{ __("You are on a cooldown because you have recently changed your password. Refresh the page and try again after :cooldown seconds.", { cooldown: props.cooldown }) }}
+            {{ __("You are on a cooldown because you have recently changed your password. Refresh the page and try again after :cooldown.", { cooldown: secondsToHMS(props.cooldown, true) }) }}
           </span>
         </form>
       </div>

@@ -114,7 +114,7 @@ watchEffect(() => {
         disabledErrorMessage.value = {
             title: __('You are on a Cooldown!'),
             body: __(
-                'You need to wait :seconds seconds before submitting this application again.',
+                'You need to wait :seconds before submitting this application again.',
                 {
                     seconds: secondsToHMS(
                         props.recruitment.submission_cooldown_in_seconds -

@@ -8,7 +8,7 @@
       ref="input"
       :type="type"
       :name="name"
-      class="dark:bg-cool-gray-900 dark:text-gray-300 border focus:outline-none rounded-md w-full p-3 h-14 disabled:opacity-50 focus:border-light-blue-300 focus:ring text-sm focus:ring-light-blue-200 focus:ring-opacity-50"
+      class="dark:bg-cool-gray-900 dark:text-gray-300 border focus:outline-none rounded-md w-full p-3 h-14 disabled:opacity-50 focus:border-light-blue-300 focus:ring text-sm focus:ring-light-blue-200 focus:ring-opacity-50 disabled:cursor-not-allowed"
       :class="borderColor + ' ' + inputClass"
       :placeholder="label"
       :autocomplete="autocomplete"
