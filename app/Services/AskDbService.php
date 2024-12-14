@@ -38,7 +38,6 @@ class AskDbService
     public function chatWithAskDbForUser(string $prompt, $user)
     {
         $messagesHistory = Cache::get("askdb::user_chat_session::{$user->id}", []);
-        dd($messagesHistory);
         $systemPrompt = $this->generateSystemPrompt();
 
         if (count($messagesHistory) > 0) {

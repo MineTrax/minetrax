@@ -36,6 +36,10 @@ const showWelcome = computed(() => {
 let results = reactive(props.chatHistory);
 
 function askDb() {
+    if (!props.featureEnabled || form.loading || !form.prompt) {
+        return;
+    }
+
     form.loading = true;
     form.error = null;
     form.verboseError = null;
@@ -59,6 +63,7 @@ function askDb() {
             form.verboseError = error.response?.data?.verbose || null;
         }
         form.prompt = prompt;
+        results.pop();
     }).finally(() => {
         form.loading = false;
         scrollToBottom();
@@ -164,7 +169,8 @@ function scrollToBottom() {
               <button
                 v-for="example in examples"
                 :key="example"
-                class="block w-full p-6 text-sm font-normal text-gray-700 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-400"
+                :disabled="!featureEnabled"
+                class="block w-full p-6 text-sm font-normal text-gray-700 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-400 disabled:cursor-not-allowed"
                 @click="askWithExample(example)"
               >
                 {{ example }}
@@ -240,14 +246,14 @@ function scrollToBottom() {
                   name="prompt"
                   :placeholder="__('Enter your query in natural language..')"
                   class="block w-full h-24 p-3 pr-12 text-gray-800 border-none rounded-lg shadow resize-none bg-gray-50 sm:text-md dark:bg-gray-800 dark:placeholder-gray-400 dark:text-gray-300 focus:outline-none focus:ring-0"
-                  :disabled="form.loading"
+                  :disabled="form.loading || !featureEnabled"
                   rows="2"
                   @keydown="handleKeydown"
                 />
 
                 <button
                   type="submit"
-                  :disabled="form.loading"
+                  :disabled="form.loading || !featureEnabled"
                   class="absolute p-2 transition-colors duration-200 ease-in-out rounded-full shadow-sm bottom-2 right-2 bg-light-blue-100 dark:bg-light-blue-800 text-light-blue-600 dark:text-light-blue-300 hover:bg-light-blue-200 dark:hover:bg-light-blue-700 hover:shadow-md disabled:opacity-50"
                 >
                   <LoadingSpinner

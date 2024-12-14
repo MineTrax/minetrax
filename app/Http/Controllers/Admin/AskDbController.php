@@ -8,6 +8,7 @@ use EchoLabs\Prism\ValueObjects\Messages\AssistantMessage;
 use EchoLabs\Prism\ValueObjects\Messages\UserMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 
@@ -77,6 +78,7 @@ class AskDbController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
+            Log::error($e);
             return response()->json([
                 'message' => 'Failed processing your request! Try again after rephrasing your question.',
                 'verbose' => $appDebug ? $e->getMessage() : null,
