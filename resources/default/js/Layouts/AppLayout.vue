@@ -20,6 +20,13 @@ export default {
         MainFooter
     },
 
+    props: {
+        hideFooter: {
+            type: Boolean,
+            default: false,
+        }
+    },
+
     data() {
         return {
             title: 'MineTrax'
@@ -66,7 +73,7 @@ export default {
         <slot />
       </main>
 
-      <MainFooter />
+      <MainFooter v-if="!hideFooter" />
     </div>
   </div>
 

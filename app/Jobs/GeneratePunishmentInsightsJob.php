@@ -5,10 +5,8 @@ namespace App\Jobs;
 use App\Models\MinecraftPlayerSession;
 use App\Models\Player;
 use App\Models\PlayerPunishment;
-use App\Services\GeolocationService;
-use App\Services\OpenAiService;
+use App\Services\AiService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -29,7 +27,7 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(OpenAiService $openAiService): void
+    public function handle(AiService $aiService): void
     {
         // return if already generating or already generated...
         if ($this->punishment->insights && in_array($this->punishment->insights['status'], ['generating', 'generated'])) {
@@ -148,7 +146,11 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         $possibleAltsJsonString
         QUESTION;
 
-        $response = $openAiService->simpleChat($systemPrompt, $question, null, 0.3, 1000, 'json_object');
+        $response = $aiService->simplePrompt($systemPrompt, $question, 0.3, 1000, [
+            'response_format' => [
+                'type' => 'json_object',
+            ]
+        ]);
         $responseData = json_decode($response, true);
 
         // mark as generated...

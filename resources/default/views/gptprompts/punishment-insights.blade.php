@@ -8,6 +8,8 @@ Provide 5 insightful points regarding this punishment each in short few words.
 Response SHOULD BE a valid JSON in the following format (DONT INCLUDE ANYTHING ELSE IN RESPONSE):
 {"score": 50,"insights": ["Insight 1","Insight 2","Insight 3","Insight 4","Insight 5"]}
 
+IP Ban doesn't indicate severity of infraction.
+
 Current Time is {{ now() }}
 
 @if($locale != 'en')

@@ -265,18 +265,7 @@ return [
     | If enabled, staff who have permission `use ask_db`, will be able to ask questions to database and get answers.
     |
     */
-    'askdb_enabled' => env('ASKDB_ENABLED', false) && env('OPENAI_API_KEY'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | OpenAI AI Model
-    |--------------------------------------------------------------------------
-    |
-    | Name of the AI model to use for OpenAI query. Currently OpenAI models are supported.
-    | Eg: gpt-4o, gpt-4o-mini.
-    |
-    */
-    'openai_ai_model' => env('OPENAI_AI_MODEL', 'gpt-4o-mini'),
+    'askdb_enabled' => env('ASKDB_ENABLED', false) && env('AI_ENABLED', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -436,7 +425,7 @@ return [
         | If enabled, BanWarden will use AI to generate insights for punishments.
         |--------------------------------------------------------------------------
         */
-        'ai_insights_enabled' => env('BANWARDEN_AI_INSIGHTS_ENABLED', true) && env('OPENAI_API_KEY'),
+        'ai_insights_enabled' => env('BANWARDEN_AI_INSIGHTS_ENABLED', true) && env('AI_ENABLED', false),
 
         /*
         |--------------------------------------------------------------------------
