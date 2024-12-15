@@ -54,7 +54,7 @@
           <div class="min-w-full">
             <div class="shadow max-w-none bg-white dark:bg-cool-gray-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded">
               <div
-                class="prose max-w-none dark:prose-dark"
+                class="prose max-w-none dark:prose-invert"
                 v-html="customPage.body_html"
               />
             </div>

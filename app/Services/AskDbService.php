@@ -7,6 +7,7 @@ use EchoLabs\Prism\ValueObjects\Messages\SystemMessage;
 use EchoLabs\Prism\ValueObjects\Messages\UserMessage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -92,7 +93,7 @@ class AskDbService
                 $tables = $this->getTablesForTools();
                 $resp = implode(PHP_EOL, $tables);
                 if (strlen($resp) > TOOLS_RESPONSE_MAX_CHARACTERS) {
-                    throw new \Exception('[Tools: get_tables_schema] response is too big to send to AI.');
+                    throw new \Exception('[AskDB][Tools: get_tables_schema] response is too big to send to AI.');
                 }
                 return $resp;
             });
@@ -106,15 +107,19 @@ class AskDbService
                 1. Only support sql_mode=only_full_group_by
                 2. Need to get schema with get_tables_schema first
                 3. You have read-only access to the database. Don't use DML queries.
+                4. Database structure follow Laravel recommendations. (is for Laravel based project)
+                5. Some relationship uses pivot table, Eg: players -> player_user -> users, define which player belongs to which user.
+                6. Remember, `players` table have little changes in naming convension of columns compared to other player related tables, Eg: It has `uuid` instead of `player_uuid`, `username` instead of `player_username`.
             "
             )
             ->withStringParameter('query', 'SQL query to execute')
             ->using(function (string $query): string {
+                Log::info("[AskDB: query_database]: $query");
                 $this->ensureQueryIsSafe($query);
                 $result = $this->evaluateQueryForTools($query);
                 $resp = json_encode($result);
                 if (strlen($resp) > TOOLS_RESPONSE_MAX_CHARACTERS) {
-                    throw new \Exception('[Tools: query_database] response is too big to send to AI.');
+                    throw new \Exception('[AskDB][Tools: query_database] response is too big to send to AI.');
                 }
                 return $resp;
             });

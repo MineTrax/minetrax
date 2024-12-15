@@ -268,7 +268,7 @@ watchEffect(() => {
             >
               <div
                 v-if="recruitment.description"
-                class="prose dark:prose-dark max-w-none mb-6 pb-6 border-b dark:border-gray-700"
+                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b dark:border-gray-700"
                 v-html="recruitment.description_html"
               />
 

@@ -51,7 +51,7 @@ defineProps({
               </div>
 
               <div
-                class="prose dark:prose-dark max-w-none"
+                class="prose dark:prose-invert max-w-none"
                 v-html="download.description_html"
               />
 

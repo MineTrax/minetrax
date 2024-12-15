@@ -210,7 +210,7 @@ function scrollToBottom() {
               </div>
               <div>
                 <div
-                  class="prose max-w-none lg:max-w-[45vw] dark:prose-dark"
+                  class="prose max-w-none lg:max-w-[45vw] dark:prose-invert"
                   v-html="result.content"
                 />
                 <p

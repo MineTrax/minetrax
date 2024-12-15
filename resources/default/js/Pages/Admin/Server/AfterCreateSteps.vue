@@ -22,7 +22,7 @@
         </div>
 
 
-        <div class="flex flex-col space-y-4 mt-6 prose-lg prose dark:prose-dark">
+        <div class="flex flex-col space-y-4 mt-6 prose-lg prose dark:prose-invert">
           <p>
             {{ __("Download latest version of the MineTrax.jar Plugin and upload it into 'plugins' folder of your server.") }}
             <a
