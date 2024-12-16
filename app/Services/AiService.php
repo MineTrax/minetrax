@@ -73,6 +73,7 @@ class AiService
             ->withMaxTokens($maxTokens)
             ->withMaxSteps($maxSteps)
             ->withTools($tools)
+            ->withClientOptions(['timeout' => 120])  // Some model reply very slow, so we need to increase timeout.
             ->generate();
 
         return $reponse;
