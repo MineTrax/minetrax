@@ -82,14 +82,14 @@
           {{ __("Edit Profile") }}
         </jet-dropdown-link>
 
-        <jet-dropdown-link :href="route('linked-player.list')">
-          {{ __("Linked Players") }}
-        </jet-dropdown-link>
-
         <jet-dropdown-link
           :href="route('recruitment-submission.index')"
         >
           {{ __("My Applications") }}
+        </jet-dropdown-link>
+
+        <jet-dropdown-link :href="route('linked-player.list')">
+          {{ __("Linked Players") }}
         </jet-dropdown-link>
 
         <jet-dropdown-link
