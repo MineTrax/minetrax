@@ -72,9 +72,9 @@ class Kernel extends HttpKernel
         'redirect-uncompleted-user' => \App\Http\Middleware\RedirectUncompletedUser::class,
         'verified-if-enabled' => \App\Http\Middleware\EnsureEmailIsVerifiedWhenFeatureEnabled::class,
 
-        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         'staff-member' => \App\Http\Middleware\StaffMember::class,
 
         'auth.api-key' => \App\Http\Middleware\AuthenticateApiKey::class,

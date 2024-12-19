@@ -98,6 +98,9 @@
                   </inertia-link>
                 </p>
               </div>
+              <div class="text-xs font-bold mt-2 text-red-500 dark:text-red-400">
+                {{ __("CAUTION: DO NOT SHARE THIS OTP WITH ANYONE!") }}
+              </div>
             </div>
           </div>
         </div>

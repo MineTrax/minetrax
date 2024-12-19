@@ -24,7 +24,7 @@
         "intervention/image-laravel": "^1.3",
         "laravel-notification-channels/discord": "^1.6",
         "laravel/framework": "^11.0",
-        "laravel/jetstream": "^5.0",
+        "laravel/jetstream": "^5.3",
         "laravel/pulse": "^1.0@beta",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.5",
@@ -51,7 +51,7 @@
         "symfony/http-client": "^7.0",
         "symfony/yaml": "^7.0",
         "tanmuhittin/laravel-google-translate": "^2.3",
-        "tightenco/ziggy": "^1.0",
+        "tightenco/ziggy": "^2.0",
         "torann/geoip": "^3.0",
         "xpaw/php-minecraft-query": "^5.0",
         "xpaw/php-source-query-class": "^4.0"
@@ -94,7 +94,8 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ]
+        ],
+        "dev": "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names='server,queue,vite'"
     },
     "extra": {
         "laravel": {

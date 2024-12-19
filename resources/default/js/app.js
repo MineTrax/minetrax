@@ -6,7 +6,7 @@ import { plugin as formKitPlugin, defaultConfig as formKitDefaultConfig } from '
 import formKitConfig from '/formkit.config.js';
 import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ZiggyVue } from '../../../vendor/tightenco/ziggy/dist/vue.m';
+import { ZiggyVue } from '../../../vendor/tightenco/ziggy';
 
 import VueTippy from 'vue-tippy';
 import translations from '@/Mixins/translations.js';
@@ -27,7 +27,7 @@ createInertiaApp({
         const VueApp = createApp({ render: () => h(App, props) })
             .use(plugin)
             // eslint-disable-next-line no-undef
-            .use(ZiggyVue, Ziggy)
+            .use(ZiggyVue)
             .use(formKitPlugin, formKitDefaultConfig(formKitConfig));
 
         VueApp.use(VueTippy, {
