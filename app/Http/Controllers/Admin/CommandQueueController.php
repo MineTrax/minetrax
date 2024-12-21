@@ -48,7 +48,7 @@ class CommandQueueController extends Controller
         ];
 
         $commandQueues = QueryBuilder::for(CommandQueue::class)
-            ->with(['server:id,name,hostname', 'player:id,uuid,username'])
+            ->with(['server:id,name,hostname', 'player:id,uuid,username,skin_texture_id', 'user:id,name,username,profile_photo_path'])
             ->allowedFilters([
                 ...$fields,
                 'server.name',
@@ -60,6 +60,9 @@ class CommandQueueController extends Controller
                     'output',
                     'tag',
                     'player_uuid',
+                    'player.username',
+                    'user.username',
+                    'user.name',
                 ])),
             ])
             ->allowedSorts($fields)

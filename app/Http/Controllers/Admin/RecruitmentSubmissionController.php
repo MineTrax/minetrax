@@ -73,7 +73,17 @@ class RecruitmentSubmissionController extends Controller
                 'user.name',
                 'lastActor.name',
                 'lastCommentor.name',
-                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'data', 'status'])),
+                AllowedFilter::custom('q', new FilterMultipleFields([
+                    'id',
+                    'data',
+                    'status',
+                    'user.name',
+                    'user.username',
+                    'lastActor.name',
+                    'lastActor.username',
+                    'lastCommentor.name',
+                    'lastCommentor.username',
+                ])),
             ])
             ->allowedSorts($fields)
             ->defaultSort('-updated_at')
@@ -142,7 +152,17 @@ class RecruitmentSubmissionController extends Controller
                 'user.name',
                 'lastActor.name',
                 'lastCommentor.name',
-                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'data', 'status'])),
+                AllowedFilter::custom('q', new FilterMultipleFields([
+                    'id',
+                    'data',
+                    'status',
+                    'user.name',
+                    'user.username',
+                    'lastActor.name',
+                    'lastActor.username',
+                    'lastCommentor.name',
+                    'lastCommentor.username',
+                ])),
             ])
             ->allowedSorts($fields)
             ->defaultSort('-updated_at')
@@ -167,17 +187,17 @@ class RecruitmentSubmissionController extends Controller
             'lastActor:id,name,username',
         ]);
         $submission['i_can_act'] = $request->user()->can('actOn', $submission)
-                                            && in_array($submission->status, [
-                                                RecruitmentSubmissionStatus::PENDING,
-                                                RecruitmentSubmissionStatus::INPROGRESS,
-                                                RecruitmentSubmissionStatus::ONHOLD,
-                                            ]);
+            && in_array($submission->status, [
+                RecruitmentSubmissionStatus::PENDING,
+                RecruitmentSubmissionStatus::INPROGRESS,
+                RecruitmentSubmissionStatus::ONHOLD,
+            ]);
         $submission['i_can_delete'] = $request->user()->can('delete', $submission)
-                                            && in_array($submission->status, [
-                                                RecruitmentSubmissionStatus::APPROVED,
-                                                RecruitmentSubmissionStatus::REJECTED,
-                                                RecruitmentSubmissionStatus::WITHDRAWN,
-                                            ]);
+            && in_array($submission->status, [
+                RecruitmentSubmissionStatus::APPROVED,
+                RecruitmentSubmissionStatus::REJECTED,
+                RecruitmentSubmissionStatus::WITHDRAWN,
+            ]);
         $submission['i_can_send_message'] = in_array($submission->status, [
             RecruitmentSubmissionStatus::PENDING,
             RecruitmentSubmissionStatus::INPROGRESS,
@@ -204,7 +224,7 @@ class RecruitmentSubmissionController extends Controller
         $this->authorize('actOn', $submission);
 
         $request->validate([
-            'action' => 'required|in:'.implode(',', [
+            'action' => 'required|in:' . implode(',', [
                 RecruitmentSubmissionStatus::INPROGRESS,
                 RecruitmentSubmissionStatus::ONHOLD,
                 RecruitmentSubmissionStatus::APPROVED,
@@ -251,7 +271,7 @@ class RecruitmentSubmissionController extends Controller
     {
         $request->validate([
             'message' => 'required|max:2000',
-            'type' => ['required', 'in:'.implode(',', [CommentType::RECRUITMENT_STAFF_WHISPER, CommentType::RECRUITMENT_STAFF_MESSAGE])],
+            'type' => ['required', 'in:' . implode(',', [CommentType::RECRUITMENT_STAFF_WHISPER, CommentType::RECRUITMENT_STAFF_MESSAGE])],
         ]);
 
         $comment = $submission->comment($request->message, $request->type);

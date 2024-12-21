@@ -67,6 +67,7 @@ class BanWardenController extends Controller
                     'creator_username',
                     'remover_username',
                     'remover_uuid',
+                    'victimPlayer.username',
                 ])),
             ])
             ->allowedSorts($fields)
