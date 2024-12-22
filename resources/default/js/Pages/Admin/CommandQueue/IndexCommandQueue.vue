@@ -285,8 +285,11 @@ const showDetails = (commandQueue) => {
                         <p class="font-semibold text-gray-500">
                             {{ __("Command ID") }}
                         </p>
-                        <p class="">
+                        <p v-if="selectedCommandQueue.command_id">
                             {{ selectedCommandQueue.command_id }}
+                        </p>
+                        <p v-else class="italic text-gray-500">
+                            {{ __("none") }}
                         </p>
                     </div>
                     <div>

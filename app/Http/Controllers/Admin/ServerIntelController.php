@@ -41,6 +41,11 @@ class ServerIntelController extends Controller
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
+        if ($selectedServers) {
+            $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->pluck('id');
+        } else {
+            $selectedServers = Server::where('type', '!=', ServerType::Bungee())->pluck('id');
+        }
 
         /**
          * Start: LAST 7 DAYS STATS
