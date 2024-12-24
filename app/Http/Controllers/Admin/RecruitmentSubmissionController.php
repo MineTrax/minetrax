@@ -66,7 +66,7 @@ class RecruitmentSubmissionController extends Controller
                 $query->whereIn('recruitment_id', $selectedRecruitments);
             })
             ->whereIn('recruitment_id', $recruitments->keys())
-            ->with(['user:id,name,username', 'recruitment', 'lastActor:id,username,name,profile_photo_path,verified_at,settings', 'lastCommentor:id,username,name,profile_photo_path,verified_at,settings'])
+            ->with(['user:id,name,username,profile_photo_path,verified_at,muted_at', 'recruitment', 'lastActor:id,username,name,profile_photo_path,verified_at,settings', 'lastCommentor:id,username,name,profile_photo_path,verified_at,settings'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
@@ -145,7 +145,7 @@ class RecruitmentSubmissionController extends Controller
                 $query->whereIn('recruitment_id', $selectedRecruitments);
             })
             ->whereIn('recruitment_id', $recruitments->keys())
-            ->with(['user:id,name,username', 'recruitment', 'lastActor:id,name,username', 'lastCommentor:id,name,username'])
+            ->with(['user:id,name,username,profile_photo_path,verified_at,muted_at', 'recruitment', 'lastActor:id,name,username,profile_photo_path,verified_at,muted_at', 'lastCommentor:id,name,username,profile_photo_path,verified_at,muted_at'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
@@ -182,7 +182,7 @@ class RecruitmentSubmissionController extends Controller
         $this->authorize('view', $submission);
 
         $submission->load([
-            'user:id,name,username',
+            'user:id,name,username,profile_photo_path,verified_at,muted_at',
             'recruitment',
             'lastActor:id,name,username',
         ]);
