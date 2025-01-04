@@ -223,27 +223,27 @@ watch(selectedForms, (newSelectedForms) => {
                     ]"
                   >
                     {{ item.user.name }}
-                          <Icon
-      v-if="item.user.verified_at"
-      v-tippy
-      name="verified-check-fill"
-      :title="__('Verified Account')"
-      class="inline mb-1 fill-current focus:outline-none text-light-blue-400 w-5 h-5"
-    />
-    <Icon
-      v-if="item.user.is_staff"
-      v-tippy
-      name="shield-check-fill"
-      :title="__('Staff Member')"
-      class="inline mb-1 text-amber-400 fill-current focus:outline-none w-5 h-5"
-    />
-    <Icon
-      v-if="item.user.muted_at"
-      v-tippy
-      name="volume-off-fill"
-      :title="__('Muted User')"
-      class="inline mb-1 text-red-500 fill-current focus:outline-none w-5 h-5"
-    />
+                        <Icon
+                        v-if="item.user.verified_at"
+                        v-tippy
+                        name="verified-check-fill"
+                        :title="__('Verified Account')"
+                        class="inline mb-1 fill-current focus:outline-none text-light-blue-400 w-5 h-5"
+                        />
+                        <Icon
+                        v-if="item.user.is_staff"
+                        v-tippy
+                        name="shield-check-fill"
+                        :title="__('Staff Member')"
+                        class="inline mb-1 text-amber-400 fill-current focus:outline-none w-5 h-5"
+                        />
+                        <Icon
+                        v-if="item.user.muted_at"
+                        v-tippy
+                        name="volume-off-fill"
+                        :title="__('Muted User')"
+                        class="inline mb-1 text-red-500 fill-current focus:outline-none w-5 h-5"
+                        />
                   </div>
                   <div class="text-sm text-gray-500">
                     @{{ item.user.username }}
