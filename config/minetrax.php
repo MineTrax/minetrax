@@ -300,6 +300,7 @@ return [
     | Change accordingly in .env to use hostname or ip as per requirement.
     */
     'ping_proxy_server_using_ip_address' => env('PING_PROXY_SERVER_USING_IP_ADDRESS', false),
+    'ping_non_proxy_server_using_ip_address' => env('PING_NON_PROXY_SERVER_USING_IP_ADDRESS', true),
     'query_proxy_server_using_ip_address' => env('QUERY_PROXY_SERVER_USING_IP_ADDRESS', true),
 
     /*

@@ -20,12 +20,14 @@ class ServerController extends Controller
             return json_decode($hasCache, true);
         }
 
-        // Decide what address to use to ping the server.
+        // Decide what address to use to ping the server
         $pingProxyServerUsingIPAddress = config('minetrax.ping_proxy_server_using_ip_address');
-        if ($pingProxyServerUsingIPAddress && $server->type->value == ServerType::Bungee) {
-            $pingAddress = $server->ip_address;
+        $pingNonProxyServerUsingIPAddress = config('minetrax.ping_non_proxy_server_using_ip_address');
+        $isBungeeServer = $server->type->value === ServerType::Bungee;
+        if ($isBungeeServer) {
+            $pingAddress = $pingProxyServerUsingIPAddress ? $server->ip_address : $server->hostname;
         } else {
-            $pingAddress = $server->type->value == ServerType::Bungee ? $server->hostname : $server->ip_address;
+            $pingAddress = $pingNonProxyServerUsingIPAddress ? $server->ip_address : $server->hostname;
         }
         // Get Ping Info of the server using MinecraftPingService
         $pingData = $pingService->pingServer($pingAddress, $server->join_port);
