@@ -227,7 +227,8 @@ class ApiBanWardenController extends ApiController
 
             // AI Insights
             $insightEnabled = config('minetrax.banwarden.ai_insights_enabled');
-            if ($insightEnabled && !$punishment->insights) {
+            $insightTypes = config('minetrax.banwarden.ai_insights_types');
+            if ($insightEnabled && !$punishment->insights && in_array($punishment->type->value, $insightTypes)) {
                 GeneratePunishmentInsightsJob::dispatch($punishment);
             }
 

@@ -295,6 +295,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | By default the PING uses hostname when server is bungee.
+    | By default the PING uses ip address when server is not bungee.
     | By default the QUERY uses ip address when server is bungee.
     |
     | Change accordingly in .env to use hostname or ip as per requirement.
@@ -427,6 +428,13 @@ return [
         |--------------------------------------------------------------------------
         */
         'ai_insights_enabled' => env('BANWARDEN_AI_INSIGHTS_ENABLED', true) && env('AI_ENABLED', false),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Comma separated list of punishment types to analyze with AI (ban,mute,kick,warn)
+        |--------------------------------------------------------------------------
+        */
+        'ai_insights_types' => explode(',', env('BANWARDEN_AI_INSIGHTS_TYPES', 'ban,mute,kick,warn')),
 
         /*
         |--------------------------------------------------------------------------

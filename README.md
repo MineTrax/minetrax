@@ -17,10 +17,10 @@ MineTrax is a web suite & analytics tool for your minecraft servers. Using it yo
 ![Alt](https://repobeats.axiom.co/api/embed/0aac0565a812462007f7d4b1612c47b546e09a48.svg "Repobeats analytics image")
 
 ## Requirements
-- PHP 8.1+
-- MySQL 5.7+ or MariaDB 10.2.7+
+- PHP 8.3+
+- MySQL 8.0+ or MariaDB 10.3+
 - Apache2 or Nginx
-- NodeJS 12+
+- NodeJS 16+
 - Redis Server
 - Git
 - Composer

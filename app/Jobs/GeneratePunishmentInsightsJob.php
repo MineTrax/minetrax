@@ -50,42 +50,52 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
             ->makeVisible('ip_address')
             ->loadMissing([
                 'country:id,name,iso_code',
-                'victimPlayer:id,uuid,username,skin_texture_id',
-                'creatorPlayer:id,uuid,username,skin_texture_id',
-                'removerPlayer:id,uuid,username,skin_texture_id',
+                'victimPlayer:id,uuid,username',
+                'creatorPlayer:id,uuid,username',
+                'removerPlayer:id,uuid,username',
             ]);
 
         // Details
+        $this->punishment->victimPlayer->makeHidden([
+            'skin_texture_id',
+            'avatar_url',
+        ]);
         $punishmentJsonString = json_encode($this->punishment);
 
         // Last Punishments
         if ($this->punishment->uuid) {
             $lastPunishments = PlayerPunishment::with([
                 'country:id,name,iso_code',
-                'victimPlayer:id,uuid,username,skin_texture_id',
-                'creatorPlayer:id,uuid,username,skin_texture_id',
-                'removerPlayer:id,uuid,username,skin_texture_id',
+                'victimPlayer:id,uuid,username',
+                'creatorPlayer:id,uuid,username',
+                'removerPlayer:id,uuid,username',
             ])
                 ->where('uuid', $this->punishment->uuid)
                 ->where('id', '!=', $this->punishment->id)
                 ->orderByDesc('start_at')
-                ->limit(10)
+                ->limit(5)
                 ->get()
                 ->makeVisible('ip_address');
         } else {
             $lastPunishments = PlayerPunishment::with([
                 'country:id,name,iso_code',
-                'victimPlayer:id,uuid,username,skin_texture_id',
-                'creatorPlayer:id,uuid,username,skin_texture_id',
-                'removerPlayer:id,uuid,username,skin_texture_id',
+                'victimPlayer:id,uuid,username',
+                'creatorPlayer:id,uuid,username',
+                'removerPlayer:id,uuid,username',
             ])
                 ->where('ip_address', 'LIKE', $this->punishment->ip_address)
                 ->where('id', '!=', $this->punishment->id)
                 ->orderByDesc('start_at')
-                ->limit(10)
+                ->limit(5)
                 ->get()
                 ->makeVisible('ip_address');
         }
+        $lastPunishments->each(function ($punishment) {
+            $punishment->country?->makeHidden(['photo_path']);
+            $punishment->victimPlayer?->makeHidden(['skin_texture_id', 'avatar_url']);
+            $punishment->creatorPlayer?->makeHidden(['skin_texture_id', 'avatar_url']);
+            $punishment->removerPlayer?->makeHidden(['skin_texture_id', 'avatar_url']);
+        });
         $lastPunishmentsJsonString = json_encode($lastPunishments);
 
         // Last Sessions
@@ -94,7 +104,7 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
                 ->where('player_uuid', $this->punishment->uuid)
                 ->where('session_started_at', '<=', $this->punishment->start_at)
                 ->orderByDesc('session_started_at')
-                ->limit(10)
+                ->limit(5)
                 ->get()
                 ->makeVisible('player_ip_address');
         } else {
@@ -102,10 +112,14 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
                 ->where('player_ip_address', 'LIKE', $this->punishment->ip_address)
                 ->where('session_started_at', '<=', $this->punishment->start_at)
                 ->orderByDesc('session_started_at')
-                ->limit(10)
+                ->limit(5)
                 ->get()
                 ->makeVisible('player_ip_address');
         }
+        $pastSessions->each(function ($session) {
+            $session->country?->makeHidden(['photo_path']);
+            $session->makeHidden('avatar_url');
+        });
         $lastSessionsJsonString = json_encode($pastSessions);
 
         // Possible Alts
@@ -118,15 +132,19 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
                 ->where('player_uuid', '!=', $this->punishment->uuid)
                 ->where('player_ip_address', 'LIKE', $firstTwoOctets)
                 ->pluck('player_uuid');
-            $altPlayers = Player::select(['id', 'uuid', 'username', 'skin_texture_id', 'first_seen_at', 'last_seen_at', 'country_id', 'ip_address', 'play_time'])
+            $altPlayers = Player::select(['id', 'uuid', 'username', 'first_seen_at', 'last_seen_at', 'country_id', 'ip_address', 'play_time'])
                 ->whereIn('uuid', $altUuids)
                 ->with('country:id,name,iso_code')
                 ->withCount('punishments')
                 ->orderByDesc('last_seen_at')
-                ->limit(10)
+                ->limit(5)
                 ->get()
                 ->makeVisible('ip_address');
         }
+        $altPlayers->each(function ($player) {
+            $player->country?->makeHidden(['photo_path']);
+            $player->makeHidden('avatar_url');
+        });
         $possibleAltsJsonString = json_encode($altPlayers);
 
         $systemPrompt = view('gptprompts.punishment-insights', [
@@ -136,10 +154,10 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         Punishment Details:
         $punishmentJsonString
 
-        Last 10 Punishments:
+        Last 5 Punishments:
         $lastPunishmentsJsonString
 
-        Last 10 Sessions (before this punishment):
+        Last 5 Sessions (before this punishment):
         $lastSessionsJsonString
 
         Possible Alts (players with similar ip address):

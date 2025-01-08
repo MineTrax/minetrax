@@ -118,7 +118,8 @@ class BanWardenController extends Controller
 
         // Generate insights if enabled and not already generated
         $insightEnabled = config('minetrax.banwarden.ai_insights_enabled');
-        if ($insightEnabled && !$playerPunishment->insights) {
+        $insightTypes = config('minetrax.banwarden.ai_insights_types');
+        if ($insightEnabled && !$playerPunishment->insights && in_array($playerPunishment->type->value, $insightTypes)) {
             GeneratePunishmentInsightsJob::dispatch($playerPunishment);
         }
 

@@ -7,6 +7,7 @@ use EchoLabs\Prism\Enums\Provider;
 use EchoLabs\Prism\Text\Generator;
 use EchoLabs\Prism\Text\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class AiService
 {
@@ -56,6 +57,8 @@ class AiService
             ->usingTemperature($temperature)
             ->usingProviderConfig($providerConfig)
             ->generate();
+
+        Log::info("[SimplePrompt] Prompt Tokens: {$response->usage->promptTokens} Completion Tokens: {$response->usage->completionTokens}");
 
         return $response->text;
     }
