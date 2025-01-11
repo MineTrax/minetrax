@@ -198,12 +198,12 @@ return [
      */
     'notifications' => [
         'notifications' => [
-            \Spatie\Backup\Notifications\Notifications\BackupHasFailedNotification::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\UnhealthyBackupWasFoundNotification::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\CleanupHasFailedNotification::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\BackupWasSuccessfulNotification::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\HealthyBackupWasFoundNotification::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\CleanupWasSuccessfulNotification::class => ['mail'],
+            \Spatie\Backup\Notifications\Notifications\BackupHasFailedNotification::class => env('BACKUP_NOTIFICATION_EMAIL') ? ['mail'] : [],
+            \Spatie\Backup\Notifications\Notifications\UnhealthyBackupWasFoundNotification::class => env('BACKUP_NOTIFICATION_EMAIL') ? ['mail'] : [],
+            \Spatie\Backup\Notifications\Notifications\CleanupHasFailedNotification::class => env('BACKUP_NOTIFICATION_EMAIL') ? ['mail'] : [],
+            \Spatie\Backup\Notifications\Notifications\BackupWasSuccessfulNotification::class => env("BACKUP_NOTIFICATION_EMAIL") ? ['mail'] : [],
+            \Spatie\Backup\Notifications\Notifications\HealthyBackupWasFoundNotification::class => env("BACKUP_NOTIFICATION_EMAIL") ? ['mail'] : [],
+            \Spatie\Backup\Notifications\Notifications\CleanupWasSuccessfulNotification::class => env("BACKUP_NOTIFICATION_EMAIL") ? ['mail'] : [],
         ],
 
         /*
