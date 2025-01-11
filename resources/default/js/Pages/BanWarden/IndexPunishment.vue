@@ -121,7 +121,7 @@ const headerRow = [
   <AppLayout>
     <AppHead :title="__('Punishments')" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
+    <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
       <div class="grid-cols-5 gap-4 mb-4 hidden md:grid">
         <div class="col-span-full  md:col-span-1">
           <div class="flex flex-row bg-white dark:bg-cool-gray-800 shadow rounded p-4">
@@ -383,7 +383,7 @@ const headerRow = [
               <p
                 v-tippy
                 :title="item.reason"
-                class="truncate w-20"
+                class="truncate w-32"
               >
                 {{ item.reason }}
               </p>
