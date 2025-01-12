@@ -16,7 +16,7 @@ class PardonPlayerPunishmentJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(public PlayerPunishment $playerPunishment, public $reason)
+    public function __construct(public PlayerPunishment $playerPunishment, public $reason, public $admin = null)
     {
         //
     }
@@ -27,11 +27,10 @@ class PardonPlayerPunishmentJob implements ShouldQueue
         // 1. If we have origin_server_id & that server has webquery, use that server.
         // 2. else, send to all servers that have webquery.
         if ($this->playerPunishment->origin_server_id && $this->playerPunishment->originServer?->webquery_port) {
-            $server = [$this->playerPunishment->originServer];
+            $servers = [$this->playerPunishment->originServer];
         } else {
             $servers = Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->get();
         }
-
 
         foreach ($servers as $server) {
             $this->pardonPlayerPunishment($server);
@@ -44,9 +43,10 @@ class PardonPlayerPunishmentJob implements ShouldQueue
 
         $victim = $this->playerPunishment->uuid ?? $this->playerPunishment->ip_address;
         $webQuery->banwardenPardon(
-            $this->playerPunishment->type->value,
+            $this->playerPunishment->type,
             $victim,
             $this->reason,
+            $this->admin,
         );
     }
 }

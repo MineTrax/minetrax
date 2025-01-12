@@ -373,6 +373,12 @@ const headerRow = [
                   alt=""
                 >
                 <span
+                  v-if="item.creator_username && item.creator_username !== 'Console'"
+                  class="text-gray-500 dark:text-gray-400 text-xs font-bold"
+                >{{ item.creator_username }}
+                </span>
+                <span
+                  v-else
                   class="text-gray-500 dark:text-gray-400 text-xs font-bold"
                 >{{ __("CONSOLE") }}
                 </span>

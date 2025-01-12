@@ -56,7 +56,7 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
             ]);
 
         // Details
-        $this->punishment->victimPlayer->makeHidden([
+        $this->punishment->victimPlayer?->makeHidden([
             'skin_texture_id',
             'avatar_url',
         ]);

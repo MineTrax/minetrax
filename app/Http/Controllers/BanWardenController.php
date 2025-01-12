@@ -15,6 +15,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class BanWardenController extends Controller
 {
@@ -326,15 +327,15 @@ class BanWardenController extends Controller
     public function pardon(PlayerPunishment $playerPunishment, Request $request)
     {
         $request->validate([
-            'reason' => 'nullable|string|max:255',
+            'reason' => 'nullable|string|max:100',
         ]);
 
         $this->authorize('delete', $playerPunishment);
 
         try {
-            PardonPlayerPunishmentJob::dispatchSync($playerPunishment, $request->input('reason'));
+            PardonPlayerPunishmentJob::dispatchSync($playerPunishment, $request->input('reason'), $request->user()->username);
         } catch (\Exception $e) {
-            \Log::error($e);
+            Log::error($e);
             return redirect()->back()
                 ->with(['toast' => ['type' => 'error', 'title' => __('Pardon Failed'), 'body' => 'Failed to execute pardon job to due webquery issue.']]);
         }

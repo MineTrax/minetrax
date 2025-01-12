@@ -66,7 +66,7 @@ class CommandQueueController extends Controller
                 ])),
             ])
             ->allowedSorts($fields)
-            ->defaultSort('-updated_at')
+            ->defaultSort('-created_at')
             ->simplePaginate($perPage)
             ->through(function ($commandQueue) {
                 if ($commandQueue->tag === 'player_password_reset') {

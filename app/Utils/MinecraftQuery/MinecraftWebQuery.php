@@ -14,12 +14,13 @@ class MinecraftWebQuery
     {
     }
 
-    public function banwardenPardon(PlayerPunishmentType $type, string $victim, string $reason = null)
+    public function banwardenPardon(PlayerPunishmentType $type, string $victim, string $reason = null, string $admin = null)
     {
         $payload = [
-            'type' => $type->value,
+            'punishment_type' => $type->value,
             'victim' => $victim,
             'reason' => $reason,
+            'admin' => $admin,
         ];
         $status = $this->sendQuery('banwarden-pardon', $payload);
 
@@ -150,6 +151,11 @@ class MinecraftWebQuery
 
     public function makePayload($type, array $data = [])
     {
+        // In data, make sure type and timestamp are not present as they are reserved throw exception if they are.
+        if (array_key_exists('type', $data) || array_key_exists('timestamp', $data)) {
+            throw new \Exception('type and timestamp are reserved keys and cannot be used in data.');
+        }
+
         // Get the API Key and Secret from the plugin settings.
         $pluginSettings = app(PluginSettings::class);
         $apiKey = $pluginSettings->plugin_api_key;
