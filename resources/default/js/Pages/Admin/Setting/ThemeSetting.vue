@@ -829,9 +829,10 @@ export default {
             this.form.post(route('admin.setting.theme.update'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.replace(route('admin.setting.theme.show'), {
+                    this.$inertia.get(route('admin.setting.theme.show'), {
                         preserveState: false,
                         preserveScroll: true,
+                        replace: true,
                     });
                 }
             });
