@@ -72,7 +72,7 @@ class BanWardenController extends Controller
                 ])),
             ])
             ->allowedSorts($fields)
-            ->defaultSort('-id')
+            ->defaultSort('-start_at')
             ->simplePaginate(perPage: $perPage)
             ->through(fn($punishment) => $punishment->makeVisibleIf($canViewCritical, [
                 'ip_address',
