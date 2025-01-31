@@ -14,6 +14,7 @@ return [
             'url' => env('OPENAI_URL', 'https://api.openai.com/v1'),
             'api_key' => env('OPENAI_API_KEY', ''),
             'organization' => env('OPENAI_ORGANIZATION', null),
+            'project' => env('OPENAI_PROJECT', null),
         ],
         'anthropic' => [
             'api_key' => env('ANTHROPIC_API_KEY', ''),
@@ -33,6 +34,13 @@ return [
         'xai' => [
             'api_key' => env('XAI_API_KEY', ''),
             'url' => env('XAI_URL', 'https://api.x.ai/v1'),
+        ],
+        'gemini' => [
+            'api_key' => env('GEMINI_API_KEY', ''),
+            'url' => env('GEMINI_URL', 'https://generativelanguage.googleapis.com/v1beta/models'),
+        ],
+        'deepseek' => [
+            'api_key' => env('DEEPSEEK_API_KEY', ''),
         ],
     ],
 
