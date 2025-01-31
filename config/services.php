@@ -82,5 +82,6 @@ return [
 
         // bot
         'token' => env('DISCORD_BOT_TOKEN'),
+        'force_join_server' => env('DISCORD_FORCE_JOIN_SERVER'),
     ],
 ];

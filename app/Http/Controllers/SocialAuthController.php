@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\SocialAccount;
 use App\Models\User;
 use App\Services\GeolocationService;
+use App\Settings\GeneralSettings;
 use App\Utils\Helpers\Helper;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ use Laravel\Socialite\Facades\Socialite;
 use NotificationChannels\Discord\Discord;
 use Log;
 use Route;
+use GuzzleHttp\Client;
 
 class SocialAuthController extends Controller
 {
@@ -25,19 +27,29 @@ class SocialAuthController extends Controller
 
     public function redirect($provider, Request $request)
     {
+        $forceJoinDiscordServer = config('services.discord.force_join_server');
+
         if ($provider === 'twitter') {
             $provider = 'twitter-oauth-2';
         }
+
         if ($request->wantsJson()) {
-            $redirectUrl = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
+            $socialiteDriver = Socialite::driver($provider)->stateless();
+            if ($provider === 'discord' && $forceJoinDiscordServer) {
+                $socialiteDriver->scopes(['guilds.join']);
+            }
+            $redirectUrl = $socialiteDriver->redirect()->getTargetUrl();
 
             return response()->json([
                 'redirect_url' => $redirectUrl,
             ]);
         }
 
-        return Socialite::driver($provider)
-            ->redirect();
+        $socialiteDriver = Socialite::driver($provider);
+        if ($provider === 'discord' && $forceJoinDiscordServer) {
+            $socialiteDriver->scopes(['guilds.join']);
+        }
+        return $socialiteDriver->redirect();
     }
 
     public function handleCallback($provider, Request $request)
@@ -160,6 +172,11 @@ class SocialAuthController extends Controller
                 $this->updateDiscordPrivateChannel($user, $socialUser);
             }
 
+            // If OAuth was discord, then handle if we should try joining discord server.
+            if ($provider === 'discord') {
+                $this->forceJoinDiscordServer($socialUser);
+            }
+
             // Authenticate and return.
             if ($request->wantsJson()) {
                 // Generate token
@@ -194,6 +211,36 @@ class SocialAuthController extends Controller
 
             return redirect()->route('login')
                 ->with(['toast' => ['type' => 'danger', 'title' => __('Unable to fetch user details from :provider', ['provider' => ucfirst($provider)]), 'milliseconds' => 7000]]);
+        }
+    }
+
+    private function forceJoinDiscordServer($socialUser)
+    {
+        $serverID = app(GeneralSettings::class)->discord_server_id;
+        $botToken = config('services.discord.token');
+        $forceJoinServer = config('services.discord.force_join_server');
+
+        if (!$serverID || !$botToken || !$forceJoinServer) {
+            return;
+        }
+
+        try {
+            $client = new Client();
+            $response = $client->put("https://discord.com/api/v10/guilds/{$serverID}/members/{$socialUser->getId()}", [
+                'headers' => [
+                    'Authorization' => 'Bot ' . $botToken,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'access_token' => $socialUser->token,
+                ],
+            ]);
+
+            if ($response->getStatusCode() === 201) {
+                Log::info("User {$socialUser->getId()} joined Discord server {$serverID}");
+            }
+        } catch (\Exception $e) {
+            Log::error("Failed to add user to Discord server: " . $e->getMessage());
         }
     }
 
