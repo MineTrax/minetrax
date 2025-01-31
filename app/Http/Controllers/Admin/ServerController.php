@@ -12,6 +12,7 @@ use App\Jobs\DeleteServerJob;
 use App\Models\MinecraftPlayer;
 use App\Models\Server;
 use App\Queries\Filters\FilterMultipleFields;
+use App\Rules\IpOrFqdn;
 use App\Services\GeolocationService;
 use App\Settings\PluginSettings;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
@@ -146,7 +147,7 @@ class ServerController extends Controller
 
         $request->validate([
             'hostname' => 'required',
-            'ip_address' => 'required|ip',
+            'ip_address' => ['required', new IpOrFqdn],
             'join_port' => 'required|numeric|min:0|max:65535',
             'query_port' => 'required|numeric|min:0|max:65535',
             'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled|different:join_port',
@@ -160,7 +161,7 @@ class ServerController extends Controller
             'order' => 'nullable|numeric',
         ]);
 
-        $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
+        $countryId = $geolocationService->getCountryIdFromIP(gethostbyname($request->ip_address));
 
         $server = Server::create([
             'ip_address' => $request->ip_address,
@@ -276,7 +277,7 @@ class ServerController extends Controller
 
         $request->validate([
             'hostname' => 'required',
-            'ip_address' => 'required|ip',
+            'ip_address' => ['required', new IpOrFqdn],
             'join_port' => 'required|numeric|min:0|max:65535',
             'query_port' => 'required|numeric|min:0|max:65535',
             'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled|different:join_port',
@@ -290,7 +291,7 @@ class ServerController extends Controller
             'order' => 'nullable|numeric',
         ]);
 
-        $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
+        $countryId = $geolocationService->getCountryIdFromIP(gethostbyname($request->ip_address));
 
         $server->name = $request->name;
         $server->join_port = $request->join_port;
@@ -319,7 +320,7 @@ class ServerController extends Controller
     {
         $this->authorize('update', $server);
 
-        $countryId = $geolocationService->getCountryIdFromIP($request->ip_address);
+        $countryId = $geolocationService->getCountryIdFromIP(gethostbyname($request->ip_address));
 
         $server->ip_address = $request->ip_address;
         $server->join_port = $request->join_port;
