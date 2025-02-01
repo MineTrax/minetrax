@@ -176,7 +176,13 @@ const headerRow = [
           <td
             class="px-4 py-3 space-x-1 text-sm font-medium"
           >
-            <template v-if="item.permissions.length > 0">
+            <span
+              v-if="item.name === 'superadmin'"
+              class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full dark:bg-opacity-10 dark:text-green-400"
+            >{{ __("All Permissions") }}
+            </span>
+
+            <template v-else-if="item.permissions.length > 0">
               <span
                 v-for="permission in item.permissions"
                 :key="permission.id"
@@ -189,12 +195,6 @@ const headerRow = [
             >{{
               __("No administration permissions for this role.")
             }}</span>
-
-            <span
-              v-if="item.name === 'superadmin'"
-              class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full dark:bg-opacity-10 dark:text-green-400"
-            >{{ __("All Permissions") }}
-            </span>
           </td>
 
           <DtRowItem>
