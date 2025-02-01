@@ -402,7 +402,14 @@ function reloadPageWithTimeout() {
                 {{ __("IP Address") }}
               </p>
               <p class="font-bold">
-                {{ punishment.ip_address || punishment.masked_ip_address || __("None") }}
+                <span v-if="punishment.ip_address || punishment.masked_ip_address">
+                  <a
+                    class="hover:underline"
+                    target="_blank"
+                    :href="`https://check-host.net/ip-info?host=${punishment.ip_address || punishment.masked_ip_address}`"
+                  >{{ punishment.ip_address || punishment.masked_ip_address }}</a>
+                </span>
+                <span v-else>{{ __("None") }}</span>
               </p>
             </div>
             <div>
@@ -970,7 +977,11 @@ function reloadPageWithTimeout() {
                   class="text-center"
                 >
                   <span v-if="item.ip_address || item.masked_ip_address">
-                    {{ item.ip_address || item.masked_ip_address }}
+                    <a
+                      class="hover:underline"
+                      target="_blank"
+                      :href="`https://check-host.net/ip-info?host=${item.ip_address || item.masked_ip_address}`"
+                    >{{ item.ip_address || item.masked_ip_address }}</a>
                   </span>
                   <span
                     v-else
@@ -1022,7 +1033,14 @@ function reloadPageWithTimeout() {
                       alt=""
                     >
                     <span
-                      class="text-xs font-bold text-gray-500 dark:text-gray-400"
+                      v-if="item.creator_username && item.creator_username !== 'Console'"
+                      class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                    >
+                    {{ item.creator_username }}
+                    </span>
+                    <span
+                      v-else
+                      class="text-sm font-bold text-gray-500 dark:text-gray-400"
                     >{{ __("CONSOLE") }}
                     </span>
                   </div>
@@ -1158,7 +1176,13 @@ function reloadPageWithTimeout() {
                     v-tippy
                     class="whitespace-nowrap"
                   >
-                    {{ item.player_ip_address || '-' }}
+                    <a
+                      v-if="item.player_ip_address"
+                      class="hover:underline"
+                      target="_blank"
+                      :href="`https://check-host.net/ip-info?host=${item.player_ip_address}`"
+                    >{{ item.player_ip_address }}</a>
+                    <span v-else>-</span>
                   </span>
                 </DtRowItem>
 
@@ -1302,7 +1326,13 @@ function reloadPageWithTimeout() {
                     v-tippy
                     class="whitespace-nowrap"
                   >
-                    {{ item.ip_address || '-' }}
+                    <a
+                      v-if="item.ip_address"
+                      class="hover:underline"
+                      target="_blank"
+                      :href="`https://check-host.net/ip-info?host=${item.ip_address}`"
+                    >{{ item.ip_address }}</a>
+                    <span v-else>-</span>
                   </span>
                 </DtRowItem>
 

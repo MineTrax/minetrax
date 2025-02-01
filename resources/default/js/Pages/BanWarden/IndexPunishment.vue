@@ -321,7 +321,12 @@ const headerRow = [
               class="text-center"
             >
               <span v-if="item.ip_address || item.masked_ip_address">
-                {{ item.ip_address || item.masked_ip_address }}
+                <a
+                    class="hover:underline"
+                    target="_blank"
+                    :href="`https://check-host.net/ip-info?host=${item.ip_address || item.masked_ip_address}`"
+                >{{ item.ip_address || item.masked_ip_address }}
+                </a>
               </span>
               <span
                 v-else
