@@ -24,11 +24,7 @@ class PlayerPolicy
             return true;
         }
 
-        if ($showPlayerIntelTo === 'staff') {
-            return $user && $user->isStaffMember();
-        }
-
-        if ($showPlayerIntelTo === 'self') {
+        if ($showPlayerIntelTo === 'staff' || $showPlayerIntelTo === 'self') {
             return $user && $user->isStaffMember();
         }
 
