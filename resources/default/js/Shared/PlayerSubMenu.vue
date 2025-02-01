@@ -15,6 +15,11 @@ defineProps({
         required: false,
         default: false,
     },
+    canChangePlayerPassword: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 });
 
 </script>
@@ -39,6 +44,18 @@ defineProps({
     </div>
 
     <div class="flex space-x-4">
+      <li v-if="canChangePlayerPassword">
+        <Link
+          :href="
+            route('reset-player-password.show', {
+              player_uuid: player.uuid,
+            })
+          "
+          class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
+        >
+          {{ __("Change Password") }}
+        </Link>
+      </li>
       <li v-if="canChangePlayerSkin">
         <Link
           :href="

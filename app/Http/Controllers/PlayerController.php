@@ -7,6 +7,7 @@ use App\Models\Player;
 use App\Models\Rank;
 use App\Models\Server;
 use App\Settings\PlayerSettings;
+use App\Settings\PluginSettings;
 use App\Utils\Helpers\MinecraftSkinUtils;
 use DB;
 use Exception;
@@ -43,7 +44,7 @@ class PlayerController extends Controller
         ]);
     }
 
-    public function show($player, Request $request)
+    public function show($player, Request $request, PluginSettings $pluginSettings)
     {
         $player = Player::where('uuid', $player)->orWhere('username', $player)
             ->with(['rank:id,shortname,name', 'country:id,name,iso_code,flag'])->firstOrFail();
@@ -81,6 +82,10 @@ class PlayerController extends Controller
         // Can change player skin
         $canPlayerChangeSkin = $request->user() && Gate::allows('changeSkin', $player);
         $playerSkinChangerEnabled = config('minetrax.player_skin_changer_enabled');
+
+        // Can change player password
+        $playerPasswordResetEnabled = $pluginSettings->enable_player_password_reset;
+        $canPlayerChangePassword = $playerPasswordResetEnabled && Gate::allows('resetPassword', $player);
 
         // filter out stuffs that are not used
         $player = $player->only([
@@ -125,6 +130,7 @@ class PlayerController extends Controller
             'player' => $player,
             'canShowPlayerIntel' => $canShowPlayerIntel,
             'canChangePlayerSkin' => $playerSkinChangerEnabled && $canPlayerChangeSkin,
+            'canChangePlayerPassword' => $canPlayerChangePassword,
         ]);
     }
 
