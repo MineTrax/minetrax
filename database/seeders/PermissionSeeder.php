@@ -137,15 +137,7 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('create banwarden_punishments_evidence');
         Permission::findOrCreate('delete banwarden_punishments_evidence');
 
+        Permission::findOrCreate('reset any_player_password');     // Ability to change any player password
         Permission::findOrCreate('cannot player_password_reset');  // User with this permission can't change his own password from web. Good for staff members.
-        Permission::findOrCreate('reset any_player_password');    // Ability to change any player password
-
-        // Get superadmin role and give all permissions to it.
-        try {
-            $superAdmin = Role::where('name', Role::SUPER_ADMIN_ROLE_NAME)->first();
-            $superAdmin->givePermissionTo(Permission::all());
-        } catch (\Exception $e) {
-            Log::error("Error giving all permissions to superadmin role: " . $e->getMessage());
-        }
     }
 }

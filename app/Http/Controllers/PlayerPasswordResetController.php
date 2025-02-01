@@ -24,8 +24,9 @@ class PlayerPasswordResetController extends Controller
         $selectedPlayerUuid = $request->query('player_uuid');
 
         $canResetAnyPlayerPassword = $request->user()->can('reset any_player_password');
+        $userOwnPlayer = $linkedPlayers->contains('uuid', $selectedPlayerUuid);
         // If selected player is not in linked player but user has permission to reset any player password, then allow.
-        if ($selectedPlayerUuid && !$linkedPlayers->contains('uuid', $selectedPlayerUuid) && $canResetAnyPlayerPassword) {
+        if ($selectedPlayerUuid && !$userOwnPlayer && $canResetAnyPlayerPassword) {
             $linkedPlayers = Player::where('uuid', $selectedPlayerUuid)->get();
         }
 
@@ -35,11 +36,12 @@ class PlayerPasswordResetController extends Controller
             $cooldown = now()->diffInSeconds($cooldown->addSeconds($pluginSettings->player_password_reset_cooldown_in_seconds), false);
         }
 
+        $hasCannotPlayerPasswordResetPermission = $request->user()->hasPermissionTo('cannot player_password_reset');
         return Inertia::render('Player/ResetPassword', [
             'uuid' => $selectedPlayerUuid,
             'players' => $linkedPlayers,
             'cooldown' => $cooldown,
-            'cannotPlayerPasswordReset' => $request->user()->hasPermissionTo('cannot player_password_reset'),
+            'cannotPlayerPasswordReset' => $hasCannotPlayerPasswordResetPermission && !$canResetAnyPlayerPassword,
         ]);
     }
 
