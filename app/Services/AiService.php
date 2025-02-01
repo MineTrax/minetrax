@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class AiService
 {
-    public Generator $client;
+    public $client;
     private ?Provider $provider;
     private string $model;
     public function __construct()
