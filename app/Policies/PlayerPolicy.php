@@ -28,6 +28,10 @@ class PlayerPolicy
             return $user && $user->isStaffMember();
         }
 
+        if ($showPlayerIntelTo === 'self') {
+            return $user->isStaffMember();
+        }
+
         if ($showPlayerIntelTo === 'login') {
             return (bool) $user;
         }
