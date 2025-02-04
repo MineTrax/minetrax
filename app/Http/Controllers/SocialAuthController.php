@@ -11,13 +11,14 @@ use App\Utils\Helpers\Helper;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
 use Laravel\Fortify\Features;
 use Laravel\Socialite\Facades\Socialite;
 use NotificationChannels\Discord\Discord;
+use GuzzleHttp\Client;
 use Log;
 use Route;
-use GuzzleHttp\Client;
 
 class SocialAuthController extends Controller
 {
@@ -146,6 +147,19 @@ class SocialAuthController extends Controller
                     'last_login_at' => now(),
                     'last_login_ip' => request()->ip(),
                 ];
+
+                // Handle choosing of username.
+                if ($socialUser->getNickname()) {
+                    $username = strtolower($socialUser->getNickname());
+                    $validator = Validator::make(['username' => $username], [
+                        'username' => ['required', 'string', 'max:30', 'alpha_dash', 'unique:users,username'],
+                    ]);
+                    if ($validator->passes()) {
+                        $data['username'] = $username;
+                        $data['user_setup_status'] = 1;
+                    }
+                }
+
                 $user = User::create($data);
                 $user->assignRole(Role::DEFAULT_ROLE_NAME);
                 $socialAccount = $user->socialAccounts()->create([
@@ -165,6 +179,15 @@ class SocialAuthController extends Controller
                     'secret' => $socialUser?->tokenSecret,
                 ]);
                 event(new Registered($user));
+
+                // Download and store avatar for new user
+                if ($socialUser->getAvatar()) {
+                    try {
+                        $user->downloadProfilePhotoFromUrl($socialUser->getAvatar());
+                    } catch (\Exception $e) {
+                        Log::error("Failed to download avatar: " . $e->getMessage());
+                    }
+                }
             }
 
             // If OAuth was discord, then check if user has discord_private_channel_id , if not then create one and update user.
