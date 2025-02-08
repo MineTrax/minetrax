@@ -33,7 +33,7 @@ onMounted(async () => {
                 avoidLabelOverlap: false,
                 itemStyle: {
                     borderRadius: 7,
-                    borderColor: '#fff',
+                    borderColor: window.colorMode === 'dark' ? '#1f2937' : '#fff',
                     borderWidth: 2
                 },
                 label: {

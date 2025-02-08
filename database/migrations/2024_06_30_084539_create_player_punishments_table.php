@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('type');
             $table->string('plugin_punishment_id')->nullable();
             $table->string('plugin_name')->nullable();
-            $table->uuid('uuid')->nullable()->index();
+            $table->char('uuid', 36)->nullable()->index(); // uuid
             $table->string('ip_address')->nullable();
             $table->foreignId('player_id')->nullable()->constrained('players')->nullOnDelete();
             $table->boolean('is_ipban')->default(false);
@@ -33,9 +33,9 @@ return new class extends Migration {
             $table->foreignId('scope_server_id')->nullable()->constrained('servers')->nullOnDelete();
             $table->foreignId('origin_server_id')->nullable()->constrained('servers')->nullOnDelete();
 
-            $table->uuid('creator_uuid')->nullable()->index();
+            $table->char('creator_uuid', 36)->nullable()->index(); // uuid
             $table->string('creator_username')->nullable();
-            $table->uuid('remover_uuid')->nullable()->index();
+            $table->char('remover_uuid', 36)->nullable()->index(); // uuid
             $table->string('remover_username')->nullable();
             $table->string('removed_reason')->nullable();
             $table->timestamp('removed_at')->nullable();

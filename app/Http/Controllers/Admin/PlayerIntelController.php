@@ -9,6 +9,7 @@ use App\Models\MinecraftPlayer;
 use App\Models\Player;
 use App\Models\Server;
 use App\Queries\Filters\FilterMultipleFields;
+use App\Settings\PluginSettings;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -16,7 +17,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class PlayerIntelController extends Controller
 {
-    public function playersList(Request $request)
+    public function playersList(Request $request, PluginSettings $pluginSettings)
     {
         $this->authorize('viewAnyIntel', Player::class);
 
@@ -98,11 +99,21 @@ class PlayerIntelController extends Controller
 
         $countries = Country::select(['id', 'name'])->get()->pluck('name');
 
+        // Password Reset Feature Enabled
+        $passwordResetEnabled = $pluginSettings->enable_player_password_reset;
+        $canResetAnyPlayerPassword = $request->user()->can('reset any_player_password');
+
+        // Skin Change Feature Enabled
+        $skinChangeEnabled = config('minetrax.player_skin_changer_enabled');
+        $canChangeAnyPlayerSkin = $request->user()->can('change any_player_skin');
+
         return Inertia::render('Admin/PlayerIntel/PlayersList', [
             'filters' => request()->all(['servers']),
             'serverList' => $serverList,
             'data' => $data,
             'countries' => $countries,
+            'canResetAnyPlayerPassword' => $canResetAnyPlayerPassword && $passwordResetEnabled,
+            'canChangeAnyPlayerSkin' => $canChangeAnyPlayerSkin && $skinChangeEnabled,
         ]);
     }
 }

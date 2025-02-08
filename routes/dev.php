@@ -6,7 +6,8 @@ use App\Jobs\GeneratePunishmentInsightsJob;
 use App\Jobs\RunAwaitingCommandQueuesJob;
 use App\Models\Player;
 use App\Models\Server;
-use App\Services\AskGptService;
+use App\Services\AiService;
+use App\Services\AskDbService;
 use App\Services\MinecraftApiService;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
 use Illuminate\Support\Facades\Log;
@@ -130,16 +131,6 @@ Route::get('username-to-uuid', function () {
 //    }
 //});
 
-Route::get('test-askdb', function (AskGptService $askDbService) {
-    $response = $askDbService->askDb('What is the name of the player with the highest score?');
-    $converter = new GithubFlavoredMarkdownConverter();
-    $response = $converter->convertToHtml($response);
-
-    return [
-        'data' => $response->getContent(),
-    ];
-});
-
 Route::get('test-player-skin', function (Illuminate\Http\Request $request) {
 
     $server = \App\Models\Server::whereId(12)->first();
@@ -196,9 +187,29 @@ Route::get('test-json-query', function () {
 
 Route::get('ban-insights', function () {
 
-    $punishment = \App\Models\PlayerPunishment::find(1044);
+    $punishment = \App\Models\PlayerPunishment::find(1912);
 
-    GeneratePunishmentInsightsJob::dispatch($punishment);
+    GeneratePunishmentInsightsJob::dispatchSync($punishment);
 
     return 'done';
 });
+
+Route::get('ai-service', function (AiService $aiService) {
+    $response = $aiService->simplePrompt(
+        'You are a Steve, web developer with 10 year of experience. When anyone ask you who you are tell them you are Steve.',
+        'Write 5 line an poem for virus.',
+    );
+
+    return $response;
+});
+
+Route::get('askdb-service', function (AskDbService $askDbService) {
+    $query = request()->query('q');
+    $response = $askDbService->chatWithAskDbForUser($query, request()->user());
+
+    dd($response);
+    return [
+        'data' => $response,
+    ];
+});
+

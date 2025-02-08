@@ -121,7 +121,7 @@ const headerRow = [
   <AppLayout>
     <AppHead :title="__('Punishments')" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
+    <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
       <div class="grid-cols-5 gap-4 mb-4 hidden md:grid">
         <div class="col-span-full  md:col-span-1">
           <div class="flex flex-row bg-white dark:bg-cool-gray-800 shadow rounded p-4">
@@ -321,7 +321,12 @@ const headerRow = [
               class="text-center"
             >
               <span v-if="item.ip_address || item.masked_ip_address">
-                {{ item.ip_address || item.masked_ip_address }}
+                <a
+                    class="hover:underline"
+                    target="_blank"
+                    :href="`https://check-host.net/ip-info?host=${item.ip_address || item.masked_ip_address}`"
+                >{{ item.ip_address || item.masked_ip_address }}
+                </a>
               </span>
               <span
                 v-else
@@ -373,6 +378,12 @@ const headerRow = [
                   alt=""
                 >
                 <span
+                  v-if="item.creator_username && item.creator_username !== 'Console'"
+                  class="text-gray-500 dark:text-gray-400 text-xs font-bold"
+                >{{ item.creator_username }}
+                </span>
+                <span
+                  v-else
                   class="text-gray-500 dark:text-gray-400 text-xs font-bold"
                 >{{ __("CONSOLE") }}
                 </span>
@@ -383,7 +394,7 @@ const headerRow = [
               <p
                 v-tippy
                 :title="item.reason"
-                class="truncate w-20"
+                class="truncate w-32"
               >
                 {{ item.reason }}
               </p>

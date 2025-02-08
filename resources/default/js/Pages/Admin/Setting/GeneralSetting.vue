@@ -216,16 +216,22 @@
                             />
                           </div>
 
-                          <div class="flex items-center col-span-6 sm:col-span-3">
-                            <x-checkbox
-                              id="enable_socialbox"
-                              v-model="form.enable_socialbox"
-                              :label="__('Socials Box')"
-                              :help="__('Enable social box in homepage.')"
-                              name="enable_socialbox"
-                              :error="form.errors.enable_socialbox"
+                          <div
+                            class="col-span-6 sm:col-span-3"
+                          >
+                            <x-input
+                              id="discord_server_id"
+                              v-model="form.discord_server_id"
+                              :label="__('Discord Server ID')"
+                              :error="form.errors.discord_server_id"
+                              autocomplete="discord_server_id"
+                              type="text"
+                              name="discord_server_id"
+                              :help="__('Eg: 453365679416646355')"
+                              help-error-flex="flex-col"
                             />
                           </div>
+
                           <div
                             class="col-span-6 sm:col-span-3"
                           >
@@ -239,6 +245,28 @@
                               name="discord_invite_url"
                               :help="__('Eg: https://discord.gg/Hzfj27k')"
                               help-error-flex="flex-col"
+                            />
+                          </div>
+
+                          <div class="flex items-center col-span-6 sm:col-span-3">
+                            <x-checkbox
+                              id="enable_discordbox"
+                              v-model="form.enable_discordbox"
+                              :label="__('Discord Box')"
+                              :help="__('Enable Discord Server Box')"
+                              name="enable_discordbox"
+                              :error="form.errors.enable_discordbox"
+                            />
+                          </div>
+
+                          <div class="flex items-center col-span-6 sm:col-span-3">
+                            <x-checkbox
+                              id="enable_socialbox"
+                              v-model="form.enable_socialbox"
+                              :label="__('Socials Box')"
+                              :help="__('Enable social box in homepage.')"
+                              name="enable_socialbox"
+                              :error="form.errors.enable_socialbox"
                             />
                           </div>
                           <div
@@ -431,33 +459,6 @@
                               type="text"
                               name="github_url"
                               :help="__('Eg: https://www.github.com/minetrax')"
-                              help-error-flex="flex-col"
-                            />
-                          </div>
-
-                          <div class="flex items-center col-span-6 sm:col-span-3">
-                            <x-checkbox
-                              id="enable_discordbox"
-                              v-model="form.enable_discordbox"
-                              :label="__('Discord Box')"
-                              :help="__('Enable Discord Server Box')"
-                              name="enable_discordbox"
-                              :error="form.errors.enable_discordbox"
-                            />
-                          </div>
-                          <div
-                            v-if="form.enable_discordbox"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <x-input
-                              id="discord_server_id"
-                              v-model="form.discord_server_id"
-                              :label="__('Discord Server ID')"
-                              :error="form.errors.discord_server_id"
-                              autocomplete="discord_server_id"
-                              type="text"
-                              name="discord_server_id"
-                              :help="__('Eg: 453365679416646355')"
                               help-error-flex="flex-col"
                             />
                           </div>

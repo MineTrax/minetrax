@@ -16,7 +16,7 @@ class CreateMinecraftPlayerStatsTable extends Migration
         Schema::create('json_minecraft_player_stats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('server_id')->constrained()->onDelete('cascade');
-            $table->uuid('uuid')->index();
+            $table->char('uuid', 36)->index();
             $table->string('username')->nullable();
             $table->unsignedBigInteger('last_modified')->nullable();    // This can be used as player last seen
             $table->string('hash')->nullable();                 // Used to check if file has changed in server and need to be synced
@@ -79,6 +79,6 @@ class CreateMinecraftPlayerStatsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('minecraft_player_stats');
+        Schema::dropIfExists('json_minecraft_player_stats');
     }
 }

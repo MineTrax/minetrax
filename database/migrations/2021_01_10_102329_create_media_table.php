@@ -12,7 +12,7 @@ class CreateMediaTable extends Migration
             $table->bigIncrements('id');
 
             $table->morphs('model');
-            $table->uuid('uuid')->nullable()->unique();
+            $table->char('uuid', 36)->nullable()->unique();
             $table->string('collection_name');
             $table->string('name');
             $table->string('file_name');
@@ -28,5 +28,10 @@ class CreateMediaTable extends Migration
 
             $table->nullableTimestamps();
         });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('media');
     }
 }

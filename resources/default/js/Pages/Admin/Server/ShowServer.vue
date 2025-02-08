@@ -95,7 +95,7 @@
                   {{ "IP Address" }}
                 </p>
               </div>
-              <p>{{ server.ip_address }}</p>
+              <p>{{ server.masked_ip_address }}</p>
             </div>
             <div class="flex justify-between">
               <div class="flex">

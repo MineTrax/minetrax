@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -93,7 +94,11 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
      * @var array
      */
     protected $appends = [
-        'profile_photo_url', 'dob_string', 'gender_string', 'is_staff', 'cover_image_url',
+        'profile_photo_url',
+        'dob_string',
+        'gender_string',
+        'is_staff',
+        'cover_image_url',
     ];
 
     protected $with = [
@@ -107,7 +112,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     public function sendEmailVerificationNotification()
     {
         // Only send verification email if Feature is enabled.
-        if (Features::enabled(Features::emailVerification()) && ! $this->hasVerifiedEmail()) {
+        if (Features::enabled(Features::emailVerification()) && !$this->hasVerifiedEmail()) {
             $this->notify(new VerifyEmail);
         }
     }
@@ -136,7 +141,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     protected function defaultProfilePhotoUrl()
     {
         if (config('auth.random_user_avatars')) {
-            return 'https://api.dicebear.com/7.x/pixel-art/svg?seed='.urlencode($this->username);
+            return 'https://api.dicebear.com/7.x/pixel-art/svg?seed=' . urlencode($this->username);
         }
 
         return url('/images/default_profile_pic.png');
@@ -150,7 +155,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         return Attribute::get(function () {
             $settings = $this->settings;
             // If settings is not loaded then try loading it.
-            if (! $settings) {
+            if (!$settings) {
                 $settings = $this->refresh()->getOriginal('settings');
             }
 
@@ -159,15 +164,15 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
                     case 'gravatar':
                         $email = $this->email;
                         // Note: This fix is because we don't load email in public places like shoutbox etc
-                        if (! $email) {
+                        if (!$email) {
                             $email = $this->refresh()->getOriginal('email');
                         }
                         $hashedEmail = md5($email);
 
                         return "https://www.gravatar.com/avatar/{$hashedEmail}?size=150&d=mp";
-                        // minecraft head using his first linked player username
+                    // minecraft head using his first linked player username
                     case 'linked_player':
-                        if (! $this?->players()?->first()) {
+                        if (!$this?->players()?->first()) {
                             break;
                         }
                         $player = $this->players()->first();
@@ -213,6 +218,27 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
                 Storage::disk($this->profilePhotoDisk())->delete($previous);
             }
         });
+    }
+
+    public function downloadProfilePhotoFromUrl($url)
+    {
+        $response = Http::get($url);
+        $contentType = $response->getHeader('Content-Type')[0] ?? 'image/jpeg';
+        $extension = explode('/', $contentType)[1] ?? 'jpg';
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'avatar_');
+        file_put_contents($tempFile, $response->body());
+
+        $uploadedFile = new UploadedFile(
+            $tempFile,
+            'avatar.' . $extension,
+            $contentType,
+            null,
+            true
+        );
+
+        $this->updateProfilePhoto($uploadedFile);
+        unlink($tempFile);
     }
 
     /**
@@ -287,7 +313,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
 
     public function isStaffMember(): bool
     {
-        return $this->roles->contains(fn ($value) => $value->is_staff == true);
+        return $this->roles->contains(fn($value) => $value->is_staff == true);
     }
 
     public function getIsStaffAttribute()
@@ -321,7 +347,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     public function voteForPollOption($option)
     {
         // Check if poll is votable
-        if (! $option->poll->isVotable()) {
+        if (!$option->poll->isVotable()) {
             throw new \Exception('Poll is not votable');
         }
 
@@ -339,7 +365,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     {
         $data = [];
 
-        if (! $this?->settings || ! array_key_exists('notifications', $this->settings)) {
+        if (!$this?->settings || !array_key_exists('notifications', $this->settings)) {
             return $data;
         }
 
@@ -359,7 +385,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         $channels = [];
 
         // empty = default, we will keep default as enabled.
-        if (! $preferenceArray) {
+        if (!$preferenceArray) {
             $channels = [
                 'database',
                 'mail',
@@ -370,7 +396,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         }
 
         $canSendToDiscord = (bool) config('services.discord.token') && $this->discord_private_channel_id;
-        if (! $canSendToDiscord) {
+        if (!$canSendToDiscord) {
             $channels = array_diff($channels, ['discord']);
         }
 

@@ -7,6 +7,7 @@ use App\Models\Player;
 use App\Models\Rank;
 use App\Models\Server;
 use App\Settings\PlayerSettings;
+use App\Settings\PluginSettings;
 use App\Utils\Helpers\MinecraftSkinUtils;
 use DB;
 use Exception;
@@ -43,7 +44,7 @@ class PlayerController extends Controller
         ]);
     }
 
-    public function show($player, Request $request)
+    public function show($player, Request $request, PluginSettings $pluginSettings)
     {
         $player = Player::where('uuid', $player)->orWhere('username', $player)
             ->with(['rank:id,shortname,name', 'country:id,name,iso_code,flag'])->firstOrFail();
@@ -81,6 +82,10 @@ class PlayerController extends Controller
         // Can change player skin
         $canPlayerChangeSkin = $request->user() && Gate::allows('changeSkin', $player);
         $playerSkinChangerEnabled = config('minetrax.player_skin_changer_enabled');
+
+        // Can change player password
+        $playerPasswordResetEnabled = $pluginSettings->enable_player_password_reset;
+        $canPlayerChangePassword = $playerPasswordResetEnabled && Gate::allows('resetPassword', $player);
 
         // filter out stuffs that are not used
         $player = $player->only([
@@ -125,6 +130,7 @@ class PlayerController extends Controller
             'player' => $player,
             'canShowPlayerIntel' => $canShowPlayerIntel,
             'canChangePlayerSkin' => $playerSkinChangerEnabled && $canPlayerChangeSkin,
+            'canChangePlayerPassword' => $canPlayerChangePassword,
         ]);
     }
 
@@ -137,10 +143,10 @@ class PlayerController extends Controller
         $size = $request->size ?? 100;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = MinecraftSkinUtils::getDefaultSkinImage('avatar', $size);
 
-            return $img->response('jpg');
+            return $this->streamImage($img);
         }
 
         try {
@@ -158,7 +164,7 @@ class PlayerController extends Controller
             }
         }
 
-        return $img->response('jpg');
+        return $this->streamImage($img);
     }
 
     public function getSkinImage(Request $request, $uuid, $username = null, $textureid = null)
@@ -168,10 +174,10 @@ class PlayerController extends Controller
         $param = $useUsernameForSkins ? $username : $uuid;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = MinecraftSkinUtils::getDefaultSkinImage('skin');
 
-            return $img->response('jpg');
+            return $this->streamImage($img, 'png');
         }
 
         try {
@@ -189,7 +195,7 @@ class PlayerController extends Controller
             }
         }
 
-        return $img->response('png');
+        return $this->streamImage($img, 'png');
     }
 
     public function getRenderImage(Request $request, $uuid, $username = null, $textureid = null)
@@ -200,10 +206,10 @@ class PlayerController extends Controller
         $scale = $request->scale;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = MinecraftSkinUtils::getDefaultSkinImage('render');
 
-            return $img->response('jpg');
+            return $this->streamImage($img, 'png');
         }
 
         try {
@@ -217,6 +223,18 @@ class PlayerController extends Controller
             }
         }
 
-        return $img->response('png');
+        return $this->streamImage($img, 'png');
+    }
+
+    private function streamImage($img, $imageType = 'jpeg')
+    {
+        $contentType = "image/{$imageType}";
+        return response()->stream(function () use ($img, $imageType) {
+            if ($imageType == 'png') {
+                echo $img->toPng();
+            } else {
+                echo $img->toJpeg();
+            }
+        }, 200, ['Content-Type' => $contentType]);
     }
 }

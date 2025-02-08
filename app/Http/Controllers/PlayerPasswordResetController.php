@@ -23,23 +23,32 @@ class PlayerPasswordResetController extends Controller
         $linkedPlayers = $request->user()->players()->select('uuid', 'players.id', 'username')->get();
         $selectedPlayerUuid = $request->query('player_uuid');
 
+        $canResetAnyPlayerPassword = $request->user()->can('reset any_player_password');
+        $userOwnPlayer = $linkedPlayers->contains('uuid', $selectedPlayerUuid);
+        // If selected player is not in linked player but user has permission to reset any player password, then allow.
+        if ($selectedPlayerUuid && !$userOwnPlayer && $canResetAnyPlayerPassword) {
+            $linkedPlayers = Player::where('uuid', $selectedPlayerUuid)->get();
+        }
+
         // Cooldown Check.
         $cooldown = Cache::get('player_password_reset::user::' . $request->user()->id);
         if ($cooldown) {
             $cooldown = now()->diffInSeconds($cooldown->addSeconds($pluginSettings->player_password_reset_cooldown_in_seconds), false);
         }
 
+        $hasCannotPlayerPasswordResetPermission = $request->user()->hasPermissionTo('cannot player_password_reset');
         return Inertia::render('Player/ResetPassword', [
             'uuid' => $selectedPlayerUuid,
             'players' => $linkedPlayers,
             'cooldown' => $cooldown,
-            'cannotPlayerPasswordReset' => $request->user()->hasPermissionTo('cannot player_password_reset'),
+            'cannotPlayerPasswordReset' => $hasCannotPlayerPasswordResetPermission && !$canResetAnyPlayerPassword,
         ]);
     }
 
     public function update(Request $request, PluginSettings $pluginSettings)
     {
         $featureEnabled = $pluginSettings->enable_player_password_reset;
+        $canResetAnyPlayerPassword = $request->user()->can('reset any_player_password');
         $cooldownInSeconds = $pluginSettings->player_password_reset_cooldown_in_seconds;
         if (!$featureEnabled) {
             return redirect()->route('home')
@@ -56,13 +65,15 @@ class PlayerPasswordResetController extends Controller
         $player = Player::where('uuid', $request->player_uuid)->firstOrFail();
         $this->authorize('resetPassword', $player);
 
-        // Cooldown Handling.
-        $cooldown = Cache::get('player_password_reset::user::' . $request->user()->id);
-        if ($cooldown) {
-            return redirect()->back()
-                ->with(['toast' => ['type' => 'danger', 'title' => __('Cooldown!'), 'body' => __('You can reset password once every :seconds seconds.', ['seconds' => $cooldownInSeconds]), 'milliseconds' => 10000]]);
+        // Cooldown Handling. (Only for user who doesn't have permission to reset any player password)
+        if (!$canResetAnyPlayerPassword) {
+            $cooldown = Cache::get('player_password_reset::user::' . $request->user()->id);
+            if ($cooldown) {
+                return redirect()->back()
+                    ->with(['toast' => ['type' => 'danger', 'title' => __('Cooldown!'), 'body' => __('You can reset password once every :seconds seconds.', ['seconds' => $cooldownInSeconds]), 'milliseconds' => 10000]]);
+            }
+            Cache::put('player_password_reset::user::' . $request->user()->id, now(), $cooldownInSeconds);
         }
-        Cache::put('player_password_reset::user::' . $request->user()->id, now(), $cooldownInSeconds);
 
         // Fire Job to reset password.
         PlayerPasswordResetCommandJob::dispatchSync(

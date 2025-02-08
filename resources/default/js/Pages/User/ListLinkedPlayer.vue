@@ -98,6 +98,9 @@
                   </inertia-link>
                 </p>
               </div>
+              <div class="text-xs font-bold mt-2 text-red-500 dark:text-red-400">
+                {{ __("CAUTION: DO NOT SHARE THIS OTP WITH ANYONE!") }}
+              </div>
             </div>
           </div>
         </div>
@@ -120,8 +123,10 @@
         <div
           v-for="player in linkedPlayers"
           :key="player.uuid"
-          class="flex justify-center pt-5 pb-5 pr-10 bg-white rounded shadow dark:bg-cool-gray-800"
+          class="flex flex-col p-4 items-center bg-white rounded shadow dark:bg-cool-gray-800"
         >
+
+        <div class="flex justify-center pr-10">
           <!-- <img :src="`https://crafatar.com/renders/body/${player.uuid}?scale=7`" :alt="player.username"> -->
           <canvas :id="`skin_container_${player.uuid}`" />
           <div class="flex flex-col space-y-2">
@@ -235,8 +240,10 @@
                 </p>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="flex justify-end space-x-4">
+        <div class="flex justify-end space-x-4">
               <inertia-link
                 v-if="$page.props?.pluginSettings?.playerPasswordResetEnabled"
                 v-tippy
@@ -244,10 +251,13 @@
                 :href="route('reset-player-password.show', {
                   player_uuid: player.uuid,
                 })"
-                class="inline-flex justify-center px-4 py-2 mt-5 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-gray-400 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 disabled:opacity-50"
-                :title="__('Reset Password of this player.')"
+                class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 disabled:opacity-50"
+                :title="__('Change Password of this player.')"
               >
                 <LockClosedIcon class="w-5 h-5" />
+                <span class="hidden md:block mt-0.5 ml-1">
+                {{ __("Change Password") }}
+                </span>
               </inertia-link>
 
               <inertia-link
@@ -257,10 +267,13 @@
                 :href="route('change-player-skin.show', {
                   player_uuid: player.uuid,
                 })"
-                class="inline-flex justify-center px-4 py-2 mt-5 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-sky-400 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 disabled:opacity-50"
+                class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-sky-400 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 disabled:opacity-50"
                 :title="__('Change Skin of this player.')"
               >
                 <PaintBrushIcon class="w-5 h-5" />
+                <span class="hidden md:block mt-0.5 ml-1">
+                {{ __("Change Skin") }}
+                </span>
               </inertia-link>
 
               <inertia-link
@@ -272,13 +285,16 @@
                 :preserve-state="false"
                 method="delete"
                 :href="route('account-link.delete', player.uuid)"
-                class="inline-flex justify-center px-4 py-2 mt-5 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
                 :title="__('Unlink this player from your account.')"
               >
                 <BookmarkSlashIcon class="w-5 h-5" />
+                <span class="hidden md:block mt-0.5 ml-1">
+                {{ __("Unlink Player") }}
+                </span>
               </inertia-link>
-            </div>
-          </div>
+        </div>
+
         </div>
       </div>
     </div>

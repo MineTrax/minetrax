@@ -48,7 +48,7 @@ class CommandQueueController extends Controller
         ];
 
         $commandQueues = QueryBuilder::for(CommandQueue::class)
-            ->with(['server:id,name,hostname', 'player:id,uuid,username'])
+            ->with(['server:id,name,hostname', 'player:id,uuid,username,skin_texture_id', 'user:id,name,username,profile_photo_path'])
             ->allowedFilters([
                 ...$fields,
                 'server.name',
@@ -60,10 +60,13 @@ class CommandQueueController extends Controller
                     'output',
                     'tag',
                     'player_uuid',
+                    'player.username',
+                    'user.username',
+                    'user.name',
                 ])),
             ])
             ->allowedSorts($fields)
-            ->defaultSort('-updated_at')
+            ->defaultSort('-created_at')
             ->simplePaginate($perPage)
             ->through(function ($commandQueue) {
                 if ($commandQueue->tag === 'player_password_reset') {
@@ -113,7 +116,7 @@ class CommandQueueController extends Controller
 
         $commandQueue->delete();
 
-        return redirect()->route('admin.command-queue.index')
+        return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted!')]]);
     }
 
@@ -141,7 +144,7 @@ class CommandQueueController extends Controller
             RunCommandQueueJob::dispatch($commandQueue);
         }
 
-        return redirect()->route('admin.command-queue.index')
+        return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Retried!'), 'body' => __('Command has been queued for retrying! Refresh the page after few seconds to check the status.')]]);
     }
 }

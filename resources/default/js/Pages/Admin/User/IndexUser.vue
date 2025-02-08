@@ -246,6 +246,7 @@ const headerRow = [
               <EyeIcon class="inline-block w-5 h-5" />
             </InertiaLink>
             <InertiaLink
+              v-if="can('impersonate users')"
               v-tippy
               as="a"
               :href="route('admin.impersonate.take', item.id)"

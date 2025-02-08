@@ -15,6 +15,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class BanWardenController extends Controller
 {
@@ -67,10 +68,11 @@ class BanWardenController extends Controller
                     'creator_username',
                     'remover_username',
                     'remover_uuid',
+                    'victimPlayer.username',
                 ])),
             ])
             ->allowedSorts($fields)
-            ->defaultSort('-id')
+            ->defaultSort('-start_at')
             ->simplePaginate(perPage: $perPage)
             ->through(fn($punishment) => $punishment->makeVisibleIf($canViewCritical, [
                 'ip_address',
@@ -117,7 +119,8 @@ class BanWardenController extends Controller
 
         // Generate insights if enabled and not already generated
         $insightEnabled = config('minetrax.banwarden.ai_insights_enabled');
-        if ($insightEnabled && !$playerPunishment->insights) {
+        $insightTypes = config('minetrax.banwarden.ai_insights_types');
+        if ($insightEnabled && !$playerPunishment->insights && in_array($playerPunishment->type->value, $insightTypes)) {
             GeneratePunishmentInsightsJob::dispatch($playerPunishment);
         }
 
@@ -161,7 +164,7 @@ class BanWardenController extends Controller
         $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
         $canShowMaskedIp = config('minetrax.banwarden.show_masked_ip_public') ? true : auth()?->user()?->isStaffMember();
 
-        $perPage = request()->query('perPage', 10);
+        $perPage = request()->query('perPage', 5);
         if ($perPage > 100) {
             $perPage = 100;
         }
@@ -324,15 +327,15 @@ class BanWardenController extends Controller
     public function pardon(PlayerPunishment $playerPunishment, Request $request)
     {
         $request->validate([
-            'reason' => 'nullable|string|max:255',
+            'reason' => 'nullable|string|max:100',
         ]);
 
         $this->authorize('delete', $playerPunishment);
 
         try {
-            PardonPlayerPunishmentJob::dispatchSync($playerPunishment, $request->input('reason'));
+            PardonPlayerPunishmentJob::dispatchSync($playerPunishment, $request->input('reason'), $request->user()->username);
         } catch (\Exception $e) {
-            \Log::error($e);
+            Log::error($e);
             return redirect()->back()
                 ->with(['toast' => ['type' => 'error', 'title' => __('Pardon Failed'), 'body' => 'Failed to execute pardon job to due webquery issue.']]);
         }

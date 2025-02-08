@@ -8,6 +8,10 @@
 @tailwind components;
 @tailwind utilities;
 
+[x-cloak] {
+    display: none;
+}
+
 @layer components {
     .fade-img-light {
         position: relative;

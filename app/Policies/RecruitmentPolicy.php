@@ -100,7 +100,7 @@ class RecruitmentPolicy
         if ($cooldownSeconds) {
             $lastSubmission = $recruitment->submissions()->where('user_id', $user->id)->latest()->first();
             if ($lastSubmission) {
-                $secondsSinceLastSubmission = now()->diffInSeconds($lastSubmission->updated_at);
+                $secondsSinceLastSubmission = $lastSubmission->updated_at->diffInSeconds(now());
                 if ($secondsSinceLastSubmission < $cooldownSeconds) {
                     return false;
                 }

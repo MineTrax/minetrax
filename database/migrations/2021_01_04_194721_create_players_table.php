@@ -15,9 +15,9 @@ class CreatePlayersTable extends Migration
     {
         Schema::create('players', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
+            $table->char('uuid', 36)->unique();
             $table->string('username')->index()->nullable();
-            $table->float('rating')->nullable(); // Calculated from secret rating function. Used to decide how elite player is.
+            $table->float('rating', 23)->nullable(); // Calculated from secret rating function. Used to decide how elite player is.
             $table->integer('total_score')->default(0); // Used to calculate Rank. Admin can change what score give what rank.
             $table->unsignedInteger('position')->nullable();            // Based on Average of rating and score maybe
 

@@ -205,8 +205,8 @@ class UserController extends Controller
         // Update the User Detail
         $user->name = $request->name;
         $user->dob = $request->dob;
-        $user->email = $request->email;
-        $user->username = $request->username;
+        $user->email = strtolower($request->email);
+        $user->username = strtolower($request->username);
         $user->gender = $request->gender;
         $user->social_links = $social_links;
         $user->settings = $settings;

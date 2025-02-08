@@ -23,7 +23,7 @@ return new class extends Migration
         Schema::create('json_minecraft_player_stats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('server_id')->constrained()->onDelete('cascade');
-            $table->uuid('uuid')->index();
+            $table->char('uuid', 36)->index(); // uuid
             $table->string('username')->nullable();
             $table->unsignedBigInteger('last_modified')->nullable();    // This can be used as player last seen
             $table->string('hash')->nullable();                 // Used to check if file has changed in server and need to be synced
@@ -81,7 +81,7 @@ return new class extends Migration
         Schema::create('json_minecraft_player_advancements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('server_id')->constrained()->onDelete('cascade');
-            $table->uuid('uuid');
+            $table->char('uuid', 36); // uuid
 
             $table->unsignedInteger('data_version')->nullable();
 

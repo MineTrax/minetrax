@@ -285,6 +285,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
 
     Route::get('ask-db', [\App\Http\Controllers\Admin\AskDbController::class, 'index'])->name('ask-db.index');
     Route::post('ask-db', [\App\Http\Controllers\Admin\AskDbController::class, 'query'])->name('ask-db.query');
+    Route::delete('ask-db', [\App\Http\Controllers\Admin\AskDbController::class, 'reset'])->name('ask-db.reset');
 
     Route::get('download', [\App\Http\Controllers\Admin\DownloadController::class, 'index'])->name('download.index');
     Route::get('download/create', [\App\Http\Controllers\Admin\DownloadController::class, 'create'])->name('download.create');

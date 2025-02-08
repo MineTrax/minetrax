@@ -10,7 +10,7 @@ function toggleMenuCollapse() {
 </script>
 
 <template>
-  <AppLayout>
+  <AppLayout :hide-footer="true">
     <AdminSideMenu
       :collapsed="isMenuCollapsed"
       @toggle-collapse="toggleMenuCollapse"

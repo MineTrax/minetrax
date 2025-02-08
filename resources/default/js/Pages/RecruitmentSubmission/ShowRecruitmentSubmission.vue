@@ -98,7 +98,7 @@ const withdrawForm = useForm({
                   <div class="flex items-center justify-between w-full">
                     <span>{{ __("Applicant") }}</span>
                     <div>
-                      You
+                      {{ __("You") }}
                     </div>
                   </div>
                 </li>

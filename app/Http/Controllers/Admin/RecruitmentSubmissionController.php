@@ -66,14 +66,24 @@ class RecruitmentSubmissionController extends Controller
                 $query->whereIn('recruitment_id', $selectedRecruitments);
             })
             ->whereIn('recruitment_id', $recruitments->keys())
-            ->with(['user:id,name,username', 'recruitment', 'lastActor:id,username,name,profile_photo_path,verified_at,settings', 'lastCommentor:id,username,name,profile_photo_path,verified_at,settings'])
+            ->with(['user:id,name,username,profile_photo_path,verified_at,muted_at', 'recruitment', 'lastActor:id,username,name,profile_photo_path,verified_at,settings', 'lastCommentor:id,username,name,profile_photo_path,verified_at,settings'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
                 'user.name',
                 'lastActor.name',
                 'lastCommentor.name',
-                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'data', 'status'])),
+                AllowedFilter::custom('q', new FilterMultipleFields([
+                    'id',
+                    'data',
+                    'status',
+                    'user.name',
+                    'user.username',
+                    'lastActor.name',
+                    'lastActor.username',
+                    'lastCommentor.name',
+                    'lastCommentor.username',
+                ])),
             ])
             ->allowedSorts($fields)
             ->defaultSort('-updated_at')
@@ -135,14 +145,24 @@ class RecruitmentSubmissionController extends Controller
                 $query->whereIn('recruitment_id', $selectedRecruitments);
             })
             ->whereIn('recruitment_id', $recruitments->keys())
-            ->with(['user:id,name,username', 'recruitment', 'lastActor:id,name,username', 'lastCommentor:id,name,username'])
+            ->with(['user:id,name,username,profile_photo_path,verified_at,muted_at', 'recruitment', 'lastActor:id,name,username,profile_photo_path,verified_at,muted_at', 'lastCommentor:id,name,username,profile_photo_path,verified_at,muted_at'])
             ->select($fields)
             ->allowedFilters([
                 ...$fields,
                 'user.name',
                 'lastActor.name',
                 'lastCommentor.name',
-                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'data', 'status'])),
+                AllowedFilter::custom('q', new FilterMultipleFields([
+                    'id',
+                    'data',
+                    'status',
+                    'user.name',
+                    'user.username',
+                    'lastActor.name',
+                    'lastActor.username',
+                    'lastCommentor.name',
+                    'lastCommentor.username',
+                ])),
             ])
             ->allowedSorts($fields)
             ->defaultSort('-updated_at')
@@ -162,22 +182,22 @@ class RecruitmentSubmissionController extends Controller
         $this->authorize('view', $submission);
 
         $submission->load([
-            'user:id,name,username',
+            'user:id,name,username,profile_photo_path,verified_at,muted_at',
             'recruitment',
             'lastActor:id,name,username',
         ]);
         $submission['i_can_act'] = $request->user()->can('actOn', $submission)
-                                            && in_array($submission->status, [
-                                                RecruitmentSubmissionStatus::PENDING,
-                                                RecruitmentSubmissionStatus::INPROGRESS,
-                                                RecruitmentSubmissionStatus::ONHOLD,
-                                            ]);
+            && in_array($submission->status, [
+                RecruitmentSubmissionStatus::PENDING,
+                RecruitmentSubmissionStatus::INPROGRESS,
+                RecruitmentSubmissionStatus::ONHOLD,
+            ]);
         $submission['i_can_delete'] = $request->user()->can('delete', $submission)
-                                            && in_array($submission->status, [
-                                                RecruitmentSubmissionStatus::APPROVED,
-                                                RecruitmentSubmissionStatus::REJECTED,
-                                                RecruitmentSubmissionStatus::WITHDRAWN,
-                                            ]);
+            && in_array($submission->status, [
+                RecruitmentSubmissionStatus::APPROVED,
+                RecruitmentSubmissionStatus::REJECTED,
+                RecruitmentSubmissionStatus::WITHDRAWN,
+            ]);
         $submission['i_can_send_message'] = in_array($submission->status, [
             RecruitmentSubmissionStatus::PENDING,
             RecruitmentSubmissionStatus::INPROGRESS,
@@ -204,7 +224,7 @@ class RecruitmentSubmissionController extends Controller
         $this->authorize('actOn', $submission);
 
         $request->validate([
-            'action' => 'required|in:'.implode(',', [
+            'action' => 'required|in:' . implode(',', [
                 RecruitmentSubmissionStatus::INPROGRESS,
                 RecruitmentSubmissionStatus::ONHOLD,
                 RecruitmentSubmissionStatus::APPROVED,
@@ -251,7 +271,7 @@ class RecruitmentSubmissionController extends Controller
     {
         $request->validate([
             'message' => 'required|max:2000',
-            'type' => ['required', 'in:'.implode(',', [CommentType::RECRUITMENT_STAFF_WHISPER, CommentType::RECRUITMENT_STAFF_MESSAGE])],
+            'type' => ['required', 'in:' . implode(',', [CommentType::RECRUITMENT_STAFF_WHISPER, CommentType::RECRUITMENT_STAFF_MESSAGE])],
         ]);
 
         $comment = $submission->comment($request->message, $request->type);

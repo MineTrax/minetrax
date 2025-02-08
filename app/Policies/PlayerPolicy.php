@@ -24,7 +24,7 @@ class PlayerPolicy
             return true;
         }
 
-        if ($showPlayerIntelTo === 'staff') {
+        if ($showPlayerIntelTo === 'staff' || $showPlayerIntelTo === 'self') {
             return $user && $user->isStaffMember();
         }
 
@@ -83,11 +83,14 @@ class PlayerPolicy
             return true;
         }
 
-        if ($user->can('cannot player_password_reset')) {
+        $userBelongsToPlayer = $user->players()->where('players.id', $player->id)->exists();
+
+        // User with this permission can't change his own password from web. Good for staff members.
+        if ($user->can('cannot player_password_reset') && $userBelongsToPlayer) {
             return false;
         }
 
-        return $user->players()->where('players.id', $player->id)->exists();
+        return $userBelongsToPlayer;
     }
 
     public function destroy(User $user, Player $player)

@@ -130,7 +130,7 @@ const disabledErrorMessage = computed(() => {
             <div class="shadow max-w-none bg-white dark:bg-cool-gray-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded">
               <div
                 v-if="customForm.description"
-                class="prose dark:prose-dark max-w-none mb-6 pb-6 border-b dark:border-gray-700"
+                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b dark:border-gray-700"
                 v-html="customForm.description_html"
               />
 

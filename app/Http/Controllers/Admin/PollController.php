@@ -76,7 +76,7 @@ class PollController extends Controller
 
     public function lock(Request $request, Poll $poll)
     {
-        $this->authorize('update', Poll::class);
+        $this->authorize('update', $poll);
 
         $poll->is_closed = true;
         $poll->save();
@@ -87,7 +87,7 @@ class PollController extends Controller
 
     public function unlock(Request $request, Poll $poll)
     {
-        $this->authorize('update', Poll::class);
+        $this->authorize('update', $poll);
 
         $poll->is_closed = false;
         $poll->save();

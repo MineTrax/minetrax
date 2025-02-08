@@ -39,7 +39,8 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::authenticateUsing(function (Request $request) {
-            $user = User::where('email', $request->email)->orWhere('username', $request->email)->first();
+            $identifier = strtolower($request->email);
+            $user = User::where('email', $identifier)->orWhere('username', $identifier)->first();
             if ($user && Hash::check($request->password, $user->password)) {
                 $user->update([
                     'last_login_at' => now(),
@@ -52,7 +53,8 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::confirmPasswordsUsing([new ConfirmPassword, '__invoke']);
 
         RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(5)->by($request->email.$request->ip());
+            $identifier = strtolower($request->email);
+            return Limit::perMinute(5)->by($identifier . $request->ip());
         });
 
         RateLimiter::for('two-factor', function (Request $request) {

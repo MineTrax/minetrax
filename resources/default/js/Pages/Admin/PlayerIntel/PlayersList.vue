@@ -8,7 +8,7 @@ import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import millify from 'millify';
-import { TrashIcon } from '@heroicons/vue/24/outline';
+import { LockClosedIcon, PaintBrushIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 const { __ } = useTranslations();
 const { can } = useAuthorizable();
@@ -27,6 +27,12 @@ const props = defineProps({
     },
     data: {
         type: Object,
+    },
+    canResetAnyPlayerPassword: {
+        type: Boolean,
+    },
+    canChangeAnyPlayerSkin: {
+        type: Boolean,
     },
 });
 
@@ -249,6 +255,32 @@ const headerRow = [
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
+              <InertiaLink
+                v-if="canChangeAnyPlayerSkin"
+                v-tippy
+                as="a"
+                :href="route('change-player-skin.show', {
+                  player_uuid: item.player.uuid,
+                })"
+                class="inline-flex items-center justify-center text-sky-400 hover:text-sky-700 focus:outline-none"
+                :title="__('Change Skin of this player.')"
+              >
+                <PaintBrushIcon class="w-5 h-5" />
+              </InertiaLink>
+
+              <InertiaLink
+                v-if="canResetAnyPlayerPassword"
+                v-tippy
+                as="a"
+                :href="route('reset-player-password.show', {
+                  player_uuid: item.player.uuid,
+                })"
+                class="inline-flex items-center justify-center text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 focus:outline-none"
+                :title="__('Change Password of this player.')"
+              >
+                <LockClosedIcon class="w-5 h-5" />
+              </InertiaLink>
+
               <InertiaLink
                 v-if="can('delete players')"
                 v-confirm="{

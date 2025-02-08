@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class PermissionSeeder extends Seeder
 {
@@ -135,6 +137,7 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('create banwarden_punishments_evidence');
         Permission::findOrCreate('delete banwarden_punishments_evidence');
 
-        Permission::findOrCreate('cannot player_password_reset');
+        Permission::findOrCreate('reset any_player_password');     // Ability to change any player password
+        Permission::findOrCreate('cannot player_password_reset');  // User with this permission can't change his own password from web. Good for staff members.
     }
 }

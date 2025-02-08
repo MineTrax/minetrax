@@ -753,9 +753,10 @@ const savePluginSetting = () => {
     form.post(route('admin.setting.plugin.update'), {
         preserveScroll: true,
         onSuccess: () => {
-            this.$inertia.replace(route('admin.setting.plugin.show'), {
+            this.$inertia.get(route('admin.setting.plugin.show'), {
                 preserveState: false,
                 preserveScroll: true,
+                replace: true,
             });
         }
     });

@@ -16,7 +16,7 @@ class CreateMinecraftPlayerAdvancementsTable extends Migration
         Schema::create('json_minecraft_player_advancements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('server_id')->constrained()->onDelete('cascade');
-            $table->uuid('uuid');
+            $table->char('uuid', 36); // uuid
 
             $table->unsignedInteger('data_version')->nullable();
 
@@ -32,6 +32,6 @@ class CreateMinecraftPlayerAdvancementsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('minecraft_player_advancements');
+        Schema::dropIfExists('json_minecraft_player_advancements');
     }
 }

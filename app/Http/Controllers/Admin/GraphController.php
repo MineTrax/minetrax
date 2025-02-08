@@ -186,8 +186,9 @@ class GraphController extends Controller
             $averagePlayerPingChangePercent = (($averagePlayerPingCurrentMonth - $averagePlayerPingPreviousMonth) / ($averagePlayerPingPreviousMonth == 0 ? 1 : $averagePlayerPingPreviousMonth)) * 100;
 
             // Peek Online Players.
-            $peekOnlinePlayersPreviousMonth = MinecraftServerLiveInfo::getOnlinePlayersCount(null, $previousMonth->startOfMonth(), $previousMonth->endOfMonth()) ?? 0;
-            $peekOnlinePlayersCurrentMonth = MinecraftServerLiveInfo::getOnlinePlayersCount(null, $currentMonth->startOfMonth(), $currentMonth->endOfMonth()) ?? 0;
+            $serverIds = Server::where('type', '!=', ServerType::Bungee())->pluck('id');
+            $peekOnlinePlayersPreviousMonth = MinecraftServerLiveInfo::getOnlinePlayersCount($serverIds, $previousMonth->startOfMonth(), $previousMonth->endOfMonth()) ?? 0;
+            $peekOnlinePlayersCurrentMonth = MinecraftServerLiveInfo::getOnlinePlayersCount($serverIds, $currentMonth->startOfMonth(), $currentMonth->endOfMonth()) ?? 0;
             $peekOnlinePlayersChangePercent = (($peekOnlinePlayersCurrentMonth - $peekOnlinePlayersPreviousMonth) / ($peekOnlinePlayersPreviousMonth == 0 ? 1 : $peekOnlinePlayersPreviousMonth)) * 100;
 
             return [

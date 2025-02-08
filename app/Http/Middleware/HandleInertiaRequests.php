@@ -9,6 +9,7 @@ use App\Models\Server;
 use App\Settings\GeneralSettings;
 use App\Settings\PluginSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Middleware;
 use Route;
 
@@ -50,7 +51,7 @@ class HandleInertiaRequests extends Middleware
             'locale' => fn() => app()->getLocale(),
             'localeIsoCode' => fn() => array_key_exists(app()->getLocale(), config('constants.locale_keymap')) ? config('constants.locale_keymap')[app()->getlocale()]['iso_code'] : '_unknown',
             'toast' => fn() => $request->session()->get('toast'),
-            'popstate' => \Str::uuid(),
+            'popstate' => Str::uuid(),
             'permissions' => function () use ($request) {
                 if (!$request->user()) {
                     return [];

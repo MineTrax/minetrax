@@ -7,6 +7,7 @@
         :player="player"
         :can-show-player-intel="canShowPlayerIntel"
         :can-change-player-skin="canChangePlayerSkin"
+        :can-change-player-password="canChangePlayerPassword"
       />
 
       <div
@@ -805,6 +806,7 @@ const props = defineProps({
     player: Object,
     canShowPlayerIntel: Boolean,
     canChangePlayerSkin: Boolean,
+    canChangePlayerPassword: Boolean,
 });
 
 const { secondsToHMS, formatTimeAgoToNow, formatToDayDateString } = useHelpers();

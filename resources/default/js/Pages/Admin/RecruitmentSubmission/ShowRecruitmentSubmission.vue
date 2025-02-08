@@ -16,6 +16,7 @@ import XTextarea from '@/Components/Form/XTextarea.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import { startCase } from 'lodash';
 import { ArrowLeftCircleIcon } from '@heroicons/vue/24/outline';
+import Icon from '@/Components/Icon.vue';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -130,6 +131,28 @@ const rejectForm = useForm({
                           :style="[submission.user.roles[0].color ? {color: submission.user.roles[0].color} : null]"
                         >
                           {{ submission.user.name }}
+
+                          <Icon
+      v-if="submission.user.verified_at"
+      v-tippy
+      name="verified-check-fill"
+      :title="__('Verified Account')"
+      class="inline mb-1 fill-current focus:outline-none text-light-blue-400 w-5 h-5"
+    />
+    <Icon
+      v-if="submission.user.is_staff"
+      v-tippy
+      name="shield-check-fill"
+      :title="__('Staff Member')"
+      class="inline mb-1 text-amber-400 fill-current focus:outline-none w-5 h-5"
+    />
+    <Icon
+      v-if="submission.user.muted_at"
+      v-tippy
+      name="volume-off-fill"
+      :title="__('Muted User')"
+      class="inline mb-1 text-red-500 fill-current focus:outline-none w-5 h-5"
+    />
                         </div>
                         <div class="text-sm text-gray-500">
                           @{{ submission.user.username }}

@@ -15,8 +15,8 @@ class CreateMinecraftPlayerPvpKillsTable extends Migration
     {
         Schema::create('minecraft_player_pvp_kills', function (Blueprint $table) {
             $table->id();
-            $table->uuid('killer_uuid')->index();
-            $table->uuid('victim_uuid')->index();
+            $table->char('killer_uuid', 36)->index(); // uuid
+            $table->char('victim_uuid', 36)->index(); // uuid
             $table->string('killer_username');
             $table->string('victim_username');
             $table->timestamp('killed_at')->nullable();

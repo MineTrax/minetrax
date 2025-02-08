@@ -262,13 +262,13 @@ function reloadPageWithTimeout() {
         </div>
 
         <div class="flex space-x-2">
-          <!-- <button
+          <button
             v-if="permissions['canPardon'] && punishment.is_active"
             class="inline-flex items-center px-4 py-2 bg-green-500 dark:bg-cool-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-600 active:bg-green-700 focus:outline-none focus:border-green-800 focus:shadow-outline-green transition ease-in-out duration-150"
             @click="showingPardonForm = true"
           >
             <span>{{ __("Pardon") }}</span>
-          </button> -->
+          </button>
           <Link
             :href="route('player.punishment.index')"
             class="hidden md:inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
@@ -402,7 +402,14 @@ function reloadPageWithTimeout() {
                 {{ __("IP Address") }}
               </p>
               <p class="font-bold">
-                {{ punishment.ip_address || punishment.masked_ip_address || __("None") }}
+                <span v-if="punishment.ip_address || punishment.masked_ip_address">
+                  <a
+                    class="hover:underline"
+                    target="_blank"
+                    :href="`https://check-host.net/ip-info?host=${punishment.ip_address || punishment.masked_ip_address}`"
+                  >{{ punishment.ip_address || punishment.masked_ip_address }}</a>
+                </span>
+                <span v-else>{{ __("None") }}</span>
               </p>
             </div>
             <div>
@@ -523,6 +530,13 @@ function reloadPageWithTimeout() {
                     alt=""
                   >
                   <span
+                    v-if="punishment.creator_username && punishment.creator_username !== 'Console'"
+                    class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                  >
+                  {{ punishment.creator_username }}
+                  </span>
+                  <span
+                    v-else
                     class="text-sm font-bold text-gray-500 dark:text-gray-400"
                   >{{ __("CONSOLE") }}
                   </span>
@@ -577,6 +591,13 @@ function reloadPageWithTimeout() {
                       alt=""
                     >
                     <span
+                      v-if="punishment.remover_username && punishment.remover_username !== 'Console'"
+                      class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                    >
+                    {{ punishment.remover_username }}
+                    </span>
+                    <span
+                      v-else
                       class="text-sm font-bold text-gray-500 dark:text-gray-400"
                     >{{ __("CONSOLE") }}
                     </span>
@@ -956,7 +977,11 @@ function reloadPageWithTimeout() {
                   class="text-center"
                 >
                   <span v-if="item.ip_address || item.masked_ip_address">
-                    {{ item.ip_address || item.masked_ip_address }}
+                    <a
+                      class="hover:underline"
+                      target="_blank"
+                      :href="`https://check-host.net/ip-info?host=${item.ip_address || item.masked_ip_address}`"
+                    >{{ item.ip_address || item.masked_ip_address }}</a>
                   </span>
                   <span
                     v-else
@@ -1008,7 +1033,14 @@ function reloadPageWithTimeout() {
                       alt=""
                     >
                     <span
-                      class="text-xs font-bold text-gray-500 dark:text-gray-400"
+                      v-if="item.creator_username && item.creator_username !== 'Console'"
+                      class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                    >
+                    {{ item.creator_username }}
+                    </span>
+                    <span
+                      v-else
+                      class="text-sm font-bold text-gray-500 dark:text-gray-400"
                     >{{ __("CONSOLE") }}
                     </span>
                   </div>
@@ -1144,7 +1176,13 @@ function reloadPageWithTimeout() {
                     v-tippy
                     class="whitespace-nowrap"
                   >
-                    {{ item.player_ip_address || '-' }}
+                    <a
+                      v-if="item.player_ip_address"
+                      class="hover:underline"
+                      target="_blank"
+                      :href="`https://check-host.net/ip-info?host=${item.player_ip_address}`"
+                    >{{ item.player_ip_address }}</a>
+                    <span v-else>-</span>
                   </span>
                 </DtRowItem>
 
@@ -1288,7 +1326,13 @@ function reloadPageWithTimeout() {
                     v-tippy
                     class="whitespace-nowrap"
                   >
-                    {{ item.ip_address || '-' }}
+                    <a
+                      v-if="item.ip_address"
+                      class="hover:underline"
+                      target="_blank"
+                      :href="`https://check-host.net/ip-info?host=${item.ip_address}`"
+                    >{{ item.ip_address }}</a>
+                    <span v-else>-</span>
                   </span>
                 </DtRowItem>
 
