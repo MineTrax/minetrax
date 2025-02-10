@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use Bus;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -12,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Log;
 use Throwable;
 
-class CalculatePlayersJob implements ShouldQueue, ShouldBeUnique
+class CalculatePlayersJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
