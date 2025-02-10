@@ -15,8 +15,6 @@ class CalculatePlayersJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $uniqueFor = 3600;
-
     /**
      * Create a new job instance.
      *
