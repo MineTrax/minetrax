@@ -59,6 +59,7 @@ class BanWardenController extends Controller
                 'country.name',
                 'victimPlayer.username',
                 AllowedFilter::scope('status'),
+                AllowedFilter::scope('evidence_attached'),
                 AllowedFilter::custom('q', new FilterMultipleFields([
                     'id',
                     'type',
@@ -311,12 +312,12 @@ class BanWardenController extends Controller
         if ($request->input('type') === 'media') {
             $playerPunishment->addMediaFromRequest('file')->toMediaCollection('punishment-evidence');
         } else {
-            $playerPunishment->evidence_urls = array_merge($playerPunishment->evidence_urls ?? [], [
-                [
-                    'id' => Str::uuid(),
-                    'url' => $request->input('url'),
-                ]
-            ]);
+            $evidences = $playerPunishment->evidence_urls ?? [];
+            $evidences[] = [
+                'id' => Str::uuid(),
+                'url' => $request->input('url'),
+            ];
+            $playerPunishment->evidence_urls = $evidences;
             $playerPunishment->save();
         }
 
@@ -343,9 +344,15 @@ class BanWardenController extends Controller
             }
             $media->delete();
         } else {
-            $playerPunishment->evidence_urls = array_filter($playerPunishment->evidence_urls, function ($url) use ($evidence) {
+            $playerPunishment->evidence_urls = array_values(array_filter($playerPunishment->evidence_urls, function ($url) use ($evidence) {
                 return $url['id'] !== $evidence;
-            });
+            }));
+
+            // if no evidences left, set evidence_urls to null
+            if (count($playerPunishment->evidence_urls) === 0) {
+                $playerPunishment->evidence_urls = null;
+            }
+
             $playerPunishment->save();
         }
 

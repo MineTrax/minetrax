@@ -60,9 +60,9 @@ class PlayerPunishment extends BaseModel implements HasMedia
             );
     }
 
-    public function scopeEvidences($query, $flag)
+    public function scopeEvidenceAttached($query, $flag ='attached' )
     {
-        if ($flag) {
+        if ($flag == 'attached') {
             // where has media or evidence_urls is not null
             return $query->where(function ($query) {
                 $query->whereHas('media')

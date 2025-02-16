@@ -227,7 +227,12 @@ const handleEvidenceAsFileUpload = (event) => {
     uploadEvidenceAsUrlForm.clearErrors();
 
     uploadEvidenceAsFileForm.file = file;
-    uploadEvidenceAsFileForm.post(route('player.punishment.evidence.store', props.punishment.id));
+    uploadEvidenceAsFileForm.post(route('player.punishment.evidence.store', props.punishment.id), {
+        onSuccess: () => {
+            showingUploadDialog.value = false;
+            uploadEvidenceAsFileForm.reset();
+        },
+    });
 };
 
 const uploadEvidenceAsUrlForm = useForm({
@@ -242,6 +247,7 @@ const handleEvidenceAsUrlUpload = () => {
     uploadEvidenceAsUrlForm.post(route('player.punishment.evidence.store', props.punishment.id), {
         onSuccess: () => {
             showingUploadDialog.value = false;
+            uploadEvidenceAsUrlForm.reset();
         },
     });
 }
