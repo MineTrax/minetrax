@@ -13,7 +13,7 @@ import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import { ref } from 'vue';
-import { XCircleIcon } from '@heroicons/vue/24/solid';
+import { LinkIcon, PaperClipIcon, XCircleIcon } from '@heroicons/vue/24/solid';
 import XInput from '@/Components/Form/XInput.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 
@@ -207,23 +207,44 @@ const altHeaders = [
 ];
 
 
+const showingUploadDialog = ref(false);
 
 const fileRef = ref(null);
-const uploadEvidenceForm = useForm({
+const uploadEvidenceAsFileForm = useForm({
+    type: 'media',
     file: null,
 });
 
-const triggerEvidenceUploadInput = () => {
+const triggerEvidenceAsFileUploadInput = () => {
     fileRef.value.click();
 };
 
-const handleEvidenceUpload = (event) => {
+const handleEvidenceAsFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    uploadEvidenceForm.file = file;
-    uploadEvidenceForm.post(route('player.punishment.evidence.store', props.punishment.id));
+    uploadEvidenceAsFileForm.clearErrors();
+    uploadEvidenceAsUrlForm.clearErrors();
+
+    uploadEvidenceAsFileForm.file = file;
+    uploadEvidenceAsFileForm.post(route('player.punishment.evidence.store', props.punishment.id));
 };
+
+const uploadEvidenceAsUrlForm = useForm({
+    type: 'url',
+    url: null,
+});
+
+const handleEvidenceAsUrlUpload = () => {
+    uploadEvidenceAsFileForm.clearErrors();
+    uploadEvidenceAsUrlForm.clearErrors();
+
+    uploadEvidenceAsUrlForm.post(route('player.punishment.evidence.store', props.punishment.id), {
+        onSuccess: () => {
+            showingUploadDialog.value = false;
+        },
+    });
+}
 
 
 const showingPardonForm = ref(false);
@@ -650,7 +671,7 @@ function reloadPageWithTimeout() {
             <!-- Evidence -->
             <div v-if="permissions['canViewEvidence']">
               <p class="font-semibold text-gray-500">
-                {{ __("Uploaded Evidence") }}
+                {{ __("Attached Evidence") }}
               </p>
               <p v-if="punishment.evidences <= 0 && !permissions['canCreateEvidence']">
                 {{ "-" }}
@@ -658,21 +679,23 @@ function reloadPageWithTimeout() {
               <div class="flex flex-wrap gap-2">
                 <div
                   v-for="evidence in punishment.evidences"
-                  :key="evidence.id"
+                  :key="evidence.data.id"
                   class="p-1.5 relative dark:bg-gray-900 bg-gray-200 rounded group"
                 >
                   <a
                     v-tippy
                     target="_blank"
                     :title="__('View :file', {
-                      file: evidence.file_name
+                      file: evidence.data?.file_name || evidence.data?.url
                     })"
-                    :href="route('player.punishment.evidence.show', {
+                    :href="evidence.type === 'media' ? route('player.punishment.evidence.show', {
                       playerPunishment: punishment.id,
-                      evidence: evidence.id
-                    })"
+                      evidence: evidence.data.id,
+                      type: evidence.type
+                    }) : evidence.data.url"
                   >
-                    <DocumentMagnifyingGlassIcon class="w-6 h-6 p-0.5" />
+                    <DocumentMagnifyingGlassIcon v-if="evidence.type === 'media'" class="w-6 h-6 p-0.5" />
+                    <LinkIcon v-else class="w-6 h-6 p-0.5" />
                   </a>
 
                   <Link
@@ -687,7 +710,8 @@ function reloadPageWithTimeout() {
                     method="DELETE"
                     :href="route('player.punishment.evidence.delete', {
                       playerPunishment: punishment.id,
-                      evidence: evidence.id
+                      evidence: evidence.data.id,
+                      type: evidence.type
                     })"
                   >
                     <XCircleIcon
@@ -695,35 +719,16 @@ function reloadPageWithTimeout() {
                     />
                   </Link>
                 </div>
-                <input
-                  v-if="permissions['canCreateEvidence']"
-                  ref="fileRef"
-                  type="file"
-                  class="hidden"
-                  @input="handleEvidenceUpload"
-                >
                 <button
                   v-if="permissions['canCreateEvidence']"
-                  :disabled="uploadEvidenceForm.processing"
+                  :disabled="uploadEvidenceAsFileForm.processing || uploadEvidenceAsUrlForm.processing"
                   class="p-1.5 dark:bg-gray-900 bg-gray-200 rounded"
-                  @click="triggerEvidenceUploadInput"
+                  @click="showingUploadDialog = true"
                 >
                   <PlusSmallIcon
-                    v-if="!uploadEvidenceForm.processing"
                     class="w-6 h-6 p-0.5"
                   />
-                  <LoadingSpinner
-                    :loading="uploadEvidenceForm.processing"
-                    class="w-6 h-6 p-1"
-                  />
                 </button>
-
-                <p
-                  v-if="uploadEvidenceForm.errors.file"
-                  class="text-xs text-red-400"
-                >
-                  {{ uploadEvidenceForm.errors.file }}
-                </p>
               </div>
             </div>
           </div>
@@ -1427,6 +1432,107 @@ function reloadPageWithTimeout() {
           {{ __("Pardon") }}
         </LoadingButton>
       </template>
+    </JetDialogModal>
+
+
+    <JetDialogModal
+    :show="showingUploadDialog"
+    @close="showingUploadDialog = false"
+>
+    <template #title>
+        <h3 class="text-lg font-bold">
+            {{ __("Attach Evidence") }}
+        </h3>
+    </template>
+
+    <template #content>
+        <div class="space-y-6">
+            <!-- File Upload Section -->
+            <div>
+                <h4 class="mb-2 font-medium">{{ __("Attach as File") }}</h4>
+                <div class="flex items-center justify-center space-x-2">
+                <input
+                  v-if="permissions['canCreateEvidence']"
+                  ref="fileRef"
+                  type="file"
+                  class="hidden"
+                  @input="handleEvidenceAsFileUpload"
+                >
+                <button
+                  v-if="permissions['canCreateEvidence']"
+                  :disabled="uploadEvidenceAsFileForm.processing"
+                  class="flex items-center px-4 py-2 space-x-1 rounded text-white tracking-widest text-xs uppercase font-semibold bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                  @click="triggerEvidenceAsFileUploadInput"
+                >
+                  <PaperClipIcon
+                    v-if="!uploadEvidenceAsFileForm.processing"
+                    class="w-5 h-5"
+                  />
+                  <LoadingSpinner
+                    :loading="uploadEvidenceAsFileForm.processing"
+                    class="w-5 h-5"
+                  />
+                  <span>{{ __("Upload File") }}</span>
+                </button>
+                </div>
+                <p
+                    v-if="uploadEvidenceAsFileForm?.errors?.file"
+                    class="mt-1 text-xs text-red-400"
+                >
+                    {{ uploadEvidenceAsFileForm?.errors?.file }}
+                </p>
+            </div>
+
+            <!-- Divider -->
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 text-gray-500 bg-white dark:bg-cool-gray-800">
+                        {{ __("OR") }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- URL Upload Section -->
+            <div>
+                <h4 class="mb-2 font-medium">{{ __("Attach as URL") }}</h4>
+                <div class="flex items-center space-x-2">
+          <input
+            v-model="uploadEvidenceAsUrlForm.url"
+            :disabled="uploadEvidenceAsUrlForm.processing"
+            :placeholder="__('Enter URL')"
+            aria-label="url"
+            type="text"
+            class="inline-block w-full bg-gray-100 border border-gray-100 rounded-md dark:bg-cool-gray-900 focus:border-gray-300 dark:border-gray-800 dark:focus:border-gray-700 dark:text-gray-200 focus:ring-0 sm:text-sm disabled:opacity-50"
+            @keyup.enter="handleEvidenceAsUrlUpload"
+          >
+                    <LoadingButton
+                        :loading="uploadEvidenceAsUrlForm.processing"
+                        class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest uppercase transition border border-transparent rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                        @click="handleEvidenceAsUrlUpload"
+                    >
+                        {{ __("Submit") }}
+                    </LoadingButton>
+                </div>
+                <p
+                    v-if="uploadEvidenceAsUrlForm?.errors?.url"
+                    class="mt-1 text-xs text-red-400"
+                >
+                    {{ uploadEvidenceAsUrlForm?.errors?.url }}
+                </p>
+            </div>
+        </div>
+    </template>
+
+    <template #footer>
+        <JetSecondaryButton
+            @click="showingUploadDialog = false"
+        >
+            {{ __("Close") }}
+        </JetSecondaryButton>
+    </template>
     </JetDialogModal>
   </AppLayout>
 </template>

@@ -83,7 +83,7 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('player/punishments/{playerPunishment:id}/history', [\App\Http\Controllers\BanWardenController::class, 'indexLastPunishments'])->name('player.punishment.show.history');
     Route::get('player/punishments/{playerPunishment:id}/sessions', [\App\Http\Controllers\BanWardenController::class, 'indexLastSessions'])->name('player.punishment.show.session');
     Route::get('player/punishments/{playerPunishment:id}/alts', [\App\Http\Controllers\BanWardenController::class, 'indexAlts'])->name('player.punishment.show.alt');
-    Route::get('player/punishments/{playerPunishment:id}/evidence/{evidence}', [\App\Http\Controllers\BanWardenController::class, 'showEvidence'])->name('player.punishment.evidence.show');
+    Route::get('player/punishments/{playerPunishment:id}/evidence/{evidence}', [\App\Http\Controllers\BanWardenController::class, 'showMediaEvidence'])->name('player.punishment.evidence.show');
 });
 
 /**
@@ -151,7 +151,7 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     // BanWarden (Authenticated)
     Route::delete('player/punishments/{playerPunishment:id}', [\App\Http\Controllers\BanWardenController::class, 'pardon'])->name('player.punishment.pardon');
     Route::post('player/punishments/{playerPunishment:id}/evidence', [\App\Http\Controllers\BanWardenController::class, 'createEvidence'])->name('player.punishment.evidence.store');
-    Route::delete('player/punishments/{playerPunishment:id}/evidence/{evidence}', [\App\Http\Controllers\BanWardenController::class, 'deleteEvidence'])->name('player.punishment.evidence.delete');
+    Route::delete('player/punishments/{playerPunishment:id}/evidence', [\App\Http\Controllers\BanWardenController::class, 'deleteEvidence'])->name('player.punishment.evidence.delete');
 });
 
 /**

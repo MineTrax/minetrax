@@ -20,6 +20,7 @@ class PlayerPunishment extends BaseModel implements HasMedia
         'end_at' => 'datetime',
         'removed_at' => 'datetime',
         'is_ipban' => 'boolean',
+        'evidence_urls' => 'array',
     ];
 
     protected $appends = [
@@ -45,7 +46,35 @@ class PlayerPunishment extends BaseModel implements HasMedia
 
     public function getEvidencesAttribute()
     {
-        return $this->getMedia('punishment-evidence');
+        $mediaFiles = $this->getMedia('punishment-evidence');
+        $urls = $this->evidence_urls ?? [];
+
+        return collect($mediaFiles)->map(fn($mediaFile) => [
+            'type' => 'media',
+            'data' => $mediaFile,
+        ])->concat(
+                collect($urls)->map(fn($url) => [
+                    'type' => 'url',
+                    'data' => $url,
+                ])
+            );
+    }
+
+    public function scopeEvidences($query, $flag)
+    {
+        if ($flag) {
+            // where has media or evidence_urls is not null
+            return $query->where(function ($query) {
+                $query->whereHas('media')
+                    ->orWhereNotNull('evidence_urls');
+            });
+        } else {
+            // where has no media and evidence_urls is null
+            return $query->where(function ($query) {
+                $query->whereDoesntHave('media')
+                    ->whereNull('evidence_urls');
+            });
+        }
     }
 
     public function scopeStatus($query, $status)
