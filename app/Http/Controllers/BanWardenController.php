@@ -16,6 +16,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class BanWardenController extends Controller
 {
@@ -58,6 +59,7 @@ class BanWardenController extends Controller
                 'country.name',
                 'victimPlayer.username',
                 AllowedFilter::scope('status'),
+                AllowedFilter::scope('evidence_attached'),
                 AllowedFilter::custom('q', new FilterMultipleFields([
                     'id',
                     'type',
@@ -268,8 +270,7 @@ class BanWardenController extends Controller
         return $players;
     }
 
-
-    public function showEvidence(PlayerPunishment $playerPunishment, $evidence, Request $request)
+    public function showMediaEvidence(PlayerPunishment $playerPunishment, $evidence, Request $request)
     {
         $this->authorize('viewEvidence', $playerPunishment);
 
@@ -289,12 +290,17 @@ class BanWardenController extends Controller
         $evidenceMaxSizeKb = config('minetrax.banwarden.evidence_max_size_kb');
         $evidenceMaxCount = config('minetrax.banwarden.evidence_max_count');
         $request->validate([
+            'type' => 'required|string|in:media,url',
             'file' => [
-                'required',
+                'required_if:type,media',
                 'file',
                 'mimes:' . $evidenceAllowedMimetypes,
                 'max:' . $evidenceMaxSizeKb,
-            ]
+            ],
+            'url' => [
+                'required_if:type,url',
+                'url',
+            ],
         ]);
 
         $previousEvidences = $playerPunishment->evidences;
@@ -303,22 +309,52 @@ class BanWardenController extends Controller
                 ->with(['toast' => ['type' => 'error', 'title' => __('Upload Failed'), 'body' => __('You can only upload up to :count evidence files', ['count' => $evidenceMaxCount])]]);
         }
 
-        $playerPunishment->addMediaFromRequest('file')->toMediaCollection('punishment-evidence');
+        if ($request->input('type') === 'media') {
+            $playerPunishment->addMediaFromRequest('file')->toMediaCollection('punishment-evidence');
+        } else {
+            $evidences = $playerPunishment->evidence_urls ?? [];
+            $evidences[] = [
+                'id' => Str::uuid(),
+                'url' => $request->input('url'),
+            ];
+            $playerPunishment->evidence_urls = $evidences;
+            $playerPunishment->save();
+        }
 
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Upload Successful'), 'body' => __('Evidence uploaded successfully')]]);
     }
 
-    public function deleteEvidence(PlayerPunishment $playerPunishment, $evidence)
+    public function deleteEvidence(PlayerPunishment $playerPunishment, Request $request)
     {
         $this->authorize('deleteEvidence', PlayerPunishment::class);
 
-        $media = $playerPunishment->getMedia('punishment-evidence')->find($evidence);
-        if (!$media) {
-            abort(404);
-        }
+        $request->validate([
+            'evidence' => 'required|string',
+            'type' => 'required|string|in:media,url',
+        ]);
 
-        $media->delete();
+        $evidence = $request->input('evidence');
+        $type = $request->input('type');
+
+        if ($type == 'media') {
+            $media = $playerPunishment->getMedia('punishment-evidence')->find($evidence);
+            if (!$media) {
+                abort(404);
+            }
+            $media->delete();
+        } else {
+            $playerPunishment->evidence_urls = array_values(array_filter($playerPunishment->evidence_urls, function ($url) use ($evidence) {
+                return $url['id'] !== $evidence;
+            }));
+
+            // if no evidences left, set evidence_urls to null
+            if (count($playerPunishment->evidence_urls) === 0) {
+                $playerPunishment->evidence_urls = null;
+            }
+
+            $playerPunishment->save();
+        }
 
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Delete Successful'), 'body' => __('Evidence deleted successfully')]]);

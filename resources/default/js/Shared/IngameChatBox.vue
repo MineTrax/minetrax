@@ -61,7 +61,7 @@
         <div
           v-show="!loading"
           id="chat-container"
-          class="relative min-h-[5rem] flex flex-col-reverse justify-between p-1 mt-1 text-white bg-gray-200 rounded md:flex-row dark:bg-cool-gray-900"
+          class="relative min-h-[5rem] dark:invert-0 invert dark:bg flex flex-col-reverse justify-between p-1 mt-1 text-white bg-[#1a1814] rounded md:flex-row dark:bg-cool-gray-900"
         >
           <button
             v-show="!shouldDisplayPlayerList"
@@ -74,7 +74,7 @@
 
           <div
             id="chatbox"
-            class="flex flex-col overflow-auto text-sm max-h-96 hide-scrollbar invert dark:invert-0"
+            class="flex flex-col overflow-auto text-sm max-h-96 hide-scrollbar"
           >
             <p
               v-for="chat in chatLogs"
