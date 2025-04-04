@@ -351,7 +351,7 @@ const formDisabled = computed(() => {
               <p class="mb-2">
                 {{ __("Change your skin by providing a valid skin URL. You can find skin from namemc.com, mineskin.org and other skin websites.") }}
               </p>
-              <p>
+              <div>
                 {{ __("Here are some examples of valid skin url:") }}
                 <ul class="list-disc list-inside">
                   <li
@@ -362,7 +362,7 @@ const formDisabled = computed(() => {
                     {{ url }}
                   </li>
                 </ul>
-              </p>
+            </div>
             </div>
 
             <form

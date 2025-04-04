@@ -12,7 +12,7 @@
         "@formkit/vue": "^1.6.9",
         "@headlessui/vue": "^1.7.23",
         "@heroicons/vue": "^2.2.0",
-        "@inertiajs/vue3": "^2.0.2",
+        "@inertiajs/vue3": "^2.0.6",
         "@tailwindcss/forms": "^0.5.10",
         "@tailwindcss/typography": "^0.5.16",
         "@tsparticles/vue3": "^3.0.1",
