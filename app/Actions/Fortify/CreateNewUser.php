@@ -42,10 +42,13 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
         ])->validate();
 
+        $forceLowercaseUsername = config('auth.force_lowercase_username');
+        $username = $forceLowercaseUsername ? strtolower($input['username']) : $input['username'];
+
         $user = User::create([
             'name' => $input['name'],
             'email' => strtolower($input['email']),
-            'username' => strtolower($input['username']),
+            'username' => $username,
             'password' => Hash::make($input['password']),
             'country_id' => $countryId,
             'user_setup_status' => 1,

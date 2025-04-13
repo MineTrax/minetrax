@@ -183,4 +183,17 @@ return [
     |
     */
     'enforce_2fa_for_staff' => env('ENFORCE_2FA_FOR_STAFF', false),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Force Lowercase Username
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, all usernames will be converted to lowercase during
+    | registration and login processes. This ensures consistency in
+    | username handling throughout the application.
+    |
+    */
+    'force_lowercase_username' => env('FORCE_LOWERCASE_USERNAME', true),
 ];
