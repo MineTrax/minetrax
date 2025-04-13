@@ -202,11 +202,14 @@ class UserController extends Controller
             'profile_photo_source' => $request->profile_photo_source,
         ];
 
+        $forceLowercaseUsername = config('auth.force_lowercase_username');
+        $username = $forceLowercaseUsername ? strtolower($request->username) : $request->username;
+
         // Update the User Detail
         $user->name = $request->name;
         $user->dob = $request->dob;
         $user->email = strtolower($request->email);
-        $user->username = strtolower($request->username);
+        $user->username = $username;
         $user->gender = $request->gender;
         $user->social_links = $social_links;
         $user->settings = $settings;
