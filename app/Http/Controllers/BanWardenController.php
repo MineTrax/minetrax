@@ -60,6 +60,7 @@ class BanWardenController extends Controller
                 'victimPlayer.username',
                 AllowedFilter::scope('status'),
                 AllowedFilter::scope('evidence_attached'),
+                AllowedFilter::scope('by_console'),
                 AllowedFilter::custom('q', new FilterMultipleFields([
                     'id',
                     'type',

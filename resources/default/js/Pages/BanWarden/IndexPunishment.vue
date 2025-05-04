@@ -73,9 +73,23 @@ const headerRow = [
         key: 'creator_username',
         sortable: false,
         label: __('Staff'),
-        filterable: {
-            type: 'text',
-        }
+        filterable: [
+            {
+                key: 'creator_username',
+                label: __('Staff'),
+                type: 'text',
+            },
+            {
+                key: 'by_console',
+                type: 'select',
+                options: [
+                    'true',
+                    'false'
+                ],
+                searchable: false,
+                label: __('By Console'),
+            }
+        ]
     },
     {
         key: 'reason',

@@ -98,6 +98,21 @@ class PlayerPunishment extends BaseModel implements HasMedia
         return $query;
     }
 
+    public function scopeByConsole($query, $flag = true)
+    {
+        if ($flag) {
+            return $query->where(function ($query) {
+                $query->whereNull('creator_uuid')
+                    ->orWhere('creator_username', 'CONSOLE');
+            });
+        } else {
+            return $query->where(function ($query) {
+                $query->whereNotNull('creator_uuid')
+                    ->where('creator_username', '!=', 'CONSOLE');
+            });
+        }
+    }
+
     public function getIsActiveAttribute()
     {
         return $this->type != PlayerPunishmentType::KICK && $this->removed_at === null && ($this->end_at === null || $this->end_at > now());
