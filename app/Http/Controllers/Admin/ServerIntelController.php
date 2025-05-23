@@ -227,26 +227,26 @@ class ServerIntelController extends Controller
             $avgSessionsPerPlayer['last_24h'] = DB::table($minecraftPlayerSessionTableName)
                 ->whereIn('server_id', $selectedServers->pluck('id'))
                 ->where('created_at', '>=', now()->subHours(24))
-                ->select('player_uuid', DB::raw('COUNT(*) as count'))
-                ->groupBy('player_uuid')
-                ->pluck('count')?->avg() ?: 0;
+                ->selectRaw('COUNT(*) / COUNT(DISTINCT player_uuid) AS avg_sessions_per_player')
+                ->value('avg_sessions_per_player')
+                ?: 0;
             $avgSessionsPerPlayer['last_7days'] = DB::table($minecraftPlayerSessionTableName)
                 ->whereIn('server_id', $selectedServers->pluck('id'))
                 ->where('created_at', '>=', now()->subWeek())
-                ->select('player_uuid', DB::raw('COUNT(*) as count'))
-                ->groupBy('player_uuid')
-                ->pluck('count')?->avg() ?: 0;
+                ->selectRaw('COUNT(*) / COUNT(DISTINCT player_uuid) AS avg_sessions_per_player')
+                ->value('avg_sessions_per_player')
+                ?: 0;
             $avgSessionsPerPlayer['last_30days'] = DB::table($minecraftPlayerSessionTableName)
                 ->whereIn('server_id', $selectedServers->pluck('id'))
                 ->where('created_at', '>=', now()->subMonth())
-                ->select('player_uuid', DB::raw('COUNT(*) as count'))
-                ->groupBy('player_uuid')
-                ->pluck('count')?->avg() ?: 0;
+                ->selectRaw('COUNT(*) / COUNT(DISTINCT player_uuid) AS avg_sessions_per_player')
+                ->value('avg_sessions_per_player')
+                ?: 0;
             $avgSessionsPerPlayer['all_time'] = DB::table($minecraftPlayerSessionTableName)
                 ->whereIn('server_id', $selectedServers->pluck('id'))
-                ->select('player_uuid', DB::raw('COUNT(*) as count'))
-                ->groupBy('player_uuid')
-                ->pluck('count')?->avg() ?: 0;
+                ->selectRaw('COUNT(*) / COUNT(DISTINCT player_uuid) AS avg_sessions_per_player')
+                ->value('avg_sessions_per_player')
+                ?: 0;
             $numbersData['avg_session_per_player'] = $avgSessionsPerPlayer;
 
             return $numbersData;
