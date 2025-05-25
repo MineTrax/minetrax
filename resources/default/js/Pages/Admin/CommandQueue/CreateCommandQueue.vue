@@ -208,7 +208,12 @@
                       :close-on-select="false"
                       :clear-on-select="false"
                       :searchable="true"
-                      :placeholder="__('Select players to run command on')+'...'"
+                      :hide-selected="true"
+                      :loading="isLoadingPlayers"
+                      :internal-search="false"
+                      @search-change="searchPlayers"
+                      :placeholder="__('Type to search players')+'...'"
+                      :no-options="__('Type at least 2 characters to search')"
                     />
                     <p class="text-sm text-red-500 mt-0.5">
                       {{ form.errors['players.id'] }}
@@ -263,13 +268,12 @@ import Multiselect from 'vue-multiselect';
 import DatePicker from 'vue-datepicker-next';
 import JetInputError from '@/Jetstream/InputError.vue';
 import { useTranslations } from '@/Composables/useTranslations';
+import axios from 'axios';
+import { ref } from 'vue';
 const { __ } = useTranslations();
 
 defineProps({
     servers: {
-        type: Array,
-    },
-    players: {
         type: Array,
     },
 });
@@ -280,6 +284,10 @@ const playerRunScopeList = {
     unlinked: 'Unlinked Only - for every player who are not linked to a user account',
     custom: 'Custom - select players from dropdown',
 };
+
+const players = ref([]);
+const isLoadingPlayers = ref(false);
+let searchTimeout = null;
 
 const form = useForm({
     scope: 'global',
@@ -300,6 +308,38 @@ function serversCustomLabel({name, hostname}) {
 function playersCustomLabel({username, uuid}) {
     return `${username} - ${uuid}`;
 }
+
+const searchPlayers = (query) => {
+    // Clear previous timeout
+    if (searchTimeout) {
+        clearTimeout(searchTimeout);
+    }
+
+    if (!query || query.length < 2) {
+        players.value = [];
+        return;
+    }
+
+    // Debounce the search to avoid too many API calls
+    searchTimeout = setTimeout(async () => {
+        isLoadingPlayers.value = true;
+
+        try {
+            const response = await axios.get('/stats', {
+                params: {
+                    'filter[q]': query
+                }
+            });
+
+            players.value = response.data.data || response.data || [];
+        } catch (error) {
+            console.error('Error searching players:', error);
+            players.value = [];
+        } finally {
+            isLoadingPlayers.value = false;
+        }
+    }, 300); // 300ms debounce
+};
 
 const submitRunCommandForm = () => {
     form.post(route('admin.command-queue.store'), {

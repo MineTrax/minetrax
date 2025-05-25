@@ -5,26 +5,73 @@ namespace App\Http\Controllers;
 use App\Models\MinecraftPlayer;
 use App\Models\Player;
 use App\Models\Rank;
-use App\Models\Server;
+use App\Queries\Filters\FilterMultipleFields;
 use App\Settings\PlayerSettings;
 use App\Settings\PluginSettings;
 use App\Utils\Helpers\MinecraftSkinUtils;
 use DB;
 use Exception;
 use Gate;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PlayerController extends Controller
 {
     public function index(Request $request, PlayerSettings $playerSettings): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        $players = Player::select(['id', 'username', 'rating', 'position', 'total_score', 'uuid', 'play_time', 'last_seen_at', 'first_seen_at', 'rank_id', 'country_id', 'skin_texture_id'])
+        $perPage = $request->input('perPage', 15);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $fields = [
+            'id',
+            'username',
+            'rating',
+            'position',
+            'total_score',
+            'uuid',
+            'play_time',
+            'last_seen_at',
+            'first_seen_at',
+            'rank_id',
+            'country_id',
+            'skin_texture_id'
+        ];
+
+        $positionSortWithoutNullsFirst = AllowedSort::callback('position', new class {
+            public function __invoke(Builder $query)
+            {
+                return $query->orderBy(DB::raw('-`position`'), 'desc');
+            }
+        });
+        $players = QueryBuilder::for(Player::class)
+            ->select($fields)
             ->with(['country:id,iso_code,flag,name', 'rank:id,shortname,name'])
-            ->orderBy(DB::raw('-`position`'), 'desc') // this sort with position but excludes the nulls
-            ->orderByDesc('rating')
-            ->orderByDesc('total_score')
-            ->simplePaginate(15);
+            ->allowedFilters([
+                ...$fields,
+                'country.name',
+                'rank.name',
+                'rank.shortname',
+                AllowedFilter::custom('q', new FilterMultipleFields(['username', 'uuid'])),
+            ])
+            ->allowedSorts([
+                'id',
+                'username',
+                'rating',
+                'total_score',
+                'play_time',
+                'last_seen_at',
+                'first_seen_at',
+                $positionSortWithoutNullsFirst
+            ])
+            ->defaultSort($positionSortWithoutNullsFirst)
+            ->simplePaginate($perPage)
+            ->withQueryString();
 
         if ($request->wantsJson()) {
             return response()->json($players);
