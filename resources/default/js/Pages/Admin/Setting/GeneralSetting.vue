@@ -506,8 +506,8 @@
                             class="flex-col col-span-6 space-y-1 sm:col-span-6"
                           >
                             <div class="flex space-x-4">
-                              <div class="w-5 drag-handle" />
-                              <div class="w-5 drag-handle" />
+                              <div class="w-5" />
+                              <div class="w-5" />
                               <label
                                 class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
                               >{{ __("Voting Site Link") }}</label>

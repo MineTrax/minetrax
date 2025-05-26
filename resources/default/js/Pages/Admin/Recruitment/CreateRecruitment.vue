@@ -286,6 +286,7 @@
                       <div class="w-full space-y-1">
                         <div class="flex space-x-4">
                           <div class="w-5" />
+                          <div class="w-5" />
                           <label
                             class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
                           >{{
@@ -319,141 +320,125 @@
                           </label>
                         </div>
 
-                        <div
-                          v-for="(
-                            field, index
-                          ) in form.fields"
-                          :key="index"
-                          class="flex space-x-4"
+                        <Draggable
+                          v-model="form.fields"
+                          :swap-threshold="0.65"
+                          class="space-y-2"
+                          handle=".drag-handle"
                         >
-                          <button
-                            type="button"
-                            class="focus:outline-none group"
-                            @click="
-                              removeField(index)
-                            "
-                          >
-                            <Icon
-                              class="w-5 h-5 text-gray-300 group-hover:text-red-500"
-                              name="trash"
-                            />
-                          </button>
-                          <div class="flex-1">
-                            <x-input
-                              v-model="field.label
-                              "
-                              :label="__(
-                                'Name Field :index',
-                                {
-                                  index:
-                                    index +
-                                    1,
-                                }
-                              )
-                              "
-                              :error="form.errors[
-                                `fields.${index}.label`
-                              ] ||
-                                form.errors[
-                                  `fields.${index}.name`
-                                ]
-                              "
-                              type="text"
-                              help-error-flex="flex-col"
-                              :required="true"
-                            />
-                          </div>
-                          <div class="flex-1">
-                            <x-select
-                              v-model="field.type"
-                              :label="__('Page Type')
-                              "
-                              :error="form.errors[
-                                `fields.${index}.type`
-                              ]
-                              "
-                              help-error-flex="flex-col"
-                              :select-list="Object.keys(
-                                formFieldType
-                              )
-                              "
-                              :required="true"
-                            />
-                          </div>
-                          <div class="flex-1">
-                            <x-input
-                              v-model="field.validation
-                              "
-                              :label="__(
-                                'Validation Field :index',
-                                {
-                                  index:
-                                    index +
-                                    1,
-                                }
-                              )
-                              "
-                              :error="form.errors[
-                                `fields.${index}.validation`
-                              ]
-                              "
-                              type="text"
-                              help-error-flex="flex-col"
-                            />
-                          </div>
-                          <div class="flex-1">
-                            <x-input
-                              v-model="field.help"
-                              :label="__(
-                                'Help Text Field :index',
-                                {
-                                  index:
-                                    index +
-                                    1,
-                                }
-                              )
-                              "
-                              :error="form.errors[
-                                `fields.${index}.help`
-                              ]
-                              "
-                              type="text"
-                              help-error-flex="flex-col"
-                            />
-                          </div>
-                          <div class="flex-1">
-                            <x-input
-                              v-if="formFieldType[
-                                field.type
-                              ].hasOptions
-                              "
-                              v-model="field.options
-                              "
-                              :label="__(
-                                'Options Field :index',
-                                {
-                                  index:
-                                    index +
-                                    1,
-                                }
-                              )
-                              "
-                              :error="form.errors[
-                                `fields.${index}.options`
-                              ]
-                              "
-                              type="text"
-                              help-error-flex="flex-col"
-                              :required="true"
-                            />
-                            <div
-                              v-else
-                              class="h-full text-gray-700 text-lg font-semibold dark:text-gray-300 w-full flex items-center justify-center"
-                            >
-                              -
+                          <template #item="{ element: field, index }">
+                            <div class="flex space-x-4 items-start">
+                              <div class="drag-handle cursor-move mt-6">
+                                <ArrowsUpDownIcon
+                                  class="w-5 h-5 text-gray-400 hover:text-gray-600"
+                                />
+                              </div>
+                              <button
+                                type="button"
+                                class="focus:outline-none group mt-6"
+                                @click="removeField(index)"
+                              >
+                                <Icon
+                                  class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                  name="trash"
+                                />
+                              </button>
+                              <div class="flex-1">
+                                <x-input
+                                  v-model="field.label"
+                                  :label="__(
+                                    'Name Field :index',
+                                    {
+                                      index: index + 1,
+                                    }
+                                  )"
+                                  :error="form.errors[
+                                    `fields.${index}.label`
+                                  ] ||
+                                    form.errors[
+                                      `fields.${index}.name`
+                                    ]
+                                  "
+                                  type="text"
+                                  help-error-flex="flex-col"
+                                  :required="true"
+                                />
+                              </div>
+                              <div class="flex-1">
+                                <x-select
+                                  v-model="field.type"
+                                  :label="__('Field Type')"
+                                  :error="form.errors[
+                                    `fields.${index}.type`
+                                  ]"
+                                  help-error-flex="flex-col"
+                                  :select-list="Object.keys(
+                                    formFieldType
+                                  )"
+                                  :required="true"
+                                />
+                              </div>
+                              <div class="flex-1">
+                                <x-input
+                                  v-model="field.validation"
+                                  :label="__(
+                                    'Validation Field :index',
+                                    {
+                                      index: index + 1,
+                                    }
+                                  )"
+                                  :error="form.errors[
+                                    `fields.${index}.validation`
+                                  ]"
+                                  type="text"
+                                  help-error-flex="flex-col"
+                                />
+                              </div>
+                              <div class="flex-1">
+                                <x-input
+                                  v-model="field.help"
+                                  :label="__(
+                                    'Help Text Field :index',
+                                    {
+                                      index: index + 1,
+                                    }
+                                  )"
+                                  :error="form.errors[
+                                    `fields.${index}.help`
+                                  ]"
+                                  type="text"
+                                  help-error-flex="flex-col"
+                                />
+                              </div>
+                              <div class="flex-1">
+                                <x-input
+                                  v-if="formFieldType[
+                                    field.type
+                                  ].hasOptions"
+                                  v-model="field.options"
+                                  :label="__(
+                                    'Options Field :index',
+                                    {
+                                      index: index + 1,
+                                    }
+                                  )"
+                                  :error="form.errors[
+                                    `fields.${index}.options`
+                                  ]"
+                                  type="text"
+                                  help-error-flex="flex-col"
+                                  :required="true"
+                                />
+                                <div
+                                  v-else
+                                  class="h-full text-gray-700 text-lg font-semibold dark:text-gray-300 w-full flex items-center justify-center"
+                                >
+                                  -
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
+                          </template>
+                        </Draggable>
 
                         <div class="flex justify-end mt-1">
                           <button
@@ -533,6 +518,8 @@ import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import {useFormKit} from '@/Composables/useFormKit';
 import { kebabCase } from 'lodash';
+import Draggable from 'vuedraggable';
+import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline';
 
 defineProps({
     roles: {
