@@ -506,7 +506,8 @@
                             class="flex-col col-span-6 space-y-1 sm:col-span-6"
                           >
                             <div class="flex space-x-4">
-                              <div class="w-5" />
+                              <div class="w-5 drag-handle" />
+                              <div class="w-5 drag-handle" />
                               <label
                                 class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
                               >{{ __("Voting Site Link") }}</label>
@@ -515,40 +516,51 @@
                               >{{ __("Display Name") }}</label>
                             </div>
 
-                            <div
-                              v-for="(votingsite, index) in form.voteforserverbox_content"
-                              :key="index"
-                              class="flex space-x-4"
+                            <Draggable
+                              v-model="form.voteforserverbox_content"
+                              :swap-threshold="0.65"
+                              class="space-y-2"
+                              item-key="id"
+                              handle=".drag-handle"
                             >
-                              <button
-                                type="button"
-                                class="focus:outline-none group"
-                                @click="deleteVotingSite(index)"
-                              >
-                                <icon
-                                  class="w-5 h-5 text-gray-300 group-hover:text-red-500"
-                                  name="trash"
-                                />
-                              </button>
-                              <div class="flex-1">
-                                <x-input
-                                  v-model="votingsite.url"
-                                  :label="__('Voting Site URL :index', {index: index+1})"
-                                  :error="form.errors[`voteforserverbox_content.${index}.url`]"
-                                  type="text"
-                                  help-error-flex="flex-col"
-                                />
-                              </div>
-                              <div class="flex-1">
-                                <x-input
-                                  v-model="votingsite.name"
-                                  :label="__('Voting Site Name :index', {index: index+1})"
-                                  :error="form.errors[`voteforserverbox_content.${index}.name`]"
-                                  type="text"
-                                  help-error-flex="flex-col"
-                                />
-                              </div>
-                            </div>
+                              <template #item="{ element: votingsite, index }">
+                                <div class="flex space-x-4 items-start">
+                                  <div class="drag-handle cursor-move mt-6">
+                                    <ArrowsUpDownIcon
+                                      class="w-5 h-5 text-gray-400 hover:text-gray-600"
+                                    />
+                                  </div>
+                                  <button
+                                    type="button"
+                                    class="focus:outline-none group mt-6"
+                                    @click="deleteVotingSite(index)"
+                                  >
+                                    <icon
+                                      class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                      name="trash"
+                                    />
+                                  </button>
+                                  <div class="flex-1">
+                                    <x-input
+                                      v-model="votingsite.url"
+                                      :label="__('Voting Site URL :index', {index: index+1})"
+                                      :error="form.errors[`voteforserverbox_content.${index}.url`]"
+                                      type="text"
+                                      help-error-flex="flex-col"
+                                    />
+                                  </div>
+                                  <div class="flex-1">
+                                    <x-input
+                                      v-model="votingsite.name"
+                                      :label="__('Voting Site Name :index', {index: index+1})"
+                                      :error="form.errors[`voteforserverbox_content.${index}.name`]"
+                                      type="text"
+                                      help-error-flex="flex-col"
+                                    />
+                                  </div>
+                                </div>
+                              </template>
+                            </Draggable>
 
                             <div class="flex justify-end mt-1">
                               <button
@@ -653,8 +665,10 @@ import XInput from '@/Components/Form/XInput.vue';
 import Icon from '@/Components/Icon.vue';
 import EasyMDE from 'easymde';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import Draggable from 'vuedraggable';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline';
 
 export default {
     components: {
@@ -664,7 +678,9 @@ export default {
         LoadingButton,
         JetSecondaryButton,
         Icon,
-        XInput
+        XInput,
+        Draggable,
+        ArrowsUpDownIcon
     },
     props: {
         settings: {
@@ -685,7 +701,10 @@ export default {
                 enable_welcomebox: this.settings.enable_welcomebox,
                 welcomebox_content: this.settings.welcomebox_content,
                 enable_voteforserverbox: this.settings.enable_voteforserverbox,
-                voteforserverbox_content: this.settings.voteforserverbox_content || [{url: '', name: ''}],
+                voteforserverbox_content: this.settings.voteforserverbox_content?.map((item, index) => ({
+                    ...item,
+                    id: index,
+                })) || [{url: '', name: '', id: 1}],
                 enable_onlineuserbox: this.settings.enable_onlineuserbox,
                 enable_newuserbox: this.settings.enable_newuserbox,
                 enable_didyouknowbox: this.settings.enable_didyouknowbox,
@@ -757,6 +776,7 @@ export default {
             this.form.voteforserverbox_content.push({
                 url: '',
                 name: '',
+                id: this.form.voteforserverbox_content.length + 1,
             });
         },
         deleteVotingSite(index) {
