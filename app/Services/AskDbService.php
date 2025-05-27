@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
-use EchoLabs\Prism\Facades\Tool;
-use EchoLabs\Prism\ValueObjects\Messages\SystemMessage;
-use EchoLabs\Prism\ValueObjects\Messages\UserMessage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Prism\Prism\Facades\Tool;
+use Prism\Prism\ValueObjects\Messages\SystemMessage;
+use Prism\Prism\ValueObjects\Messages\UserMessage;
+
 
 const STRICT_MODE = true;
 const IGNORE_TABLES = [
