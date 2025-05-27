@@ -1,18 +1,35 @@
 <template>
   <jet-dropdown
     width="full"
-    class="ml-4"
+    class="ml-4 relative"
   >
     <template #trigger>
-      <BellIcon
-        class="w-5 h-5 hover:cursor-pointer text-gray-500 dark:text-gray-400 dark:hover:text-gray-200"
-      />
-      <span class="sr-only">{{ __("Notifications") }}</span>
-      <div
-        v-if="notifications && notifications.length > 0"
-        class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-800 cursor-pointer"
-      >
-        {{ notifications.length }}
+      <div class="relative hover:cursor-pointer">
+        <BellIcon
+          :class="[
+            'w-5 h-5 transition-all duration-300',
+            notifications && notifications.length > 0
+              ? 'text-red-500 dark:text-red-400 animate-pulse'
+              : 'text-gray-500 dark:text-gray-400 dark:hover:text-gray-200'
+          ]"
+        />
+        <span class="sr-only">{{ __("Notifications") }}</span>
+
+        <!-- Enhanced notification badge with glow and bounce -->
+        <div
+          v-if="notifications && notifications.length > 0"
+          class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-800 cursor-pointer animate-bounce shadow-lg"
+          style="animation-duration: 2s; box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);"
+        >
+          {{ notifications.length }}
+        </div>
+
+        <!-- Pulsing ring effect for extra attention -->
+        <div
+          v-if="notifications && notifications.length > 0"
+          class="absolute -inset-1 bg-red-500 rounded-full opacity-20 animate-ping"
+          style="animation-duration: 2s;"
+        ></div>
       </div>
     </template>
 

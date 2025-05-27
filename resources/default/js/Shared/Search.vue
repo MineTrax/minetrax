@@ -4,13 +4,15 @@
       <input
         v-model="searchString"
         aria-label="search"
-        class="border-none bg-gray-200 dark:bg-cool-gray-900 h-10 px-5 pr-10 focus:w-80 rounded-full text-sm focus:outline-none focus:ring-0"
-        :class="{'w-80': showResults}"
+        class="border-none bg-gray-200 dark:bg-cool-gray-900 h-10 px-5 pr-10 w-48 rounded-full text-sm focus:outline-none focus:ring-0 transition-all duration-300 ease-in-out"
+        :class="{'w-80': showResults || isFocused}"
         type="search"
         name="search"
         :placeholder="__('Search')+'..'"
         autocomplete="off"
         @input="performSearch"
+        @focus="isFocused = true"
+        @blur="handleBlur"
       >
       <button
         type="submit"
@@ -167,7 +169,8 @@ export default {
             loading: false,
             searchString: '',
             usersList: [],
-            playersList: []
+            playersList: [],
+            isFocused: false
         };
     },
     // This hide the dropdown if clicked outside of the component
@@ -177,6 +180,7 @@ export default {
             if (!this.$el.contains(e.target)){
                 this.showResults = false;
                 this.searchString = '';
+                this.isFocused = false;
             }
         });
     },
@@ -194,7 +198,16 @@ export default {
             }).finally(() => {
                 this.loading = false;
             });
-        }, 200)
+        }, 200),
+        handleBlur() {
+            // Use setTimeout to allow click events on results to fire first
+            setTimeout(() => {
+                this.isFocused = false;
+                if (!this.searchString) {
+                    this.showResults = false;
+                }
+            }, 150);
+        }
     },
 };
 </script>
