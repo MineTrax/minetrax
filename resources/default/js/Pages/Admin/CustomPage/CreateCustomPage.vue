@@ -169,7 +169,7 @@
                           />
 
                           <XCheckbox
-                            v-show="pageType !== 'redirect'"
+                            v-show="pageType !== 'redirect' && pageType !== 'html'"
                             id="is_sidebar_visible"
                             v-model="form.is_sidebar_visible"
                             :label="__('Sidebar Visible')"
