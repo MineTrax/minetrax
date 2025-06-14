@@ -106,28 +106,28 @@ function pagination(currentPage, pageCount) {
     <InertiaLink
       v-if="props.data.prev_page_url"
       :href="data.prev_page_url"
-      class="relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+      class="relative inline-flex items-center rounded-md border border-secondary-300 dark:border-secondary-800 dark:bg-surface-700 dark:text-secondary-300 dark:hover:bg-surface-600 bg-white px-4 py-2 text-sm font-medium text-secondary-700 hover:bg-surface-50"
     >
       {{ __("Previous") }}
     </InertiaLink>
     <button
       v-else
       disabled
-      class="relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-500  bg-white px-4 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
+      class="relative inline-flex items-center rounded-md border border-secondary-300 dark:border-secondary-800 dark:bg-surface-700 dark:text-secondary-500  bg-white px-4 py-2 text-sm font-medium text-secondary-400 cursor-not-allowed"
     >
       {{ __("Previous") }}
     </button>
     <InertiaLink
       v-if="props.data.next_page_url"
       :href="data.next_page_url"
-      class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+      class="relative ml-3 inline-flex items-center rounded-md border border-secondary-300 dark:border-secondary-800 dark:bg-surface-700 dark:text-secondary-300 dark:hover:bg-surface-600 bg-white px-4 py-2 text-sm font-medium text-secondary-700 hover:bg-surface-50"
     >
       {{ __("Next") }}
     </InertiaLink>
     <button
       v-else
       disabled
-      class="relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-500  bg-white px-4 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
+      class="relative inline-flex items-center rounded-md border border-secondary-300 dark:border-secondary-800 dark:bg-surface-700 dark:text-secondary-500  bg-white px-4 py-2 text-sm font-medium text-secondary-400 cursor-not-allowed"
     >
       {{ __("Next") }}
     </button>
@@ -140,17 +140,17 @@ function pagination(currentPage, pageCount) {
   >
     <InertiaLink
       :href="previousPage.url ?? '#'"
-      class="relative disabled:bg-gray-900 inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:z-20 focus:outline-offset-0"
+      class="relative disabled:bg-surface-900 inline-flex items-center rounded-l-md px-2 py-2 text-secondary-400 dark:text-secondary-300 ring-1 ring-inset ring-secondary-300 dark:ring-secondary-700 focus:z-20 focus:outline-offset-0"
       :class="[
         previousPage.url == null
           ? 'pointer-events-none'
-          : 'hover:bg-gray-50 dark:hover:bg-gray-700',
+          : 'hover:bg-surface-50 dark:hover:bg-surface-700',
       ]"
     >
       <span class="sr-only">{{ __("Previous") }}</span>
       <ChevronLeftIcon class="h-5 w-5" />
     </InertiaLink>
-    <!-- Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" -->
+    <!-- Current: "z-10 bg-primary-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-secondary-900 ring-1 ring-inset ring-secondary-300 hover:bg-surface-50 focus:outline-offset-0" -->
 
     <template
       v-for="(page, index) in pageGenArray"
@@ -158,16 +158,16 @@ function pagination(currentPage, pageCount) {
     >
       <span
         v-if="page === '...'"
-        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:outline-offset-0"
+        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-secondary-700 dark:text-secondary-300 ring-1 ring-inset ring-secondary-300 dark:ring-secondary-700 focus:outline-offset-0"
       >...</span>
       <InertiaLink
         v-else
         :href="pages[page - 1].url"
-        class="relative inline-flex items-center px-4 py-2 text-sm text-gray-900 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:z-20 focus:outline-offset-0"
+        class="relative inline-flex items-center px-4 py-2 text-sm text-secondary-900 dark:text-secondary-300 ring-1 ring-inset ring-secondary-300 dark:ring-secondary-700 focus:z-20 focus:outline-offset-0"
         :class="[
           pages[page - 1].active
-            ? 'bg-gray-300 dark:bg-gray-900 font-semibold'
-            : 'hover:bg-gray-50 dark:hover:bg-gray-700',
+            ? 'bg-surface-300 dark:bg-surface-900 font-semibold'
+            : 'hover:bg-surface-50 dark:hover:bg-surface-700',
         ]"
       >
         {{ pages[page - 1].label }}
@@ -177,11 +177,11 @@ function pagination(currentPage, pageCount) {
     <InertiaLink
       :disabled="!nextPage.url == null"
       :href="nextPage.url ?? '#'"
-      class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:z-20 focus:outline-offset-0"
+      class="relative inline-flex items-center rounded-r-md px-2 py-2 text-secondary-400 dark:text-secondary-300 ring-1 ring-inset ring-secondary-300 dark:ring-secondary-700 focus:z-20 focus:outline-offset-0"
       :class="[
         nextPage.url == null
           ? 'pointer-events-none'
-          : 'hover:bg-gray-50 dark:hover:bg-gray-700',
+          : 'hover:bg-surface-50 dark:hover:bg-surface-700',
       ]"
     >
       <span class="sr-only">{{ __("Next") }}</span>

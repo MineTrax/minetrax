@@ -159,14 +159,14 @@ watchEffect(() => {
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between md:mb-4">
         <h1
-          class="text-center font-bold text-2xl text-gray-900 dark:text-gray-200 mb-5"
+          class="text-center font-bold text-2xl text-secondary-900 dark:text-secondary-200 mb-5"
         >
           {{ recruitment.title }}
         </h1>
         <div class="">
           <inertia-link
             :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Homepage") }}</span>
           </inertia-link>
@@ -176,8 +176,8 @@ watchEffect(() => {
         <div class="overflow-x-auto md:w-9/12">
           <AlertCard
             v-if="formDisabled && disabledErrorMessage.title"
-            text-color="text-red-800 dark:text-red-500"
-            border-color="border-red-500"
+            text-color="text-error-800 dark:text-error-500"
+            border-color="border-error-500"
           >
             {{ disabledErrorMessage.title }}
             <template #body>
@@ -187,8 +187,8 @@ watchEffect(() => {
 
           <AlertCard
             v-if="formDisabled && userLastActiveSubmission"
-            text-color="text-sky-800 dark:text-sky-500"
-            border-color="border-sky-500"
+            text-color="text-primary-800 dark:text-primary-500"
+            border-color="border-primary-500"
           >
             {{ __("You have already applied!") }}
             <template #body>
@@ -207,7 +207,7 @@ watchEffect(() => {
 
               <div class="flex mt-2">
                 <InertiaLink
-                  class="p-2 border border-sky-800 dark:border-sky-500 rounded text-sky-800 dark:text-sky-500 hover:bg-sky-200 dark:hover:bg-sky-900"
+                  class="p-2 border border-primary-800 dark:border-primary-500 rounded text-primary-800 dark:text-primary-500 hover:bg-primary-200 dark:hover:bg-primary-900"
                   :href="
                     route('recruitment-submission.show', {
                       recruitment: recruitment.slug,
@@ -264,11 +264,11 @@ watchEffect(() => {
 
           <div class="min-w-full">
             <div
-              class="shadow max-w-none bg-white dark:bg-cool-gray-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded"
+              class="shadow max-w-none bg-white dark:bg-surface-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded"
             >
               <div
                 v-if="recruitment.description"
-                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b dark:border-gray-700"
+                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b dark:border-secondary-700"
                 v-html="recruitment.description_html"
               />
 
@@ -287,7 +287,7 @@ watchEffect(() => {
                     recruitment.max_submission_per_user &&
                     userSubmissionsCount > 0
                 "
-                class="text-xs text-gray-500 dark:text-gray-400 text-right"
+                class="text-xs text-secondary-500 dark:text-secondary-400 text-right"
               >
                 {{
                   __(

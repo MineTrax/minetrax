@@ -72,16 +72,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage Polls')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-secondary-400">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
           {{ __("Manage Polls") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create polls')"
             :href="route('admin.poll.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
           >
             <span>{{ __("Create New") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Poll") }}</span>
@@ -90,20 +90,20 @@ const headerRow = [
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-white rounded shadow dark:bg-surface-800"
         :header="headerRow"
         :data="polls"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
           >
             {{ item.id }}
           </td>
 
           <DtRowItem>
-            <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
+            <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
               {{ item.question }}
             </div>
           </DtRowItem>
@@ -113,12 +113,12 @@ const headerRow = [
               <span
                 v-for="option in item.options"
                 :key="option.id"
-                class="px-2 mr-1 mb-1 inline-flex text-xs leading-5 font-semibold rounded bg-gray-100 text-gray-800 dark:bg-cool-gray-700 dark:text-gray-300"
+                class="px-2 mr-1 mb-1 inline-flex text-xs leading-5 font-semibold rounded bg-surface-100 text-secondary-800 dark:bg-surface-700 dark:text-secondary-300"
               >{{ option.name }}</span>
             </template>
             <span
               v-else
-              class="italic text-gray-500"
+              class="italic text-secondary-500"
             >{{ __("No options.") }}</span>
           </td>
 
@@ -163,19 +163,19 @@ const headerRow = [
             <span v-if="item.creator">{{ item.creator.username }}</span>
             <span
               v-else
-              class="italic text-red-600"
+              class="italic text-error-600"
             >{{ __("None") }}</span>
           </DtRowItem>
 
           <DtRowItem>
             <Icon
               v-if="item.is_closed"
-              class="text-green-500"
+              class="text-success-500"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </DtRowItem>
@@ -189,7 +189,7 @@ const headerRow = [
               as="button"
               method="put"
               :href="route('admin.poll.lock', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Lock Poll')"
             >
               <LockClosedIcon class="inline-block w-5 h-5" />
@@ -200,7 +200,7 @@ const headerRow = [
               as="button"
               method="put"
               :href="route('admin.poll.unlock', item.id)"
-              class="inline-flex items-center justify-center text-green-600 dark:text-green-500 hover:text-green-800 dark:hover:text-green-800"
+              class="inline-flex items-center justify-center text-success-600 dark:text-success-500 hover:text-success-800 dark:hover:text-success-800"
               :title="__('Unlock Poll')"
             >
               <LockOpenIcon class="inline-block w-5 h-5" />
@@ -215,7 +215,7 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.poll.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Poll')"
             >
               <TrashIcon class="inline-block w-5 h-5" />

@@ -7,7 +7,7 @@
     <jet-authentication-card>
       <div
         v-if="status"
-        class="mb-4 font-medium text-sm text-green-600"
+        class="mb-4 font-medium text-sm text-success-600"
       >
         {{ status }}
       </div>
@@ -57,7 +57,7 @@
           <inertia-link
             v-if="canResetPassword"
             :href="route('password.request')"
-            class="underline text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+            class="underline text-sm text-secondary-600 hover:text-secondary-900 dark:text-secondary-400 dark:hover:text-secondary-200"
           >
             {{ __("Forgot your password?") }}
           </inertia-link>
@@ -65,7 +65,7 @@
 
           <loading-button
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
           >
             {{ __("Login") }}
           </loading-button>

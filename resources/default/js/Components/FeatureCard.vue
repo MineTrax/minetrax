@@ -1,5 +1,5 @@
 <template>
-  <div :class="`bg-white dark:bg-cool-gray-800 shadow rounded border-t-4 border-${color}-500 p-3`">
+  <div :class="`bg-white dark:bg-surface-800 shadow rounded border-t-4 border-${color}-500 p-3`">
     <div :class="`inline px-2 py-1 bg-${color}-100 dark:bg-opacity-10 text-${color}-500 rounded text-sm font-semibold`">
       {{ capitalize(feature.type) }}
     </div>
@@ -14,10 +14,10 @@
         alt="Image"
       >
     </a>
-    <h4 class="font-bold text-black dark:text-gray-200 mt-2 text-lg">
+    <h4 class="font-bold text-black dark:text-secondary-200 mt-2 text-lg">
       {{ feature.title }}
     </h4>
-    <p class="text-sm text-gray-700 dark:text-gray-400">
+    <p class="text-sm text-secondary-700 dark:text-secondary-400">
       {{ feature.desc }}
     </p>
   </div>

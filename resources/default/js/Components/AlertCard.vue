@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`mb-4 bg-white dark:bg-cool-gray-800 border-t-4 ${borderColor} rounded-b ${textColor} px-4 py-3 shadow relative`"
+    :class="`mb-4 bg-white dark:bg-surface-800 border-t-4 ${borderColor} rounded-b ${textColor} px-4 py-3 shadow relative`"
     role="alert"
   >
     <div class="flex">
@@ -30,7 +30,7 @@
     </div>
     <button
       v-if="closeButton"
-      class="absolute rounded-full bg-white dark:bg-gray-800 border dark:border-gray-900 dark:hover:bg-gray-700 hover:bg-gray-100 p-1 -top-5 -right-3"
+      class="absolute rounded-full bg-white dark:bg-surface-800 border dark:border-secondary-900 dark:hover:bg-surface-700 hover:bg-surface-100 p-1 -top-5 -right-3"
       @click="$emit('close')"
     >
       <XMarkIcon class="h-5 w-5" />
@@ -44,11 +44,11 @@ import { XMarkIcon } from '@heroicons/vue/24/outline';
 defineProps({
     borderColor: {
         type: String,
-        default: 'border-green-500',
+        default: 'border-success-500',
     },
     textColor: {
         type: String,
-        default: 'text-green-500',
+        default: 'text-success-500',
     },
     titleClass: {
         type: String,

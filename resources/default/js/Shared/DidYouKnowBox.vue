@@ -3,8 +3,8 @@
     v-if="enabled"
     ref="box"
   >
-    <div class="p-3 bg-white rounded shadow sm:px-5 dark:bg-cool-gray-800">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+    <div class="p-3 bg-white rounded shadow sm:px-5 dark:bg-surface-800">
+      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
         {{ __("Did You Know?") }}
       </h3>
 
@@ -15,10 +15,10 @@
       >
         <div class="w-full max-w-sm mx-auto">
           <div class="flex space-x-4 animate-pulse">
-            <div class="w-8 h-8 bg-gray-300 rounded dark:bg-cool-gray-700" />
+            <div class="w-8 h-8 bg-surface-300 rounded dark:bg-surface-700" />
             <div class="flex-1 py-1 space-y-1">
-              <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
-              <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+              <div class="w-3/4 h-4 bg-surface-300 rounded dark:bg-surface-700" />
+              <div class="w-5/6 h-4 bg-surface-300 rounded dark:bg-surface-700" />
             </div>
           </div>
         </div>
@@ -36,7 +36,7 @@
           alt="Image"
         >
         <div
-          class="text-sm text-gray-600 dark:text-gray-300"
+          class="text-sm text-secondary-600 dark:text-secondary-300"
           :class="{ 'font-semibold text-center': imageUrl }"
         >
           {{ text }}

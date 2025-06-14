@@ -41,8 +41,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="bg-white dark:bg-cool-gray-800 rounded w-full h-full p-3 shadow">
-    <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex mt-2 items-center">
+  <div class="bg-white dark:bg-surface-800 rounded w-full h-full p-3 shadow">
+    <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200 flex mt-2 items-center">
       <QrCodeIcon
         class="w-6 mr-1"
       />
@@ -60,8 +60,8 @@ onMounted(async () => {
       v-else
       class="m-0 p-0"
     >
-      <table class="table-auto min-w-full text-sm dark:text-gray-300 text-gray-700">
-        <thead class="border-b dark:border-gray-700">
+      <table class="table-auto min-w-full text-sm dark:text-secondary-300 text-secondary-700">
+        <thead class="border-b dark:border-secondary-700">
           <tr>
             <th
               scope="col"
@@ -97,7 +97,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <UserGroupIcon
-                class="w-5 text-indigo-500 mr-1"
+                class="w-5 text-primary-500 mr-1"
               />
               {{ __("Total Players") }}
             </td>
@@ -118,7 +118,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <ClockIcon
-                class="w-5 text-green-500 mr-1"
+                class="w-5 text-success-500 mr-1"
               />
               {{ __("Total Play Time") }}
             </td>
@@ -139,7 +139,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <ClockIcon
-                class="w-5 text-red-500 mr-1"
+                class="w-5 text-error-500 mr-1"
               />
               {{ __("Total Afk Time") }}
             </td>
@@ -160,7 +160,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <UsersIcon
-                class="w-5 text-green-500 mr-1"
+                class="w-5 text-success-500 mr-1"
               />
               {{ __("Total Sessions") }}
             </td>
@@ -244,7 +244,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <FireIcon
-                class="w-5 text-green-500 mr-1"
+                class="w-5 text-success-500 mr-1"
               />
               {{ __("Total Mob Kills") }}
             </td>
@@ -266,7 +266,7 @@ onMounted(async () => {
             <td class="p-2 flex">
               <icon
                 name="skull-outline"
-                class="w-5 text-red-500 mr-1"
+                class="w-5 text-error-500 mr-1"
               />
               {{ __("Total Deaths") }}
             </td>

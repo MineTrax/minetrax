@@ -48,7 +48,7 @@ const unlinkAccount = (id) => {
 
     <template #content>
       <h3
-        class="text-lg font-medium text-gray-900 dark:text-gray-300"
+        class="text-lg font-medium text-secondary-900 dark:text-secondary-300"
       >
         {{ __("Social Accounts") }}
       </h3>
@@ -62,7 +62,7 @@ const unlinkAccount = (id) => {
 
       <div
         v-else
-        class="mt-3 max-w-xl text-sm text-gray-600 dark:text-gray-400"
+        class="mt-3 max-w-xl text-sm text-secondary-600 dark:text-secondary-400"
       >
         <ul
           v-if="socialAccounts.length"
@@ -95,7 +95,7 @@ const unlinkAccount = (id) => {
                   v-tippy
                   :title="__('Unlink Account')"
                 >
-                  <XMarkIcon class="h-5 w-5 text-gray-400 rounded hover:bg-red-400 hover:text-white" />
+                  <XMarkIcon class="h-5 w-5 text-secondary-400 rounded hover:bg-error-400 hover:text-white" />
                 </LoadingButton>
               </JetConfirmsPassword>
             </div>

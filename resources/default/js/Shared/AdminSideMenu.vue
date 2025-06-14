@@ -391,7 +391,7 @@ const navItems = [
 <template>
   <div
     :class="[
-      'min-h-screen fixed bg-white shadow dark:bg-cool-gray-800 z-10 duration-300',
+      'min-h-screen fixed bg-white shadow dark:bg-surface-800 z-10 duration-300',
       collapsed ? 'w-16' : 'w-64'
     ]"
   >
@@ -400,7 +400,7 @@ const navItems = [
         <button @click.prevent="$emit('toggleCollapse')">
           <ChevronDoubleLeftIcon
             :class="[
-              'h-6 w-6 p-0.5 text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-400',
+              'h-6 w-6 p-0.5 text-secondary-400 hover:text-secondary-600 dark:text-secondary-600 dark:hover:text-secondary-400',
               collapsed ? '-rotate-180' : ''
             ]"
           />
@@ -418,7 +418,7 @@ const navItems = [
 
       <div
         v-if="!collapsed"
-        class="mt-10 text-xs text-center text-gray-600 dark:text-gray-500"
+        class="mt-10 text-xs text-center text-secondary-600 dark:text-secondary-500"
       >
         {{ __("Web Version:") }}&nbsp;{{ $page.props.webVersion || 'unknown' }}
       </div>

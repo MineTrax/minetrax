@@ -47,7 +47,7 @@ export default {
 
 <template>
   <nav
-    class="bg-white shadow dark:bg-cool-gray-800 z-40 w-full"
+    class="bg-white shadow dark:bg-surface-800 z-40 w-full"
     :class="{'sticky top-0': isStickyHeader, 'overflow-y-auto': isStickyHeader && showingNavigationDropdown}"
   >
     <!-- Primary Navigation Menu -->
@@ -89,7 +89,7 @@ export default {
           <color-theme-toggle class="flex items-center justify-center space-x-8 md:ml-8 md:hidden" />
 
           <button
-            class="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-cool-gray-900 focus:text-gray-500 dark:focus:text-gray-200"
+            class="inline-flex items-center justify-center p-2 text-secondary-400 transition duration-150 ease-in-out rounded-md dark:text-secondary-500 hover:text-secondary-500 dark:hover:text-secondary-300 hover:bg-surface-100 dark:hover:bg-surface-900 focus:outline-none focus:bg-surface-100 dark:focus:bg-surface-900 focus:text-secondary-500 dark:focus:text-secondary-200"
             @click="showingNavigationDropdown = ! showingNavigationDropdown"
           >
             <svg
@@ -152,7 +152,7 @@ export default {
       <!-- Responsive Settings Options / Not configurable by CustomNav -->
       <div
         v-if="$page.props.auth.user"
-        class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700"
+        class="pt-4 pb-1 border-t border-secondary-200 dark:border-secondary-700"
       >
         <inertia-link
           as="a"
@@ -171,10 +171,10 @@ export default {
           </div>
 
           <div>
-            <div class="text-base font-medium text-gray-800 dark:text-gray-300">
+            <div class="text-base font-medium text-secondary-800 dark:text-secondary-300">
               {{ $page.props.auth.user.name }}
             </div>
-            <div class="text-sm font-medium text-gray-500">
+            <div class="text-sm font-medium text-secondary-500">
               {{ $page.props.auth.user.email }}
             </div>
           </div>

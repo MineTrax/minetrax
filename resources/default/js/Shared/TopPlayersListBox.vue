@@ -1,13 +1,13 @@
 <template>
   <div v-if="enabled && players && players.length > 0">
-    <div class="p-3 bg-white dark:bg-cool-gray-800 rounded shadow space-y-2">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+    <div class="p-3 bg-white dark:bg-surface-800 rounded shadow space-y-2">
+      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
         {{ title }}
       </h3>
 
       <div class="flex flex-col space-y-2">
         <table class="">
-          <thead class="bg-gray-100 dark:bg-cool-gray-900 dark:bg-opacity-50 text-gray-700 dark:text-gray-300">
+          <thead class="bg-surface-100 dark:bg-surface-900 dark:bg-opacity-50 text-secondary-700 dark:text-secondary-300">
             <tr>
               <th
                 scope="col"
@@ -42,16 +42,16 @@
             </tr>
           </thead>
 
-          <tbody class="bg-white dark:bg-cool-gray-800">
+          <tbody class="bg-white dark:bg-surface-800">
             <tr
               v-for="(player, index) in players"
               :key="index"
-              :class="{'bg-gray-50 dark:bg-cool-gray-600 dark:bg-opacity-10': index % 2 === 1}"
+              :class="{'bg-surface-50 dark:bg-surface-600 dark:bg-opacity-10': index % 2 === 1}"
             >
-              <td class="p-1 text-sm text-light-blue-400 font-extrabold">
+              <td class="p-1 text-sm text-primary-400 font-extrabold">
                 <span
                   v-if="player.position"
-                  class="border-2 rounded text-sm px-1 border-light-blue-300 bg-light-blue-50 dark:bg-cool-gray-800"
+                  class="border-2 rounded text-sm px-1 border-primary-300 bg-primary-50 dark:bg-surface-800"
                 >
                   {{ player.position }}
                 </span>
@@ -85,22 +85,22 @@
                       v-tippy
                       as="div"
                       :href="route('player.show', player.uuid)"
-                      class="text-sm text-gray-900 focus:outline-none cursor-pointer hover:underline"
+                      class="text-sm text-secondary-900 focus:outline-none cursor-pointer hover:underline"
                       :content="player.uuid"
                     >
                       <span
                         v-if="player.username"
-                        class="text-gray-700 dark:text-gray-300 font-bold text-sm truncate"
+                        class="text-secondary-700 dark:text-secondary-300 font-bold text-sm truncate"
                       >{{ player.username }}</span>
                       <span
                         v-else
-                        class="text-red-500 dark:text-red-400 italic"
+                        class="text-error-500 dark:text-error-400 italic"
                       >{{ __("Unknown") }}</span>
                     </inertia-link>
                   </div>
                 </div>
               </td>
-              <td class="p-1 text-sm text-gray-700 hidden sm:table-cell">
+              <td class="p-1 text-sm text-secondary-700 hidden sm:table-cell">
                 <span v-if="player.rating != null">
                   <icon
                     v-tippy
@@ -111,10 +111,10 @@
                 </span>
                 <span
                   v-else
-                  class="text-gray-700 dark:text-gray-500 italic"
+                  class="text-secondary-700 dark:text-secondary-500 italic"
                 >{{ __("none") }}</span>
               </td>
-              <td class="p-1 text-xs text-gray-700 dark:text-gray-300 hidden sm:table-cell">
+              <td class="p-1 text-xs text-secondary-700 dark:text-secondary-300 hidden sm:table-cell">
                 <span
                   v-tippy
                   class="focus:outline-none"

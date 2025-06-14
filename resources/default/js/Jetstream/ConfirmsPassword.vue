@@ -104,7 +104,7 @@ const closeModal = () => {
         </div>
 
 
-        <span class="text-gray-500 text-xs italic">
+        <span class="text-secondary-500 text-xs italic">
           {{ __("Continue with empty password if you have no password.") }}
         </span>
       </template>

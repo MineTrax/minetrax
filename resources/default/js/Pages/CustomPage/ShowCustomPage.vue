@@ -3,7 +3,7 @@
     <app-head :title="customPage.title" />
 
     <div v-if="!customPage.is_visible">
-      <div class="bg-gray-500 text-white px-4 py-3 text-center">
+      <div class="bg-surface-500 text-white px-4 py-3 text-center">
         <div class="flex items-center justify-center">
           <svg
             class="fill-current h-5 w-5 mr-2"
@@ -22,13 +22,13 @@
     <!-- If not HTML Page -->
     <div v-else class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between md:mb-4">
-        <h1 class="text-center font-bold text-2xl md:text-4xl text-gray-900 dark:text-gray-200 mb-5">
+        <h1 class="text-center font-bold text-2xl md:text-4xl text-secondary-900 dark:text-secondary-200 mb-5">
           {{ customPage.title }}
         </h1>
         <div class="">
           <inertia-link
             :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Homepage") }}</span>
           </inertia-link>
@@ -40,7 +40,7 @@
           :class="customPage.is_sidebar_visible ? 'md:w-9/12' : 'md:w-full'"
         >
           <div class="min-w-full">
-            <div class="shadow max-w-none bg-white dark:bg-cool-gray-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded">
+            <div class="shadow max-w-none bg-white dark:bg-surface-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded">
               <div
                 class="prose max-w-none dark:prose-invert"
                 v-html="customPage.body_html"

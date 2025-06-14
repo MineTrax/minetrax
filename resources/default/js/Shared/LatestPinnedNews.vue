@@ -6,7 +6,7 @@
     <div
       v-for="news in newslist"
       :key="news.id"
-      class="flex justify-between bg-white rounded shadow dark:bg-cool-gray-800"
+      class="flex justify-between bg-white rounded shadow dark:bg-surface-800"
     >
       <div class="p-3 sm:px-5">
         <div class="text-xl">
@@ -14,22 +14,22 @@
             <icon
               v-tippy
               :title="__('Pinned News')"
-              class="inline text-gray-400 focus:outline-none"
+              class="inline text-secondary-400 focus:outline-none"
               name="paper-clip"
             />
             <span
               class="text-sm font-semibold tracking-wider uppercase"
-              :class="{ 'text-light-blue-400': news.type.value === 0, 'text-orange-500': news.type.value === 1, 'text-green-500': news.type.value === 2 }"
+              :class="{ 'text-primary-400': news.type.value === 0, 'text-orange-500': news.type.value === 1, 'text-success-500': news.type.value === 2 }"
             >&nbsp;{{ news.type.key }}&nbsp;</span>
             <span
               v-tippy
               :content="formatToDayDateString(news.published_at)"
-              class="text-sm font-light leading-snug text-gray-500 focus:outline-none dark:text-gray-400"
+              class="text-sm font-light leading-snug text-secondary-500 focus:outline-none dark:text-secondary-400"
             >{{
               formatTimeAgoToNow(news.published_at)
             }}
             </span>
-            <span class="text-sm font-light leading-snug text-gray-500 dark:text-gray-400"> - {{ news.time_to_read }} read</span>
+            <span class="text-sm font-light leading-snug text-secondary-500 dark:text-secondary-400"> - {{ news.time_to_read }} read</span>
           </p>
 
           <img
@@ -41,13 +41,13 @@
 
           <inertia-link
             :href="route('news.show', news.slug)"
-            class="duration-200 hover:text-light-blue-400 dark:text-gray-200 dark:hover:text-light-blue-400"
+            class="duration-200 hover:text-primary-400 dark:text-secondary-200 dark:hover:text-primary-400"
           >
             {{ news.title }}
           </inertia-link>
         </div>
         <div
-          class="mt-3 text-gray-500 dark:text-gray-400"
+          class="mt-3 text-secondary-500 dark:text-secondary-400"
           v-html="news.body_md"
         />
       </div>

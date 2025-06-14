@@ -26,14 +26,14 @@ defineProps({
 
 <template>
   <ul
-    class="flex justify-between bg-white shadow dark:bg-gray-800 p-4 rounded font-semibold"
+    class="flex justify-between bg-white shadow dark:bg-surface-800 p-4 rounded font-semibold"
   >
     <div class="flex">
       <li>
         <Link
-          class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
+          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
           :class="{
-            'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900':
+            'bg-surface-200 text-secondary-900 dark:bg-surface-900 dark:text-secondary-200 dark:hover:bg-surface-900':
               route().current('player.show'),
           }"
           :href="route('player.show', { player: player.uuid })"
@@ -51,7 +51,7 @@ defineProps({
               player_uuid: player.uuid,
             })
           "
-          class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
+          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
         >
           {{ __("Change Password") }}
         </Link>
@@ -64,10 +64,10 @@ defineProps({
             })
           "
           :class="{
-            'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900':
+            'bg-surface-200 text-secondary-900 dark:bg-surface-900 dark:text-secondary-200 dark:hover:bg-surface-900':
               route().current('player.intel.session.index'),
           }"
-          class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
+          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
         >
           {{ __("Change Skin") }}
         </Link>
@@ -80,10 +80,10 @@ defineProps({
             })
           "
           :class="{
-            'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900':
+            'bg-surface-200 text-secondary-900 dark:bg-surface-900 dark:text-secondary-200 dark:hover:bg-surface-900':
               route().current('player.intel.session.index'),
           }"
-          class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
+          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
         >
           {{ __("Sessions") }}
         </Link>
@@ -91,7 +91,7 @@ defineProps({
 
       <li v-if="route().current('player.intel.session.show')">
         <span
-          class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900"
+          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600 bg-surface-200 text-secondary-900 dark:bg-surface-900 dark:text-secondary-200 dark:hover:bg-surface-900"
         >
           {{ __("Session Details") }}
         </span>

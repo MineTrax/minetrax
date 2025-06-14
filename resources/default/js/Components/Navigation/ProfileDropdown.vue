@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="$page.props.auth.user"
-    class="relative ml-3 font-semibold dark:text-gray-400"
+    class="relative ml-3 font-semibold dark:text-secondary-400"
   >
     <jet-dropdown
       align="right"
@@ -10,7 +10,7 @@
       <template #trigger>
         <button
           v-if="$page.props.jetstream.managesProfilePhotos"
-          class="flex text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 items-center text-sm font-semibold transition duration-150 ease-in-out border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 dark:focus:border-cool-gray-700"
+          class="flex text-secondary-500 hover:text-secondary-800 dark:text-secondary-400 dark:hover:text-secondary-200 items-center text-sm font-semibold transition duration-150 ease-in-out border-2 border-transparent rounded-full focus:outline-none focus:border-secondary-300 dark:focus:border-secondary-700"
         >
           {{ $page.props.auth.user.name }}
           <img
@@ -26,7 +26,7 @@
         >
           <button
             type="button"
-            class="inline-flex items-center px-3 py-2 text-sm font-semibold leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none"
+            class="inline-flex items-center px-3 py-2 text-sm font-semibold leading-4 text-secondary-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-secondary-700 focus:outline-none"
           >
             {{ $page.props.auth.user.name }}
 
@@ -49,7 +49,7 @@
       <template #content>
         <div
           v-if="canShowAdminSidebar"
-          class="block px-4 py-2 text-xs text-gray-400"
+          class="block px-4 py-2 text-xs text-secondary-400"
         >
           {{ __("Staff") }}
         </div>
@@ -63,11 +63,11 @@
 
         <div
           v-if="canShowAdminSidebar"
-          class="border-t border-gray-100 dark:border-cool-gray-700"
+          class="border-t border-secondary-100 dark:border-secondary-700"
         />
 
         <!-- Account Management -->
-        <div class="block px-4 py-2 text-xs text-gray-400">
+        <div class="block px-4 py-2 text-xs text-secondary-400">
           {{ __("Manage Account") }}
         </div>
 
@@ -106,7 +106,7 @@
           {{ __("Change Player Skin") }}
         </jet-dropdown-link>
 
-        <div class="border-t border-gray-100 dark:border-cool-gray-700" />
+        <div class="border-t border-secondary-100 dark:border-secondary-700" />
 
         <!-- Authentication -->
         <form @submit.prevent="emit('logout')">

@@ -60,20 +60,20 @@ const headerRow = [
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-white rounded shadow dark:bg-surface-800"
           :header="headerRow"
           :data="consoleHistory"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               {{ item.id }}
             </td>
 
             <td class="px-4">
-              <div class="text-sm text-gray-800 dark:text-gray-200">
+              <div class="text-sm text-secondary-800 dark:text-secondary-200">
                 <pre class="whitespace-pre-wrap">{{ item.data }}</pre>
               </div>
             </td>

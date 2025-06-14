@@ -141,14 +141,14 @@ const headerRow = [
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-white rounded shadow dark:bg-surface-800"
           :header="headerRow"
           :data="data"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               <div class="flex items-center">
                 <div
@@ -166,7 +166,7 @@ const headerRow = [
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10">
@@ -181,16 +181,16 @@ const headerRow = [
                     v-tippy
                     as="a"
                     :href="route('player.show', item.player.uuid)"
-                    class="text-sm font-medium text-gray-900 dark:text-gray-200 focus:outline-none cursor-pointer hover:underline"
+                    class="text-sm font-medium text-secondary-900 dark:text-secondary-200 focus:outline-none cursor-pointer hover:underline"
                     :content="item.player.uuid"
                   >
                     <span
                       v-if="item.player_username"
-                      class="font-extrabold text-gray-700 dark:text-gray-300"
+                      class="font-extrabold text-secondary-700 dark:text-secondary-300"
                     >{{ item.player_username }}</span>
                     <span
                       v-else
-                      class="text-red-500 italic"
+                      class="text-error-500 italic"
                     >{{ __("Unknown") }}</span>
                   </inertia-link>
                 </div>
@@ -262,7 +262,7 @@ const headerRow = [
                 :href="route('change-player-skin.show', {
                   player_uuid: item.player.uuid,
                 })"
-                class="inline-flex items-center justify-center text-sky-400 hover:text-sky-700 focus:outline-none"
+                class="inline-flex items-center justify-center text-primary-400 hover:text-primary-700 focus:outline-none"
                 :title="__('Change Skin of this player.')"
               >
                 <PaintBrushIcon class="w-5 h-5" />
@@ -275,7 +275,7 @@ const headerRow = [
                 :href="route('reset-player-password.show', {
                   player_uuid: item.player.uuid,
                 })"
-                class="inline-flex items-center justify-center text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 focus:outline-none"
+                class="inline-flex items-center justify-center text-secondary-500 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-secondary-100 focus:outline-none"
                 :title="__('Change Password of this player.')"
               >
                 <LockClosedIcon class="w-5 h-5" />
@@ -291,7 +291,7 @@ const headerRow = [
                 as="button"
                 method="DELETE"
                 :href="route('admin.intel.player.delete', item.player.uuid)"
-                class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
                 :title="__('Delete Player')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />

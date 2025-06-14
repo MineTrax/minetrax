@@ -74,26 +74,26 @@ const headerRow = [
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-white rounded shadow dark:bg-surface-800"
           :header="headerRow"
           :data="chatHistory"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               {{ item.id }}
             </td>
 
             <td class="px-4 invert dark:invert-0">
-              <div class="text-sm text-gray-200">
+              <div class="text-sm text-secondary-200">
                 <p
                   v-html="item.data"
                 />
                 <p
                   v-if="item.causer_uuid"
-                  class="text-xs text-gray-500 italic"
+                  class="text-xs text-secondary-500 italic"
                 >
                   {{ __("Causer") }}: {{ item.causer_uuid }} ({{ item.causer_username }})
                 </p>

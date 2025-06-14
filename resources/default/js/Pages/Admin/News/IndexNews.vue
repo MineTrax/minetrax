@@ -63,16 +63,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage News')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-secondary-400">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
           {{ __("Manage News") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create news')"
             :href="route('admin.news.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
           >
             <span>{{ __("Create News") }}</span>
           </InertiaLink>
@@ -80,22 +80,22 @@ const headerRow = [
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-white rounded shadow dark:bg-surface-800"
         :header="headerRow"
         :data="newslist"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
           >
             {{ item.id }}
           </td>
           <td class="px-4">
-            <div class="text-sm text-gray-900">
+            <div class="text-sm text-secondary-900">
               <span
                 v-if="item.type.value === 0"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-light-blue-100 text-light-blue-800 dark:bg-light-blue-700 dark:bg-opacity-25 dark:text-light-blue-400"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-700 dark:bg-opacity-25 dark:text-primary-400"
               >{{ item.type.key }}</span>
               <span
                 v-else-if="item.type.value === 1"
@@ -103,11 +103,11 @@ const headerRow = [
               >{{ item.type.key }}</span>
               <span
                 v-else-if="item.type.value === 2"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-700 dark:bg-opacity-25 dark:text-green-400"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-success-100 text-success-800 dark:bg-success-700 dark:bg-opacity-25 dark:text-success-400"
               >{{ item.type.key }}</span>
               <span
                 v-else
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-surface-100 text-secondary-800"
               >{{ item.type.key }}</span>
             </div>
           </td>
@@ -125,7 +125,7 @@ const headerRow = [
                 >
               </div>
               <div class="ml-4">
-                <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
                   {{ item.title }}
                 </div>
               </div>
@@ -137,12 +137,12 @@ const headerRow = [
               v-if="item.published_at"
               v-tippy
               :content="formatTimeAgoToNow(item.published_at)"
-              class="text-green-500 focus:outline-none"
+              class="text-success-500 focus:outline-none"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </DtRowItem>
@@ -150,12 +150,12 @@ const headerRow = [
           <DtRowItem>
             <Icon
               v-if="item.is_pinned"
-              class="text-green-500"
+              class="text-success-500"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </DtRowItem>
@@ -176,7 +176,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('news.show', item.slug)"
-              class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
               :title="__('View News')"
             >
               <EyeIcon class="inline-block w-5 h-5" />
@@ -186,7 +186,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('admin.news.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit News')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
@@ -201,7 +201,7 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.news.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete News')"
             >
               <TrashIcon class="inline-block w-5 h-5" />

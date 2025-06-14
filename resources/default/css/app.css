@@ -30,8 +30,8 @@
         right: 0;
         background: linear-gradient(
             to bottom,
-            rgba(229, 231, 235, 0) 0%,
-            rgba(229, 231, 235, 1) 100%
+            theme('colors.surface.200' / 0%) 0%,
+            theme('colors.surface.200') 100%
         );
         height: 40%;
     }
@@ -45,8 +45,8 @@
         right: 0;
         background: linear-gradient(
             to bottom,
-            rgba(17, 24, 39, 0) 0%,
-            rgba(17, 24, 39, 1) 100%
+            theme('colors.surface.900' / 0%) 0%,
+            theme('colors.surface.900') 100%
         );
         height: 40%;
     }
@@ -129,7 +129,7 @@
 }
 
 .autolink {
-    color: #39b9f1;
+    color: theme('colors.primary.500');
 }
 
 .autolink:hover {
@@ -165,7 +165,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    -webkit-box-shadow: inset 0 0 0 1px #39b9f1, inset 0 0 0 4px #39b9f1;
+    -webkit-box-shadow: inset 0 0 0 1px theme('colors.primary.500'), inset 0 0 0 4px theme('colors.primary.500');
 }
 
 ::-webkit-scrollbar-corner {
@@ -185,7 +185,7 @@ body.swal2-shown > [aria-hidden="true"] {
 }
 .lds-ripple div {
     position: absolute;
-    border: 4px solid #12bbff;
+    border: 4px solid theme('colors.primary.500');
     opacity: 1;
     border-radius: 50%;
     animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
@@ -229,13 +229,13 @@ body.swal2-shown > [aria-hidden="true"] {
 }
 
 .CodeMirror {
-    color: #8c8c8c;
-    border-color: #333;
+    color: theme('colors.secondary.500');
+    border-color: theme('colors.secondary.700');
     background-color: inherit;
 }
 
 .cm-s-easymde .CodeMirror-cursor {
-    border-color: #a0a0a0;
+    border-color: theme('colors.secondary.400');
 }
 
 .no-disabled-effect .data-\[disabled\]\:opacity-50[data-disabled] {
@@ -252,33 +252,33 @@ body.swal2-shown > [aria-hidden="true"] {
 
 /* Fix multiselect in darkmode */
 .multiselect .multiselect__tags {
-    @apply dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300
+    @apply dark:bg-surface-900 dark:border-secondary-700 dark:text-secondary-300
 }
 
 .multiselect__tags .multiselect__single {
-    @apply dark:bg-gray-900
+    @apply dark:bg-surface-900
 }
 
 .multiselect .multiselect__input {
-    @apply dark:bg-gray-900
+    @apply dark:bg-surface-900
 }
 
 .multiselect .multiselect__content-wrapper {
-    @apply dark:bg-gray-900 dark:text-gray-300 dark:border-gray-800
+    @apply dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-800
 }
 
 .multiselect .multiselect__option--selected {
-    @apply dark:bg-gray-700 dark:text-gray-300
+    @apply dark:bg-surface-700 dark:text-secondary-300
 }
 
 .multiselect__tag {
-    @apply bg-sky-500
+    @apply bg-primary-500
 }
 
 .multiselect__option--highlight {
-    @apply bg-sky-500
+    @apply bg-primary-500
 }
 
 .multiselect__option--highlight::after {
-    @apply bg-sky-500
+    @apply bg-primary-500
 }

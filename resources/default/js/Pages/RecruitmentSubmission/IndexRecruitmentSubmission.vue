@@ -70,13 +70,13 @@ const headerRow = [
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-lg md:text-3xl text-gray-500 dark:text-gray-300">
+        <h1 class="font-bold text-lg md:text-3xl text-secondary-500 dark:text-secondary-300">
           {{ __("My Application Requests") }}
         </h1>
         <div class="flex space-x-2">
           <Link
             :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Homepage") }}</span>
           </Link>
@@ -84,14 +84,14 @@ const headerRow = [
       </div>
       <div class="flex flex-col md:flex-row md:space-x-4">
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800 w-full"
+          class="bg-white rounded shadow dark:bg-surface-800 w-full"
           :header="headerRow"
           :data="submissions"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="text-sm px-4 font-medium text-left text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               <InertiaLink
                 as="a"
@@ -143,7 +143,7 @@ const headerRow = [
                     }
                   )
                 "
-                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
               </InertiaLink>

@@ -4,22 +4,22 @@
     ref="box"
   >
     <AlertCard
-      text-color="text-red-800 dark:text-red-500"
-      border-color="border-red-500"
+          text-color="text-error-800 dark:text-error-500"
+    border-color="border-error-500"
     >
       {{ __("Your MineTrax Version is Outdated!") }}
       <template
         #body
       >
-        <div class="text-gray-700 dark:text-gray-200">
-          {{ __("Your current MineTrax version is") }}&nbsp;<span class="text-red-500">{{ response.my_version }}</span>&nbsp;{{ __("while the latest version is") }}&nbsp;<span class="text-green-500">{{ response.latest_version }}</span>. {{ __("Please upgrade to enjoy latest features.") }} <br>
+        <div class="text-secondary-700 dark:text-secondary-200">
+          {{ __("Your current MineTrax version is") }}&nbsp;<span class="text-error-500">{{ response.my_version }}</span>&nbsp;{{ __("while the latest version is") }}&nbsp;<span class="text-success-500">{{ response.latest_version }}</span>. {{ __("Please upgrade to enjoy latest features.") }} <br>
           <a
-            class="text-light-blue-500 hover:underline"
+            class="text-primary-500 hover:underline"
             target="_blank"
             href="https://minetrax.github.io/docs/upgrade"
           >{{ __("Click here to know more.") }}</a>
 
-          <p class="text-xs text-gray-500 italic mt-2">
+          <p class="text-xs text-secondary-500 italic mt-2">
             {{ __("Note: This box is only visible to Staff Member") }}
           </p>
         </div>

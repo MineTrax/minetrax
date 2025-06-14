@@ -8,7 +8,7 @@
       ref="input"
       :type="type"
       :name="name"
-      class="dark:bg-cool-gray-900 dark:text-gray-300 border focus:outline-none rounded-md w-full p-3 h-14 disabled:opacity-50 focus:border-light-blue-300 focus:ring text-sm focus:ring-light-blue-200 focus:ring-opacity-50 disabled:cursor-not-allowed"
+      class="dark:bg-surface-900 dark:text-secondary-300 border focus:outline-none rounded-md w-full p-3 h-14 disabled:opacity-50 focus:border-primary-300 focus:ring text-sm focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed"
       :class="borderColor + ' ' + inputClass"
       :placeholder="label"
       :autocomplete="autocomplete"
@@ -34,13 +34,13 @@
     >
       <p
         v-show="help"
-        class="text-xs text-gray-500"
+        class="text-xs text-secondary-500"
       >
         {{ help }}
       </p>
       <p
         v-show="error"
-        class="text-xs text-red-500"
+        class="text-xs text-error-500"
       >
         {{ error }}
       </p>
@@ -97,20 +97,20 @@ export default {
     computed: {
         borderColor() {
             if(this.error) {
-                return 'border-red-400 dark:border-red-600';
+                return 'border-error-400 dark:border-error-600';
             } else {
-                return 'border-gray-300 dark:border-gray-900';
+                return 'border-secondary-300 dark:border-secondary-900';
             }
         },
         textColor() {
             if (this.hasFocus) {
-                return 'text-light-blue-400';
+                return 'text-primary-400';
             }
 
             if(this.error) {
-                return 'text-red-400 dark:text-red-600';
+                return 'text-error-400 dark:text-error-600';
             } else {
-                return 'text-gray-500 dark:text-gray-400';
+                return 'text-secondary-500 dark:text-secondary-400';
             }
         }
     },

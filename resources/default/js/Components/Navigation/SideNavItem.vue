@@ -28,8 +28,8 @@ const hasActiveChild = computed(() => {
     v-if="!item.children.length && item.visible"
     :class="[
       'group flex w-full items-center rounded-md py-2 px-3 text-sm font-medium',
-      'hover:bg-gray-100 dark:hover:bg-gray-900',
-      item.active ? 'text-gray-800 font-semibold dark:text-gray-200' : 'text-gray-600 dark:text-gray-400 font-medium'
+      'hover:bg-surface-100 dark:hover:bg-surface-900',
+      item.active ? 'text-secondary-800 font-semibold dark:text-secondary-200' : 'text-secondary-600 dark:text-secondary-400 font-medium'
     ]"
     :href="item.href"
     :target="item.newtab ? '_blank' : null"
@@ -38,8 +38,8 @@ const hasActiveChild = computed(() => {
       :is="item.icon"
       v-if="item.icon"
       :class="[
-        'w-6 h-6 shrink-0 mr-2 group-hover:text-gray-600 dark:group-hover:text-gray-400',
-        item.active ? 'text-gray-600 dark:text-gray-400' : 'text-gray-400 dark:text-gray-600'
+        'w-6 h-6 shrink-0 mr-2 group-hover:text-secondary-600 dark:group-hover:text-secondary-400',
+        item.active ? 'text-secondary-600 dark:text-secondary-400' : 'text-secondary-400 dark:text-secondary-600'
       ]"
     />
     <span v-if="!collapsed">{{ __(item.label) }}</span>
@@ -53,16 +53,16 @@ const hasActiveChild = computed(() => {
     <DisclosureButton
       :class="[
         'group text-left flex w-full items-center rounded-md py-2 px-3 text-sm',
-        'hover:bg-gray-100 dark:hover:bg-gray-900',
-        open ? 'font-semibold text-gray-800 dark:text-gray-200' : 'text-gray-600 dark:text-gray-400 font-medium'
+        'hover:bg-surface-100 dark:hover:bg-surface-900',
+        open ? 'font-semibold text-secondary-800 dark:text-secondary-200' : 'text-secondary-600 dark:text-secondary-400 font-medium'
       ]"
     >
       <component
         :is="item.icon"
         v-if="item.icon"
         :class="[
-          'w-6 h-6 shrink-0 mr-2 group-hover:text-gray-600 dark:group-hover:text-gray-400',
-          open ? 'text-gray-600 dark:text-gray-400' : 'text-gray-400 dark:text-gray-600'
+          'w-6 h-6 shrink-0 mr-2 group-hover:text-secondary-600 dark:group-hover:text-secondary-400',
+          open ? 'text-secondary-600 dark:text-secondary-400' : 'text-secondary-400 dark:text-secondary-600'
         ]"
       />
       <span
@@ -74,7 +74,7 @@ const hasActiveChild = computed(() => {
         v-if="!collapsed"
         :class="[
           'w-6 h-6 shrink-0',
-          open? '-rotate-180 text-gray-600 dark:text-gray-400': 'text-gray-400 dark:text-gray-600'
+          open? '-rotate-180 text-secondary-600 dark:text-secondary-400': 'text-secondary-400 dark:text-secondary-600'
         ]"
       />
     </DisclosureButton>

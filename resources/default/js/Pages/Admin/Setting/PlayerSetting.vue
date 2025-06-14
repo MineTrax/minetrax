@@ -7,8 +7,8 @@
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-cool-gray-800 shadow w-full rounded">
-            <div class="px-6 py-4 border-b dark:border-gray-700 dark:text-gray-300 font-bold">
+          <div class="bg-white dark:bg-surface-800 shadow w-full rounded">
+            <div class="px-6 py-4 border-b dark:border-secondary-700 dark:text-secondary-300 font-bold">
               {{ __("Player Settings") }}
             </div>
 
@@ -20,7 +20,7 @@
                     @submit.prevent="savePlayerSetting"
                   >
                     <div class="shadow overflow-hidden sm:rounded-md">
-                      <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
+                      <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
                           <div class="col-span-6 sm:col-spam-4">
                             <x-input
@@ -63,18 +63,18 @@
                           <!-- Toggle Show Available Variables -->
                           <div
                             v-if="form.is_custom_rating_enabled"
-                            class="col-span-6 text-gray-800"
+                            class="col-span-6 text-secondary-800"
                           >
                             <button
                               type="button"
-                              class="-mt-7 text-xs float-right text-light-blue-500 focus:outline-none underline hover:text-light-blue-400"
+                              class="-mt-7 text-xs float-right text-primary-500 focus:outline-none underline hover:text-primary-400"
                               @click="showHelpForRating = !showHelpForRating"
                             >
                               {{ !showHelpForRating ? __('Need help with this?') : __('-hide help') }}
                             </button>
                             <div
                               v-if="showHelpForRating"
-                              class="flex flex-col dark:text-gray-400"
+                              class="flex flex-col dark:text-secondary-400"
                             >
                               <span class="font-bold">{{ __("Available Variables") }}</span>
                               <ul class="list-disc list px-4">
@@ -92,7 +92,7 @@
 
                             <div
                               v-if="showHelpForRating"
-                              class="flex flex-col mt-2 dark:text-gray-400"
+                              class="flex flex-col mt-2 dark:text-secondary-400"
                             >
                               <span class="font-bold">{{ __("Available Dynamic Variables (per server)") }}</span>
                               <ul class="list-disc list px-4">
@@ -110,7 +110,7 @@
 
                             <div
                               v-if="showHelpForRating"
-                              class="flex flex-col mt-2 dark:text-gray-400"
+                              class="flex flex-col mt-2 dark:text-secondary-400"
                             >
                               <span class="font-bold">{{ __("Available Functions") }}</span>
                               <ul class="list-disc list px-4">
@@ -130,10 +130,10 @@
                           <!-- Show option to verify/test expression against a player -->
                           <div
                             v-if="form.is_custom_rating_enabled"
-                            class="col-span-6 sm:col-span-6 flex flex-col text-sm w-3/5 p-4 border-2 border-gray-200 dark:border-gray-700 rounded"
+                            class="col-span-6 sm:col-span-6 flex flex-col text-sm w-3/5 p-4 border-2 border-secondary-200 dark:border-secondary-700 rounded"
                           >
                             <span
-                              class="text-gray-500 dark:text-gray-400 text-center text-sm font-semibold mb-4 -mt-7 bg-white dark:bg-cool-gray-800 w-28"
+                              class="text-secondary-500 dark:text-secondary-400 text-center text-sm font-semibold mb-4 -mt-7 bg-white dark:bg-surface-800 w-28"
                             >{{ __("Test Algorithm") }}</span>
                             <div class="flex">
                               <x-input
@@ -148,7 +148,7 @@
                               />
                               <loading-button
                                 :loading="rating_expression_validation_form.busy"
-                                class="ml-2 h-14 inline-flex justify-center py-2 px-4 border border-2 border-light-blue-500 shadow-sm text-sm font-bold rounded-md text-light-blue-500 hover:bg-light-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                                class="ml-2 h-14 inline-flex justify-center py-2 px-4 border border-2 border-primary-500 shadow-sm text-sm font-bold rounded-md text-primary-500 hover:bg-primary-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
                                 type="button"
                                 @click="validateRatingExpression"
                               >
@@ -157,19 +157,19 @@
                             </div>
                             <p
                               v-if="validator_rating_value"
-                              class="p-2 mt-1 text-center bg-green-500 font-semibold rounded text-white"
+                              class="p-2 mt-1 text-center bg-success-500 font-semibold rounded text-white"
                             >
                               {{ __("Success! Rating for this Player will be:") }} <span class="font-bold">{{ validator_rating_value }}</span>
                             </p>
                             <p
                               v-if="validator_rating_exception"
-                              class="p-2 mt-1 text-center bg-red-500 font-semibold rounded text-white"
+                              class="p-2 mt-1 text-center bg-error-500 font-semibold rounded text-white"
                             >
                               {{ __("Oops!") }}&nbsp;{{ validator_rating_exception }}
                             </p>
                           </div>
 
-                          <div class="col-span-6 sm:col-span-6 border-t border-gray-300 dark:border-gray-700 pt-4">
+                          <div class="col-span-6 sm:col-span-6 border-t border-secondary-300 dark:border-secondary-700 pt-4">
                             <x-checkbox
                               id="is_custom_score_enabled"
                               v-model="form.is_custom_score_enabled"
@@ -197,18 +197,18 @@
                           <!-- Toggle Show Available Variables -->
                           <div
                             v-if="form.is_custom_score_enabled"
-                            class="col-span-6 text-gray-800"
+                            class="col-span-6 text-secondary-800"
                           >
                             <button
                               type="button"
-                              class="-mt-7 text-xs float-right text-light-blue-500 focus:outline-none underline hover:text-light-blue-400"
+                              class="-mt-7 text-xs float-right text-primary-500 focus:outline-none underline hover:text-primary-400"
                               @click="showHelpForScore = !showHelpForScore"
                             >
                               {{ !showHelpForScore ? 'Need help with this?' : '-hide help' }}
                             </button>
                             <div
                               v-if="showHelpForScore"
-                              class="flex flex-col dark:text-gray-400"
+                              class="flex flex-col dark:text-secondary-400"
                             >
                               <span class="font-bold">{{ __("Available Variables") }}</span>
                               <ul class="list-disc list px-4">
@@ -226,7 +226,7 @@
 
                             <div
                               v-if="showHelpForScore"
-                              class="flex flex-col mt-2 dark:text-gray-400"
+                              class="flex flex-col mt-2 dark:text-secondary-400"
                             >
                               <span class="font-bold">{{ __("Available Dynamic Variables (per server)") }}</span>
                               <ul class="list-disc list px-4">
@@ -244,7 +244,7 @@
 
                             <div
                               v-if="showHelpForScore"
-                              class="flex flex-col mt-2 dark:text-gray-400"
+                              class="flex flex-col mt-2 dark:text-secondary-400"
                             >
                               <span class="font-bold">{{ __("Available Functions") }}</span>
                               <ul class="list-disc list px-4">
@@ -264,10 +264,10 @@
                           <!-- Show option to verify/test expression against a player -->
                           <div
                             v-if="form.is_custom_score_enabled"
-                            class="col-span-6 sm:col-span-6 flex flex-col text-sm w-3/5 p-4 border-2 border-gray-200 dark:border-gray-700 rounded"
+                            class="col-span-6 sm:col-span-6 flex flex-col text-sm w-3/5 p-4 border-2 border-secondary-200 dark:border-secondary-700 rounded"
                           >
                             <span
-                              class="text-gray-500 dark:text-gray-400 text-center text-sm font-semibold mb-4 -mt-7 bg-white dark:bg-cool-gray-800 w-28"
+                              class="text-secondary-500 dark:text-secondary-400 text-center text-sm font-semibold mb-4 -mt-7 bg-white dark:bg-surface-800 w-28"
                             >{{ __("Test Algorithm") }}</span>
                             <div class="flex">
                               <x-input
@@ -282,7 +282,7 @@
                               />
                               <loading-button
                                 :loading="score_expression_validation_form.busy"
-                                class="ml-2 h-14 inline-flex justify-center py-2 px-4 border border-2 border-light-blue-500 shadow-sm text-sm font-bold rounded-md text-light-blue-500 hover:bg-light-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                                class="ml-2 h-14 inline-flex justify-center py-2 px-4 border border-2 border-primary-500 shadow-sm text-sm font-bold rounded-md text-primary-500 hover:bg-primary-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
                                 type="button"
                                 @click="validateScoreExpression"
                               >
@@ -291,20 +291,20 @@
                             </div>
                             <p
                               v-if="validator_score_value"
-                              class="p-2 mt-1 text-center bg-green-500 font-semibold rounded text-white"
+                              class="p-2 mt-1 text-center bg-success-500 font-semibold rounded text-white"
                             >
                               {{ __("Success! Score for this Player will be:") }} <span class="font-bold">{{ validator_score_value }}</span>
                             </p>
                             <p
                               v-if="validator_score_exception"
-                              class="p-2 mt-1 text-center bg-red-500 font-semibold rounded text-white"
+                              class="p-2 mt-1 text-center bg-error-500 font-semibold rounded text-white"
                             >
                               {{ __("Oops!") }}&nbsp;{{ validator_score_exception }}
                             </p>
                           </div>
 
-                          <div class="col-span-6 sm:col-span-6 border-t border-gray-300 dark:border-gray-700 pt-4 space-y-3">
-                            <p class="text-sm text-gray-700 font-bold dark:text-gray-300">
+                          <div class="col-span-6 sm:col-span-6 border-t border-secondary-300 dark:border-secondary-700 pt-4 space-y-3">
+                            <p class="text-sm text-secondary-700 font-bold dark:text-secondary-300">
                               {{ __("Show Player Intel To") }}
                             </p>
 
@@ -316,17 +316,17 @@
                                     v-model="form.show_player_intel_to"
                                     type="radio"
                                     value="none"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    class="w-4 h-4 text-primary-600 bg-surface-100 border-secondary-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-secondary-800 focus:ring-2 dark:bg-surface-700 dark:border-secondary-600"
                                     name="show_player_intel_to"
                                   >
                                 </div>
                                 <div class="ml-2 text-sm">
                                   <label
                                     for="show_player_intel_to_none"
-                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                    class="font-medium text-secondary-900 dark:text-secondary-300"
                                   >{{ __("Only Superadmin") }}</label>
                                   <p
-                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                    class="text-xs font-normal text-secondary-500 dark:text-secondary-300"
                                   >
                                     {{ __("Only superadmin role will be able to view player intel data for anyone.") }}
                                   </p>
@@ -339,17 +339,17 @@
                                     v-model="form.show_player_intel_to"
                                     type="radio"
                                     value="staff"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    class="w-4 h-4 text-primary-600 bg-surface-100 border-secondary-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-secondary-800 focus:ring-2 dark:bg-surface-700 dark:border-secondary-600"
                                     name="show_player_intel_to"
                                   >
                                 </div>
                                 <div class="ml-2 text-sm">
                                   <label
                                     for="show_player_intel_to_staff"
-                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                    class="font-medium text-secondary-900 dark:text-secondary-300"
                                   >{{ __("Staff Role and above") }}</label>
                                   <p
-                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                    class="text-xs font-normal text-secondary-500 dark:text-secondary-300"
                                   >
                                     {{ __("Any staff role & superadmin will be able to view player intel for any player.") }}
                                   </p>
@@ -362,17 +362,17 @@
                                     v-model="form.show_player_intel_to"
                                     type="radio"
                                     value="self"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    class="w-4 h-4 text-primary-600 bg-surface-100 border-secondary-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-secondary-800 focus:ring-2 dark:bg-surface-700 dark:border-secondary-600"
                                     name="show_player_intel_to"
                                   >
                                 </div>
                                 <div class="ml-2 text-sm">
                                   <label
                                     for="show_player_intel_to_self"
-                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                    class="font-medium text-secondary-900 dark:text-secondary-300"
                                   >{{ __("Linked Account and above") }}</label>
                                   <p
-                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                    class="text-xs font-normal text-secondary-500 dark:text-secondary-300"
                                   >
                                     {{ __("User who linked player can view player intel for the linked players. Superadmin & Staff role can view all players.") }}
                                   </p>
@@ -386,17 +386,17 @@
                                     v-model="form.show_player_intel_to"
                                     type="radio"
                                     value="login"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    class="w-4 h-4 text-primary-600 bg-surface-100 border-secondary-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-secondary-800 focus:ring-2 dark:bg-surface-700 dark:border-secondary-600"
                                     name="show_player_intel_to"
                                   >
                                 </div>
                                 <div class="ml-2 text-sm">
                                   <label
                                     for="show_player_intel_to_login"
-                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                    class="font-medium text-secondary-900 dark:text-secondary-300"
                                   >{{ __("Any Authenticated User") }}</label>
                                   <p
-                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                    class="text-xs font-normal text-secondary-500 dark:text-secondary-300"
                                   >
                                     {{ __("Any authenticated user can view player intel data for any player.") }}
                                   </p>
@@ -410,17 +410,17 @@
                                     v-model="form.show_player_intel_to"
                                     type="radio"
                                     value="all"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    class="w-4 h-4 text-primary-600 bg-surface-100 border-secondary-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-secondary-800 focus:ring-2 dark:bg-surface-700 dark:border-secondary-600"
                                     name="show_player_intel_to"
                                   >
                                 </div>
                                 <div class="ml-2 text-sm">
                                   <label
                                     for="show_player_intel_to_all"
-                                    class="font-medium text-gray-900 dark:text-gray-300"
+                                    class="font-medium text-secondary-900 dark:text-secondary-300"
                                   >{{ __("Public") }}</label>
                                   <p
-                                    class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                    class="text-xs font-normal text-secondary-500 dark:text-secondary-300"
                                   >
                                     {{ __("Any user or guest visiting the website can view player intel for any player.") }}
                                   </p>
@@ -430,10 +430,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
+                      <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                         <loading-button
                           :loading="form.processing"
-                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
+                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                           type="submit"
                         >
                           {{ __("Save Player Settings") }}

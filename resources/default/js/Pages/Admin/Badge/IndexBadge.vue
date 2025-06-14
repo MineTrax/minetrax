@@ -68,16 +68,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Badges Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-secondary-400">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
           {{ __("User Badges") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create badges')"
             :href="route('admin.badge.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
           >
             <span>{{ __("Create New") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Badge") }}</span>
@@ -86,14 +86,14 @@ const headerRow = [
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-white rounded shadow dark:bg-surface-800"
         :header="headerRow"
         :data="badges"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
           >
             {{ item.id }}
           </td>
@@ -109,11 +109,11 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div
-              class="text-sm font-medium text-gray-900 dark:text-gray-300"
+              class="text-sm font-medium text-secondary-900 dark:text-secondary-300"
             >
               {{ item.name }}
             </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">
+            <div class="text-sm text-secondary-500 dark:text-secondary-400">
               {{ item.shortname }}
             </div>
           </td>
@@ -125,12 +125,12 @@ const headerRow = [
           <td class="px-4">
             <Icon
               v-if="item.is_sticky"
-              class="text-green-500"
+              class="text-success-500"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </td>
@@ -156,7 +156,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('admin.badge.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit Badge')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
@@ -171,7 +171,7 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.badge.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Badge')"
             >
               <TrashIcon class="inline-block w-5 h-5" />

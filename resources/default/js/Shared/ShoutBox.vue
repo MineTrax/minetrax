@@ -1,7 +1,7 @@
 <template>
   <div v-if="$page.props.generalSettings.enable_shoutbox">
-    <div class="p-3 space-y-4 bg-white rounded shadow dark:bg-cool-gray-800">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+    <div class="p-3 space-y-4 bg-white rounded shadow dark:bg-surface-800">
+      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
         {{ __("Shout Box") }}
       </h3>
 
@@ -13,19 +13,19 @@
         >
           <div class="w-full max-w-sm mx-auto">
             <div class="flex space-x-4 animate-pulse">
-              <div class="w-8 h-8 bg-gray-300 rounded-full dark:bg-cool-gray-700" />
+              <div class="w-8 h-8 bg-surface-300 rounded-full dark:bg-surface-700" />
               <div class="flex-1 py-1 space-y-1">
-                <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
-                <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+                <div class="w-3/4 h-4 bg-surface-300 rounded dark:bg-surface-700" />
+                <div class="w-5/6 h-4 bg-surface-300 rounded dark:bg-surface-700" />
               </div>
             </div>
           </div>
           <div class="w-full max-w-sm mx-auto">
             <div class="flex space-x-4 animate-pulse">
-              <div class="w-8 h-8 bg-gray-300 rounded-full dark:bg-cool-gray-700" />
+              <div class="w-8 h-8 bg-surface-300 rounded-full dark:bg-surface-700" />
               <div class="flex-1 py-1 space-y-1">
-                <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
-                <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+                <div class="w-3/4 h-4 bg-surface-300 rounded dark:bg-surface-700" />
+                <div class="w-5/6 h-4 bg-surface-300 rounded dark:bg-surface-700" />
               </div>
             </div>
           </div>
@@ -43,7 +43,7 @@
           >
             <div class="items-start order-2 max-w-xs mx-2 space-y-2 text-sm">
               <div
-                class="flex flex-col inline-block px-4 py-2 text-gray-700 bg-gray-100 rounded-tl-lg rounded-2xl dark:bg-cool-gray-600 dark:bg-opacity-25 dark:text-gray-200"
+                class="flex flex-col inline-block px-4 py-2 text-secondary-700 bg-surface-100 rounded-tl-lg rounded-2xl dark:bg-surface-600 dark:bg-opacity-25 dark:text-secondary-200"
               >
                 <div>
                   <inertia-link
@@ -56,7 +56,7 @@
                   </inertia-link>
                   <span
                     v-tippy
-                    class="ml-1 text-xs text-gray-500 dark:text-gray-400 focus:outline-none"
+                    class="ml-1 text-xs text-secondary-500 dark:text-secondary-400 focus:outline-none"
                     :title="formatToDayDateString(shout.created_at)"
                   >
                     {{ formatTimeAgoToNow(shout.created_at, false) }}
@@ -82,7 +82,7 @@
               :href="route('shout.delete', shout.id)"
             >
               <icon
-                class="w-4 h-4 text-gray-200 dark:text-gray-500 hover:text-red-400 dark:hover:text-red-500"
+                class="w-4 h-4 text-secondary-200 dark:text-secondary-500 hover:text-error-400 dark:hover:text-error-500"
                 name="trash"
               />
             </inertia-link>
@@ -104,18 +104,18 @@
               :href="route('shout.delete', shout.id)"
             >
               <icon
-                class="w-4 h-4 text-gray-200 dark:text-gray-500 hover:text-red-400 dark:hover:text-red-500"
+                class="w-4 h-4 text-secondary-200 dark:text-secondary-500 hover:text-error-400 dark:hover:text-error-500"
                 name="trash"
               />
             </inertia-link>
             <div class="items-start order-1 max-w-xs mx-2 space-y-2 text-sm">
               <div
-                class="flex flex-col inline-block px-4 py-2 text-gray-700 rounded-tr-lg rounded-2xl bg-light-blue-100 dark:bg-cool-gray-900 dark:bg-opacity-40 dark:text-gray-200"
+                class="flex flex-col inline-block px-4 py-2 text-secondary-700 rounded-tr-lg rounded-2xl bg-primary-100 dark:bg-surface-900 dark:bg-opacity-40 dark:text-secondary-200"
               >
                 <div class="text-right">
                   <span
                     v-tippy
-                    class="mr-1 text-xs text-gray-500 dark:text-gray-400 focus:outline-none"
+                    class="mr-1 text-xs text-secondary-500 dark:text-secondary-400 focus:outline-none"
                     :title="formatToDayDateString(shout.created_at)"
                   >
                     {{ formatTimeAgoToNow(shout.created_at, false) }}
@@ -145,7 +145,7 @@
 
         <div
           v-if="!loading && (!shouts || shouts.length <= 0)"
-          class="italic text-gray-500 dark:text-gray-400 text-center"
+          class="italic text-secondary-500 dark:text-secondary-400 text-center"
         >
           {{ __("No shouts yet.") }}
         </div>
@@ -158,22 +158,22 @@
           v-model="message"
           :disabled="sending"
           aria-label="Shout"
-          class="block w-full mt-1 bg-gray-100 border-none rounded-md focus:ring-gray-300 sm:text-sm disabled:opacity-50 focus:bg-white dark:bg-cool-gray-900 dark:text-gray-200 dark:focus:bg-gray-900 dark:focus:ring-gray-700"
+          class="block w-full mt-1 bg-surface-100 border-none rounded-md focus:ring-secondary-300 sm:text-sm disabled:opacity-50 focus:bg-white dark:bg-surface-900 dark:text-secondary-200 dark:focus:bg-surface-900 dark:focus:ring-secondary-700"
           type="text"
           :placeholder="__('Say something..')"
           @keypress.enter="sendShout"
         >
         <span
           v-if="error"
-          class="text-xs text-red-400"
+          class="text-xs text-error-400"
         >{{ error }}</span>
       </div>
       <div
         v-else
-        class="text-sm text-center text-gray-600 dark:text-gray-400"
+        class="text-sm text-center text-secondary-600 dark:text-secondary-400"
       >
         <inertia-link
-          class="font-semibold text-light-blue-500"
+          class="font-semibold text-primary-500"
           :href="route('login')"
         >
           {{ __("Login") }}
@@ -181,7 +181,7 @@
         <template v-if="$page.props.hasRegistrationFeature">
           {{ " " + __("or") }}
           <inertia-link
-            class="font-semibold text-light-blue-500"
+            class="font-semibold text-primary-500"
             :href="route('register')"
           >
             {{ __("Register") }}

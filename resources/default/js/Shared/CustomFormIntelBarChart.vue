@@ -51,8 +51,8 @@ option.value = {
 </script>
 
 <template>
-  <div class="bg-white dark:bg-cool-gray-800 rounded w-full h-full space-y-2 p-3 shadow">
-    <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex items-center">
+  <div class="bg-white dark:bg-surface-800 rounded w-full h-full space-y-2 p-3 shadow">
+    <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200 flex items-center">
       {{ title }}
     </h3>
     <Chart

@@ -88,16 +88,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage Custom Forms')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-secondary-400">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
           {{ __("Manage Custom Forms") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create custom_forms')"
             :href="route('admin.custom-form.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
           >
             <span>{{ __("Create") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Custom Form") }}</span>
@@ -106,14 +106,14 @@ const headerRow = [
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-white rounded shadow dark:bg-surface-800"
         :header="headerRow"
         :data="customForms"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
           >
             {{ item.id }}
           </td>
@@ -122,7 +122,7 @@ const headerRow = [
             <InertiaLink
               as="a"
               :href="route('admin.custom-form.show', item.id)"
-              class="dark:hover:text-gray-200 hover:text-light-blue-400"
+              class="dark:hover:text-secondary-200 hover:text-primary-400"
             >
               {{ item.title }}
             </InertiaLink>
@@ -131,7 +131,7 @@ const headerRow = [
           <DtRowItem class="px-4 whitespace-normal">
             <div class="flex items-center">
               <div
-                class="text-sm font-medium text-gray-900 dark:text-gray-400"
+                class="text-sm font-medium text-secondary-900 dark:text-secondary-400"
               >
                 {{ item.status.value }}
               </div>
@@ -141,7 +141,7 @@ const headerRow = [
           <td class="px-4 whitespace-normal">
             <div class="flex items-center">
               <div
-                class="text-sm font-medium text-gray-900 dark:text-gray-400"
+                class="text-sm font-medium text-secondary-900 dark:text-secondary-400"
               >
                 {{ item.can_create_submission }}
               </div>
@@ -149,31 +149,31 @@ const headerRow = [
           </td>
 
           <td
-            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-secondary-500 align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_notify_staff_on_submission"
-              class="text-green-500 focus:outline-none"
+              class="text-success-500 focus:outline-none"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </td>
 
           <td
-            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-secondary-500 align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_visible_in_listing"
-              class="text-green-500 focus:outline-none"
+              class="text-success-500 focus:outline-none"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </td>
@@ -199,7 +199,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('custom-form.show', item.slug)"
-              class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
               :title="__('Show Public View')"
             >
               <EyeIcon class="inline-block w-5 h-5" />
@@ -208,7 +208,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('admin.custom-form.show', item.id)"
-              class="inline-flex items-center justify-center text-green-500 hover:text-green-800"
+              class="inline-flex items-center justify-center text-success-500 hover:text-success-800"
               :title="__('Show Intel')"
             >
               <ChartBarSquareIcon class="inline-block w-5 h-5" />
@@ -218,7 +218,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('admin.custom-form.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit Custom Form')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
@@ -233,7 +233,7 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.custom-form.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Custom Form')"
             >
               <TrashIcon class="inline-block w-5 h-5" />

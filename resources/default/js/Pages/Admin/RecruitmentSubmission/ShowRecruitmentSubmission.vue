@@ -59,7 +59,7 @@ const rejectForm = useForm({
 
     <div class="p-4 px-10 mx-auto space-y-4">
       <div class="py-3 flex justify-between">
-        <h3 class="text-xl font-extrabold text-gray-800 dark:text-gray-200">
+        <h3 class="text-xl font-extrabold text-secondary-800 dark:text-secondary-200">
           {{
             __(':user application for :recruitmenttitle #:index', {
               user: submission.user.name,
@@ -80,13 +80,13 @@ const rejectForm = useForm({
             as="button"
             method="DELETE"
             :href="route('admin.recruitment-submission.delete', submission.id)"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-red-600 border border-transparent rounded-md hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-600 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-gray"
           >
             <span>{{ __("Delete") }}</span>
           </InertiaLink>
           <InertiaLink
             :href="route('admin.recruitment-submission.index-open')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-400 border border-transparent rounded-md hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-400 focus:shadow-outline-gray dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-900 dark:focus:border-gray-700"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-400 focus:shadow-outline-gray dark:bg-surface-800 dark:hover:bg-surface-700 dark:active:bg-surface-900 dark:focus:border-secondary-700"
           >
             <span class="flex items-center justify-center">
               <ArrowLeftCircleIcon class="h-4 mr-2" />
@@ -96,7 +96,7 @@ const rejectForm = useForm({
 
           <InertiaLink
             :href="route('admin.recruitment-submission.index-closed')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-400 border border-transparent rounded-md hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-400 focus:shadow-outline-gray dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-900 dark:focus:border-gray-700"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-400 focus:shadow-outline-gray dark:bg-surface-800 dark:hover:bg-surface-700 dark:active:bg-surface-900 dark:focus:border-secondary-700"
           >
             <span class="flex items-center justify-center">
               <ArrowLeftCircleIcon class="h-4 mr-2" />
@@ -108,9 +108,9 @@ const rejectForm = useForm({
 
       <div class="flex w-full gap-4">
         <div class="w-1/2 space-y-4">
-          <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800">
+          <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800">
             <ul class="flex flex-col mt-3">
-              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
+              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
                 <div class="flex items-center justify-between w-full">
                   <span>{{ __("Applicant") }}</span>
                   <div>
@@ -127,7 +127,7 @@ const rejectForm = useForm({
                       </div>
                       <div class="flex-col">
                         <div
-                          class="text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap truncate"
+                          class="text-sm font-semibold text-secondary-900 dark:text-secondary-300 whitespace-nowrap truncate"
                           :style="[submission.user.roles[0].color ? {color: submission.user.roles[0].color} : null]"
                         >
                           {{ submission.user.name }}
@@ -137,7 +137,7 @@ const rejectForm = useForm({
       v-tippy
       name="verified-check-fill"
       :title="__('Verified Account')"
-      class="inline mb-1 fill-current focus:outline-none text-light-blue-400 w-5 h-5"
+      class="inline mb-1 fill-current focus:outline-none text-primary-400 w-5 h-5"
     />
     <Icon
       v-if="submission.user.is_staff"
@@ -151,10 +151,10 @@ const rejectForm = useForm({
       v-tippy
       name="volume-off-fill"
       :title="__('Muted User')"
-      class="inline mb-1 text-red-500 fill-current focus:outline-none w-5 h-5"
+      class="inline mb-1 text-error-500 fill-current focus:outline-none w-5 h-5"
     />
                         </div>
-                        <div class="text-sm text-gray-500">
+                        <div class="text-sm text-secondary-500">
                           @{{ submission.user.username }}
                         </div>
                       </div>
@@ -163,14 +163,14 @@ const rejectForm = useForm({
                 </div>
               </li>
 
-              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
+              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
                 <div class="flex items-center justify-between w-full">
                   <span>{{ __("Application") }}</span>
                   <span>{{ submission.recruitment.title }}</span>
                 </div>
               </li>
 
-              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
+              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
                 <div class="flex items-center justify-between w-full">
                   <span>{{ __("Created At") }}</span>
                   <span
@@ -181,7 +181,7 @@ const rejectForm = useForm({
               </li>
 
               <li
-                class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400"
+                class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400"
               >
                 <div class="flex items-center justify-between w-full">
                   <span>{{ __("Last Updated At") }}</span>
@@ -193,7 +193,7 @@ const rejectForm = useForm({
                 </div>
               </li>
 
-              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
+              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
                 <div class="flex items-center justify-between w-full">
                   <span>{{ __("Request Status") }}</span>
                   <CommonStatusBadge :status="submission.status.value" />
@@ -202,7 +202,7 @@ const rejectForm = useForm({
 
               <li
                 v-if="submission.last_act_reason"
-                class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400"
+                class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400"
               >
                 <div class="flex items-center justify-between w-full">
                   <span>{{ __("Reason") }}</span>
@@ -212,7 +212,7 @@ const rejectForm = useForm({
 
               <li
                 v-if="submission.last_act_by"
-                class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400"
+                class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400"
               >
                 <div class="flex items-center justify-between w-full">
                   <span>
@@ -229,7 +229,7 @@ const rejectForm = useForm({
               <InertiaLink
                 v-if="submission.i_can_act && ['pending', 'onhold'].includes(submission.status.value)"
                 as="button"
-                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-sky-500 border border-transparent rounded-md hover:bg-sky-700 active:bg-sky-900 focus:outline-none focus:border-sky-900 focus:shadow-outline-gray"
+                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-primary-500 border border-transparent rounded-md hover:bg-primary-700 active:bg-primary-900 focus:outline-none focus:border-primary-900 focus:shadow-outline-gray"
                 method="POST"
                 :href="route('admin.recruitment-submission.act', submission.id)"
                 :data="{
@@ -241,7 +241,7 @@ const rejectForm = useForm({
               <InertiaLink
                 v-if="submission.i_can_act && submission.status.value != 'onhold'"
                 as="button"
-                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-500 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-500 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
                 method="POST"
                 :href="route('admin.recruitment-submission.act', submission.id)"
                 :data="{
@@ -265,13 +265,13 @@ const rejectForm = useForm({
                 :data="{
                   action: 'approved',
                 }"
-                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-500 border border-transparent rounded-md hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:shadow-outline-gray"
+                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-success-500 border border-transparent rounded-md hover:bg-success-700 active:bg-success-900 focus:outline-none focus:border-success-900 focus:shadow-outline-gray"
               >
                 <span>{{ __("Approve") }}</span>
               </InertiaLink>
               <button
                 v-if="submission.i_can_act"
-                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-red-500 border border-transparent rounded-md hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-gray"
+                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-500 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-gray"
                 @click="showingRejectForm = true"
               >
                 <span>{{ __("Reject") }}</span>
@@ -280,7 +280,7 @@ const rejectForm = useForm({
           </div>
 
 
-          <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800">
+          <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800">
             <RecruitmentMessagesBox
               :submission="submission"
               :for-admin="true"
@@ -289,7 +289,7 @@ const rejectForm = useForm({
         </div>
 
 
-        <div class="md:w-1/2 px-3 py-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800 md:px-10 md:py-5 no-disabled-effect">
+        <div class="md:w-1/2 px-3 py-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800 md:px-10 md:py-5 no-disabled-effect">
           <FormKit
             :disabled="true"
             type="form"
@@ -330,7 +330,7 @@ const rejectForm = useForm({
         </JetSecondaryButton>
         <LoadingButton
           :loading="rejectForm.processing"
-          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-red-500 border border-transparent rounded-md hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-gray"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-500 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-gray"
           @click="() => {
             rejectForm.post(route('admin.recruitment-submission.act', submission.id), {
               onSuccess: () => {

@@ -7,21 +7,21 @@
       v-if="!$page.props.disableEmailPasswordAuth"
       class="flex items-center justify-between mt-3"
     >
-      <hr class="w-full dark:border-gray-600">
+      <hr class="w-full dark:border-secondary-600">
       <span
-        class="p-2 text-gray-400 dark:text-gray-500 whitespace-nowrap text-sm"
+        class="p-2 text-secondary-400 dark:text-secondary-500 whitespace-nowrap text-sm"
       >{{ __("Or continue with") }}
       </span>
-      <hr class="w-full dark:border-gray-600">
+      <hr class="w-full dark:border-secondary-600">
     </div>
     <div
       v-else
       class="mb-4"
     >
-      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">
+      <h2 class="text-2xl font-bold text-secondary-800 dark:text-secondary-200">
         {{ __("Sign in") }}
       </h2>
-      <span class="text-sm text-gray-500 dark:text-gray-300">{{ __("with social to continue.") }}</span>
+      <span class="text-sm text-secondary-500 dark:text-secondary-300">{{ __("with social to continue.") }}</span>
     </div>
 
     <div
@@ -31,7 +31,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.google"
         :href="route('social.login', 'google')"
-        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-red-500 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-red-500 hover:bg-gray-50 dark:hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-error-500 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-error-500 hover:bg-surface-50 dark:hover:bg-error-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error-500 disabled:opacity-50"
       >
         <icon
           name="google"
@@ -45,7 +45,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.facebook"
         :href="route('social.login', 'facebook')"
-        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-blue-700 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-blue-700 hover:bg-gray-50 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 disabled:opacity-50"
+        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-primary-700 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-primary-700 hover:bg-surface-50 dark:hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 disabled:opacity-50"
       >
         <icon
           name="facebook"
@@ -59,7 +59,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.twitter"
         :href="route('social.login', 'twitter')"
-        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white text-sky-400 dark:bg-sky-400 hover:bg-gray-50 dark:hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 disabled:opacity-50"
+        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white text-primary-400 dark:bg-primary-400 hover:bg-surface-50 dark:hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
       >
         <icon
           name="twitter"
@@ -73,7 +73,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.discord"
         :href="route('social.login', 'discord')"
-        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-indigo-500 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-indigo-500 hover:bg-gray-50 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 disabled:opacity-50"
+        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-primary-500 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-primary-500 hover:bg-surface-50 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 disabled:opacity-50"
       >
         <icon
           name="discord"

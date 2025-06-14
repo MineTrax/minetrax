@@ -113,7 +113,7 @@ const formDisabled = computed(() => {
       <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <h2
           v-if="selectedPlayer"
-          class="text-lg mb-2 md:mb-0 md:text-2xl font-bold text-gray-700 dark:text-gray-200"
+          class="text-lg mb-2 md:mb-0 md:text-2xl font-bold text-secondary-700 dark:text-secondary-200"
         >
           {{
             __("Change skin for :username", {
@@ -123,7 +123,7 @@ const formDisabled = computed(() => {
         </h2>
         <h2
           v-else
-          class="text-lg italic mb-2 md:mb-0 md:text-2xl font-bold text-gray-500 dark:text-gray-500"
+          class="text-lg italic mb-2 md:mb-0 md:text-2xl font-bold text-secondary-500 dark:text-secondary-500"
         >
           {{ __("No Linked Players") }}
         </h2>
@@ -131,7 +131,7 @@ const formDisabled = computed(() => {
         <Multiselect
           id="country"
           v-model="selectedPlayer"
-          class="w-full md:w-1/3 bg-gray-300 border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm dark:bg-gray-900"
+          class="w-full md:w-1/3 bg-surface-300 border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm dark:bg-surface-900"
           :options="players"
           :multiple="false"
           :placeholder="__('Search') + '...'"
@@ -144,28 +144,28 @@ const formDisabled = computed(() => {
 
       <p
         v-if="selectedPlayer"
-        class="text-xs text-gray-500 dark:text-gray-500"
+        class="text-xs text-secondary-500 dark:text-secondary-500"
       >
         {{ __("Player Uuid") }}: {{ selectedPlayer.uuid }}
       </p>
 
       <AlertCard
         v-if="!hasServersWithFeature"
-        text-color="text-red-800 dark:text-red-500"
-        border-color="border-red-500"
+        text-color="text-error-800 dark:text-error-500"
+        border-color="border-error-500"
       >
         <p class="text-sm">
           {{ __("Oh Jeez! No server support changing of skin yet!") }}
         </p>
         <template #body>
-          <p class="text-gray-500 dark:text-gray-400">
+          <p class="text-secondary-500 dark:text-secondary-400">
             {{
               __(
                 "This feature is not enabled in any of the servers. Below form will be disabled. "
               )
             }}
           </p>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
+          <p class="text-sm text-secondary-500 dark:text-secondary-400">
             {{ __("Please check back later or contact the server administrator.") }}
           </p>
         </template>
@@ -173,8 +173,8 @@ const formDisabled = computed(() => {
 
       <AlertCard
         v-if="cooldown"
-        text-color="text-yellow-800 dark:text-yellow-500"
-        border-color="border-yellow-500"
+        text-color="text-warning-800 dark:text-warning-500"
+        border-color="borde-warning-500"
       >
         {{ __("You are on a cooldown! Please wait for :cooldown seconds before you can try again.", {
           cooldown: cooldown
@@ -183,8 +183,8 @@ const formDisabled = computed(() => {
 
       <AlertCard
         v-if="!selectedPlayer"
-        text-color="text-red-800 dark:text-red-500"
-        border-color="border-red-500"
+        text-color="text-error-800 dark:text-error-500"
+        border-color="border-error-500"
       >
         {{ __("No linked players found. Please link a player to your account.") }}
       </AlertCard>
@@ -195,7 +195,7 @@ const formDisabled = computed(() => {
       >
         <TabList
           as="ul"
-          class="mb-4 space-y-4 text-sm font-medium text-gray-500 flex-column space-y dark:text-gray-400 md:me-4 md:mb-0"
+          class="mb-4 space-y-4 text-sm font-medium text-secondary-500 flex-column space-y dark:text-secondary-400 md:me-4 md:mb-0"
         >
           <Tab
             v-for="(tab, index) in tabList"
@@ -207,9 +207,9 @@ const formDisabled = computed(() => {
             <a
               href="#"
               :class="{
-                'inline-flex items-center w-full px-4 py-3 rounded-lg hover:text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white':
+                'inline-flex items-center w-full px-4 py-3 rounded-lg hover:text-secondary-900 bg-surface-50 hover:bg-surface-100 dark:bg-surface-800 dark:hover:bg-surface-700 dark:hover:text-white':
                   !selected,
-                'inline-flex items-center w-full px-4 py-3 text-white bg-gray-500 rounded-lg active dark:bg-gray-600':
+                'inline-flex items-center w-full px-4 py-3 text-white bg-surface-500 rounded-lg active dark:bg-surface-600':
                   selected,
               }"
               aria-current="page"
@@ -222,10 +222,10 @@ const formDisabled = computed(() => {
         >
           <TabPanel
             as="div"
-            class="w-full p-6 text-gray-500 rounded-lg bg-gray-50 text-medium dark:text-gray-400 dark:bg-gray-800"
+            class="w-full p-6 text-secondary-500 rounded-lg bg-surface-50 text-medium dark:text-secondary-400 dark:bg-surface-800"
           >
             <h3
-              class="mb-2 text-lg font-bold text-gray-900 dark:text-white"
+              class="mb-2 text-lg font-bold text-secondary-900 dark:text-white"
             >
               {{ __("Change Skin") }} - {{ __("Upload Skin") }}
             </h3>
@@ -240,7 +240,7 @@ const formDisabled = computed(() => {
                   <br>
                   {{ __("A valid skin image should look like this: ") }}
                   <a
-                    class="text-blue-500 dark:text-blue-400 hover:underline"
+                    class="text-primary-500 dark:text-primary-400 hover:underline"
                     href="https://mc-heads.net/skin/xinecraft.png"
                     target="_blank"
                   >https://mc-heads.net/skin/xinecraft.png</a>
@@ -254,11 +254,11 @@ const formDisabled = computed(() => {
             </div>
 
             <form
-              class="w-full border-t mt-4 border-gray-300 dark:border-gray-700"
+              class="w-full border-t mt-4 border-secondary-300 dark:border-secondary-700"
               @submit.prevent="submitUploadSkinForm"
             >
               <div class="col-span-6 sm:col-span-6 pt-4 space-y-3">
-                <p class="text-sm text-gray-700 font-bold dark:text-gray-300">
+                <p class="text-sm text-secondary-700 font-bold dark:text-secondary-300">
                   {{ __("Skin Type") }}
                 </p>
 
@@ -270,14 +270,14 @@ const formDisabled = computed(() => {
                         v-model="form.skin_type"
                         type="radio"
                         value="steve"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        class="w-4 h-4 text-primary-600 bg-surface-100 border-secondary-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-secondary-800 focus:ring-2 dark:bg-surface-700 dark:border-secondary-600"
                         name="skin_type"
                       >
                     </div>
                     <div class="ml-2 text-sm">
                       <label
                         for="skin_type_steve"
-                        class="font-medium text-gray-900 dark:text-gray-300"
+                        class="font-medium text-secondary-900 dark:text-secondary-300"
                       >{{ __("Steve") }}</label>
                     </div>
                   </div>
@@ -288,14 +288,14 @@ const formDisabled = computed(() => {
                         v-model="form.skin_type"
                         type="radio"
                         value="alex"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        class="w-4 h-4 text-primary-600 bg-surface-100 border-secondary-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-secondary-800 focus:ring-2 dark:bg-surface-700 dark:border-secondary-600"
                         name="skin_type"
                       >
                     </div>
                     <div class="ml-2 text-sm">
                       <label
                         for="skin_type_alex"
-                        class="font-medium text-gray-900 dark:text-gray-300"
+                        class="font-medium text-secondary-900 dark:text-secondary-300"
                       >{{ __("Alex") }}</label>
                     </div>
                   </div>
@@ -304,7 +304,7 @@ const formDisabled = computed(() => {
 
 
               <div class="col-span-6 sm:col-span-6 pt-4 space-y-3">
-                <p class="text-sm text-gray-700 font-bold dark:text-gray-300">
+                <p class="text-sm text-secondary-700 font-bold dark:text-secondary-300">
                   {{ __("Skin File") }}
                 </p>
 
@@ -314,13 +314,13 @@ const formDisabled = computed(() => {
                     ref="file"
                     accept=".png"
                     type="file"
-                    class="block p-2 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                    class="block p-2 w-full text-sm text-secondary-900 border border-secondary-300 rounded-lg cursor-pointer bg-surface-50 dark:text-secondary-400 focus:outline-none dark:bg-surface-700 dark:border-secondary-600 dark:placeholder-secondary-400"
                     required
                   >
                 </div>
                 <p
                   v-if="form.errors.file"
-                  class="text-xs text-red-500"
+                  class="text-xs text-error-500"
                 >
                   {{ form.errors.file }}
                 </p>
@@ -329,7 +329,7 @@ const formDisabled = computed(() => {
               <div class="mt-6">
                 <LoadingButton
                   :loading="form.processing"
-                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
                   :disabled="formDisabled"
                   type="submit"
                 >
@@ -340,10 +340,10 @@ const formDisabled = computed(() => {
           </TabPanel>
           <TabPanel
             as="div"
-            class="w-full p-6 text-gray-500 rounded-lg bg-gray-50 text-medium dark:text-gray-400 dark:bg-gray-800"
+            class="w-full p-6 text-secondary-500 rounded-lg bg-surface-50 text-medium dark:text-secondary-400 dark:bg-surface-800"
           >
             <h3
-              class="mb-2 text-lg font-bold text-gray-900 dark:text-white"
+              class="mb-2 text-lg font-bold text-secondary-900 dark:text-white"
             >
               {{ __("Change Skin") }} - {{ __("From URL") }}
             </h3>
@@ -384,7 +384,7 @@ const formDisabled = computed(() => {
               <div class="mt-6">
                 <LoadingButton
                   :loading="form.processing"
-                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
                   :disabled="formDisabled"
                   type="submit"
                 >
@@ -395,10 +395,10 @@ const formDisabled = computed(() => {
           </TabPanel>
           <TabPanel
             as="div"
-            class="w-full p-6 text-gray-500 rounded-lg bg-gray-50 text-medium dark:text-gray-400 dark:bg-gray-800"
+            class="w-full p-6 text-secondary-500 rounded-lg bg-surface-50 text-medium dark:text-secondary-400 dark:bg-surface-800"
           >
             <h3
-              class="mb-2 text-lg font-bold text-gray-900 dark:text-white"
+              class="mb-2 text-lg font-bold text-secondary-900 dark:text-white"
             >
               {{ __("Change Skin") }} - {{ __("From Username") }}
             </h3>
@@ -429,7 +429,7 @@ const formDisabled = computed(() => {
               <div class="mt-6">
                 <LoadingButton
                   :loading="form.processing"
-                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
                   :disabled="formDisabled"
                   type="submit"
                 >
@@ -440,10 +440,10 @@ const formDisabled = computed(() => {
           </TabPanel>
           <TabPanel
             as="div"
-            class="w-full p-6 text-gray-500 rounded-lg bg-gray-50 text-medium dark:text-gray-400 dark:bg-gray-800"
+            class="w-full p-6 text-secondary-500 rounded-lg bg-surface-50 text-medium dark:text-secondary-400 dark:bg-surface-800"
           >
             <h3
-              class="mb-2 text-lg font-bold text-gray-900 dark:text-white"
+              class="mb-2 text-lg font-bold text-secondary-900 dark:text-white"
             >
               {{ __("Change Skin") }} - {{ __("Reset") }}
             </h3>
@@ -458,7 +458,7 @@ const formDisabled = computed(() => {
               <div class="mt-6">
                 <LoadingButton
                   :loading="form.processing"
-                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-error-500 hover:bg-error-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error-500 disabled:opacity-50"
                   :disabled="formDisabled"
                   type="submit"
                 >

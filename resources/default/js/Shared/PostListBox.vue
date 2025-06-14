@@ -2,7 +2,7 @@
   <div class="space-y-4 w-full">
     <div
       v-if="$page.props.auth.user && !username"
-      class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow"
+      class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow"
     >
       <form
         class="mt-4 text-xl flex flex-col items-end space-y-2"
@@ -11,7 +11,7 @@
         <textarea
           ref="post-content"
           v-model="body"
-          class="mt-1 overflow-hidden block w-full shadow-sm sm:text-sm border-gray-300 rounded-md resize-none focus:border-light-blue-300 focus:ring text-sm focus:ring-light-blue-200 focus:ring-opacity-50 dark:bg-cool-gray-900 dark:text-gray-200 dark:border-gray-800"
+          class="mt-1 overflow-hidden block w-full shadow-sm sm:text-sm border-secondary-300 rounded-md resize-none focus:border-primary-300 focus:ring text-sm focus:ring-primary-200 focus:ring-opacity-50 dark:bg-surface-900 dark:text-secondary-200 dark:border-secondary-800"
           aria-label="post content"
           :placeholder="bodyPlaceholderText"
           name="post"
@@ -36,7 +36,7 @@
             >
               <icon
                 name="close"
-                class="p-1 text-gray-500 dark:text-gray-400"
+                class="p-1 text-secondary-500 dark:text-secondary-400"
               />
             </button>
             <img
@@ -61,12 +61,12 @@
             v-tippy
             :title="__('Add Media')"
             type="button"
-            class="inline-flex items-center justify-center h-10 w-10 hover:bg-light-blue-100 dark:hover:bg-cool-gray-900 rounded-full focus:outline-none"
+            class="inline-flex items-center justify-center h-10 w-10 hover:bg-primary-100 dark:hover:bg-surface-900 rounded-full focus:outline-none"
             @click="openImageSelector"
           >
             <icon
               name="photograph"
-              class="h-6 w-6 text-light-blue-400"
+              class="h-6 w-6 text-primary-400"
             />
           </button>
           <span><jet-input-error
@@ -74,7 +74,7 @@
             class="mt-2"
           /></span>
           <loading-button
-            class="justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-bold tracking-wide leading-5 rounded-full text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+            class="justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-bold tracking-wide leading-5 rounded-full text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
             :loading="postsubmitting"
             type="submit"
           >
@@ -88,26 +88,26 @@
       v-if="loading"
       class="space-y-4"
     >
-      <div class="px-5 py-4 bg-white dark:bg-cool-gray-800 shadow rounded-lg">
+      <div class="px-5 py-4 bg-white dark:bg-surface-800 shadow rounded-lg">
         <div class="animate-pulse flex space-x-4">
-          <div class="rounded-full bg-gray-300 dark:bg-cool-gray-700 h-12 w-12" />
+          <div class="rounded-full bg-surface-300 dark:bg-surface-700 h-12 w-12" />
           <div class="flex-1 space-y-4 py-1">
-            <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-3/4" />
+            <div class="h-4 bg-surface-300 dark:bg-surface-700 rounded w-3/4" />
             <div class="space-y-2">
-              <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded" />
-              <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-5/6" />
+              <div class="h-4 bg-surface-300 dark:bg-surface-700 rounded" />
+              <div class="h-4 bg-surface-300 dark:bg-surface-700 rounded w-5/6" />
             </div>
           </div>
         </div>
       </div>
-      <div class="px-5 py-4 bg-white dark:bg-cool-gray-800 shadow rounded-lg">
+      <div class="px-5 py-4 bg-white dark:bg-surface-800 shadow rounded-lg">
         <div class="animate-pulse flex space-x-4">
-          <div class="rounded-full bg-gray-300 dark:bg-cool-gray-700 h-12 w-12" />
+          <div class="rounded-full bg-surface-300 dark:bg-surface-700 h-12 w-12" />
           <div class="flex-1 space-y-4 py-1">
-            <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-3/4" />
+            <div class="h-4 bg-surface-300 dark:bg-surface-700 rounded w-3/4" />
             <div class="space-y-2">
-              <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded" />
-              <div class="h-4 bg-gray-300 dark:bg-cool-gray-700 rounded w-5/6" />
+              <div class="h-4 bg-surface-300 dark:bg-surface-700 rounded" />
+              <div class="h-4 bg-surface-300 dark:bg-surface-700 rounded w-5/6" />
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@
         <div
           v-if="!loading && showEmptyPost && posts.data.length <= 0"
           :key="999999999"
-          class="flex bg-white dark:bg-cool-gray-800 items-center justify-center italic text-gray-500 dark:text-gray-400 p-4 rounded shadow"
+          class="flex bg-white dark:bg-surface-800 items-center justify-center italic text-secondary-500 dark:text-secondary-400 p-4 rounded shadow"
         >
           {{ __(":username hasn't posted anything yet.", {username: username}) }}
         </div>

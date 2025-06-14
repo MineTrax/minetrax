@@ -1,11 +1,11 @@
 <template>
   <div v-if="enabled">
-    <div class="p-3 sm:px-5 bg-white dark:bg-gray-800 rounded shadow">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+    <div class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow">
+      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
         {{ __("Online Players") }}
         <span
           v-if="!loading && !error"
-          class="float-right text-green-500 font-semibold"
+          class="float-right text-success-500 font-semibold"
         >
           <span v-if="serverInfo['MaxPlayers']">
             {{ serverInfo["Players"] }} /
@@ -23,7 +23,7 @@
         class="flex p-4 justify-center"
       >
         <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-light-blue-600"
+          class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-600"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -50,7 +50,7 @@
 
       <div
         v-if="!loading && !error"
-        class="mt-3 text-gray-500 flex flex-wrap justify-center"
+        class="mt-3 text-secondary-500 flex flex-wrap justify-center"
       >
         <div
           v-for="pl of playersList"
@@ -80,7 +80,7 @@
           !loading &&
           (!playersList || playersList.length <= 0)
         "
-        class="italic p-1 rounded text-center text-gray-400"
+        class="italic p-1 rounded text-center text-secondary-400"
       >
         {{ __("No players online.") }}
       </div>

@@ -67,16 +67,16 @@ activeTime = Math.max(activeTime, 0);
         :can-show-player-intel="canShowPlayerIntel"
       />
       <div
-        class="flex flex-col shadow bg-white dark:bg-cool-gray-800 rounded p-3"
+        class="flex flex-col shadow bg-white dark:bg-surface-800 rounded p-3"
       >
-        <h1 class="text-lg font-bold text-gray-700 dark:text-gray-300">
+        <h1 class="text-lg font-bold text-secondary-700 dark:text-secondary-300">
           {{ __("Session #:id", { id: session.id }) }},
           {{ player.username }}
           <span class="text-sm font-light">({{ player.uuid }})</span>
         </h1>
 
         <div
-          class="grid grid-cols-1 md:grid-cols-2 grap-2 md:gap-16 w-full dark:text-gray-400 text-gray-600 mt-4"
+          class="grid grid-cols-1 md:grid-cols-2 grap-2 md:gap-16 w-full dark:text-secondary-400 text-secondary-600 mt-4"
         >
           <table>
             <tr>
@@ -156,7 +156,7 @@ activeTime = Math.max(activeTime, 0);
                 </span>
                 <span
                   v-else
-                  class="text-gray-400"
+                  class="text-secondary-400"
                 >—</span>
               </td>
             </tr>
@@ -376,15 +376,15 @@ activeTime = Math.max(activeTime, 0);
 
       <div
         v-if="showCriticalInfo && criticalInfo"
-        class="flex flex-col shadow bg-white dark:bg-cool-gray-800 rounded p-3"
+        class="flex flex-col shadow bg-white dark:bg-surface-800 rounded p-3"
       >
-        <h1 class="text-lg font-bold text-gray-700 dark:text-gray-300">
+        <h1 class="text-lg font-bold text-secondary-700 dark:text-secondary-300">
           {{ __("Critical Info") }}
           <span class="text-sm font-light">({{ __("Only visible to Staff with permission") }})</span>
         </h1>
 
         <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-16 w-full dark:text-gray-400 text-gray-600 mt-4"
+          class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-16 w-full dark:text-secondary-400 text-secondary-600 mt-4"
         >
           <table>
             <tr>
@@ -393,7 +393,7 @@ activeTime = Math.max(activeTime, 0);
               </td>
               <td class="text-right">
                 <a
-                  class="hover:text-light-blue-400 hover:underline filter blur-sm hover:blur-none duration-300"
+                  class="hover:text-primary-400 hover:underline filter blur-sm hover:blur-none duration-300"
                   target="_blank"
                   :href="`https://check-host.net/ip-info?host=${criticalInfo.player_ip_address}`"
                 >

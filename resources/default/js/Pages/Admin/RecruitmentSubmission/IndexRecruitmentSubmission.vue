@@ -148,7 +148,7 @@ watch(selectedForms, (newSelectedForms) => {
     <div class="p-4 mx-auto space-y-4 px-10">
       <div class="flex items-center justify-between">
         <h3
-          class="text-xl font-extrabold text-gray-800 dark:text-gray-200"
+          class="text-xl font-extrabold text-secondary-800 dark:text-secondary-200"
         >
           {{
             closed
@@ -164,20 +164,20 @@ watch(selectedForms, (newSelectedForms) => {
           name="selectForms"
           :select-list="forms"
           :placeholder="__('All Applications')"
-          class="w-48 max-w-48 dark:border dark:rounded dark:border-gray-700"
+          class="w-48 max-w-48 dark:border dark:rounded dark:border-secondary-700"
         />
       </div>
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-white rounded shadow dark:bg-surface-800"
           :header="headerRow"
           :data="submissions"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="text-sm px-4 font-medium text-left text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               <InertiaLink
                 as="a"
@@ -187,7 +187,7 @@ watch(selectedForms, (newSelectedForms) => {
                     item.id
                   )
                 "
-                class="hover:text-sky-500"
+                class="hover:text-primary-500"
               >
                 {{ item.id }}
               </InertiaLink>
@@ -212,7 +212,7 @@ watch(selectedForms, (newSelectedForms) => {
                 </div>
                 <div class="flex-col">
                   <div
-                    class="text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap truncate"
+                    class="text-sm font-semibold text-secondary-900 dark:text-secondary-300 whitespace-nowrap truncate"
                     :style="[
                       item.user.roles[0].color
                         ? {
@@ -228,7 +228,7 @@ watch(selectedForms, (newSelectedForms) => {
                         v-tippy
                         name="verified-check-fill"
                         :title="__('Verified Account')"
-                        class="inline mb-1 fill-current focus:outline-none text-light-blue-400 w-5 h-5"
+                        class="inline mb-1 fill-current focus:outline-none text-primary-400 w-5 h-5"
                         />
                         <Icon
                         v-if="item.user.is_staff"
@@ -242,10 +242,10 @@ watch(selectedForms, (newSelectedForms) => {
                         v-tippy
                         name="volume-off-fill"
                         :title="__('Muted User')"
-                        class="inline mb-1 text-red-500 fill-current focus:outline-none w-5 h-5"
+                        class="inline mb-1 text-error-500 fill-current focus:outline-none w-5 h-5"
                         />
                   </div>
-                  <div class="text-sm text-gray-500">
+                  <div class="text-sm text-secondary-500">
                     @{{ item.user.username }}
                   </div>
                 </div>
@@ -271,17 +271,17 @@ watch(selectedForms, (newSelectedForms) => {
             >
               <UserDisplayname
                 v-if="item.last_actor"
-                text-class="text-sm text-gray-700 dark:text-gray-400"
+                text-class="text-sm text-secondary-700 dark:text-secondary-400"
                 :user="item.last_actor"
                 :show-badges="true"
               >
-                <div class="text-xs text-gray-400 dark:text-gray-500">
+                <div class="text-xs text-secondary-400 dark:text-secondary-500">
                   {{ formatTimeAgoToNow(item.last_act_at) }}
                 </div>
               </UserDisplayname>
               <span
                 v-else
-                class="text-gray-400 text-sm italic"
+                class="text-secondary-400 text-sm italic"
               >
                 {{ __('None') }}
               </span>
@@ -292,17 +292,17 @@ watch(selectedForms, (newSelectedForms) => {
             >
               <UserDisplayname
                 v-if="item.last_commentor"
-                text-class="text-sm text-gray-700 dark:text-gray-400"
+                text-class="text-sm text-secondary-700 dark:text-secondary-400"
                 :user="item.last_commentor"
                 :show-badges="true"
               >
-                <div class="text-xs text-gray-400 dark:text-gray-500">
+                <div class="text-xs text-secondary-400 dark:text-secondary-500">
                   {{ formatTimeAgoToNow(item.last_comment_at) }}
                 </div>
               </UserDisplayname>
               <span
                 v-else
-                class="text-gray-400 text-sm italic"
+                class="text-secondary-400 text-sm italic"
               >
                 {{ __('None') }}
               </span>
@@ -335,7 +335,7 @@ watch(selectedForms, (newSelectedForms) => {
                     item.id
                   )
                 "
-                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
               </InertiaLink>
@@ -357,7 +357,7 @@ watch(selectedForms, (newSelectedForms) => {
                     item.id
                   )
                 "
-                class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
                 :title="__('Delete Submission')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />

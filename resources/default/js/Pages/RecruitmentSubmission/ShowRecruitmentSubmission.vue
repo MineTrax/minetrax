@@ -56,7 +56,7 @@ const withdrawForm = useForm({
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-xl text-gray-500 dark:text-gray-300">
+        <h1 class="font-bold text-xl text-secondary-500 dark:text-secondary-300">
           <span class="mr-3">
             {{
               __('Application for :recruitmenttitle #:index', {
@@ -70,7 +70,7 @@ const withdrawForm = useForm({
         <div class="flex space-x-2">
           <Link
             :href="route('recruitment-submission.index')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Back") }}</span>
           </Link>
@@ -80,21 +80,21 @@ const withdrawForm = useForm({
       <AlertCard
         v-if="submission.status.value === 'pending'"
         title-class="flex items-center"
-        text-color="text-green-600 dark:text-green-400"
-        border-color="border-green-500"
+        text-color="text-success-600 dark:text-success-400"
+        border-color="border-success-500"
       >
         {{ __("Success! A staff will soon review your application. Please be patience.") }}
         <template #icon>
-          <CheckCircleIcon class="h-6 w-6 text-green-500 mr-2" />
+          <CheckCircleIcon class="h-6 w-6 text-success-500 mr-2" />
         </template>
       </AlertCard>
 
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="flex w-full gap-4 flex-col md:flex-row">
           <div class="md:w-1/2 space-y-4">
-            <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800">
+            <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800">
               <ul class="flex flex-col mt-3">
-                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
+                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
                   <div class="flex items-center justify-between w-full">
                     <span>{{ __("Applicant") }}</span>
                     <div>
@@ -103,14 +103,14 @@ const withdrawForm = useForm({
                   </div>
                 </li>
 
-                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
+                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
                   <div class="flex items-center justify-between w-full">
                     <span>{{ __("Application") }}</span>
                     <span>{{ submission.recruitment.title }}</span>
                   </div>
                 </li>
 
-                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
+                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
                   <div class="flex items-center justify-between w-full">
                     <span>{{ __("Created At") }}</span>
                     <span
@@ -121,7 +121,7 @@ const withdrawForm = useForm({
                 </li>
 
                 <li
-                  class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400"
+                  class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400"
                 >
                   <div class="flex items-center justify-between w-full">
                     <span>{{ __("Last Updated At") }}</span>
@@ -134,7 +134,7 @@ const withdrawForm = useForm({
                 </li>
 
 
-                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400">
+                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
                   <div class="flex items-center justify-between w-full">
                     <span>{{ __("Request Status") }}</span>
                     <CommonStatusBadge :status="submission.status.value" />
@@ -143,7 +143,7 @@ const withdrawForm = useForm({
 
                 <li
                   v-if="submission.last_act_reason"
-                  class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400"
+                  class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400"
                 >
                   <div class="flex items-center justify-between w-full">
                     <span>{{ __("Reason") }}</span>
@@ -153,7 +153,7 @@ const withdrawForm = useForm({
 
                 <li
                   v-if="submission.last_act_by"
-                  class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-gray-400"
+                  class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400"
                 >
                   <div class="flex items-center justify-between w-full">
                     <span>
@@ -175,12 +175,12 @@ const withdrawForm = useForm({
                         </div>
                         <div class="flex-col">
                           <div
-                            class="text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap truncate"
+                            class="text-sm font-semibold text-secondary-900 dark:text-secondary-300 whitespace-nowrap truncate"
                             :style="[submission.last_actor.roles[0].color ? {color: submission.last_actor.roles[0].color} : null]"
                           >
                             {{ submission.last_actor.name }}
                           </div>
-                          <div class="text-sm text-gray-500">
+                          <div class="text-sm text-secondary-500">
                             @{{ submission.last_actor.username }}
                           </div>
                         </div>
@@ -194,7 +194,7 @@ const withdrawForm = useForm({
               <div class="button-group flex space-x-4 justify-end p-4">
                 <button
                   v-if="submission.i_can_withdraw"
-                  class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-red-500 border border-transparent rounded-md hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-gray"
+                  class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-500 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-gray"
                   @click="showingWithdrawForm = true"
                 >
                   <span>{{ __("Withdraw") }}</span>
@@ -203,7 +203,7 @@ const withdrawForm = useForm({
             </div>
 
 
-            <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800">
+            <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800">
               <RecruitmentMessagesBox
                 :submission="submission"
                 :for-admin="false"
@@ -212,7 +212,7 @@ const withdrawForm = useForm({
           </div>
 
 
-          <div class="md:w-1/2 px-3 py-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-cool-gray-800 md:px-10 md:py-5 no-disabled-effect">
+          <div class="md:w-1/2 px-3 py-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800 md:px-10 md:py-5 no-disabled-effect">
             <FormKit
               :disabled="true"
               type="form"
@@ -237,7 +237,7 @@ const withdrawForm = useForm({
         </h3>
         <p
           v-if="submission.recruitment.submission_cooldown_in_seconds"
-          class="text-xs text-gray-500"
+          class="text-xs text-secondary-500"
         >
           {{ __("Please note that you won't be apply again for a given cooldown period of :hms.", {
             hms: secondsToHMS(submission.recruitment.submission_cooldown_in_seconds, true)
@@ -262,7 +262,7 @@ const withdrawForm = useForm({
         </JetSecondaryButton>
         <LoadingButton
           :loading="withdrawForm.processing"
-          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-red-500 border border-transparent rounded-md hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-gray"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-500 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-gray"
           @click="() => {
             withdrawForm.post(route('recruitment-submission.withdraw', {
               submission: submission.id,

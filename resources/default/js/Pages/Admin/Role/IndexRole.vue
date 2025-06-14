@@ -74,16 +74,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Users Roles Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-secondary-400">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
           {{ __("User Roles & Permissions") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create roles')"
             :href="route('admin.role.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
           >
             <span>{{ __("Create New") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Role") }}</span>
@@ -92,14 +92,14 @@ const headerRow = [
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-white rounded shadow dark:bg-surface-800"
         :header="headerRow"
         :data="roles"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
           >
             {{ item.id }}
           </td>
@@ -113,7 +113,7 @@ const headerRow = [
               >
               <div
                 v-else
-                class="inline-flex font-bold uppercase leading-5 p-1.5 bg-sky-400 text-white rounded-sm"
+                class="inline-flex font-bold uppercase leading-5 p-1.5 bg-primary-400 text-white rounded-sm"
                 :style="`background-color: ${item.color};`"
               >
                 {{ item.display_name }}
@@ -124,7 +124,7 @@ const headerRow = [
           <td class="px-4 whitespace-nowrap">
             <div class="items-center">
               <div
-                class="text-sm font-semibold text-gray-900 dark:text-gray-300"
+                class="text-sm font-semibold text-secondary-900 dark:text-secondary-300"
                 :style="[
                   item.color ? { color: item.color } : null,
                 ]"
@@ -132,7 +132,7 @@ const headerRow = [
                 {{ item.display_name }}
               </div>
               <div
-                class="text-sm text-gray-500 dark:text-gray-400"
+                class="text-sm text-secondary-500 dark:text-secondary-400"
               >
                 {{ item.name }}
               </div>
@@ -141,7 +141,7 @@ const headerRow = [
 
           <DtRowItem>
             <Link
-              class="hover:text-blue-400"
+              class="hover:text-primary-400"
               :href="
                 route('admin.user.index', {
                   filter: { 'roles.display_name' : item.display_name}
@@ -155,12 +155,12 @@ const headerRow = [
           <DtRowItem>
             <Icon
               v-if="item.is_staff"
-              class="text-green-500"
+              class="text-success-500"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </DtRowItem>
@@ -178,7 +178,7 @@ const headerRow = [
           >
             <span
               v-if="item.name === 'superadmin'"
-              class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full dark:bg-opacity-10 dark:text-green-400"
+              class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-success-800 bg-success-100 rounded-full dark:bg-opacity-10 dark:text-success-400"
             >{{ __("All Permissions") }}
             </span>
 
@@ -186,12 +186,12 @@ const headerRow = [
               <span
                 v-for="permission in item.permissions"
                 :key="permission.id"
-                class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-blue-800 bg-blue-100 rounded-full dark:bg-opacity-10 dark:text-light-blue-400"
+                class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-primary-800 bg-primary-100 rounded-full dark:bg-opacity-10 dark:text-primary-400"
               >{{ permission.name }}</span>
             </template>
             <span
               v-else
-              class="italic text-gray-500"
+              class="italic text-secondary-500"
             >{{
               __("No administration permissions for this role.")
             }}</span>
@@ -209,7 +209,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('admin.role.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit Role')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
@@ -224,7 +224,7 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.role.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Role')"
             >
               <TrashIcon class="inline-block w-5 h-5" />

@@ -8,9 +8,9 @@
       class="max-w-6xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10"
     >
       <div
-        class="px-4 py-3 mb-4 bg-white border-t-4 rounded-b shadow dark:bg-cool-gray-800"
+        class="px-4 py-3 mb-4 bg-white border-t-4 rounded-b shadow dark:bg-surface-800"
         :class="{
-          'border-sky-500 text-sky-900 dark:text-sky-400': linkSlotsLeft > 0,
+          'border-primary-500 text-primary-900 dark:text-primary-400': linkSlotsLeft > 0,
           'border-orange-500 opacity-35 text-orange-900 dark:text-orange-400': linkSlotsLeft <= 0
         }"
         role="alert"
@@ -18,7 +18,7 @@
         <div class="flex">
           <div class="py-1">
             <svg
-              class="w-6 h-6 mr-4 fill-current text-light-blue-500"
+              class="w-6 h-6 mr-4 fill-current text-primary-500"
               :class="{
                 'text-orange-500': linkSlotsLeft <= 0
               }"
@@ -46,7 +46,7 @@
               </span>
             </p>
             <div class="flex flex-col items-center mt-2 text-sm">
-              <p class="text-gray-500 dark:text-gray-400">
+              <p class="text-secondary-500 dark:text-secondary-400">
                 {{ __("To link a player to your account, join server and type '/link :otp' in your chat.", {
                   otp: currentLinkOtp?.otp
                 }) }}
@@ -65,7 +65,7 @@
                   v-tippy
                   :title="__('Click to Copy')"
                   type="button"
-                  class="p-2 mt-3 font-semibold text-center font-mono tracking-wider text-gray-600 transition duration-150 ease-in-out border border-gray-200 rounded w-full md:w-1/2 dark:border-gray-700 dark:text-gray-300 hover:text-light-blue-500 dark:hover:text-light-blue-400 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900 hover:border-light-blue-500 dark:hover:border-cool-gray-800 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 focus:outline-none"
+                  class="p-2 mt-3 font-semibold text-center font-mono tracking-wider text-secondary-600 transition duration-150 ease-in-out border border-secondary-200 rounded w-full md:w-1/2 dark:border-secondary-700 dark:text-secondary-300 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-surface-900 hover:border-primary-500 dark:hover:border-secondary-800 focus:ring focus:ring-primary-200 focus:ring-opacity-50 focus:outline-none"
                   @click="props.copy('/link ' + currentLinkOtp?.otp)"
                 >
                   <span v-if="props.status !== 'copied'">
@@ -79,26 +79,26 @@
 
               <p
                 v-if="otpExpiryCountdownSeconds > 0"
-                class="italic dark:text-gray-400 mt-4"
+                class="italic dark:text-secondary-400 mt-4"
               >
                 {{ __("This OTP will expire in :seconds seconds.", {
                   seconds: otpExpiryCountdownSeconds
                 }) }}
               </p>
               <div v-else>
-                <p class="dark:text-gray-400 mt-4">
+                <p class="dark:text-secondary-400 mt-4">
                   {{ __("This OTP has expired. Refresh the page to get a new OTP.") }}
 
                   <inertia-link
                     as="button"
                     :href="route('linked-player.list')"
-                    class="dark:text-sky-400 dark:hover:text-sky-500 text-sky-500 hover:text-sky-700 hover:underline"
+                    class="dark:text-primary-400 dark:hover:text-primary-500 text-primary-500 hover:text-primary-700 hover:underline"
                   >
                     {{ __("Click here to refresh.") }}
                   </inertia-link>
                 </p>
               </div>
-              <div class="text-xs font-bold mt-2 text-red-500 dark:text-red-400">
+              <div class="text-xs font-bold mt-2 text-error-500 dark:text-error-400">
                 {{ __("CAUTION: DO NOT SHARE THIS OTP WITH ANYONE!") }}
               </div>
             </div>
@@ -115,7 +115,7 @@
           v-if="linkedPlayers.length <= 0"
           class="flex justify-center pt-5 pb-5 pr-10"
         >
-          <p class="italic text-red-500">
+          <p class="italic text-error-500">
             {{ __("No players linked to your account right now.") }}
           </p>
         </div>
@@ -123,7 +123,7 @@
         <div
           v-for="player in linkedPlayers"
           :key="player.uuid"
-          class="flex flex-col p-4 items-center bg-white rounded shadow dark:bg-cool-gray-800"
+          class="flex flex-col p-4 items-center bg-white rounded shadow dark:bg-surface-800"
         >
 
         <div class="flex justify-center pr-10">
@@ -134,35 +134,35 @@
               <inertia-link
                 as="a"
                 :href="route('player.show', player.uuid)"
-                class="text-lg font-bold text-light-blue-400 hover:text-light-blue-500"
+                class="text-lg font-bold text-primary-400 hover:text-primary-500"
               >
                 {{ player.username }}
               </inertia-link>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
+              <p class="text-xs text-secondary-500 dark:text-secondary-400">
                 {{ player.uuid }}
               </p>
             </div>
 
             <div class="flex items-center justify-between">
-              <p class="font-bold dark:text-gray-400">
+              <p class="font-bold dark:text-secondary-400">
                 {{ __("Position") }}:
               </p>
-              <div class="flex items-center space-x-2 text-sm font-extrabold text-center text-light-blue-400">
+              <div class="flex items-center space-x-2 text-sm font-extrabold text-center text-primary-400">
                 <span
                   v-if="player.position"
-                  class="px-2 text-lg border-2 rounded border-light-blue-300 bg-light-blue-50 dark:bg-cool-gray-800"
+                  class="px-2 text-lg border-2 rounded border-primary-300 bg-primary-50 dark:bg-surface-800"
                 >
                   {{ player.position }}
                 </span>
                 <span
                   v-else
-                  class="text-sm italic text-gray-500 dark:text-gray-400"
+                  class="text-sm italic text-secondary-500 dark:text-secondary-400"
                 >{{ __("None") }}</span>
               </div>
             </div>
 
             <div class="flex items-center justify-between">
-              <p class="font-bold dark:text-gray-400">
+              <p class="font-bold dark:text-secondary-400">
                 {{ __("Rating") }}:
               </p>
               <icon
@@ -174,25 +174,25 @@
               />
               <p
                 v-else
-                class="text-sm italic text-gray-500 dark:text-gray-400"
+                class="text-sm italic text-secondary-500 dark:text-secondary-400"
               >
                 {{ __("None") }}
               </p>
             </div>
             <div class="flex items-center justify-between">
-              <p class="font-bold dark:text-gray-400">
+              <p class="font-bold dark:text-secondary-400">
                 {{ __("Rank") }}:
               </p>
               <div class="flex items-center space-x-2">
                 <p
                   v-if="player.rank"
-                  class="dark:text-gray-200"
+                  class="dark:text-secondary-200"
                 >
                   {{ player.rank.name }}
                 </p>
                 <p
                   v-else
-                  class="text-sm italic text-gray-500 dark:text-gray-400"
+                  class="text-sm italic text-secondary-500 dark:text-secondary-400"
                 >
                   {{ __("None") }}
                 </p>
@@ -207,11 +207,11 @@
               </div>
             </div>
             <div class="flex items-center justify-between">
-              <p class="font-bold dark:text-gray-400">
+              <p class="font-bold dark:text-secondary-400">
                 {{ __("Country") }}:
               </p>
               <div class="flex items-center space-x-2">
-                <p class="dark:text-gray-200">
+                <p class="dark:text-secondary-200">
                   {{ player.country.name }}
                 </p>
                 <img
@@ -225,13 +225,13 @@
             </div>
 
             <div class="flex items-center justify-between">
-              <p class="font-bold dark:text-gray-400">
+              <p class="font-bold dark:text-secondary-400">
                 {{ __("Last Seen") }}:
               </p>
               <div class="flex items-center space-x-2">
                 <p
                   v-tippy
-                  class="focus:outline-none dark:text-gray-200"
+                  class="focus:outline-none dark:text-secondary-200"
                   :title="formatToDayDateString(player.last_seen_at)"
                 >
                   {{
@@ -251,7 +251,7 @@
                 :href="route('reset-player-password.show', {
                   player_uuid: player.uuid,
                 })"
-                class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 disabled:opacity-50"
+                class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-surface-600 hover:bg-surface-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-600 disabled:opacity-50"
                 :title="__('Change Password of this player.')"
               >
                 <LockClosedIcon class="w-5 h-5" />
@@ -267,7 +267,7 @@
                 :href="route('change-player-skin.show', {
                   player_uuid: player.uuid,
                 })"
-                class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-sky-400 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 disabled:opacity-50"
+                class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary-400 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400 disabled:opacity-50"
                 :title="__('Change Skin of this player.')"
               >
                 <PaintBrushIcon class="w-5 h-5" />
@@ -285,7 +285,7 @@
                 :preserve-state="false"
                 method="delete"
                 :href="route('account-link.delete', player.uuid)"
-                class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-error-600 border border-transparent rounded-md shadow-sm hover:bg-error-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error-500 disabled:opacity-50"
                 :title="__('Unlink this player from your account.')"
               >
                 <BookmarkSlashIcon class="w-5 h-5" />

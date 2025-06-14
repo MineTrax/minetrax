@@ -10,7 +10,7 @@ defineProps({
     iconClass: {
         type: [Array, String],
         required: false,
-        default: 'text-gray-500 bg-gray-100 dark:bg-gray-500 dark:text-white'
+        default: 'text-secondary-500 bg-surface-100 dark:bg-surface-500 dark:text-white'
     },
     title: {
         type: [String, Number],
@@ -51,11 +51,11 @@ defineProps({
     :value="millify(value)"
     :sub-value="`(+${subValue})`"
     :sub-value-class="[
-      subValue > 0 ? 'text-green-500' : 'text-gray-400',
+      subValue > 0 ? 'text-success-500' : 'text-secondary-400',
     ]"
     :change="`+${millify(change, {precision: 2})}%`"
     :change-class="[
-      change > 0 ? 'text-green-500 bg-green-100' : 'text-gray-400 bg-gray-100',
+      change > 0 ? 'text-success-500 bg-success-100' : 'text-secondary-400 bg-surface-100',
     ]"
     :change-desc="changeDesc"
     :icon="icon"

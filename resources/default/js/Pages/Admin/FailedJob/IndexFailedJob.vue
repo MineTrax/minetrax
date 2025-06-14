@@ -60,9 +60,9 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Failed Jobs')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-secondary-400">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
           {{ __("Failed Jobs") }}
         </h1>
         <div class="flex">
@@ -70,7 +70,7 @@ const headerRow = [
             v-if="can('retry failed_jobs')"
             :href="route('admin.failed-job.retry')"
             method="post"
-            class="mr-2 inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-500 border border-transparent rounded-md hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:shadow-outline-gray"
+            class="mr-2 inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-success-500 border border-transparent rounded-md hover:bg-success-700 active:bg-success-900 focus:outline-none focus:border-success-900 focus:shadow-outline-gray"
           >
             {{ __("Retry All Jobs") }}
           </InertiaLink>
@@ -80,7 +80,7 @@ const headerRow = [
             method="delete"
             as="button"
             :href="route('admin.failed-job.clear')"
-            class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-error-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-red transition ease-in-out duration-150"
           >
             {{ __("Clear All Jobs") }}
           </InertiaLink>
@@ -88,14 +88,14 @@ const headerRow = [
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-white rounded shadow dark:bg-surface-800"
         :header="headerRow"
         :data="jobs"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
           >
             {{ item.id }}
           </td>
@@ -106,10 +106,10 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div>
-              <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
+              <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
                 {{ item.payload.displayName }}
               </div>
-              <div class="text-sm text-gray-500 dark:text-gray-400">
+              <div class="text-sm text-secondary-500 dark:text-secondary-400">
                 {{ __("Attempts: :attempts", {
                   attempts: item.payload.attempts,
                 }) }}
@@ -149,7 +149,7 @@ const headerRow = [
               method="post"
               :data="{ uuid: item.uuid }"
               :href="route('admin.failed-job.retry')"
-              class="inline-flex items-center justify-center text-green-600 dark:text-green-500 hover:text-green-800 dark:hover:text-green-800"
+              class="inline-flex items-center justify-center text-success-600 dark:text-success-500 hover:text-success-800 dark:hover:text-success-800"
               :title="__('Retry Job')"
             >
               <ArrowPathIcon class="inline-block w-5 h-5" />
@@ -165,7 +165,7 @@ const headerRow = [
               method="DELETE"
               :data="{ uuid: item.uuid }"
               :href="route('admin.failed-job.clear')"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Job')"
             >
               <TrashIcon class="inline-block w-5 h-5" />

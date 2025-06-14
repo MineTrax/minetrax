@@ -51,22 +51,22 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Online Users & Guests')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-secondary-400">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
           {{ __("Online Users & Guests") }}
         </h1>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-white rounded shadow dark:bg-surface-800"
         :header="headerRow"
         :data="sessions"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
           >
             <div class="flex items-center justify-center">
               <div
@@ -97,26 +97,26 @@ const headerRow = [
               </div>
               <div class="flex-col">
                 <div
-                  class="text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap truncate"
+                  class="text-sm font-semibold text-secondary-900 dark:text-secondary-300 whitespace-nowrap truncate"
                   :style="[item.user.roles[0].color ? {color: item.user.roles[0].color} : null]"
                 >
                   {{ item.user.name }}
                 </div>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-secondary-500">
                   @{{ item.user.username }}
                 </div>
               </div>
             </InertiaLink>
             <div
               v-else
-              class="flex items-center italic text-sm text-gray-500 dark:text-gray-400"
+              class="flex items-center italic text-sm text-secondary-500 dark:text-secondary-400"
             >
               {{ __("Anonymous") }}
             </div>
           </td>
 
           <DtRowItem>
-            <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
+            <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
               <a
                 class="hover:underline"
                 target="_blank"

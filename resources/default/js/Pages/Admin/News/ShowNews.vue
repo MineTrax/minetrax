@@ -6,20 +6,20 @@
       <div class="flex justify-end mb-8">
         <div class="flex">
           <button
-            class="mr-2 inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red transition ease-in-out duration-150"
+            class="mr-2 inline-flex items-center px-4 py-2 bg-error-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-red transition ease-in-out duration-150"
             @click="confirmNewsDeletion(news.id)"
           >
             {{ __("Delete") }}
           </button>
           <inertia-link
             :href="route('admin.news.edit', news.id)"
-            class="mr-2 inline-flex items-center px-4 py-2 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-700 focus:shadow-outline-yellow transition ease-in-out duration-150"
+            class="mr-2 inline-flex items-center px-4 py-2 bg-warning-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-warning-600 active:bg-warning-700 focus:outline-none focus:borde-warning-700 focus:shadow-outline-yellow transition ease-in-out duration-150"
           >
             <span>{{ __("Edit") }}</span>
           </inertia-link>
           <inertia-link
             :href="route('admin.news.index')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Go Back") }}</span>
           </inertia-link>

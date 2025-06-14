@@ -6,7 +6,7 @@
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
+        <h1 class="font-bold text-3xl text-secondary-500 dark:text-secondary-300">
           {{ __("Notifications") }}
         </h1>
         <div class="flex">
@@ -15,14 +15,14 @@
             :href="route('notification.mark-as-read')"
             method="post"
             :preserve-state="false"
-            class="mr-1 inline-flex items-center px-4 py-2 bg-light-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-light-blue-700 active:bg-light-blue-600 focus:outline-none focus:border-light-blue-700 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="mr-1 inline-flex items-center px-4 py-2 bg-primary-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary-700 active:bg-primary-600 focus:outline-none focus:border-primary-700 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Mark all as read") }}</span>
           </inertia-link>
         </div>
       </div>
       <div class="flex flex-col md:flex-row md:space-x-4">
-        <div class="flex flex-col space-y-4  md:w-8/12 bg-white p-4 rounded dark:bg-cool-gray-800 text-gray-700 dark:text-gray-300">
+        <div class="flex flex-col space-y-4  md:w-8/12 bg-white p-4 rounded dark:bg-surface-800 text-secondary-700 dark:text-secondary-300">
           <infinite-scroll :load-more="loadNotifications">
             <transition-group
               name="list"
@@ -39,7 +39,7 @@
           <div
             v-if="notifications.data.length <= 0"
             :key="999999999"
-            class="flex items-center justify-center italic text-gray-500 dark:text-gray-400"
+            class="flex items-center justify-center italic text-secondary-500 dark:text-secondary-400"
           >
             {{ __("No notifications to show.") }}
           </div>

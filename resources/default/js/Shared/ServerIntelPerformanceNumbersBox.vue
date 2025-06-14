@@ -40,8 +40,8 @@ onMounted(async () => {
 
 <template>
   <div class="flex">
-    <div class="bg-white dark:bg-cool-gray-800 rounded w-full h-full p-3 shadow">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex mt-2 items-center">
+    <div class="bg-white dark:bg-surface-800 rounded w-full h-full p-3 shadow">
+      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200 flex mt-2 items-center">
         <Icon
           name="calculator"
           class="w-6 mr-1"
@@ -60,8 +60,8 @@ onMounted(async () => {
         v-else
         class="m-0 p-0"
       >
-        <table class="table-auto min-w-full text-sm dark:text-gray-300 text-gray-700">
-          <thead class="border-b dark:border-gray-700">
+        <table class="table-auto min-w-full text-sm dark:text-secondary-300 text-secondary-700">
+          <thead class="border-b dark:border-secondary-700">
             <tr>
               <th
                 scope="col"
@@ -98,7 +98,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="users"
-                  class="w-5 text-green-500 mr-1"
+                  class="w-5 text-success-500 mr-1"
                 />
                 {{ __("Peak Online Players") }}
               </td>
@@ -120,7 +120,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="finger-print"
-                  class="w-5 text-indigo-500 mr-1"
+                  class="w-5 text-primary-500 mr-1"
                 />
                 {{ __("Avg Player Session Length") }}
               </td>
@@ -142,7 +142,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="moon-outline"
-                  class="w-5 text-gray-500 mr-1"
+                  class="w-5 text-secondary-500 mr-1"
                 />
                 {{ __("Avg Player AFK Time") }}
               </td>
@@ -186,7 +186,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="cpu"
-                  class="w-5 text-blue-500 mr-1"
+                  class="w-5 text-primary-500 mr-1"
                 />
                 {{ __("Avg CPU Usage") }}
               </td>
@@ -252,7 +252,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="server"
-                  class="w-5 text-light-blue-500 mr-1"
+                  class="w-5 text-primary-500 mr-1"
                 />
                 {{ __("Min Free Disk") }}
               </td>
@@ -274,7 +274,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="toggle-off"
-                  class="w-5 text-red-500 mr-1"
+                  class="w-5 text-error-500 mr-1"
                 />
                 {{ __("Total Restarts") }}
               </td>

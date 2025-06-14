@@ -124,7 +124,7 @@ watch(selectedForms, (newSelectedForms) => {
 
     <div class="p-4 mx-auto space-y-4 px-10">
       <div class="flex items-center justify-between">
-        <h3 class="text-xl font-extrabold text-gray-800 dark:text-gray-200">
+        <h3 class="text-xl font-extrabold text-secondary-800 dark:text-secondary-200">
           {{ archived ? __("Archived Form Submissions:") : __("Form Submissions:") }}
           {{ showing ?? __("All Forms") }}
         </h3>
@@ -135,25 +135,25 @@ watch(selectedForms, (newSelectedForms) => {
           name="selectForms"
           :select-list="forms"
           :placeholder="__('All Forms')"
-          class="w-48 max-w-48 dark:border dark:rounded dark:border-gray-700"
+          class="w-48 max-w-48 dark:border dark:rounded dark:border-secondary-700"
         />
       </div>
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-white rounded shadow dark:bg-surface-800"
           :header="headerRow"
           :data="submissions"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="text-sm px-4 font-medium text-left text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               {{ item.id }}
             </td>
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               <div class="flex items-center">
                 <div
@@ -186,19 +186,19 @@ watch(selectedForms, (newSelectedForms) => {
                 </div>
                 <div class="flex-col">
                   <div
-                    class="text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap truncate"
+                    class="text-sm font-semibold text-secondary-900 dark:text-secondary-300 whitespace-nowrap truncate"
                     :style="[item.user.roles[0].color ? {color: item.user.roles[0].color} : null]"
                   >
                     {{ item.user.name }}
                   </div>
-                  <div class="text-sm text-gray-500">
+                  <div class="text-sm text-secondary-500">
                     @{{ item.user.username }}
                   </div>
                 </div>
               </InertiaLink>
               <div
                 v-else
-                class="flex items-center italic text-sm text-gray-500 dark:text-gray-400"
+                class="flex items-center italic text-sm text-secondary-500 dark:text-secondary-400"
               >
                 {{ __("Anonymous") }}
               </div>
@@ -231,7 +231,7 @@ watch(selectedForms, (newSelectedForms) => {
               <InertiaLink
                 as="a"
                 :href="route('admin.custom-form-submission.show', item.id)"
-                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
               </InertiaLink>
@@ -260,7 +260,7 @@ watch(selectedForms, (newSelectedForms) => {
                 as="button"
                 method="POST"
                 :href="route('admin.custom-form-submission.restore', item.id)"
-                class="inline-flex items-center justify-center text-green-500 hover:text-green-900 focus:outline-none"
+                class="inline-flex items-center justify-center text-success-500 hover:text-success-900 focus:outline-none"
                 :title="__('Restore Submission')"
               >
                 <ArrowUturnUpIcon class="inline-block w-5 h-5" />
@@ -275,7 +275,7 @@ watch(selectedForms, (newSelectedForms) => {
                 as="button"
                 method="DELETE"
                 :href="route('admin.custom-form-submission.delete', item.id)"
-                class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
                 :title="__('Delete Submission')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />

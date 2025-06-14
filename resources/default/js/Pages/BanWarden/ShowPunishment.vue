@@ -272,7 +272,7 @@ function reloadPageWithTimeout() {
     <div class="px-2 py-4 mx-auto md:py-12 md:px-10 max-w-7xl">
       <div class="flex flex-col md:flex-row justify-between mb-8">
         <div class="flex items-center">
-          <h1 class="text-lg font-bold text-gray-500 md:text-3xl dark:text-gray-300">
+          <h1 class="text-lg font-bold text-secondary-500 md:text-3xl dark:text-secondary-300">
             {{ __("Punishment #:id", {
               id: punishment.id,
               punish: punishment.type.value
@@ -291,28 +291,28 @@ function reloadPageWithTimeout() {
         <div class="flex space-x-2">
           <button
             v-if="permissions['canPardon'] && punishment.is_active"
-            class="inline-flex items-center px-4 py-2 bg-green-500 dark:bg-cool-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-600 active:bg-green-700 focus:outline-none focus:border-green-800 focus:shadow-outline-green transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-success-500 dark:bg-cool-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-success-600 active:bg-success-700 focus:outline-none focus:border-success-800 focus:shadow-outline-green transition ease-in-out duration-150"
             @click="showingPardonForm = true"
           >
             <span>{{ __("Pardon") }}</span>
           </button>
           <Link
             :href="route('player.punishment.index')"
-            class="hidden md:inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="hidden md:inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Back") }}</span>
           </Link>
         </div>
       </div>
-      <div class="flex flex-col space-y-8 text-gray-800 dark:text-gray-300">
+      <div class="flex flex-col space-y-8 text-secondary-800 dark:text-secondary-300">
         <!-- Details Start -->
         <div class="grid w-full gap-2 md:grid-cols-3">
-          <div class="w-full grid-cols-3 gap-6 p-2 leading-8 bg-white rounded shadow dark:bg-cool-gray-800 md:p-5 md:col-span-2 md:grid">
-            <h3 class="col-span-3 -mb-4 text-lg font-bold text-gray-500 dark:text-gray-400">
+          <div class="w-full grid-cols-3 gap-6 p-2 leading-8 bg-white rounded shadow dark:bg-surface-800 md:p-5 md:col-span-2 md:grid">
+            <h3 class="col-span-3 -mb-4 text-lg font-bold text-secondary-500 dark:text-secondary-400">
               {{ __("Punishment Details") }}
             </h3>
             <div>
-              <p class="font-semibold text-gray-500 dark:text-gray-400">
+              <p class="font-semibold text-secondary-500 dark:text-secondary-400">
                 {{ __("Type") }}
               </p>
               <p class="font-bold">
@@ -321,7 +321,7 @@ function reloadPageWithTimeout() {
             </div>
 
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("ID") }}
               </p>
               <p class="font-bold">
@@ -329,7 +329,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Status") }}
               </p>
               <p class="font-bold">
@@ -339,7 +339,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Player") }}
               </p>
               <div v-if="punishment.uuid && punishment.victim_player">
@@ -358,16 +358,16 @@ function reloadPageWithTimeout() {
                       v-tippy
                       as="a"
                       :href="route('player.show', punishment.victim_player.uuid)"
-                      class="font-medium text-gray-900 cursor-pointer dark:text-gray-200 focus:outline-none hover:underline"
+                      class="font-medium text-secondary-900 cursor-pointer dark:text-secondary-200 focus:outline-none hover:underline"
                       :content="punishment.victim_player.uuid"
                     >
                       <span
                         v-if="punishment.victim_player.username"
-                        class="font-extrabold text-gray-700 dark:text-gray-300"
+                        class="font-extrabold text-secondary-700 dark:text-secondary-300"
                       >{{ punishment.victim_player.username }}</span>
                       <span
                         v-else
-                        class="italic text-red-500"
+                        class="italic text-error-500"
                       >{{ __("Unknown") }}</span>
                     </Link>
                   </div>
@@ -387,11 +387,11 @@ function reloadPageWithTimeout() {
                   <div class="ml-2">
                     <div
                       v-tippy
-                      class="font-medium text-gray-900 dark:text-gray-200"
+                      class="font-medium text-secondary-900 dark:text-secondary-200"
                       :content="punishment.uuid"
                     >
                       <span
-                        class="italic text-red-500"
+                        class="italic text-error-500"
                       >{{ __("Unknown") }}</span>
                     </div>
                   </div>
@@ -407,13 +407,13 @@ function reloadPageWithTimeout() {
                   alt=""
                 >
                 <span
-                  class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                  class="text-sm font-bold text-secondary-500 dark:text-secondary-400"
                 >{{ __("IP :punish", {punish: punishment.type.key}) }}
                 </span>
               </div>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("IP :punish", {
                   punish: punishment.type.value
                 }) }}
@@ -425,7 +425,7 @@ function reloadPageWithTimeout() {
             <div
               v-if="canShowMaskedIp"
             >
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("IP Address") }}
               </p>
               <p class="font-bold">
@@ -440,7 +440,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Country") }}
               </p>
               <div class="flex items-center font-bold">
@@ -453,20 +453,20 @@ function reloadPageWithTimeout() {
               </div>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Date") }}
               </p>
               <div class="flex flex-col font-bold">
                 <span>
                   {{ formatTimeAgoToNow(punishment.start_at) }}
                 </span>
-                <span class="text-xs text-gray-500 dark:text-gray-400">
+                <span class="text-xs text-secondary-500 dark:text-secondary-400">
                   {{ formatToDayDateString(punishment.start_at) }}
                 </span>
               </div>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Expires") }}
               </p>
               <div
@@ -476,7 +476,7 @@ function reloadPageWithTimeout() {
                 <span>
                   {{ formatTimeAgoToNow(punishment.end_at) }}
                 </span>
-                <span class="text-xs text-gray-500 dark:text-gray-400">
+                <span class="text-xs text-secondary-500 dark:text-secondary-400">
                   {{ formatToDayDateString(punishment.end_at) }}
                 </span>
               </div>
@@ -488,7 +488,7 @@ function reloadPageWithTimeout() {
               </div>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Reason") }}
               </p>
               <p class="mt-1 font-bold leading-normal">
@@ -496,7 +496,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Notes") }}
               </p>
               <p class="mt-1 font-bold leading-normal">
@@ -504,7 +504,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Server Scope") }}
               </p>
               <p class="font-bold">
@@ -512,7 +512,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Punished by") }}
               </p>
               <div>
@@ -532,16 +532,16 @@ function reloadPageWithTimeout() {
                         v-tippy
                         as="a"
                         :href="punishment.creator_player ? route('player.show', punishment.creator_player.uuid): '#'"
-                        class="font-medium text-gray-900 cursor-pointer dark:text-gray-200 focus:outline-none hover:underline"
+                        class="font-medium text-secondary-900 cursor-pointer dark:text-secondary-200 focus:outline-none hover:underline"
                         :content="punishment.creator_uuid"
                       >
                         <span
                           v-if="punishment.creator_player?.username || punishment.creator_username"
-                          class="font-extrabold text-gray-700 dark:text-gray-300"
+                          class="font-extrabold text-secondary-700 dark:text-secondary-300"
                         >{{ punishment.creator_player?.username || punishment.creator_username }}</span>
                         <span
                           v-else
-                          class="italic text-red-500"
+                          class="italic text-error-500"
                         >{{ __("Unknown") }}</span>
                       </Link>
                     </div>
@@ -558,13 +558,13 @@ function reloadPageWithTimeout() {
                   >
                   <span
                     v-if="punishment.creator_username && punishment.creator_username !== 'Console'"
-                    class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                    class="text-sm font-bold text-secondary-500 dark:text-secondary-400"
                   >
                   {{ punishment.creator_username }}
                   </span>
                   <span
                     v-else
-                    class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                    class="text-sm font-bold text-secondary-500 dark:text-secondary-400"
                   >{{ __("CONSOLE") }}
                   </span>
                 </div>
@@ -573,7 +573,7 @@ function reloadPageWithTimeout() {
 
             <template v-if="punishment.removed_at && (punishment.remover_uuid || punishment.remover_username)">
               <div>
-                <p class="font-semibold text-gray-500">
+                <p class="font-semibold text-secondary-500">
                   {{ __("Pardon by") }}
                 </p>
                 <div>
@@ -593,16 +593,16 @@ function reloadPageWithTimeout() {
                           v-tippy
                           as="a"
                           :href="punishment.remover_player ? route('player.show', punishment.remover_player.uuid): '#'"
-                          class="font-medium text-gray-900 cursor-pointer dark:text-gray-200 focus:outline-none hover:underline"
+                          class="font-medium text-secondary-900 cursor-pointer dark:text-secondary-200 focus:outline-none hover:underline"
                           :content="punishment.remover_uuid"
                         >
                           <span
                             v-if="punishment.remover_player?.username || punishment.creator_username"
-                            class="font-extrabold text-gray-700 dark:text-gray-300"
+                            class="font-extrabold text-secondary-700 dark:text-secondary-300"
                           >{{ punishment.remover_player?.username || punishment.creator_username }}</span>
                           <span
                             v-else
-                            class="italic text-red-500"
+                            class="italic text-error-500"
                           >{{ __("Unknown") }}</span>
                         </Link>
                       </div>
@@ -619,20 +619,20 @@ function reloadPageWithTimeout() {
                     >
                     <span
                       v-if="punishment.remover_username && punishment.remover_username !== 'Console'"
-                      class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                      class="text-sm font-bold text-secondary-500 dark:text-secondary-400"
                     >
                     {{ punishment.remover_username }}
                     </span>
                     <span
                       v-else
-                      class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                      class="text-sm font-bold text-secondary-500 dark:text-secondary-400"
                     >{{ __("CONSOLE") }}
                     </span>
                   </div>
                 </div>
               </div>
               <div>
-                <p class="font-semibold text-gray-500">
+                <p class="font-semibold text-secondary-500">
                   {{ __("Pardon at") }}
                 </p>
                 <div
@@ -641,13 +641,13 @@ function reloadPageWithTimeout() {
                   <span>
                     {{ formatTimeAgoToNow(punishment.removed_at) }}
                   </span>
-                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                  <span class="text-xs text-secondary-500 dark:text-secondary-400">
                     {{ formatToDayDateString(punishment.removed_at) }}
                   </span>
                 </div>
               </div>
               <div>
-                <p class="font-semibold text-gray-500">
+                <p class="font-semibold text-secondary-500">
                   {{ __("Pardon Reason") }}
                 </p>
                 <p class="mt-1 font-bold leading-normal">
@@ -657,7 +657,7 @@ function reloadPageWithTimeout() {
             </template>
 
             <div v-if="punishment.plugin_punishment_id">
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Plugin Punishment ID") }}
               </p>
               <p class="mt-1 font-bold leading-normal">
@@ -666,7 +666,7 @@ function reloadPageWithTimeout() {
             </div>
 
             <div v-if="punishment.origin_server_name">
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Origin Server") }}
               </p>
               <p class="font-bold mt-0.5 leading-normal">
@@ -676,7 +676,7 @@ function reloadPageWithTimeout() {
 
             <!-- Evidence -->
             <div v-if="permissions['canViewEvidence']">
-              <p class="font-semibold text-gray-500">
+              <p class="font-semibold text-secondary-500">
                 {{ __("Attached Evidence") }}
               </p>
               <p v-if="punishment.evidences <= 0 && !permissions['canCreateEvidence']">
@@ -686,7 +686,7 @@ function reloadPageWithTimeout() {
                 <div
                   v-for="evidence in punishment.evidences"
                   :key="evidence.data.id"
-                  class="p-1.5 relative dark:bg-gray-900 bg-gray-200 rounded group"
+                  class="p-1.5 relative dark:bg-surface-900 bg-surface-200 rounded group"
                 >
                   <a
                     v-tippy
@@ -721,14 +721,14 @@ function reloadPageWithTimeout() {
                     })"
                   >
                     <XCircleIcon
-                      class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-red-400 absolute -top-2 -right-2 w-5 h-5 p-0.5 text-gray-500 dark:text-gray-200 cursor-pointer"
+                      class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-error-400 absolute -top-2 -right-2 w-5 h-5 p-0.5 text-secondary-500 dark:text-secondary-200 cursor-pointer"
                     />
                   </Link>
                 </div>
                 <button
                   v-if="permissions['canCreateEvidence']"
                   :disabled="uploadEvidenceAsFileForm.processing || uploadEvidenceAsUrlForm.processing"
-                  class="p-1.5 dark:bg-gray-900 bg-gray-200 rounded"
+                  class="p-1.5 dark:bg-surface-900 bg-surface-200 rounded"
                   @click="showingUploadDialog = true"
                 >
                   <PlusSmallIcon
@@ -738,8 +738,8 @@ function reloadPageWithTimeout() {
               </div>
             </div>
           </div>
-          <div class="w-full p-2 bg-white rounded shadow dark:bg-cool-gray-800 md:p-5 md:col-span-1">
-            <h3 class="col-span-3 text-lg font-bold text-gray-500 dark:text-gray-400">
+          <div class="w-full p-2 bg-white rounded shadow dark:bg-surface-800 md:p-5 md:col-span-1">
+            <h3 class="col-span-3 text-lg font-bold text-secondary-500 dark:text-secondary-400">
               {{ __("AI Insights") }}
             </h3>
             <Chart
@@ -866,14 +866,14 @@ function reloadPageWithTimeout() {
 
         <!-- Punishment History Start -->
         <div>
-          <h3 class="mb-2 text-2xl font-bold text-gray-500 dark:text-gray-300">
+          <h3 class="mb-2 text-2xl font-bold text-secondary-500 dark:text-secondary-300">
             {{ __("Last 5 Punishments") }}
           </h3>
-          <div class="w-full bg-white rounded shadow dark:bg-cool-gray-800">
+          <div class="w-full bg-white rounded shadow dark:bg-surface-800">
             <ArrayTable
               :url="route('player.punishment.show.history', punishment.id)"
               :header="punishmentHistoryHeaders"
-              class="w-full bg-white rounded shadow dark:bg-gray-800"
+              class="w-full bg-white rounded shadow dark:bg-surface-800"
             >
               <template #default="{ item }">
                 <DtRowItem>
@@ -882,7 +882,7 @@ function reloadPageWithTimeout() {
                     as="a"
                     :href="route('player.punishment.show', item.id)"
                     class="cursor-pointer focus:outline-none hover:underline"
-                    :class="item.is_active ? 'font-bold dark:text-gray-300' : ''"
+                    :class="item.is_active ? 'font-bold dark:text-secondary-300' : ''"
                     :content="__('View details')"
                   >
                     {{ item.id }}
@@ -928,16 +928,16 @@ function reloadPageWithTimeout() {
                           v-tippy
                           as="a"
                           :href="route('player.show', item.victim_player.uuid)"
-                          class="text-sm font-medium text-gray-900 cursor-pointer dark:text-gray-200 focus:outline-none hover:underline"
+                          class="text-sm font-medium text-secondary-900 cursor-pointer dark:text-secondary-200 focus:outline-none hover:underline"
                           :content="item.victim_player.uuid"
                         >
                           <span
                             v-if="item.victim_player.username"
-                            class="font-extrabold text-gray-700 dark:text-gray-300"
+                            class="font-extrabold text-secondary-700 dark:text-secondary-300"
                           >{{ item.victim_player.username }}</span>
                           <span
                             v-else
-                            class="italic text-red-500"
+                            class="italic text-error-500"
                           >{{ __("Unknown") }}</span>
                         </Link>
                       </div>
@@ -957,11 +957,11 @@ function reloadPageWithTimeout() {
                       <div class="ml-2">
                         <div
                           v-tippy
-                          class="text-sm font-medium text-gray-900 dark:text-gray-200"
+                          class="text-sm font-medium text-secondary-900 dark:text-secondary-200"
                           :content="item.uuid"
                         >
                           <span
-                            class="italic text-red-500"
+                            class="italic text-error-500"
                           >{{ __("Unknown") }}</span>
                         </div>
                       </div>
@@ -977,7 +977,7 @@ function reloadPageWithTimeout() {
                       alt=""
                     >
                     <span
-                      class="text-xs font-bold text-gray-500 dark:text-gray-400"
+                      class="text-xs font-bold text-secondary-500 dark:text-secondary-400"
                     >{{ __("IP :punish", {punish: item.type.key}) }}
                     </span>
                   </div>
@@ -996,7 +996,7 @@ function reloadPageWithTimeout() {
                   </span>
                   <span
                     v-else
-                    class="italic text-gray-400"
+                    class="italic text-secondary-400"
                   >
                     {{ __("None") }}
                   </span>
@@ -1019,16 +1019,16 @@ function reloadPageWithTimeout() {
                           v-tippy
                           as="a"
                           :href="item.creator_player ? route('player.show', item.creator_player.uuid): '#'"
-                          class="text-sm font-medium text-gray-900 cursor-pointer dark:text-gray-200 focus:outline-none hover:underline"
+                          class="text-sm font-medium text-secondary-900 cursor-pointer dark:text-secondary-200 focus:outline-none hover:underline"
                           :content="item.creator_uuid"
                         >
                           <span
                             v-if="item.creator_player?.username || item.creator_username"
-                            class="font-extrabold text-gray-700 dark:text-gray-300"
+                            class="font-extrabold text-secondary-700 dark:text-secondary-300"
                           >{{ item.creator_player?.username || item.creator_username }}</span>
                           <span
                             v-else
-                            class="italic text-red-500"
+                            class="italic text-error-500"
                           >{{ __("Unknown") }}</span>
                         </Link>
                       </div>
@@ -1045,13 +1045,13 @@ function reloadPageWithTimeout() {
                     >
                     <span
                       v-if="item.creator_username && item.creator_username !== 'Console'"
-                      class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                      class="text-sm font-bold text-secondary-500 dark:text-secondary-400"
                     >
                     {{ item.creator_username }}
                     </span>
                     <span
                       v-else
-                      class="text-sm font-bold text-gray-500 dark:text-gray-400"
+                      class="text-sm font-bold text-secondary-500 dark:text-secondary-400"
                     >{{ __("CONSOLE") }}
                     </span>
                   </div>
@@ -1086,7 +1086,7 @@ function reloadPageWithTimeout() {
                   </span>
                   <span
                     v-else
-                    class="italic text-gray-400"
+                    class="italic text-secondary-400"
                   >
                     {{ __("None") }}
                   </span>
@@ -1111,7 +1111,7 @@ function reloadPageWithTimeout() {
                         'player.punishment.show', item.id
                       )
                     "
-                    class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                    class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
                   >
                     <EyeIcon class="inline-block w-5 h-5" />
                   </Link>
@@ -1126,27 +1126,27 @@ function reloadPageWithTimeout() {
         <div
           v-if="permissions['canViewSessions']"
         >
-          <h3 class="mb-2 text-2xl font-bold text-gray-500 dark:text-gray-300">
+          <h3 class="mb-2 text-2xl font-bold text-secondary-500 dark:text-secondary-300">
             {{ __("Last 5 Sessions") }}
             <span class="text-sm">
               {{ __("(before this punishment)") }}
             </span>
           </h3>
-          <div class="w-full bg-white rounded shadow dark:bg-cool-gray-800">
+          <div class="w-full bg-white rounded shadow dark:bg-surface-800">
             <ArrayTable
               :url="route('player.punishment.show.session', punishment.id)"
               :header="sessionHeaders"
-              class="w-full bg-white rounded shadow dark:bg-gray-800"
+              class="w-full bg-white rounded shadow dark:bg-surface-800"
             >
               <template #default="{ item }">
                 <td
-                  class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+                  class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
                 >
                   {{ item.id }}
                 </td>
 
                 <td
-                  class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+                  class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
                 >
                   <div class="flex items-center">
                     <div
@@ -1164,7 +1164,7 @@ function reloadPageWithTimeout() {
                 </td>
 
                 <td
-                  class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+                  class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
                 >
                   <div class="flex items-center">
                     <InertiaLink
@@ -1173,9 +1173,9 @@ function reloadPageWithTimeout() {
                         player: item.player_uuid,
                         session: item.id,
                       })"
-                      class="text-sm font-medium text-gray-900 cursor-pointer dark:text-gray-200 focus:outline-none hover:underline"
+                      class="text-sm font-medium text-secondary-900 cursor-pointer dark:text-secondary-200 focus:outline-none hover:underline"
                     >
-                      <span class="font-extrabold text-gray-700 dark:text-gray-300">
+                      <span class="font-extrabold text-secondary-700 dark:text-secondary-300">
                         {{ item.player_displayname }} ({{ item.player_username }})
                       </span>
                     </InertiaLink>
@@ -1218,7 +1218,7 @@ function reloadPageWithTimeout() {
                   </span>
                   <span
                     v-else
-                    class="text-gray-400"
+                    class="text-secondary-400"
                   >—</span>
                 </DtRowItem>
 
@@ -1247,7 +1247,7 @@ function reloadPageWithTimeout() {
                       player: item.player_uuid,
                       session: item.id,
                     })"
-                    class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                    class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
                     :title="__('View Session Details')"
                   >
                     <EyeIcon class="inline-block w-5 h-5" />
@@ -1263,27 +1263,27 @@ function reloadPageWithTimeout() {
         <div
           v-if="permissions['canViewAlts']"
         >
-          <h3 class="mb-2 text-2xl font-bold text-gray-500 dark:text-gray-300">
+          <h3 class="mb-2 text-2xl font-bold text-secondary-500 dark:text-secondary-300">
             {{ __("Possible Alts") }}
             <span class="text-sm">
               {{ __("(players with similar ip address)") }}
             </span>
           </h3>
-          <div class="w-full bg-white rounded shadow dark:bg-cool-gray-800">
+          <div class="w-full bg-white rounded shadow dark:bg-surface-800">
             <ArrayTable
               :url="route('player.punishment.show.alt', punishment.id)"
               :header="altHeaders"
-              class="w-full bg-white rounded shadow dark:bg-gray-800"
+              class="w-full bg-white rounded shadow dark:bg-surface-800"
             >
               <template #default="{ item }">
                 <td
-                  class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+                  class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
                 >
                   {{ item.id }}
                 </td>
 
                 <td
-                  class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+                  class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
                 >
                   <div class="flex items-center">
                     <div
@@ -1301,7 +1301,7 @@ function reloadPageWithTimeout() {
                 </td>
 
                 <td
-                  class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+                  class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
                 >
                   <div class="flex items-center">
                     <div class="flex-shrink-0 h-7 w-7">
@@ -1316,16 +1316,16 @@ function reloadPageWithTimeout() {
                         v-tippy
                         as="a"
                         :href="route('player.show', item.uuid)"
-                        class="text-sm font-medium text-gray-900 cursor-pointer dark:text-gray-200 focus:outline-none hover:underline"
+                        class="text-sm font-medium text-secondary-900 cursor-pointer dark:text-secondary-200 focus:outline-none hover:underline"
                         :content="item.uuid"
                       >
                         <span
                           v-if="item.username"
-                          class="font-extrabold text-gray-700 dark:text-gray-300"
+                          class="font-extrabold text-secondary-700 dark:text-secondary-300"
                         >{{ item.username }}</span>
                         <span
                           v-else
-                          class="italic text-red-500"
+                          class="italic text-error-500"
                         >{{ __("Unknown") }}</span>
                       </Link>
                     </div>
@@ -1382,7 +1382,7 @@ function reloadPageWithTimeout() {
                     :href="route('player.show', {
                       player: item.uuid,
                     })"
-                    class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                    class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
                     :title="__('View Details')"
                   >
                     <EyeIcon class="inline-block w-5 h-5" />
@@ -1423,7 +1423,7 @@ function reloadPageWithTimeout() {
         </JetSecondaryButton>
         <LoadingButton
           :loading="pardonForm.processing"
-          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-500 border border-transparent rounded-md hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:shadow-outline-gray"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-success-500 border border-transparent rounded-md hover:bg-success-700 active:bg-success-900 focus:outline-none focus:border-success-900 focus:shadow-outline-gray"
           @click="() => {
             pardonForm.delete(route('player.punishment.pardon', {
               playerPunishment: punishment.id,
@@ -1467,7 +1467,7 @@ function reloadPageWithTimeout() {
                 <button
                   v-if="permissions['canCreateEvidence']"
                   :disabled="uploadEvidenceAsFileForm.processing"
-                  class="flex items-center px-4 py-2 space-x-1 rounded text-white tracking-widest text-xs uppercase font-semibold bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                  class="flex items-center px-4 py-2 space-x-1 rounded text-white tracking-widest text-xs uppercase font-semibold bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
                   @click="triggerEvidenceAsFileUploadInput"
                 >
                   <PaperClipIcon
@@ -1483,7 +1483,7 @@ function reloadPageWithTimeout() {
                 </div>
                 <p
                     v-if="uploadEvidenceAsFileForm?.errors?.file"
-                    class="mt-1 text-xs text-red-400"
+                    class="mt-1 text-xs text-error-400"
                 >
                     {{ uploadEvidenceAsFileForm?.errors?.file }}
                 </p>
@@ -1492,10 +1492,10 @@ function reloadPageWithTimeout() {
             <!-- Divider -->
             <div class="relative">
                 <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                    <div class="w-full border-t border-secondary-300 dark:border-secondary-600"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
-                    <span class="px-2 text-gray-500 bg-white dark:bg-cool-gray-800">
+                    <span class="px-2 text-secondary-500 bg-white dark:bg-surface-800">
                         {{ __("OR") }}
                     </span>
                 </div>
@@ -1511,12 +1511,12 @@ function reloadPageWithTimeout() {
             :placeholder="__('Enter URL')"
             aria-label="url"
             type="text"
-            class="inline-block w-full bg-gray-100 border border-gray-100 rounded-md dark:bg-cool-gray-900 focus:border-gray-300 dark:border-gray-800 dark:focus:border-gray-700 dark:text-gray-200 focus:ring-0 sm:text-sm disabled:opacity-50"
+            class="inline-block w-full bg-surface-100 border border-secondary-100 rounded-md dark:bg-surface-900 focus:border-secondary-300 dark:border-secondary-800 dark:focus:border-secondary-700 dark:text-secondary-200 focus:ring-0 sm:text-sm disabled:opacity-50"
             @keyup.enter="handleEvidenceAsUrlUpload"
           >
                     <LoadingButton
                         :loading="uploadEvidenceAsUrlForm.processing"
-                        class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest uppercase transition border border-transparent rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                        class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest uppercase transition border border-transparent rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
                         @click="handleEvidenceAsUrlUpload"
                     >
                         {{ __("Submit") }}
@@ -1524,7 +1524,7 @@ function reloadPageWithTimeout() {
                 </div>
                 <p
                     v-if="uploadEvidenceAsUrlForm?.errors?.url"
-                    class="mt-1 text-xs text-red-400"
+                    class="mt-1 text-xs text-error-400"
                 >
                     {{ uploadEvidenceAsUrlForm?.errors?.url }}
                 </p>

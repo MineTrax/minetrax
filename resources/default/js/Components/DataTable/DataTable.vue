@@ -130,13 +130,13 @@ function toggleSorting(key) {
         <div id="searchBox">
           <div class="relative mt-1">
             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <MagnifyingGlassIcon class="w-4 h-4 text-gray-500 stroke-2 dark:text-gray-400" />
+              <MagnifyingGlassIcon class="w-4 h-4 text-secondary-500 stroke-2 dark:text-secondary-400" />
             </div>
             <input
               id="table-search"
               v-model="filters.filter.q"
               type="text"
-              class="block p-2 text-sm text-gray-900 border border-gray-300 rounded-lg pl-9 md:w-80 bg-gray-50 dark:bg-gray-900 dark:border-gray-800 dark:placeholder-gray-400 dark:text-gray-300 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50"
+              class="block p-2 text-sm text-secondary-900 border border-secondary-300 rounded-lg pl-9 md:w-80 bg-surface-50 dark:bg-surface-900 dark:border-secondary-800 dark:placeholder-secondary-400 dark:text-secondary-300 focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
               :placeholder="__('Search..')"
             >
           </div>
@@ -151,10 +151,10 @@ function toggleSorting(key) {
           id="resetButton"
         >
           <button
-            class="hidden px-4 py-1 font-semibold text-gray-500 bg-white border border-gray-200 rounded md:block dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-400 dark:border-gray-800 hover:bg-gray-100"
+            class="hidden px-4 py-1 font-semibold text-secondary-500 bg-white border border-secondary-200 rounded md:block dark:bg-surface-700 dark:hover:bg-surface-600 dark:text-secondary-400 dark:border-secondary-800 hover:bg-surface-100"
             @click="resetFilters()"
           >
-            <XMarkIcon class="inline-block w-4 h-4 text-gray-500" />
+            <XMarkIcon class="inline-block w-4 h-4 text-secondary-500" />
             {{ __("Reset") }}
           </button>
         </div>
@@ -168,15 +168,15 @@ function toggleSorting(key) {
       <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
           <div class="overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead class="bg-gray-100 dark:bg-gray-700">
+            <table class="min-w-full divide-y divide-secondary-200 dark:divide-secondary-700">
+              <thead class="bg-surface-100 dark:bg-surface-700">
                 <tr>
                   <slot name="header">
                     <th
                       v-for="th in header"
                       :key="th.key"
                       scope="col"
-                      class="px-4 py-3 text-xs font-semibold text-left text-gray-400 dark:text-gray-300"
+                      class="px-4 py-3 text-xs font-semibold text-left text-secondary-400 dark:text-secondary-300"
                       :class="[th.class ? th.class : '']"
                     >
                       <div class="inline-flex items-center">
@@ -187,12 +187,12 @@ function toggleSorting(key) {
                                 ? th.filterable.some(filter => filters.filter[filter.key ?? th.key])
                                 : filters.filter[th.filterable.key ?? th.key]"
                               name="funnel-fill"
-                              class="inline-block h-4 mr-1 text-green-500 cursor-pointer dark:text-green-500 hover:text-gray-700 dark:hover:text-white"
+                              class="inline-block h-4 mr-1 text-success-500 cursor-pointer dark:text-success-500 hover:text-secondary-700 dark:hover:text-white"
                             />
                             <Icon
                               v-else
                               name="funnel-outline"
-                              class="inline-block h-4 mr-1 text-gray-400 cursor-pointer dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
+                              class="inline-block h-4 mr-1 text-secondary-400 cursor-pointer dark:text-secondary-300 hover:text-secondary-700 dark:hover:text-white"
                             />
                           </PopoverButton>
 
@@ -206,7 +206,7 @@ function toggleSorting(key) {
                           >
                             <PopoverPanel
                               v-slot="{ close }"
-                              class="absolute z-10 p-4 text-gray-800 bg-white border border-gray-200 rounded shadow dark:text-gray-300 min-w-64 dark:bg-gray-700 dark:border-gray-600"
+                              class="absolute z-10 p-4 text-secondary-800 bg-white border border-secondary-200 rounded shadow dark:text-secondary-300 min-w-64 dark:bg-surface-700 dark:border-secondary-600"
                             >
                               <h3 class="mb-1 text-sm font-semibold">
                                 {{ Array.isArray(th.filterable)
@@ -229,14 +229,14 @@ function toggleSorting(key) {
                                     <input
                                       v-if="filter.type === 'text'"
                                       v-model="filters.filter[filter.key ?? th.key]"
-                                      class="block w-full p-2 border-gray-200 rounded-md shadow-sm dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-700 focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                      class="block w-full p-2 border-secondary-200 rounded-md shadow-sm dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-700 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                                       :placeholder="`Enter ${filter.title ?? filter.label}...`"
                                       type="text"
                                     >
                                     <Multiselect
                                       v-if="['multiselect', 'select'].includes(filter.type)"
                                       v-model="filters.filter[filter.key ?? th.key]"
-                                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                      class="block w-full border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                                       :options="filter.options"
                                       :multiple="filter.type === 'multiselect'"
                                       :close-on-select="filter.type === 'select'"
@@ -246,7 +246,7 @@ function toggleSorting(key) {
                                       :placeholder="`Select ${filter.title ?? filter.label}...`"
                                     />
                                     <button
-                                      class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none disabled:opacity-50"
+                                      class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-error-500 hover:bg-error-600 focus:outline-none disabled:opacity-50"
                                       :disabled="!filters.filter[filter.key ?? th.key]"
                                       type="button"
                                       @click="() => {
@@ -265,14 +265,14 @@ function toggleSorting(key) {
                                   <input
                                     v-if="th.filterable.type === 'text'"
                                     v-model="filters.filter[th.filterable.key ?? th.key]"
-                                    class="block w-full p-2 border-gray-200 rounded-md shadow-sm dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-700 focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                    class="block w-full p-2 border-secondary-200 rounded-md shadow-sm dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-700 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                                     :placeholder="`Enter ${th.label}...`"
                                     type="text"
                                   >
                                   <Multiselect
                                     v-if="['multiselect', 'select'].includes(th.filterable.type)"
                                     v-model="filters.filter[th.filterable.key ?? th.key]"
-                                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                    class="block w-full border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                                     :options="th.filterable.options"
                                     :multiple="th.filterable.type === 'multiselect'"
                                     :close-on-select="th.filterable.type === 'select'"
@@ -282,7 +282,7 @@ function toggleSorting(key) {
                                     :placeholder="`Select ${th.label}...`"
                                   />
                                   <button
-                                    class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none disabled:opacity-50"
+                                    class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-error-500 hover:bg-error-600 focus:outline-none disabled:opacity-50"
                                     :disabled="!filters.filter[th.filterable.key ?? th.key]"
                                     type="button"
                                     @click="() => {
@@ -309,9 +309,9 @@ function toggleSorting(key) {
                           <Icon
                             v-if="th.sortable"
                             :name="sortedField === th.key ? (sortedDirection === 'asc' ? 'sort-up' : 'sort-down') : 'sort-updown'"
-                            class="inline-block w-3 h-3 ml-1 text-gray-400 dark:text-gray-300"
+                            class="inline-block w-3 h-3 ml-1 text-secondary-400 dark:text-secondary-300"
                             :class="[
-                              sortedField === th.key ? 'text-light-blue-500 dark:text-light-blue-400' : '',
+                              sortedField === th.key ? 'text-primary-500 dark:text-primary-400' : '',
                             ]"
                           />
                         </div>
@@ -321,7 +321,7 @@ function toggleSorting(key) {
                 </tr>
               </thead>
 
-              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody class="divide-y divide-secondary-200 dark:divide-secondary-700">
                 <tr
                   v-for="item in data.data"
                   :key="item.id"
@@ -335,7 +335,7 @@ function toggleSorting(key) {
                 <tr v-if="data.data.length <= 0">
                   <td
                     :colspan="header.length"
-                    class="px-4 py-3 text-sm font-medium text-center text-gray-500 dark:text-gray-300"
+                    class="px-4 py-3 text-sm font-medium text-center text-secondary-500 dark:text-secondary-300"
                   >
                     {{ __("No data found") }}
                   </td>
@@ -349,18 +349,18 @@ function toggleSorting(key) {
 
     <div
       id="tableFooter"
-      class="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700"
+      class="flex items-center justify-between px-4 py-3 border-t border-secondary-200 dark:border-secondary-700"
     >
       <div class="flex justify-between flex-1 sm:hidden">
         <InertiaLink
           :href="data.prev_page_url ?? '#'"
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 hover:bg-gray-50"
+          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-md dark:border-secondary-800 dark:bg-surface-700 dark:text-secondary-300 dark:hover:bg-surface-600 hover:bg-surface-50"
         >
           {{ __("Previous") }}
         </InertiaLink>
         <InertiaLink
           :href="data.next_page_url ?? '#'"
-          class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 hover:bg-gray-50"
+          class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-md dark:border-secondary-800 dark:bg-surface-700 dark:text-secondary-300 dark:hover:bg-surface-600 hover:bg-surface-50"
         >
           {{ __("Next") }}
         </InertiaLink>
@@ -371,7 +371,7 @@ function toggleSorting(key) {
             <select
               id="perPage"
               v-model="filters.perPage"
-              class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-light-blue-500 focus:border-light-blue-500 dark:bg-gray-900 dark:border-gray-800 dark:placeholder-gray-400 dark:text-gray-300 dark:focus:ring-light-blue-500 dark:focus:border-light-blue-500"
+              class="block w-full text-sm text-secondary-900 border border-secondary-300 rounded-lg bg-surface-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-surface-900 dark:border-secondary-800 dark:placeholder-secondary-400 dark:text-secondary-300 dark:focus:ring-primary-500 dark:focus:border-primary-500"
             >
               <option
                 :value="10"
@@ -401,14 +401,14 @@ function toggleSorting(key) {
           </div>
           <p
             v-if="data.total != undefined"
-            class="ml-2 text-sm text-gray-700 dark:text-gray-400"
+            class="ml-2 text-sm text-secondary-700 dark:text-secondary-400"
           >
             {{ __("Showing") }}
-            <span class="font-semibold dark:text-gray-300">{{ data.from ?? 0 }}</span>
+            <span class="font-semibold dark:text-secondary-300">{{ data.from ?? 0 }}</span>
             {{ __("to") }}
-            <span class="font-semibold dark:text-gray-300">{{ data.to ?? 0 }}</span>
+            <span class="font-semibold dark:text-secondary-300">{{ data.to ?? 0 }}</span>
             {{ __("of") }}
-            <span class="font-semibold dark:text-gray-300">{{ data.total }}</span>
+            <span class="font-semibold dark:text-secondary-300">{{ data.total }}</span>
             {{ __("results") }}
           </p>
         </div>

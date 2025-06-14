@@ -98,7 +98,7 @@ const headerRow = [
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-white rounded shadow dark:bg-surface-800"
           :header="headerRow"
           :data="sessions"
           :filters="filters"
@@ -106,13 +106,13 @@ const headerRow = [
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               {{ item.id }}
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               <div class="flex items-center">
                 <div
@@ -130,7 +130,7 @@ const headerRow = [
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
             >
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10">
@@ -147,9 +147,9 @@ const headerRow = [
                       player: item.player_uuid,
                       session: item.id,
                     })"
-                    class="text-sm font-medium text-gray-900 dark:text-gray-200 focus:outline-none cursor-pointer hover:underline"
+                    class="text-sm font-medium text-secondary-900 dark:text-secondary-200 focus:outline-none cursor-pointer hover:underline"
                   >
-                    <span class="font-extrabold text-gray-700 dark:text-gray-300">
+                    <span class="font-extrabold text-secondary-700 dark:text-secondary-300">
                       {{ item.player_displayname }} ({{ item.player_username }})
                     </span>
                   </InertiaLink>
@@ -178,7 +178,7 @@ const headerRow = [
               </span>
               <span
                 v-else
-                class="text-gray-400"
+                class="text-secondary-400"
               >—</span>
             </DtRowItem>
 
@@ -207,7 +207,7 @@ const headerRow = [
                   player: item.player_uuid,
                   session: item.id,
                 })"
-                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
                 :title="__('View Session Details')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />

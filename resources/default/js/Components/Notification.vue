@@ -1,7 +1,7 @@
 <template>
   <div
     :class="{
-      'bg-light-blue-50 rounded dark:bg-cool-gray-600 dark:bg-opacity-25':
+      'bg-primary-50 rounded dark:bg-surface-600 dark:bg-opacity-25':
         notification.read_at == null,
     }"
     @click="markAsRead"

@@ -2,7 +2,7 @@
 defineProps({
     colorClass: {
         type: String,
-        default: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+        default: 'bg-surface-100 text-secondary-800 dark:bg-surface-900 dark:text-secondary-300'
     }
 });
 </script>

@@ -125,22 +125,22 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Users Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-secondary-400">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
           {{ __("Users") }}
         </h1>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-white rounded shadow dark:bg-surface-800"
         :header="headerRow"
         :data="users"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
           >
             {{ item.id }}
           </td>
@@ -166,7 +166,7 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div
-              class="text-sm font-semibold text-gray-900 dark:text-gray-300"
+              class="text-sm font-semibold text-secondary-900 dark:text-secondary-300"
               :style="[
                 item.roles[0].color
                   ? { color: item.roles[0].color }
@@ -223,7 +223,7 @@ const headerRow = [
             <span
               v-if="item.banned_at"
               v-tippy
-              class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-red-100 text-red-800 dark:bg-red-700 dark:bg-opacity-25 dark:text-red-400"
+              class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-error-100 text-error-800 dark:bg-error-700 dark:bg-opacity-25 dark:text-error-400"
               :title="__('Banned')"
             >
               <NoSymbolIcon class="inline-block w-4 h-4" />
@@ -240,7 +240,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('user.public.get', item.username)"
-              class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
               :title="__('View Profile')"
             >
               <EyeIcon class="inline-block w-5 h-5" />
@@ -260,7 +260,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('admin.user.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit User')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
@@ -275,7 +275,7 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.user.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete User')"
             >
               <TrashIcon class="inline-block w-5 h-5" />

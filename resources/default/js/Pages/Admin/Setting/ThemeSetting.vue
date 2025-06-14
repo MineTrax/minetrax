@@ -7,8 +7,8 @@
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-cool-gray-800 shadow w-full rounded">
-            <div class="px-6 py-4 border-b dark:border-gray-700 dark:text-gray-300 font-bold">
+          <div class="bg-white dark:bg-surface-800 shadow w-full rounded">
+            <div class="px-6 py-4 border-b dark:border-secondary-700 dark:text-secondary-300 font-bold">
               {{ __("Theme Settings") }}
             </div>
 
@@ -20,7 +20,7 @@
                     @submit.prevent="saveThemeSetting"
                   >
                     <div class="shadow overflow-hidden sm:rounded-md">
-                      <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
+                      <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
                           <!-- ColorMode -->
                           <div class="col-span-6 sm:col-span-6">
@@ -89,7 +89,7 @@
                           </div>
 
                           <!-- Home Hero Section -->
-                          <div class="flex items-center col-span-6 sm:col-span-6 border-t border-gray-300 dark:border-gray-700 pt-4">
+                          <div class="flex items-center col-span-6 sm:col-span-6 border-t border-secondary-300 dark:border-secondary-700 pt-4">
                             <x-checkbox
                               id="enable_home_hero_section"
                               v-model="form.enable_home_hero_section"
@@ -116,7 +116,7 @@
 
                             <label
                               for="home_hero_fg_image_light"
-                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
                             >{{ __("Hero Foreground Image Light") }}</label>
 
                             <div
@@ -131,7 +131,7 @@
                               >
                               <span
                                 v-else
-                                class="text-gray-400 italic text-xs"
+                                class="text-secondary-400 italic text-xs"
                               >
                                 {{ __("No Foreground Image.") }}
                               </span>
@@ -155,7 +155,7 @@
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>
 
-                            <div class="mt-2 text-xs text-gray-400">
+                            <div class="mt-2 text-xs text-secondary-400">
                               {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp
                             </div>
 
@@ -182,7 +182,7 @@
 
                             <label
                               for="home_hero_fg_image_dark"
-                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
                             >{{ __("Hero Foreground Image Dark") }}</label>
 
                             <div
@@ -197,7 +197,7 @@
                               >
                               <span
                                 v-else
-                                class="text-gray-400 italic text-xs"
+                                class="text-secondary-400 italic text-xs"
                               >
                                 {{ __("No Foreground Image.") }}
                               </span>
@@ -221,7 +221,7 @@
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>
 
-                            <div class="mt-2 text-xs text-gray-400">
+                            <div class="mt-2 text-xs text-secondary-400">
                               {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp
                             </div>
 
@@ -248,7 +248,7 @@
 
                             <label
                               for="home_hero_bg_image_light"
-                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
                             >{{ __("Hero Background Image Light") }}</label>
 
                             <div
@@ -288,7 +288,7 @@
 
                               <div
                                 v-else
-                                class="h-40 flex items-center justify-center text-gray-400 text-sm italic"
+                                class="h-40 flex items-center justify-center text-secondary-400 text-sm italic"
                               >
                                 {{ __("Upload preview not available for this type. Please save to see the changes.") }}
                               </div>
@@ -302,7 +302,7 @@
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>
 
-                            <div class="mt-2 text-xs text-gray-400">
+                            <div class="mt-2 text-xs text-secondary-400">
                               {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp, webm
                             </div>
 
@@ -329,7 +329,7 @@
 
                             <label
                               for="home_hero_bg_image_dark"
-                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
                             >{{ __("Hero Background Image Dark") }}</label>
 
                             <div
@@ -369,7 +369,7 @@
 
                               <div
                                 v-else
-                                class="h-40 flex items-center justify-center text-gray-400 text-sm italic"
+                                class="h-40 flex items-center justify-center text-secondary-400 text-sm italic"
                               >
                                 {{ __("Upload preview not available for this type. Please save to see the changes.") }}
                               </div>
@@ -384,7 +384,7 @@
                             </jet-secondary-button>
 
 
-                            <div class="mt-2 text-xs text-gray-400">
+                            <div class="mt-2 text-xs text-secondary-400">
                               {{ __("Max Size") }}: 2 MB
                             </div>
 
@@ -533,7 +533,7 @@
 
                           <!-- Loading Gif -->
                           <div
-                            class="col-span-6 sm:col-span-6 border-t border-gray-300 dark:border-gray-700 pt-4"
+                            class="col-span-6 sm:col-span-6 border-t border-secondary-300 dark:border-secondary-700 pt-4"
                           >
                             <input
                               id="loading_gif"
@@ -546,7 +546,7 @@
 
                             <label
                               for="loading_gif"
-                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
                             >{{ __("Animated Loading Image") }}</label>
 
                             <div
@@ -561,7 +561,7 @@
                               >
                               <span
                                 v-else
-                                class="text-gray-400 italic text-xs"
+                                class="text-secondary-400 italic text-xs"
                               >
                                 {{ __("No Animated Loading Image.") }}
                               </span>
@@ -593,7 +593,7 @@
                               {{ __("Remove Image") }}
                             </jet-secondary-button>
 
-                            <div class="mt-2 text-xs text-gray-400">
+                            <div class="mt-2 text-xs text-secondary-400">
                               {{ __("Allowed") }}:  gif & svg
                             </div>
 
@@ -604,10 +604,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
+                      <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                         <loading-button
                           :loading="form.processing"
-                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
+                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                           type="submit"
                         >
                           {{ __("Save Theme Settings") }}
@@ -618,7 +618,7 @@
 
                   <div
                     v-if="false"
-                    class="flex p-5 justify-center items-center text-red-500 italic"
+                    class="flex p-5 justify-center items-center text-error-500 italic"
                   >
                     {{ __("Not implemented from here! Theme can be be customized by accessing 'resources' folder.") }}
                   </div>

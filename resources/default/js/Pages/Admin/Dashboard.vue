@@ -54,7 +54,7 @@ defineProps({
       v-if="!can('view admin_dashboard')"
       class="p-4 flex"
     >
-      <div class="flex-1 bg-white dark:bg-gray-800 p-4 rounded text-red-400 text-center italic">
+      <div class="flex-1 bg-white dark:bg-surface-800 p-4 rounded text-error-400 text-center italic">
         {{ __("Sorry! You are not allowed to view Admin Dashboard Statistics.") }}
       </div>
     </div>
@@ -75,7 +75,7 @@ defineProps({
           :change="kpiTotalUserPercent"
           change-desc="in last 7 days"
           :icon="UserPlusIcon"
-          icon-class="text-light-blue-500 bg-light-blue-100 dark:bg-light-blue-500 dark:text-white"
+          icon-class="text-primary-500 bg-primary-100 dark:bg-primary-500 dark:text-white"
           :description="`Total Verified: ${kpiTotalVerifiedUsers} users`"
         />
 
@@ -87,7 +87,7 @@ defineProps({
           :change="kpiTotalPlayersPercent"
           change-desc="in last 7 days"
           :icon="UserIcon"
-          icon-class="text-green-500 bg-green-100 dark:bg-green-500 dark:text-white"
+          icon-class="text-success-500 bg-success-100 dark:bg-success-500 dark:text-white"
           :description="`Total Linked: ${kpiTotalLinkedPlayers} players`"
         />
 
@@ -112,20 +112,20 @@ defineProps({
           }${millify(kpiFailedJobsForInterval)})`"
           :sub-value-class="[
             kpiFailedJobsForInterval > 0
-              ? 'text-red-500'
-              : 'text-green-500',
+              ? 'text-error-500'
+              : 'text-success-500',
           ]"
           :change="`${
             kpiTotalFailedJobPercent > 0 ? '+' : ''
           }${millify(kpiTotalFailedJobPercent, { precision: 2 })}%`"
           :change-class="[
             kpiTotalFailedJobPercent > 0
-              ? 'text-red-500 bg-red-100'
-              : 'text-green-500 bg-green-100',
+              ? 'text-error-500 bg-error-100'
+              : 'text-success-500 bg-success-100',
           ]"
           change-desc="in last 7 days"
           :icon="FireIcon"
-          icon-class="text-red-500 bg-red-100 dark:bg-red-500 dark:text-white"
+          icon-class="text-error-500 bg-error-100 dark:bg-error-500 dark:text-white"
           :description="`Last Run: ${queueLastProcessed ? formatTimeAgoToNow(queueLastProcessed) : __('not yet')}`"
         />
       </div>

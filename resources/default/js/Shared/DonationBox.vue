@@ -1,18 +1,18 @@
 <template>
   <div v-if="enabled">
-    <div class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+    <div class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow">
+      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
         {{ __("Donate") }}
       </h3>
 
-      <p class="rounded text-sm text-gray-600 dark:text-gray-300 text-center p-1">
+      <p class="rounded text-sm text-secondary-600 dark:text-secondary-300 text-center p-1">
         {{ donationText }}
       </p>
 
-      <div class="mt-3 text-light-blue-400 flex justify-center">
+      <div class="mt-3 text-primary-400 flex justify-center">
         <a
           target="_blank"
-          class="hover:bg-light-blue-50 dark:hover:bg-cool-gray-900 border px-2 py-1 border-light-blue-400 font-semibold rounded"
+          class="hover:bg-primary-50 dark:hover:bg-surface-900 border px-2 py-1 border-primary-400 font-semibold rounded"
           :href="$page.props.generalSettings.donation_box_url"
         >
           {{ __("Donate Now") }}

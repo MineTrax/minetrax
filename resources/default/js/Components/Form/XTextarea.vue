@@ -4,7 +4,7 @@
       :id="id"
       ref="input"
       :name="name"
-      class="border hide-scrollbar resize-none focus:outline-none rounded-md w-full p-3 min-h-16 h-20 disabled:opacity-50 focus:border-light-blue-300 focus:ring text-sm focus:ring-light-blue-200 focus:ring-opacity-50 dark:bg-cool-gray-900 dark:border-cool-gray-900 dark:text-gray-300"
+      class="border hide-scrollbar resize-none focus:outline-none rounded-md w-full p-3 min-h-16 h-20 disabled:opacity-50 focus:border-primary-300 focus:ring text-sm focus:ring-primary-200 focus:ring-opacity-50 dark:bg-surface-900 dark:border-secondary-900 dark:text-secondary-300"
       :class="borderColor"
       :placeholder="label"
       :autocomplete="autocomplete"
@@ -19,7 +19,7 @@
     <label
       :for="id"
       :class="textColor"
-      class="absolute top-0 left-0 px-3 pt-5 text-sm pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-gray-400"
+      class="absolute top-0 left-0 px-3 pt-5 text-sm pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-secondary-400"
     >{{
       label
     }}
@@ -31,13 +31,13 @@
     >
       <p
         v-show="help"
-        class="text-xs text-gray-500"
+        class="text-xs text-secondary-500"
       >
         {{ help }}
       </p>
       <p
         v-show="error"
-        class="text-xs text-red-500"
+        class="text-xs text-error-500"
       >
         {{ error }}
       </p>
@@ -90,24 +90,24 @@ export default {
     computed: {
         borderColor() {
             if(this.error) {
-                return 'border-red-400';
+                return 'border-error-400';
             } else {
-                return 'border-gray-300';
+                return 'border-secondary-300';
             }
         },
         textColor() {
             if (this.hasFocus) {
-                return 'text-light-blue-400';
+                return 'text-primary-400';
             }
 
             if(this.error) {
-                return 'text-red-400';
+                return 'text-error-400';
             } else {
                 if (this.disabled) {
-                    return 'text-gray-400 dark:text-gray-600';
+                    return 'text-secondary-400 dark:text-secondary-600';
                 }
 
-                return 'text-gray-500';
+                return 'text-secondary-500';
             }
         }
     },

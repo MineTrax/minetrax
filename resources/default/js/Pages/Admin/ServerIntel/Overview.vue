@@ -57,8 +57,8 @@ defineProps({
       >
         <ServerIntelOverviewNumbersBox :servers="filters?.servers" />
 
-        <div class="bg-white dark:bg-cool-gray-800 rounded w-full shadow basis-2/6 p-3">
-          <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex mt-2 items-center">
+        <div class="bg-white dark:bg-surface-800 rounded w-full shadow basis-2/6 p-3">
+          <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200 flex mt-2 items-center">
             <ServerStackIcon
               class="w-6 mr-1"
             />
@@ -66,13 +66,13 @@ defineProps({
           </h3>
 
           <div class="flex flex-col text-sm mt-5">
-            <table class="table-auto min-w-full dark:text-gray-300 text-gray-700">
+            <table class="table-auto min-w-full dark:text-secondary-300 text-secondary-700">
               <tbody>
                 <tr>
                   <td class="py-2 flex">
                     <Icon
                       name="users"
-                      class="w-5 text-indigo-500 mr-1"
+                      class="w-5 text-primary-500 mr-1"
                     />
                     {{ __("Unique Players") }}
                   </td>
@@ -98,7 +98,7 @@ defineProps({
                   <td class="py-2 flex">
                     <Icon
                       name="users"
-                      class="w-5 text-gray-500 mr-1"
+                      class="w-5 text-secondary-500 mr-1"
                     />
                     {{ __("Old Players") }}
                   </td>
@@ -111,7 +111,7 @@ defineProps({
                   <td class="py-2 flex">
                     <Icon
                       name="users"
-                      class="w-5 text-green-500 mr-1"
+                      class="w-5 text-success-500 mr-1"
                     />
                     {{ __("Peak Online Players") }}
                   </td>
@@ -137,7 +137,7 @@ defineProps({
                   <td class="py-2 flex">
                     <Icon
                       name="joystick"
-                      class="w-5 text-red-500 mr-1"
+                      class="w-5 text-error-500 mr-1"
                     />
                     {{ __("Lowest TPS") }}
                   </td>
@@ -150,7 +150,7 @@ defineProps({
                   <td class="py-2 flex">
                     <Icon
                       name="cpu"
-                      class="w-5 text-blue-500 mr-1"
+                      class="w-5 text-primary-500 mr-1"
                     />
                     {{ __("Avg CPU Load") }}
                   </td>
@@ -162,7 +162,7 @@ defineProps({
                 <tr>
                   <td class="py-2 flex">
                     <PowerIcon
-                      class="w-5 text-green-500 mr-1"
+                      class="w-5 text-success-500 mr-1"
                     />
                     {{ __("Longest Uptime") }}
                   </td>
@@ -175,7 +175,7 @@ defineProps({
                   <td class="py-2 flex">
                     <Icon
                       name="toggle-off"
-                      class="w-5 text-red-500 mr-1"
+                      class="w-5 text-error-500 mr-1"
                     />
                     {{ __("Restarts") }}
                   </td>

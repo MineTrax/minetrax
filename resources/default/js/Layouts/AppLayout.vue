@@ -51,7 +51,7 @@ export default {
       :title="__('Leave Impersonation')"
       as="a"
       :href="route('admin.impersonate.leave')"
-      class="fixed flex p-2 text-white bg-red-500 rounded-full bottom-4 right-4 hover:bg-red-700 z-50"
+      class="fixed flex p-2 text-white bg-error-500 rounded-full bottom-4 right-4 hover:bg-error-700 z-50"
     >
       <icon
         name="ban"
@@ -61,7 +61,7 @@ export default {
 
     <div
       class="min-h-screen"
-      :class="{ 'border-4 border-red-500' : $page.props.isImpersonating}"
+      :class="{ 'border-4 border-error-500' : $page.props.isImpersonating}"
     >
       <!-- NavBar -->
       <MainNavbarCustom />

@@ -26,7 +26,7 @@ defineProps({
         <div class="flex">
           <Link
             :href="route('download.index')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Back") }}</span>
           </Link>
@@ -35,14 +35,14 @@ defineProps({
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="-my-2 md:w-9/12 overflow-x-auto md:-mx-6 lg:-mx-8">
           <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
-            <div class="shadow max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-gray-200 rounded md:rounded-lg dark:bg-cool-gray-800 dark:border-none">
-              <h1 class="font-bold text-4xl text-gray-900 dark:text-gray-200 mb-5">
+            <div class="shadow max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-secondary-200 rounded md:rounded-lg dark:bg-surface-800 dark:border-none">
+              <h1 class="font-bold text-4xl text-secondary-900 dark:text-secondary-200 mb-5">
                 {{ download.name }}
               </h1>
 
               <div class="mb-4">
                 <p
-                  class="text-gray-500 dark:text-gray-400 text-sm focus:outline-none"
+                  class="text-secondary-500 dark:text-secondary-400 text-sm focus:outline-none"
                 >
                   {{ __("Created:") }} {{ formatToDayDateString(download.created_at) }}
                   ▪
@@ -65,7 +65,7 @@ defineProps({
                   class="relative inline-block px-4 py-2 md:px-8 md:py-4 font-medium group"
                 >
                   <span class="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-black dark:bg-white group-hover:-translate-x-0 group-hover:-translate-y-0" />
-                  <span class="absolute inset-0 w-full h-full bg-white dark:bg-gray-800 border-2 border-black dark:border-white group-hover:bg-black dark:group-hover:bg-white" />
+                  <span class="absolute inset-0 w-full h-full bg-white dark:bg-surface-800 border-2 border-black dark:border-white group-hover:bg-black dark:group-hover:bg-white" />
                   <span class="relative text-black dark:text-white group-hover:text-white dark:group-hover:text-black">{{ __("Download Now") }}</span>
                 </a>
               </div>

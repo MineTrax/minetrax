@@ -72,24 +72,24 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage Player Ranks')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-secondary-400">
       <AlertCard
         v-if="showPlayerRankSyncAlert"
         :close-button="true"
-        text-color="text-light-blue-800 dark:text-light-blue-500"
-        border-color="border-light-blue-500"
+        text-color="text-primary-800 dark:text-primary-500"
+        border-color="border-primary-500"
         @close="showPlayerRankSyncAlert = false"
       >
         {{ __("Do you know! MineTrax can also sync rank from server instead of calculating using algorithm.") }}
         <template #body>
-          <p class="text-gray-600 dark:text-gray-400">
+          <p class="text-secondary-600 dark:text-secondary-400">
             {{
               __(
                 "If you want to sync player rank from your minecraft server, follow the steps below:"
               )
             }}
           </p>
-          <ul class="text-gray-600 list-disc list-inside dark:text-gray-400">
+          <ul class="text-secondary-600 list-disc list-inside dark:text-secondary-400">
             <li>
               {{
 
@@ -110,7 +110,7 @@ const headerRow = [
             </li>
           </ul>
 
-          <p class="italic text-gray-400 dark:text-gray-500">
+          <p class="italic text-secondary-400 dark:text-secondary-500">
             {{
               __(
                 "Note: This is optional feature. You can safely close this alert if you don't want to use it. You can always do it later."
@@ -121,7 +121,7 @@ const headerRow = [
       </AlertCard>
 
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
           {{ __("Manage Player Ranks") }}
         </h1>
         <div class="flex">
@@ -131,14 +131,14 @@ const headerRow = [
             method="post"
             as="button"
             :href="route('admin.rank.reset')"
-            class="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-red-600 border border-transparent rounded-md hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red"
+            class="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-600 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-red"
           >
             {{ __("Reset to Default Ranks") }}
           </InertiaLink>
           <InertiaLink
             v-if="can('create ranks')"
             :href="route('admin.rank.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
           >
             <span>{{ __("Create New") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Rank") }}</span>
@@ -147,14 +147,14 @@ const headerRow = [
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-white rounded shadow dark:bg-surface-800"
         :header="headerRow"
         :data="ranks"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
           >
             {{ item.id }}
           </td>
@@ -170,10 +170,10 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div>
-              <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
+              <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
                 {{ item.name }}
               </div>
-              <div class="text-sm text-gray-500 dark:text-gray-400">
+              <div class="text-sm text-secondary-500 dark:text-secondary-400">
                 {{ item.shortname }}
               </div>
             </div>
@@ -208,7 +208,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('admin.rank.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit Rank')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
@@ -223,7 +223,7 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.rank.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Rank')"
             >
               <TrashIcon class="inline-block w-5 h-5" />

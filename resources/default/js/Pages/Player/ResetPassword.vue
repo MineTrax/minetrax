@@ -67,7 +67,7 @@ const success = computed(() => {
       <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <h2
           v-if="selectedPlayer"
-          class="text-lg mb-2 md:mb-0 md:text-2xl font-bold text-gray-700 dark:text-gray-200"
+          class="text-lg mb-2 md:mb-0 md:text-2xl font-bold text-secondary-700 dark:text-secondary-200"
         >
           {{
             __("Reset password for :username", {
@@ -77,7 +77,7 @@ const success = computed(() => {
         </h2>
         <h2
           v-else
-          class="text-lg italic mb-2 md:mb-0 md:text-2xl font-bold text-gray-500 dark:text-gray-500"
+          class="text-lg italic mb-2 md:mb-0 md:text-2xl font-bold text-secondary-500 dark:text-secondary-500"
         >
           {{ __("No Linked Players") }}
         </h2>
@@ -85,7 +85,7 @@ const success = computed(() => {
         <Multiselect
           id="username"
           v-model="selectedPlayer"
-          class="w-full md:w-1/3 bg-gray-300 border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm dark:bg-gray-900"
+          class="w-full md:w-1/3 bg-surface-300 border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm dark:bg-surface-900"
           :options="players"
           :multiple="false"
           :placeholder="__('Search') + '...'"
@@ -98,18 +98,18 @@ const success = computed(() => {
 
       <p
         v-if="selectedPlayer"
-        class="text-xs text-gray-500 dark:text-gray-500"
+        class="text-xs text-secondary-500 dark:text-secondary-500"
       >
         {{ __("Player Uuid") }}: {{ selectedPlayer.uuid }}
       </p>
 
       <AlertCard
         v-if="success"
-        text-color="text-green-800 dark:text-green-500"
-        border-color="border-green-500"
+        text-color="text-success-800 dark:text-success-500"
+        border-color="border-success-500"
       >
         <template #icon>
-          <CheckCircleIcon class="fill-current h-6 w-6 text-green-500 mr-4" />
+          <CheckCircleIcon class="fill-current h-6 w-6 text-success-500 mr-4" />
         </template>
         <h2 class="text-xl">
           {{ __("Password changed successfully!") }}
@@ -123,16 +123,16 @@ const success = computed(() => {
 
       <AlertCard
         v-if="!selectedPlayer"
-        text-color="text-red-800 dark:text-red-500"
-        border-color="border-red-500"
+        text-color="text-error-800 dark:text-error-500"
+        border-color="border-error-500"
       >
         {{ __("No linked players found. Please link a player to your account.") }}
       </AlertCard>
 
       <AlertCard
         v-if="cannotPlayerPasswordReset"
-        text-color="text-red-800 dark:text-red-500"
-        border-color="border-red-500"
+        text-color="text-error-800 dark:text-error-500"
+        border-color="border-error-500"
       >
         {{ __("Your are not allowed to reset your player passwords.") }}
 
@@ -145,7 +145,7 @@ const success = computed(() => {
 
       <div
         as="div"
-        class="w-full p-6 text-gray-500 rounded-lg text-medium dark:text-gray-400 bg-white shadow dark:bg-gray-800"
+        class="w-full p-6 text-secondary-500 rounded-lg text-medium dark:text-secondary-400 bg-white shadow dark:bg-surface-800"
       >
         <form
           class="w-full mt-4"
@@ -168,7 +168,7 @@ const success = computed(() => {
                 <button
                   :disabled="formDisabled"
                   type="button"
-                  class="inline-flex items-center px-4 py-4 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest whitespace-nowrap shadow-sm hover:text-gray-500 focus:outline-none active:text-gray-800 active:mt-0.5 active:bg-gray-50 transition ease-in-out duration-150 dark:bg-cool-gray-700 dark:text-gray-200 dark:border-gray-800 dark:hover:text-white dark:hover:bg-cool-gray-600 disabled:active:mt-0 disabled:cursor-not-allowed disabled:opacity-50"
+                  class="inline-flex items-center px-4 py-4 bg-white border border-secondary-300 rounded-md font-semibold text-xs text-secondary-700 tracking-widest whitespace-nowrap shadow-sm hover:text-secondary-500 focus:outline-none active:text-secondary-800 active:mt-0.5 active:bg-surface-50 transition ease-in-out duration-150 dark:bg-surface-700 dark:text-secondary-200 dark:border-secondary-800 dark:hover:text-white dark:hover:bg-surface-600 disabled:active:mt-0 disabled:cursor-not-allowed disabled:opacity-50"
                   @click="form.new_password = generateRandomString(16)"
                 >
                   <ArrowPathIcon class="inline h-5 w-5 mr-1" />
@@ -197,7 +197,7 @@ const success = computed(() => {
           <div class="mt-6">
             <LoadingButton
               :loading="form.processing"
-              class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+              class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
               :disabled="formDisabled"
               type="submit"
             >

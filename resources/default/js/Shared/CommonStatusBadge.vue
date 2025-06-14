@@ -13,28 +13,28 @@ const props = defineProps({
 const colorClass = computed(() => {
     switch (props.status) {
     case 'pending':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700';
+        return 'bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200 border border-warning-300 dark:border-warning-700';
     case 'inprogress':
     case 'running':
-        return 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200 border border-cyan-300 dark:border-cyan-700';
+        return 'bg-info-100 text-info-800 dark:bg-info-900 dark:text-info-200 border border-info-300 dark:border-info-700';
     case 'approved':
     case 'completed':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-300 dark:border-green-700';
+        return 'bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200 border border-success-300 dark:border-success-700';
     case 'rejected':
     case 'failed':
     case 'ban':
     case 'active':
     case 'permanent':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border border-red-300 dark:border-red-700';
+        return 'bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200 border border-error-300 dark:border-error-700';
     case 'onhold':
     case 'deferred':
         return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700';
     case 'warn':
-        return 'bg-yellow-50 text-yellow-800 dark:bg-yellow-900 dark:bg-opacity-25 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700';
+        return 'bg-warning-50 text-warning-800 dark:bg-warning-900 dark:bg-opacity-25 dark:text-warning-200 border border-warning-300 dark:border-warning-700';
     case 'kick':
-        return 'bg-gray-50 text-gray-800 dark:bg-gray-900 dark:bg-opacity-25 dark:text-gray-200 border border-gray-300 dark:border-gray-700';
+        return 'bg-surface-50 text-secondary-800 dark:bg-surface-900 dark:bg-opacity-25 dark:text-secondary-200 border border-secondary-300 dark:border-secondary-700';
     default:
-        return 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-300 border border-gray-300 dark:border-gray-700';
+        return 'bg-surface-100 text-secondary-600 dark:bg-surface-900 dark:text-secondary-300 border border-secondary-300 dark:border-secondary-700';
     }
 });
 

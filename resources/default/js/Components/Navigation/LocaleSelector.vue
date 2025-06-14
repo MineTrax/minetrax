@@ -4,7 +4,7 @@
       <button
         v-tippy
         :title="__('Change Language')"
-        class="flex items-center text-sm font-medium text-gray-400 hover:text-gray-300"
+        class="flex items-center text-sm font-medium text-secondary-400 hover:text-secondary-300"
       >
         <img
           :src="`/images/flags/flags-iso/shiny/48/${$page.props.localeIsoCode.toUpperCase()}.png`"
@@ -18,7 +18,7 @@
         <button
           v-for="(locale) in availableLocales"
           :key="locale.code"
-          class="flex items-center w-full px-4 py-1 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          class="flex items-center w-full px-4 py-1 text-sm font-medium text-secondary-500 hover:text-secondary-700 dark:text-secondary-400 dark:hover:text-secondary-300"
           @click="setLocale(locale.code)"
         >
           <img

@@ -3,9 +3,9 @@
     <select
       :id="id"
       ref="input"
-      class="border-gray-300 text-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full p-3 dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
+      class="border-secondary-300 text-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 rounded-md block w-full p-3 dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-900"
       :class="[
-        error ? 'border-red-400 dark:border-red-400' : 'border-gray-300',
+        error ? 'border-error-400 dark:border-error-400' : 'border-secondary-300',
         label ? 'pt-6 h-14' : '',
         selectClass,
       ]"
@@ -20,7 +20,7 @@
     >
       <option
         v-if="placeholder"
-        class="text-gray-500 dark:text-gray-400"
+        class="text-secondary-500 dark:text-secondary-400"
         value=""
         :disabled="disableNull"
       >
@@ -39,7 +39,7 @@
       v-if="label"
       :for="id"
       :class="textColor"
-      class="absolute -top-3 left-0 px-3 py-5 text-xs h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-gray-400"
+      class="absolute -top-3 left-0 px-3 py-5 text-xs h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-secondary-400"
     >{{
       label
     }}</label>
@@ -50,13 +50,13 @@
     >
       <p
         v-show="help"
-        class="text-xs text-gray-500 dark:text-gray-400"
+        class="text-xs text-secondary-500 dark:text-secondary-400"
       >
         {{ help }}
       </p>
       <p
         v-show="error"
-        class="text-xs text-red-500"
+        class="text-xs text-error-500"
       >
         {{ error }}
       </p>
@@ -119,13 +119,13 @@ export default {
         },
         textColor() {
             if (this.hasFocus) {
-                return 'text-light-blue-400';
+                return 'text-primary-400';
             }
 
             if (this.error) {
-                return 'text-red-400';
+                return 'text-error-400';
             } else {
-                return 'text-gray-500';
+                return 'text-secondary-500';
             }
         }
     },

@@ -27,9 +27,14 @@ if (window.colorMode === 'dark') {
     provide(THEME_KEY, 'darkmine');
 }
 
+// Get CSS custom properties for dynamic theming
+const getThemeColor = (property) => {
+    return getComputedStyle(document.documentElement).getPropertyValue(property).trim();
+};
+
 const loadingOptions = {
     text: 'Loading...',
-    color: '#39b9f1',
+    color: getThemeColor('--color-primary-500') || '#8b5cf6',
     textColor: window.colorMode === 'dark' ? '#fff' : '#000',
     maskColor: 'transparent',
 };

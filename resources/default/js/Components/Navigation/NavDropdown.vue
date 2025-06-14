@@ -1,6 +1,6 @@
 <template>
   <div
-    class="inline-flex items-center px-1 pt-1 text-sm leading-5 text-gray-500 transition duration-150 ease-in-out border-b-2 border-transparent hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300"
+    class="inline-flex items-center px-1 pt-1 text-sm leading-5 text-secondary-500 transition duration-150 ease-in-out border-b-2 border-transparent hover:border-secondary-300 focus:outline-none focus:text-secondary-700 focus:border-secondary-300"
   >
     <jet-dropdown
       align="right"
@@ -10,7 +10,7 @@
         <span class="inline-flex rounded-md">
           <button
             type="button"
-            class="inline-flex items-center py-2 text-sm font-semibold leading-4 text-gray-500 transition duration-150 ease-in-out border border-transparent rounded-md dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
+            class="inline-flex items-center py-2 text-sm font-semibold leading-4 text-secondary-500 transition duration-150 ease-in-out border border-transparent rounded-md dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200 focus:outline-none"
           >
             {{ __(title) }}
             <svg
