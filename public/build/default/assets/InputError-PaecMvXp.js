@@ -1,0 +1,1 @@
+import{p as s,x as t,o as a,d as r,a as o,t as c}from"./app-B6MSbjiR.js";const n={class:"text-xs text-error-500"},l={__name:"InputError",props:{message:String},setup(e){return(i,m)=>s((a(),r("div",null,[o("p",n,c(e.message),1)],512)),[[t,e.message]])}};export{l as _};
