@@ -37,10 +37,7 @@
                           </div>
 
                           <!-- ColorTheme -->
-                          <div
-                            v-show="false"
-                            class="col-span-6 sm:col-span-3"
-                          >
+                          <div class="col-span-6 sm:col-span-3">
                             <x-select
                               id="theme_name"
                               v-model="form.theme_name"
@@ -53,12 +50,8 @@
                             />
                           </div>
 
-
                           <!-- Primary Font -->
-                          <div
-                            v-show="false"
-                            class="col-span-6 sm:col-span-3"
-                          >
+                          <div class="col-span-6 sm:col-span-3">
                             <x-select
                               id="primary_font"
                               v-model="form.primary_font"
@@ -72,10 +65,7 @@
                           </div>
 
                           <!-- Secondary Font -->
-                          <div
-                            v-show="false"
-                            class="col-span-6 sm:col-span-3"
-                          >
+                          <div class="col-span-6 sm:col-span-3">
                             <x-select
                               id="secondary_font"
                               v-model="form.secondary_font"
@@ -727,6 +717,19 @@ export default {
         };
     },
 
+    watch: {
+        // Watch for theme changes and apply them immediately for preview
+        'form.theme_name'() {
+            this.updateThemeAttributes();
+        },
+        'form.primary_font'() {
+            this.updateThemeAttributes();
+        },
+        'form.secondary_font'() {
+            this.updateThemeAttributes();
+        }
+    },
+
     methods: {
         updateHomeHeroBgImageLightPreview() {
             const reader = new FileReader();
@@ -829,6 +832,9 @@ export default {
             this.form.post(route('admin.setting.theme.update'), {
                 preserveScroll: true,
                 onSuccess: () => {
+                    // Update theme attributes immediately after successful save
+                    this.updateThemeAttributes();
+
                     this.$inertia.get(route('admin.setting.theme.show'), {
                         preserveState: false,
                         preserveScroll: true,
@@ -846,6 +852,16 @@ export default {
                 preserveScroll: true,
                 onSuccess: () => (this.loadingGifPreview = null),
             });
+        },
+
+        updateThemeAttributes() {
+            // Update data attributes on body for immediate theme switching
+            const body = document.querySelector('body');
+            if (body) {
+                body.setAttribute('data-theme', this.form.theme_name);
+                body.setAttribute('data-primary-font', this.form.primary_font);
+                body.setAttribute('data-secondary-font', this.form.secondary_font);
+            }
         }
     }
 };

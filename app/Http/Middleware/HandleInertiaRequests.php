@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Server;
 use App\Settings\GeneralSettings;
 use App\Settings\PluginSettings;
+use App\Settings\ThemeSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Middleware;
@@ -107,6 +108,14 @@ class HandleInertiaRequests extends Middleware
             'pluginSettings' => function (PluginSettings $pluginSettings) {
                 return [
                     'playerPasswordResetEnabled' => $pluginSettings->enable_player_password_reset,
+                ];
+            },
+            'themeSettings' => function (ThemeSettings $themeSettings) {
+                return [
+                    'color_mode' => $themeSettings->color_mode,
+                    'theme_name' => $themeSettings->theme_name,
+                    'primary_font' => $themeSettings->primary_font,
+                    'secondary_font' => $themeSettings->secondary_font,
                 ];
             }
         ]);

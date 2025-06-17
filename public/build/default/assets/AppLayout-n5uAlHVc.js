@@ -1,0 +1,1 @@
+import{_ as t}from"./BaseLayout-sXkR-4Uw.js";import{o as a,c as r,w as s,S as f}from"./app-jpCRGzWE.js";const i={__name:"AppLayout",props:{hideFooter:{type:Boolean,default:!1}},setup(e){return(o,p)=>(a(),r(t,{"hide-footer":e.hideFooter},{default:s(()=>[f(o.$slots,"default")]),_:3},8,["hide-footer"]))}};export{i as _};

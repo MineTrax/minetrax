@@ -6,40 +6,42 @@ use BenSampo\Enum\Enum;
 
 /**
  * @method static static LIGHT_BLUE()
- * @method static static BLUE()
- * @method static static RED()
- * @method static static ORANGE()
- * @method static static LIME()
+ * @method static static PURPLE()
  * @method static static GREEN()
- * @method static static TEAL()
- * @method static static INDIGO()
- * @method static static FUCHSIA()
+ * @method static static ORANGE()
  */
 final class ThemeType extends Enum
 {
     const LIGHT_BLUE = 'light-blue';
-
-    const BLUE = 'blue';
-
-    const RED = 'red';
-
+    const PURPLE = 'purple';
+    const GREEN = 'green';
     const ORANGE = 'orange';
 
-    const LIME = 'lime';
-
-    const GREEN = 'green';
-
-    const TEAL = 'teal';
-
-    const INDIGO = 'indigo';
-
-    const FUCHSIA = 'fuchsia';
+    /**
+     * Get the description for display
+     */
+    public static function getDescription($value): string
+    {
+        switch ($value) {
+            case self::LIGHT_BLUE:
+                return 'Sky Blue Theme';
+            case self::PURPLE:
+                return 'Purple Theme';
+            case self::GREEN:
+                return 'Nature Green Theme';
+            case self::ORANGE:
+                return 'Warm Orange Theme';
+            default:
+                return parent::getDescription($value);
+        }
+    }
 
     public function toArray(): mixed
     {
         return [
             'key' => $this->key,
             'value' => $this->value,
+            'description' => self::getDescription($this->value),
         ];
     }
 }
