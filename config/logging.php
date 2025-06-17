@@ -54,7 +54,10 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => env('LOG_DISCORD_WEBHOOK_URL') ? ['daily', 'discord'] : ['daily'],
+            'channels' => array_unique(array_merge(
+                explode(',', env('LOG_STACK', 'daily')),
+                env('LOG_DISCORD_WEBHOOK_URL') ? ['discord'] : []
+            )),
             'ignore_exceptions' => true,
         ],
 
