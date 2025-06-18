@@ -3,8 +3,8 @@ import { useChartTheme } from "@/Composables/useChartTheme.js";
 // Use the composable to get theme utilities
 const { getThemeColor, getChartColorPalette } = useChartTheme();
 
-const contrastColor = getThemeColor("--color-secondary-300", "#cbd5e1");
-const backgroundColor = getThemeColor("--color-surface-800", "#1f2937");
+const contrastColor = getThemeColor("--color-secondary-700", "#374151");
+const backgroundColor = getThemeColor("--color-white", "#ffffff");
 const axisCommon = function () {
     return {
         axisLine: {
@@ -14,17 +14,17 @@ const axisCommon = function () {
         },
         splitLine: {
             lineStyle: {
-                color: getThemeColor("--color-secondary-600", "#475569"),
+                color: getThemeColor("--color-secondary-200", "#e5e7eb"),
             },
         },
         splitArea: {
             areaStyle: {
-                color: ["rgba(255,255,255,0.02)", "rgba(255,255,255,0.05)"],
+                color: ["rgba(0,0,0,0.02)", "rgba(0,0,0,0.05)"],
             },
         },
         minorSplitLine: {
             lineStyle: {
-                color: getThemeColor("--color-secondary-700", "#334155"),
+                color: getThemeColor("--color-secondary-100", "#f3f4f6"),
             },
         },
     };
@@ -34,20 +34,19 @@ const axisCommon = function () {
 const colorPalette = getChartColorPalette();
 
 const theme = {
-    darkMode: true,
+    darkMode: false,
 
     color: colorPalette,
     backgroundColor: backgroundColor,
     axisPointer: {
         lineStyle: {
-            color: getThemeColor("--color-secondary-500", "#64748b"),
+            color: getThemeColor("--color-secondary-400", "#9ca3af"),
         },
         crossStyle: {
-            color: getThemeColor("--color-secondary-500", "#64748b"),
+            color: getThemeColor("--color-secondary-400", "#9ca3af"),
         },
         label: {
-            // TODO Contrast of label backgorundColor
-            color: "#fff",
+            color: "#000",
         },
     },
     legend: {
@@ -60,10 +59,10 @@ const theme = {
     },
     title: {
         textStyle: {
-            color: "#EEF1FA",
+            color: "#1f2937",
         },
         subtextStyle: {
-            color: getThemeColor("--color-secondary-400", "#94a3b8"),
+            color: getThemeColor("--color-secondary-500", "#6b7280"),
         },
     },
     toolbox: {
@@ -72,47 +71,47 @@ const theme = {
         },
     },
     dataZoom: {
-        borderColor: "#71708A",
+        borderColor: "#9ca3af",
         textStyle: {
             color: contrastColor,
         },
         brushStyle: {
-            color: "rgba(135,163,206,0.3)",
+            color: "rgba(59,130,246,0.3)",
         },
         handleStyle: {
-            color: "#353450",
-            borderColor: "#C5CBE3",
+            color: "#f3f4f6",
+            borderColor: "#6b7280",
         },
         moveHandleStyle: {
-            color: "#B0B6C3",
+            color: "#9ca3af",
             opacity: 0.3,
         },
-        fillerColor: "rgba(135,163,206,0.2)",
+        fillerColor: "rgba(59,130,246,0.2)",
         emphasis: {
             handleStyle: {
-                borderColor: "#91B7F2",
-                color: "#4D587D",
+                borderColor: "#3b82f6",
+                color: "#e5e7eb",
             },
             moveHandleStyle: {
-                color: "#636D9A",
+                color: "#6b7280",
                 opacity: 0.7,
             },
         },
         dataBackground: {
             lineStyle: {
-                color: "#71708A",
+                color: "#9ca3af",
                 width: 1,
             },
             areaStyle: {
-                color: "#71708A",
+                color: "#9ca3af",
             },
         },
         selectedDataBackground: {
             lineStyle: {
-                color: "#87A3CE",
+                color: "#3b82f6",
             },
             areaStyle: {
-                color: "#87A3CE",
+                color: "#3b82f6",
             },
         },
     },
@@ -164,24 +163,22 @@ const theme = {
         },
         axisLine: {
             lineStyle: {
-                color: [[1, "rgba(207,212,219,0.2)"]],
+                color: [[1, "rgba(156,163,175,0.2)"]],
             },
         },
         axisLabel: {
             color: contrastColor,
         },
         detail: {
-            color: "#EEF1FA",
+            color: "#1f2937",
         },
     },
     candlestick: {
         itemStyle: {
-            color: "#f64e56",
-            color0: "#54ea92",
-            borderColor: "#f64e56",
-            borderColor0: "#54ea92",
-            // borderColor: '#ca2824',
-            // borderColor0: '#09a443'
+            color: "#ef4444",
+            color0: "#22c55e",
+            borderColor: "#ef4444",
+            borderColor0: "#22c55e",
         },
     },
 };
