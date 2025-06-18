@@ -34,7 +34,7 @@ export default {
     },
     computed: {
         color() {
-            return (['red','light-blue','green','pink','orange','purple'])[ this.index % 6];
+            return (['red','sky','green','pink','orange','purple'])[ this.index % 6];
         }
     }
 };

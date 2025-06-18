@@ -31,7 +31,6 @@ module.exports = {
                 sans: ["Nunito", ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                // Semantic color scheme - DARK VIOLET THEME
                 primary: colors.sky,
                 secondary: colors.gray,
                 success: colors.green,
@@ -40,32 +39,7 @@ module.exports = {
                 info: colors.cyan,
                 purple: colors.purple,
 
-                // Semantic background colors - VERY DARK THEME (Almost Black)
-                surface: {
-                    50: colors.gray[50],
-                    100: colors.gray[100],
-                    200: colors.gray[200],
-                    300: colors.gray[300],
-                    400: colors.gray[400],
-                    500: colors.gray[500],
-                    600: colors.gray[600],
-                    700: colors.gray[700],
-                    800: colors.gray[800],
-                    900: colors.gray[900],
-                },
-
-                // Legacy color aliases (keep for compatibility)
-                "light-blue": colors.sky, // Updated to match new primary
-                "cool-gray": colors.gray, // Updated to match new secondary
-                orange: colors.orange,
-                lime: colors.lime,
-                teal: colors.teal,
-                amber: colors.amber,
-                rose: colors.rose,
-                "theme-gray": {
-                    100: "#dee8ea",
-                    200: "#c4cfd1",
-                },
+                surface: colors.gray,
             },
             maxHeight: {
                 0: "0",
