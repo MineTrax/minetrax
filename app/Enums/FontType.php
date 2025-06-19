@@ -6,9 +6,11 @@ use BenSampo\Enum\Enum;
 
 final class FontType extends Enum
 {
-    const Nunito = 'Nunito';
+    const NUNITO = 'Nunito';
 
-    const Ubuntu = 'Ubuntu';
+    const UBUNTU = 'Ubuntu';
+
+    const INTER = 'Inter';
 
     public function toArray(): mixed
     {

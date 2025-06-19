@@ -36,27 +36,25 @@
                             />
                           </div>
 
-                          <!-- ColorTheme -->
+                          <!-- ColorScheme -->
                           <div
-                            v-show="false"
                             class="col-span-6 sm:col-span-3"
                           >
                             <x-select
-                              id="theme_name"
-                              v-model="form.theme_name"
-                              name="theme_name"
-                              :error="form.errors.theme_name"
-                              :label="__('Color Theme')"
-                              :placeholder="__('Select theme..')"
+                              id="color_scheme"
+                              v-model="form.color_scheme"
+                              name="color_scheme"
+                              :error="form.errors.color_scheme"
+                              :label="__('Color Scheme')"
+                              :placeholder="__('Select color scheme..')"
                               :disable-null="true"
-                              :select-list="themeList"
+                              :select-list="colorSchemeList"
                             />
                           </div>
 
 
                           <!-- Primary Font -->
                           <div
-                            v-show="false"
                             class="col-span-6 sm:col-span-3"
                           >
                             <x-select
@@ -64,25 +62,8 @@
                               v-model="form.primary_font"
                               name="primary_font"
                               :error="form.errors.primary_font"
-                              :label="__('Primary Font')"
-                              :placeholder="__('Select primary font..')"
-                              :disable-null="true"
-                              :select-list="fontList"
-                            />
-                          </div>
-
-                          <!-- Secondary Font -->
-                          <div
-                            v-show="false"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <x-select
-                              id="secondary_font"
-                              v-model="form.secondary_font"
-                              name="secondary_font"
-                              :error="form.errors.secondary_font"
-                              :label="__('Secondary Font')"
-                              :placeholder="__('Select secondary font..')"
+                              :label="__('Font Family')"
+                              :placeholder="__('Select font family..')"
                               :disable-null="true"
                               :select-list="fontList"
                             />
@@ -656,7 +637,7 @@ export default {
     },
     props: {
         settings: Object,
-        themeList: Object,
+        colorSchemeList: Object,
         fontList: Object,
         isVideoHomeHeroBgImagePathLight: Boolean,
         isVideoHomeHeroBgImagePathDark: Boolean,
@@ -666,9 +647,8 @@ export default {
         return {
             form: useForm({
                 color_mode: this.settings.color_mode,
-                theme_name: this.settings.theme_name,
+                color_scheme: this.settings.color_scheme,
                 primary_font: this.settings.primary_font,
-                secondary_font: this.settings.secondary_font,
                 enable_home_hero_section: this.settings.enable_home_hero_section,
                 home_hero_bg_size_css: this.settings.home_hero_bg_size_css,
                 home_hero_bg_position_css: this.settings.home_hero_bg_position_css,

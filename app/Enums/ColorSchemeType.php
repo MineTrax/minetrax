@@ -5,7 +5,7 @@ namespace App\Enums;
 use BenSampo\Enum\Enum;
 
 /**
- * @method static static LIGHT_BLUE()
+ * @method static static SKY()
  * @method static static BLUE()
  * @method static static RED()
  * @method static static ORANGE()
@@ -15,9 +15,9 @@ use BenSampo\Enum\Enum;
  * @method static static INDIGO()
  * @method static static FUCHSIA()
  */
-final class ThemeType extends Enum
+final class ColorSchemeType extends Enum
 {
-    const LIGHT_BLUE = 'light-blue';
+    const SKY = 'sky';
 
     const BLUE = 'blue';
 
