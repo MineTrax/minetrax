@@ -1,3 +1,4 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
 const colors = require("tailwindcss/colors");
 
 /** @type {import('tailwindcss').Config} */
@@ -27,7 +28,7 @@ module.exports = {
                 },
             },
             fontFamily: {
-                sans: ["Nunito"],
+                sans: ["Nunito", ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 primary: colors.sky,
