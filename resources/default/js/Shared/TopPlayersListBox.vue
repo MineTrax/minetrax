@@ -1,10 +1,9 @@
 <template>
-  <div v-if="enabled && players && players.length > 0">
-    <div class="p-3 bg-white dark:bg-surface-800 rounded shadow space-y-2">
+  <Card v-if="enabled && players && players.length > 0">
+    <CardContent class="p-3 space-y-2">
       <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ title }}
       </h3>
-
       <div class="flex flex-col space-y-2">
         <table class="">
           <thead class="bg-surface-100 dark:bg-surface-900 dark:bg-opacity-50 text-foreground dark:text-foreground">
@@ -41,35 +40,21 @@
               </th>
             </tr>
           </thead>
-
-          <tbody class="bg-white dark:bg-surface-800">
+          <tbody class="divide-y divide-surface-200 dark:divide-surface-600">
             <tr
               v-for="(player, index) in players"
-              :key="index"
-              :class="{'bg-surface-50 dark:bg-surface-600 dark:bg-opacity-10': index % 2 === 1}"
+              :key="player.uuid"
             >
-              <td class="p-1 text-sm text-primary font-extrabold">
-                <span
-                  v-if="player.position"
-                  class="border-2 rounded text-sm px-1 border-primary bg-primary dark:bg-surface-800"
-                >
-                  {{ player.position }}
-                </span>
+              <td class="p-1 font-semibold text-foreground dark:text-foreground text-sm">
+                {{ index + 1 }}
               </td>
               <td class="p-1">
-                <div class="flex items-center">
-                  <div
-                    v-tippy
-                    class="flex-shrink-0 h-6 w-6 focus:outline-none"
-                    :content="player.country.name"
-                  >
-                    <img
-                      class="h-6 w-6"
-                      :src="player.country.photo_path"
-                      :alt="player.country.name"
-                    >
-                  </div>
-                </div>
+                <img
+                  v-if="player.country"
+                  class="w-4 rounded"
+                  :src="`/images/flags/flags/flat/24/${player.country?.iso_code.toLowerCase()}.png`"
+                  :alt="player.country?.name"
+                >
               </td>
               <td class="p-1">
                 <div class="flex items-center">
@@ -129,16 +114,24 @@
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script>
 import Icon from '@/Components/Icon.vue';
 import { useHelpers } from '@/Composables/useHelpers';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 export default {
-    components: {Icon},
+    components: {
+        Icon,
+        Card,
+        CardContent,
+    },
     props: {
         title: String,
         players: Array,

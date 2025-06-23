@@ -29,6 +29,8 @@ module.exports = {
             },
             fontFamily: {
                 sans: ["var(--font-sans)", ...fontFamily.sans],
+                serif: ["var(--font-serif)", ...fontFamily.serif],
+                mono: ["var(--font-mono)", ...fontFamily.mono],
             },
             colors: {
                 // primary: "var(--primary)",
@@ -74,6 +76,32 @@ module.exports = {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
+                chart: {
+                    1: "hsl(var(--chart-1))",
+                    2: "hsl(var(--chart-2))",
+                    3: "hsl(var(--chart-3))",
+                    4: "hsl(var(--chart-4))",
+                    5: "hsl(var(--chart-5))",
+                },
+            },
+            borderRadius: {
+                lg: "var(--radius)",
+                md: "calc(var(--radius) - 2px)",
+                sm: "calc(var(--radius) - 4px)",
+            },
+            borderColor: {
+                DEFAULT: "hsl(var(--border))",
+            },
+            ringColor: { DEFAULT: "hsl(var(--ring))" },
+            boxShadow: {
+                "2xs": "var(--shadow-2xs)",
+                xs: "var(--shadow-xs)",
+                sm: "var(--shadow-sm)",
+                DEFAULT: "var(--shadow)",
+                md: "var(--shadow-md)",
+                lg: "var(--shadow-lg)",
+                xl: "var(--shadow-xl)",
+                "2xl": "var(--shadow-2xl)",
             },
             maxHeight: {
                 0: "0",
@@ -137,7 +165,7 @@ module.exports = {
     },
 
     plugins: [
-        require("@tailwindcss/forms"),
+        // require("@tailwindcss/forms"), // Removed, coz adding blue border to input fields.
         require("@tailwindcss/typography"),
         // Plugin to expose semantic colors as CSS custom properties
         function ({ addBase, theme }) {

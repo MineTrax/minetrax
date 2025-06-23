@@ -61,7 +61,7 @@ createInertiaApp({
         return VueApp.mount(el);
     },
     progress: {
-        color: "var(--primary)",
+        color: "hsl(var(--primary))",
     },
 });
 

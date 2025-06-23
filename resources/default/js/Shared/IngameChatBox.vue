@@ -1,6 +1,6 @@
 <template>
-  <div v-if="enabled">
-    <div class="p-3 bg-white rounded shadow sm:px-5 dark:bg-surface-800">
+  <Card v-if="enabled">
+    <CardContent class="p-3 sm:px-5">
       <div class="flex justify-between">
         <h3 class="font-extrabold text-foreground dark:text-foreground">
           {{ __("Server In-Game Chat") }}
@@ -223,7 +223,7 @@
           {{ __("to chat with In-Game Players") }}
         </div>
       </div>
-    </div>
+    </CardContent>
 
     <jet-dialog-modal
       :show="showAdminPlayerActionModel"
@@ -299,7 +299,7 @@
         </jet-secondary-button>
       </template>
     </jet-dialog-modal>
-  </div>
+  </Card>
 </template>
 
 <script>
@@ -312,9 +312,13 @@ import {format} from 'date-fns';
 import {USE_WEBSOCKETS} from '@/constants';
 import {useAuthorizable} from '@/Composables/useAuthorizable';
 import { useHelpers } from '@/Composables/useHelpers';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 export default {
-    components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton},
+    components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton, Card, CardContent},
     props: {
         defaultServerId: Number,
         serverList: Array

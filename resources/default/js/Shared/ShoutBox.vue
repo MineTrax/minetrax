@@ -1,6 +1,6 @@
 <template>
-  <div v-if="$page.props.generalSettings.enable_shoutbox">
-    <div class="p-3 space-y-4 bg-white rounded shadow dark:bg-surface-800">
+  <Card v-if="$page.props.generalSettings.enable_shoutbox">
+    <CardContent class="p-3 space-y-4">
       <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Shout Box") }}
       </h3>
@@ -152,17 +152,16 @@
       </div>
 
       <div v-if="$page.props.auth.user">
-        <input
+        <Input
           v-if="!loading"
           ref="inputbox"
           v-model="message"
           :disabled="sending"
           aria-label="Shout"
-          class="block w-full mt-1 bg-surface-100 border-none rounded-md focus:ring-foreground sm:text-sm disabled:opacity-50 focus:bg-white dark:bg-surface-900 dark:text-foreground dark:focus:bg-surface-900 dark:focus:ring-foreground"
           type="text"
           :placeholder="__('Say something..')"
           @keypress.enter="sendShout"
-        >
+        />
         <span
           v-if="error"
           class="text-xs text-error-400"
@@ -189,17 +188,22 @@
         </template>
         {{ __("to Shout") }}
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script>
 import Icon from '@/Components/Icon.vue';
 import { useHelpers } from '@/Composables/useHelpers';
+import { Input } from '@/Components/ui/input';
 import {USE_WEBSOCKETS} from '@/constants';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 export default {
-    components: {Icon},
+    components: {Icon, Card, CardContent, Input},
     setup() {
         const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
         return {formatTimeAgoToNow,formatToDayDateString};
@@ -260,7 +264,7 @@ export default {
                 this.message = '';
                 this.sending = false;
                 this.$nextTick(() => {
-                    this.$refs.inputbox.focus();
+                    this.$refs.inputbox.$el.focus();
                 });
             });
         },

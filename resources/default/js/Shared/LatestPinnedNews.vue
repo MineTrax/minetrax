@@ -3,12 +3,11 @@
     v-if="newslist && newslist.length > 0"
     class="space-y-4"
   >
-    <div
+    <Card
       v-for="news in newslist"
       :key="news.id"
-      class="flex justify-between bg-white rounded shadow dark:bg-surface-800"
     >
-      <div class="p-3 sm:px-5">
+      <CardContent class="p-3 sm:px-5">
         <div class="text-xl">
           <p class="mb-1">
             <icon
@@ -50,17 +49,25 @@
           class="mt-3 text-foreground dark:text-foreground"
           v-html="news.body_md"
         />
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   </div>
 </template>
 
 <script>
 import Icon from '@/Components/Icon.vue';
 import { useHelpers } from '@/Composables/useHelpers';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 export default {
-    components: {Icon},
+    components: {
+        Icon,
+        Card,
+        CardContent,
+    },
     props: {
         newslist: Array
     },

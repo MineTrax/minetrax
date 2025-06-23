@@ -1,6 +1,6 @@
 <template>
-  <div v-if="newslist.length > 0">
-    <div class="p-3 bg-white dark:bg-surface-800 rounded shadow space-y-4">
+  <Card v-if="newslist.length > 0">
+    <CardContent class="p-3 space-y-4">
       <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Latest News") }}
       </h3>
@@ -50,15 +50,22 @@
           alt="News Image"
         >
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script>
 import { useHelpers } from '@/Composables/useHelpers';
-
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 export default {
+    components: {
+        Card,
+        CardContent,
+    },
     props: {
         newslist: Array
     },

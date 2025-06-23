@@ -1,6 +1,6 @@
 <template>
-  <div v-if="enabled">
-    <div class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow break-words">
+  <Card v-if="enabled">
+    <CardContent class="p-3 sm:px-5 break-words">
       <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Server Status") }}
       </h3>
@@ -62,17 +62,20 @@
           </button>
         </copy-to-clipboard>
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script>
-
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 import CopyToClipboard from '@/Components/CopyToClipboard.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 
 export default {
-    components: {ErrorMessage, CopyToClipboard},
+    components: {ErrorMessage, CopyToClipboard, Card, CardContent},
 
     props: {
         server: Object,

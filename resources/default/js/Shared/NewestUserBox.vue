@@ -1,6 +1,6 @@
 <template>
-  <div v-if="enabled && user">
-    <div class="p-3 bg-white dark:bg-surface-800 rounded shadow space-y-2">
+  <Card v-if="enabled && user">
+    <CardContent class="p-3 space-y-2">
       <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Newest User") }}
       </h3>
@@ -29,15 +29,22 @@
           >{{ __("Joined") }}&nbsp;{{ formatTimeAgoToNow(user.created_at) }}</span>
         </div>
       </inertia-link>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script>
 import { useHelpers } from '@/Composables/useHelpers';
-
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 export default {
+    components: {
+        Card,
+        CardContent,
+    },
     props: {
         user: Object,
         enabled: Boolean

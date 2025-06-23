@@ -1,9 +1,9 @@
 <template>
-  <div
+  <Card
     v-if="enabled"
     ref="box"
   >
-    <div class="p-3 bg-white rounded shadow sm:px-5 dark:bg-surface-800">
+    <CardContent class="p-3 sm:px-5">
       <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Did You Know?") }}
       </h3>
@@ -42,13 +42,17 @@
           {{ text }}
         </div>
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 defineProps({
     enabled: {

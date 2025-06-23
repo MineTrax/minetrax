@@ -1,10 +1,10 @@
 {
   "$schema": "https://shadcn-vue.com/schema.json",
-  "style": "default",
+  "style": "new-york",
   "typescript": false,
   "tailwind": {
     "config": "tailwind.config.js",
-    "css": "resources/custom/css/app.css",
+    "css": "resources/default/css/app.css",
     "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""

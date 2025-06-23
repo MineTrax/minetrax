@@ -1,6 +1,6 @@
 <template>
-  <div v-if="enabled">
-    <div class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow">
+  <Card v-if="enabled">
+    <CardContent class="p-3 sm:px-5">
       <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Online Players") }}
         <span
@@ -84,14 +84,18 @@
       >
         {{ __("No players online.") }}
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script setup>
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 import { usePage } from '@inertiajs/vue3';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 const props = defineProps({
     server: {

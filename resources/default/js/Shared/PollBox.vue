@@ -1,6 +1,6 @@
 <template>
-  <div v-if="poll">
-    <div class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow">
+  <Card v-if="poll">
+    <CardContent class="p-3 sm:px-5">
       <h3
         v-if="!isListing"
         class="font-extrabold text-foreground dark:text-foreground"
@@ -19,16 +19,22 @@
           @addvote="addVote"
         />
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script>
 import Poll from '@/Components/Poll.vue';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 export default {
     components: {
-        Poll
+        Poll,
+        Card,
+        CardContent,
     },
     props: {
         poll: Object,
