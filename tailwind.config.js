@@ -1,4 +1,4 @@
-const defaultTheme = require("tailwindcss/defaultTheme");
+const { fontFamily } = require("tailwindcss/defaultTheme");
 const colors = require("tailwindcss/colors");
 
 /** @type {import('tailwindcss').Config} */
@@ -28,18 +28,52 @@ module.exports = {
                 },
             },
             fontFamily: {
-                sans: ["Nunito", ...defaultTheme.fontFamily.sans],
+                sans: ["var(--font-sans)", ...fontFamily.sans],
             },
             colors: {
-                primary: colors.sky,
+                // primary: "var(--primary)",
                 secondary: colors.gray,
                 success: colors.green,
                 warning: colors.yellow,
                 error: colors.red,
                 info: colors.cyan,
                 purple: colors.purple,
-
                 surface: colors.gray,
+
+                // NEW TAILWIND THEMING
+                border: "var(--border)",
+                input: "var(--input)",
+                ring: "var(--ring)",
+                background: "var(--background)",
+                foreground: "var(--foreground)",
+                primary: {
+                    DEFAULT: "hsl(var(--primary))",
+                    foreground: "hsl(var(--primary-foreground))",
+                },
+                // secondary: {
+                //     DEFAULT: "hsl(var(--secondary))",
+                //     foreground: "hsl(var(--secondary-foreground))",
+                // },
+                destructive: {
+                    DEFAULT: "var(--destructive)",
+                    foreground: "var(--destructive-foreground)",
+                },
+                muted: {
+                    DEFAULT: "var(--muted)",
+                    foreground: "var(--muted-foreground)",
+                },
+                accent: {
+                    DEFAULT: "var(--accent)",
+                    foreground: "var(--accent-foreground)",
+                },
+                popover: {
+                    DEFAULT: "var(--popover)",
+                    foreground: "var(--popover-foreground)",
+                },
+                card: {
+                    DEFAULT: "var(--card)",
+                    foreground: "var(--card-foreground)",
+                },
             },
             maxHeight: {
                 0: "0",

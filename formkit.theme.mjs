@@ -54,7 +54,7 @@ const classes = {
         "appearance-none": true,
         "[color-scheme:light]": true,
         "dark:[color-scheme:dark]": true,
-        "selection:bg-primary-100": true,
+        "selection:bg-primary": true,
         "selection:text-secondary-700": true,
         "group-data-[has-overlay]:selection:!text-transparent": true,
         "font-bold": true,
