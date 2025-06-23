@@ -148,7 +148,7 @@ const headerRow = [
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               <div class="flex items-center">
                 <div
@@ -166,7 +166,7 @@ const headerRow = [
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10">
@@ -181,12 +181,12 @@ const headerRow = [
                     v-tippy
                     as="a"
                     :href="route('player.show', item.player.uuid)"
-                    class="text-sm font-medium text-secondary-900 dark:text-secondary-200 focus:outline-none cursor-pointer hover:underline"
+                    class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
                     :content="item.player.uuid"
                   >
                     <span
                       v-if="item.player_username"
-                      class="font-extrabold text-secondary-700 dark:text-secondary-300"
+                      class="font-extrabold text-foreground dark:text-foreground"
                     >{{ item.player_username }}</span>
                     <span
                       v-else
@@ -262,7 +262,7 @@ const headerRow = [
                 :href="route('change-player-skin.show', {
                   player_uuid: item.player.uuid,
                 })"
-                class="inline-flex items-center justify-center text-primary-400 hover:text-primary-700 focus:outline-none"
+                class="inline-flex items-center justify-center text-primary hover:text-primary focus:outline-none"
                 :title="__('Change Skin of this player.')"
               >
                 <PaintBrushIcon class="w-5 h-5" />
@@ -275,7 +275,7 @@ const headerRow = [
                 :href="route('reset-player-password.show', {
                   player_uuid: item.player.uuid,
                 })"
-                class="inline-flex items-center justify-center text-secondary-500 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-secondary-100 focus:outline-none"
+                class="inline-flex items-center justify-center text-foreground hover:text-foreground dark:text-foreground dark:hover:text-foreground focus:outline-none"
                 :title="__('Change Password of this player.')"
               >
                 <LockClosedIcon class="w-5 h-5" />

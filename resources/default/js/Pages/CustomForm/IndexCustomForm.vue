@@ -64,13 +64,13 @@ const headerRow = [
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-secondary-500 dark:text-secondary-300">
+        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
           {{ __("Forms") }}
         </h1>
         <div class="flex">
           <Link
             :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Homepage") }}</span>
           </Link>
@@ -87,7 +87,7 @@ const headerRow = [
             <DtRowItem>
               <Link
                 :href="route('custom-form.show', item.slug)"
-                class="hover:text-primary-400 hover:underline"
+                class="hover:text-primary hover:underline"
               >
                 {{ item.title }}
               </Link>
@@ -100,7 +100,7 @@ const headerRow = [
               >
                 <UserIcon
                   v-if="item.can_create_submission === 'auth'"
-                  class="inline-block w-4 h-4 text-primary-400"
+                  class="inline-block w-4 h-4 text-primary"
                 />
               </span>
               <Icon
@@ -132,7 +132,7 @@ const headerRow = [
                 v-tippy
                 as="a"
                 :href="route('custom-form.show', item.slug)"
-                class="inline-flex items-center justify-center text-primary-600 dark:text-primary-500 hover:text-primary-800 dark:hover:text-primary-800"
+                class="inline-flex items-center justify-center text-primary dark:text-primary hover:text-primary dark:hover:text-primary"
                 :title="__('Show Details')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />

@@ -32,7 +32,7 @@ module.exports = {
             },
             colors: {
                 // primary: "var(--primary)",
-                secondary: colors.gray,
+                // secondary: colors.gray,
                 success: colors.green,
                 warning: colors.yellow,
                 error: colors.red,
@@ -41,38 +41,38 @@ module.exports = {
                 surface: colors.gray,
 
                 // NEW TAILWIND THEMING
-                border: "var(--border)",
-                input: "var(--input)",
-                ring: "var(--ring)",
-                background: "var(--background)",
-                foreground: "var(--foreground)",
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
                 primary: {
                     DEFAULT: "hsl(var(--primary))",
                     foreground: "hsl(var(--primary-foreground))",
                 },
-                // secondary: {
-                //     DEFAULT: "hsl(var(--secondary))",
-                //     foreground: "hsl(var(--secondary-foreground))",
-                // },
+                secondary: {
+                    DEFAULT: "hsl(var(--secondary))",
+                    foreground: "hsl(var(--secondary-foreground))",
+                },
                 destructive: {
-                    DEFAULT: "var(--destructive)",
-                    foreground: "var(--destructive-foreground)",
+                    DEFAULT: "hsl(var(--destructive))",
+                    foreground: "hsl(var(--destructive-foreground))",
                 },
                 muted: {
-                    DEFAULT: "var(--muted)",
-                    foreground: "var(--muted-foreground)",
+                    DEFAULT: "hsl(var(--muted))",
+                    foreground: "hsl(var(--muted-foreground))",
                 },
                 accent: {
-                    DEFAULT: "var(--accent)",
-                    foreground: "var(--accent-foreground)",
+                    DEFAULT: "hsl(var(--accent))",
+                    foreground: "hsl(var(--accent-foreground))",
                 },
                 popover: {
-                    DEFAULT: "var(--popover)",
-                    foreground: "var(--popover-foreground)",
+                    DEFAULT: "hsl(var(--popover))",
+                    foreground: "hsl(var(--popover-foreground))",
                 },
                 card: {
-                    DEFAULT: "var(--card)",
-                    foreground: "var(--card-foreground)",
+                    DEFAULT: "hsl(var(--card))",
+                    foreground: "hsl(var(--card-foreground))",
                 },
             },
             maxHeight: {
@@ -85,43 +85,43 @@ module.exports = {
             typography: (theme) => ({
                 dark: {
                     css: {
-                        color: theme("colors.secondary.300"),
+                        color: theme("colors.foreground"),
                         a: {
-                            color: theme("colors.primary.400"),
+                            color: theme("colors.primary.DEFAULT"),
                             "&:hover": {
-                                color: theme("colors.primary.200"),
+                                color: theme("colors.primary.DEFAULT"),
                             },
                         },
 
                         h1: {
-                            color: theme("colors.secondary.300"),
+                            color: theme("colors.foreground"),
                         },
                         h2: {
-                            color: theme("colors.secondary.300"),
+                            color: theme("colors.foreground"),
                         },
                         h3: {
-                            color: theme("colors.secondary.300"),
+                            color: theme("colors.foreground"),
                         },
                         h4: {
-                            color: theme("colors.secondary.300"),
+                            color: theme("colors.foreground"),
                         },
                         h5: {
-                            color: theme("colors.secondary.300"),
+                            color: theme("colors.foreground"),
                         },
                         h6: {
-                            color: theme("colors.secondary.300"),
+                            color: theme("colors.foreground"),
                         },
 
                         strong: {
-                            color: theme("colors.secondary.300"),
+                            color: theme("colors.foreground"),
                         },
 
                         code: {
-                            color: theme("colors.secondary.300"),
+                            color: theme("colors.foreground"),
                         },
 
                         figcaption: {
-                            color: theme("colors.secondary.500"),
+                            color: theme("colors.foreground"),
                         },
                     },
                 },

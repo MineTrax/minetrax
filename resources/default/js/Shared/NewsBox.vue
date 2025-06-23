@@ -1,7 +1,7 @@
 <template>
   <div v-if="newslist.length > 0">
     <div class="p-3 bg-white dark:bg-surface-800 rounded shadow space-y-4">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Latest News") }}
       </h3>
 
@@ -13,7 +13,7 @@
         <div class="flex-co space-y-1">
           <span
             v-if="news.type.value === 0"
-            class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-primary-100 text-primary-800 dark:bg-primary-700 dark:bg-opacity-25 dark:text-primary-400"
+            class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-primary text-primary dark:bg-primary dark:bg-opacity-25 dark:text-primary"
           >{{ news.type.key }}</span>
           <span
             v-else-if="news.type.value === 1"
@@ -25,23 +25,23 @@
           >{{ news.type.key }}</span>
           <span
             v-else
-            class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-surface-100 text-secondary-800 dark:bg-surface-700 dark:bg-opacity-25 dark:text-secondary-400"
+            class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-lg bg-surface-100 text-foreground dark:bg-surface-700 dark:bg-opacity-25 dark:text-foreground"
           >{{ news.type.key }}</span>
 
-          <p class="font-semibold leading-5 text-secondary-800 dark:text-secondary-300">
+          <p class="font-semibold leading-5 text-foreground dark:text-foreground">
             <inertia-link
               :href="route('news.show', news.slug)"
-              class="hover:text-primary-400 duration-200"
+              class="hover:text-primary duration-200"
             >
               <span>{{ news.title }}</span>
             </inertia-link>
           </p>
           <span
             v-tippy
-            class="text-secondary-500 dark:text-secondary-400 text-xs focus:outline-none"
+            class="text-foreground dark:text-foreground text-xs focus:outline-none"
             :title="formatToDayDateString(news.published_at)"
           >{{ formatTimeAgoToNow(news.published_at) }}</span>
-          <span class="text-secondary-500 dark:text-secondary-400 text-xs"> - {{ news.time_to_read }}&nbsp;{{ __("read") }}</span>
+          <span class="text-foreground dark:text-foreground text-xs"> - {{ news.time_to_read }}&nbsp;{{ __("read") }}</span>
         </div>
         <img
           v-if="news.photo_url"

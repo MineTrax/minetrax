@@ -4,7 +4,7 @@
       :title="__('2FA Challenge confirmation')"
     />
     <jet-authentication-card>
-      <div class="mb-4 text-sm text-secondary-600 dark:text-secondary-400">
+      <div class="mb-4 text-sm text-foreground dark:text-foreground">
         <template v-if="! recovery">
           {{ __("Please confirm access to your account by entering the authentication code provided by your authenticator application.") }}
         </template>
@@ -28,7 +28,7 @@
             v-model="form.code"
             type="text"
             inputmode="numeric"
-            class="mt-1 block w-full dark:text-secondary-200"
+            class="mt-1 block w-full dark:text-foreground"
             autofocus
             autocomplete="one-time-code"
           />
@@ -44,7 +44,7 @@
             ref="recovery_code"
             v-model="form.recovery_code"
             type="text"
-            class="mt-1 block w-full dark:text-secondary-200"
+            class="mt-1 block w-full dark:text-foreground"
             autocomplete="one-time-code"
           />
         </div>
@@ -52,7 +52,7 @@
         <div class="flex items-center justify-end mt-4">
           <button
             type="button"
-            class="text-sm text-secondary-600 hover:text-secondary-900 underline cursor-pointer dark:text-secondary-400 dark:hover:text-secondary-200"
+            class="text-sm text-foreground hover:text-foreground underline cursor-pointer dark:text-foreground dark:hover:text-foreground"
             @click.prevent="toggleRecovery"
           >
             <template v-if="! recovery">
@@ -66,7 +66,7 @@
 
           <loading-button
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
           >
             {{ __("Login") }}
           </loading-button>

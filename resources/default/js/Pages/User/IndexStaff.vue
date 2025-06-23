@@ -20,10 +20,10 @@ defineProps({
             class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8"
           >
             <div
-              class="p-4 space-y-10 overflow-hidden bg-white border-b border-secondary-200 rounded shadow dark:bg-surface-800 dark:border-secondary-800"
+              class="p-4 space-y-10 overflow-hidden bg-white border-b border-foreground rounded shadow dark:bg-surface-800 dark:border-foreground"
             >
               <h2
-                class="mt-2 text-2xl font-bold text-center text-secondary-700 dark:text-secondary-300"
+                class="mt-2 text-2xl font-bold text-center text-foreground dark:text-foreground"
               >
                 {{ __("Meet the Team") }}
               </h2>
@@ -53,7 +53,7 @@ defineProps({
                     class="flex flex-col items-center mt-2"
                   >
                     <h3
-                      class="font-bold text-secondary-800 dark:text-secondary-300"
+                      class="font-bold text-foreground dark:text-foreground"
                     >
                       {{ staff.name }}
                     </h3>
@@ -67,7 +67,7 @@ defineProps({
                           }
                           : null,
                       ]"
-                      class="text-sm text-secondary-700 dark:text-secondary-400"
+                      class="text-sm text-foreground dark:text-foreground"
                     >
                       {{
                         staff.roles[0].display_name
@@ -79,7 +79,7 @@ defineProps({
 
               <div
                 v-else
-                class="flex justify-center italic text-secondary-600 dark:text-secondary-400"
+                class="flex justify-center italic text-foreground dark:text-foreground"
               >
                 {{ __("No Staff Yet!") }}
               </div>

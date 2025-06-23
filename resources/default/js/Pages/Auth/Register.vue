@@ -95,11 +95,11 @@
                 {{ __("I agree to the ") }} <a
                   target="_blank"
                   :href="route('terms.show')"
-                  class="underline text-sm text-secondary-600 hover:text-secondary-900"
+                  class="underline text-sm text-foreground hover:text-foreground"
                 >{{ __("Terms of Service") }}</a>&nbsp;{{ __("and") }}&nbsp;<a
                   target="_blank"
                   :href="route('policy.show')"
-                  class="underline text-sm text-secondary-600 hover:text-secondary-900"
+                  class="underline text-sm text-foreground hover:text-foreground"
                 >{{ __("Privacy Policy") }}</a>
               </div>
             </div>
@@ -109,14 +109,14 @@
         <div class="flex items-center justify-end mt-4">
           <inertia-link
             :href="route('login')"
-            class="underline text-sm text-secondary-600 hover:text-secondary-900 dark:text-secondary-400 dark:hover:text-secondary-200"
+            class="underline text-sm text-foreground hover:text-foreground dark:text-foreground dark:hover:text-foreground"
           >
             {{ __("Already registered?") }}
           </inertia-link>
 
           <loading-button
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
           >
             {{ __("Register") }}
           </loading-button>

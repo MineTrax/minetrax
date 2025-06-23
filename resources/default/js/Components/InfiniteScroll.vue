@@ -5,7 +5,7 @@
     v-if="loading"
     name="loading"
   >
-    <div class="p-5 text-center text-secondary-600 dark:text-secondary-300 text-sm">
+    <div class="p-5 text-center text-foreground dark:text-foreground text-sm">
       {{ loadingText }}
     </div>
   </slot>

@@ -19,7 +19,7 @@
           </inertia-link>
           <inertia-link
             :href="route('admin.news.index')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Go Back") }}</span>
           </inertia-link>

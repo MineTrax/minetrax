@@ -14,10 +14,10 @@
         alt="Image"
       >
     </a>
-    <h4 class="font-bold text-black dark:text-secondary-200 mt-2 text-lg">
+    <h4 class="font-bold text-black dark:text-foreground mt-2 text-lg">
       {{ feature.title }}
     </h4>
-    <p class="text-sm text-secondary-700 dark:text-secondary-400">
+    <p class="text-sm text-foreground dark:text-foreground">
       {{ feature.desc }}
     </p>
   </div>

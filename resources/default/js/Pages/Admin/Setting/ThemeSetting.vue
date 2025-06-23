@@ -8,7 +8,7 @@
       <div class="flex-1">
         <div class="flex flex-col w-full">
           <div class="bg-white dark:bg-surface-800 shadow w-full rounded">
-            <div class="px-6 py-4 border-b dark:border-secondary-700 dark:text-secondary-300 font-bold">
+            <div class="px-6 py-4 border-b dark:border-foreground dark:text-foreground font-bold">
               {{ __("Theme Settings") }}
             </div>
 
@@ -70,7 +70,7 @@
                           </div>
 
                           <!-- Home Hero Section -->
-                          <div class="flex items-center col-span-6 sm:col-span-6 border-t border-secondary-300 dark:border-secondary-700 pt-4">
+                          <div class="flex items-center col-span-6 sm:col-span-6 border-t border-foreground dark:border-foreground pt-4">
                             <x-checkbox
                               id="enable_home_hero_section"
                               v-model="form.enable_home_hero_section"
@@ -97,7 +97,7 @@
 
                             <label
                               for="home_hero_fg_image_light"
-                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Hero Foreground Image Light") }}</label>
 
                             <div
@@ -112,7 +112,7 @@
                               >
                               <span
                                 v-else
-                                class="text-secondary-400 italic text-xs"
+                                class="text-foreground italic text-xs"
                               >
                                 {{ __("No Foreground Image.") }}
                               </span>
@@ -136,7 +136,7 @@
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>
 
-                            <div class="mt-2 text-xs text-secondary-400">
+                            <div class="mt-2 text-xs text-foreground">
                               {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp
                             </div>
 
@@ -163,7 +163,7 @@
 
                             <label
                               for="home_hero_fg_image_dark"
-                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Hero Foreground Image Dark") }}</label>
 
                             <div
@@ -178,7 +178,7 @@
                               >
                               <span
                                 v-else
-                                class="text-secondary-400 italic text-xs"
+                                class="text-foreground italic text-xs"
                               >
                                 {{ __("No Foreground Image.") }}
                               </span>
@@ -202,7 +202,7 @@
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>
 
-                            <div class="mt-2 text-xs text-secondary-400">
+                            <div class="mt-2 text-xs text-foreground">
                               {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp
                             </div>
 
@@ -229,7 +229,7 @@
 
                             <label
                               for="home_hero_bg_image_light"
-                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Hero Background Image Light") }}</label>
 
                             <div
@@ -269,7 +269,7 @@
 
                               <div
                                 v-else
-                                class="h-40 flex items-center justify-center text-secondary-400 text-sm italic"
+                                class="h-40 flex items-center justify-center text-foreground text-sm italic"
                               >
                                 {{ __("Upload preview not available for this type. Please save to see the changes.") }}
                               </div>
@@ -283,7 +283,7 @@
                               {{ __("Select A New Image") }}
                             </jet-secondary-button>
 
-                            <div class="mt-2 text-xs text-secondary-400">
+                            <div class="mt-2 text-xs text-foreground">
                               {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp, webm
                             </div>
 
@@ -310,7 +310,7 @@
 
                             <label
                               for="home_hero_bg_image_dark"
-                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Hero Background Image Dark") }}</label>
 
                             <div
@@ -350,7 +350,7 @@
 
                               <div
                                 v-else
-                                class="h-40 flex items-center justify-center text-secondary-400 text-sm italic"
+                                class="h-40 flex items-center justify-center text-foreground text-sm italic"
                               >
                                 {{ __("Upload preview not available for this type. Please save to see the changes.") }}
                               </div>
@@ -365,7 +365,7 @@
                             </jet-secondary-button>
 
 
-                            <div class="mt-2 text-xs text-secondary-400">
+                            <div class="mt-2 text-xs text-foreground">
                               {{ __("Max Size") }}: 2 MB
                             </div>
 
@@ -514,7 +514,7 @@
 
                           <!-- Loading Gif -->
                           <div
-                            class="col-span-6 sm:col-span-6 border-t border-secondary-300 dark:border-secondary-700 pt-4"
+                            class="col-span-6 sm:col-span-6 border-t border-foreground dark:border-foreground pt-4"
                           >
                             <input
                               id="loading_gif"
@@ -527,7 +527,7 @@
 
                             <label
                               for="loading_gif"
-                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Animated Loading Image") }}</label>
 
                             <div
@@ -542,7 +542,7 @@
                               >
                               <span
                                 v-else
-                                class="text-secondary-400 italic text-xs"
+                                class="text-foreground italic text-xs"
                               >
                                 {{ __("No Animated Loading Image.") }}
                               </span>
@@ -574,7 +574,7 @@
                               {{ __("Remove Image") }}
                             </jet-secondary-button>
 
-                            <div class="mt-2 text-xs text-secondary-400">
+                            <div class="mt-2 text-xs text-foreground">
                               {{ __("Allowed") }}:  gif & svg
                             </div>
 
@@ -588,7 +588,7 @@
                       <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                         <loading-button
                           :loading="form.processing"
-                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
+                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                           type="submit"
                         >
                           {{ __("Save Theme Settings") }}

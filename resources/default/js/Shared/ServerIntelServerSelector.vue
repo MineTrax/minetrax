@@ -45,7 +45,7 @@ watch(selectedServers, (newSelectedServers) => {
 
 <template>
   <div class="flex items-center justify-between">
-    <h3 class="text-xl font-extrabold text-secondary-800 dark:text-secondary-200">
+    <h3 class="text-xl font-extrabold text-foreground dark:text-foreground">
       {{ title }}:
       {{ showing ?? __("All Servers") }}
     </h3>
@@ -56,7 +56,7 @@ watch(selectedServers, (newSelectedServers) => {
       name="select_servers"
       :select-list="props.serverList"
       :placeholder="__('All Servers')"
-      class="w-48 max-w-48 dark:border dark:rounded dark:border-secondary-700"
+      class="w-48 max-w-48 dark:border dark:rounded dark:border-foreground"
     />
   </div>
 </template>

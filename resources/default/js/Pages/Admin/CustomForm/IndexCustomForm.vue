@@ -88,16 +88,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage Custom Forms')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Manage Custom Forms") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create custom_forms')"
             :href="route('admin.custom-form.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
           >
             <span>{{ __("Create") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Custom Form") }}</span>
@@ -113,7 +113,7 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -122,7 +122,7 @@ const headerRow = [
             <InertiaLink
               as="a"
               :href="route('admin.custom-form.show', item.id)"
-              class="dark:hover:text-secondary-200 hover:text-primary-400"
+              class="dark:hover:text-foreground hover:text-primary"
             >
               {{ item.title }}
             </InertiaLink>
@@ -131,7 +131,7 @@ const headerRow = [
           <DtRowItem class="px-4 whitespace-normal">
             <div class="flex items-center">
               <div
-                class="text-sm font-medium text-secondary-900 dark:text-secondary-400"
+                class="text-sm font-medium text-foreground dark:text-foreground"
               >
                 {{ item.status.value }}
               </div>
@@ -141,7 +141,7 @@ const headerRow = [
           <td class="px-4 whitespace-normal">
             <div class="flex items-center">
               <div
-                class="text-sm font-medium text-secondary-900 dark:text-secondary-400"
+                class="text-sm font-medium text-foreground dark:text-foreground"
               >
                 {{ item.can_create_submission }}
               </div>
@@ -149,7 +149,7 @@ const headerRow = [
           </td>
 
           <td
-            class="py-4 text-sm text-center text-secondary-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_notify_staff_on_submission"
@@ -164,7 +164,7 @@ const headerRow = [
           </td>
 
           <td
-            class="py-4 text-sm text-center text-secondary-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_visible_in_listing"
@@ -199,7 +199,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('custom-form.show', item.slug)"
-              class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
+              class="inline-flex items-center justify-center text-primary hover:text-primary"
               :title="__('Show Public View')"
             >
               <EyeIcon class="inline-block w-5 h-5" />

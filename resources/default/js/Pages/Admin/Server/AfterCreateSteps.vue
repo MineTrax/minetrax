@@ -16,7 +16,7 @@
           </h1>
 
 
-          <h1 class="uppercase font-bold mt-3 dark:text-secondary-200 text-secondary-800">
+          <h1 class="uppercase font-bold mt-3 dark:text-foreground text-foreground">
             {{ __("Follow below steps to add the Plugin!") }}
           </h1>
         </div>
@@ -27,7 +27,7 @@
             {{ __("Download latest version of the MineTrax.jar Plugin and upload it into 'plugins' folder of your server.") }}
             <a
               target="_blank"
-              class="text-primary-400 hover:text-primary-600 whitespace-nowrap"
+              class="text-primary hover:text-primary whitespace-nowrap"
               href="https://github.com/MineTrax/plugin/releases/latest"
             >{{ __("Click here to Download") }}</a>
           </p>
@@ -56,7 +56,7 @@ webquery-port: {{ server.webquery_port }}</pre>
         <div class="flex justify-end mt-4">
           <InertiaLink
             as="a"
-            class="text-primary-400 hover:text-primary-600 whitespace-nowrap"
+            class="text-primary hover:text-primary whitespace-nowrap"
             :href="route('admin.server.index')"
           >
             {{ __("Go back to Server List") }}

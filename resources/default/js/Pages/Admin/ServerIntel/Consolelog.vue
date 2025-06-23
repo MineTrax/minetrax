@@ -67,13 +67,13 @@ const headerRow = [
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               {{ item.id }}
             </td>
 
             <td class="px-4">
-              <div class="text-sm text-secondary-800 dark:text-secondary-200">
+              <div class="text-sm text-foreground dark:text-foreground">
                 <pre class="whitespace-pre-wrap">{{ item.data }}</pre>
               </div>
             </td>

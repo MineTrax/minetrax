@@ -2,17 +2,17 @@
   <div class="bg-white p-4 rounded flex space-x-4 justify-between dark:bg-surface-800 shadow">
     <div id="left">
       <h3
-        class="text-secondary-400 text-sm font-bold"
+        class="text-foreground text-sm font-bold"
         :class="color"
       >
         {{ title }}
       </h3>
-      <p class="text-2xl font-bold text-secondary-800 dark:text-secondary-200">
+      <p class="text-2xl font-bold text-foreground dark:text-foreground">
         {{ value }}
       </p>
       <p
         v-if="desc"
-        class="text-xs text-secondary-400"
+        class="text-xs text-foreground"
       >
         {{ desc }}
       </p>

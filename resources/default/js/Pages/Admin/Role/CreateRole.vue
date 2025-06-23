@@ -4,12 +4,12 @@
 
     <div class="max-w-6xl px-10 py-12 mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Add User Role") }}
         </h1>
         <inertia-link
           :href="route('admin.role.index')"
-          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md dark:bg-surface-600 hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md dark:bg-surface-600 hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
         >
           <span>{{ __("Cancel") }}</span>
         </inertia-link>
@@ -19,10 +19,10 @@
         <div class="md:grid md:grid-cols-3 md:gap-6">
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
-              <h3 class="text-lg font-medium leading-6 text-secondary-900 dark:text-secondary-400">
+              <h3 class="text-lg font-medium leading-6 text-foreground dark:text-foreground">
                 {{ __("Overview") }}
               </h3>
-              <p class="mt-1 text-sm text-secondary-600 dark:text-secondary-500">
+              <p class="mt-1 text-sm text-foreground dark:text-foreground">
                 {{ __("Roles are used to authorize registered users of your website to perform actions on web like ban, mute users etc.") }}
                 <br>
                 {{ __("For each role you can customize 'Web Message Format' which is the in-game chat format.") }}
@@ -46,7 +46,7 @@
 
                       <label
                         for="photo"
-                        class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                        class="block text-sm font-medium text-foreground dark:text-foreground"
                       >{{ __("Role Image") }}</label>
 
                       <!-- New Profile Photo Preview -->
@@ -165,12 +165,12 @@
                     >
                       <label
                         for="permissions"
-                        class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                        class="block text-sm font-medium text-foreground dark:text-foreground"
                       >{{ __("Administrative Permissions") }}</label>
                       <multiselect
                         id="permissions"
                         v-model="form.permissions"
-                        class="block w-full mt-1 border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                        class="block w-full mt-1 border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                         :options="permissions"
                         :multiple="true"
                         :close-on-select="false"
@@ -188,7 +188,7 @@
                 <div class="flex justify-end px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6">
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Add Role") }}

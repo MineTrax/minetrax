@@ -133,12 +133,12 @@ function getServerWebQueryStatus(serverId) {
   <AdminLayout>
     <app-head :title="__('Manage Servers')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <AlertCard
         v-if="canCreateBungeeServer && showBungeeServerAlert"
         :close-button="true"
-        text-color="text-primary-800 dark:text-primary-500"
-        border-color="border-primary-500"
+        text-color="text-primary dark:text-primary"
+        border-color="border-primary"
         @close="showBungeeServerAlert = false"
       >
         {{ __("You don't have Bungee/Proxy Server Added!") }}
@@ -149,7 +149,7 @@ function getServerWebQueryStatus(serverId) {
             )
           }}
 
-          <p class="italic text-secondary-400 dark:text-secondary-500">
+          <p class="italic text-foreground dark:text-foreground">
             {{
               __(
                 "Note: This is not an error. You can safely ignore this message if you don't want to add proxy server."
@@ -161,7 +161,7 @@ function getServerWebQueryStatus(serverId) {
 
       <div class="flex justify-between mb-8">
         <h1
-          class="font-bold text-3xl text-secondary-500 dark:text-secondary-300 flex items-center"
+          class="font-bold text-3xl text-foreground dark:text-foreground flex items-center"
         >
           {{ __("Servers") }}
           <InertiaLink
@@ -184,7 +184,7 @@ function getServerWebQueryStatus(serverId) {
           <InertiaLink
             v-if="can('create servers')"
             :href="route('admin.server.create')"
-            class="mr-1 inline-flex items-center px-4 py-2 bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="mr-1 inline-flex items-center px-4 py-2 bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Add") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Server") }}</span>
@@ -192,7 +192,7 @@ function getServerWebQueryStatus(serverId) {
           <InertiaLink
             v-if="can('create servers') && canCreateBungeeServer"
             :href="route('admin.server.create-bungee')"
-            class="inline-flex items-center px-4 py-2 border-2 border-secondary-800 rounded-md font-semibold text-xs text-secondary-800 uppercase tracking-widest focus:outline-none focus:border-secondary-900 transition ease-in-out duration-150 dark:text-secondary-300 dark:border-secondary-700 dark:hover:border-secondary-500"
+            class="inline-flex items-center px-4 py-2 border-2 border-foreground rounded-md font-semibold text-xs text-foreground uppercase tracking-widest focus:outline-none focus:border-foreground transition ease-in-out duration-150 dark:text-foreground dark:border-foreground dark:hover:border-foreground"
           >
             <span>{{ __("Add Proxy Server") }}</span>
           </InertiaLink>
@@ -207,7 +207,7 @@ function getServerWebQueryStatus(serverId) {
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200 font-bold"
+            class="px-4 py-4 text-sm text-center text-foreground whitespace-nowrap dark:text-foreground font-bold"
           >
             {{ item.id }}
           </td>
@@ -223,12 +223,12 @@ function getServerWebQueryStatus(serverId) {
               </div>
               <div class="ml-4">
                 <div
-                  class="text-sm font-medium text-secondary-900 dark:text-secondary-300"
+                  class="text-sm font-medium text-foreground dark:text-foreground"
                 >
                   {{ item.name }}
                 </div>
                 <div
-                  class="text-sm text-secondary-500 dark:text-secondary-400"
+                  class="text-sm text-foreground dark:text-foreground"
                 >
                   {{ item.hostname }}
                 </div>
@@ -238,10 +238,10 @@ function getServerWebQueryStatus(serverId) {
 
           <DtRowItem>
             <div class="group">
-              <div class="text-sm filter blur-sm text-secondary-900 dark:text-secondary-300 group-hover:blur-none duration-300 cursor-text">
+              <div class="text-sm filter blur-sm text-foreground dark:text-foreground group-hover:blur-none duration-300 cursor-text">
                 {{ item.masked_ip_address }} : {{ item.join_port }}
               </div>
-              <div class="text-sm text-secondary-500 dark:text-secondary-400 filter blur-sm group-hover:blur-none duration-300 cursor-text">
+              <div class="text-sm text-foreground dark:text-foreground filter blur-sm group-hover:blur-none duration-300 cursor-text">
                 {{
                   __("WebQuery: :webquery_port", {
                     webquery_port:
@@ -260,7 +260,7 @@ function getServerWebQueryStatus(serverId) {
             <div class="flex">
               <span
                 v-if="!getServerStatus(item.id)"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-surface-100 text-secondary-800 dark:bg-opacity-25 dark:text-secondary-400"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-surface-100 text-foreground dark:bg-opacity-25 dark:text-foreground"
               >{{ __("Loading") }}...</span>
               <span
                 v-else-if="getServerStatus(item.id).online === 1"
@@ -281,7 +281,7 @@ function getServerWebQueryStatus(serverId) {
             <div class="flex">
               <span
                 v-if="!getServerWebQueryStatus(item.id)"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-surface-100 text-secondary-800 dark:bg-opacity-25 dark:text-secondary-400"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-surface-100 text-foreground dark:bg-opacity-25 dark:text-foreground"
               >{{ __("Loading") }}...</span>
               <span
                 v-else-if="getServerWebQueryStatus(item.id).online === 1"
@@ -335,7 +335,7 @@ function getServerWebQueryStatus(serverId) {
                 as="a"
                 :title="__('View Server Intel')"
                 :href="route('admin.server.show', item.id)"
-                class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
+                class="inline-flex items-center justify-center text-primary hover:text-primary"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
               </InertiaLink>

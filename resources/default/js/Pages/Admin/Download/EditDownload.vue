@@ -4,12 +4,12 @@
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-secondary-500 dark:text-secondary-300">
+        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
           {{ __("Edit Download") }}
         </h1>
         <inertia-link
           :href="route('admin.download.index')"
-          class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
         >
           <span>{{ __("Cancel") }}</span>
         </inertia-link>
@@ -19,13 +19,13 @@
         <div class="md:grid md:grid-cols-3 md:gap-6">
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
-              <h3 class="text-lg font-medium leading-6 text-secondary-900 dark:text-secondary-400">
+              <h3 class="text-lg font-medium leading-6 text-foreground dark:text-foreground">
                 {{ __("Overview") }}
               </h3>
-              <p class="mt-1 text-sm text-secondary-600 dark:text-secondary-500">
+              <p class="mt-1 text-sm text-foreground dark:text-foreground">
                 {{ __("Using downloads you can safely provide your users way to download anything like resource packs etc.") }}
               </p>
-              <p class="mt-1 text-sm text-secondary-600 dark:text-secondary-500">
+              <p class="mt-1 text-sm text-foreground dark:text-foreground">
                 {{ __("You can restrict the download to a paricular role and even hide actual external download URL from end user by stream the file directly from within minetrax.") }}
               </p>
             </div>
@@ -53,7 +53,7 @@
                         v-model="form.description"
                         aria-label="description"
                         name="description"
-                        class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-secondary-300 rounded-md"
+                        class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-foreground rounded-md"
                       />
                       <jet-input-error
                         :message="form.errors.description"
@@ -125,9 +125,9 @@
                     >
                       <label
                         for="file"
-                        class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                        class="block text-sm font-medium text-foreground dark:text-foreground"
                       >{{ __("File") }}</label>
-                      <span class="block p-2 w-full text-sm text-secondary-900 border border-secondary-300 cursor-default rounded-lg bg-surface-50 dark:text-secondary-400 focus:outline-none dark:bg-surface-700 dark:border-secondary-600 dark:placeholder-secondary-400">
+                      <span class="block p-2 w-full text-sm text-foreground border border-foreground cursor-default rounded-lg bg-surface-50 dark:text-foreground focus:outline-none dark:bg-surface-700 dark:border-foreground dark:placeholder-foreground">
                         {{ download.file?.file_name }}
                       </span>
                       <jet-input-error
@@ -178,7 +178,7 @@
                 <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Update Download") }}

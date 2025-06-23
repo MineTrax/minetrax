@@ -1,13 +1,13 @@
 <template>
   <div v-if="enabled && user">
     <div class="p-3 bg-white dark:bg-surface-800 rounded shadow space-y-2">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Newest User") }}
       </h3>
       <inertia-link
         as="a"
         :href="route('user.public.get', user.username)"
-        class="cursor-pointer flex space-x-2 border dark:border-secondary-700 rounded-tl-md rounded-tr-xl rounded-b-3xl p-2 items-center hover:border-primary-400 dark:hover:border-primary-400"
+        class="cursor-pointer flex space-x-2 border dark:border-foreground rounded-tl-md rounded-tr-xl rounded-b-3xl p-2 items-center hover:border-primary dark:hover:border-primary"
       >
         <img
           class="w-14 h-14 rounded-full"
@@ -17,14 +17,14 @@
         <div class="flex flex-col">
           <div class="break-all">
             <span
-              class="text-secondary-800 dark:text-secondary-300 font-semibold"
+              class="text-foreground dark:text-foreground font-semibold"
               :style="[user.roles[0].color ? {color: user.roles[0].color} : null]"
             >{{ user.name }}</span>
-            <span class="text-secondary-500 dark:text-secondary-400">@{{ user.username }}</span>
+            <span class="text-foreground dark:text-foreground">@{{ user.username }}</span>
           </div>
           <span
             v-tippy
-            class="text-sm text-secondary-700 dark:text-secondary-500 focus:outline-none"
+            class="text-sm text-foreground dark:text-foreground focus:outline-none"
             :title="formatToDayDateString(user.created_at)"
           >{{ __("Joined") }}&nbsp;{{ formatTimeAgoToNow(user.created_at) }}</span>
         </div>

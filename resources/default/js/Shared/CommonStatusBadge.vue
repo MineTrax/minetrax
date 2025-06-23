@@ -32,9 +32,9 @@ const colorClass = computed(() => {
     case 'warn':
         return 'bg-warning-50 text-warning-800 dark:bg-warning-900 dark:bg-opacity-25 dark:text-warning-200 border border-warning-300 dark:border-warning-700';
     case 'kick':
-        return 'bg-surface-50 text-secondary-800 dark:bg-surface-900 dark:bg-opacity-25 dark:text-secondary-200 border border-secondary-300 dark:border-secondary-700';
+        return 'bg-surface-50 text-foreground dark:bg-surface-900 dark:bg-opacity-25 dark:text-foreground border border-foreground dark:border-foreground';
     default:
-        return 'bg-surface-100 text-secondary-600 dark:bg-surface-900 dark:text-secondary-300 border border-secondary-300 dark:border-secondary-700';
+        return 'bg-surface-100 text-foreground dark:bg-surface-900 dark:text-foreground border border-foreground dark:border-foreground';
     }
 });
 

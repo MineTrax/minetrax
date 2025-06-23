@@ -4,7 +4,7 @@
 
     <div class="max-w-6xl px-10 py-12 mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Run Command") }}
         </h1>
       </div>
@@ -23,7 +23,7 @@
                       class="flex justify-between gap-2"
                     >
                       <RadioGroupLabel
-                        class="flex items-center flex-none w-1/12 font-semibold text-secondary-700 dark:text-secondary-300"
+                        class="flex items-center flex-none w-1/12 font-semibold text-foreground dark:text-foreground"
                       >
                         {{ __("Scope") }}
                       </RadioGroupLabel>
@@ -36,8 +36,8 @@
                           class="p-3 rounded shadow-sm cursor-pointer"
                           :class="
                             checked
-                              ? 'dark:bg-surface-900 dark:text-secondary-200 font-bold bg-primary-400 text-white'
-                              : 'dark:bg-surface-600 dark:text-secondary-300 bg-surface-200 text-secondary-700'
+                              ? 'dark:bg-surface-900 dark:text-foreground font-bold bg-primary text-white'
+                              : 'dark:bg-surface-600 dark:text-foreground bg-surface-200 text-foreground'
                           "
                         >
                           <div class="flex items-center justify-center">
@@ -45,7 +45,7 @@
                               :checked="checked"
                               type="radio"
                               disabled
-                              class="w-4 h-4 bg-surface-100 border-secondary-300 text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-secondary-800 focus:ring-2 dark:bg-surface-700 dark:border-secondary-600"
+                              class="w-4 h-4 bg-surface-100 border-foreground text-primary focus:ring-primary dark:focus:ring-primary dark:ring-offset-foreground focus:ring-2 dark:bg-surface-700 dark:border-foreground"
                             >
                             <label
                               class="ms-2"
@@ -54,7 +54,7 @@
                           </div>
                           <div>
                             <span
-                              :class="checked ? 'text-secondary-200 dark:text-secondary-400' : 'text-secondary-400'"
+                              :class="checked ? 'text-foreground dark:text-foreground' : 'text-foreground'"
                               class="text-xs"
                             >
                               {{ __("Run generic command") }}
@@ -71,8 +71,8 @@
                           class="p-3 rounded shadow-sm cursor-pointer"
                           :class="
                             checked
-                              ? 'dark:bg-surface-900 dark:text-secondary-200 font-bold bg-primary-400 text-white'
-                              : 'dark:bg-surface-600 dark:text-secondary-300 bg-surface-200 text-secondary-700'
+                              ? 'dark:bg-surface-900 dark:text-foreground font-bold bg-primary text-white'
+                              : 'dark:bg-surface-600 dark:text-foreground bg-surface-200 text-foreground'
                           "
                         >
                           <div class="flex items-center justify-center">
@@ -80,7 +80,7 @@
                               :checked="checked"
                               type="radio"
                               disabled
-                              class="w-4 h-4 bg-surface-100 border-secondary-300 text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-secondary-800 focus:ring-2 dark:bg-surface-700 dark:border-secondary-600"
+                              class="w-4 h-4 bg-surface-100 border-foreground text-primary focus:ring-primary dark:focus:ring-primary dark:ring-offset-foreground focus:ring-2 dark:bg-surface-700 dark:border-foreground"
                             >
                             <label
                               class="ms-2"
@@ -89,7 +89,7 @@
                           </div>
                           <div>
                             <span
-                              :class="checked ? 'text-secondary-200 dark:text-secondary-400' : 'text-secondary-400'"
+                              :class="checked ? 'text-foreground dark:text-foreground' : 'text-foreground'"
                               class="text-xs"
                             >
                               {{ __("Run against players") }}
@@ -102,13 +102,13 @@
 
                   <div class="col-span-6 sm:col-span-6">
                     <p
-                      class="mb-2 text-secondary-700 dark:text-secondary-300 font-semibold"
+                      class="mb-2 text-foreground dark:text-foreground font-semibold"
                     >
                       {{ __("Servers to run on") }}
                     </p>
                     <Multiselect
                       v-model="form.servers"
-                      class="block w-full border-secondary-900 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      class="block w-full border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                       :options="servers"
                       :custom-label="serversCustomLabel"
                       track-by="id"
@@ -128,15 +128,15 @@
                       v-if="form.scope === 'player'"
                       class="flex flex-col items-end mb-2"
                     >
-                      <h3 class="text-secondary-700 dark:text-secondary-300 text-sm font-semibold">
+                      <h3 class="text-foreground dark:text-foreground text-sm font-semibold">
                         {{ __("Available Placeholders") }}
                       </h3>
-                      <ol class="text-sm text-right text-secondary-600 dark:text-secondary-400">
+                      <ol class="text-sm text-right text-foreground dark:text-foreground">
                         <li>
-                          <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-secondary-300 p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player.") }}
+                          <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player.") }}
                         </li>
                         <li>
-                          <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-secondary-300 p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player.") }}
+                          <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player.") }}
                         </li>
                       </ol>
                     </div>
@@ -163,11 +163,11 @@
                       value-type="date"
                       type="datetime"
                       format="YYYY-MM-DD hh:mm:ss A"
-                      input-class="border-secondary-300 h-14 p-3 text-sm pt-7 focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-900"
+                      input-class="border-foreground h-14 p-3 text-sm pt-7 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-foreground dark:border-foreground"
                     />
                     <label
                       for="execute_at"
-                      class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-secondary-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
+                      class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-foreground h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
                     >{{ __("Run at") }}</label>
                     <jet-input-error
                       :message="form.errors.execute_at"
@@ -194,13 +194,13 @@
                     class="col-span-6 sm:col-span-6"
                   >
                     <p
-                      class="mb-2 text-secondary-700 dark:text-secondary-300 font-semibold"
+                      class="mb-2 text-foreground dark:text-foreground font-semibold"
                     >
                       {{ __("Select players") }}
                     </p>
                     <Multiselect
                       v-model="form.players.id"
-                      class="block w-full border-secondary-900 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      class="block w-full border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                       :options="players"
                       :custom-label="playersCustomLabel"
                       track-by="id"

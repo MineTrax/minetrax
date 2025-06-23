@@ -74,16 +74,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Users Roles Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("User Roles & Permissions") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create roles')"
             :href="route('admin.role.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
           >
             <span>{{ __("Create New") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Role") }}</span>
@@ -99,7 +99,7 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -113,7 +113,7 @@ const headerRow = [
               >
               <div
                 v-else
-                class="inline-flex font-bold uppercase leading-5 p-1.5 bg-primary-400 text-white rounded-sm"
+                class="inline-flex font-bold uppercase leading-5 p-1.5 bg-primary text-white rounded-sm"
                 :style="`background-color: ${item.color};`"
               >
                 {{ item.display_name }}
@@ -124,7 +124,7 @@ const headerRow = [
           <td class="px-4 whitespace-nowrap">
             <div class="items-center">
               <div
-                class="text-sm font-semibold text-secondary-900 dark:text-secondary-300"
+                class="text-sm font-semibold text-foreground dark:text-foreground"
                 :style="[
                   item.color ? { color: item.color } : null,
                 ]"
@@ -132,7 +132,7 @@ const headerRow = [
                 {{ item.display_name }}
               </div>
               <div
-                class="text-sm text-secondary-500 dark:text-secondary-400"
+                class="text-sm text-foreground dark:text-foreground"
               >
                 {{ item.name }}
               </div>
@@ -141,7 +141,7 @@ const headerRow = [
 
           <DtRowItem>
             <Link
-              class="hover:text-primary-400"
+              class="hover:text-primary"
               :href="
                 route('admin.user.index', {
                   filter: { 'roles.display_name' : item.display_name}
@@ -186,12 +186,12 @@ const headerRow = [
               <span
                 v-for="permission in item.permissions"
                 :key="permission.id"
-                class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-primary-800 bg-primary-100 rounded-full dark:bg-opacity-10 dark:text-primary-400"
+                class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-primary bg-primary rounded-full dark:bg-opacity-10 dark:text-primary"
               >{{ permission.name }}</span>
             </template>
             <span
               v-else
-              class="italic text-secondary-500"
+              class="italic text-foreground"
             >{{
               __("No administration permissions for this role.")
             }}</span>

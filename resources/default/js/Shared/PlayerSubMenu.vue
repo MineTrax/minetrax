@@ -31,9 +31,9 @@ defineProps({
     <div class="flex">
       <li>
         <Link
-          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
+          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
           :class="{
-            'bg-surface-200 text-secondary-900 dark:bg-surface-900 dark:text-secondary-200 dark:hover:bg-surface-900':
+            'bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900':
               route().current('player.show'),
           }"
           :href="route('player.show', { player: player.uuid })"
@@ -51,7 +51,7 @@ defineProps({
               player_uuid: player.uuid,
             })
           "
-          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
+          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
         >
           {{ __("Change Password") }}
         </Link>
@@ -64,10 +64,10 @@ defineProps({
             })
           "
           :class="{
-            'bg-surface-200 text-secondary-900 dark:bg-surface-900 dark:text-secondary-200 dark:hover:bg-surface-900':
+            'bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900':
               route().current('player.intel.session.index'),
           }"
-          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
+          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
         >
           {{ __("Change Skin") }}
         </Link>
@@ -80,10 +80,10 @@ defineProps({
             })
           "
           :class="{
-            'bg-surface-200 text-secondary-900 dark:bg-surface-900 dark:text-secondary-200 dark:hover:bg-surface-900':
+            'bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900':
               route().current('player.intel.session.index'),
           }"
-          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
+          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
         >
           {{ __("Sessions") }}
         </Link>
@@ -91,7 +91,7 @@ defineProps({
 
       <li v-if="route().current('player.intel.session.show')">
         <span
-          class="text-secondary-700 dark:text-secondary-300 rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600 bg-surface-200 text-secondary-900 dark:bg-surface-900 dark:text-secondary-200 dark:hover:bg-surface-900"
+          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600 bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900"
         >
           {{ __("Session Details") }}
         </span>

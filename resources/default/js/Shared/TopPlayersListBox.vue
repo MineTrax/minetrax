@@ -1,13 +1,13 @@
 <template>
   <div v-if="enabled && players && players.length > 0">
     <div class="p-3 bg-white dark:bg-surface-800 rounded shadow space-y-2">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ title }}
       </h3>
 
       <div class="flex flex-col space-y-2">
         <table class="">
-          <thead class="bg-surface-100 dark:bg-surface-900 dark:bg-opacity-50 text-secondary-700 dark:text-secondary-300">
+          <thead class="bg-surface-100 dark:bg-surface-900 dark:bg-opacity-50 text-foreground dark:text-foreground">
             <tr>
               <th
                 scope="col"
@@ -48,10 +48,10 @@
               :key="index"
               :class="{'bg-surface-50 dark:bg-surface-600 dark:bg-opacity-10': index % 2 === 1}"
             >
-              <td class="p-1 text-sm text-primary-400 font-extrabold">
+              <td class="p-1 text-sm text-primary font-extrabold">
                 <span
                   v-if="player.position"
-                  class="border-2 rounded text-sm px-1 border-primary-300 bg-primary-50 dark:bg-surface-800"
+                  class="border-2 rounded text-sm px-1 border-primary bg-primary dark:bg-surface-800"
                 >
                   {{ player.position }}
                 </span>
@@ -85,12 +85,12 @@
                       v-tippy
                       as="div"
                       :href="route('player.show', player.uuid)"
-                      class="text-sm text-secondary-900 focus:outline-none cursor-pointer hover:underline"
+                      class="text-sm text-foreground focus:outline-none cursor-pointer hover:underline"
                       :content="player.uuid"
                     >
                       <span
                         v-if="player.username"
-                        class="text-secondary-700 dark:text-secondary-300 font-bold text-sm truncate"
+                        class="text-foreground dark:text-foreground font-bold text-sm truncate"
                       >{{ player.username }}</span>
                       <span
                         v-else
@@ -100,7 +100,7 @@
                   </div>
                 </div>
               </td>
-              <td class="p-1 text-sm text-secondary-700 hidden sm:table-cell">
+              <td class="p-1 text-sm text-foreground hidden sm:table-cell">
                 <span v-if="player.rating != null">
                   <icon
                     v-tippy
@@ -111,10 +111,10 @@
                 </span>
                 <span
                   v-else
-                  class="text-secondary-700 dark:text-secondary-500 italic"
+                  class="text-foreground dark:text-foreground italic"
                 >{{ __("none") }}</span>
               </td>
-              <td class="p-1 text-xs text-secondary-700 dark:text-secondary-300 hidden sm:table-cell">
+              <td class="p-1 text-xs text-foreground dark:text-foreground hidden sm:table-cell">
                 <span
                   v-tippy
                   class="focus:outline-none"

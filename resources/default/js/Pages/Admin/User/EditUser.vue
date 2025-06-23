@@ -4,12 +4,12 @@
 
     <div class="max-w-5xl px-10 py-12 mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Edit User ':username'", {username: userData.name}) }}
         </h1>
         <inertia-link
           :href="route('admin.user.index')"
-          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md dark:bg-surface-600 hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md dark:bg-surface-600 hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
         >
           <span>{{ __("Cancel") }}</span>
         </inertia-link>
@@ -133,12 +133,12 @@
                         :placeholder="__('Select your date of birth')"
                         class="w-full"
                         value-type="format"
-                        input-class="block w-full p-3 text-sm border-secondary-300 rounded-md h-14 pt-7 focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-900"
+                        input-class="block w-full p-3 text-sm border-foreground rounded-md h-14 pt-7 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 dark:bg-surface-900 dark:text-foreground dark:border-foreground"
                       />
 
                       <label
                         for="dob"
-                        class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-secondary-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out "
+                        class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-foreground h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out "
                       >{{ __("Date of Birth") }}</label>
                       <jet-input-error
                         :message="form.errors.dob"
@@ -349,12 +349,12 @@
                     >
                       <label
                         for="badges"
-                        class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                        class="block text-sm font-medium text-foreground dark:text-foreground"
                       >{{ __("User Badges") }}</label>
                       <multiselect
                         id="badges"
                         v-model="form.badges"
-                        class="block w-full mt-1 border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                        class="block w-full mt-1 border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                         :options="badgesList"
                         :multiple="true"
                         :close-on-select="false"
@@ -375,12 +375,12 @@
                     >
                       <label
                         for="country"
-                        class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                        class="block text-sm font-medium text-foreground dark:text-foreground"
                       >{{ __("Country") }}</label>
                       <multiselect
                         id="country"
                         v-model="form.country"
-                        class="block w-full mt-1 border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                        class="block w-full mt-1 border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                         :options="countryList"
                         :multiple="false"
                         :placeholder="__('Search')+'...'"
@@ -436,7 +436,7 @@
                 <div class="flex justify-end px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6">
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Update User") }}

@@ -148,7 +148,7 @@ watch(selectedForms, (newSelectedForms) => {
     <div class="p-4 mx-auto space-y-4 px-10">
       <div class="flex items-center justify-between">
         <h3
-          class="text-xl font-extrabold text-secondary-800 dark:text-secondary-200"
+          class="text-xl font-extrabold text-foreground dark:text-foreground"
         >
           {{
             closed
@@ -164,7 +164,7 @@ watch(selectedForms, (newSelectedForms) => {
           name="selectForms"
           :select-list="forms"
           :placeholder="__('All Applications')"
-          class="w-48 max-w-48 dark:border dark:rounded dark:border-secondary-700"
+          class="w-48 max-w-48 dark:border dark:rounded dark:border-foreground"
         />
       </div>
 
@@ -177,7 +177,7 @@ watch(selectedForms, (newSelectedForms) => {
         >
           <template #default="{ item }">
             <td
-              class="text-sm px-4 font-medium text-left text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+              class="text-sm px-4 font-medium text-left text-foreground whitespace-nowrap dark:text-foreground"
             >
               <InertiaLink
                 as="a"
@@ -187,7 +187,7 @@ watch(selectedForms, (newSelectedForms) => {
                     item.id
                   )
                 "
-                class="hover:text-primary-500"
+                class="hover:text-primary"
               >
                 {{ item.id }}
               </InertiaLink>
@@ -212,7 +212,7 @@ watch(selectedForms, (newSelectedForms) => {
                 </div>
                 <div class="flex-col">
                   <div
-                    class="text-sm font-semibold text-secondary-900 dark:text-secondary-300 whitespace-nowrap truncate"
+                    class="text-sm font-semibold text-foreground dark:text-foreground whitespace-nowrap truncate"
                     :style="[
                       item.user.roles[0].color
                         ? {
@@ -228,7 +228,7 @@ watch(selectedForms, (newSelectedForms) => {
                         v-tippy
                         name="verified-check-fill"
                         :title="__('Verified Account')"
-                        class="inline mb-1 fill-current focus:outline-none text-primary-400 w-5 h-5"
+                        class="inline mb-1 fill-current focus:outline-none text-primary w-5 h-5"
                         />
                         <Icon
                         v-if="item.user.is_staff"
@@ -245,7 +245,7 @@ watch(selectedForms, (newSelectedForms) => {
                         class="inline mb-1 text-error-500 fill-current focus:outline-none w-5 h-5"
                         />
                   </div>
-                  <div class="text-sm text-secondary-500">
+                  <div class="text-sm text-foreground">
                     @{{ item.user.username }}
                   </div>
                 </div>
@@ -271,17 +271,17 @@ watch(selectedForms, (newSelectedForms) => {
             >
               <UserDisplayname
                 v-if="item.last_actor"
-                text-class="text-sm text-secondary-700 dark:text-secondary-400"
+                text-class="text-sm text-foreground dark:text-foreground"
                 :user="item.last_actor"
                 :show-badges="true"
               >
-                <div class="text-xs text-secondary-400 dark:text-secondary-500">
+                <div class="text-xs text-foreground dark:text-foreground">
                   {{ formatTimeAgoToNow(item.last_act_at) }}
                 </div>
               </UserDisplayname>
               <span
                 v-else
-                class="text-secondary-400 text-sm italic"
+                class="text-foreground text-sm italic"
               >
                 {{ __('None') }}
               </span>
@@ -292,17 +292,17 @@ watch(selectedForms, (newSelectedForms) => {
             >
               <UserDisplayname
                 v-if="item.last_commentor"
-                text-class="text-sm text-secondary-700 dark:text-secondary-400"
+                text-class="text-sm text-foreground dark:text-foreground"
                 :user="item.last_commentor"
                 :show-badges="true"
               >
-                <div class="text-xs text-secondary-400 dark:text-secondary-500">
+                <div class="text-xs text-foreground dark:text-foreground">
                   {{ formatTimeAgoToNow(item.last_comment_at) }}
                 </div>
               </UserDisplayname>
               <span
                 v-else
-                class="text-secondary-400 text-sm italic"
+                class="text-foreground text-sm italic"
               >
                 {{ __('None') }}
               </span>
@@ -335,7 +335,7 @@ watch(selectedForms, (newSelectedForms) => {
                     item.id
                   )
                 "
-                class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
+                class="inline-flex items-center justify-center text-primary hover:text-primary"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
               </InertiaLink>

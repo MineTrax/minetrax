@@ -1,7 +1,7 @@
 <template>
   <div class="vue-poll">
     <h3
-      class="qst dark:text-secondary-300"
+      class="qst dark:text-foreground"
       v-html="question"
     />
     <div class="ans-cnt">
@@ -13,7 +13,7 @@
         <template v-if="!finalResults">
           <div
             v-if="!visibleResults"
-            class="hover:bg-primary-100 dark:hover:bg-surface-900"
+            class="hover:bg-primary dark:hover:bg-surface-900"
             :class="{ 'ans-no-vote noselect': true, active: a.selected }"
             @click.prevent="handleVote(a)"
           >
@@ -24,7 +24,7 @@
           </div>
           <div
             v-else
-            :class="{ 'ans-voted dark:text-secondary-200': true, selected: a.selected }"
+            :class="{ 'ans-voted dark:text-foreground': true, selected: a.selected }"
           >
             <span
               v-if="a.percent"
@@ -43,7 +43,7 @@
           />
         </template>
         <template v-else>
-          <div :class="{ 'ans-voted final dark:text-secondary-200': true, selected: a.selected }">
+          <div :class="{ 'ans-voted final dark:text-foreground': true, selected: a.selected }">
             <span
               v-if="a.percent"
               class="percent"
@@ -55,7 +55,7 @@
             />
           </div>
           <span
-            :class="{ 'bg bg-surface-200 dark:bg-surface-700': true, 'bg-primary-300 dark:bg-primary-500': mostVotes == a.votes }"
+            :class="{ 'bg bg-surface-200 dark:bg-surface-700': true, 'bg-primary dark:bg-primary': mostVotes == a.votes }"
             :style="{ width: a.percent }"
           />
         </template>
@@ -64,7 +64,7 @@
 
     <div
       v-if="isComingSoon"
-      class="text-secondary-400 text-xs italic"
+      class="text-foreground text-xs italic"
     >
       {{ __("Poll starting") }}&nbsp;{{ formatTimeAgoToNow(started_at) }}
     </div>
@@ -77,7 +77,7 @@
       />
       <div
         v-if="!isComingSoon && closed_at && !finalResults"
-        class="text-secondary-400 text-xs italic"
+        class="text-foreground text-xs italic"
       >
         {{ __("Poll closing") }}&nbsp;{{ formatTimeAgoToNow(closed_at) }}
       </div>

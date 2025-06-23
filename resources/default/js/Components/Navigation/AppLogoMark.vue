@@ -13,7 +13,7 @@
     >
       <Icon
         name="cog"
-        class="w-6 h-6 text-secondary-400 dark:text-secondary-500 hover:animate-spin"
+        class="w-6 h-6 text-foreground dark:text-foreground hover:animate-spin"
       />
     </InertiaLink>
   </div>

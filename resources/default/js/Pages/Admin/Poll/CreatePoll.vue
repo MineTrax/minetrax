@@ -4,12 +4,12 @@
 
     <div class="py-12 px-10 max-w-6xl mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-secondary-500 dark:text-secondary-300">
+        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
           {{ __("Create New Poll") }}
         </h1>
         <inertia-link
           :href="route('admin.poll.index')"
-          class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
         >
           <span>{{ __("Cancel") }}</span>
         </inertia-link>
@@ -19,10 +19,10 @@
         <div class="md:grid md:grid-cols-3 md:gap-6">
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
-              <h3 class="text-lg font-medium leading-6 text-secondary-900 dark:text-secondary-400">
+              <h3 class="text-lg font-medium leading-6 text-foreground dark:text-foreground">
                 {{ __("Tips") }}
               </h3>
-              <p class="mt-1 text-sm text-secondary-600 dark:text-secondary-500">
+              <p class="mt-1 text-sm text-foreground dark:text-foreground">
                 {{ __("Adding polls in your website increase user retention & engagement.") }}
               </p>
             </div>
@@ -57,7 +57,7 @@
                           @click="deleteOption(index)"
                         >
                           <icon
-                            class="w-5 h-5 text-secondary-300 group-hover:text-error-500"
+                            class="w-5 h-5 text-foreground group-hover:text-error-500"
                             name="trash"
                           />
                         </button>
@@ -76,7 +76,7 @@
                       <div class="flex justify-end mt-1">
                         <button
                           type="button"
-                          class="p-1.5 text-xs text-primary-500 rounded border border-primary-500 focus:outline-none"
+                          class="p-1.5 text-xs text-primary rounded border border-primary focus:outline-none"
                           @click="addMoreOption"
                         >
                           {{ __("Add More") }}
@@ -100,11 +100,11 @@
                         value-type="date"
                         format="YYYY-MM-DD hh:mm:ss A"
                         type="datetime"
-                        input-class="border-secondary-300 h-14 p-3 text-sm pt-7 focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-900"
+                        input-class="border-foreground h-14 p-3 text-sm pt-7 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-foreground dark:border-foreground"
                       />
                       <label
                         for="started_at"
-                        class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-secondary-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
+                        class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-foreground h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
                       >{{ __("Starts At") }}</label>
                       <jet-input-error
                         :message="form.errors.started_at"
@@ -121,11 +121,11 @@
                         value-type="date"
                         format="YYYY-MM-DD hh:mm:ss A"
                         type="datetime"
-                        input-class="border-secondary-300 h-14 p-3 text-sm pt-7 focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-900"
+                        input-class="border-foreground h-14 p-3 text-sm pt-7 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-foreground dark:border-foreground"
                       />
                       <label
                         for="closed_at"
-                        class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-secondary-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
+                        class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-foreground h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
                       >{{ __("Ends At") }}</label>
                       <jet-input-error
                         :message="form.errors.closed_at"
@@ -137,7 +137,7 @@
                 <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Create Poll") }}

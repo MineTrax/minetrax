@@ -5,7 +5,7 @@
     />
 
     <jet-authentication-card>
-      <div class="mb-4 text-sm text-secondary-600 dark:text-secondary-400">
+      <div class="mb-4 text-sm text-foreground dark:text-foreground">
         {{ __("Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.") }}
       </div>
 
@@ -35,7 +35,7 @@
         <div class="flex items-center justify-end mt-4">
           <loading-button
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
           >
             {{ __("Email Password Reset Link") }}
           </loading-button>

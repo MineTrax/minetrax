@@ -1,7 +1,7 @@
 <template>
   <div v-if="enabled">
     <div class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Online Players") }}
         <span
           v-if="!loading && !error"
@@ -23,7 +23,7 @@
         class="flex p-4 justify-center"
       >
         <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-600"
+          class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -50,7 +50,7 @@
 
       <div
         v-if="!loading && !error"
-        class="mt-3 text-secondary-500 flex flex-wrap justify-center"
+        class="mt-3 text-foreground flex flex-wrap justify-center"
       >
         <div
           v-for="pl of playersList"
@@ -80,7 +80,7 @@
           !loading &&
           (!playersList || playersList.length <= 0)
         "
-        class="italic p-1 rounded text-center text-secondary-400"
+        class="italic p-1 rounded text-center text-foreground"
       >
         {{ __("No players online.") }}
       </div>

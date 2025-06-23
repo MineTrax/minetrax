@@ -38,7 +38,7 @@
       </AlertCard>
 
       <div
-        class="overflow-hidden bg-white border-b border-secondary-200 shadow max-w-none dark:bg-surface-800 dark:border-secondary-800 md:rounded"
+        class="overflow-hidden bg-white border-b border-foreground shadow max-w-none dark:bg-surface-800 dark:border-foreground md:rounded"
       >
         <div>
           <div
@@ -62,7 +62,7 @@
                   >
                     <img
                       style="height: 9rem; width: 9rem"
-                      class="relative transition bg-white border-4 border-white rounded-full md dark:bg-surface-800 hover:bg-surface-200 dark:border-secondary-600"
+                      class="relative transition bg-white border-4 border-white rounded-full md dark:bg-surface-800 hover:bg-surface-200 dark:border-foreground"
                       :src="profileUser.profile_photo_url"
                       alt=""
                     >
@@ -84,7 +84,7 @@
                     v-tippy
                     :title="__('Update Profile')"
                     :href="route('profile.show')"
-                    class="inline-flex items-center px-2 py-2 text-sm font-medium border-2 rounded-full border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white"
+                    class="inline-flex items-center px-2 py-2 text-sm font-medium border-2 rounded-full border-primary text-primary hover:bg-primary hover:text-white"
                   >
                     <PencilSquareIcon
                       class="w-5 h-5 stroke-2"
@@ -184,7 +184,7 @@
                         profileUser.id
                       )
                     "
-                    class="inline-flex items-center px-2 py-2 text-sm font-medium text-primary-500 border-2 border-primary-500 rounded-full hover:bg-primary-500 hover:text-white"
+                    class="inline-flex items-center px-2 py-2 text-sm font-medium text-primary border-2 border-primary rounded-full hover:bg-primary hover:text-white"
                   >
                     <PencilSquareIcon
                       class="w-5 h-5 stroke-2"
@@ -204,7 +204,7 @@
                   text-class="text-xl"
                 />
                 <p
-                  class="font-medium leading-5 text-secondary-600 dark:text-secondary-400"
+                  class="font-medium leading-5 text-foreground dark:text-foreground"
                 >
                   @{{ profileUser.username }}
                 </p>
@@ -225,7 +225,7 @@
                   >
                   <div
                     v-else
-                    class="inline-flex mt-2 font-bold uppercase leading-5 p-1.5 bg-primary-400 text-white rounded-sm"
+                    class="inline-flex mt-2 font-bold uppercase leading-5 p-1.5 bg-primary text-white rounded-sm"
                     :style="`background-color: ${role.color};`"
                   >
                     {{ role.display_name }}
@@ -235,7 +235,7 @@
               <div class="flex justify-end mr-4">
                 <p
                   v-tippy
-                  class="text-sm font-medium leading-5 text-secondary-600 focus:outline-none"
+                  class="text-sm font-medium leading-5 text-foreground focus:outline-none"
                   :title="
                     formatToDayDateString(
                       profileUser.created_at
@@ -264,7 +264,7 @@
             <div
               v-for="player in profileUser.players"
               :key="player.uuid"
-              class="flex justify-around p-4 space-x-4 border-b border-secondary-200 dark:border-none"
+              class="flex justify-around p-4 space-x-4 border-b border-foreground dark:border-none"
             >
               <img
                 :src="
@@ -285,34 +285,34 @@
                     :href="
                       route('player.show', player.uuid)
                     "
-                    class="text-lg font-bold text-primary-400 hover:text-primary-500"
+                    class="text-lg font-bold text-primary hover:text-primary"
                   >
                     {{ player.username }}
                   </inertia-link>
                 </div>
 
                 <div class="flex items-center justify-between">
-                  <p class="font-bold dark:text-secondary-400">
+                  <p class="font-bold dark:text-foreground">
                     {{ __("Position") }}:
                   </p>
                   <div
-                    class="flex items-center space-x-2 text-sm font-extrabold text-center text-primary-400"
+                    class="flex items-center space-x-2 text-sm font-extrabold text-center text-primary"
                   >
                     <span
                       v-if="player.position"
-                      class="px-2 text-lg border-2 rounded border-primary-300 bg-primary-50 dark:bg-surface-800"
+                      class="px-2 text-lg border-2 rounded border-primary bg-primary dark:bg-surface-800"
                     >
                       {{ player.position }}
                     </span>
                     <span
                       v-else
-                      class="text-sm italic text-secondary-500 dark:text-secondary-400"
+                      class="text-sm italic text-foreground dark:text-foreground"
                     >{{ __("None") }}</span>
                   </div>
                 </div>
 
                 <div class="flex items-center justify-between">
-                  <p class="font-bold dark:text-secondary-400">
+                  <p class="font-bold dark:text-foreground">
                     {{ __("Rating") }}:
                   </p>
                   <icon
@@ -324,25 +324,25 @@
                   />
                   <p
                     v-else
-                    class="text-sm italic text-secondary-500 dark:text-secondary-400"
+                    class="text-sm italic text-foreground dark:text-foreground"
                   >
                     {{ __("None") }}
                   </p>
                 </div>
                 <div class="flex items-center justify-between">
-                  <p class="font-bold dark:text-secondary-400">
+                  <p class="font-bold dark:text-foreground">
                     {{ __("Rank") }}:
                   </p>
                   <div class="flex items-center space-x-2">
                     <p
                       v-if="player.rank"
-                      class="dark:text-secondary-200"
+                      class="dark:text-foreground"
                     >
                       {{ player.rank.name }}
                     </p>
                     <p
                       v-else
-                      class="text-sm italic text-secondary-500 dark:text-secondary-400"
+                      class="text-sm italic text-foreground dark:text-foreground"
                     >
                       {{ __("None") }}
                     </p>
@@ -361,13 +361,13 @@
                 </div>
 
                 <div class="flex items-center justify-between">
-                  <p class="font-bold dark:text-secondary-400">
+                  <p class="font-bold dark:text-foreground">
                     {{ __("Last Seen") }}:
                   </p>
                   <div class="flex items-center space-x-2">
                     <p
                       v-tippy
-                      class="focus:outline-none dark:text-secondary-200"
+                      class="focus:outline-none dark:text-foreground"
                       :title="
                         formatToDayDateString(
                           player.last_seen_at
@@ -392,7 +392,7 @@
             "
             class="p-4 bg-white rounded shadow dark:bg-surface-800"
           >
-            <h3 class="font-bold text-secondary-700 dark:text-secondary-200">
+            <h3 class="font-bold text-foreground dark:text-foreground">
               Badges
             </h3>
             <div class="flex flex-row justify-center space-x-2">
@@ -415,18 +415,18 @@
             v-if="profileUser.about"
             class="flex flex-col w-full p-4 bg-white rounded shadow dark:bg-surface-800"
           >
-            <span class="whitespace-pre-wrap dark:text-secondary-200">{{
+            <span class="whitespace-pre-wrap dark:text-foreground">{{
               profileUser.about
             }}</span>
           </div>
 
           <div
-            class="flex flex-col w-full p-4 space-y-2 bg-white rounded shadow dark:bg-surface-800 dark:text-secondary-400"
+            class="flex flex-col w-full p-4 space-y-2 bg-white rounded shadow dark:bg-surface-800 dark:text-foreground"
           >
             <div class="flex justify-between">
               <span>{{ __("Country") }}</span>
               <span
-                class="font-semibold text-secondary-800 dark:text-secondary-200"
+                class="font-semibold text-foreground dark:text-foreground"
               >
                 {{ profileUser.country.name }}
                 <img
@@ -439,7 +439,7 @@
             <div class="flex justify-between">
               <span>{{ __("Day of Birth") }}</span>
               <span
-                class="font-semibold text-secondary-800 dark:text-secondary-200"
+                class="font-semibold text-foreground dark:text-foreground"
               >{{
                 profileUser.dob_string || __("unknown")
               }}</span>
@@ -447,7 +447,7 @@
             <div class="flex justify-between">
               <span>{{ __("Gender") }}</span>
               <span
-                class="font-semibold text-secondary-800 dark:text-secondary-200"
+                class="font-semibold text-foreground dark:text-foreground"
               >{{
                 __(profileUser.gender_string) ||
                   __("unknown")
@@ -456,7 +456,7 @@
             <div class="flex justify-between">
               <span>{{ __("Total Posts") }}</span>
               <span
-                class="font-semibold text-secondary-800 dark:text-secondary-200"
+                class="font-semibold text-foreground dark:text-foreground"
               >{{ profileUser.posts_count }}</span>
             </div>
             <div
@@ -468,7 +468,7 @@
             >
               <span>{{ __("Discord") }}</span>
               <span
-                class="font-semibold text-secondary-800 dark:text-secondary-200"
+                class="font-semibold text-foreground dark:text-foreground"
               >{{
                 profileUser.social_links.s_discord_username
               }}</span>
@@ -496,7 +496,7 @@
         />
         <div
           v-else
-          class="flex items-center justify-center w-full p-3 space-y-4 text-center text-secondary-500 bg-white rounded shadow sm:px-5 dark:bg-surface-800"
+          class="flex items-center justify-center w-full p-3 space-y-4 text-center text-foreground bg-white rounded shadow sm:px-5 dark:bg-surface-800"
         >
           <span class="italic">{{
             __("Posts Feed is disabled!")

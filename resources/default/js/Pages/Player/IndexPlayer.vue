@@ -9,7 +9,7 @@
         <div class="grid grid-cols-12 gap-4 mb-4">
           <div class="col-span-12  md:col-span-4">
             <div class="flex flex-row bg-white dark:bg-surface-800 shadow rounded p-4">
-              <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-primary-100 dark:bg-opacity-10 text-primary-500">
+              <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-primary dark:bg-opacity-10 text-primary">
                 <svg
                   class="w-6 h-6"
                   fill="none"
@@ -24,10 +24,10 @@
                 /></svg>
               </div>
               <div class="flex flex-col flex-grow ml-4">
-                <div class="text-sm text-secondary-500 dark:text-secondary-400">
+                <div class="text-sm text-foreground dark:text-foreground">
                   {{ __("Total Players") }}
                 </div>
-                <div class="font-bold dark:text-secondary-200 text-lg">
+                <div class="font-bold dark:text-foreground text-lg">
                   {{ totalPlayersCount }}
                 </div>
               </div>
@@ -50,10 +50,10 @@
                 /></svg>
               </div>
               <div class="flex flex-col flex-grow ml-4">
-                <div class="text-sm text-secondary-500 dark:text-secondary-400">
+                <div class="text-sm text-foreground dark:text-foreground">
                   {{ __("Active Players") }}
                 </div>
-                <div class="font-bold text-lg dark:text-secondary-200">
+                <div class="font-bold text-lg dark:text-foreground">
                   {{ activePlayersCount }}
                 </div>
               </div>
@@ -76,10 +76,10 @@
                 /></svg>
               </div>
               <div class="flex flex-col flex-grow ml-4">
-                <div class="text-sm text-secondary-500 dark:text-secondary-400">
+                <div class="text-sm text-foreground dark:text-foreground">
                   {{ __("Play Time") }}
                 </div>
-                <div class="font-bold text-lg dark:text-secondary-200">
+                <div class="font-bold text-lg dark:text-foreground">
                   {{ totalPlayTime === 0 ? '0 h' : secondsToHMS(totalPlayTime) }}
                 </div>
               </div>
@@ -89,9 +89,9 @@
 
         <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
           <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
-            <div class="shadow overflow-hidden border-b border-secondary-200 dark:border-secondary-700 dark:border-none rounded">
-              <table class="min-w-full divide-y divide-secondary-200 dark:divide-secondary-700">
-                <thead class="bg-surface-100 dark:bg-surface-800 text-secondary-700 dark:text-secondary-200">
+            <div class="shadow overflow-hidden border-b border-foreground dark:border-foreground dark:border-none rounded">
+                                  <table class="min-w-full divide-y divide-foreground dark:divide-foreground">
+                <thead class="bg-surface-100 dark:bg-surface-800 text-foreground dark:text-foreground">
                   <tr>
                     <th
                       scope="col"
@@ -144,17 +144,17 @@
                   </tr>
                 </thead>
 
-                <tbody class="bg-white dark:bg-surface-800 divide-y divide-secondary-200 dark:divide-none">
+                                        <tbody class="bg-white dark:bg-surface-800 divide-y divide-foreground dark:divide-none">
                   <infinite-scroll :load-more="loadMorePlayers">
                     <tr
                       v-for="(player, index) in playersList.data"
                       :key="player.uuid"
                       :class="{'bg-surface-50 dark:bg-surface-700 dark:bg-opacity-10': index % 2 === 1}"
                     >
-                      <td class="px-2 py-4 whitespace-nowrap text-center text-sm text-primary-400 font-extrabold">
+                      <td class="px-2 py-4 whitespace-nowrap text-center text-sm text-primary font-extrabold">
                         <span
                           v-if="player.position"
-                          class="border-2 rounded text-lg px-2 border-primary-300 bg-primary-50 dark:bg-transparent"
+                          class="border-2 rounded text-lg px-2 border-primary bg-primary dark:bg-transparent"
                         >
                           {{ player.position }}
                         </span>
@@ -206,12 +206,12 @@
                               v-tippy
                               as="a"
                               :href="route('player.show', player.uuid)"
-                              class="text-sm font-medium text-secondary-900 dark:text-secondary-200 focus:outline-none cursor-pointer hover:underline"
+                              class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
                               :content="player.uuid"
                             >
                               <span
                                 v-if="player.username"
-                                :class="player.is_active ? 'text-secondary-700 dark:text-secondary-300' : 'text-secondary-500 dark:text-secondary-400'"
+                                :class="player.is_active ? 'text-foreground dark:text-foreground' : 'text-foreground dark:text-foreground'"
                                 class="font-extrabold"
                               >{{ player.username }}</span>
                               <span
@@ -222,7 +222,7 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary-700">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                         <span v-if="player.rating != null">
                           <icon
                             v-tippy
@@ -233,16 +233,16 @@
                         </span>
                         <span
                           v-else
-                          class="text-secondary-700 dark:text-secondary-400 italic"
+                          class="text-foreground dark:text-foreground italic"
                         >{{ __("none") }}</span>
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary-700 dark:text-secondary-300">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground dark:text-foreground">
                         {{ player.total_score }}
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary-700 dark:text-secondary-300">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground dark:text-foreground">
                         {{ secondsToHMS(player.play_time, true) }}
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary-700 dark:text-secondary-300">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground dark:text-foreground">
                         <span
                           v-tippy
                           class="focus:outline-none"
@@ -258,7 +258,7 @@
                     <template #loading>
                       <tr>
                         <td
-                          class="border-t dark:border-none px-6 py-4 sm:text-center text-secondary-700 dark:text-secondary-500 italic"
+                          class="border-t dark:border-none px-6 py-4 sm:text-center text-foreground dark:text-foreground italic"
                           colspan="8"
                         >
                           {{ __("Loading more...") }}
@@ -269,7 +269,7 @@
 
                   <tr v-if="playersList.data.length === 0">
                     <td
-                      class="px-6 py-4 text-center dark:text-secondary-300 text-secondary-700"
+                      class="px-6 py-4 text-center dark:text-foreground text-foreground"
                       colspan="8"
                     >
                       {{ __("No players found.") }}

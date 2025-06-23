@@ -154,14 +154,14 @@ const headerRow = [
                 <div class="col-span-full  md:col-span-1">
                     <div class="flex flex-row bg-white dark:bg-surface-800 shadow rounded p-4">
                         <div
-                            class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-primary-100 dark:bg-opacity-10 text-primary-500">
+                            class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-primary dark:bg-opacity-10 text-primary">
                             <ScaleIcon class="w-6 h-6 stroke-2" />
                         </div>
                         <div class="flex flex-col flex-grow ml-4">
-                            <div class="text-sm text-secondary-500 dark:text-secondary-400">
+                            <div class="text-sm text-foreground dark:text-foreground">
                                 {{ __("Punishments") }}
                             </div>
-                            <div class="font-bold dark:text-secondary-200 text-lg">
+                            <div class="font-bold dark:text-foreground text-lg">
                                 {{ metrics.total_active_bans + metrics.total_active_mutes + metrics.total_active_warns
                                 }} /
                                 {{ metrics.total_bans + metrics.total_mutes + metrics.total_warns + metrics.total_kicks
@@ -177,10 +177,10 @@ const headerRow = [
                             <NoSymbolIcon class="w-6 h-6 stroke-2" />
                         </div>
                         <div class="flex flex-col flex-grow ml-4">
-                            <div class="text-sm text-secondary-500 dark:text-secondary-400">
+                            <div class="text-sm text-foreground dark:text-foreground">
                                 {{ __("Bans") }}
                             </div>
-                            <div class="font-bold text-lg dark:text-secondary-200">
+                            <div class="font-bold text-lg dark:text-foreground">
                                 {{ metrics.total_active_bans }} / {{ metrics.total_bans }}
                             </div>
                         </div>
@@ -189,14 +189,14 @@ const headerRow = [
                 <div class="col-span-full  md:col-span-1">
                     <div class="flex flex-row bg-white dark:bg-surface-800 shadow rounded p-4">
                         <div
-                            class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-surface-100 dark:bg-opacity-10 text-secondary-400">
+                            class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-surface-100 dark:bg-opacity-10 text-foreground">
                             <SpeakerXMarkIcon class="w-6 h-6 stroke-2" />
                         </div>
                         <div class="flex flex-col flex-grow ml-4">
-                            <div class="text-sm text-secondary-500 dark:text-secondary-400">
+                            <div class="text-sm text-foreground dark:text-foreground">
                                 {{ __("Mutes") }}
                             </div>
-                            <div class="font-bold text-lg dark:text-secondary-200">
+                            <div class="font-bold text-lg dark:text-foreground">
                                 {{ metrics.total_active_mutes }} / {{ metrics.total_mutes }}
                             </div>
                         </div>
@@ -209,10 +209,10 @@ const headerRow = [
                             <ExclamationTriangleIcon class="w-6 h-6 stroke-2" />
                         </div>
                         <div class="flex flex-col flex-grow ml-4">
-                            <div class="text-sm text-secondary-500 dark:text-secondary-400">
+                            <div class="text-sm text-foreground dark:text-foreground">
                                 {{ __("Warns") }}
                             </div>
-                            <div class="font-bold text-lg dark:text-secondary-200">
+                            <div class="font-bold text-lg dark:text-foreground">
                                 {{ metrics.total_active_warns }} / {{ metrics.total_warns }}
                             </div>
                         </div>
@@ -225,10 +225,10 @@ const headerRow = [
                             <ArrowRightOnRectangleIcon class="w-6 h-6 stroke-2" />
                         </div>
                         <div class="flex flex-col flex-grow ml-4">
-                            <div class="text-sm text-secondary-500 dark:text-secondary-400">
+                            <div class="text-sm text-foreground dark:text-foreground">
                                 {{ __("Kicks") }}
                             </div>
-                            <div class="font-bold text-lg dark:text-secondary-200">
+                            <div class="font-bold text-lg dark:text-foreground">
                                 {{ metrics.total_kicks }}
                             </div>
                         </div>
@@ -243,7 +243,7 @@ const headerRow = [
                         <DtRowItem>
                             <Link v-tippy as="a" :href="route('player.punishment.show', item.id)"
                                 class="focus:outline-none cursor-pointer hover:underline"
-                                :class="item.is_active ? 'font-bold dark:text-secondary-300' : ''"
+                                :class="item.is_active ? 'font-bold dark:text-foreground' : ''"
                                 :content="__('View details')">
                             {{ item.id }}
                             </Link>
@@ -270,10 +270,10 @@ const headerRow = [
                                     </div>
                                     <div class="ml-2">
                                         <Link v-tippy as="a" :href="route('player.show', item.victim_player.uuid)"
-                                            class="text-sm font-medium text-secondary-900 dark:text-secondary-200 focus:outline-none cursor-pointer hover:underline"
+                                            class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
                                             :content="item.victim_player.uuid">
                                         <span v-if="item.victim_player.username"
-                                            class="font-extrabold text-secondary-700 dark:text-secondary-300">{{
+                                            class="font-extrabold text-foreground dark:text-foreground">{{
                                                 item.victim_player.username }}</span>
                                         <span v-else class="text-error-500 italic">{{ __("Unknown") }}</span>
                                         </Link>
@@ -286,7 +286,7 @@ const headerRow = [
                                         <img class="h-7 w-7" :src="route('player.avatar.get', item.uuid)" alt="">
                                     </div>
                                     <div class="ml-2">
-                                        <div v-tippy class="text-sm font-medium text-secondary-900 dark:text-secondary-200"
+                                        <div v-tippy class="text-sm font-medium text-foreground dark:text-foreground"
                                             :content="item.uuid">
                                             <span class="text-error-500 italic">{{ __("Unknown") }}</span>
                                         </div>
@@ -295,7 +295,7 @@ const headerRow = [
                             </div>
                             <div v-else class="flex items-center space-x-2">
                                 <img class="h-7 w-7" src="/images/pc_head.png" alt="">
-                                <span class="text-secondary-500 dark:text-secondary-400 text-xs font-bold">{{ __("IP :punish",
+                                <span class="text-foreground dark:text-foreground text-xs font-bold">{{ __("IP :punish",
                                     { punish: item.type.key }) }}
                                 </span>
                             </div>
@@ -308,7 +308,7 @@ const headerRow = [
                                         item.ip_address || item.masked_ip_address }}
                                 </a>
                             </span>
-                            <span v-else class="text-secondary-400 italic">
+                            <span v-else class="text-foreground italic">
                                 {{ __("None") }}
                             </span>
                         </DtRowItem>
@@ -324,10 +324,10 @@ const headerRow = [
                                     <div class="ml-2">
                                         <Link v-tippy as="a"
                                             :href="item.creator_player ? route('player.show', item.creator_player.uuid) : '#'"
-                                            class="text-sm font-medium text-secondary-900 dark:text-secondary-200 focus:outline-none cursor-pointer hover:underline"
+                                            class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
                                             :content="item.creator_uuid">
                                         <span v-if="item.creator_player?.username || item.creator_username"
-                                            class="font-extrabold text-secondary-700 dark:text-secondary-300">{{
+                                            class="font-extrabold text-foreground dark:text-foreground">{{
                                                 item.creator_player?.username || item.creator_username }}</span>
                                         <span v-else class="text-error-500 italic">{{ __("Unknown") }}</span>
                                         </Link>
@@ -337,10 +337,10 @@ const headerRow = [
                             <div v-else class="flex items-center space-x-2">
                                 <img class="h-7 w-7" src="/images/console_head.png" alt="">
                                 <span v-if="item.creator_username && item.creator_username !== 'Console'"
-                                    class="text-secondary-500 dark:text-secondary-400 text-xs font-bold">{{ item.creator_username
+                                    class="text-foreground dark:text-foreground text-xs font-bold">{{ item.creator_username
                                     }}
                                 </span>
-                                <span v-else class="text-secondary-500 dark:text-secondary-400 text-xs font-bold">{{ __("CONSOLE")
+                                <span v-else class="text-foreground dark:text-foreground text-xs font-bold">{{ __("CONSOLE")
                                     }}
                                 </span>
                             </div>
@@ -362,7 +362,7 @@ const headerRow = [
                             <span v-if="item.end_at" v-tippy :title="formatToDayDateString(item.end_at)">
                                 {{ formatTimeAgoToNow(item.end_at) }}
                             </span>
-                            <span v-else class="italic text-secondary-400">
+                            <span v-else class="italic text-foreground">
                                 {{ __("None") }}
                             </span>
                         </DtRowItem>
@@ -376,7 +376,7 @@ const headerRow = [
                             <InertiaLink v-tippy :title="__('View details')" as="a" :href="route(
                                 'player.punishment.show', item.id
                             )
-                                " class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800">
+                                " class="inline-flex items-center justify-center text-primary hover:text-primary">
                                 <EyeIcon class="inline-block w-5 h-5" />
                             </InertiaLink>
                         </td>

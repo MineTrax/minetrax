@@ -3,7 +3,7 @@ import { useChartTheme } from "@/Composables/useChartTheme.js";
 // Use the composable to get theme utilities
 const { getThemeColor, getChartColorPalette } = useChartTheme();
 
-const contrastColor = getThemeColor("--color-secondary-300", "#cbd5e1");
+const contrastColor = getThemeColor("--color-foreground", "#cbd5e1");
 const backgroundColor = getThemeColor("--color-surface-800", "#1f2937");
 const axisCommon = function () {
     return {
@@ -14,7 +14,7 @@ const axisCommon = function () {
         },
         splitLine: {
             lineStyle: {
-                color: getThemeColor("--color-secondary-600", "#475569"),
+                color: getThemeColor("--color-foreground", "#475569"),
             },
         },
         splitArea: {
@@ -24,7 +24,7 @@ const axisCommon = function () {
         },
         minorSplitLine: {
             lineStyle: {
-                color: getThemeColor("--color-secondary-700", "#334155"),
+                color: getThemeColor("--color-foreground", "#334155"),
             },
         },
     };
@@ -40,10 +40,10 @@ const theme = {
     backgroundColor: backgroundColor,
     axisPointer: {
         lineStyle: {
-            color: getThemeColor("--color-secondary-500", "#64748b"),
+            color: getThemeColor("--color-foreground", "#64748b"),
         },
         crossStyle: {
-            color: getThemeColor("--color-secondary-500", "#64748b"),
+            color: getThemeColor("--color-foreground", "#64748b"),
         },
         label: {
             // TODO Contrast of label backgorundColor
@@ -63,7 +63,7 @@ const theme = {
             color: "#EEF1FA",
         },
         subtextStyle: {
-            color: getThemeColor("--color-secondary-400", "#94a3b8"),
+            color: getThemeColor("--color-foreground", "#94a3b8"),
         },
     },
     toolbox: {

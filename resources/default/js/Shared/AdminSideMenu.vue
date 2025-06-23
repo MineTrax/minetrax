@@ -400,7 +400,7 @@ const navItems = [
         <button @click.prevent="$emit('toggleCollapse')">
           <ChevronDoubleLeftIcon
             :class="[
-              'h-6 w-6 p-0.5 text-secondary-400 hover:text-secondary-600 dark:text-secondary-600 dark:hover:text-secondary-400',
+              'h-6 w-6 p-0.5 text-foreground hover:text-foreground dark:text-foreground dark:hover:text-foreground',
               collapsed ? '-rotate-180' : ''
             ]"
           />
@@ -418,7 +418,7 @@ const navItems = [
 
       <div
         v-if="!collapsed"
-        class="mt-10 text-xs text-center text-secondary-600 dark:text-secondary-500"
+        class="mt-10 text-xs text-center text-foreground dark:text-foreground"
       >
         {{ __("Web Version:") }}&nbsp;{{ $page.props.webVersion || 'unknown' }}
       </div>

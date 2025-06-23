@@ -1,5 +1,5 @@
 <template>
-  <div class="relative mx-auto text-secondary-600 dark:text-secondary-400">
+  <div class="relative mx-auto text-foreground dark:text-foreground">
     <form @submit.prevent="performSearch">
       <input
         v-model="searchString"
@@ -19,7 +19,7 @@
         class="absolute right-0 top-0 mt-3 mr-4"
       >
         <MagnifyingGlassIcon
-          class="text-secondary-400 dark:text-secondary-600 h-4 w-4 stroke-2"
+          class="text-foreground dark:text-foreground h-4 w-4 stroke-2"
         />
       </button>
     </form>
@@ -40,7 +40,7 @@
         v-if="!loading"
         id="users"
       >
-        <span class="text-xs text-secondary-400 dark:text-secondary-300 font-extrabold">{{ __("USERS") }}</span>
+        <span class="text-xs text-foreground dark:text-foreground font-extrabold">{{ __("USERS") }}</span>
 
         <div class="flex flex-col">
           <inertia-link
@@ -49,7 +49,7 @@
             :key="user.username"
             as="a"
             :href="route('user.public.get', user.username)"
-            class="flex px-2 py-1 justify-between hover:bg-primary-100 dark:hover:bg-surface-900 rounded cursor-pointer"
+            class="flex px-2 py-1 justify-between hover:bg-primary dark:hover:bg-surface-900 rounded cursor-pointer"
           >
             <div class="flex">
               <img
@@ -58,10 +58,10 @@
                 alt="Image"
               >
               <div class="text-sm">
-                <p class="text-secondary-700 dark:text-secondary-300 font-bold">
+                <p class="text-foreground dark:text-foreground font-bold">
                   {{ user.title }}
                 </p>
-                <p class="text-secondary-500 dark:text-secondary-500">
+                <p class="text-foreground dark:text-foreground">
                   @{{ user.username }}
                 </p>
               </div>
@@ -92,7 +92,7 @@
         id="players"
         class="mt-5 pb-4"
       >
-        <span class="text-xs text-secondary-400 dark:text-secondary-300 font-extrabold">{{ __("PLAYERS") }}</span>
+        <span class="text-xs text-foreground dark:text-foreground font-extrabold">{{ __("PLAYERS") }}</span>
 
         <div class="flex flex-col">
           <inertia-link
@@ -101,7 +101,7 @@
             :key="player.uuid"
             as="a"
             :href="route('player.show', player.uuid)"
-            class="flex justify-between px-2 py-1 hover:bg-primary-100 dark:hover:bg-surface-900 rounded cursor-pointer"
+            class="flex justify-between px-2 py-1 hover:bg-primary dark:hover:bg-surface-900 rounded cursor-pointer"
           >
             <div class="flex items-center">
               <img
@@ -110,7 +110,7 @@
                 alt="Avatar"
               >
               <div class="text-sm">
-                <p class="text-secondary-700 dark:text-secondary-300 font-bold">
+                <p class="text-foreground dark:text-foreground font-bold">
                   {{ player.title }}
                 </p>
               </div>

@@ -30,7 +30,7 @@
     </div>
     <button
       v-if="closeButton"
-      class="absolute rounded-full bg-white dark:bg-surface-800 border dark:border-secondary-900 dark:hover:bg-surface-700 hover:bg-surface-100 p-1 -top-5 -right-3"
+      class="absolute rounded-full bg-white dark:bg-surface-800 border dark:border-foreground dark:hover:bg-surface-700 hover:bg-surface-100 p-1 -top-5 -right-3"
       @click="$emit('close')"
     >
       <XMarkIcon class="h-5 w-5" />

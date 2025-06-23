@@ -1,5 +1,5 @@
 <template>
-  <div class="font-sans text-secondary-900 antialiased">
+  <div class="font-sans text-foreground antialiased">
     <div class="pt-4 bg-surface-100">
       <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0">
         <div>

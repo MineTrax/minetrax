@@ -63,16 +63,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage News')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Manage News") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create news')"
             :href="route('admin.news.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
           >
             <span>{{ __("Create News") }}</span>
           </InertiaLink>
@@ -87,15 +87,15 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
           <td class="px-4">
-            <div class="text-sm text-secondary-900">
+            <div class="text-sm text-foreground">
               <span
                 v-if="item.type.value === 0"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-700 dark:bg-opacity-25 dark:text-primary-400"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary text-primary dark:bg-primary dark:bg-opacity-25 dark:text-primary"
               >{{ item.type.key }}</span>
               <span
                 v-else-if="item.type.value === 1"
@@ -107,7 +107,7 @@ const headerRow = [
               >{{ item.type.key }}</span>
               <span
                 v-else
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-surface-100 text-secondary-800"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-surface-100 text-foreground"
               >{{ item.type.key }}</span>
             </div>
           </td>
@@ -125,7 +125,7 @@ const headerRow = [
                 >
               </div>
               <div class="ml-4">
-                <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
+                <div class="text-sm font-medium text-foreground dark:text-foreground">
                   {{ item.title }}
                 </div>
               </div>
@@ -176,7 +176,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('news.show', item.slug)"
-              class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
+              class="inline-flex items-center justify-center text-primary hover:text-primary"
               :title="__('View News')"
             >
               <EyeIcon class="inline-block w-5 h-5" />

@@ -4,7 +4,7 @@
       :id="id"
       ref="input"
       :name="name"
-      class="border hide-scrollbar resize-none focus:outline-none rounded-md w-full p-3 min-h-16 h-20 disabled:opacity-50 focus:border-primary-300 focus:ring text-sm focus:ring-primary-200 focus:ring-opacity-50 dark:bg-surface-900 dark:border-secondary-900 dark:text-secondary-300"
+      class="border hide-scrollbar resize-none focus:outline-none rounded-md w-full p-3 min-h-16 h-20 disabled:opacity-50 focus:border-primary focus:ring text-sm focus:ring-primary focus:ring-opacity-50 dark:bg-surface-900 dark:border-foreground dark:text-foreground"
       :class="borderColor"
       :placeholder="label"
       :autocomplete="autocomplete"
@@ -19,7 +19,7 @@
     <label
       :for="id"
       :class="textColor"
-      class="absolute top-0 left-0 px-3 pt-5 text-sm pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-secondary-400"
+      class="absolute top-0 left-0 px-3 pt-5 text-sm pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-foreground"
     >{{
       label
     }}
@@ -31,7 +31,7 @@
     >
       <p
         v-show="help"
-        class="text-xs text-secondary-500"
+        class="text-xs text-foreground"
       >
         {{ help }}
       </p>
@@ -92,22 +92,22 @@ export default {
             if(this.error) {
                 return 'border-error-400';
             } else {
-                return 'border-secondary-300';
+                return 'border-foreground';
             }
         },
         textColor() {
             if (this.hasFocus) {
-                return 'text-primary-400';
+                return 'text-primary';
             }
 
             if(this.error) {
                 return 'text-error-400';
             } else {
                 if (this.disabled) {
-                    return 'text-secondary-400 dark:text-secondary-600';
+                    return 'text-foreground dark:text-foreground';
                 }
 
-                return 'text-secondary-500';
+                return 'text-foreground';
             }
         }
     },

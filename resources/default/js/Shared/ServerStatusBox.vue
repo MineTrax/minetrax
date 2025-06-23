@@ -1,7 +1,7 @@
 <template>
   <div v-if="enabled">
     <div class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow break-words">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Server Status") }}
       </h3>
 
@@ -11,7 +11,7 @@
         class="flex p-4 justify-center"
       >
         <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-600 dark:text-primary-400"
+          class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary dark:text-primary"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -41,8 +41,8 @@
         v-if="!loading && !error"
         class="flex flex-col"
       >
-        <div class="mt-3 text-secondary-700 dark:text-secondary-300 text-center font-semibold">
-          {{ __("Join") }} <span class="font-bold text-primary-500 dark:text-primary-400">{{ serverInfo.players.online }}</span> {{ __("Online Players") }}!
+        <div class="mt-3 text-foreground dark:text-foreground text-center font-semibold">
+          {{ __("Join") }} <span class="font-bold text-primary dark:text-primary">{{ serverInfo.players.online }}</span> {{ __("Online Players") }}!
         </div>
 
         <copy-to-clipboard v-slot="props">
@@ -50,7 +50,7 @@
             v-tippy
             :title="__('Click to Copy')"
             type="button"
-            class="text-center font-extrabold mt-3 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-300 rounded p-2 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-surface-900 hover:border-primary-500 dark:hover:border-secondary-800 focus:ring focus:ring-primary-200 focus:ring-opacity-50 transition duration-150 ease-in-out focus:outline-none"
+            class="text-center font-extrabold mt-3 border border-foreground dark:border-foreground text-foreground dark:text-foreground rounded p-2 hover:text-primary dark:hover:text-primary hover:bg-primary dark:hover:bg-surface-900 hover:border-primary dark:hover:border-foreground focus:ring focus:ring-primary focus:ring-opacity-50 transition duration-150 ease-in-out focus:outline-none"
             @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
           >
             <span v-if="props.status !== 'copied'">

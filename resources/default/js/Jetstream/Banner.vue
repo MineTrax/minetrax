@@ -15,14 +15,14 @@ watch(message, async () => {
   <div>
     <div
       v-if="show && message"
-      :class="{ 'bg-primary-500': style == 'success', 'bg-error-700': style == 'danger' }"
+      :class="{ 'bg-primary': style == 'success', 'bg-error-700': style == 'danger' }"
     >
       <div class="max-w-screen-xl mx-auto py-2 px-3 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between flex-wrap">
           <div class="w-0 flex-1 flex items-center min-w-0">
             <span
               class="flex p-2 rounded-lg"
-              :class="{ 'bg-primary-600': style == 'success', 'bg-error-600': style == 'danger' }"
+              :class="{ 'bg-primary': style == 'success', 'bg-error-600': style == 'danger' }"
             >
               <svg
                 v-if="style == 'success'"
@@ -66,7 +66,7 @@ watch(message, async () => {
             <button
               type="button"
               class="-mr-1 flex p-2 rounded-md focus:outline-none sm:-mr-2 transition"
-              :class="{ 'hover:bg-primary-600 focus:bg-primary-600': style == 'success', 'hover:bg-error-600 focus:bg-error-600': style == 'danger' }"
+              :class="{ 'hover:bg-primary focus:bg-primary': style == 'success', 'hover:bg-error-600 focus:bg-error-600': style == 'danger' }"
               aria-label="Dismiss"
               @click.prevent="show = false"
             >

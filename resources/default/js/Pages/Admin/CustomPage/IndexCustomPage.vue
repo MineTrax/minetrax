@@ -81,16 +81,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage Custom Pages')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Manage Custom Pages") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create custom_pages')"
             :href="route('admin.custom-page.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
           >
             <span>{{ __("Create") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Custom Page") }}</span>
@@ -106,7 +106,7 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -122,7 +122,7 @@ const headerRow = [
           <td class="px-4 whitespace-normal">
             <div class="flex items-center">
               <div
-                class="text-sm font-medium text-secondary-900 dark:text-secondary-300"
+                class="text-sm font-medium text-foreground dark:text-foreground"
               >
                 {{
                   item.is_redirect
@@ -135,7 +135,7 @@ const headerRow = [
             </div>
           </td>
 
-          <td class="py-4 text-sm text-secondary-500 px-9">
+          <td class="py-4 text-sm text-foreground px-9">
             <Icon
               v-if="item.is_visible"
               class="text-success-500 focus:outline-none"
@@ -148,7 +148,7 @@ const headerRow = [
             />
           </td>
           <td
-            class="py-4 text-sm text-center text-secondary-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_in_navbar"
@@ -162,7 +162,7 @@ const headerRow = [
             />
           </td>
           <td
-            class="py-4 text-sm text-center text-secondary-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_sidebar_visible"
@@ -177,7 +177,7 @@ const headerRow = [
           </td>
 
           <td
-            class="py-4 text-sm text-center text-secondary-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_open_in_new_tab"
@@ -207,14 +207,14 @@ const headerRow = [
               v-if="!item.is_open_in_new_tab"
               as="a"
               :href="route('custom-page.show', item.path)"
-              class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
+              class="inline-flex items-center justify-center text-primary hover:text-primary"
             >
               <EyeIcon class="inline-block w-5 h-5" />
             </InertiaLink>
             <a
               v-else
               :href="route('custom-page.show', item.path)"
-              class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
+              class="inline-flex items-center justify-center text-primary hover:text-primary"
               target="_blank"
             >
               <EyeIcon class="inline-block w-5 h-5" />

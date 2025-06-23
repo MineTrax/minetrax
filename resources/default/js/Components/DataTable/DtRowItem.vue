@@ -1,5 +1,5 @@
 <template>
-  <td class="px-4 py-3 text-sm text-secondary-800 dark:text-secondary-400">
+  <td class="px-4 py-3 text-sm text-foreground dark:text-foreground">
     <slot />
   </td>
 </template>

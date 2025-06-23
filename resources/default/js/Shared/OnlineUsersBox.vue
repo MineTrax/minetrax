@@ -1,7 +1,7 @@
 <template>
   <div v-if="enabled && users">
     <div class="p-3 bg-white dark:bg-surface-800 rounded shadow space-y-2">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Online Users") }}
       </h3>
 
@@ -14,7 +14,7 @@
           :key="user.id"
           as="a"
           :href="route('user.public.get', user.user.username)"
-          class="cursor-pointer flex mr-2 items-center text-primary-500 hover:underline"
+          class="cursor-pointer flex mr-2 items-center text-primary hover:underline"
           :style="[user.user.roles[0].color ? {color: user.user.roles[0].color} : null]"
         >
           <img
@@ -28,12 +28,12 @@
 
       <div
         v-else
-        class="text-secondary-500 dark:text-secondary-400 italic font-light flex justify-center"
+        class="text-foreground dark:text-foreground italic font-light flex justify-center"
       >
         {{ __("No member online.") }}
       </div>
 
-      <div class="flex justify-center text-xs text-secondary-700 dark:text-secondary-300 font-semibold">
+      <div class="flex justify-center text-xs text-foreground dark:text-foreground font-semibold">
         {{ __("Total") }}: {{ guestCount + onlineMembers.length }} ({{ __("members") }}: {{ onlineMembers.length }}, {{ __("guests") }}: {{ guestCount }})
       </div>
     </div>

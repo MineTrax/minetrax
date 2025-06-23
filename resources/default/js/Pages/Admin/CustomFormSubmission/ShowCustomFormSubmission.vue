@@ -41,7 +41,7 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value, 
 
     <div class="p-4 px-10 mx-auto space-y-4">
       <div class="py-3 flex justify-between">
-        <h3 class="text-xl font-extrabold text-secondary-800 dark:text-secondary-200">
+        <h3 class="text-xl font-extrabold text-foreground dark:text-foreground">
           {{ __(":formtitle - Submission #:index", {index: submission.id, formtitle: submission.custom_form.title}) }}
           <span
             v-if="submission.deleted_at"
@@ -95,7 +95,7 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value, 
           </InertiaLink>
           <InertiaLink
             :href="submission.deleted_at ? route('admin.custom-form-submission.index-archived') : route('admin.custom-form-submission.index')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-400 focus:shadow-outline-gray dark:bg-surface-800 dark:hover:bg-surface-700 dark:active:bg-surface-900 dark:focus:border-secondary-700"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray dark:bg-surface-800 dark:hover:bg-surface-700 dark:active:bg-surface-900 dark:focus:border-foreground"
           >
             <span>{{ __("Back") }}</span>
           </InertiaLink>
@@ -116,7 +116,7 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value, 
         </div>
         <div class="w-1/3 p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800">
           <ul class="flex flex-col mt-3">
-            <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
+            <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
               <div class="flex items-center justify-between w-full">
                 <span>{{ __("User") }}</span>
                 <div>
@@ -134,19 +134,19 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value, 
                     </div>
                     <div class="flex-col">
                       <div
-                        class="text-sm font-semibold text-secondary-900 dark:text-secondary-300 whitespace-nowrap truncate"
+                        class="text-sm font-semibold text-foreground dark:text-foreground whitespace-nowrap truncate"
                         :style="[submission.user.roles[0].color ? {color: submission.user.roles[0].color} : null]"
                       >
                         {{ submission.user.name }}
                       </div>
-                      <div class="text-sm text-secondary-500">
+                      <div class="text-sm text-foreground">
                         @{{ submission.user.username }}
                       </div>
                     </div>
                   </InertiaLink>
                   <div
                     v-else
-                    class="flex items-center italic text-sm text-secondary-500 dark:text-secondary-400"
+                    class="flex items-center italic text-sm text-foreground dark:text-foreground"
                   >
                     {{ __("Anonymous") }}
                   </div>
@@ -154,7 +154,7 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value, 
               </div>
             </li>
 
-            <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
+            <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
               <div class="flex items-center justify-between w-full">
                 <span>{{ __("User's Country") }}</span>
                 <div class="flex items-center space-x-1">
@@ -175,14 +175,14 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value, 
               </div>
             </li>
 
-            <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
+            <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
               <div class="flex items-center justify-between w-full">
                 <span>{{ __("Form") }}</span>
                 <span>{{ submission.custom_form.title }}</span>
               </div>
             </li>
 
-            <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400">
+            <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
               <div class="flex items-center justify-between w-full">
                 <span>{{ __("Created At") }}</span>
                 <span
@@ -194,7 +194,7 @@ const formSchema = useFormKit().generateSchemaFromFieldsArray(parsedData.value, 
 
             <li
               v-if="submission.deleted_at"
-              class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-secondary-800 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-secondary-400"
+              class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground"
             >
               <div class="flex items-center justify-between w-full">
                 <span>{{ __("Archived At") }}</span>

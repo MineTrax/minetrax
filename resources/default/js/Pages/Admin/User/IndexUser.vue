@@ -125,9 +125,9 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Users Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Users") }}
         </h1>
       </div>
@@ -140,7 +140,7 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -166,7 +166,7 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div
-              class="text-sm font-semibold text-secondary-900 dark:text-secondary-300"
+              class="text-sm font-semibold text-foreground dark:text-foreground"
               :style="[
                 item.roles[0].color
                   ? { color: item.roles[0].color }
@@ -240,7 +240,7 @@ const headerRow = [
               v-tippy
               as="a"
               :href="route('user.public.get', item.username)"
-              class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
+              class="inline-flex items-center justify-center text-primary hover:text-primary"
               :title="__('View Profile')"
             >
               <EyeIcon class="inline-block w-5 h-5" />

@@ -10,7 +10,7 @@
             'w-5 h-5 transition-all duration-300',
             notifications && notifications.length > 0
               ? 'text-error-500 dark:text-error-400 animate-pulse'
-              : 'text-secondary-500 dark:text-secondary-400 dark:hover:text-secondary-200'
+              : 'text-foreground dark:text-foreground dark:hover:text-foreground'
           ]"
         />
         <span class="sr-only">{{ __("Notifications") }}</span>
@@ -18,7 +18,7 @@
         <!-- Enhanced notification badge with glow and bounce -->
         <div
           v-if="notifications && notifications.length > 0"
-          class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-error-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-secondary-800 cursor-pointer animate-bounce shadow-lg"
+          class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-error-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-foreground cursor-pointer animate-bounce shadow-lg"
           style="animation-duration: 2s; box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);"
         >
           {{ notifications.length }}
@@ -36,7 +36,7 @@
     <template #content>
       <div class="container p-3 pb-2 w-80">
         <div class="flex justify-between">
-          <div class="block text-xs text-secondary-400">
+          <div class="block text-xs text-foreground">
             {{ __("Notifications") }}
           </div>
           <inertia-link
@@ -44,7 +44,7 @@
             :href="route('notification.mark-as-read')"
             method="post"
             :preserve-state="false"
-            class="block text-xs text-primary-400 hover:underline"
+            class="block text-xs text-primary hover:underline"
           >
             {{ __("Mark all as read") }}
           </inertia-link>
@@ -56,7 +56,7 @@
           class="flex p-4 justify-center"
         >
           <svg
-            class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-600"
+            class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -81,7 +81,7 @@
           {{ error }}
         </error-message>
 
-        <div class="flex flex-col text-sm text-secondary-700 dark:text-secondary-300 mt-2 h-96 overflow-y-auto space-y-1">
+        <div class="flex flex-col text-sm text-foreground dark:text-foreground mt-2 h-96 overflow-y-auto space-y-1">
           <notification
             v-for="notification in notifications"
             :key="notification.id"
@@ -90,13 +90,13 @@
           <div
             v-if="!loading && notifications.length <= 0"
             :key="999999999"
-            class="flex items-center justify-center italic text-secondary-500 dark:text-secondary-400 p-4"
+            class="flex items-center justify-center italic text-foreground dark:text-foreground p-4"
           >
             {{ __("No new notifications to show.") }}
           </div>
         </div>
 
-        <div class="flex justify-center text-primary-400 text-xs mt-2 hover:underline cursor-pointer">
+        <div class="flex justify-center text-primary text-xs mt-2 hover:underline cursor-pointer">
           <inertia-link
             as="a"
             :href="route('notification.index')"

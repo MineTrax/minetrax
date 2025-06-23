@@ -13,8 +13,8 @@ const props = defineProps({
 
 const classes = computed(() => {
     return props.active
-        ? 'block pl-3 pr-4 py-2 border-l-4 border-primary-400 text-base font-medium text-primary-700 bg-primary-50 dark:bg-surface-900 focus:outline-none focus:text-primary-800 focus:bg-primary-100 dark:focus:bg-surface-900 focus:border-primary-700 transition duration-150 ease-in-out'
-        : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-secondary-600 dark:text-secondary-400 hover:text-secondary-800 dark:hover:text-secondary-200 hover:bg-surface-50 dark:hover:bg-surface-700 hover:border-secondary-300 focus:outline-none focus:text-secondary-800 dark:focus:text-secondary-200 focus:bg-surface-50 dark:focus:bg-surface-900 focus:border-secondary-300 transition duration-150 ease-in-out';
+        ? 'block pl-3 pr-4 py-2 border-l-4 border-primary text-base font-medium text-primary bg-primary dark:bg-surface-900 focus:outline-none focus:text-primary focus:bg-primary dark:focus:bg-surface-900 focus:border-primary transition duration-150 ease-in-out'
+        : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground dark:text-foreground hover:text-foreground dark:hover:text-foreground hover:bg-surface-50 dark:hover:bg-surface-700 hover:border-foreground focus:outline-none focus:text-foreground dark:focus:text-foreground focus:bg-surface-50 dark:focus:bg-surface-900 focus:border-foreground transition duration-150 ease-in-out';
 });
 </script>
 

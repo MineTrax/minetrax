@@ -72,24 +72,24 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage Player Ranks')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <AlertCard
         v-if="showPlayerRankSyncAlert"
         :close-button="true"
-        text-color="text-primary-800 dark:text-primary-500"
-        border-color="border-primary-500"
+        text-color="text-primary dark:text-primary"
+        border-color="border-primary"
         @close="showPlayerRankSyncAlert = false"
       >
         {{ __("Do you know! MineTrax can also sync rank from server instead of calculating using algorithm.") }}
         <template #body>
-          <p class="text-secondary-600 dark:text-secondary-400">
+          <p class="text-foreground dark:text-foreground">
             {{
               __(
                 "If you want to sync player rank from your minecraft server, follow the steps below:"
               )
             }}
           </p>
-          <ul class="text-secondary-600 list-disc list-inside dark:text-secondary-400">
+          <ul class="text-foreground list-disc list-inside dark:text-foreground">
             <li>
               {{
 
@@ -110,7 +110,7 @@ const headerRow = [
             </li>
           </ul>
 
-          <p class="italic text-secondary-400 dark:text-secondary-500">
+          <p class="italic text-foreground dark:text-foreground">
             {{
               __(
                 "Note: This is optional feature. You can safely close this alert if you don't want to use it. You can always do it later."
@@ -121,7 +121,7 @@ const headerRow = [
       </AlertCard>
 
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Manage Player Ranks") }}
         </h1>
         <div class="flex">
@@ -138,7 +138,7 @@ const headerRow = [
           <InertiaLink
             v-if="can('create ranks')"
             :href="route('admin.rank.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
           >
             <span>{{ __("Create New") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Rank") }}</span>
@@ -154,7 +154,7 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -170,10 +170,10 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div>
-              <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
+              <div class="text-sm font-medium text-foreground dark:text-foreground">
                 {{ item.name }}
               </div>
-              <div class="text-sm text-secondary-500 dark:text-secondary-400">
+              <div class="text-sm text-foreground dark:text-foreground">
                 {{ item.shortname }}
               </div>
             </div>

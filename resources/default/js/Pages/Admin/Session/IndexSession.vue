@@ -51,9 +51,9 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Online Users & Guests')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Online Users & Guests") }}
         </h1>
       </div>
@@ -66,7 +66,7 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             <div class="flex items-center justify-center">
               <div
@@ -97,26 +97,26 @@ const headerRow = [
               </div>
               <div class="flex-col">
                 <div
-                  class="text-sm font-semibold text-secondary-900 dark:text-secondary-300 whitespace-nowrap truncate"
+                  class="text-sm font-semibold text-foreground dark:text-foreground whitespace-nowrap truncate"
                   :style="[item.user.roles[0].color ? {color: item.user.roles[0].color} : null]"
                 >
                   {{ item.user.name }}
                 </div>
-                <div class="text-sm text-secondary-500">
+                <div class="text-sm text-foreground">
                   @{{ item.user.username }}
                 </div>
               </div>
             </InertiaLink>
             <div
               v-else
-              class="flex items-center italic text-sm text-secondary-500 dark:text-secondary-400"
+              class="flex items-center italic text-sm text-foreground dark:text-foreground"
             >
               {{ __("Anonymous") }}
             </div>
           </td>
 
           <DtRowItem>
-            <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
+            <div class="text-sm font-medium text-foreground dark:text-foreground">
               <a
                 class="hover:underline"
                 target="_blank"

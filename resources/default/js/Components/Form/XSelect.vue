@@ -3,9 +3,9 @@
     <select
       :id="id"
       ref="input"
-      class="border-secondary-300 text-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 rounded-md block w-full p-3 dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-900"
+      class="border-foreground text-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md block w-full p-3 dark:bg-surface-900 dark:text-foreground dark:border-foreground"
       :class="[
-        error ? 'border-error-400 dark:border-error-400' : 'border-secondary-300',
+        error ? 'border-error-400 dark:border-error-400' : 'border-foreground',
         label ? 'pt-6 h-14' : '',
         selectClass,
       ]"
@@ -20,7 +20,7 @@
     >
       <option
         v-if="placeholder"
-        class="text-secondary-500 dark:text-secondary-400"
+        class="text-foreground dark:text-foreground"
         value=""
         :disabled="disableNull"
       >
@@ -39,7 +39,7 @@
       v-if="label"
       :for="id"
       :class="textColor"
-      class="absolute -top-3 left-0 px-3 py-5 text-xs h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-secondary-400"
+      class="absolute -top-3 left-0 px-3 py-5 text-xs h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-foreground"
     >{{
       label
     }}</label>
@@ -50,7 +50,7 @@
     >
       <p
         v-show="help"
-        class="text-xs text-secondary-500 dark:text-secondary-400"
+        class="text-xs text-foreground dark:text-foreground"
       >
         {{ help }}
       </p>
@@ -119,13 +119,13 @@ export default {
         },
         textColor() {
             if (this.hasFocus) {
-                return 'text-primary-400';
+                return 'text-primary';
             }
 
             if (this.error) {
                 return 'text-error-400';
             } else {
-                return 'text-secondary-500';
+                return 'text-foreground';
             }
         }
     },

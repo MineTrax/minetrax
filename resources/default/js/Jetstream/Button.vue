@@ -14,7 +14,7 @@ defineProps({
 <template>
   <button
     :type="type"
-    class="inline-flex items-center px-4 py-2 bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray transition ease-in-out duration-150 dark:bg-surface-700 dark:hover:bg-surface-600"
+    class="inline-flex items-center px-4 py-2 bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150 dark:bg-surface-700 dark:hover:bg-surface-600"
   >
     <svg
       v-if="loading"

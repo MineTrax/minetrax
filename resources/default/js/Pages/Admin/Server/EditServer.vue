@@ -4,12 +4,12 @@
 
     <div class="py-12 px-10 max-w-5xl mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-secondary-500 dark:text-secondary-300">
+        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
           {{ __('Edit Server: :name', { name: server.name }) }}
         </h1>
         <inertia-link
           :href="route('admin.server.index')"
-          class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
         >
           <span>{{ __("Cancel") }}</span>
         </inertia-link>
@@ -123,7 +123,7 @@
                           name="webquery_port"
                           help-error-flex="flex-col"
                         />
-                        <div class="text-xs text-secondary-400 flex items-center">
+                        <div class="text-xs text-foreground flex items-center">
                           {{ __("WebQuery port is a new port which MineTrax plugin will open for secure connection between server and web. Enter a port value which is available and can be open. Eg: 25569") }}
                         </div>
                       </div>
@@ -209,7 +209,7 @@
                 <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Update Server") }}

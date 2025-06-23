@@ -4,12 +4,12 @@
 
     <div class="max-w-6xl px-10 py-12 mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Add Player Rank") }}
         </h1>
         <inertia-link
           :href="route('admin.rank.index')"
-          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md dark:bg-surface-600 hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md dark:bg-surface-600 hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
         >
           <span>{{ __("Cancel") }}</span>
         </inertia-link>
@@ -19,16 +19,16 @@
         <div class="md:grid md:grid-cols-3 md:gap-6">
           <div class="md:col-span-1">
             <div class="px-4 sm:px-0">
-              <h3 class="text-lg font-medium leading-6 text-secondary-900 dark:text-secondary-400">
+              <h3 class="text-lg font-medium leading-6 text-foreground dark:text-foreground">
                 {{ __("Overview") }}
               </h3>
-              <p class="mt-1 text-sm text-secondary-600 dark:text-secondary-500">
+              <p class="mt-1 text-sm text-foreground dark:text-foreground">
                 {{ __("Ranks are assigned to players when a given criteria is matched, eg: play time, score etc.") }}<br>{{ __("Play Time Need should be provided in Seconds. So if you want to add criteria to give rank if player played at-least 1 minute then you write 60") }}
               </p>
-              <p class="mt-3 text-sm text-secondary-600 dark:text-secondary-500">
+              <p class="mt-3 text-sm text-foreground dark:text-foreground">
                 {{ __("Each rank is sorted according to its weight. More the score and time is more the weight.") }}
               </p>
-              <p class="mt-3 text-sm text-secondary-600 dark:text-secondary-500">
+              <p class="mt-3 text-sm text-foreground dark:text-foreground">
                 {{ __("If you instead want to sync player rank from server to web, you can do that too from Settings -> Player Settings. Currently Luckperms is supported. Make sure to have same Short Name for rank name what you have chosen in Luckperms. While rank sync is enabled the criteria like score and time will be ignored but while adding ranks it is recommended to enter something in them so web know which rank has more weight.") }}
               </p>
             </div>
@@ -97,7 +97,7 @@
 
                       <label
                         for="rank_img"
-                        class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                        class="block text-sm font-medium text-foreground dark:text-foreground"
                       >{{ __("Rank Image") }}</label>
 
 
@@ -141,7 +141,7 @@
                 <div class="flex justify-end px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6">
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Add Rank") }}

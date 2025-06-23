@@ -5,7 +5,7 @@
     />
 
     <div class="py-3 px-2 sm:py-12 sm:px-10 max-w-7xl mx-auto">
-      <h1 class="text-center text-xl sm:text-2xl md:text-4xl font-extrabold text-secondary-700 dark:text-secondary-200 mb-3">
+      <h1 class="text-center text-xl sm:text-2xl md:text-4xl font-extrabold text-foreground dark:text-foreground mb-3">
         {{ __("Features & Known Bugs") }}
       </h1>
 
@@ -24,7 +24,7 @@
         />
       </div>
 
-      <span class="text-lg mt-10 font-extrabold text-primary-500 mb-4 flex items-center">
+      <span class="text-lg mt-10 font-extrabold text-primary mb-4 flex items-center">
         <icon
           name="spin-loader"
           class="h-7 w-7 animate-spin mr-1"
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <span class="absolute hidden bg-error-100 bg-primary-100 bg-success-100 bg-pink-100 bg-orange-100 bg-purple-100 border-error-500 border-primary-500 border-success-500 border-pink-500 border-orange-500 border-purple-500 text-error-500 text-primary-500 text-success-500 text-pink-500 text-orange-500 text-purple-500" />
+    <span class="absolute hidden bg-error-100 bg-primary bg-success-100 bg-pink-100 bg-orange-100 bg-purple-100 border-error-500 border-primary border-success-500 border-pink-500 border-orange-500 border-purple-500 text-error-500 text-primary text-success-500 text-pink-500 text-orange-500 text-purple-500" />
   </app-layout>
 </template>
 

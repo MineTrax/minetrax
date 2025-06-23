@@ -11,7 +11,7 @@
         <textarea
           ref="post-content"
           v-model="body"
-          class="mt-1 overflow-hidden block w-full shadow-sm sm:text-sm border-secondary-300 rounded-md resize-none focus:border-primary-300 focus:ring text-sm focus:ring-primary-200 focus:ring-opacity-50 dark:bg-surface-900 dark:text-secondary-200 dark:border-secondary-800"
+          class="mt-1 overflow-hidden block w-full shadow-sm sm:text-sm border-foreground rounded-md resize-none focus:border-primary focus:ring text-sm focus:ring-primary focus:ring-opacity-50 dark:bg-surface-900 dark:text-foreground dark:border-foreground"
           aria-label="post content"
           :placeholder="bodyPlaceholderText"
           name="post"
@@ -36,7 +36,7 @@
             >
               <icon
                 name="close"
-                class="p-1 text-secondary-500 dark:text-secondary-400"
+                class="p-1 text-foreground dark:text-foreground"
               />
             </button>
             <img
@@ -61,12 +61,12 @@
             v-tippy
             :title="__('Add Media')"
             type="button"
-            class="inline-flex items-center justify-center h-10 w-10 hover:bg-primary-100 dark:hover:bg-surface-900 rounded-full focus:outline-none"
+            class="inline-flex items-center justify-center h-10 w-10 hover:bg-primary dark:hover:bg-surface-900 rounded-full focus:outline-none"
             @click="openImageSelector"
           >
             <icon
               name="photograph"
-              class="h-6 w-6 text-primary-400"
+              class="h-6 w-6 text-primary"
             />
           </button>
           <span><jet-input-error
@@ -74,7 +74,7 @@
             class="mt-2"
           /></span>
           <loading-button
-            class="justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-bold tracking-wide leading-5 rounded-full text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+            class="justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-bold tracking-wide leading-5 rounded-full text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
             :loading="postsubmitting"
             type="submit"
           >
@@ -128,7 +128,7 @@
         <div
           v-if="!loading && showEmptyPost && posts.data.length <= 0"
           :key="999999999"
-          class="flex bg-white dark:bg-surface-800 items-center justify-center italic text-secondary-500 dark:text-secondary-400 p-4 rounded shadow"
+          class="flex bg-white dark:bg-surface-800 items-center justify-center italic text-foreground dark:text-foreground p-4 rounded shadow"
         >
           {{ __(":username hasn't posted anything yet.", {username: username}) }}
         </div>

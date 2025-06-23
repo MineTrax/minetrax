@@ -143,7 +143,7 @@ const pollServerForNewMessages = () => {
 
 <template>
   <div class="flex flex-col p-3 space-y-4">
-    <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+    <h3 class="font-extrabold text-foreground dark:text-foreground">
       {{ __("Messages Box") }}
     </h3>
 
@@ -173,7 +173,7 @@ const pollServerForNewMessages = () => {
     >
       <div
         v-if="!isLoading && messages && messages.length === 0"
-        class="flex justify-center pt-4 text-sm text-secondary-500 dark:text-secondary-400"
+        class="flex justify-center pt-4 text-sm text-foreground dark:text-foreground"
       >
         {{ __("No messages found.") }}
       </div>
@@ -191,7 +191,7 @@ const pollServerForNewMessages = () => {
             v-if="comment.type.value === 'recruitment_action'"
           >
             <div
-              class="italic text-sm text-secondary-700 dark:text-secondary-300"
+              class="italic text-sm text-foreground dark:text-foreground"
             >
               <InertiaLink
                 as="span"
@@ -216,7 +216,7 @@ const pollServerForNewMessages = () => {
               <CommonStatusBadge :status="comment.comment" />
               <span
                 v-tippy
-                class="inline ml-1 text-xs text-secondary-500 dark:text-secondary-400 focus:outline-none"
+                class="inline ml-1 text-xs text-foreground dark:text-foreground focus:outline-none"
                 :title="
                   formatToDayDateString(comment.created_at)
                 "
@@ -261,7 +261,7 @@ const pollServerForNewMessages = () => {
               }"
             >
               <div
-                class="flex flex-col px-4 py-2 text-secondary-700 rounded-2xl dark:bg-opacity-25 dark:text-secondary-200"
+                class="flex flex-col px-4 py-2 text-foreground rounded-2xl dark:bg-opacity-25 dark:text-foreground"
                 :class="
                   {
                     'bg-orange-100 dark:bg-warning-300': comment.type.value === 'recruitment_staff_whisper',
@@ -286,7 +286,7 @@ const pollServerForNewMessages = () => {
                   >
                     <span
                       v-tippy
-                      class="inline ml-1 text-xs text-secondary-500 dark:text-secondary-400 focus:outline-none"
+                      class="inline ml-1 text-xs text-foreground dark:text-foreground focus:outline-none"
                       :title="
                         formatToDayDateString(
                           comment.created_at
@@ -336,7 +336,7 @@ const pollServerForNewMessages = () => {
             >
               <Icon
                 name="trash"
-                class="w-4 h-4 text-secondary-200 hover:text-error-400 dark:text-secondary-500 dark:hover:text-error-500"
+                class="w-4 h-4 text-foreground hover:text-error-400 dark:text-foreground dark:hover:text-error-500"
               />
             </InertiaLink>
           </template>
@@ -380,7 +380,7 @@ const pollServerForNewMessages = () => {
         </LoadingButton>
         <LoadingButton
           :disabled="!submission.i_can_send_message"
-          class="px-4 py-2 text-white rounded bg-primary-500 hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-25"
+          class="px-4 py-2 text-white rounded bg-primary hover:bg-primary disabled:cursor-not-allowed disabled:opacity-25"
           :loading="isSendingMessage"
           @click="
             forAdmin

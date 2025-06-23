@@ -58,7 +58,7 @@ defineProps({
         <ServerIntelOverviewNumbersBox :servers="filters?.servers" />
 
         <div class="bg-white dark:bg-surface-800 rounded w-full shadow basis-2/6 p-3">
-          <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200 flex mt-2 items-center">
+          <h3 class="font-extrabold text-foreground dark:text-foreground flex mt-2 items-center">
             <ServerStackIcon
               class="w-6 mr-1"
             />
@@ -66,13 +66,13 @@ defineProps({
           </h3>
 
           <div class="flex flex-col text-sm mt-5">
-            <table class="table-auto min-w-full dark:text-secondary-300 text-secondary-700">
+            <table class="table-auto min-w-full dark:text-foreground text-foreground">
               <tbody>
                 <tr>
                   <td class="py-2 flex">
                     <Icon
                       name="users"
-                      class="w-5 text-primary-500 mr-1"
+                      class="w-5 text-primary mr-1"
                     />
                     {{ __("Unique Players") }}
                   </td>
@@ -98,7 +98,7 @@ defineProps({
                   <td class="py-2 flex">
                     <Icon
                       name="users"
-                      class="w-5 text-secondary-500 mr-1"
+                      class="w-5 text-foreground mr-1"
                     />
                     {{ __("Old Players") }}
                   </td>
@@ -150,7 +150,7 @@ defineProps({
                   <td class="py-2 flex">
                     <Icon
                       name="cpu"
-                      class="w-5 text-primary-500 mr-1"
+                      class="w-5 text-primary mr-1"
                     />
                     {{ __("Avg CPU Load") }}
                   </td>

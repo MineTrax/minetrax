@@ -29,7 +29,7 @@ const hasActiveChild = computed(() => {
     :class="[
       'group flex w-full items-center rounded-md py-2 px-3 text-sm font-medium',
       'hover:bg-surface-100 dark:hover:bg-surface-900',
-      item.active ? 'text-secondary-800 font-semibold dark:text-secondary-200' : 'text-secondary-600 dark:text-secondary-400 font-medium'
+      item.active ? 'text-foreground font-semibold dark:text-foreground' : 'text-foreground dark:text-foreground font-medium'
     ]"
     :href="item.href"
     :target="item.newtab ? '_blank' : null"
@@ -38,8 +38,8 @@ const hasActiveChild = computed(() => {
       :is="item.icon"
       v-if="item.icon"
       :class="[
-        'w-6 h-6 shrink-0 mr-2 group-hover:text-secondary-600 dark:group-hover:text-secondary-400',
-        item.active ? 'text-secondary-600 dark:text-secondary-400' : 'text-secondary-400 dark:text-secondary-600'
+        'w-6 h-6 shrink-0 mr-2 group-hover:text-foreground dark:group-hover:text-foreground',
+        item.active ? 'text-foreground dark:text-foreground' : 'text-foreground dark:text-foreground'
       ]"
     />
     <span v-if="!collapsed">{{ __(item.label) }}</span>
@@ -54,15 +54,15 @@ const hasActiveChild = computed(() => {
       :class="[
         'group text-left flex w-full items-center rounded-md py-2 px-3 text-sm',
         'hover:bg-surface-100 dark:hover:bg-surface-900',
-        open ? 'font-semibold text-secondary-800 dark:text-secondary-200' : 'text-secondary-600 dark:text-secondary-400 font-medium'
+        open ? 'font-semibold text-foreground dark:text-foreground' : 'text-foreground dark:text-foreground font-medium'
       ]"
     >
       <component
         :is="item.icon"
         v-if="item.icon"
         :class="[
-          'w-6 h-6 shrink-0 mr-2 group-hover:text-secondary-600 dark:group-hover:text-secondary-400',
-          open ? 'text-secondary-600 dark:text-secondary-400' : 'text-secondary-400 dark:text-secondary-600'
+          'w-6 h-6 shrink-0 mr-2 group-hover:text-foreground dark:group-hover:text-foreground',
+          open ? 'text-foreground dark:text-foreground' : 'text-foreground dark:text-foreground'
         ]"
       />
       <span
@@ -74,7 +74,7 @@ const hasActiveChild = computed(() => {
         v-if="!collapsed"
         :class="[
           'w-6 h-6 shrink-0',
-          open? '-rotate-180 text-secondary-600 dark:text-secondary-400': 'text-secondary-400 dark:text-secondary-600'
+          open? '-rotate-180 text-foreground dark:text-foreground': 'text-foreground dark:text-foreground'
         ]"
       />
     </DisclosureButton>

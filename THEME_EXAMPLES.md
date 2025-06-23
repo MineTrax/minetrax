@@ -178,11 +178,11 @@ For advanced theming, you can even conditionally apply different colors based on
 ```css
 /* In your CSS file */
 [data-theme="dark"] .custom-component {
-    @apply bg-surface-900 text-secondary-100;
+    @apply bg-surface-900 text-foreground;
 }
 
 [data-theme="light"] .custom-component {
-    @apply bg-surface-50 text-secondary-900;
+    @apply bg-surface-50 text-foreground;
 }
 ```
 

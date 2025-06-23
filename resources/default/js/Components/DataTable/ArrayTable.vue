@@ -116,7 +116,7 @@ const sortedDir = computed(() => {
       <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
           <div class="overflow-hidden">
-            <table class="min-w-full divide-y divide-secondary-200 dark:divide-secondary-700">
+                                <table class="min-w-full divide-y divide-foreground dark:divide-foreground">
               <thead class="bg-surface-100 dark:bg-surface-700">
                 <tr>
                   <slot name="header">
@@ -124,7 +124,7 @@ const sortedDir = computed(() => {
                       v-for="th in header"
                       :key="th.key"
                       scope="col"
-                      class="px-4 py-3 text-xs font-semibold text-left text-secondary-400 dark:text-secondary-300"
+                      class="px-4 py-3 text-xs font-semibold text-left text-foreground dark:text-foreground"
                       :class="[ th.class ? th.class : '' ]"
                     >
                       <div class="inline-flex items-center">
@@ -136,8 +136,8 @@ const sortedDir = computed(() => {
                           <Icon
                             v-if="th.sortable"
                             :name="sortedField === th.key ? (sortedDir === 'asc' ? 'sort-up' : 'sort-down') : 'sort-updown'"
-                            class="inline-block w-3 h-3 ml-1 text-secondary-400 dark:text-secondary-300"
-                            :class="[ sortedField === th.key ? 'text-primary-500 dark:text-primary-400' : '' ]"
+                            class="inline-block w-3 h-3 ml-1 text-foreground dark:text-foreground"
+                            :class="[ sortedField === th.key ? 'text-primary dark:text-primary' : '' ]"
                           />
                         </div>
                       </div>
@@ -147,7 +147,7 @@ const sortedDir = computed(() => {
               </thead>
               <tbody
                 v-if="!loading"
-                class="divide-y divide-secondary-200 dark:divide-secondary-700"
+                                        class="divide-y divide-foreground dark:divide-foreground"
               >
                 <tr
                   v-for="item in sortedData"
@@ -160,7 +160,7 @@ const sortedDir = computed(() => {
                     <td
                       v-for="column in header"
                       :key="column.key"
-                      class="px-4 py-3 text-sm font-medium text-secondary-900 dark:text-secondary-100"
+                      class="px-4 py-3 text-sm font-medium text-foreground dark:text-foreground"
                     >
                       {{ item[column.key] }}
                     </td>
@@ -170,7 +170,7 @@ const sortedDir = computed(() => {
                 <tr v-if="sortedData.length <= 0">
                   <td
                     :colspan="header.length"
-                    class="px-4 py-3 text-sm font-medium text-center text-secondary-500 dark:text-secondary-300"
+                    class="px-4 py-3 text-sm font-medium text-center text-foreground dark:text-foreground"
                   >
                     {{ __("No data found") }}
                   </td>
@@ -183,7 +183,7 @@ const sortedDir = computed(() => {
                 <tr>
                   <td
                     :colspan="header.length"
-                    class="px-4 py-3 text-sm font-medium text-center text-secondary-500 dark:text-secondary-300"
+                    class="px-4 py-3 text-sm font-medium text-center text-foreground dark:text-foreground"
                   >
                     <div
                       v-if="loading"

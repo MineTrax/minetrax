@@ -69,14 +69,14 @@ activeTime = Math.max(activeTime, 0);
       <div
         class="flex flex-col shadow bg-white dark:bg-surface-800 rounded p-3"
       >
-        <h1 class="text-lg font-bold text-secondary-700 dark:text-secondary-300">
+        <h1 class="text-lg font-bold text-foreground dark:text-foreground">
           {{ __("Session #:id", { id: session.id }) }},
           {{ player.username }}
           <span class="text-sm font-light">({{ player.uuid }})</span>
         </h1>
 
         <div
-          class="grid grid-cols-1 md:grid-cols-2 grap-2 md:gap-16 w-full dark:text-secondary-400 text-secondary-600 mt-4"
+          class="grid grid-cols-1 md:grid-cols-2 grap-2 md:gap-16 w-full dark:text-foreground text-foreground mt-4"
         >
           <table>
             <tr>
@@ -156,7 +156,7 @@ activeTime = Math.max(activeTime, 0);
                 </span>
                 <span
                   v-else
-                  class="text-secondary-400"
+                  class="text-foreground"
                 >—</span>
               </td>
             </tr>
@@ -378,13 +378,13 @@ activeTime = Math.max(activeTime, 0);
         v-if="showCriticalInfo && criticalInfo"
         class="flex flex-col shadow bg-white dark:bg-surface-800 rounded p-3"
       >
-        <h1 class="text-lg font-bold text-secondary-700 dark:text-secondary-300">
+        <h1 class="text-lg font-bold text-foreground dark:text-foreground">
           {{ __("Critical Info") }}
           <span class="text-sm font-light">({{ __("Only visible to Staff with permission") }})</span>
         </h1>
 
         <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-16 w-full dark:text-secondary-400 text-secondary-600 mt-4"
+          class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-16 w-full dark:text-foreground text-foreground mt-4"
         >
           <table>
             <tr>
@@ -393,7 +393,7 @@ activeTime = Math.max(activeTime, 0);
               </td>
               <td class="text-right">
                 <a
-                  class="hover:text-primary-400 hover:underline filter blur-sm hover:blur-none duration-300"
+                  class="hover:text-primary hover:underline filter blur-sm hover:blur-none duration-300"
                   target="_blank"
                   :href="`https://check-host.net/ip-info?host=${criticalInfo.player_ip_address}`"
                 >

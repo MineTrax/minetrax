@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <hr
       v-if="commentableType == 'post'"
-      class="mt-0.5 dark:border-secondary-700"
+      class="mt-0.5 dark:border-foreground"
     >
 
     <!-- Loading Spinner -->
@@ -11,7 +11,7 @@
       class="flex justify-center p-4"
     >
       <svg
-        class="w-5 h-5 mr-3 -ml-1 animate-spin text-primary-600 dark:text-primary-400"
+        class="w-5 h-5 mr-3 -ml-1 animate-spin text-primary dark:text-primary"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -38,7 +38,7 @@
       class="flex mt-3"
     >
       <button
-        class="text-sm font-semibold text-secondary-500 dark:text-secondary-400 focus:outline-none hover:underline"
+        class="text-sm font-semibold text-foreground dark:text-foreground focus:outline-none hover:underline"
         @click="loadMoreComments"
       >
         {{ __("View previous comments") }}
@@ -48,7 +48,7 @@
     <!-- Show no comments -->
     <div
       v-if="!loading && comments && comments.data.length === 0"
-      class="flex justify-center pt-4 text-secondary-500 dark:text-secondary-400 text-sm"
+      class="flex justify-center pt-4 text-foreground dark:text-foreground text-sm"
     >
       {{ __("No comments yet") }}
     </div>
@@ -65,8 +65,8 @@
       >
         <div class="items-start order-2 max-w-lg mx-2 space-y-2 text-sm">
           <div
-            class="flex flex-col px-4 py-2 text-secondary-700 bg-surface-100 rounded-tl-lg rounded-2xl dark:bg-surface-600 dark:bg-opacity-25 dark:text-secondary-200"
-            :class="{'border border-secondary-300 dark:border-secondary-700': $page.props.auth.user && $page.props.auth.user.id === comment.user_id}"
+            class="flex flex-col px-4 py-2 text-foreground bg-surface-100 rounded-tl-lg rounded-2xl dark:bg-surface-600 dark:bg-opacity-25 dark:text-foreground"
+            :class="{'border border-foreground dark:border-foreground': $page.props.auth.user && $page.props.auth.user.id === comment.user_id}"
           >
             <inertia-link
               as="a"
@@ -80,7 +80,7 @@
               >
                 <span
                   v-tippy
-                  class="inline ml-1 text-xs text-secondary-500 dark:text-secondary-400 focus:outline-none"
+                  class="inline ml-1 text-xs text-foreground dark:text-foreground focus:outline-none"
                   :title="formatToDayDateString(comment.created_at)"
                 >
                   {{ formatTimeAgoToNow(comment.created_at) }}
@@ -107,7 +107,7 @@
         >
           <icon
             name="trash"
-            class="w-4 h-4 text-secondary-200 hover:text-error-400 dark:text-secondary-500 dark:hover:text-error-500"
+            class="w-4 h-4 text-foreground hover:text-error-400 dark:text-foreground dark:hover:text-error-500"
           />
         </inertia-link>
       </div>
@@ -132,7 +132,7 @@
             :placeholder="__('Write a comment...')"
             aria-label="comment"
             type="text"
-            class="block w-full mt-1 bg-surface-100 border border-secondary-100 rounded-full dark:bg-surface-900 focus:border-secondary-300 dark:border-secondary-800 dark:focus:border-secondary-700 dark:text-secondary-200 focus:ring-0 sm:text-sm disabled:opacity-50"
+            class="block w-full mt-1 bg-surface-100 border border-foreground rounded-full dark:bg-surface-900 focus:border-foreground dark:border-foreground dark:focus:border-foreground dark:text-foreground focus:ring-0 sm:text-sm disabled:opacity-50"
             @keypress.enter="submitComment"
           >
         </form>

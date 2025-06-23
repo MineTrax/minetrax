@@ -68,16 +68,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Badges Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("User Badges") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create badges')"
             :href="route('admin.badge.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
           >
             <span>{{ __("Create New") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Badge") }}</span>
@@ -93,7 +93,7 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -109,11 +109,11 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div
-              class="text-sm font-medium text-secondary-900 dark:text-secondary-300"
+              class="text-sm font-medium text-foreground dark:text-foreground"
             >
               {{ item.name }}
             </div>
-            <div class="text-sm text-secondary-500 dark:text-secondary-400">
+            <div class="text-sm text-foreground dark:text-foreground">
               {{ item.shortname }}
             </div>
           </td>

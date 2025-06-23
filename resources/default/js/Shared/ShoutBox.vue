@@ -1,7 +1,7 @@
 <template>
   <div v-if="$page.props.generalSettings.enable_shoutbox">
     <div class="p-3 space-y-4 bg-white rounded shadow dark:bg-surface-800">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Shout Box") }}
       </h3>
 
@@ -43,7 +43,7 @@
           >
             <div class="items-start order-2 max-w-xs mx-2 space-y-2 text-sm">
               <div
-                class="flex flex-col inline-block px-4 py-2 text-secondary-700 bg-surface-100 rounded-tl-lg rounded-2xl dark:bg-surface-600 dark:bg-opacity-25 dark:text-secondary-200"
+                class="flex flex-col inline-block px-4 py-2 text-foreground bg-surface-100 rounded-tl-lg rounded-2xl dark:bg-surface-600 dark:bg-opacity-25 dark:text-foreground"
               >
                 <div>
                   <inertia-link
@@ -56,7 +56,7 @@
                   </inertia-link>
                   <span
                     v-tippy
-                    class="ml-1 text-xs text-secondary-500 dark:text-secondary-400 focus:outline-none"
+                    class="ml-1 text-xs text-foreground dark:text-foreground focus:outline-none"
                     :title="formatToDayDateString(shout.created_at)"
                   >
                     {{ formatTimeAgoToNow(shout.created_at, false) }}
@@ -82,7 +82,7 @@
               :href="route('shout.delete', shout.id)"
             >
               <icon
-                class="w-4 h-4 text-secondary-200 dark:text-secondary-500 hover:text-error-400 dark:hover:text-error-500"
+                class="w-4 h-4 text-foreground dark:text-foreground hover:text-error-400 dark:hover:text-error-500"
                 name="trash"
               />
             </inertia-link>
@@ -104,18 +104,18 @@
               :href="route('shout.delete', shout.id)"
             >
               <icon
-                class="w-4 h-4 text-secondary-200 dark:text-secondary-500 hover:text-error-400 dark:hover:text-error-500"
+                class="w-4 h-4 text-foreground dark:text-foreground hover:text-error-400 dark:hover:text-error-500"
                 name="trash"
               />
             </inertia-link>
             <div class="items-start order-1 max-w-xs mx-2 space-y-2 text-sm">
               <div
-                class="flex flex-col inline-block px-4 py-2 text-secondary-700 rounded-tr-lg rounded-2xl bg-primary-100 dark:bg-surface-900 dark:bg-opacity-40 dark:text-secondary-200"
+                class="flex flex-col inline-block px-4 py-2 text-foreground rounded-tr-lg rounded-2xl bg-primary dark:bg-surface-900 dark:bg-opacity-40 dark:text-foreground"
               >
                 <div class="text-right">
                   <span
                     v-tippy
-                    class="mr-1 text-xs text-secondary-500 dark:text-secondary-400 focus:outline-none"
+                    class="mr-1 text-xs text-foreground dark:text-foreground focus:outline-none"
                     :title="formatToDayDateString(shout.created_at)"
                   >
                     {{ formatTimeAgoToNow(shout.created_at, false) }}
@@ -145,7 +145,7 @@
 
         <div
           v-if="!loading && (!shouts || shouts.length <= 0)"
-          class="italic text-secondary-500 dark:text-secondary-400 text-center"
+          class="italic text-foreground dark:text-foreground text-center"
         >
           {{ __("No shouts yet.") }}
         </div>
@@ -158,7 +158,7 @@
           v-model="message"
           :disabled="sending"
           aria-label="Shout"
-          class="block w-full mt-1 bg-surface-100 border-none rounded-md focus:ring-secondary-300 sm:text-sm disabled:opacity-50 focus:bg-white dark:bg-surface-900 dark:text-secondary-200 dark:focus:bg-surface-900 dark:focus:ring-secondary-700"
+          class="block w-full mt-1 bg-surface-100 border-none rounded-md focus:ring-foreground sm:text-sm disabled:opacity-50 focus:bg-white dark:bg-surface-900 dark:text-foreground dark:focus:bg-surface-900 dark:focus:ring-foreground"
           type="text"
           :placeholder="__('Say something..')"
           @keypress.enter="sendShout"
@@ -170,10 +170,10 @@
       </div>
       <div
         v-else
-        class="text-sm text-center text-secondary-600 dark:text-secondary-400"
+        class="text-sm text-center text-foreground dark:text-foreground"
       >
         <inertia-link
-          class="font-semibold text-primary-500"
+          class="font-semibold text-primary"
           :href="route('login')"
         >
           {{ __("Login") }}
@@ -181,7 +181,7 @@
         <template v-if="$page.props.hasRegistrationFeature">
           {{ " " + __("or") }}
           <inertia-link
-            class="font-semibold text-primary-500"
+            class="font-semibold text-primary"
             :href="route('register')"
           >
             {{ __("Register") }}

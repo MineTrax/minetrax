@@ -27,7 +27,7 @@ defineProps({
 
 <template>
   <div
-    class="leading-6 text-black dark:text-secondary-200"
+    class="leading-6 text-black dark:text-foreground"
     :class="textClass"
     :style="[user.roles[0].color ? {color: user.roles[0].color} : null]"
   >
@@ -36,7 +36,7 @@ defineProps({
     </span>
     <span
       v-if="showUsername"
-      class="text-secondary-500 dark:text-secondary-300"
+      class="text-foreground dark:text-foreground"
     > @{{ user.username }}</span>
 
     <Icon
@@ -44,7 +44,7 @@ defineProps({
       v-tippy
       name="verified-check-fill"
       :title="__('Verified Account')"
-      class="inline mb-1 fill-current focus:outline-none text-primary-400"
+      class="inline mb-1 fill-current focus:outline-none text-primary"
       :class="iconClass"
     />
     <Icon

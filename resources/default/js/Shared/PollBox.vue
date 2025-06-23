@@ -3,17 +3,17 @@
     <div class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow">
       <h3
         v-if="!isListing"
-        class="font-extrabold text-secondary-800 dark:text-secondary-200"
+        class="font-extrabold text-foreground dark:text-foreground"
       >
         {{ __("Latest Poll") }}
       </h3>
       <h3
         v-if="isListing"
-        class="font-extrabold text-secondary-800 dark:text-secondary-200"
+        class="font-extrabold text-foreground dark:text-foreground"
       >
         {{ __("Poll") }} {{ poll.id }}
       </h3>
-      <div class="mt-3 text-secondary-500 dark:text-secondary-300">
+      <div class="mt-3 text-foreground dark:text-foreground">
         <poll
           v-bind="options"
           @addvote="addVote"

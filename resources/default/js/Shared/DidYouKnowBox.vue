@@ -4,7 +4,7 @@
     ref="box"
   >
     <div class="p-3 bg-white rounded shadow sm:px-5 dark:bg-surface-800">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Did You Know?") }}
       </h3>
 
@@ -36,7 +36,7 @@
           alt="Image"
         >
         <div
-          class="text-sm text-secondary-600 dark:text-secondary-300"
+          class="text-sm text-foreground dark:text-foreground"
           :class="{ 'font-semibold text-center': imageUrl }"
         >
           {{ text }}

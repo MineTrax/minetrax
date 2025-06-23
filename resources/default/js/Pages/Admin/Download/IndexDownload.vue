@@ -83,16 +83,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Downloads Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Downloads") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create downloads')"
             :href="route('admin.download.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
           >
             <span>{{ __("Create") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Download") }}</span>
@@ -108,7 +108,7 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -176,7 +176,7 @@ const headerRow = [
           <DtRowItem>
             <span
               v-if="item.is_external"
-              class="italic text-secondary-400"
+              class="italic text-foreground"
             >{{ __("Unknown") }}</span>
             <span v-else>
               {{ millify(item.file.size, {
@@ -206,7 +206,7 @@ const headerRow = [
               v-tippy
               :href="route('download.download', item.slug)"
               target="_blank"
-              class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
+              class="inline-flex items-center justify-center text-primary hover:text-primary"
               :title="__('Download')"
             >
               <CloudArrowDownIcon class="inline-block w-5 h-5" />

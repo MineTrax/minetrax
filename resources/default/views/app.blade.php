@@ -56,7 +56,7 @@
     }
     @endphp
 </head>
-<body class="font-sans antialiased bg-surface-200 dark:bg-surface-900">
+<body class="font-sans antialiased bg-background">
     {{-- SEO Inject at Body Start --}}
     @php
     $seoInjectAtBodyStart = app(\App\Settings\SeoSettings::class)->inject_at_body_start;

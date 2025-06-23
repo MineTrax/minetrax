@@ -8,7 +8,7 @@
       <div class="flex-1">
         <div class="flex flex-col w-full">
           <div class="w-full bg-white rounded shadow dark:bg-surface-800">
-            <div class="px-6 py-4 font-bold border-b dark:border-secondary-700 dark:text-secondary-200">
+            <div class="px-6 py-4 font-bold border-b dark:border-foreground dark:text-foreground">
               {{ __("General Settings") }}
             </div>
 
@@ -34,7 +34,7 @@
 
                             <label
                               for="photo"
-                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Site Header Logo Image Light (200x40)") }}</label>
 
 
@@ -82,7 +82,7 @@
 
                             <label
                               for="photo_dark"
-                              class="block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Site Header Logo Image Dark (200x40)") }}</label>
 
 
@@ -509,10 +509,10 @@
                               <div class="w-5" />
                               <div class="w-5" />
                               <label
-                                class="flex-1 block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                                class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                               >{{ __("Voting Site Link") }}</label>
                               <label
-                                class="flex-1 block text-sm font-medium text-secondary-700 dark:text-secondary-400"
+                                class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                               >{{ __("Display Name") }}</label>
                             </div>
 
@@ -527,7 +527,7 @@
                                 <div class="flex space-x-4 items-start">
                                   <div class="drag-handle cursor-move mt-6">
                                     <ArrowsUpDownIcon
-                                      class="w-5 h-5 text-secondary-400 hover:text-secondary-600"
+                                      class="w-5 h-5 text-foreground hover:text-foreground"
                                     />
                                   </div>
                                   <button
@@ -536,7 +536,7 @@
                                     @click="deleteVotingSite(index)"
                                   >
                                     <icon
-                                      class="w-5 h-5 text-secondary-300 group-hover:text-error-500"
+                                      class="w-5 h-5 text-foreground group-hover:text-error-500"
                                       name="trash"
                                     />
                                   </button>
@@ -565,7 +565,7 @@
                             <div class="flex justify-end mt-1">
                               <button
                                 type="button"
-                                class="p-1.5 text-xs text-primary-500 rounded border border-primary-500 focus:outline-none"
+                                class="p-1.5 text-xs text-primary rounded border border-primary focus:outline-none"
                                 @click="addMoreVotingSite"
                               >
                                 {{ __("Add More") }}
@@ -604,7 +604,7 @@
                               v-model="form.welcomebox_content"
                               aria-label="welcomebox"
                               name="welcomebox_content"
-                              class="block w-full mt-1 border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                              class="block w-full mt-1 border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                             />
                             <jet-input-error
                               :message="form.errors.welcomebox_content"
@@ -639,7 +639,7 @@
                       <div class="flex justify-end px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6">
                         <loading-button
                           :loading="form.processing"
-                          class="inline-flex justify-center px-4 py-2 text-sm font-bold text-white border border-transparent rounded-md shadow-sm bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
+                          class="inline-flex justify-center px-4 py-2 text-sm font-bold text-white border border-transparent rounded-md shadow-sm bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                           type="submit"
                         >
                           {{ __("Save General Settings") }}

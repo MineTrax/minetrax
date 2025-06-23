@@ -23,21 +23,21 @@ defineProps({
       <div class="flex-1">
         <div class="flex flex-col w-full">
           <div class="w-full bg-white rounded shadow dark:bg-surface-800">
-            <div class="px-6 py-4 font-bold text-error-500 border-b dark:border-secondary-700 dark:text-error-500">
+            <div class="px-6 py-4 font-bold text-error-500 border-b dark:border-foreground dark:text-error-500">
               <span>{{ __("Dangerzone") }}</span>
-              <span class="float-right text-sm italic font-normal text-secondary-500">{{ __("Be cautious with your actions!") }}</span>
+              <span class="float-right text-sm italic font-normal text-foreground">{{ __("Be cautious with your actions!") }}</span>
             </div>
 
             <div
               id="box-container"
-              class="mt-5 divide-y divide-secondary-200 md:mt-0 dark:divide-secondary-700"
+                              class="mt-5 divide-y divide-foreground md:mt-0 dark:divide-foreground"
             >
               <div class="flex justify-between p-5">
                 <div class="flex flex-col">
-                  <h3 class="text-base font-semibold leading-6 text-secondary-900 dark:text-secondary-100">
+                  <h3 class="text-base font-semibold leading-6 text-foreground dark:text-foreground">
                     {{ __("Delete all Shouts") }}
                   </h3>
-                  <p class="mt-1 text-sm text-secondary-500 dark:text-secondary-400">
+                  <p class="mt-1 text-sm text-foreground dark:text-foreground">
                     {{ __("Permanently delete all shouts from shoutbox.") }}
                   </p>
 
@@ -71,10 +71,10 @@ defineProps({
 
               <div class="flex justify-between p-5">
                 <div class="flex flex-col">
-                  <h3 class="text-base font-semibold leading-6 text-secondary-900 dark:text-secondary-100">
+                  <h3 class="text-base font-semibold leading-6 text-foreground dark:text-foreground">
                     {{ __("Delete all Console Logs") }}
                   </h3>
-                  <p class="mt-1 text-sm text-secondary-500 dark:text-secondary-400">
+                  <p class="mt-1 text-sm text-foreground dark:text-foreground">
                     {{ __("Permanently delete all console logs of all servers.") }}
                   </p>
 
@@ -108,10 +108,10 @@ defineProps({
 
               <div class="flex justify-between p-5">
                 <div class="flex flex-col">
-                  <h3 class="text-base font-semibold leading-6 text-secondary-900 dark:text-secondary-100">
+                  <h3 class="text-base font-semibold leading-6 text-foreground dark:text-foreground">
                     {{ __("Delete all Chat History") }}
                   </h3>
-                  <p class="mt-1 text-sm text-secondary-500 dark:text-secondary-400">
+                  <p class="mt-1 text-sm text-foreground dark:text-foreground">
                     {{ __("Permanently delete all chat history for all servers.") }}
                   </p>
 
@@ -145,10 +145,10 @@ defineProps({
 
               <div class="flex justify-between p-5">
                 <div class="flex flex-col">
-                  <h3 class="text-base font-semibold leading-6 text-secondary-900 dark:text-secondary-100">
+                  <h3 class="text-base font-semibold leading-6 text-foreground dark:text-foreground">
                     {{ __("Delete Player Intel") }}
                   </h3>
-                  <p class="mt-1 text-sm text-secondary-500 dark:text-secondary-400">
+                  <p class="mt-1 text-sm text-foreground dark:text-foreground">
                     {{ __("Permanently delete all player related stats for all servers. It will also unlink all players linked to user and then delete all player data.") }}
                   </p>
 
@@ -182,10 +182,10 @@ defineProps({
 
               <div class="flex justify-between p-5">
                 <div class="flex flex-col">
-                  <h3 class="text-base font-semibold leading-6 text-secondary-900 dark:text-secondary-100">
+                  <h3 class="text-base font-semibold leading-6 text-foreground dark:text-foreground">
                     {{ __("Delete Server Intel") }}
                   </h3>
-                  <p class="mt-1 text-sm text-secondary-500 dark:text-secondary-400">
+                  <p class="mt-1 text-sm text-foreground dark:text-foreground">
                     {{ __("Permanently delete all the tracked Server Intel (Analytics) data for all servers. Eg: performance, activities data etc.") }}
                   </p>
 
@@ -219,10 +219,10 @@ defineProps({
 
               <div class="flex justify-between p-5">
                 <div class="flex flex-col">
-                  <h3 class="text-base font-semibold leading-6 text-secondary-900 dark:text-secondary-100">
+                  <h3 class="text-base font-semibold leading-6 text-foreground dark:text-foreground">
                     {{ __("Delete Player Punishments (BanWarden)") }}
                   </h3>
-                  <p class="mt-1 text-sm text-secondary-500 dark:text-secondary-400">
+                  <p class="mt-1 text-sm text-foreground dark:text-foreground">
                     {{ __("Permanently delete all player punishments related data.") }}
                   </p>
 

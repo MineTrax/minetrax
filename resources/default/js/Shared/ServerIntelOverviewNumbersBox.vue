@@ -42,7 +42,7 @@ onMounted(async () => {
 
 <template>
   <div class="bg-white dark:bg-surface-800 rounded w-full h-full p-3 shadow">
-    <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200 flex mt-2 items-center">
+    <h3 class="font-extrabold text-foreground dark:text-foreground flex mt-2 items-center">
       <QrCodeIcon
         class="w-6 mr-1"
       />
@@ -60,8 +60,8 @@ onMounted(async () => {
       v-else
       class="m-0 p-0"
     >
-      <table class="table-auto min-w-full text-sm dark:text-secondary-300 text-secondary-700">
-        <thead class="border-b dark:border-secondary-700">
+      <table class="table-auto min-w-full text-sm dark:text-foreground text-foreground">
+        <thead class="border-b dark:border-foreground">
           <tr>
             <th
               scope="col"
@@ -97,7 +97,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <UserGroupIcon
-                class="w-5 text-primary-500 mr-1"
+                class="w-5 text-primary mr-1"
               />
               {{ __("Total Players") }}
             </td>

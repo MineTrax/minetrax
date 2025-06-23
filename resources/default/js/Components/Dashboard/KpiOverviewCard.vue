@@ -7,7 +7,7 @@ defineProps({
     iconClass: {
         type: [Array, String],
         required: false,
-        default: 'text-secondary-500 bg-surface-100 dark:bg-surface-500 dark:text-white'
+        default: 'text-foreground bg-surface-100 dark:bg-surface-500 dark:text-white'
     },
     title: {
         type: [String, Number],
@@ -21,7 +21,7 @@ defineProps({
     subValueClass: {
         type: [Array, String],
         required: false,
-        default: 'text-secondary-400',
+        default: 'text-foreground',
     },
     description: {
         type: [String, Number],
@@ -31,7 +31,7 @@ defineProps({
     descriptionClass: {
         type: [Array, String],
         required: false,
-        default: 'text-secondary-400',
+        default: 'text-foreground',
     },
     value: {
         type: [String, Number],
@@ -45,7 +45,7 @@ defineProps({
     changeClass: {
         type: [Array, String],
         required: false,
-        default: 'text-secondary-500 dark:text-secondary-400 bg-surface-100',
+        default: 'text-foreground dark:text-foreground bg-surface-100',
     },
     changeDesc: {
         type: [String, Number],
@@ -63,14 +63,14 @@ defineProps({
         class="w-6 h-6 p-1 mr-1 rounded-full"
         :class="iconClass"
       />
-      <h3 class="mb-3 font-bold text-secondary-600 dark:text-secondary-400 text-md">
+      <h3 class="mb-3 font-bold text-foreground dark:text-foreground text-md">
         {{ __(title) }}
       </h3>
     </div>
 
     <div class="flex items-end justify-between space-x-4">
       <div>
-        <p class="text-4xl font-bold dark:text-secondary-300 text-secondary-800">
+        <p class="text-4xl font-bold dark:text-foreground text-foreground">
           {{ value }}
           <span
             v-if="subValue"
@@ -99,7 +99,7 @@ defineProps({
         >
           {{ change }}
         </span>
-        <p class="text-xs text-secondary-400 whitespace-nowrap">
+        <p class="text-xs text-foreground whitespace-nowrap">
           {{ __(changeDesc) }}
         </p>
       </div>

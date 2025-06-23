@@ -38,7 +38,7 @@ const getThemeColor = (property) => {
 
 const loadingOptions = {
     text: 'Loading...',
-    color: getThemeColor('--color-primary-500') || '#8b5cf6',
+                    color: getThemeColor('--color-primary') || '#8b5cf6',
     textColor: window.colorMode === 'dark' ? '#fff' : '#000',
     maskColor: 'transparent',
 };

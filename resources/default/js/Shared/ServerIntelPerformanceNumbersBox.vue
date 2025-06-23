@@ -41,7 +41,7 @@ onMounted(async () => {
 <template>
   <div class="flex">
     <div class="bg-white dark:bg-surface-800 rounded w-full h-full p-3 shadow">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200 flex mt-2 items-center">
+      <h3 class="font-extrabold text-foreground dark:text-foreground flex mt-2 items-center">
         <Icon
           name="calculator"
           class="w-6 mr-1"
@@ -60,8 +60,8 @@ onMounted(async () => {
         v-else
         class="m-0 p-0"
       >
-        <table class="table-auto min-w-full text-sm dark:text-secondary-300 text-secondary-700">
-          <thead class="border-b dark:border-secondary-700">
+        <table class="table-auto min-w-full text-sm dark:text-foreground text-foreground">
+          <thead class="border-b dark:border-foreground">
             <tr>
               <th
                 scope="col"
@@ -120,7 +120,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="finger-print"
-                  class="w-5 text-primary-500 mr-1"
+                  class="w-5 text-primary mr-1"
                 />
                 {{ __("Avg Player Session Length") }}
               </td>
@@ -142,7 +142,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="moon-outline"
-                  class="w-5 text-secondary-500 mr-1"
+                  class="w-5 text-foreground mr-1"
                 />
                 {{ __("Avg Player AFK Time") }}
               </td>
@@ -186,7 +186,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="cpu"
-                  class="w-5 text-primary-500 mr-1"
+                  class="w-5 text-primary mr-1"
                 />
                 {{ __("Avg CPU Usage") }}
               </td>
@@ -252,7 +252,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="server"
-                  class="w-5 text-primary-500 mr-1"
+                  class="w-5 text-primary mr-1"
                 />
                 {{ __("Min Free Disk") }}
               </td>

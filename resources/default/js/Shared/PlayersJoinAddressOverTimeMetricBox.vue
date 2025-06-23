@@ -166,7 +166,7 @@ const datePickerShortcuts = [
 <template>
   <div class="bg-white dark:bg-surface-800 rounded w-full h-full space-y-2 p-3 shadow">
     <div class="flex justify-between">
-      <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200 flex items-center">
+      <h3 class="font-extrabold text-foreground dark:text-foreground flex items-center">
         {{ __("Join Addresses over time") }}
       </h3>
 
@@ -175,7 +175,7 @@ const datePickerShortcuts = [
         type="date"
         range
         :placeholder="__('View for date range')"
-        input-class="block w-full p-2 text-sm border-secondary-300 rounded-md focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-900"
+        input-class="block w-full p-2 text-sm border-foreground rounded-md focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 dark:bg-surface-900 dark:text-foreground dark:border-foreground"
         :shortcuts="datePickerShortcuts"
         @change="fetchData()"
       />

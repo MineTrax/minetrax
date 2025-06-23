@@ -192,12 +192,12 @@
           :placeholder="__('Select your date of birth')"
           class="w-full"
           value-type="format"
-          input-class="border-secondary-300 h-14 p-3 text-sm pt-7 focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-secondary-300 dark:border-secondary-900"
+          input-class="border-foreground h-14 p-3 text-sm pt-7 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-foreground dark:border-foreground"
         />
 
         <label
           for="dob"
-          class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-secondary-500 h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-secondary-400"
+          class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-foreground h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-foreground"
         >{{ __("Date of Birth") }}</label>
         <jet-input-error
           :message="form.errors.dob"

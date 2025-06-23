@@ -4,13 +4,13 @@
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-secondary-500 dark:text-secondary-300">
+        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
           {{ __("News") }} <span class="hidden md:inline">{{ __("& Announcements") }}</span>
         </h1>
         <div class="flex">
           <inertia-link
             :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Homepage") }}</span>
           </inertia-link>
@@ -26,11 +26,11 @@
             >
               <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
                 <div
-                  class="shadow max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-secondary-200 rounded md:rounded-lg dark:bg-surface-800 dark:border-none"
+                  class="shadow max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-foreground rounded md:rounded-lg dark:bg-surface-800 dark:border-none"
                 >
                   <span
                     v-if="news.type.value === 0"
-                    class="bg-primary-400 font-bold inline-flex leading-7 mb-3 px-3 rounded text-sm text-white"
+                    class="bg-primary font-bold inline-flex leading-7 mb-3 px-3 rounded text-sm text-white"
                   >{{
                     news.type.key
                   }}</span>
@@ -63,7 +63,7 @@
                   <inertia-link
                     as="a"
                     :href="route('news.show', news.slug)"
-                    class="block font-bold text-4xl text-secondary-900 dark:text-secondary-200 mb-5 cursor-pointer hover:underline"
+                    class="block font-bold text-4xl text-foreground dark:text-foreground mb-5 cursor-pointer hover:underline"
                   >
                     {{
                       news.title
@@ -79,7 +79,7 @@
                       <inertia-link
                         as="p"
                         :href="route('user.public.get', news.creator.username)"
-                        class="cursor-pointer hover:underline font-bold text-secondary-700 dark:text-secondary-300"
+                        class="cursor-pointer hover:underline font-bold text-foreground dark:text-foreground"
                         :style="[news.creator.roles[0].color ? {color: news.creator.roles[0].color} : null]"
                       >
                         {{ news.creator.name }}
@@ -87,13 +87,13 @@
                       <p
                         v-tippy
                         :title="formatTimeAgoToNow(news.created_at)"
-                        class="text-secondary-500 dark:text-secondary-400 text-sm focus:outline-none"
+                        class="text-foreground dark:text-foreground text-sm focus:outline-none"
                       >
                         {{
                           formatToDayDateString(news.published_at)
                         }}
                       </p>
-                      <p class="text-secondary-500 dark:text-secondary-400 text-sm">
+                      <p class="text-foreground dark:text-foreground text-sm">
                         {{ news.time_to_read }}
                         {{ __("read") }}
                       </p>
@@ -113,7 +113,7 @@
             class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8"
           >
             <div
-              class="shadow text-center dark:text-secondary-400 italic max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-secondary-200 rounded md:rounded-lg dark:bg-surface-800 dark:border-none"
+              class="shadow text-center dark:text-foreground italic max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-foreground rounded md:rounded-lg dark:bg-surface-800 dark:border-none"
             >
               {{ __("No News or Announcement Yet.") }}
             </div>

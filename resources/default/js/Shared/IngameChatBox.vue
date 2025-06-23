@@ -2,7 +2,7 @@
   <div v-if="enabled">
     <div class="p-3 bg-white rounded shadow sm:px-5 dark:bg-surface-800">
       <div class="flex justify-between">
-        <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200">
+        <h3 class="font-extrabold text-foreground dark:text-foreground">
           {{ __("Server In-Game Chat") }}
         </h3>
 
@@ -13,7 +13,7 @@
           v-model="serverId"
           aria-label="serverSelector"
           name="serverSelector"
-          class="text-xs border-secondary-300 rounded-md shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 dark:border-secondary-700 dark:bg-surface-800 dark:text-secondary-300"
+          class="text-xs border-foreground rounded-md shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 dark:border-foreground dark:bg-surface-800 dark:text-foreground"
         >
           <option
             v-for="server in serverList"
@@ -87,7 +87,7 @@
 
             <div
               v-if="!chatLogs || chatLogs.length <= 0"
-              class="flex items-center justify-center w-full h-full text-sm italic text-secondary-500"
+              class="flex items-center justify-center w-full h-full text-sm italic text-foreground"
             >
               {{ __("No chat recorded yet!") }}
             </div>
@@ -100,7 +100,7 @@
           >
             <div class="flex flex-col w-full space-y-1">
               <div class="relative flex items-center justify-center p-2 bg-surface-100 dark:bg-opacity-25 dark:bg-surface-600">
-                <h3 class="ml-4 mr-5 font-bold text-secondary-700 dark:text-secondary-200">
+                <h3 class="ml-4 mr-5 font-bold text-foreground dark:text-foreground">
                   {{ __("Players") }}&nbsp;({{ playersList.length }})
                 </h3>
                 <button
@@ -114,7 +114,7 @@
 
               <div
                 v-if="!playersList || playersList.length <= 0"
-                class="text-sm text-center italic text-secondary-500 dark:text-secondary-400 pb-2 pt-1"
+                class="text-sm text-center italic text-foreground dark:text-foreground pb-2 pt-1"
               >
                 {{ __("No players.") }}
               </div>
@@ -135,13 +135,13 @@
                     :href="route('player.show', player.id)"
                   >
                     <span
-                      class="mr-1 font-semibold truncate text-secondary-800 dark:text-white"
+                      class="mr-1 font-semibold truncate text-foreground dark:text-white"
                       :class="{ 'text-orange-500 dark:text-warning-300': player.is_op }"
                     >{{ player.username }}</span>
                   </inertia-link>
                   <span
                     v-else
-                    class="mr-1 truncate text-secondary-800 dark:text-white"
+                    class="mr-1 truncate text-foreground dark:text-white"
                     :class="{ 'text-orange-500 dark:text-warning-300': player.is_op }"
                   >
                     {{ player.username }}
@@ -160,7 +160,7 @@
                   >
                   <a
                     v-if="$page.props.auth.user && $page.props.auth.user.is_staff"
-                    class="text-secondary-400 cursor-pointer hover:text-secondary-200"
+                    class="text-foreground cursor-pointer hover:text-foreground"
                     href="#"
                     @click.prevent="openAdminPlayerActionModel(player)"
                   >
@@ -187,7 +187,7 @@
               v-model="message"
               :disabled="sending || !isWebQuerySuccess"
               aria-label="Shout"
-              class="block w-full mt-1 bg-surface-100 border-none rounded-md focus:ring-secondary-300 dark:focus:ring-secondary-700 sm:text-sm disabled:opacity-50 dark:bg-surface-900 dark:text-secondary-200 focus:bg-white dark:focus:bg-surface-900"
+              class="block w-full mt-1 bg-surface-100 border-none rounded-md focus:ring-foreground dark:focus:ring-foreground sm:text-sm disabled:opacity-50 dark:bg-surface-900 dark:text-foreground focus:bg-white dark:focus:bg-surface-900"
               type="text"
               :placeholder="isWebQuerySuccess ? __('Say something..'): __('Server webquery is offline')"
             >
@@ -197,16 +197,16 @@
             >{{ error }}</span>
             <span
               v-if="!loading && can('send server_custom_commands')"
-              class="flex justify-end mt-2 text-xs text-secondary-500 dark:text-secondary-400"
+              class="flex justify-end mt-2 text-xs text-foreground dark:text-foreground"
             >{{ __("Start with / to send a console command") }}</span>
           </form>
         </div>
         <div
           v-else
-          class="mt-2 text-sm text-center text-secondary-600 dark:text-secondary-400"
+          class="mt-2 text-sm text-center text-foreground dark:text-foreground"
         >
           <inertia-link
-            class="font-semibold text-primary-500"
+            class="font-semibold text-primary"
             :href="route('login')"
           >
             {{ __("Login") }}
@@ -214,7 +214,7 @@
           <template v-if="$page.props.hasRegistrationFeature">
             {{ " " + __("or") }}
             <inertia-link
-              class="font-semibold text-primary-500"
+              class="font-semibold text-primary"
               :href="route('register')"
             >
               {{ __("Register") }}
@@ -234,14 +234,14 @@
           v-if="actionModelCurrentPlayer"
           class="flex flex-col items-center font-bold"
         >
-          <span class="text-secondary-800 underline">{{ __("Manage Player") }}</span>
+          <span class="text-foreground underline">{{ __("Manage Player") }}</span>
           <img
             class="h-24 rounded"
             :src="route('player.avatar.get',{uuid: actionModelCurrentPlayer.id, username: actionModelCurrentPlayer.username, textureid: actionModelCurrentPlayer.skin_texture_id})"
             alt="Player Avatar"
           >
-          <span class="text-primary-600">{{ actionModelCurrentPlayer.username }}</span>
-          <span class="text-xs text-secondary-600">{{ actionModelCurrentPlayer.id }}</span>
+          <span class="text-primary">{{ actionModelCurrentPlayer.username }}</span>
+          <span class="text-xs text-foreground">{{ actionModelCurrentPlayer.id }}</span>
         </div>
       </template>
 
@@ -250,7 +250,7 @@
           <loading-button
             v-if="can('kill players')"
             :loading="adminPlayerActionLoading"
-            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-surface-600 border border-transparent rounded-md shadow-sm hover:bg-surface-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500 disabled:opacity-50"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-surface-600 border border-transparent rounded-md shadow-sm hover:bg-surface-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground disabled:opacity-50"
             type="button"
             @click="sendCommandToServer('kill')"
           >

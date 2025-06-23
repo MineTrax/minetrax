@@ -5,10 +5,10 @@
     />
     <jet-authentication-card>
       <template #logo>
-        <Icon name="person-badge" class="text-primary-500 fill-current w-16 h-16" />
+        <Icon name="person-badge" class="text-primary fill-current w-16 h-16" />
       </template>
 
-      <div class="mb-4 text-sm text-secondary-600 dark:text-secondary-400">
+      <div class="mb-4 text-sm text-foreground dark:text-foreground">
         {{ __("Choose a cool Username for yourself!") }}
       </div>
 
@@ -36,7 +36,7 @@
         <div class="flex items-center justify-end mt-4">
           <loading-button
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
           >
             {{ __("Continue") }}
           </loading-button>

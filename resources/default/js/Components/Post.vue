@@ -1,7 +1,7 @@
 <template>
   <div
     class="px-5 py-4 bg-white rounded shadow dark:bg-surface-800"
-    :class="{ 'rounded-l-none border-l-4 border-primary-500': $page.props.auth.user && $page.props.auth.user.id === post.user.id }"
+    :class="{ 'rounded-l-none border-l-4 border-primary': $page.props.auth.user && $page.props.auth.user.id === post.user.id }"
   >
     <!-- Header -->
     <div class="flex justify-between">
@@ -13,7 +13,7 @@
         >
         <div class="ml-2 mt-0.5">
           <inertia-link
-            class="cursor-pointer hover:underline dark:text-secondary-300"
+            class="cursor-pointer hover:underline dark:text-foreground"
             as="a"
             :href="route('user.public.get', post.user.username)"
           >
@@ -28,7 +28,7 @@
               as="a"
               :href="route('post.show', post.id)"
               :content="formatToDayDateString(post.created_at)"
-              class="text-sm font-light leading-snug text-secondary-500 dark:hover:text-primary-500 focus:outline-none hover:text-primary-500 dark:text-secondary-300"
+              class="text-sm font-light leading-snug text-foreground dark:hover:text-primary focus:outline-none hover:text-primary dark:text-foreground"
             >
               {{
                 formatTimeAgoToNow(post.created_at)
@@ -47,7 +47,7 @@
         as="button"
         method="delete"
         :href="route('post.delete', post.id)"
-        class="flex items-start text-secondary-500 rounded-full hover:text-error-500 focus:outline-none"
+        class="flex items-start text-foreground rounded-full hover:text-error-500 focus:outline-none"
       >
         <icon
           name="trash"
@@ -57,7 +57,7 @@
     </div>
     <!-- Body -->
     <p
-      class="mt-2 leading-snug text-secondary-800 break-words whitespace-pre-line dark:text-secondary-200 md:leading-normal"
+      class="mt-2 leading-snug text-foreground break-words whitespace-pre-line dark:text-foreground md:leading-normal"
       v-html="purifyAndLinkifyText(post.body)"
     />
 
@@ -81,7 +81,7 @@
     </div>
 
     <!-- Footer Buttons -->
-    <div class="flex items-center justify-end mt-5 space-x-10 text-secondary-500">
+    <div class="flex items-center justify-end mt-5 space-x-10 text-foreground">
       <button
         v-if="!liked"
         class="flex cursor-pointer group focus:outline-none"
@@ -96,7 +96,7 @@
           />
         </span>
         <span
-          class="text-secondary-500 dark:text-secondary-400  font-light py-1.5 group-hover:text-pink-500 transition duration-300 ease-in-out"
+          class="text-foreground dark:text-foreground  font-light py-1.5 group-hover:text-pink-500 transition duration-300 ease-in-out"
         >{{
           likes_count
         }}</span>
@@ -115,7 +115,7 @@
           />
         </span>
         <span
-          class="text-pink-500 dark:text-secondary-400 font-light py-1.5 group-hover:text-pink-500 transition duration-300 ease-in-out"
+          class="text-pink-500 dark:text-foreground font-light py-1.5 group-hover:text-pink-500 transition duration-300 ease-in-out"
         >{{
           likes_count
         }}</span>
@@ -125,7 +125,7 @@
         @click="showComments=!showComments"
       >
         <span
-          class="group-hover:bg-primary-100 dark:group-hover:bg-surface-900 group-hover:text-primary-500 p-1.5 rounded-full transition duration-300 ease-in-out"
+          class="group-hover:bg-primary dark:group-hover:bg-surface-900 group-hover:text-primary p-1.5 rounded-full transition duration-300 ease-in-out"
         >
           <icon
             name="comment"
@@ -133,7 +133,7 @@
           />
         </span>
         <span
-          class="text-secondary-500 dark:text-secondary-400 font-light py-1.5 flex items-center group-hover:text-primary-500 transition duration-300 ease-in-out"
+          class="text-foreground dark:text-foreground font-light py-1.5 flex items-center group-hover:text-primary transition duration-300 ease-in-out"
         >{{ post.comments_count }}</span>
       </button>
     </div>

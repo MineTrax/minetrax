@@ -35,7 +35,7 @@
 
                 <div
                   v-if="pollList.data <= 0"
-                  class="p-3 md:px-5 bg-white dark:bg-surface-800 rounded shadow italic text-secondary-500 dark:text-secondary-400 text-center text-sm font-semibold"
+                  class="p-3 md:px-5 bg-white dark:bg-surface-800 rounded shadow italic text-foreground dark:text-foreground text-center text-sm font-semibold"
                 >
                   {{ __("No Polls Found") }}
                 </div>

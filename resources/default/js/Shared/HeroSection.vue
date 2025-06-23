@@ -60,12 +60,12 @@
             >
               <span
                 v-if="!loading && !error"
-                class="uppercase text-primary-400"
+                class="uppercase text-primary"
               >{{ serverInfo?.players?.online }} {{ __("Players Online") }}
               </span>
               <span
                 v-if="loading"
-                class="text-secondary-400 uppercase"
+                class="text-foreground uppercase"
               >
                 {{ __("Loading..") }}
               </span>
@@ -104,7 +104,7 @@
           class="justify-center hidden basis-1/4 hover:rainbow md:flex hover:scale-110 transition ease-in-out duration-500"
         >
           <div class="flex flex-col">
-            <p class="mt-2 font-bold text-right uppercase text-primary-400">
+            <p class="mt-2 font-bold text-right uppercase text-primary">
               {{ discordUsersCount }} {{ __("Online") }}
             </p>
             <span

@@ -106,13 +106,13 @@ const headerRow = [
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               {{ item.id }}
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               <div class="flex items-center">
                 <div
@@ -130,7 +130,7 @@ const headerRow = [
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10">
@@ -147,9 +147,9 @@ const headerRow = [
                       player: item.player_uuid,
                       session: item.id,
                     })"
-                    class="text-sm font-medium text-secondary-900 dark:text-secondary-200 focus:outline-none cursor-pointer hover:underline"
+                    class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
                   >
-                    <span class="font-extrabold text-secondary-700 dark:text-secondary-300">
+                    <span class="font-extrabold text-foreground dark:text-foreground">
                       {{ item.player_displayname }} ({{ item.player_username }})
                     </span>
                   </InertiaLink>
@@ -178,7 +178,7 @@ const headerRow = [
               </span>
               <span
                 v-else
-                class="text-secondary-400"
+                class="text-foreground"
               >—</span>
             </DtRowItem>
 
@@ -207,7 +207,7 @@ const headerRow = [
                   player: item.player_uuid,
                   session: item.id,
                 })"
-                class="inline-flex items-center justify-center text-primary-500 hover:text-primary-800"
+                class="inline-flex items-center justify-center text-primary hover:text-primary"
                 :title="__('View Session Details')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />

@@ -7,21 +7,21 @@
       v-if="!$page.props.disableEmailPasswordAuth"
       class="flex items-center justify-between mt-3"
     >
-      <hr class="w-full dark:border-secondary-600">
+      <hr class="w-full dark:border-foreground">
       <span
-        class="p-2 text-secondary-400 dark:text-secondary-500 whitespace-nowrap text-sm"
+        class="p-2 text-foreground dark:text-foreground whitespace-nowrap text-sm"
       >{{ __("Or continue with") }}
       </span>
-      <hr class="w-full dark:border-secondary-600">
+      <hr class="w-full dark:border-foreground">
     </div>
     <div
       v-else
       class="mb-4"
     >
-      <h2 class="text-2xl font-bold text-secondary-800 dark:text-secondary-200">
+      <h2 class="text-2xl font-bold text-foreground dark:text-foreground">
         {{ __("Sign in") }}
       </h2>
-      <span class="text-sm text-secondary-500 dark:text-secondary-300">{{ __("with social to continue.") }}</span>
+      <span class="text-sm text-foreground dark:text-foreground">{{ __("with social to continue.") }}</span>
     </div>
 
     <div
@@ -45,7 +45,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.facebook"
         :href="route('social.login', 'facebook')"
-        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-primary-700 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-primary-700 hover:bg-surface-50 dark:hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 disabled:opacity-50"
+        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-primary border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-primary hover:bg-surface-50 dark:hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
       >
         <icon
           name="facebook"
@@ -59,7 +59,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.twitter"
         :href="route('social.login', 'twitter')"
-        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white text-primary-400 dark:bg-primary-400 hover:bg-surface-50 dark:hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white text-primary dark:bg-primary hover:bg-surface-50 dark:hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
       >
         <icon
           name="twitter"
@@ -73,7 +73,7 @@
       <a
         v-if="$page.props.enabledSocialAuths.discord"
         :href="route('social.login', 'discord')"
-        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-primary-500 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-primary-500 hover:bg-surface-50 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 disabled:opacity-50"
+        class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-primary border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-primary hover:bg-surface-50 dark:hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
       >
         <icon
           name="discord"

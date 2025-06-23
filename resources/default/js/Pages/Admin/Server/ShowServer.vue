@@ -3,7 +3,7 @@
     <app-head :title="__('Server #:id', {id: server.id})" />
 
     <div class="max-w-6xl px-10 py-12 mx-auto space-y-4">
-      <h2 class="text-2xl text-secondary-600 dark:text-secondary-200">
+      <h2 class="text-2xl text-foreground dark:text-foreground">
         <span class="font-bold">#{{ server.id }}</span>
         -
         <span class="font-bold">{{ server.name }}</span>
@@ -40,7 +40,7 @@
           :title="__('Total Players')"
           :value="serverAggrData.total_players"
           :desc="__(':active_players active players', {active_players: serverAggrData.active_players})"
-          color="text-primary-300"
+          color="text-primary"
           icon="users"
           class="flex-1"
         />
@@ -48,14 +48,14 @@
 
       <div
         id="server-general-data"
-        class="w-full p-2 space-y-4 text-sm text-secondary-700 bg-white rounded shadow dark:text-secondary-300 dark:bg-surface-800 md:p-5"
+        class="w-full p-2 space-y-4 text-sm text-foreground bg-white rounded shadow dark:text-foreground dark:bg-surface-800 md:p-5"
       >
-        <div class="flex justify-between pb-4 space-x-8 border-b border-secondary-200 dark:border-secondary-700">
+        <div class="flex justify-between pb-4 space-x-8 border-b border-foreground dark:border-foreground">
           <div class="flex-1 space-y-4">
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-primary-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -165,7 +165,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-primary-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -208,7 +208,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-primary-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -231,12 +231,12 @@
           </div>
         </div>
 
-        <div class="flex justify-between space-x-8 dark:border-secondary-700">
+        <div class="flex justify-between space-x-8 dark:border-foreground">
           <div class="flex-1 space-y-4">
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-primary-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -299,7 +299,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-primary-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -330,7 +330,7 @@
         class="p-3 bg-white rounded shadow dark:bg-surface-800"
       >
         <div class="flex justify-between">
-          <h3 class="mb-1 font-extrabold text-secondary-800 dark:text-secondary-200">
+          <h3 class="mb-1 font-extrabold text-foreground dark:text-foreground">
             {{ __("Server Logs") }}
           </h3>
         </div>
@@ -344,7 +344,7 @@
             v-model="commandText"
             :disabled="sendingCommand"
             aria-label="Commander"
-            class="block w-full mt-1 bg-surface-100 border-none rounded focus:ring-secondary-300 dark:focus:ring-secondary-700 sm:text-sm disabled:opacity-50 dark:bg-surface-900 dark:text-secondary-200 focus:bg-white dark:focus:bg-surface-900"
+            class="block w-full mt-1 bg-surface-100 border-none rounded focus:ring-foreground dark:focus:ring-foreground sm:text-sm disabled:opacity-50 dark:bg-surface-900 dark:text-foreground focus:bg-white dark:focus:bg-surface-900"
             type="text"
             :placeholder="__('Type a command and press Enter to run...')"
           >

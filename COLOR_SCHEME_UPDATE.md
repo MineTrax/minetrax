@@ -139,7 +139,7 @@ The old color aliases are kept in the configuration for backward compatibility:
 
 #### After
 ```html
-<div class="text-primary-500 bg-surface-100 border-error-500 dark:bg-surface-800">
+<div class="text-primary bg-surface-100 border-error-500 dark:bg-surface-800">
 ```
 
 ### 9. Background Theme Customization

@@ -26,7 +26,7 @@ defineProps({
         <div class="flex">
           <Link
             :href="route('download.index')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-secondary-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
           >
             <span>{{ __("Back") }}</span>
           </Link>
@@ -35,14 +35,14 @@ defineProps({
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="-my-2 md:w-9/12 overflow-x-auto md:-mx-6 lg:-mx-8">
           <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
-            <div class="shadow max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-secondary-200 rounded md:rounded-lg dark:bg-surface-800 dark:border-none">
-              <h1 class="font-bold text-4xl text-secondary-900 dark:text-secondary-200 mb-5">
+            <div class="shadow max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-foreground rounded md:rounded-lg dark:bg-surface-800 dark:border-none">
+              <h1 class="font-bold text-4xl text-foreground dark:text-foreground mb-5">
                 {{ download.name }}
               </h1>
 
               <div class="mb-4">
                 <p
-                  class="text-secondary-500 dark:text-secondary-400 text-sm focus:outline-none"
+                  class="text-foreground dark:text-foreground text-sm focus:outline-none"
                 >
                   {{ __("Created:") }} {{ formatToDayDateString(download.created_at) }}
                   ▪

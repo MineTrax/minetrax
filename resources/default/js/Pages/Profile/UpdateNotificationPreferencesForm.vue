@@ -15,24 +15,24 @@
             <tr>
               <th
                 scope="col"
-                class="text-lg text-left font-semibold text-secondary-600 dark:text-secondary-300"
+                class="text-lg text-left font-semibold text-foreground dark:text-foreground"
               >
                 {{ __("Notify me when") }}
               </th>
               <th
-                class="font-semibold text-secondary-600 dark:text-secondary-300 text-sm"
+                class="font-semibold text-foreground dark:text-foreground text-sm"
               >
                 {{ __("Email") }}
               </th>
               <th
-                class="font-semibold text-secondary-600 dark:text-secondary-300 text-sm"
+                class="font-semibold text-foreground dark:text-foreground text-sm"
               >
                 {{ __("Discord") }}
               </th>
             </tr>
           </thead>
           <tbody
-            class="text-secondary-700 dark:text-secondary-400 text-sm leading-6"
+            class="text-foreground dark:text-foreground text-sm leading-6"
           >
             <tr class="mt-5">
               <td>{{ __("Someone commented on my Post") }}</td>
@@ -41,7 +41,7 @@
                   v-model="form.comment_on_post"
                   type="checkbox"
                   value="mail"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="comment_on_post"
                 >
               </td>
@@ -49,7 +49,7 @@
                 <input
                   v-model="form.comment_on_post"
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="comment_on_post"
                   value="discord"
                 >
@@ -61,7 +61,7 @@
                 <input
                   v-model="form.like_on_post"
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="like_on_post"
                   value="mail"
                 >
@@ -70,7 +70,7 @@
                 <input
                   v-model="form.like_on_post"
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="like_on_post"
                   value="discord"
                 >
@@ -82,7 +82,7 @@
                 <input
                   v-model="form.you_are_muted"
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="you_are_muted"
                   value="mail"
                 >
@@ -91,7 +91,7 @@
                 <input
                   v-model="form.you_are_muted"
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="you_are_muted"
                   value="discord"
                 >
@@ -103,7 +103,7 @@
                 <input
                   v-model="form.you_are_banned"
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="you_are_banned"
                   value="mail"
                 >
@@ -112,7 +112,7 @@
                 <input
                   v-model="form.you_are_banned"
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="you_are_banned"
                   value="discord"
                 >
@@ -130,7 +130,7 @@
                     form.recruitment_submission_status_changed
                   "
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="recruitment_submission_status_changed"
                   value="mail"
                 >
@@ -141,7 +141,7 @@
                     form.recruitment_submission_status_changed
                   "
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="recruitment_submission_status_changed"
                   value="discord"
                 >
@@ -159,7 +159,7 @@
                     form.recruitment_submission_comment_created
                   "
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="recruitment_submission_comment_created"
                   value="mail"
                 >
@@ -170,7 +170,7 @@
                     form.recruitment_submission_comment_created
                   "
                   type="checkbox"
-                  class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                  class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                   name="recruitment_submission_comment_created"
                   value="discord"
                 >
@@ -179,7 +179,7 @@
             <template v-if="user.is_staff">
               <tr class="flex mt-2">
                 <span
-                  class="font-bold dark:text-secondary-300 text-secondary-600"
+                  class="font-bold dark:text-foreground text-foreground"
                 >
                   {{ __("For staff members") }}
                 </span>
@@ -194,7 +194,7 @@
                       form.recruitment_submission_created
                     "
                     type="checkbox"
-                    class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                    class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                     name="recruitment_submission_created"
                     value="mail"
                   >
@@ -205,7 +205,7 @@
                       form.recruitment_submission_created
                     "
                     type="checkbox"
-                    class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                    class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                     name="recruitment_submission_created"
                     value="discord"
                   >
@@ -221,7 +221,7 @@
                       form.custom_form_submission_created
                     "
                     type="checkbox"
-                    class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                    class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                     name="custom_form_submission_created"
                     value="mail"
                   >
@@ -232,7 +232,7 @@
                       form.custom_form_submission_created
                     "
                     type="checkbox"
-                    class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                    class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                     name="custom_form_submission_created"
                     value="discord"
                   >
@@ -246,7 +246,7 @@
                       form.news_commented_by_user
                     "
                     type="checkbox"
-                    class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                    class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                     name="news_commented_by_user"
                     value="mail"
                   >
@@ -257,7 +257,7 @@
                       form.news_commented_by_user
                     "
                     type="checkbox"
-                    class="rounded border-secondary-300 dark:bg-surface-900 dark:border-secondary-900 text-primary-500 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
+                    class="rounded border-foreground dark:bg-surface-900 dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150"
                     name="news_commented_by_user"
                     value="discord"
                   >

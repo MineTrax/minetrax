@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="enabled"
-    class="z-50 flex items-center h-12 font-semibold text-white shadow-sm bg-primary-500"
+    class="z-50 flex items-center h-12 font-semibold text-white shadow-sm bg-primary"
   >
     <a
       class="w-full mt-2 cursor-pointer"

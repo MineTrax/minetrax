@@ -7,7 +7,7 @@
     <template
       #body
     >
-      <div class="text-secondary-700 text-sm dark:text-secondary-200">
+      <div class="text-foreground text-sm dark:text-foreground">
         <p>
           {{ __("Email verification is required to perform any action on the site. Please check your email inbox or ") }}
         </p>
@@ -16,7 +16,7 @@
           :href="route('verification.send')"
           method="post"
           as="button"
-          class="underline text-primary-500 hover:text-primary-700"
+          class="underline text-primary hover:text-primary"
           @click.prevent="sendEmailVerification"
         >
           {{ __("Click here to re-send the verification email") }}

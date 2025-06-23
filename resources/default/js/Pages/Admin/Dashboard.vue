@@ -75,7 +75,7 @@ defineProps({
           :change="kpiTotalUserPercent"
           change-desc="in last 7 days"
           :icon="UserPlusIcon"
-          icon-class="text-primary-500 bg-primary-100 dark:bg-primary-500 dark:text-white"
+          icon-class="text-primary bg-primary dark:bg-primary dark:text-white"
           :description="`Total Verified: ${kpiTotalVerifiedUsers} users`"
         />
 

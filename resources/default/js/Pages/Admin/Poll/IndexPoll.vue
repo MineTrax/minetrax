@@ -72,16 +72,16 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage Polls')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Manage Polls") }}
         </h1>
         <div class="flex">
           <InertiaLink
             v-if="can('create polls')"
             :href="route('admin.poll.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-secondary-900 focus:shadow-outline-gray"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
           >
             <span>{{ __("Create New") }}</span>
             <span class="hidden md:inline">&nbsp;{{ __("Poll") }}</span>
@@ -97,13 +97,13 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
 
           <DtRowItem>
-            <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
+            <div class="text-sm font-medium text-foreground dark:text-foreground">
               {{ item.question }}
             </div>
           </DtRowItem>
@@ -113,12 +113,12 @@ const headerRow = [
               <span
                 v-for="option in item.options"
                 :key="option.id"
-                class="px-2 mr-1 mb-1 inline-flex text-xs leading-5 font-semibold rounded bg-surface-100 text-secondary-800 dark:bg-surface-700 dark:text-secondary-300"
+                class="px-2 mr-1 mb-1 inline-flex text-xs leading-5 font-semibold rounded bg-surface-100 text-foreground dark:bg-surface-700 dark:text-foreground"
               >{{ option.name }}</span>
             </template>
             <span
               v-else
-              class="italic text-secondary-500"
+              class="italic text-foreground"
             >{{ __("No options.") }}</span>
           </td>
 

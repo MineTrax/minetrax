@@ -131,7 +131,7 @@ function removeNavItem(idx, list) {
       <div class="flex-1">
         <div class="flex flex-col w-full">
           <div class="bg-white dark:bg-surface-800 shadow w-full rounded">
-            <div class="px-6 py-4 border-b dark:border-secondary-700 dark:text-secondary-300 font-bold">
+            <div class="px-6 py-4 border-b dark:border-foreground dark:text-foreground font-bold">
               {{ __("Navigation Settings") }}
             </div>
 
@@ -168,7 +168,7 @@ function removeNavItem(idx, list) {
                           </div>
 
                           <div class="col-span-6 sm:col-span-6">
-                            <h3 class="text-secondary-600 dark:text-secondary-300 mb-1 font-bold">
+                            <h3 class="text-foreground dark:text-foreground mb-1 font-bold">
                               {{ __("Available Items") }}
                             </h3>
                             <Draggable
@@ -180,11 +180,11 @@ function removeNavItem(idx, list) {
                               item-key="key"
                             >
                               <template #item="{ element }">
-                                <div class="bg-surface-200 dark:bg-surface-700 rounded p-2 text-secondary-400 shadow-sm text-center">
-                                  <p class="text-sm text-secondary-500">
+                                <div class="bg-surface-200 dark:bg-surface-700 rounded p-2 text-foreground shadow-sm text-center">
+                                  <p class="text-sm text-foreground">
                                     {{ element.type }}
                                   </p>
-                                  <p class="text-secondary-700 dark:text-secondary-400">
+                                  <p class="text-foreground dark:text-foreground">
                                     {{ element.name }}
                                   </p>
                                 </div>
@@ -193,9 +193,9 @@ function removeNavItem(idx, list) {
                           </div>
 
 
-                          <div class="flex col-span-6 border-t border-secondary-200 dark:border-secondary-700 pt-4 gap-5">
+                          <div class="flex col-span-6 border-t border-foreground dark:border-foreground pt-4 gap-5">
                             <div class="grow">
-                              <h3 class="text-center text-secondary-600 dark:text-secondary-200 font-bold">
+                              <h3 class="text-center text-foreground dark:text-foreground font-bold">
                                 Left
                               </h3>
                               <Draggable
@@ -206,8 +206,8 @@ function removeNavItem(idx, list) {
                                 item-key="key"
                               >
                                 <template #item="{ element, index }">
-                                  <div class="bg-surface-200 shadow-sm dark:bg-surface-700 relative rounded p-2 text-secondary-700 dark:text-secondary-400 text-center">
-                                    <p class="text-sm text-secondary-500 dark:text-secondary-500">
+                                  <div class="bg-surface-200 shadow-sm dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
+                                    <p class="text-sm text-foreground dark:text-foreground">
                                       {{ element.type }}
                                     </p>
                                     <p>{{ element.name }}</p>
@@ -219,7 +219,7 @@ function removeNavItem(idx, list) {
                                     />
 
                                     <Icon
-                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-secondary-500 dark:text-secondary-400"
+                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
                                       name="close"
                                       @click="removeNavItem(index, leftNavList)"
                                     />
@@ -228,17 +228,17 @@ function removeNavItem(idx, list) {
                                     <div v-if="element.type === 'dropdown'">
                                       <Draggable
                                         :swap-threshold="0.65"
-                                        class="dragArea flex flex-col gap-2 rounded border border-secondary-200 dark:border-secondary-700 p-2 min-h-[5rem] bg-white dark:bg-surface-800"
+                                        class="dragArea flex flex-col gap-2 rounded border border-foreground dark:border-foreground p-2 min-h-[5rem] bg-white dark:bg-surface-800"
                                         :list="element.children"
                                         :group="{ name: 'navbar' }"
                                         item-key="key"
                                       >
                                         <template #item="{ element: el, index: idx }">
-                                          <div class="bg-surface-200 dark:bg-surface-700 relative rounded p-2 text-secondary-700 dark:text-secondary-400 text-center">
-                                            <p class="text-sm text-secondary-500">
+                                          <div class="bg-surface-200 dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
+                                            <p class="text-sm text-foreground">
                                               {{ el.type }}
                                             </p>
-                                            <p class="text-secondary-700 dark:text-secondary-400">
+                                            <p class="text-foreground dark:text-foreground">
                                               {{ el.name }}
                                             </p>
                                             <x-input
@@ -249,7 +249,7 @@ function removeNavItem(idx, list) {
                                             />
 
                                             <Icon
-                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-secondary-500 dark:text-secondary-400"
+                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
                                               name="close"
                                               @click="removeNavItem(idx, element.children)"
                                             />
@@ -262,7 +262,7 @@ function removeNavItem(idx, list) {
                               </Draggable>
                             </div>
                             <div class="grow">
-                              <h3 class="text-center text-secondary-600 dark:text-secondary-200 font-bold">
+                              <h3 class="text-center text-foreground dark:text-foreground font-bold">
                                 Middle
                               </h3>
                               <Draggable
@@ -273,8 +273,8 @@ function removeNavItem(idx, list) {
                                 item-key="key"
                               >
                                 <template #item="{ element, index }">
-                                  <div class="bg-surface-200 shadow-sm dark:bg-surface-700 relative rounded p-2 text-secondary-700 dark:text-secondary-400 text-center">
-                                    <p class="text-sm text-secondary-500 dark:text-secondary-500">
+                                  <div class="bg-surface-200 shadow-sm dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
+                                    <p class="text-sm text-foreground dark:text-foreground">
                                       {{ element.type }}
                                     </p>
                                     <p>{{ element.name }}</p>
@@ -286,7 +286,7 @@ function removeNavItem(idx, list) {
                                     />
 
                                     <Icon
-                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-secondary-500 dark:text-secondary-400"
+                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
                                       name="close"
                                       @click="removeNavItem(index, middleNavList)"
                                     />
@@ -295,17 +295,17 @@ function removeNavItem(idx, list) {
                                     <div v-if="element.type === 'dropdown'">
                                       <Draggable
                                         :swap-threshold="0.65"
-                                        class="dragArea flex flex-col gap-2 rounded border border-secondary-200 dark:border-secondary-700 p-2 min-h-[5rem] bg-white dark:bg-surface-800"
+                                        class="dragArea flex flex-col gap-2 rounded border border-foreground dark:border-foreground p-2 min-h-[5rem] bg-white dark:bg-surface-800"
                                         :list="element.children"
                                         :group="{ name: 'navbar' }"
                                         item-key="key"
                                       >
                                         <template #item="{ element: el, index: idx }">
-                                          <div class="bg-surface-200 dark:bg-surface-700 relative rounded p-2 text-secondary-700 dark:text-secondary-400 text-center">
-                                            <p class="text-sm text-secondary-500">
+                                          <div class="bg-surface-200 dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
+                                            <p class="text-sm text-foreground">
                                               {{ el.type }}
                                             </p>
-                                            <p class="text-secondary-700 dark:text-secondary-400">
+                                            <p class="text-foreground dark:text-foreground">
                                               {{ el.name }}
                                             </p>
                                             <x-input
@@ -316,7 +316,7 @@ function removeNavItem(idx, list) {
                                             />
 
                                             <Icon
-                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-secondary-500 dark:text-secondary-400"
+                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
                                               name="close"
                                               @click="removeNavItem(idx, element.children)"
                                             />
@@ -329,7 +329,7 @@ function removeNavItem(idx, list) {
                               </Draggable>
                             </div>
                             <div class="grow">
-                              <h3 class="text-center text-secondary-600 dark:text-secondary-200 font-bold">
+                              <h3 class="text-center text-foreground dark:text-foreground font-bold">
                                 Right
                               </h3>
                               <Draggable
@@ -340,8 +340,8 @@ function removeNavItem(idx, list) {
                                 item-key="key"
                               >
                                 <template #item="{ element, index }">
-                                  <div class="bg-surface-200 shadow-sm dark:bg-surface-700 relative rounded p-2 text-secondary-700 dark:text-secondary-400 text-center">
-                                    <p class="text-sm text-secondary-500 dark:text-secondary-500">
+                                  <div class="bg-surface-200 shadow-sm dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
+                                    <p class="text-sm text-foreground dark:text-foreground">
                                       {{ element.type }}
                                     </p>
                                     <p>{{ element.name }}</p>
@@ -353,7 +353,7 @@ function removeNavItem(idx, list) {
                                     />
 
                                     <Icon
-                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-secondary-500 dark:text-secondary-400"
+                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
                                       name="close"
                                       @click="removeNavItem(index, rightNavList)"
                                     />
@@ -362,17 +362,17 @@ function removeNavItem(idx, list) {
                                     <div v-if="element.type === 'dropdown'">
                                       <Draggable
                                         :swap-threshold="0.65"
-                                        class="dragArea flex flex-col gap-2 rounded border border-secondary-200 dark:border-secondary-700 p-2 min-h-[5rem] bg-white dark:bg-surface-800"
+                                        class="dragArea flex flex-col gap-2 rounded border border-foreground dark:border-foreground p-2 min-h-[5rem] bg-white dark:bg-surface-800"
                                         :list="element.children"
                                         :group="{ name: 'navbar' }"
                                         item-key="key"
                                       >
                                         <template #item="{ element: el, index: idx }">
-                                          <div class="bg-surface-200 dark:bg-surface-700 relative rounded p-2 text-secondary-700 dark:text-secondary-400 text-center">
-                                            <p class="text-sm text-secondary-500">
+                                          <div class="bg-surface-200 dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
+                                            <p class="text-sm text-foreground">
                                               {{ el.type }}
                                             </p>
-                                            <p class="text-secondary-700 dark:text-secondary-400">
+                                            <p class="text-foreground dark:text-foreground">
                                               {{ el.name }}
                                             </p>
                                             <x-input
@@ -383,7 +383,7 @@ function removeNavItem(idx, list) {
                                             />
 
                                             <Icon
-                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-secondary-500 dark:text-secondary-400"
+                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
                                               name="close"
                                               @click="removeNavItem(idx, element.children)"
                                             />
@@ -397,11 +397,11 @@ function removeNavItem(idx, list) {
                             </div>
                           </div>
 
-                          <div class="flex col-span-6 text-secondary-500 text-sm justify-center italic">
+                          <div class="flex col-span-6 text-foreground text-sm justify-center italic">
                             {{ __("Tip: Start by dragging items from above 'Available Items' to down here.") }}
                           </div>
 
-                          <div class="flex items-center col-span-3 sm:col-span-6 border-t border-secondary-200 dark:border-secondary-700 pt-4">
+                          <div class="flex items-center col-span-3 sm:col-span-6 border-t border-foreground dark:border-foreground pt-4">
                             <x-checkbox
                               id="enable_custom_footer"
                               v-model="form.enable_custom_footer"
@@ -493,7 +493,7 @@ function removeNavItem(idx, list) {
                                     @click="removeFooterColumnItem(column, item_index)"
                                   >
                                     <Icon
-                                      class="w-5 h-5 text-secondary-300 group-hover:text-error-500"
+                                      class="w-5 h-5 text-foreground group-hover:text-error-500"
                                       name="trash"
                                     />
                                   </button>
@@ -501,7 +501,7 @@ function removeNavItem(idx, list) {
                               </div>
 
                               <button
-                                class="mt-2 float-right inline-flex items-center px-2 py-1 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
+                                class="mt-2 float-right inline-flex items-center px-2 py-1 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                                 type="button"
                                 @click="addFooterColumnItem(column)"
                               >
@@ -515,7 +515,7 @@ function removeNavItem(idx, list) {
                       <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                         <loading-button
                           :loading="form.processing"
-                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
+                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                           type="submit"
                         >
                           {{ __("Save Navigation Settings") }}

@@ -17,7 +17,7 @@
           id="position"
           class="flex flex-col items-center justify-center"
         >
-          <div class="flex items-center text-primary-400 font-extrabold">
+          <div class="flex items-center text-primary font-extrabold">
             <span
               v-if="player.position"
               v-tippy
@@ -28,8 +28,8 @@
                 text-2xl
                 px-2
                 py-1
-                border-primary-300
-                bg-primary-50
+                border-primary
+                bg-primary
                 dark:bg-surface-800
               "
             >
@@ -38,12 +38,12 @@
             <span
               v-else
               v-tippy
-              class="italic text-sm text-secondary-500 dark:text-secondary-400"
+              class="italic text-sm text-foreground dark:text-foreground"
               :title="__('Position: None')"
             >{{ __("None") }}</span>
           </div>
 
-          <span class="text-sm text-secondary-400 dark:text-secondary-300 font-bold mt-1"> {{ __("Position") }} </span>
+          <span class="text-sm text-foreground dark:text-foreground font-bold mt-1"> {{ __("Position") }} </span>
         </div>
 
         <div
@@ -61,14 +61,14 @@
             <p
               v-else
               v-tippy
-              class="italic text-sm text-secondary-500 dark:text-secondary-400"
+              class="italic text-sm text-foreground dark:text-foreground"
               :title="__('Rating: None')"
             >
               {{ __("None") }}
             </p>
           </div>
 
-          <span class="text-sm text-secondary-400 dark:text-secondary-300 font-bold mt-1"> {{ __("Rating") }} </span>
+          <span class="text-sm text-foreground dark:text-foreground font-bold mt-1"> {{ __("Rating") }} </span>
         </div>
 
         <div
@@ -87,14 +87,14 @@
             <p
               v-else
               v-tippy
-              class="italic text-sm text-secondary-500 dark:text-secondary-400"
+              class="italic text-sm text-foreground dark:text-foreground"
               :title="__('Rank: None')"
             >
               {{ __("None") }}
             </p>
           </div>
 
-          <span class="text-sm text-secondary-400 dark:text-secondary-300 font-bold mt-1"> {{ __("Rank") }} </span>
+          <span class="text-sm text-foreground dark:text-foreground font-bold mt-1"> {{ __("Rank") }} </span>
         </div>
 
         <div
@@ -112,13 +112,13 @@
           <p
             v-else
             v-tippy
-            class="italic text-sm text-secondary-500 dark:text-secondary-400"
+            class="italic text-sm text-foreground dark:text-foreground"
             :title="__('Country: None')"
           >
             {{ __("Unknown") }}
           </p>
 
-          <span class="text-sm text-secondary-400 dark:text-secondary-300 font-bold mt-1"> {{ __("Country") }} </span>
+          <span class="text-sm text-foreground dark:text-foreground font-bold mt-1"> {{ __("Country") }} </span>
         </div>
       </div>
 
@@ -153,21 +153,21 @@
           </div>
           <div class="shadow bg-white dark:bg-surface-800 rounded w-full p-2 md:p-5">
             <div class="flex justify-between space-x-2 items-center mb-2">
-              <h1 class="text-2xl text-secondary-800 dark:text-secondary-200 font-extrabold">
+              <h1 class="text-2xl text-foreground dark:text-foreground font-extrabold">
                 {{ player.username }}
               </h1>
-              <h2 class="text-secondary-400 font-semibold text-xs md:text-sm">
+              <h2 class="text-foreground font-semibold text-xs md:text-sm">
                 {{ player.uuid }}
               </h2>
             </div>
 
             <div
               id="stats"
-              class="text-xs md:text-sm font-semibold text-secondary-700 dark:text-secondary-400 space-y-4"
+              class="text-xs md:text-sm font-semibold text-foreground dark:text-foreground space-y-4"
             >
               <div
                 id="first"
-                class="flex justify-between pb-4 border-b border-secondary-200 dark:border-secondary-700"
+                class="flex justify-between pb-4 border-b border-foreground dark:border-foreground"
               >
                 <div class="flex-1 space-y-4">
                   <div class="flex justify-between">
@@ -196,7 +196,7 @@
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
-                        class="w-5 h-5 text-primary-500"
+                        class="w-5 h-5 text-primary"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -236,7 +236,7 @@
                       >{{ player.rating }}</span>
                       <span
                         v-else
-                        class="italic text-secondary-500"
+                        class="italic text-foreground"
                       >{{ __("None") }}</span>
                     </p>
                   </div>
@@ -326,7 +326,7 @@
                 flex
                 justify-between
                 pb-4
-                border-b border-secondary-200 dark:border-secondary-700
+                border-b border-foreground dark:border-foreground
                 space-x-8
               "
               >
@@ -334,7 +334,7 @@
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
-                        class="w-5 h-5 text-primary-500"
+                        class="w-5 h-5 text-primary"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -351,7 +351,7 @@
                       <span v-if="player.rank">{{ player.rank.name }}</span>
                       <span
                         v-else
-                        class="italic text-secondary-500"
+                        class="italic text-foreground"
                       >{{ __("None") }}</span>
                     </p>
                   </div>
@@ -378,7 +378,7 @@
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
-                        class="w-5 h-5 text-primary-500"
+                        class="w-5 h-5 text-primary"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -400,7 +400,7 @@
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
-                        class="w-5 h-5 text-secondary-700 dark:text-secondary-200"
+                        class="w-5 h-5 text-foreground dark:text-foreground"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -437,14 +437,14 @@
                       <span v-if="player.next_rank">{{ player.next_rank }}</span>
                       <span
                         v-else
-                        class="italic text-secondary-500"
+                        class="italic text-foreground"
                       >{{ __("None") }}</span>
                     </p>
                   </div>
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
-                        class="w-5 h-5 text-primary-500"
+                        class="w-5 h-5 text-primary"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -508,13 +508,13 @@
 
               <div
                 id="third"
-                class="flex justify-between pb-4 border-b border-secondary-200 dark:border-secondary-700 space-x-8"
+                class="flex justify-between pb-4 border-b border-foreground dark:border-foreground space-x-8"
               >
                 <div class="flex-1 space-y-4">
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
-                        class="w-5 h-5 text-primary-500"
+                        class="w-5 h-5 text-primary"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -632,7 +632,7 @@
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
-                        class="w-5 h-5 text-primary-500"
+                        class="w-5 h-5 text-primary"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -650,7 +650,7 @@
                     <p class="flex items-start space-x-2">
                       <inertia-link
                         v-if="player.owner"
-                        class="font-bold text-primary-400 hover:text-primary-600"
+                        class="font-bold text-primary hover:text-primary"
                         as="a"
                         :href="route('user.public.get', player.owner.username)"
                       >
@@ -658,7 +658,7 @@
                       </inertia-link>
                       <span
                         v-else
-                        class="italic text-secondary-500"
+                        class="italic text-foreground"
                       >{{ __("None") }}</span>
 
 
@@ -699,7 +699,7 @@
                     </div>
                     <p
                       v-if="!player.favorite_server"
-                      class="text-secondary-400 italic"
+                      class="text-foreground italic"
                     >
                       {{ __("None") }}
                     </p>
@@ -723,7 +723,7 @@
                   <div class="flex justify-between">
                     <div class="flex">
                       <svg
-                        class="w-5 h-5 text-primary-500"
+                        class="w-5 h-5 text-primary"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"

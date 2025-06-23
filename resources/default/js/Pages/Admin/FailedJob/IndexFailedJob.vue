@@ -60,9 +60,9 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Failed Jobs')" />
 
-    <div class="px-10 py-8 mx-auto text-secondary-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-secondary-500 dark:text-secondary-300">
+        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
           {{ __("Failed Jobs") }}
         </h1>
         <div class="flex">
@@ -95,7 +95,7 @@ const headerRow = [
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+            class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -106,10 +106,10 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div>
-              <div class="text-sm font-medium text-secondary-900 dark:text-secondary-300">
+              <div class="text-sm font-medium text-foreground dark:text-foreground">
                 {{ item.payload.displayName }}
               </div>
-              <div class="text-sm text-secondary-500 dark:text-secondary-400">
+              <div class="text-sm text-foreground dark:text-foreground">
                 {{ __("Attempts: :attempts", {
                   attempts: item.payload.attempts,
                 }) }}

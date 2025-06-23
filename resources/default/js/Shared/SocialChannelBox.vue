@@ -5,7 +5,7 @@
   >
     <h3
       v-if="showTitle"
-      class="text-secondary-800 dark:text-secondary-200 font-extrabold"
+      class="text-foreground dark:text-foreground font-extrabold"
     >
       {{ __("Socials") }}
     </h3>
@@ -17,7 +17,7 @@
         :title="__('Youtube')"
         :href="youtube"
         target="_blank"
-        class="inline-block p-1 hover:bg-error-600 text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-error-600 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <svg
           class="fill-current h-8 w-8 p-1"
@@ -41,7 +41,7 @@
         :title="__('Twitter')"
         :href="twitter"
         target="_blank"
-        class="inline-block p-1 hover:bg-primary-600 text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-primary text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="twitter"
@@ -55,7 +55,7 @@
         :title="__('Twitch')"
         :href="twitch"
         target="_blank"
-        class="inline-block p-1 hover:bg-purple-600 text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-purple-600 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="twitch"
@@ -69,7 +69,7 @@
         :title="__('Facebook')"
         :href="facebook"
         target="_blank"
-        class="inline-block p-1 hover:bg-primary-700 text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-primary text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <svg
           class="w-8 h-8 p-1 fill-current"
@@ -88,7 +88,7 @@
         :title="__('LinkedIn')"
         :href="linkedin"
         target="_blank"
-        class="inline-block p-1 hover:bg-[#0a66c2] text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-[#0a66c2] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="linkedin"
@@ -102,7 +102,7 @@
         :title="__('TikTok')"
         :href="tiktok"
         target="_blank"
-        class="inline-block p-1 hover:bg-black text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-black text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="tiktok"
@@ -116,7 +116,7 @@
         :title="__('Steam')"
         :href="steam"
         target="_blank"
-        class="inline-block p-1 hover:bg-surface-800 text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-surface-800 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <svg
           class="h-8 w-8 p-1 fill-current"
@@ -140,7 +140,7 @@
         :title="__('Website')"
         :href="website"
         target="_blank"
-        class="inline-block p-1 hover:bg-success-600 text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-success-600 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <svg
           class="h-8 w-8 p-1 fill-current"
@@ -161,7 +161,7 @@
         :title="__('Discord')"
         :href="discord"
         target="_blank"
-        class="inline-block p-1 hover:bg-primary-600 text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-primary text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="discord"
@@ -175,7 +175,7 @@
         :title="__('Instagram')"
         :href="instagram"
         target="_blank"
-        class="inline-block p-1 hover:bg-[#fe435e] text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-[#fe435e] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="instagram"
@@ -189,7 +189,7 @@
         :title="__('WhatsApp')"
         :href="whatsapp"
         target="_blank"
-        class="inline-block p-1 hover:bg-success-500 text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-success-500 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="whatsapp"
@@ -203,7 +203,7 @@
         :title="__('Telegram')"
         :href="telegram"
         target="_blank"
-        class="inline-block p-1 hover:bg-[#38b5e4] text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-[#38b5e4] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="telegram"
@@ -217,7 +217,7 @@
         :title="__('Threads')"
         :href="threads"
         target="_blank"
-        class="inline-block p-1 hover:bg-[#000000] text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-[#000000] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="threads"
@@ -231,7 +231,7 @@
         :title="__('Reddit')"
         :href="reddit"
         target="_blank"
-        class="inline-block p-1 hover:bg-[#ef4623] text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-[#ef4623] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="reddit"
@@ -245,7 +245,7 @@
         :title="__('GitHub')"
         :href="github"
         target="_blank"
-        class="inline-block p-1 hover:bg-[#000000] text-secondary-700 rounded hover:text-white transition duration-100 ease-in dark:text-secondary-300 dark:hover:text-white"
+        class="inline-block p-1 hover:bg-[#000000] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
       >
         <icon
           name="github"

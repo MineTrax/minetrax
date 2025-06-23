@@ -89,7 +89,7 @@ export default {
           <color-theme-toggle class="flex items-center justify-center space-x-8 md:ml-8 md:hidden" />
 
           <button
-            class="inline-flex items-center justify-center p-2 text-secondary-400 transition duration-150 ease-in-out rounded-md dark:text-secondary-500 hover:text-secondary-500 dark:hover:text-secondary-300 hover:bg-surface-100 dark:hover:bg-surface-900 focus:outline-none focus:bg-surface-100 dark:focus:bg-surface-900 focus:text-secondary-500 dark:focus:text-secondary-200"
+            class="inline-flex items-center justify-center p-2 text-foreground transition duration-150 ease-in-out rounded-md dark:text-foreground hover:text-foreground dark:hover:text-foreground hover:bg-surface-100 dark:hover:bg-surface-900 focus:outline-none focus:bg-surface-100 dark:focus:bg-surface-900 focus:text-foreground dark:focus:text-foreground"
             @click="showingNavigationDropdown = ! showingNavigationDropdown"
           >
             <svg
@@ -152,7 +152,7 @@ export default {
       <!-- Responsive Settings Options / Not configurable by CustomNav -->
       <div
         v-if="$page.props.auth.user"
-        class="pt-4 pb-1 border-t border-secondary-200 dark:border-secondary-700"
+        class="pt-4 pb-1 border-t border-foreground dark:border-foreground"
       >
         <inertia-link
           as="a"
@@ -171,10 +171,10 @@ export default {
           </div>
 
           <div>
-            <div class="text-base font-medium text-secondary-800 dark:text-secondary-300">
+            <div class="text-base font-medium text-foreground dark:text-foreground">
               {{ $page.props.auth.user.name }}
             </div>
-            <div class="text-sm font-medium text-secondary-500">
+            <div class="text-sm font-medium text-foreground">
               {{ $page.props.auth.user.email }}
             </div>
           </div>

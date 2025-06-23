@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white dark:bg-surface-800 rounded w-full h-full space-y-2 p-3 shadow">
-    <h3 class="font-extrabold text-secondary-800 dark:text-secondary-200 flex items-center">
+    <h3 class="font-extrabold text-foreground dark:text-foreground flex items-center">
       <icon
         name="ram"
         class="w-6 mr-1"

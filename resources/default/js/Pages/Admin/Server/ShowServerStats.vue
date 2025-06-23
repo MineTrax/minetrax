@@ -3,7 +3,7 @@
     <app-head :title="__('Server #:id', {id: server.id})" />
 
     <div class="max-w-6xl px-10 py-12 mx-auto space-y-4">
-      <h2 class="text-2xl text-secondary-600 dark:text-secondary-200">
+      <h2 class="text-2xl text-foreground dark:text-foreground">
         <span class="font-bold">#{{ server.id }}</span>
         -
         <span class="font-bold">{{ server.name }}</span>
@@ -13,7 +13,7 @@
 
       <div
         v-if="isEmpty"
-        class="w-full p-2 space-y-4 text-sm text-secondary-700 bg-white rounded shadow dark:text-secondary-300 dark:bg-surface-800 md:p-5"
+        class="w-full p-2 space-y-4 text-sm text-foreground bg-white rounded shadow dark:text-foreground dark:bg-surface-800 md:p-5"
       >
         <h3 class="text-center text-error-400">
           {{ __("No data captured yet for this server! Please try visiting later.") }}
@@ -21,9 +21,9 @@
       </div>
       <div
         v-else
-        class="w-full p-2 space-y-4 text-sm text-secondary-700 bg-white rounded shadow dark:text-secondary-300 dark:bg-surface-800 md:p-5"
+        class="w-full p-2 space-y-4 text-sm text-foreground bg-white rounded shadow dark:text-foreground dark:bg-surface-800 md:p-5"
       >
-        <h3 class="flex items-center pb-4 font-extrabold text-secondary-800 border-b border-secondary-200 dark:text-secondary-200 dark:border-secondary-700">
+        <h3 class="flex items-center pb-4 font-extrabold text-foreground border-b border-foreground dark:text-foreground dark:border-foreground">
           <icon
             name="calculator"
             class="w-6 mr-1"
@@ -188,7 +188,7 @@
           <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
-                class="w-5 h-5 text-primary-500"
+                class="w-5 h-5 text-primary"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -214,7 +214,7 @@
           <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
-                class="w-5 h-5 text-primary-500"
+                class="w-5 h-5 text-primary"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -289,7 +289,7 @@
           <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
-                class="w-5 h-5 text-primary-500"
+                class="w-5 h-5 text-primary"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -352,7 +352,7 @@
           <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
-                class="w-5 h-5 text-primary-500"
+                class="w-5 h-5 text-primary"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -442,7 +442,7 @@
           <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
-                class="w-5 h-5 text-primary-500"
+                class="w-5 h-5 text-primary"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -514,7 +514,7 @@
           <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
-                class="w-5 h-5 text-primary-500"
+                class="w-5 h-5 text-primary"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -536,7 +536,7 @@
           <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
-                class="w-5 h-5 text-primary-500"
+                class="w-5 h-5 text-primary"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -688,7 +688,7 @@
             <div class="flex">
               <icon
                 name="moon-outline"
-                class="w-5 h-5 text-primary-500"
+                class="w-5 h-5 text-primary"
               />
               <p class="ml-1">
                 {{ __("Total sleeps by all players") }}
@@ -742,7 +742,7 @@
           <div class="flex justify-between flex-1">
             <div class="flex">
               <svg
-                class="w-5 h-5 text-primary-500"
+                class="w-5 h-5 text-primary"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"

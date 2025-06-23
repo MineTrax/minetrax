@@ -9,7 +9,7 @@
     </template>
 
     <template #content>
-      <div class="max-w-xl text-sm text-secondary-600 dark:text-secondary-400">
+      <div class="max-w-xl text-sm text-foreground dark:text-foreground">
         {{ __("If necessary, you may logout of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.") }}
       </div>
 
@@ -32,7 +32,7 @@
               stroke-width="2"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              class="w-8 h-8 text-secondary-500"
+              class="w-8 h-8 text-foreground"
             >
               <path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
@@ -46,7 +46,7 @@
               fill="none"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="w-8 h-8 text-secondary-500"
+              class="w-8 h-8 text-foreground"
             >
               <path
                 d="M0 0h24v24H0z"
@@ -62,12 +62,12 @@
           </div>
 
           <div class="ml-3">
-            <div class="text-sm text-secondary-600 dark:text-secondary-400">
+            <div class="text-sm text-foreground dark:text-foreground">
               {{ session.agent.platform }} - {{ session.agent.browser }}
             </div>
 
             <div>
-              <div class="text-xs text-secondary-500">
+              <div class="text-xs text-foreground">
                 {{ session.ip_address }},
 
                 <span

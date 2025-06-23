@@ -17,24 +17,24 @@ export function useChartTheme() {
         return isDark
             ? [
                   getThemeColor("--color-surface-700", "#374151"), // Start with subtle background-like color
-                  getThemeColor("--color-primary-200", "#c7d2fe"),
-                  getThemeColor("--color-primary-400", "#818cf8"),
-                  getThemeColor("--color-primary-600", "#4f46e5"),
-                  getThemeColor("--color-primary-800", "#3730a3"),
+                  getThemeColor("--color-primary", "#c7d2fe"),
+                  getThemeColor("--color-primary", "#818cf8"),
+                  getThemeColor("--color-primary", "#4f46e5"),
+                  getThemeColor("--color-primary", "#3730a3"),
               ]
             : [
-                  getThemeColor("--color-secondary-50", "#f8fafc"), // Start with very light background-like color
-                  getThemeColor("--color-primary-100", "#e0e7ff"),
-                  getThemeColor("--color-primary-300", "#a5b4fc"),
-                  getThemeColor("--color-primary-500", "#6366f1"),
-                  getThemeColor("--color-primary-700", "#4338ca"),
+                  getThemeColor("--color-foreground", "#f8fafc"), // Start with very light background-like color
+                  getThemeColor("--color-primary", "#e0e7ff"),
+                  getThemeColor("--color-primary", "#a5b4fc"),
+                  getThemeColor("--color-primary", "#6366f1"),
+                  getThemeColor("--color-primary", "#4338ca"),
               ];
     };
 
     // Get chart color palette (for line charts, bar charts, etc.)
     const getChartColorPalette = () => {
         return [
-            getThemeColor("--color-primary-500", "#6366f1"),
+            getThemeColor("--color-primary", "#6366f1"),
             getThemeColor("--color-green-500", "#10b981"),
             getThemeColor("--color-yellow-500", "#f59e0b"),
             getThemeColor("--color-red-500", "#ef4444"),
@@ -51,9 +51,9 @@ export function useChartTheme() {
         return {
             backgroundColor: getThemeColor("--color-surface-800", "#1f2937"),
             textStyle: {
-                color: getThemeColor("--color-secondary-200", "#e5e7eb"),
+                color: getThemeColor("--color-foreground", "#e5e7eb"),
             },
-            borderColor: getThemeColor("--color-secondary-600", "#4b5563"),
+            borderColor: getThemeColor("--color-foreground", "#4b5563"),
             borderWidth: 1,
         };
     };
@@ -63,16 +63,16 @@ export function useChartTheme() {
         return {
             axisLine: {
                 lineStyle: {
-                    color: getThemeColor("--color-secondary-400", "#9ca3af"),
+                    color: getThemeColor("--color-foreground", "#9ca3af"),
                 },
             },
             splitLine: {
                 lineStyle: {
-                    color: getThemeColor("--color-secondary-600", "#4b5563"),
+                    color: getThemeColor("--color-foreground", "#4b5563"),
                 },
             },
             axisLabel: {
-                color: getThemeColor("--color-secondary-300", "#d1d5db"),
+                color: getThemeColor("--color-foreground", "#d1d5db"),
             },
         };
     };
@@ -81,7 +81,7 @@ export function useChartTheme() {
     const getLegendStyle = () => {
         return {
             textStyle: {
-                color: getThemeColor("--color-secondary-300", "#d1d5db"),
+                color: getThemeColor("--color-foreground", "#d1d5db"),
             },
         };
     };
@@ -90,7 +90,7 @@ export function useChartTheme() {
     const getToolboxStyle = () => {
         return {
             iconStyle: {
-                borderColor: getThemeColor("--color-secondary-400", "#9ca3af"),
+                borderColor: getThemeColor("--color-foreground", "#9ca3af"),
             },
         };
     };
@@ -102,20 +102,17 @@ export function useChartTheme() {
                 normal: {
                     areaColor: getThemeColor("--color-surface-50", "#ffffff"),
                     borderColor: getThemeColor(
-                        "--color-secondary-300",
+                        "--color-foreground",
                         "#d1d5db"
                     ),
                     borderWidth: 0.5,
                 },
                 emphasis: {
                     areaColor: getThemeColor(
-                        "--color-secondary-200",
+                        "--color-foreground",
                         "#e5e7eb"
                     ),
-                    borderColor: getThemeColor(
-                        "--color-primary-500",
-                        "#6366f1"
-                    ),
+                    borderColor: getThemeColor("--color-primary", "#6366f1"),
                     borderWidth: 1,
                 },
             },
@@ -124,7 +121,7 @@ export function useChartTheme() {
                 emphasis: {
                     textStyle: {
                         color: getThemeColor(
-                            "--color-secondary-100",
+                            "--color-foreground",
                             "#f3f4f6"
                         ),
                     },
@@ -146,11 +143,11 @@ export function useChartTheme() {
             color: getChartColorPalette(),
             backgroundColor: getThemeColor("--color-surface-900", "#111827"),
             textStyle: {
-                color: getThemeColor("--color-secondary-300", "#d1d5db"),
+                color: getThemeColor("--color-foreground", "#d1d5db"),
             },
             title: {
                 textStyle: {
-                    color: getThemeColor("--color-secondary-100", "#f3f4f6"),
+                    color: getThemeColor("--color-foreground", "#f3f4f6"),
                 },
             },
             tooltip: getTooltipStyle(),
@@ -158,7 +155,7 @@ export function useChartTheme() {
             toolbox: getToolboxStyle(),
             axisPointer: {
                 lineStyle: {
-                    color: getThemeColor("--color-secondary-500", "#6b7280"),
+                    color: getThemeColor("--color-foreground", "#6b7280"),
                 },
             },
         };

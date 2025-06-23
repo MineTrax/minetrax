@@ -81,19 +81,19 @@ const headerRow = [
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-secondary-800 whitespace-nowrap dark:text-secondary-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               {{ item.id }}
             </td>
 
             <td class="px-4 invert dark:invert-0">
-              <div class="text-sm text-secondary-200">
+              <div class="text-sm text-foreground">
                 <p
                   v-html="item.data"
                 />
                 <p
                   v-if="item.causer_uuid"
-                  class="text-xs text-secondary-500 italic"
+                  class="text-xs text-foreground italic"
                 >
                   {{ __("Causer") }}: {{ item.causer_uuid }} ({{ item.causer_username }})
                 </p>

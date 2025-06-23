@@ -7,7 +7,7 @@
         :title="__('Use Light Theme')"
       >
         <MoonIcon
-          class="w-5 h-5 text-secondary-400 focus:outline-none stroke-2"
+          class="w-5 h-5 text-foreground focus:outline-none stroke-2"
         />
       </span>
       <span
@@ -16,7 +16,7 @@
         :title="__('Use Dark Theme')"
       >
         <SunIcon
-          class="w-6 h-6 text-secondary-400 focus:outline-none stroke-2"
+          class="w-6 h-6 text-foreground focus:outline-none stroke-2"
         />
       </span>
     </button>
