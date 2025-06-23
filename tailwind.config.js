@@ -33,6 +33,7 @@ module.exports = {
                 mono: ["var(--font-mono)", ...fontFamily.mono],
             },
             colors: {
+                // OLD COLORS. For backward compatibility only. Don't use these.
                 // primary: "var(--primary)",
                 // secondary: colors.gray,
                 success: colors.green,
@@ -41,6 +42,7 @@ module.exports = {
                 info: colors.cyan,
                 purple: colors.purple,
                 surface: colors.gray,
+                // Old colors ends.
 
                 // NEW TAILWIND THEMING
                 border: "hsl(var(--border))",
