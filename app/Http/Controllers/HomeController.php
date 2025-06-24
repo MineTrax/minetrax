@@ -44,7 +44,7 @@ class HomeController extends Controller
         // Make stripped body_html of the pinned news
         foreach ($latestPinnedNews as $news) {
             $converter = new GithubFlavoredMarkdownConverter();
-            $strippedBody = \Str::words($news->body, 25);
+            $strippedBody = \Str::words($news->body, 50);
             $news->body_md = $converter->convertToHtml($strippedBody)->getContent();
         }
 
