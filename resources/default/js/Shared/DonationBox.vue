@@ -12,7 +12,7 @@
       <div class="mt-3 flex justify-center">
         <Button
           variant="outline"
-          size="sm"
+          size="lg"
           as="a"
           target="_blank"
           :href="$page.props.generalSettings.donation_box_url"
