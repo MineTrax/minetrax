@@ -1,7 +1,7 @@
 <template>
   <Card v-if="enabled">
     <CardContent class="p-3 sm:px-5 break-words">
-      <h3 class="font-extrabold text-foreground dark:text-foreground">
+      <h3 class="font-extrabold text-card-foreground">
         {{ __("Server Status") }}
       </h3>
 
@@ -11,7 +11,7 @@
         class="flex p-4 justify-center"
       >
         <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary dark:text-primary"
+          class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -41,16 +41,17 @@
         v-if="!loading && !error"
         class="flex flex-col"
       >
-        <div class="mt-3 text-foreground dark:text-foreground text-center font-semibold">
-          {{ __("Join") }} <span class="font-bold text-primary dark:text-primary">{{ serverInfo.players.online }}</span> {{ __("Online Players") }}!
+        <div class="mt-3 text-card-foreground text-center font-semibold">
+          {{ __("Join") }} <span class="font-bold text-primary">{{ serverInfo.players.online }}</span> {{ __("Online Players") }}!
         </div>
 
         <copy-to-clipboard v-slot="props">
-          <button
+          <Button
+            class="mt-3 font-extrabold"
+            size="lg"
             v-tippy
             :title="__('Click to Copy')"
             type="button"
-            class="text-center font-extrabold mt-3 border border-foreground dark:border-foreground text-foreground dark:text-foreground rounded p-2 hover:text-primary dark:hover:text-primary hover:bg-primary dark:hover:bg-surface-900 hover:border-primary dark:hover:border-foreground focus:ring focus:ring-primary focus:ring-opacity-50 transition duration-150 ease-in-out focus:outline-none"
             @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
           >
             <span v-if="props.status !== 'copied'">
@@ -59,7 +60,7 @@
             <span v-else>
               {{ __("Copied!") }}
             </span>
-          </button>
+        </Button>
         </copy-to-clipboard>
       </div>
     </CardContent>
@@ -73,9 +74,10 @@ import {
 } from '@/Components/ui/card'
 import CopyToClipboard from '@/Components/CopyToClipboard.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
+import Button from '@/Components/ui/button/Button.vue';
 
 export default {
-    components: {ErrorMessage, CopyToClipboard, Card, CardContent},
+    components: {ErrorMessage, CopyToClipboard, Card, CardContent, Button},
 
     props: {
         server: Object,
