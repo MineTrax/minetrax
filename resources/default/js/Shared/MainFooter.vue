@@ -36,7 +36,7 @@ if(customFooterData?.style == 'variant_1') {
 
 <template>
   <footer
-    class="w-full text-foreground bg-white dark:bg-surface-800 body-font"
+    class="w-full text-foreground bg-secondary body-font"
     :class="{'md:mt-28': canShowCustomFooter}"
   >
     <div
@@ -239,7 +239,7 @@ if(customFooterData?.style == 'variant_1') {
     <div
       v-if="canShowCustomFooter && customFooterData.style == 'variant_2'"
       id="variant_2"
-      class="bg-white dark:bg-surface-800"
+      class="bg-secondary"
     >
       <div class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="flex justify-center">
@@ -491,10 +491,10 @@ if(customFooterData?.style == 'variant_1') {
 
     <div
       :class="{
-        'bg-white dark:bg-surface-800 border-t border-foreground dark:border-foreground': canShowCustomFooter,
-        'bg-surface-200': !canShowCustomFooter,
+        'bg-secondary border-t': canShowCustomFooter,
+        'bg-background': !canShowCustomFooter,
       }"
-      class="flex flex-col items-center justify-center p-5 dark:bg-surface-900"
+      class="flex flex-col items-center justify-center p-5"
     >
       <div class="text-sm text-foreground dark:text-foreground">
         &copy; {{ $page.props.generalSettings.site_name }} {{ new Date().getFullYear() }}
