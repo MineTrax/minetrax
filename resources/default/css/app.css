@@ -30,8 +30,8 @@
         right: 0;
         background: linear-gradient(
             to bottom,
-            theme("colors.surface.200" / 0%) 0%,
-            theme("colors.surface.200") 100%
+            theme("colors.background" / 0%) 0%,
+            theme("colors.background") 100%
         );
         height: 40%;
     }
@@ -45,8 +45,8 @@
         right: 0;
         background: linear-gradient(
             to bottom,
-            theme("colors.surface.900" / 0%) 0%,
-            theme("colors.surface.900") 100%
+            theme("colors.background" / 0%) 0%,
+            theme("colors.background") 100%
         );
         height: 40%;
     }

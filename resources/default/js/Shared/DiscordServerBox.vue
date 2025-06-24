@@ -1,5 +1,5 @@
 <template>
-  <div v-if="enabled && server" class="discord-widget rounded-xl border bg-card text-card-foreground shadow">
+  <div v-if="enabled && server" class="discord-widget w-full rounded-xl border bg-card text-card-foreground shadow">
     <!-- Loading State -->
     <div v-if="loading" class="discord-widget-loading">
       <div class="loading-spinner"></div>
@@ -679,7 +679,7 @@ export default {
 }
 
 .join-button:hover {
-  background: hsl(var(--muted));
+  background: hsl(var(--accent));
 }
 
 /* Custom scrollbar for members container */
