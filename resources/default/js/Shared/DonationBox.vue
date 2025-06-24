@@ -1,50 +1,52 @@
 <template>
   <Card v-if="enabled">
-    <CardContent class="p-3 sm:px-5">
-      <h3 class="font-extrabold text-foreground dark:text-foreground">
+    <CardContent class="p-3 space-y-2">
+      <h3 class="font-extrabold text-card-foreground">
         {{ __("Donate") }}
       </h3>
 
-      <p class="rounded text-sm text-foreground dark:text-foreground text-center p-1">
+      <p class="rounded text-sm text-card-foreground text-center p-1">
         {{ donationText }}
       </p>
 
-      <div class="mt-3 text-primary flex justify-center">
-        <a
+      <div class="mt-3 flex justify-center">
+        <Button
+          variant="outline"
+          size="sm"
+          as="a"
           target="_blank"
-          class="hover:bg-primary dark:hover:bg-surface-900 border px-2 py-1 border-primary font-semibold rounded"
           :href="$page.props.generalSettings.donation_box_url"
         >
           {{ __("Donate Now") }}
-        </a>
+        </Button>
       </div>
     </CardContent>
   </Card>
 </template>
 
-<script>
-import {sample} from 'lodash';
+<script setup>
+import { computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import { sample } from 'lodash';
+import { useTranslations } from '@/Composables/useTranslations';
 import {
   Card,
   CardContent,
 } from '@/Components/ui/card'
+import { Button } from '@/Components/ui/button'
 
-export default {
-    components: {
-        Card,
-        CardContent,
-    },
-    computed: {
-        enabled() {
-            return this.$page.props.generalSettings.enable_donation_box && this.$page.props.generalSettings.donation_box_url;
-        },
-        donationText() {
-            return sample([
-                this.__('Help us run our servers!'),
-                this.__('Your help mean everything to us!'),
-                this.__('If you are capable, we would appreciate your contribution')
-            ]);
-        }
-    }
-};
+const { __ } = useTranslations();
+const page = usePage();
+
+const enabled = computed(() => {
+  return page.props.generalSettings.enable_donation_box && page.props.generalSettings.donation_box_url;
+});
+
+const donationText = computed(() => {
+  return sample([
+    __('Help us run our servers!'),
+    __('Your help mean everything to us!'),
+    __('If you are capable, we would appreciate your contribution')
+  ]);
+});
 </script>

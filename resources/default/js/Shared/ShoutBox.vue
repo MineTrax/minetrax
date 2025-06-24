@@ -5,7 +5,7 @@
         {{ __("Shout Box") }}
       </h3>
 
-      <div class="flex-col space-y-4 overflow-auto max-h-96 hide-scrollbar">
+      <div class="overflow-auto flex-col space-y-4 max-h-96 hide-scrollbar">
         <!--Loading-->
         <div
           v-if="loading"
@@ -14,56 +14,56 @@
           <!-- Other user message skeleton -->
           <div class="chat-message">
             <div class="flex">
-              <div class="items-start order-2 max-w-xs mx-2 space-y-2 text-sm">
-                <div class="flex flex-col inline-block px-4 py-2 bg-popover rounded-tl-lg rounded-2xl">
+              <div class="order-2 items-start mx-2 space-y-2 max-w-xs text-sm">
+                <div class="inline-block flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg bg-popover">
                   <div class="mb-2">
-                    <Skeleton class="h-4 w-16 inline-block" />
-                    <Skeleton class="h-3 w-12 inline-block ml-1" />
+                    <Skeleton class="inline-block w-16 h-4" />
+                    <Skeleton class="inline-block ml-1 w-12 h-3" />
                   </div>
                   <div class="space-y-1">
-                    <Skeleton class="h-4 w-32" />
-                    <Skeleton class="h-4 w-24" />
+                    <Skeleton class="w-32 h-4" />
+                    <Skeleton class="w-24 h-4" />
                   </div>
                 </div>
               </div>
-              <Skeleton class="order-1 w-8 h-8 mt-2 rounded-full" />
+              <Skeleton class="order-1 mt-2 w-8 h-8 rounded-full" />
             </div>
           </div>
 
           <!-- Self message skeleton -->
           <div class="chat-message">
             <div class="flex justify-end">
-              <div class="items-start order-1 max-w-xs mx-2 space-y-2 text-sm">
-                <div class="flex flex-col inline-block px-4 py-2 bg-primary rounded-tr-lg rounded-2xl">
-                  <div class="text-right mb-2">
-                    <Skeleton class="h-3 w-12 inline-block mr-1" />
-                    <Skeleton class="h-4 w-16 inline-block" />
+              <div class="order-1 items-start mx-2 space-y-2 max-w-xs text-sm">
+                <div class="inline-block flex flex-col px-4 py-2 rounded-2xl rounded-tr-lg bg-primary">
+                  <div class="mb-2 text-right">
+                    <Skeleton class="inline-block mr-1 w-12 h-3" />
+                    <Skeleton class="inline-block w-16 h-4" />
                   </div>
                   <div class="space-y-1">
-                    <Skeleton class="h-4 w-28" />
-                    <Skeleton class="h-4 w-20" />
+                    <Skeleton class="w-28 h-4" />
+                    <Skeleton class="w-20 h-4" />
                   </div>
                 </div>
               </div>
-              <Skeleton class="order-2 w-8 h-8 mt-2 rounded-full" />
+              <Skeleton class="order-2 mt-2 w-8 h-8 rounded-full" />
             </div>
           </div>
 
           <!-- Another other user message skeleton -->
           <div class="chat-message">
             <div class="flex">
-              <div class="items-start order-2 max-w-xs mx-2 space-y-2 text-sm">
-                <div class="flex flex-col inline-block px-4 py-2 bg-popover rounded-tl-lg rounded-2xl">
+              <div class="order-2 items-start mx-2 space-y-2 max-w-xs text-sm">
+                <div class="inline-block flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg bg-popover">
                   <div class="mb-2">
-                    <Skeleton class="h-4 w-20 inline-block" />
-                    <Skeleton class="h-3 w-10 inline-block ml-1" />
+                    <Skeleton class="inline-block w-20 h-4" />
+                    <Skeleton class="inline-block ml-1 w-10 h-3" />
                   </div>
                   <div class="space-y-1">
-                    <Skeleton class="h-4 w-36" />
+                    <Skeleton class="w-36 h-4" />
                   </div>
                 </div>
               </div>
-              <Skeleton class="order-1 w-8 h-8 mt-2 rounded-full" />
+              <Skeleton class="order-1 mt-2 w-8 h-8 rounded-full" />
             </div>
           </div>
         </div>
@@ -78,9 +78,9 @@
             v-if="!$page.props.auth.user || shout.user_id !== $page.props.auth.user.id"
             class="flex"
           >
-            <div class="items-start order-2 max-w-xs mx-2 space-y-2 text-sm">
+            <div class="order-2 items-start mx-2 space-y-2 max-w-xs text-sm">
               <div
-                class="flex flex-col inline-block px-4 py-2 text-card-foreground bg-popover rounded-tl-lg rounded-2xl"
+                class="flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg text-card-foreground bg-popover"
               >
                 <div>
                   <inertia-link
@@ -107,7 +107,7 @@
             <img
               :src="shout.user.profile_photo_url"
               alt="My profile"
-              class="order-1 w-8 h-8 mt-2 rounded-full"
+              class="order-1 mt-2 w-8 h-8 rounded-full"
             >
             <inertia-link
               v-if="$page.props.auth.user && shout.permissions.delete"
@@ -145,9 +145,9 @@
                 name="trash"
               />
             </inertia-link>
-            <div class="items-start order-1 max-w-xs mx-2 space-y-2 text-sm">
+            <div class="order-1 items-start mx-2 space-y-2 max-w-xs text-sm">
               <div
-                class="flex flex-col inline-block px-4 py-2 text-primary-foreground rounded-tr-lg rounded-2xl bg-primary"
+                class="flex flex-col px-4 py-2 rounded-2xl rounded-tr-lg text-primary-foreground bg-primary"
               >
                 <div class="text-right">
                   <span
@@ -174,7 +174,7 @@
             <img
               :src="shout.user.profile_photo_url"
               alt="My profile"
-              class="order-2 w-8 h-8 mt-2 rounded-full"
+              class="order-2 mt-2 w-8 h-8 rounded-full"
             >
           </div>
           <!-- self end -->
@@ -182,7 +182,7 @@
 
         <div
           v-if="!loading && (!shouts || shouts.length <= 0)"
-          class="italic text-muted-foreground text-center"
+          class="italic text-center text-muted-foreground"
         >
           {{ __("No shouts yet.") }}
         </div>

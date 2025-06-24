@@ -129,7 +129,7 @@
 }
 
 .autolink {
-    color: var(--primary);
+    color: hsl(var(--primary));
 }
 
 .autolink:hover {
@@ -165,8 +165,8 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    -webkit-box-shadow: inset 0 0 0 1px var(--primary),
-        inset 0 0 0 4px var(--primary);
+    -webkit-box-shadow: inset 0 0 0 1px hsl(var(--primary)),
+        inset 0 0 0 4px hsl(var(--primary));
 }
 
 ::-webkit-scrollbar-corner {
@@ -186,7 +186,7 @@ body.swal2-shown > [aria-hidden="true"] {
 }
 .lds-ripple div {
     position: absolute;
-    border: 4px solid var(--primary);
+    border: 4px solid hsl(var(--primary));
     opacity: 1;
     border-radius: 50%;
     animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
@@ -230,13 +230,13 @@ body.swal2-shown > [aria-hidden="true"] {
 }
 
 .CodeMirror {
-    color: var(--secondary);
-    border-color: var(--secondary);
+    color: hsl(var(--secondary));
+    border-color: hsl(var(--secondary));
     background-color: inherit;
 }
 
 .cm-s-easymde .CodeMirror-cursor {
-    border-color: var(--secondary);
+    border-color: hsl(var(--secondary));
 }
 
 .no-disabled-effect .data-\[disabled\]\:opacity-50[data-disabled] {

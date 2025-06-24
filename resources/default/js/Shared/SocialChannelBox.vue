@@ -1,26 +1,24 @@
 <template>
-  <Card
-    v-if="enabled && show"
-  >
+  <Card v-if="enabled && show">
     <CardContent class="p-3 space-y-2">
       <h3
         v-if="showTitle"
-        class="text-foreground dark:text-foreground font-extrabold"
+        class="font-extrabold text-card-foreground"
       >
         {{ __("Socials") }}
       </h3>
 
-      <div class="flex items-center justify-center space-x-6 flex-wrap">
+      <div class="flex items-center justify-center space-x-4 flex-wrap gap-y-2">
         <a
           v-if="youtube"
           v-tippy
           :title="__('Youtube')"
           :href="youtube"
           target="_blank"
-          class="inline-block p-1 hover:bg-error-600 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-error-600 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <svg
-            class="fill-current h-8 w-8 p-1"
+            class="fill-current h-6 w-6"
             height="512"
             viewBox="0 0 24 24"
             width="512"
@@ -41,11 +39,11 @@
           :title="__('Twitter')"
           :href="twitter"
           target="_blank"
-          class="inline-block p-1 hover:bg-primary text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-primary text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="twitter"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -55,11 +53,11 @@
           :title="__('Twitch')"
           :href="twitch"
           target="_blank"
-          class="inline-block p-1 hover:bg-purple-600 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-purple-600 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="twitch"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -69,10 +67,10 @@
           :title="__('Facebook')"
           :href="facebook"
           target="_blank"
-          class="inline-block p-1 hover:bg-primary text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-primary text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <svg
-            class="w-8 h-8 p-1 fill-current"
+            class="w-6 h-6 fill-current"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 155.139 155.139"
           >
@@ -88,11 +86,11 @@
           :title="__('LinkedIn')"
           :href="linkedin"
           target="_blank"
-          class="inline-block p-1 hover:bg-[#0a66c2] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-[#0a66c2] text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="linkedin"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -102,11 +100,11 @@
           :title="__('TikTok')"
           :href="tiktok"
           target="_blank"
-          class="inline-block p-1 hover:bg-black text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-black text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="tiktok"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -116,10 +114,10 @@
           :title="__('Steam')"
           :href="steam"
           target="_blank"
-          class="inline-block p-1 hover:bg-surface-800 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-surface-800 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <svg
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
             height="512"
             viewBox="0 0 24 24"
             width="512"
@@ -140,10 +138,10 @@
           :title="__('Website')"
           :href="website"
           target="_blank"
-          class="inline-block p-1 hover:bg-success-600 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-success-600 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <svg
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 26 26"
           >
@@ -161,11 +159,11 @@
           :title="__('Discord')"
           :href="discord"
           target="_blank"
-          class="inline-block p-1 hover:bg-primary text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-primary text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="discord"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -175,11 +173,11 @@
           :title="__('Instagram')"
           :href="instagram"
           target="_blank"
-          class="inline-block p-1 hover:bg-[#fe435e] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-[#fe435e] text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="instagram"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -189,11 +187,11 @@
           :title="__('WhatsApp')"
           :href="whatsapp"
           target="_blank"
-          class="inline-block p-1 hover:bg-success-500 text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-success-500 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="whatsapp"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -203,11 +201,11 @@
           :title="__('Telegram')"
           :href="telegram"
           target="_blank"
-          class="inline-block p-1 hover:bg-[#38b5e4] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-[#38b5e4] text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="telegram"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -217,11 +215,11 @@
           :title="__('Threads')"
           :href="threads"
           target="_blank"
-          class="inline-block p-1 hover:bg-[#000000] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-[#000000] text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="threads"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -231,11 +229,11 @@
           :title="__('Reddit')"
           :href="reddit"
           target="_blank"
-          class="inline-block p-1 hover:bg-[#ef4623] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-[#ef4623] text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="reddit"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
 
@@ -245,11 +243,11 @@
           :title="__('GitHub')"
           :href="github"
           target="_blank"
-          class="inline-block p-1 hover:bg-[#000000] text-foreground rounded hover:text-white transition duration-100 ease-in dark:text-foreground dark:hover:text-white"
+          class="inline-block p-2 hover:bg-[#000000] text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="github"
-            class="h-8 w-8 p-1 fill-current"
+            class="h-6 w-6 fill-current"
           />
         </a>
       </div>
@@ -257,59 +255,54 @@
   </Card>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
+import { useTranslations } from '@/Composables/useTranslations';
 import Icon from '@/Components/Icon.vue';
 import {
   Card,
   CardContent,
 } from '@/Components/ui/card'
 
-export default {
-    components: {
-        Icon,
-        Card,
-        CardContent,
-    },
-    props: {
-        enabled: Boolean,
-        showTitle: Boolean,
-        youtube: [String, null],
-        facebook: [String, null],
-        twitter: [String, null],
-        twitch: [String, null],
-        website: [String, null],
-        steam: [String, null],
-        discord: [String, null],
-        tiktok: [String, null],
-        linkedin: [String, null],
-        instagram: [String, null],
-        whatsapp: [String, null],
-        telegram: [String, null],
-        reddit: [String, null],
-        threads: [String, null],
-        github: [String, null],
-    },
+const props = defineProps({
+  enabled: Boolean,
+  showTitle: Boolean,
+  youtube: [String, null],
+  facebook: [String, null],
+  twitter: [String, null],
+  twitch: [String, null],
+  website: [String, null],
+  steam: [String, null],
+  discord: [String, null],
+  tiktok: [String, null],
+  linkedin: [String, null],
+  instagram: [String, null],
+  whatsapp: [String, null],
+  telegram: [String, null],
+  reddit: [String, null],
+  threads: [String, null],
+  github: [String, null],
+});
 
-    computed: {
-        show() {
-            return (
-                !!this.youtube ||
-                !!this.facebook ||
-                !!this.twitter ||
-                !!this.twitter ||
-                !!this.website ||
-                !!this.steam ||
-                !!this.discord ||
-                !!this.tiktok ||
-                !!this.linkedin ||
-                !!this.instagram ||
-                !!this.whatsapp ||
-                !!this.telegram ||
-                !!this.reddit ||
-                !!this.threads ||
-                !!this.github
-            );
-        },
-    },
-};
+const { __ } = useTranslations();
+
+const show = computed(() => {
+  return (
+    !!props.youtube ||
+    !!props.facebook ||
+    !!props.twitter ||
+    !!props.twitch ||
+    !!props.website ||
+    !!props.steam ||
+    !!props.discord ||
+    !!props.tiktok ||
+    !!props.linkedin ||
+    !!props.instagram ||
+    !!props.whatsapp ||
+    !!props.telegram ||
+    !!props.reddit ||
+    !!props.threads ||
+    !!props.github
+  );
+});
 </script>
