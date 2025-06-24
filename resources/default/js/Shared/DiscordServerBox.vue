@@ -3,14 +3,14 @@
     <!-- Loading State -->
     <div v-if="loading" class="discord-widget-loading">
       <div class="loading-spinner"></div>
-      <p class="loading-text">Loading Discord server...</p>
+      <p class="loading-text">{{ __("Loading Discord server...") }}</p>
     </div>
 
     <!-- Error State -->
     <div v-else-if="error" class="discord-widget-error">
       <div class="error-icon">⚠️</div>
-      <p class="error-text">Failed to load Discord server</p>
-      <button @click="fetchDiscordData" class="retry-button">Retry</button>
+      <p class="error-text">{{ error }}</p>
+      <button @click="fetchDiscordData" class="retry-button">{{ __("Retry") }}</button>
     </div>
 
     <!-- Success State -->
@@ -34,7 +34,7 @@
               <h3 class="server-name">{{ discordData.name }}</h3>
             </a>
             <h3 v-else class="server-name">{{ discordData.name }}</h3>
-            <p class="member-count">{{ discordData.presence_count }} members online</p>
+            <p class="member-count">{{ __(":count members online", { count: discordData.presence_count }) }}</p>
           </div>
         </div>
       </div>
@@ -46,7 +46,7 @@
             <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
             <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
           </svg>
-          VOICE CHANNELS — {{ voiceChannels.length }}
+          {{ __("VOICE CHANNELS") }} — {{ voiceChannels.length }}
         </h4>
         <div class="channels-list">
           <div
@@ -96,7 +96,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="12" cy="12" r="10"/>
             </svg>
-            ONLINE
+            {{ __("ONLINE") }}
           </h4>
           <div class="members-list">
             <div
@@ -140,7 +140,7 @@
               <circle cx="12" cy="12" r="10"/>
               <path d="M12 6v6l4 2"/>
             </svg>
-            IDLE
+            {{ __("IDLE") }}
           </h4>
           <div class="members-list">
             <div
@@ -184,7 +184,7 @@
               <circle cx="12" cy="12" r="10"/>
               <path d="M15 9H9v6h6z"/>
             </svg>
-            DO NOT DISTURB
+            {{ __("DO NOT DISTURB") }}
           </h4>
           <div class="members-list">
             <div
@@ -242,8 +242,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
     props: {
         enabled: Boolean,
@@ -253,7 +251,7 @@ export default {
         return {
       colorMode: window.colorMode,
       loading: false,
-      error: false,
+      error: null,
       discordData: null,
       refreshInterval: null
     }
@@ -296,17 +294,41 @@ export default {
     async fetchDiscordData(silent = false) {
       if (!silent) {
         this.loading = true
-        this.error = false
+        this.error = null
       }
 
       try {
         const response = await fetch(`https://discord.com/api/guilds/${this.server}/widget.json`)
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Discord server not found or widget not enabled')
+          } else if (response.status === 403) {
+            throw new Error('Discord server widget is disabled')
+          } else {
+            throw new Error(`Discord API error: ${response.status} ${response.statusText}`)
+          }
+        }
+
         const data = await response.json()
+
+        if (!data || typeof data !== 'object') {
+          throw new Error('Invalid response from Discord API')
+        }
+
         this.discordData = data
-        this.error = false
+        this.error = null
       } catch (err) {
         console.error('Error fetching Discord data:', err)
-        this.error = true
+
+        if (err.name === 'TypeError' && err.message.includes('fetch')) {
+          this.error = 'Network error: Unable to connect to Discord'
+        } else if (err.name === 'SyntaxError') {
+          this.error = 'Invalid response from Discord API'
+        } else {
+          this.error = err.message || 'Failed to load Discord server'
+        }
+
         this.discordData = null
       } finally {
         this.loading = false
