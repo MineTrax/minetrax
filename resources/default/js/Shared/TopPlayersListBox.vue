@@ -1,12 +1,12 @@
 <template>
   <Card v-if="enabled && players && players.length > 0">
     <CardContent class="p-3 space-y-2">
-      <h3 class="font-extrabold text-foreground dark:text-foreground">
+      <h3 class="font-extrabold text-card-foreground">
         {{ title }}
       </h3>
       <div class="flex flex-col space-y-2">
         <table class="">
-          <thead class="bg-surface-100 dark:bg-surface-900 dark:bg-opacity-50 text-foreground dark:text-foreground">
+          <thead class="bg-background">
             <tr>
               <th
                 scope="col"
@@ -28,19 +28,19 @@
               </th>
               <th
                 scope="col"
-                class="p-1 text-left text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
+                class="p-1 text-center text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
               >
                 {{ __("Rating") }}
               </th>
               <th
                 scope="col"
-                class="p-1 text-left text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
+                class="p-1 text-right text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
               >
                 {{ __("Last Seen") }}
               </th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-surface-200 dark:divide-surface-600">
+          <tbody class="divide-y divide-border/50">
             <tr
               v-for="(player, index) in players"
               :key="player.uuid"
@@ -50,9 +50,11 @@
               </td>
               <td class="p-1">
                 <img
+                  v-tippy
+                  :content="player.country?.name"
                   v-if="player.country"
-                  class="w-4 rounded"
-                  :src="`/images/flags/flags/flat/24/${player.country?.iso_code.toLowerCase()}.png`"
+                  class="h-6 w-6"
+                  :src="`/images/flags/flags-iso/shiny/48/${player.country?.iso_code.toLowerCase()}.png`"
                   :alt="player.country?.name"
                 >
               </td>
@@ -79,17 +81,17 @@
                       >{{ player.username }}</span>
                       <span
                         v-else
-                        class="text-error-500 dark:text-error-400 italic"
+                        class="text-destructive italic"
                       >{{ __("Unknown") }}</span>
                     </inertia-link>
                   </div>
                 </div>
               </td>
-              <td class="p-1 text-sm text-foreground hidden sm:table-cell">
+              <td class="p-1 text-sm text-foreground text-center hidden sm:table-cell">
                 <span v-if="player.rating != null">
                   <icon
                     v-tippy
-                    class="w-6 h-6 focus:outline-none"
+                    class="w-6 h-6 mx-auto focus:outline-none"
                     :name="`rating-${player.rating}`"
                     :content="player.rating"
                   />
@@ -99,7 +101,7 @@
                   class="text-foreground dark:text-foreground italic"
                 >{{ __("none") }}</span>
               </td>
-              <td class="p-1 text-xs text-foreground dark:text-foreground hidden sm:table-cell">
+              <td class="p-1 text-xs text-foreground dark:text-foreground text-right hidden sm:table-cell">
                 <span
                   v-tippy
                   class="focus:outline-none"
@@ -118,28 +120,25 @@
   </Card>
 </template>
 
-<script>
-import Icon from '@/Components/Icon.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
+<script setup>
+import Icon from '@/Components/Icon.vue'
+import { useHelpers } from '@/Composables/useHelpers'
+import { Card, CardContent } from '@/Components/ui/card'
 
-export default {
-    components: {
-        Icon,
-        Card,
-        CardContent,
-    },
-    props: {
-        title: String,
-        players: Array,
-        enabled: Boolean
-    },
-    setup() {
-        const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
-        return {formatTimeAgoToNow,formatToDayDateString};
-    },
-};
+const props = defineProps({
+  title: {
+    type: String,
+    default: '',
+  },
+  players: {
+    type: Array,
+    default: () => [],
+  },
+  enabled: {
+    type: Boolean,
+    default: true,
+  },
+})
+
+const { formatTimeAgoToNow, formatToDayDateString } = useHelpers()
 </script>
