@@ -37,7 +37,7 @@
           </p>
           <br>
 
-          <p>
+          <div>
             {{ __("Open the config file and update the following details in it as provided below") }}:
             <pre class="dark:bg-surface-900">enabled: true
 api-host: {{ apiHost }}
@@ -46,7 +46,7 @@ api-secret: {{ apiSecret }}
 server-id: {{ server.id }}
 webquery-host: 0.0.0.0
 webquery-port: {{ server.webquery_port }}</pre>
-          </p>
+            </div>
 
           <p>
             {{ __("Restart your server again and you are all set!") }}
