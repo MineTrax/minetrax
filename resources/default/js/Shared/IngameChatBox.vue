@@ -181,19 +181,17 @@
           class="mt-1"
         >
           <form @submit.prevent="postSendMessage">
-            <input
+            <Input
               v-if="!loading"
               ref="inputbox"
               v-model="message"
               :disabled="sending || !isWebQuerySuccess"
-              aria-label="Shout"
-              class="block w-full mt-1 bg-surface-100 border-none rounded-md focus:ring-foreground dark:focus:ring-foreground sm:text-sm disabled:opacity-50 dark:bg-surface-900 dark:text-foreground focus:bg-white dark:focus:bg-surface-900"
-              type="text"
               :placeholder="isWebQuerySuccess ? __('Say something..'): __('Server webquery is offline')"
-            >
+              aria-label="Shout"
+            />
             <span
               v-if="error"
-              class="text-xs text-error-400"
+              class="text-xs text-destructive"
             >{{ error }}</span>
             <span
               v-if="!loading && can('send server_custom_commands')"
@@ -303,7 +301,7 @@
 </template>
 
 <script>
-
+import { Input } from '@/Components/ui/input';
 import Icon from '@/Components/Icon.vue';
 import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
@@ -312,13 +310,14 @@ import {format} from 'date-fns';
 import {USE_WEBSOCKETS} from '@/constants';
 import {useAuthorizable} from '@/Composables/useAuthorizable';
 import { useHelpers } from '@/Composables/useHelpers';
+
 import {
   Card,
   CardContent,
 } from '@/Components/ui/card'
 
 export default {
-    components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton, Card, CardContent},
+    components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton, Card, CardContent, Input},
     props: {
         defaultServerId: Number,
         serverList: Array

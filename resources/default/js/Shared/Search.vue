@@ -1,14 +1,14 @@
 <template>
-  <div class="relative mx-auto text-foreground dark:text-foreground">
+  <div ref="searchContainer" class="relative mx-auto text-foreground">
     <form @submit.prevent="performSearch">
       <input
         v-model="searchString"
         aria-label="search"
-        class="border-none bg-surface-200 dark:bg-surface-900 h-10 px-5 pr-10 w-48 rounded-full text-sm focus:outline-none focus:ring-0 transition-all duration-300 ease-in-out"
+        class="focus:border bg-background h-10 px-5 pr-10 w-48 rounded-full text-sm focus:outline-none focus:ring-0 transition-all duration-300 ease-in-out"
         :class="{'w-80': showResults || isFocused}"
         type="search"
         name="search"
-        :placeholder="__('Search')+'..'"
+        :placeholder="__('Search..')"
         autocomplete="off"
         @input="performSearch"
         @focus="isFocused = true"
@@ -19,7 +19,7 @@
         class="absolute right-0 top-0 mt-3 mr-4"
       >
         <MagnifyingGlassIcon
-          class="text-foreground dark:text-foreground h-4 w-4 stroke-2"
+          class="text-foreground h-4 w-4 stroke-2"
         />
       </button>
     </form>
@@ -27,12 +27,12 @@
     <div
       v-if="showResults && searchString"
       id="results"
-      class="absolute bg-white dark:bg-surface-800 px-3 py-1 w-full rounded-md shadow-lg z-50"
+      class="absolute bg-popover px-3 py-1 w-full rounded-md shadow-lg z-50 border border-border"
     >
       <div
         v-if="loading"
         id="loading"
-        class="text-center p-2"
+        class="text-center p-2 text-popover-foreground"
       >
         {{ __("Loading") }}...
       </div>
@@ -40,7 +40,7 @@
         v-if="!loading"
         id="users"
       >
-        <span class="text-xs text-foreground dark:text-foreground font-extrabold">{{ __("USERS") }}</span>
+        <span class="text-xs text-popover-foreground font-extrabold">{{ __("USERS") }}</span>
 
         <div class="flex flex-col">
           <inertia-link
@@ -49,7 +49,7 @@
             :key="user.username"
             as="a"
             :href="route('user.public.get', user.username)"
-            class="flex px-2 py-1 justify-between hover:bg-primary dark:hover:bg-surface-900 rounded cursor-pointer"
+            class="flex px-2 py-1 justify-between hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
           >
             <div class="flex">
               <img
@@ -58,10 +58,10 @@
                 alt="Image"
               >
               <div class="text-sm">
-                <p class="text-foreground dark:text-foreground font-bold">
+                <p class="text-popover-foreground font-bold">
                   {{ user.title }}
                 </p>
-                <p class="text-foreground dark:text-foreground">
+                <p class="text-popover-foreground">
                   @{{ user.username }}
                 </p>
               </div>
@@ -82,7 +82,7 @@
         <div
           v-if="!usersList || usersList.length <= 0"
           id="emptyusers"
-          class="italic"
+          class="italic text-muted-foreground"
         >
           {{ __("No users found.") }}
         </div>
@@ -92,7 +92,7 @@
         id="players"
         class="mt-5 pb-4"
       >
-        <span class="text-xs text-foreground dark:text-foreground font-extrabold">{{ __("PLAYERS") }}</span>
+        <span class="text-xs text-popover-foreground font-extrabold">{{ __("PLAYERS") }}</span>
 
         <div class="flex flex-col">
           <inertia-link
@@ -101,7 +101,7 @@
             :key="player.uuid"
             as="a"
             :href="route('player.show', player.uuid)"
-            class="flex justify-between px-2 py-1 hover:bg-primary dark:hover:bg-surface-900 rounded cursor-pointer"
+            class="flex justify-between px-2 py-1 hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
           >
             <div class="flex items-center">
               <img
@@ -110,14 +110,14 @@
                 alt="Avatar"
               >
               <div class="text-sm">
-                <p class="text-foreground dark:text-foreground font-bold">
+                <p class="text-popover-foreground font-bold">
                   {{ player.title }}
                 </p>
               </div>
             </div>
 
             <div class="flex space-x-2">
-              <icon
+              <Icon
                 v-show="player.rating != null"
                 v-tippy
                 class="w-8 h-8 focus:outline-none"
@@ -146,7 +146,7 @@
         <div
           v-if="!playersList || playersList.length <= 0"
           id="emptyplayers"
-          class="italic"
+          class="italic text-muted-foreground"
         >
           {{ __("No players found.") }}
         </div>
@@ -155,61 +155,71 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
 import Icon from '@/Components/Icon.vue';
-import {debounce} from 'lodash/function';
+import { debounce } from 'lodash/function';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 
-export default {
-    name: 'Search',
-    components: {Icon, MagnifyingGlassIcon},
-    data() {
-        return {
-            showResults: false,
-            loading: false,
-            searchString: '',
-            usersList: [],
-            playersList: [],
-            isFocused: false
-        };
-    },
-    // This hide the dropdown if clicked outside of the component
-    created: function() {
-        window.addEventListener('click', (e) => {
-            // close dropdown when clicked outside
-            if (!this.$el.contains(e.target)){
-                this.showResults = false;
-                this.searchString = '';
-                this.isFocused = false;
-            }
-        });
-    },
-    methods: {
-        performSearch: debounce(function() {
-            if (!this.searchString) {
-                return;
-            }
+// Template ref
+const searchContainer = ref(null);
 
-            this.showResults = true;
-            this.loading = true;
-            axios.get(route('search', {q: this.searchString})).then(data => {
-                this.usersList = data.data.users;
-                this.playersList = data.data.players;
-            }).finally(() => {
-                this.loading = false;
-            });
-        }, 200),
-        handleBlur() {
-            // Use setTimeout to allow click events on results to fire first
-            setTimeout(() => {
-                this.isFocused = false;
-                if (!this.searchString) {
-                    this.showResults = false;
-                }
-            }, 150);
+// Reactive data
+const showResults = ref(false);
+const loading = ref(false);
+const searchString = ref('');
+const usersList = ref([]);
+const playersList = ref([]);
+const isFocused = ref(false);
+
+// Debounced search function
+const performSearch = debounce(() => {
+    if (!searchString.value) {
+        return;
+    }
+
+    showResults.value = true;
+    loading.value = true;
+
+    axios.get(route('search', { q: searchString.value }))
+        .then(data => {
+            usersList.value = data.data.users;
+            playersList.value = data.data.players;
+        })
+        .finally(() => {
+            loading.value = false;
+        });
+}, 200);
+
+// Handle blur event
+const handleBlur = () => {
+    // Use setTimeout to allow click events on results to fire first
+    setTimeout(() => {
+        isFocused.value = false;
+        if (!searchString.value) {
+            showResults.value = false;
         }
-    },
+    }, 150);
 };
+
+// Click outside handler
+const handleClickOutside = (e) => {
+    // Close dropdown when clicked outside
+    if (searchContainer.value && !searchContainer.value.contains(e.target)) {
+        showResults.value = false;
+        searchString.value = '';
+        isFocused.value = false;
+    }
+};
+
+// Lifecycle hooks
+onMounted(() => {
+    window.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style scoped>
