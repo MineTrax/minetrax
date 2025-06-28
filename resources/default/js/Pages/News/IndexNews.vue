@@ -93,10 +93,6 @@
                           formatToDayDateString(news.published_at)
                         }}
                       </p>
-                      <p class="text-foreground dark:text-foreground text-sm">
-                        {{ news.time_to_read }}
-                        {{ __("read") }}
-                      </p>
                     </div>
                   </div>
                   <div

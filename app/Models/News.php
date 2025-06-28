@@ -46,11 +46,6 @@ class News extends BaseModel implements HasMedia
         return $converter->convertToHtml($this->body);
     }
 
-    public function getTimeToReadAttribute(): string
-    {
-        return Helper::getEstimateReadingTime($this->body);
-    }
-
     public function creator(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

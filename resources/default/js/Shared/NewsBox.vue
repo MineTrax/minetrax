@@ -35,7 +35,7 @@
                   {{ formatTimeAgoToNow(news.published_at) }}
                 </span>
                 <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
-                <span>{{ news.time_to_read }}&nbsp;{{ __("read") }}</span>
+                <span>{{ news.type.key }}</span>
               </div>
             </div>
 

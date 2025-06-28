@@ -30,7 +30,6 @@ class HomeController extends Controller
             ->limit(5)
             ->select(['id', 'title', 'published_at', 'type', 'slug', 'body'])
             ->get()
-            ->append('time_to_read')
             ->makeHidden('body');
 
         // Latest pinned news.
@@ -39,7 +38,7 @@ class HomeController extends Controller
             ->whereNotNull('published_at')
             ->where('is_pinned', true)
             ->limit(10)
-            ->get()?->append('time_to_read');
+            ->get();
 
         // Make stripped body_html of the pinned news
         foreach ($latestPinnedNews as $news) {
@@ -65,10 +64,10 @@ class HomeController extends Controller
             ->get()
             // Filter out duplicate user sessions but don't filter guest session with null user_id
             ->filter(function ($user) use ($onlineUsers) {
-                if (! $user->user) {
+                if (!$user->user) {
                     $onlineUsers->push($user);
                 } else {
-                    if (! $onlineUsers->firstWhere('user_id', $user->user_id)) {
+                    if (!$onlineUsers->firstWhere('user_id', $user->user_id)) {
                         $onlineUsers->push($user);
                     }
                 }
@@ -143,7 +142,7 @@ class HomeController extends Controller
         $oneHour = 3600;
         $featureList = Cache::remember('feature:list', $oneHour, function () {
             $features = Http::withoutVerifying()->timeout(5)->get('https://q0rmzst113.execute-api.eu-central-1.amazonaws.com/v1/features')->json();
-            if (! $features['body']) {
+            if (!$features['body']) {
                 throw new \Exception('Failed to get data');
             }
 
@@ -186,7 +185,7 @@ class HomeController extends Controller
     public function visitVotingSite(Request $request, GeneralSettings $generalSettings)
     {
         $voteSitesArray = $generalSettings->voteforserverbox_content;
-        if (! $voteSitesArray) {
+        if (!$voteSitesArray) {
             return abort(404);
         }
 

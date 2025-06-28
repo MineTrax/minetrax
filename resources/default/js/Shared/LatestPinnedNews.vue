@@ -58,15 +58,11 @@
           <div class="flex items-center space-x-4 text-sm text-card-foreground/70">
             <span
               v-tippy
-              :content="formatToDayDateString(news.published_at)"
-              class="cursor-help hover:text-card-foreground transition-colors"
+              :content="formatTimeAgoToNow(news.published_at)"
+              class="cursor-help text-muted-foreground"
             >
-              {{ formatTimeAgoToNow(news.published_at) }}
+              {{ formatToDayDateString(news.published_at) }}
             </span>
-            <div class="flex items-center space-x-1">
-              <icon name="clock" class="w-3 h-3" />
-              <span>{{ news.time_to_read }} {{ __("read") }}</span>
-            </div>
           </div>
         </div>
 

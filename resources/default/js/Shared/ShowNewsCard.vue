@@ -64,9 +64,6 @@ defineProps({
           >
             {{ formatToDayDateString(news.published_at) }}
           </p>
-          <p class="text-sm text-foreground dark:text-foreground">
-            {{ news.time_to_read }} {{ __("read") }}
-          </p>
         </div>
       </div>
       <div

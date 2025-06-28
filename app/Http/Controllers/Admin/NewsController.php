@@ -89,7 +89,7 @@ class NewsController extends Controller
         $this->authorize('view', $news);
 
         return Inertia::render('Admin/News/ShowNews', [
-            'news' => $news->append(['body_html', 'time_to_read'])->load('creator:id,name,username,profile_photo_path'),
+            'news' => $news->append(['body_html'])->load('creator:id,name,username,profile_photo_path'),
         ]);
     }
 

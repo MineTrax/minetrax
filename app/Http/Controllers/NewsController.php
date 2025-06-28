@@ -18,8 +18,8 @@ class NewsController extends Controller
             ->orderBy('published_at', 'desc')
             ->simplePaginate(5);
 
-        $news->each(function($n) {
-            $n->append(['body_html', 'time_to_read']);
+        $news->each(function ($n) {
+            $n->append(['body_html']);
             $n->body_html_small = \Str::limit($n->body_html, 500);
         });
 
@@ -44,12 +44,11 @@ class NewsController extends Controller
             ->limit(5)
             ->select(['id', 'title', 'published_at', 'type', 'slug', 'body'])
             ->get()
-            ->append('time_to_read')
             ->makeHidden('body');
 
         return Inertia::render('News/ShowNews', [
             'newslist' => $newslist,
-            'news' => $news->append(['body_html', 'time_to_read'])->load('creator:id,name,username,profile_photo_path')
+            'news' => $news->append(['body_html'])->load('creator:id,name,username,profile_photo_path')
         ]);
     }
 

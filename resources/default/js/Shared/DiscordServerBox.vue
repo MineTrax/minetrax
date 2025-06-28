@@ -348,7 +348,6 @@ export default {
 
 <style scoped>
 .discord-widget {
-  max-width: 400px;
   margin: 0 auto;
   overflow: hidden;
   font-family: var(--font-sans);
