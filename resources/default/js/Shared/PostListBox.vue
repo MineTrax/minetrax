@@ -1,17 +1,16 @@
 <template>
   <div class="space-y-4 w-full">
-    <div
+    <Card
       v-if="$page.props.auth.user && !username"
-      class="p-3 sm:px-5 bg-white dark:bg-surface-800 rounded shadow"
     >
+      <CardContent class="p-2">
       <form
-        class="mt-4 text-xl flex flex-col items-end space-y-2"
+        class="text-xl flex flex-col items-end space-y-2"
         @submit.prevent="submitPost"
       >
-        <textarea
+        <Textarea
           ref="post-content"
           v-model="body"
-          class="mt-1 overflow-hidden block w-full shadow-sm sm:text-sm border-foreground rounded-md resize-none focus:border-primary focus:ring text-sm focus:ring-primary focus:ring-opacity-50 dark:bg-surface-900 dark:text-foreground dark:border-foreground"
           aria-label="post content"
           :placeholder="bodyPlaceholderText"
           name="post"
@@ -61,7 +60,7 @@
             v-tippy
             :title="__('Add Media')"
             type="button"
-            class="inline-flex items-center justify-center h-10 w-10 hover:bg-primary dark:hover:bg-surface-900 rounded-full focus:outline-none"
+            class="inline-flex items-center justify-center h-10 w-10 hover:bg-background rounded-full focus:outline-none"
             @click="openImageSelector"
           >
             <icon
@@ -73,16 +72,16 @@
             :message="bodyerror"
             class="mt-2"
           /></span>
-          <loading-button
-            class="justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-bold tracking-wide leading-5 rounded-full text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+          <LoadingButton
             :loading="postsubmitting"
             type="submit"
           >
             {{ __("Post") }}
-          </loading-button>
+          </LoadingButton>
         </div>
       </form>
-    </div>
+      </CardContent>
+    </Card>
 
     <div
       v-if="loading"
@@ -145,9 +144,12 @@ import LoadingButton from '@/Components/LoadingButton.vue';
 import Post from '@/Components/Post.vue';
 import {sample} from 'lodash/collection';
 import Icon from '@/Components/Icon.vue';
+import {Card, CardContent} from '@/Components/ui/card';
+import { Textarea } from '@/Components/ui/textarea';
+
 
 export default {
-    components: {Icon, LoadingButton, InfiniteScroll, JetInputError, Post},
+    components: {Icon, LoadingButton, InfiniteScroll, JetInputError, Post, Card, CardContent, Textarea},
 
     props: {
         username: {
