@@ -15,7 +15,7 @@
           <div class="chat-message">
             <div class="flex">
               <div class="order-2 items-start mx-2 space-y-2 max-w-xs text-sm">
-                <div class="inline-block flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg bg-popover">
+                <div class="flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg bg-muted">
                   <div class="mb-2">
                     <Skeleton class="inline-block w-16 h-4" />
                     <Skeleton class="inline-block ml-1 w-12 h-3" />
@@ -34,7 +34,7 @@
           <div class="chat-message">
             <div class="flex justify-end">
               <div class="order-1 items-start mx-2 space-y-2 max-w-xs text-sm">
-                <div class="inline-block flex flex-col px-4 py-2 rounded-2xl rounded-tr-lg bg-primary">
+                <div class="flex flex-col px-4 py-2 rounded-2xl rounded-tr-lg bg-primary">
                   <div class="mb-2 text-right">
                     <Skeleton class="inline-block mr-1 w-12 h-3" />
                     <Skeleton class="inline-block w-16 h-4" />
@@ -53,7 +53,7 @@
           <div class="chat-message">
             <div class="flex">
               <div class="order-2 items-start mx-2 space-y-2 max-w-xs text-sm">
-                <div class="inline-block flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg bg-popover">
+                <div class="flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg bg-muted">
                   <div class="mb-2">
                     <Skeleton class="inline-block w-20 h-4" />
                     <Skeleton class="inline-block ml-1 w-10 h-3" />
@@ -80,7 +80,7 @@
           >
             <div class="order-2 items-start mx-2 space-y-2 max-w-xs text-sm">
               <div
-                class="flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg text-card-foreground bg-popover"
+                class="flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg text-card-foreground bg-muted"
               >
                 <div>
                   <inertia-link
