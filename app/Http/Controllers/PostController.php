@@ -138,7 +138,7 @@ class PostController extends Controller
         $this->authorize('delete', $post);
 
         $post->delete();
-        return redirect()->route('home')
+        return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Post has been deleted successfully')]]);
     }
 
