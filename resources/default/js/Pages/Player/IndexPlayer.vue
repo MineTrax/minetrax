@@ -1,160 +1,173 @@
 <template>
-  <app-layout>
-    <app-head
+  <AppLayout>
+    <AppHead
       :title="__('Players')"
     />
 
     <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
       <div class="flex-grow">
         <div class="grid grid-cols-12 gap-4 mb-4">
-          <div class="col-span-12  md:col-span-4">
-            <div class="flex flex-row bg-white dark:bg-surface-800 shadow rounded p-4">
-              <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-primary dark:bg-opacity-10 text-primary">
-                <svg
-                  class="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                ><path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                /></svg>
-              </div>
-              <div class="flex flex-col flex-grow ml-4">
-                <div class="text-sm text-foreground dark:text-foreground">
-                  {{ __("Total Players") }}
+          <div class="col-span-12 md:col-span-4">
+            <Card>
+              <CardContent class="p-4">
+                <div class="flex flex-row">
+                  <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-primary/10 text-primary">
+                    <svg
+                      class="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    /></svg>
+                  </div>
+                  <div class="flex flex-col flex-grow ml-4">
+                    <div class="text-sm text-muted-foreground">
+                      {{ __("Total Players") }}
+                    </div>
+                    <div class="font-bold text-lg text-card-foreground">
+                      {{ totalPlayersCount }}
+                    </div>
+                  </div>
                 </div>
-                <div class="font-bold dark:text-foreground text-lg">
-                  {{ totalPlayersCount }}
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
-          <div class="col-span-12  md:col-span-4">
-            <div class="flex flex-row bg-white dark:bg-surface-800 shadow rounded p-4">
-              <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-success-100 dark:bg-opacity-10 text-success-500">
-                <svg
-                  class="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                ><path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                /></svg>
-              </div>
-              <div class="flex flex-col flex-grow ml-4">
-                <div class="text-sm text-foreground dark:text-foreground">
-                  {{ __("Active Players") }}
+          <div class="col-span-12 md:col-span-4">
+            <Card>
+              <CardContent class="p-4">
+                <div class="flex flex-row">
+                  <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-green-500/10 text-green-500"
+                  >
+                    <svg
+                      class="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    /></svg>
+                  </div>
+                  <div class="flex flex-col flex-grow ml-4">
+                    <div class="text-sm text-muted-foreground">
+                      {{ __("Active Players") }}
+                    </div>
+                    <div class="font-bold text-lg text-card-foreground">
+                      {{ activePlayersCount }}
+                    </div>
+                  </div>
                 </div>
-                <div class="font-bold text-lg dark:text-foreground">
-                  {{ activePlayersCount }}
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
-          <div class="col-span-12  md:col-span-4">
-            <div class="flex flex-row bg-white dark:bg-surface-800 shadow rounded p-4">
-              <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-pink-100 dark:bg-opacity-10 text-pink-500">
-                <svg
-                  class="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                ><path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                /></svg>
-              </div>
-              <div class="flex flex-col flex-grow ml-4">
-                <div class="text-sm text-foreground dark:text-foreground">
-                  {{ __("Play Time") }}
+          <div class="col-span-12 md:col-span-4">
+            <Card>
+              <CardContent class="p-4">
+                <div class="flex flex-row">
+                  <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-pink-500/10 text-pink-500">
+                    <svg
+                      class="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    /></svg>
+                  </div>
+                  <div class="flex flex-col flex-grow ml-4">
+                    <div class="text-sm text-muted-foreground">
+                      {{ __("Play Time") }}
+                    </div>
+                    <div class="font-bold text-lg text-card-foreground">
+                      {{ totalPlayTime === 0 ? '0 h' : secondsToHMS(totalPlayTime) }}
+                    </div>
+                  </div>
                 </div>
-                <div class="font-bold text-lg dark:text-foreground">
-                  {{ totalPlayTime === 0 ? '0 h' : secondsToHMS(totalPlayTime) }}
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
-        <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
-          <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
-            <div class="shadow overflow-hidden border-b border-foreground dark:border-foreground dark:border-none rounded">
-                                  <table class="min-w-full divide-y divide-foreground dark:divide-foreground">
-                <thead class="bg-surface-100 dark:bg-surface-800 text-foreground dark:text-foreground">
+        <Card>
+          <CardContent class="p-0">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-border">
+                <thead class="bg-muted/50">
                   <tr>
                     <th
                       scope="col"
-                      class="px-2 py-3 text-left text-xs font-bold text-center uppercase tracking-wider"
+                      class="px-2 py-3 text-xs font-bold text-center uppercase tracking-wider text-muted-foreground"
                     >
                       {{ __("#") }}
                     </th>
                     <th
                       scope="col"
-                      class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider"
+                      class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground"
                     >
                       {{ __("Flag") }}
                     </th>
                     <th
                       scope="col"
-                      class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider"
+                      class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground"
                     >
                       {{ __("Rank") }}
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
+                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground"
                     >
                       {{ __("Name") }}
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
+                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground"
                     >
                       {{ __("Rating") }}
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
+                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground"
                     >
                       {{ __("Score") }}
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
+                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground"
                     >
                       {{ __("Time Played") }}
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
+                      class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground"
                     >
                       {{ __("Last Seen") }}
                     </th>
                   </tr>
                 </thead>
 
-                                        <tbody class="bg-white dark:bg-surface-800 divide-y divide-foreground dark:divide-none">
-                  <infinite-scroll :load-more="loadMorePlayers">
+                <tbody class="bg-card divide-y divide-border">
+                  <InfiniteScroll :load-more="loadMorePlayers">
                     <tr
                       v-for="(player, index) in playersList.data"
                       :key="player.uuid"
-                      :class="{'bg-surface-50 dark:bg-surface-700 dark:bg-opacity-10': index % 2 === 1}"
+                      :class="{'bg-muted/20': index % 2 === 1}"
                     >
                       <td class="px-2 py-4 whitespace-nowrap text-center text-sm text-primary font-extrabold">
                         <span
                           v-if="player.position"
-                          class="border-2 rounded text-lg px-2 border-primary bg-primary dark:bg-transparent"
+                          class="border-2 rounded text-lg px-2 border-primary bg-primary text-primary-foreground"
                         >
                           {{ player.position }}
                         </span>
@@ -206,23 +219,23 @@
                               v-tippy
                               as="a"
                               :href="route('player.show', player.uuid)"
-                              class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
+                              class="text-sm font-medium text-card-foreground focus:outline-none cursor-pointer hover:underline"
                               :content="player.uuid"
                             >
                               <span
                                 v-if="player.username"
-                                :class="player.is_active ? 'text-foreground dark:text-foreground' : 'text-foreground dark:text-foreground'"
+                                :class="player.is_active ? 'text-card-foreground' : 'text-muted-foreground'"
                                 class="font-extrabold"
                               >{{ player.username }}</span>
                               <span
                                 v-else
-                                class="text-error-500 italic"
+                                class="text-destructive italic"
                               >{{ __("Unknown") }}</span>
                             </inertia-link>
                           </div>
                         </div>
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
                         <span v-if="player.rating != null">
                           <icon
                             v-tippy
@@ -233,16 +246,16 @@
                         </span>
                         <span
                           v-else
-                          class="text-foreground dark:text-foreground italic"
+                          class="text-muted-foreground italic"
                         >{{ __("none") }}</span>
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground dark:text-foreground">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
                         {{ player.total_score }}
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground dark:text-foreground">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
                         {{ secondsToHMS(player.play_time, true) }}
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground dark:text-foreground">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
                         <span
                           v-tippy
                           class="focus:outline-none"
@@ -258,18 +271,18 @@
                     <template #loading>
                       <tr>
                         <td
-                          class="border-t dark:border-none px-6 py-4 sm:text-center text-foreground dark:text-foreground italic"
+                          class="border-t px-6 py-4 sm:text-center text-muted-foreground italic"
                           colspan="8"
                         >
                           {{ __("Loading more...") }}
                         </td>
                       </tr>
                     </template>
-                  </infinite-scroll>
+                  </InfiniteScroll>
 
                   <tr v-if="playersList.data.length === 0">
                     <td
-                      class="px-6 py-4 text-center dark:text-foreground text-foreground"
+                      class="px-6 py-4 text-center text-muted-foreground"
                       colspan="8"
                     >
                       {{ __("No players found.") }}
@@ -278,59 +291,51 @@
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
-  </app-layout>
+  </AppLayout>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Icon from '@/Components/Icon.vue';
 import InfiniteScroll from '@/Components/InfiniteScroll.vue';
+import { Card, CardContent } from '@/Components/ui/card';
 import { useHelpers } from '@/Composables/useHelpers';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
 
-export default {
+// Define props
+const props = defineProps({
+  players: Object,
+  totalPlayersCount: Number,
+  activePlayersCount: Number,
+  totalPlayTime: {
+    type: [String, Number]
+  },
+  lastScanAt: String,
+});
 
-    components: {
-        Icon,
-        AppLayout,
-        InfiniteScroll
-    },
-    props: {
-        players: Object,
-        totalPlayersCount: Number,
-        activePlayersCount: Number,
-        totalPlayTime: {
-            type: [String, Number]
-        },
-        lastScanAt: String,
-    },
-    setup() {
-        const {can} = useAuthorizable();
-        const {formatTimeAgoToNow, formatToDayDateString, secondsToHMS} = useHelpers();
-        return {can, formatTimeAgoToNow, formatToDayDateString, secondsToHMS};
-    },
-    data() {
-        return {
-            playersList: this.players
-        };
-    },
-    methods: {
-        loadMorePlayers() {
-            if (!this.playersList.next_page_url) {
-                return Promise.resolve();
-            }
+// Use composables
+const { can } = useAuthorizable();
+const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
 
-            return axios(this.playersList.next_page_url).then(response => {
-                this.playersList = {
-                    ...response.data,
-                    data: [...this.playersList.data, ...response.data.data]
-                };
-            });
-        }
-    },
+// Reactive data
+const playersList = ref(props.players);
+
+// Methods
+const loadMorePlayers = () => {
+  if (!playersList.value.next_page_url) {
+    return Promise.resolve();
+  }
+
+  return axios(playersList.value.next_page_url).then(response => {
+    playersList.value = {
+      ...response.data,
+      data: [...playersList.value.data, ...response.data.data]
+    };
+  });
 };
 </script>
