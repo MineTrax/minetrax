@@ -2,57 +2,53 @@
   <Card v-if="enabled">
     <CardContent class="p-3 sm:px-5">
       <div class="flex justify-between">
-        <h3 class="font-extrabold text-foreground dark:text-foreground">
+        <h3 class="font-extrabold text-foreground">
           {{ __("Server In-Game Chat") }}
         </h3>
 
         <!-- Server Selector Dropdown-->
-        <select
+        <Select
           v-if="serverList && serverList.length > 1"
-          id="serverSelector"
           v-model="serverId"
-          aria-label="serverSelector"
-          name="serverSelector"
-          class="text-xs border-foreground rounded-md shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 dark:border-foreground dark:bg-surface-800 dark:text-foreground"
         >
-          <option
-            v-for="server in serverList"
-            :key="server.id"
-            :value="server.id"
-          >
-            {{ server.name }}
-          </option>
-        </select>
+          <SelectTrigger class="w-[180px] text-xs">
+            <SelectValue placeholder="Select server..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem
+              v-for="server in serverList"
+              :key="server.id"
+              :value="server.id"
+            >
+              {{ server.name }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div class="flex flex-col">
         <!--Loading-->
         <div
           v-if="loading"
-          class="space-y-2"
+          class="space-y-3"
         >
-          <div class="w-full">
-            <div class="flex space-x-4 animate-pulse">
-              <div class="flex-1 py-1 space-y-1">
-                <div class="w-3/4 h-4 bg-surface-300 rounded dark:bg-surface-700" />
-                <div class="w-5/6 h-4 bg-surface-300 rounded dark:bg-surface-700" />
-              </div>
+          <!-- Chat message skeleton -->
+          <div class="flex space-y-1 mt-2">
+            <div class="flex-1 space-y-2">
+              <Skeleton class="w-3/4 h-4" />
+              <Skeleton class="w-5/6 h-4" />
             </div>
           </div>
-          <div class="w-full">
-            <div class="flex space-x-4 animate-pulse">
-              <div class="flex-1 py-1 space-y-1">
-                <div class="w-3/4 h-4 bg-surface-300 rounded dark:bg-surface-700" />
-                <div class="w-5/6 h-4 bg-surface-300 rounded dark:bg-surface-700" />
-              </div>
+          <div class="flex space-y-1">
+            <div class="flex-1 space-y-2">
+              <Skeleton class="w-2/3 h-4" />
+              <Skeleton class="w-4/5 h-4" />
             </div>
           </div>
-          <div class="w-full">
-            <div class="flex space-x-4 animate-pulse">
-              <div class="flex-1 py-1 space-y-1">
-                <div class="w-3/4 h-4 bg-surface-300 rounded dark:bg-surface-700" />
-                <div class="w-5/6 h-4 bg-surface-300 rounded dark:bg-surface-700" />
-              </div>
+          <div class="flex space-y-1">
+            <div class="flex-1 space-y-2">
+              <Skeleton class="w-3/5 h-4" />
+              <Skeleton class="w-full h-4" />
             </div>
           </div>
         </div>
@@ -61,20 +57,11 @@
         <div
           v-show="!loading"
           id="chat-container"
-          class="relative min-h-[5rem] dark:invert-0 invert dark:bg flex flex-col-reverse justify-between p-1 mt-1 text-white bg-[#1a1814] rounded md:flex-row dark:bg-surface-900"
+          class="relative min-h-[5rem] flex flex-col-reverse justify-between p-1 mt-1 md:flex-row bg-background rounded"
         >
-          <button
-            v-show="!shouldDisplayPlayerList"
-            class="absolute top-0 right-0 mt-1 mr-2 font-semibold text-success-400 z-10"
-            type="button"
-            @click="shouldDisplayPlayerList = !shouldDisplayPlayerList"
-          >
-            [+]
-          </button>
-
           <div
             id="chatbox"
-            class="flex flex-col overflow-auto text-sm max-h-96 hide-scrollbar"
+            class="invert dark:invert-0 flex flex-col overflow-auto text-sm max-h-96 hide-scrollbar"
           >
             <p
               v-for="chat in chatLogs"
@@ -94,27 +81,20 @@
           </div>
 
           <div
-            v-show="!playersListLoading && shouldDisplayPlayerList"
+            v-show="!playersListLoading"
             id="player-list"
-            class="sticky flex justify-end overflow-auto text-sm bg-white bg-opacity-100 rounded dark:bg-surface-800 max-h-96 min-w-max hide-scrollbar"
+            class="sticky flex overflow-auto text-sm bg-card text-card-foreground max-h-96 min-w-max hide-scrollbar"
           >
             <div class="flex flex-col w-full space-y-1">
-              <div class="relative flex items-center justify-center p-2 bg-surface-100 dark:bg-opacity-25 dark:bg-surface-600">
-                <h3 class="ml-4 mr-5 font-bold text-foreground dark:text-foreground">
+              <div class="relative flex items-center justify-center p-2">
+                <h3 class="ml-4 mr-5 font-bold text-foreground">
                   {{ __("Players") }}&nbsp;({{ playersList.length }})
                 </h3>
-                <button
-                  class="absolute right-0 mr-2 font-semibold text-error-500 dark:text-error-400 z-10"
-                  type="button"
-                  @click="shouldDisplayPlayerList = !shouldDisplayPlayerList"
-                >
-                  [-]
-                </button>
               </div>
 
               <div
                 v-if="!playersList || playersList.length <= 0"
-                class="text-sm text-center italic text-foreground dark:text-foreground pb-2 pt-1"
+                class="text-sm text-center italic text-foreground pb-2 pt-1"
               >
                 {{ __("No players.") }}
               </div>
@@ -135,14 +115,12 @@
                     :href="route('player.show', player.id)"
                   >
                     <span
-                      class="mr-1 font-semibold truncate text-foreground dark:text-white"
-                      :class="{ 'text-orange-500 dark:text-warning-300': player.is_op }"
+                      class="mr-1 font-semibold truncate text-foreground"
                     >{{ player.username }}</span>
                   </inertia-link>
                   <span
                     v-else
-                    class="mr-1 truncate text-foreground dark:text-white"
-                    :class="{ 'text-orange-500 dark:text-warning-300': player.is_op }"
+                    class="mr-1 truncate text-foreground"
                   >
                     {{ player.username }}
                   </span>
@@ -195,13 +173,13 @@
             >{{ error }}</span>
             <span
               v-if="!loading && can('send server_custom_commands')"
-              class="flex justify-end mt-2 text-xs text-foreground dark:text-foreground"
+              class="flex justify-end mt-2 text-xs text-foreground"
             >{{ __("Start with / to send a console command") }}</span>
           </form>
         </div>
         <div
           v-else
-          class="mt-2 text-sm text-center text-foreground dark:text-foreground"
+          class="mt-2 text-sm text-center text-foreground"
         >
           <inertia-link
             class="font-semibold text-primary"
@@ -315,9 +293,17 @@ import {
   Card,
   CardContent,
 } from '@/Components/ui/card'
+import { Skeleton } from '@/Components/ui/skeleton'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/Components/ui/select'
 
 export default {
-    components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton, Card, CardContent, Input},
+    components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton, Card, CardContent, Input, Skeleton, Select, SelectContent, SelectItem, SelectTrigger, SelectValue},
     props: {
         defaultServerId: Number,
         serverList: Array
