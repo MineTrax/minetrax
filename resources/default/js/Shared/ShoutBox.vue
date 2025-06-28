@@ -1,5 +1,5 @@
 <template>
-  <Card v-if="$page.props.generalSettings.enable_shoutbox">
+  <Card v-if="$page.props.generalSettings.enable_shoutbox" ref="box">
     <CardContent class="p-3 space-y-4">
       <h3 class="font-extrabold text-card-foreground">
         {{ __("Shout Box") }}
@@ -234,6 +234,8 @@ import Icon from '@/Components/Icon.vue';
 import { useHelpers } from '@/Composables/useHelpers';
 import { Input } from '@/Components/ui/input';
 import {USE_WEBSOCKETS} from '@/constants';
+import { ref } from 'vue';
+import { useElementVisibility } from '@vueuse/core';
 import {
   Card,
   CardContent,
@@ -244,7 +246,9 @@ export default {
     components: {Icon, Card, CardContent, Input, Skeleton},
     setup() {
         const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
-        return {formatTimeAgoToNow,formatToDayDateString};
+        const box = ref(null);
+        const isVisible = useElementVisibility(box);
+        return {formatTimeAgoToNow,formatToDayDateString, box, isVisible};
     },
     data() {
         return {
@@ -271,7 +275,12 @@ export default {
                 this.shouts.unshift(data.data);
             });
         } else {
-            this.shoutQueryInterval = setInterval(() => this.pollServerForNewShouts(), 5000);
+            this.shoutQueryInterval = setInterval(() => {
+                if (!this.isVisible) {
+                    return;
+                }
+                this.pollServerForNewShouts();
+            }, 5000);
         }
     },
 

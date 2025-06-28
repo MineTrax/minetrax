@@ -4,8 +4,7 @@
             <CardContent class="p-2">
                 <form class="text-xl flex flex-col items-end space-y-2" @submit.prevent="submitPost">
                     <Textarea ref="post-content" v-model="body" aria-label="post content"
-                        :placeholder="bodyPlaceholderText" name="post" rows="3" @keypress.enter.shift="submitPost"
-                        @input="resizeTextArea" />
+                        :placeholder="bodyPlaceholderText" name="post" rows="3" @keypress.enter.shift="submitPost" />
 
                     <div v-if="imagesDisplay.length" class="grid gap-1 grid-cols-3 w-full">
                         <div v-for="(img, index) in imagesDisplay" :key="index" class="relative">
@@ -183,11 +182,8 @@ export default {
                 .then((response) => {
                     if (response.status === 200) {
                         this.posts.data.unshift(response.data.data);
-                        // Set Body to empty and resize the textarea to initial
                         this.body = "";
                         this.imagesDisplay = [];
-                        const textarea = this.$refs["post-content"];
-                        textarea.style.height = "initial";
                     }
                 })
                 .catch((error) => {
@@ -200,12 +196,6 @@ export default {
                     }
                 })
                 .finally(() => (this.postsubmitting = false));
-        },
-
-        resizeTextArea() {
-            const textarea = this.$refs["post-content"];
-            textarea.style.height = "initial";
-            textarea.style.height = `${textarea.scrollHeight}px`;
         },
 
         openImageSelector() {

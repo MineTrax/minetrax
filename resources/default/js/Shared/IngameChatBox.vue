@@ -1,5 +1,5 @@
 <template>
-  <Card v-if="enabled">
+  <Card v-if="enabled" ref="box">
     <CardContent class="p-3 sm:px-5">
       <div class="flex justify-between">
         <h3 class="font-extrabold text-foreground">
@@ -285,6 +285,8 @@ import {format} from 'date-fns';
 import {USE_WEBSOCKETS} from '@/constants';
 import {useAuthorizable} from '@/Composables/useAuthorizable';
 import { useHelpers } from '@/Composables/useHelpers';
+import { ref } from 'vue';
+import { useElementVisibility } from '@vueuse/core';
 
 import {
   Card,
@@ -316,7 +318,9 @@ export default {
     setup() {
         const {can} = useAuthorizable();
         const {formatToDayDateString} = useHelpers();
-        return {can, formatToDayDateString};
+        const box = ref(null);
+        const isVisible = useElementVisibility(box);
+        return {can, formatToDayDateString, box, isVisible};
     },
 
     data() {
@@ -362,7 +366,10 @@ export default {
 
             clearInterval(this.playerListQueryInterval);
             this.getPlayerListForServer(newId);
-            this.playerListQueryInterval = setInterval(() => this.getPlayerListForServer(newId), 10000);
+            this.playerListQueryInterval = setInterval(() => {
+                if (!this.isVisible) return;
+                this.getPlayerListForServer(newId);
+            }, 5000);
         }
     },
 
@@ -372,7 +379,10 @@ export default {
         this.getChatListForServer(this.serverId);
 
         this.getPlayerListForServer(this.serverId);
-        this.playerListQueryInterval = setInterval(() => this.getPlayerListForServer(this.serverId), 10000);
+        this.playerListQueryInterval = setInterval(() => {
+            if (!this.isVisible) return;
+            this.getPlayerListForServer(this.serverId);
+        }, 5000);
     },
 
     unmounted() {
@@ -432,7 +442,10 @@ export default {
                     });
                 });
             } else {
-                this.chatListQueryInterval = setInterval(() => this.pollServerForNewChat(this.serverId), 6000);
+                this.chatListQueryInterval = setInterval(() => {
+                    if (!this.isVisible) return;
+                    this.pollServerForNewChat(this.serverId);
+                }, 6000);
             }
         },
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col px-3">
+  <div class="flex flex-col">
     <hr
       v-if="commentableType == 'post'"
       class="mt-0.5"
@@ -8,7 +8,7 @@
     <!-- Loading Spinner -->
     <div
       v-if="loading || loadingMore"
-      class="flex justify-center p-4"
+      class="flex justify-center p-4 px-3"
     >
       <svg
         class="w-5 h-5 mr-3 -ml-1 animate-spin text-primary dark:text-primary"
@@ -35,7 +35,7 @@
     <!-- Load More Comment Button -->
     <div
       v-show="!loadingMore && !loading && showLoadMoreCommentsButton && comments && comments.next_page_url"
-      class="flex mt-3"
+      class="flex mt-3 px-3"
     >
       <button
         class="text-sm font-semibold text-foreground dark:text-foreground focus:outline-none hover:underline"
@@ -48,7 +48,7 @@
     <!-- Show no comments -->
     <div
       v-if="!loading && comments && comments.data.length === 0"
-      class="flex justify-center pt-4 text-sm text-muted-foreground"
+      class="flex justify-center pt-4 text-sm text-muted-foreground px-3"
     >
       {{ __("No comments yet") }}
     </div>
@@ -61,12 +61,11 @@
       <div
         v-for="comment in comments.data"
         :key="comment.id"
-        class="flex"
+        class="flex border-b border-border last:border-b-0 px-3"
       >
         <div class="items-start order-2 max-w-lg mx-2 space-y-2 text-sm">
           <div
-            class="flex flex-col px-4 py-2 text-foreground bg-surface-100 rounded-tl-lg rounded-2xl dark:bg-surface-600 dark:bg-opacity-25 dark:text-foreground"
-            :class="{'border border-foreground dark:border-foreground': $page.props.auth.user && $page.props.auth.user.id === comment.user_id}"
+            class="flex flex-col px-1.5 py-2"
           >
             <inertia-link
               as="a"
@@ -80,7 +79,7 @@
               >
                 <span
                   v-tippy
-                  class="inline ml-1 text-xs text-foreground dark:text-foreground focus:outline-none"
+                  class="inline ml-1 text-xs text-muted-foreground focus:outline-none"
                   :title="formatToDayDateString(comment.created_at)"
                 >
                   {{ formatTimeAgoToNow(comment.created_at) }}
@@ -103,11 +102,11 @@
           as="button"
           method="delete"
           :href="route(`${commentableType}.comment.delete`, [commentable.id, comment.id])"
-          class="order-3 focus:outline-none"
+          class="order-3 focus:outline-none text-muted-foreground"
         >
           <icon
             name="trash"
-            class="w-4 h-4 text-foreground hover:text-error-400 dark:text-foreground dark:hover:text-error-500"
+            class="w-4 h-4 text-muted-foreground hover:text-destructive"
           />
         </inertia-link>
       </div>
@@ -116,7 +115,7 @@
     <!-- Comments Input Box -->
     <div
       v-if="$page.props.auth.user"
-      class="flex my-2"
+      class="flex my-2 px-3"
     >
       <img
         :src="$page.props.auth.user.profile_photo_url"
@@ -222,7 +221,7 @@ export default {
                 this.submitting = false;
                 // Wait for next tick coz component is re-rendered (it check if component is visible with v-if)
                 this.$nextTick(() => {
-                    this.$refs.comment.focus();
+                    this.$refs.comment.$el.focus();
                 });
             });
         }

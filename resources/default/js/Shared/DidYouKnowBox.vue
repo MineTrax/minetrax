@@ -48,6 +48,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useElementVisibility } from '@vueuse/core';
 import axios from 'axios';
 import {
   Card,
@@ -65,21 +66,8 @@ const text = ref(null);
 const imageUrl = ref(null);
 const loading = ref(true);
 const box = ref(null);
+const isVisible = useElementVisibility(box);
 let interval = null;
-
-const isInViewport = () => {
-    const rect = box.value?.getBoundingClientRect();
-    if (!rect) return false;
-
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <=
-        (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <=
-        (window.innerWidth || document.documentElement.clientWidth)
-    );
-};
 
 onMounted(() => {
     axios
@@ -93,7 +81,7 @@ onMounted(() => {
         });
 
     interval = setInterval(() => {
-        if (!isInViewport()) {
+        if (!isVisible.value) {
             return;
         }
         loading.value = true;
