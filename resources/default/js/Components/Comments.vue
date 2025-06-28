@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col px-3">
     <hr
       v-if="commentableType == 'post'"
-      class="mt-0.5 dark:border-foreground"
+      class="mt-0.5"
     >
 
     <!-- Loading Spinner -->
@@ -48,7 +48,7 @@
     <!-- Show no comments -->
     <div
       v-if="!loading && comments && comments.data.length === 0"
-      class="flex justify-center pt-4 text-foreground dark:text-foreground text-sm"
+      class="flex justify-center pt-4 text-sm text-muted-foreground"
     >
       {{ __("No comments yet") }}
     </div>
@@ -116,25 +116,24 @@
     <!-- Comments Input Box -->
     <div
       v-if="$page.props.auth.user"
-      class="flex mt-1"
+      class="flex my-2"
     >
       <img
         :src="$page.props.auth.user.profile_photo_url"
         alt="My profile"
-        class="order-1 w-8 h-8 mt-2 rounded-full"
+        class="order-1 w-8 h-8 rounded-full"
       >
       <div class="flex-grow order-2 mx-2 text-sm">
         <form @submit.prevent="submitComment">
-          <input
+          <Input
             ref="comment"
             v-model="commentBody"
             :disabled="submitting"
             :placeholder="__('Write a comment...')"
             aria-label="comment"
             type="text"
-            class="block w-full mt-1 bg-surface-100 border border-foreground rounded-full dark:bg-surface-900 focus:border-foreground dark:border-foreground dark:focus:border-foreground dark:text-foreground focus:ring-0 sm:text-sm disabled:opacity-50"
             @keypress.enter="submitComment"
-          >
+          />
         </form>
         <span
           v-if="bodyerror"
@@ -149,9 +148,10 @@
 import Icon from '@/Components/Icon.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
 import { useHelpers } from '@/Composables/useHelpers';
+import { Input } from '@/Components/ui/input';
 
 export default {
-    components: {Icon, UserDisplayname},
+    components: {Icon, UserDisplayname, Input},
 
     props: {
         commentable: Object,
