@@ -578,7 +578,7 @@
                               id="enable_status_feed"
                               v-model="form.enable_status_feed"
                               :label="__('Enable Status Feed')"
-                              :help="__('Let player post status on homepage?')"
+                              :help="__('Let player post status on post page?')"
                               name="enable_status_feed"
                               :error="form.errors.enable_status_feed"
                             />

@@ -51,7 +51,6 @@
           :title="__('Top 10 Players')"
         />
         <latest-pinned-news :newslist="pinnedNewsList" />
-        <post-list-box v-if="generalSettings.enable_status_feed" />
       </div>
 
       <!-- Right Column -->
@@ -108,7 +107,6 @@ import DiscordServerBox from '@/Shared/DiscordServerBox.vue';
 import NewestUserBox from '@/Shared/NewestUserBox.vue';
 import VotingSitesBox from '@/Shared/VotingSitesBox.vue';
 import WelcomeBox from '@/Shared/WelcomeBox.vue';
-import PostListBox from '@/Shared/PostListBox.vue';
 import LatestPinnedNews from '@/Shared/LatestPinnedNews.vue';
 import SocialChannelBox from '@/Shared/SocialChannelBox.vue';
 import DidYouKnowBox from '@/Shared/DidYouKnowBox.vue';
@@ -138,7 +136,6 @@ export default {
         DidYouKnowBox,
         VersionCheck,
         SocialChannelBox,
-        PostListBox,
         WelcomeBox,
         NewsBox,
         AppLayout,

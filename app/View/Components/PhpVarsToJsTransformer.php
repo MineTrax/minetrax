@@ -4,6 +4,7 @@ namespace App\View\Components;
 
 use App\Models\CustomPage;
 use App\Settings\NavigationSettings;
+use App\Settings\GeneralSettings;
 use Illuminate\View\Component;
 
 class PhpVarsToJsTransformer extends Component
@@ -103,7 +104,8 @@ class PhpVarsToJsTransformer extends Component
         ];
 
         $navbarSettings = app(NavigationSettings::class);
-        $navbar = $this->generateCustomNavbarData($navbarSettings);
+        $generalSettings = app(GeneralSettings::class);
+        $navbar = $this->generateCustomNavbarData($navbarSettings, $generalSettings);
         $footer = $navbarSettings->enable_custom_footer ? $navbarSettings->custom_footer_data : null;
 
         $seoSettings = app(\App\Settings\SeoSettings::class);
@@ -120,9 +122,10 @@ class PhpVarsToJsTransformer extends Component
         ]);
     }
 
-    private function generateCustomNavbarData($navbarSettings)
+    private function generateCustomNavbarData($navbarSettings, $generalSettings)
     {
         $customNavbarEnabled = $navbarSettings->enable_custom_navbar;
+        $enablePosts = $generalSettings->enable_status_feed;
 
         // If custom navbar is disabled, generate default navbar
         if (!$customNavbarEnabled) {
@@ -147,6 +150,16 @@ class PhpVarsToJsTransformer extends Component
                 'title' => 'Others',
                 'key' => 'dropdown-others-01',
                 'children' => [
+                    ...($enablePosts ? [
+                        [
+                            'type' => 'route',
+                            'name' => 'Posts',
+                            'title' => 'Posts',
+                            'route' => 'post.index',
+                            'key' => 'route-posts-01',
+                            'authenticated' => false,
+                        ]
+                    ] : []),
                     [
                         'type' => 'route',
                         'name' => 'Polls',

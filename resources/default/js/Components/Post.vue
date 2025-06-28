@@ -90,7 +90,7 @@
           @click="likePost"
         >
           <span
-            class="group-hover:bg-pink-50 dark:group-hover:bg-pink-950/30 group-hover:text-pink-500 p-2 rounded-full transition-all duration-200"
+            class="group-hover:bg-destructive/10 dark:group-hover:bg-destructive/30 group-hover:text-destructive p-2 rounded-full transition-all duration-200"
           >
             <icon
               name="heart-hollow"
@@ -98,16 +98,16 @@
             />
           </span>
           <span
-            class="ml-1 text-sm font-medium group-hover:text-pink-500 transition-colors duration-200"
+            class="ml-1 text-sm font-medium group-hover:text-destructive transition-colors duration-200"
           >{{ likes_count }}</span>
         </button>
         <button
           v-else
-          class="flex items-center text-pink-500 cursor-pointer group"
+          class="flex items-center text-destructive cursor-pointer group"
           @click="unlikePost"
         >
           <span
-            class="group-hover:bg-pink-50 dark:group-hover:bg-pink-950/30 p-2 rounded-full transition-all duration-200"
+            class="group-hover:bg-destructive/10 dark:group-hover:bg-destructive/30 p-2 rounded-full transition-all duration-200"
           >
             <icon
               name="heart-fill"

@@ -21,30 +21,34 @@ class PostController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $posts = null;
-        if (auth()->user()) {
-            $posts = Post::with([
-                'loveReactant.reactions' => function ($q) {
-                    $q->where('reacter_id', auth()->user()->id);
-                },
-                'loveReactant.reactionTotal',
-                'user:id,name,username,profile_photo_path,verified_at,settings'
-            ])
-                ->withCount('comments')
-                ->orderByDesc('id')
-                ->cursorPaginate(5);
-        } else {
-            $posts = Post::with([
-                'loveReactant.reactionTotal',
-                'user:id,name,username,profile_photo_path,verified_at,settings'
-            ])
-                ->withCount('comments')
-                ->orderByDesc('id')
-                ->cursorPaginate(5);
+        if ($request->wantsJson()) {
+            $posts = null;
+            if (auth()->user()) {
+                $posts = Post::with([
+                    'loveReactant.reactions' => function ($q) {
+                        $q->where('reacter_id', auth()->user()->id);
+                    },
+                    'loveReactant.reactionTotal',
+                    'user:id,name,username,profile_photo_path,verified_at,settings'
+                ])
+                    ->withCount('comments')
+                    ->orderByDesc('id')
+                    ->cursorPaginate(5);
+            } else {
+                $posts = Post::with([
+                    'loveReactant.reactionTotal',
+                    'user:id,name,username,profile_photo_path,verified_at,settings'
+                ])
+                    ->withCount('comments')
+                    ->orderByDesc('id')
+                    ->cursorPaginate(5);
+            }
+            return $posts;
         }
-        return $posts;
+
+        return Inertia::render('Post/IndexPost');
     }
 
     public function indexForUser(User $user)
@@ -75,14 +79,14 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        if(auth()->user()) {
-           $post->load([
-               'loveReactant.reactions' => function ($q) {
-                   $q->where('reacter_id', auth()->user()->id);
-               },
-               'loveReactant.reactionTotal',
-               'user:id,name,username,profile_photo_path,verified_at,settings',
-           ])->loadCount('comments');
+        if (auth()->user()) {
+            $post->load([
+                'loveReactant.reactions' => function ($q) {
+                    $q->where('reacter_id', auth()->user()->id);
+                },
+                'loveReactant.reactionTotal',
+                'user:id,name,username,profile_photo_path,verified_at,settings',
+            ])->loadCount('comments');
         } else {
             $post->load([
                 'loveReactant.reactionTotal',
@@ -103,9 +107,9 @@ class PostController extends Controller
 
         // @TODO: This may create some vulnerability if people can upload some executable file, please check
         if ($request->hasFile('media')) {
-                $post->addAllMediaFromRequest()->each(function ($fileAdder) {
-                    $fileAdder->toMediaCollection('posts');
-                });
+            $post->addAllMediaFromRequest()->each(function ($fileAdder) {
+                $fileAdder->toMediaCollection('posts');
+            });
         }
 
         if ($request->wantsJson()) {
@@ -115,7 +119,8 @@ class PostController extends Controller
                     $q->where('reacter_id', auth()->user()->id);
                 },
                 'loveReactant.reactionTotal',
-                'user:id,name,username,profile_photo_path,verified_at,settings'])
+                'user:id,name,username,profile_photo_path,verified_at,settings'
+            ])
                 ->loadCount('comments');
 
             return response()->json([
