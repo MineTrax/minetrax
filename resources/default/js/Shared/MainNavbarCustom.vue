@@ -47,7 +47,7 @@ export default {
 
 <template>
   <nav
-    class="bg-secondary shadow z-40 w-full"
+    class="bg-sidebar shadow z-40 w-full"
     :class="{'sticky top-0': isStickyHeader, 'overflow-y-auto': isStickyHeader && showingNavigationDropdown}"
   >
     <!-- Primary Navigation Menu -->

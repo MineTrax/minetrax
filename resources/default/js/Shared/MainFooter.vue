@@ -36,7 +36,7 @@ if(customFooterData?.style == 'variant_1') {
 
 <template>
   <footer
-    class="w-full text-foreground bg-secondary body-font"
+    class="w-full text-foreground bg-sidebar body-font"
     :class="{'md:mt-28': canShowCustomFooter}"
   >
     <div
@@ -491,7 +491,7 @@ if(customFooterData?.style == 'variant_1') {
 
     <div
       :class="{
-        'bg-secondary border-t': canShowCustomFooter,
+        'bg-sidebar border-t': canShowCustomFooter,
         'bg-background': !canShowCustomFooter,
       }"
       class="flex flex-col items-center justify-center p-5"

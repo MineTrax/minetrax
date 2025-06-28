@@ -411,7 +411,7 @@ export default {
 }
 
 .discord-header {
-  background: hsl(var(--secondary));
+  background: hsl(var(--card));
   padding: 12px 16px;
   display: flex;
   justify-content: space-between;

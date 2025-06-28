@@ -289,6 +289,14 @@ body.swal2-shown > [aria-hidden="true"] {
     :root {
     }
 } */
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
 :root {
     --background: 204 12.1951% 91.9608%;
     --foreground: 0 0% 20%;
@@ -391,13 +399,4 @@ body.swal2-shown > [aria-hidden="true"] {
     --shadow-xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.1),
         0px 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.25);
-}
-
-@layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
 }
