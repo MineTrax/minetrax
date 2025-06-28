@@ -94,7 +94,7 @@
 
               <div
                 v-if="!playersList || playersList.length <= 0"
-                class="text-sm text-center italic text-foreground pb-2 pt-1"
+                class="text-sm text-center italic text-muted-foreground pb-2 pt-1"
               >
                 {{ __("No players.") }}
               </div>
