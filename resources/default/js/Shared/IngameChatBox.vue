@@ -201,28 +201,30 @@
       </div>
     </CardContent>
 
-    <jet-dialog-modal
-      :show="showAdminPlayerActionModel"
-      @close="closeAdminPlayerActionModel"
+    <Dialog
+      :open="showAdminPlayerActionModel"
+      @update:open="(open) => { if (!open) closeAdminPlayerActionModel() }"
     >
-      <template #title>
-        <div
-          v-if="actionModelCurrentPlayer"
-          class="flex flex-col items-center font-bold"
-        >
-          <span class="text-foreground underline">{{ __("Manage Player") }}</span>
-          <img
-            class="h-24 rounded"
-            :src="route('player.avatar.get',{uuid: actionModelCurrentPlayer.id, username: actionModelCurrentPlayer.username, textureid: actionModelCurrentPlayer.skin_texture_id})"
-            alt="Player Avatar"
-          >
-          <span class="text-primary">{{ actionModelCurrentPlayer.username }}</span>
-          <span class="text-xs text-foreground">{{ actionModelCurrentPlayer.id }}</span>
-        </div>
-      </template>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            <div
+              v-if="actionModelCurrentPlayer"
+              class="flex flex-col items-center space-y-2"
+            >
+              <span class="text-foreground font-bold mb-4">{{ __("Manage Player") }}</span>
+              <img
+                class="h-24 rounded"
+                :src="route('player.avatar.get',{uuid: actionModelCurrentPlayer.id, username: actionModelCurrentPlayer.username, textureid: actionModelCurrentPlayer.skin_texture_id})"
+                alt="Player Avatar"
+              >
+              <span class="text-primary">{{ actionModelCurrentPlayer.username }}</span>
+              <span class="text-xs text-foreground">{{ actionModelCurrentPlayer.id }}</span>
+            </div>
+          </DialogTitle>
+        </DialogHeader>
 
-      <template #content>
-        <div class="flex justify-center space-x-2">
+        <div class="flex justify-center space-x-2 mt-4">
           <loading-button
             v-if="can('kill players')"
             :loading="adminPlayerActionLoading"
@@ -267,21 +269,16 @@
         >
           {{ adminPlayerActionError }}
         </div>
-      </template>
 
-      <template #footer>
-        <jet-secondary-button @click="closeAdminPlayerActionModel">
-          {{ __("Cancel") }}
-        </jet-secondary-button>
-      </template>
-    </jet-dialog-modal>
+        <DialogFooter />
+      </DialogContent>
+    </Dialog>
   </Card>
 </template>
 
 <script>
 import { Input } from '@/Components/ui/input';
 import Icon from '@/Components/Icon.vue';
-import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import {format} from 'date-fns';
@@ -301,9 +298,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/Components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/Components/ui/dialog'
 
 export default {
-    components: {Icon, JetDialogModal, JetSecondaryButton, LoadingButton, Card, CardContent, Input, Skeleton, Select, SelectContent, SelectItem, SelectTrigger, SelectValue},
+    components: {Icon, JetSecondaryButton, LoadingButton, Card, CardContent, Input, Skeleton, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle},
     props: {
         defaultServerId: Number,
         serverList: Array
