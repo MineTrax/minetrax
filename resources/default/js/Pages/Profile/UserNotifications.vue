@@ -23,7 +23,7 @@
       </div>
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="flex flex-col space-y-4  md:w-8/12 bg-white p-4 rounded dark:bg-surface-800 text-foreground dark:text-foreground">
-          <infinite-scroll :load-more="loadNotifications">
+          <infinite-scroll :load-more="loadNotifications" :can-load-more="notifications.next_page_url !== null">
             <transition-group
               name="list"
               tag="div"

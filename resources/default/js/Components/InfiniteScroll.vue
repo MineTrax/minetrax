@@ -26,6 +26,10 @@ const props = defineProps({
     type: Function,
     required: true,
   },
+  canLoadMore: {
+    type: Boolean,
+    default: true,
+  },
   loadingText: {
     type: String,
     default: 'Loading more...'
@@ -39,6 +43,10 @@ const props = defineProps({
 const loading = ref(false)
 const sentinel = ref(null)
 
+const canLoadMore = () => {
+  return props.canLoadMore
+}
+
 useInfiniteScroll(
   sentinel,
   async () => {
@@ -50,6 +58,7 @@ useInfiniteScroll(
   {
     distance: props.threshold,
     debounce: 100,
+    canLoadMore: canLoadMore
   }
 )
 </script>

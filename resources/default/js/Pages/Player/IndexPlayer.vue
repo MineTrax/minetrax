@@ -4,7 +4,7 @@
       :title="__('Players')"
     />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
+    <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex-grow">
         <div class="grid grid-cols-12 gap-4 mb-4">
           <div class="col-span-12 md:col-span-4">
@@ -158,7 +158,7 @@
                 </thead>
 
                 <tbody class="bg-card divide-y divide-border">
-                  <InfiniteScroll :load-more="loadMorePlayers">
+                  <InfiniteScroll :load-more="loadMorePlayers" :can-load-more="playersList.next_page_url !== null">
                     <tr
                       v-for="(player, index) in playersList.data"
                       :key="player.uuid"
@@ -305,7 +305,6 @@ import Icon from '@/Components/Icon.vue';
 import InfiniteScroll from '@/Components/InfiniteScroll.vue';
 import { Card, CardContent } from '@/Components/ui/card';
 import { useHelpers } from '@/Composables/useHelpers';
-import { useAuthorizable } from '@/Composables/useAuthorizable';
 
 // Define props
 const props = defineProps({
@@ -319,7 +318,6 @@ const props = defineProps({
 });
 
 // Use composables
-const { can } = useAuthorizable();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
 
 // Reactive data
@@ -328,7 +326,7 @@ const playersList = ref(props.players);
 // Methods
 const loadMorePlayers = () => {
   if (!playersList.value.next_page_url) {
-    return Promise.resolve();
+    return;
   }
 
   return axios(playersList.value.next_page_url).then(response => {

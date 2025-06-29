@@ -65,7 +65,7 @@
             </Card>
         </div>
 
-        <InfiniteScroll :load-more="loadMorePosts">
+        <InfiniteScroll :load-more="loadMorePosts" :can-load-more="posts.next_page_url !== null">
             <transition-group name="list" tag="div" class="space-y-4">
                 <Post v-for="post in posts.data" :key="post.id" :post="post" />
                 <Card v-if="!loading && showEmptyPost && posts.data.length <= 0" :key="999999999"

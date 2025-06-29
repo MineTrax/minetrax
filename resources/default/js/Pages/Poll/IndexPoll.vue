@@ -18,7 +18,7 @@
           <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
               <div class="">
-                <infinite-scroll :load-more="loadMorePolls">
+                <infinite-scroll :load-more="loadMorePolls" :can-load-more="pollList.next_page_url !== null">
                   <transition-group
                     name="list"
                     tag="div"

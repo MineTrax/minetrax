@@ -6,7 +6,7 @@
 
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="flex flex-col space-y-6 md:w-9/12">
-          <infinite-scroll :load-more="loadMoreNews">
+          <infinite-scroll :load-more="loadMoreNews" :can-load-more="newsList.next_page_url !== null">
             <div
               v-for="(news, index) in newsList.data"
               :key="index"
