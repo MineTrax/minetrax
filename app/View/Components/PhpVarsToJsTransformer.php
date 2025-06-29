@@ -147,9 +147,17 @@ class PhpVarsToJsTransformer extends Component
             $dropdownList = [
                 'type' => 'dropdown',
                 'name' => 'Dropdown',
-                'title' => 'Others',
-                'key' => 'dropdown-others-01',
+                'title' => 'More',
+                'key' => 'dropdown-more-01',
                 'children' => [
+                    [
+                        'type' => 'route',
+                        'name' => 'News',
+                        'title' => 'News',
+                        'route' => 'news.index',
+                        'key' => 'route-news-01',
+                        'authenticated' => false,
+                    ],
                     ...($enablePosts ? [
                         [
                             'type' => 'route',
@@ -166,14 +174,6 @@ class PhpVarsToJsTransformer extends Component
                         'title' => 'Polls',
                         'route' => 'poll.index',
                         'key' => 'route-polls-01',
-                        'authenticated' => false,
-                    ],
-                    [
-                        'type' => 'route',
-                        'name' => 'News',
-                        'title' => 'News',
-                        'route' => 'news.index',
-                        'key' => 'route-news-01',
                         'authenticated' => false,
                     ],
                     [
