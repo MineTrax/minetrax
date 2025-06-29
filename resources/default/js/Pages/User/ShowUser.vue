@@ -1,6 +1,6 @@
 <template>
-    <app-layout>
-        <app-head :title="__(':name profile', { name: profileUser.name })" />
+    <AppLayout>
+        <AppHead :title="__(':name profile', { name: profileUser.name })" />
 
         <div class="max-w-7xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
             <AlertCard variant="destructive" v-if="profileUser.banned_at">
@@ -10,8 +10,8 @@
                 </template>
                 <template #body>
                     {{ __("If you think it is a mistake.") }}
-                    <inertia-link :href="route('staff.index')" class="font-semibold hover:underline">
-                        {{ __("Please contact a Staff") }} </inertia-link>.
+                    <Link :href="route('staff.index')" class="font-semibold hover:underline">
+                        {{ __("Please contact a Staff") }} </Link>.
                 </template>
             </AlertCard>
 
@@ -45,14 +45,14 @@
                             <!-- Follow Button -->
                             <div v-if="$page.props.auth.user" class="flex text-xs text-right md:text-medium">
                                 <div class="p-4 space-x-2">
-                                    <inertia-link v-if="
+                                    <Link v-if="
                                         profileUser.id ===
                                         $page.props.auth.user.id
                                     " v-tippy :title="__('Update Profile')" :href="route('profile.show')"
                                         class="inline-flex items-center px-2 py-2 text-sm font-medium border-2 rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                                         <PencilSquareIcon class="w-5 h-5 stroke-2" />
-                                    </inertia-link>
-                                    <inertia-link v-if="
+                                    </Link>
+                                    <Link v-if="
                                         can('mute users') &&
                                         !profileUser.muted_at
                                     " v-tippy :title="__('Mute')" method="post" as="button" :href="route(
@@ -62,8 +62,8 @@
                                             "
                                         class="inline-flex items-center px-2 py-2 text-sm font-medium text-warning-500 border-2 border-warning-500 rounded-full hover:bg-warning-500 hover:text-white">
                                         <SpeakerXMarkIcon class="w-5 h-5 stroke-2" />
-                                    </inertia-link>
-                                    <inertia-link v-if="
+                                    </Link>
+                                    <Link v-if="
                                         can('mute users') &&
                                         profileUser.muted_at
                                     " v-tippy :title="__('Unmute')" method="post" as="button" :href="route(
@@ -73,8 +73,8 @@
                                             "
                                         class="inline-flex items-center px-2 py-2 text-sm font-medium text-success-500 border-2 border-success-500 rounded-full hover:bg-success-500 hover:text-white">
                                         <SpeakerWaveIcon class="w-5 h-5 stroke-2" />
-                                    </inertia-link>
-                                    <inertia-link v-if="
+                                    </Link>
+                                    <Link v-if="
                                         can('ban users') &&
                                         !profileUser.banned_at
                                     " v-tippy :title="__('Ban')" method="post" as="button" :href="route(
@@ -84,8 +84,8 @@
                                             "
                                         class="inline-flex items-center px-2 py-2 text-sm font-medium text-destructive border-2 border-destructive rounded-full hover:bg-destructive hover:text-destructive-foreground">
                                         <NoSymbolIcon class="w-5 h-5 stroke-2" />
-                                    </inertia-link>
-                                    <inertia-link v-if="
+                                    </Link>
+                                    <Link v-if="
                                         can('ban users') &&
                                         profileUser.banned_at
                                     " v-tippy :title="__('Unban')" method="post" as="button" :href="route(
@@ -95,15 +95,15 @@
                                             "
                                         class="inline-flex items-center px-2 py-2 text-sm font-medium text-success-500 border-2 border-success-500 rounded-full hover:bg-success-500 hover:text-white">
                                         <NoSymbolIcon class="w-5 h-5 stroke-2" />
-                                    </inertia-link>
-                                    <inertia-link v-if="can('update users')" v-tippy :title="__('Edit')" :href="route(
+                                    </Link>
+                                    <Link v-if="can('update users')" v-tippy :title="__('Edit')" :href="route(
                                         'admin.user.edit',
                                         profileUser.id
                                     )
                                         "
                                         class="inline-flex items-center px-2 py-2 text-sm font-medium text-primary border-2 border-primary rounded-full hover:bg-primary hover:text-primary-foreground">
                                         <PencilSquareIcon class="w-5 h-5 stroke-2" />
-                                    </inertia-link>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +112,7 @@
                         <div class="justify-center w-full mt-3 ml-3 space-y-2">
                             <!-- User basic-->
                             <div>
-                                <user-displayname :user="profileUser" icon-class="w-6 h-6" text-class="text-xl" />
+                                <UserDisplayname :user="profileUser" icon-class="w-6 h-6" text-class="text-xl" />
                                 <p class="font-medium leading-5 text-card-foreground">
                                     @{{ profileUser.username }}
                                 </p>
@@ -164,10 +164,10 @@
 
                             <div class="flex flex-col flex-1 space-y-2">
                                 <div class="username">
-                                    <inertia-link as="a" :href="route('player.show', player.uuid)
+                                    <Link as="a" :href="route('player.show', player.uuid)
                                         " class="text-lg font-bold text-primary hover:text-primary/80">
                                         {{ player.username }}
-                                    </inertia-link>
+                                    </Link>
                                 </div>
 
                                 <div class="flex items-center justify-between">
@@ -308,7 +308,7 @@
                         </CardContent>
                     </Card>
 
-                    <social-channel-box v-if="profileUser.social_links" :enabled="!!profileUser.social_links"
+                    <SocialChannelBox v-if="profileUser.social_links" :enabled="!!profileUser.social_links"
                         :show-title="false" :facebook="profileUser.social_links.s_facebook_url"
                         :youtube="profileUser.social_links.s_youtube_url"
                         :twitch="profileUser.social_links.s_twitch_url"
@@ -318,7 +318,7 @@
                         :tiktok="profileUser.social_links.s_tiktok_url"
                         :website="profileUser.social_links.s_website_url" />
                 </div>
-                <post-list-box v-if="$page.props.generalSettings.enable_status_feed" :username="profileUser.username"
+                <PostListBox v-if="$page.props.generalSettings.enable_status_feed" :username="profileUser.username"
                     :show-empty-post="true" />
                 <Card v-else class="flex items-center justify-center w-full p-3 space-y-4 text-center">
                     <CardContent>
@@ -329,17 +329,19 @@
                 </Card>
             </div>
         </div>
-    </app-layout>
+    </AppLayout>
 </template>
 
-<script>
+<script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
+import AppHead from "@/Components/AppHead.vue";
+import { Link } from "@inertiajs/vue3";
 import Icon from "@/Components/Icon.vue";
 import PostListBox from "@/Shared/PostListBox.vue";
 import SocialChannelBox from "@/Shared/SocialChannelBox.vue";
 import AlertCard from "@/Components/AlertCard.vue";
 import UserDisplayname from "@/Components/UserDisplayname.vue";
-import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import { Card, CardContent } from "@/Components/ui/card";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useHelpers } from "@/Composables/useHelpers";
 import {
@@ -349,30 +351,15 @@ import {
     SpeakerWaveIcon,
 } from "@heroicons/vue/24/outline";
 
-export default {
-    components: {
-        SocialChannelBox,
-        Icon,
-        AppLayout,
-        PostListBox,
-        AlertCard,
-        UserDisplayname,
-        NoSymbolIcon,
-        PencilSquareIcon,
-        SpeakerXMarkIcon,
-        SpeakerWaveIcon,
-        Card,
-        CardContent,
-        CardHeader,
-        CardTitle,
+// Define props
+defineProps({
+    profileUser: {
+        type: Object,
+        required: true,
     },
-    props: {
-        profileUser: Object,
-    },
-    setup() {
-        const { can } = useAuthorizable();
-        const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
-        return { can, formatTimeAgoToNow, formatToDayDateString };
-    },
-};
+});
+
+// Setup composables
+const { can } = useAuthorizable();
+const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
 </script>
