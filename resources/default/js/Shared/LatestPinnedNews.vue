@@ -29,14 +29,15 @@
 
         <!-- Title section -->
         <div class="mb-4">
-          <inertia-link
+          <Link
             :href="route('news.show', news.slug)"
             class="group/title"
+            prefetch
           >
             <h2 class="text-2xl sm:text-3xl font-bold leading-tight text-card-foreground group-hover/title:text-primary transition-colors duration-200 mb-2">
               {{ news.title }}
             </h2>
-          </inertia-link>
+          </Link>
         </div>
 
         <!-- Metadata section -->
@@ -74,13 +75,14 @@
 
         <!-- Read more indicator -->
         <div class="mt-6 pt-4 border-t border-border/50">
-          <inertia-link
+          <Link
             :href="route('news.show', news.slug)"
             class="inline-flex items-center space-x-2 text-sm font-medium text-primary hover:text-primary/90 transition-colors group/link"
+            prefetch
           >
             <span>{{ __("Read full article") }}</span>
             <icon name="arrow-right" class="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
-          </inertia-link>
+          </Link>
         </div>
       </CardContent>
     </Card>
@@ -90,6 +92,7 @@
 <script>
 import Icon from '@/Components/Icon.vue';
 import { useHelpers } from '@/Composables/useHelpers';
+import { Link } from '@inertiajs/vue3';
 import {
   Card,
   CardContent,
@@ -100,6 +103,7 @@ export default {
         Icon,
         Card,
         CardContent,
+        Link,
     },
     props: {
         newslist: Array
