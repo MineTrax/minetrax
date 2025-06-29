@@ -2,121 +2,126 @@
   <app-layout>
     <app-head :title="__('News')" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
-          {{ __("News") }} <span class="hidden md:inline">{{ __("& Announcements") }}</span>
-        </h1>
-        <div class="flex">
-          <inertia-link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </inertia-link>
-        </div>
-      </div>
+    <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
+
       <div class="flex flex-col md:flex-row md:space-x-4">
-        <div class="flex flex-col space-y-4 -my-2 md:w-9/12 overflow-x-auto md:-mx-6 lg:-mx-8">
+        <div class="flex flex-col space-y-6 md:w-9/12">
           <infinite-scroll :load-more="loadMoreNews">
             <div
               v-for="(news, index) in newsList.data"
               :key="index"
-              class=""
+              class="space-y-6"
             >
-              <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
-                <div
-                  class="shadow max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-foreground rounded md:rounded-lg dark:bg-surface-800 dark:border-none"
-                >
-                  <span
-                    v-if="news.type.value === 0"
-                    class="bg-primary font-bold inline-flex leading-7 mb-3 px-3 rounded text-sm text-white"
-                  >{{
-                    news.type.key
-                  }}</span>
-                  <span
-                    v-else-if="news.type.value === 1"
-                    class="bg-orange-600 font-bold inline-flex leading-7 mb-3 px-3 rounded text-sm text-white"
-                  >{{
-                    news.type.key
-                  }}</span>
-                  <span
-                    v-else-if="news.type.value === 2"
-                    class="bg-success-600 font-bold inline-flex leading-7 mb-3 px-3 rounded text-sm text-white"
-                  >{{
-                    news.type.key
-                  }}</span>
-                  <span
-                    v-else
-                    class="bg-surface-600 font-bold inline-flex leading-7 mb-3 px-3 rounded text-sm text-white"
-                  >{{
-                    news.type.key
-                  }}</span>
-
-                  <img
+              <Card class="group relative overflow-hidden transition-shadow duration-300 hover:shadow-lg">
+                <CardContent class="p-6 sm:p-8">
+                  <!-- Image section -->
+                  <div
                     v-if="news.photo_url"
-                    class="w-full mb-5 rounded"
-                    :src="news.photo_url"
-                    alt="News Image"
+                    class="relative mb-6 -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 overflow-hidden"
                   >
-
-                  <inertia-link
-                    as="a"
-                    :href="route('news.show', news.slug)"
-                    class="block font-bold text-4xl text-foreground dark:text-foreground mb-5 cursor-pointer hover:underline"
-                  >
-                    {{
-                      news.title
-                    }}
-                  </inertia-link>
-                  <div class="flex w-full md:w-auto mb-5">
-                    <img
-                      :src="news.creator.profile_photo_url"
-                      alt="Profile"
-                      class="h-12 w-12 mr-3 rounded-full"
-                    >
-                    <div>
-                      <inertia-link
-                        as="p"
-                        :href="route('user.public.get', news.creator.username)"
-                        class="cursor-pointer hover:underline font-bold text-foreground dark:text-foreground"
-                        :style="[news.creator.roles[0].color ? {color: news.creator.roles[0].color} : null]"
+                    <div class="aspect-video relative">
+                      <img
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        :src="news.photo_url"
+                        alt="News Image"
                       >
-                        {{ news.creator.name }}
-                      </inertia-link>
-                      <p
-                        v-tippy
-                        :title="formatTimeAgoToNow(news.created_at)"
-                        class="text-foreground dark:text-foreground text-sm focus:outline-none"
-                      >
-                        {{
-                          formatToDayDateString(news.published_at)
-                        }}
-                      </p>
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
                   </div>
+
+                  <!-- Title section -->
+                  <div class="mb-4">
+                    <inertia-link
+                      :href="route('news.show', news.slug)"
+                      class="group/title"
+                    >
+                      <h2 class="text-2xl sm:text-3xl font-bold leading-tight text-card-foreground group-hover/title:text-primary transition-colors duration-200 mb-2">
+                        {{ news.title }}
+                      </h2>
+                    </inertia-link>
+                  </div>
+
+                  <!-- Metadata section -->
+                  <div class="flex items-center justify-between mb-4 pb-4 border-b border-border/30">
+                    <div class="flex items-center space-x-3">
+                      <span
+                        class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full"
+                        :class="{
+                          'bg-primary/10 text-primary border border-primary/20': news.type.value === 0,
+                          'bg-orange-100 text-orange-700 border border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800': news.type.value === 1,
+                          'bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800': news.type.value === 2
+                        }"
+                      >
+                        {{ news.type.key }}
+                      </span>
+                    </div>
+
+                    <!-- Author and time metadata -->
+                    <div class="flex items-center space-x-4">
+                      <div class="flex items-center space-x-2">
+                        <img
+                          :src="news.creator.profile_photo_url"
+                          alt="Profile"
+                          class="h-8 w-8 rounded-full border border-border/20"
+                        >
+                        <div class="text-sm">
+                          <inertia-link
+                            :href="route('user.public.get', news.creator.username)"
+                            class="font-medium text-card-foreground hover:text-primary transition-colors cursor-pointer"
+                            :style="[news.creator.roles[0].color ? {color: news.creator.roles[0].color} : null]"
+                          >
+                            {{ news.creator.name }}
+                          </inertia-link>
+                        </div>
+                      </div>
+                      <div class="text-sm text-muted-foreground">
+                        <span
+                          v-tippy
+                          :content="formatTimeAgoToNow(news.created_at)"
+                          class="cursor-help"
+                        >
+                          {{ formatToDayDateString(news.published_at) }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Content section -->
                   <div
-                    class="prose dark:prose-invert max-w-none"
+                    class="prose prose-sm sm:prose-base max-w-none text-card-foreground/80 prose-headings:text-card-foreground prose-p:text-card-foreground/80 prose-strong:text-card-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary/30 prose-blockquote:text-card-foreground/70 prose-code:text-primary prose-code:bg-muted prose-code:rounded prose-code:px-1 prose-pre:bg-muted"
                     v-html="news.body_html_small"
                   />
-                </div>
-              </div>
+
+                  <!-- Read more indicator -->
+                  <div class="mt-6 pt-4 border-t border-border/50">
+                    <inertia-link
+                      :href="route('news.show', news.slug)"
+                      class="inline-flex items-center space-x-2 text-sm font-medium text-primary hover:text-primary/90 transition-colors group/link"
+                    >
+                      <span>{{ __("Read full article") }}</span>
+                      <icon name="arrow-right" class="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
+                    </inertia-link>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </infinite-scroll>
 
           <div
             v-if="newsList.data <= 0"
-            class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8"
+            class="py-2 align-middle inline-block min-w-full"
           >
-            <div
-              class="shadow text-center dark:text-foreground italic max-w-none bg-white px-3 py-2 md:px-10 md:py-5 overflow-hidden border-b border-foreground rounded md:rounded-lg dark:bg-surface-800 dark:border-none"
-            >
-              {{ __("No News or Announcement Yet.") }}
-            </div>
+            <Card class="text-center">
+              <CardContent class="p-8">
+                <div class="text-muted-foreground italic">
+                  {{ __("No News or Announcement Yet.") }}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
-        <div class="hidden md:block md:w-3/12 flex-1 space-y-4 mt-4 md:mt-0">
+        <div class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 h-screen sticky" :class="{'top-16': isStickyNav, 'top-5': !isStickyNav}">
           <server-status-box />
           <shout-box />
         </div>
@@ -125,51 +130,43 @@
   </app-layout>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import InfiniteScroll from '@/Components/InfiniteScroll.vue';
+import Icon from '@/Components/Icon.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
 import { useHelpers } from '@/Composables/useHelpers';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 import ShoutBox from '@/Shared/ShoutBox.vue';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
+import { usePage } from '@inertiajs/vue3';
 
-export default {
+const props = defineProps({
+    newses: Object,
+});
 
-    components: {
-        ShoutBox,
-        ServerStatusBox,
-        AppLayout,
-        InfiniteScroll,
-    },
-    props: {
-        newses: Object,
-    },
+const page = usePage();
+const { can } = useAuthorizable();
+const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
 
-    setup() {
-        const {can} = useAuthorizable();
-        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
-        return {can, formatTimeAgoToNow, formatToDayDateString};
-    },
+const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;
 
-    data() {
-        return {
-            newsList: this.newses
+const newsList = ref(props.newses);
+
+const loadMoreNews = () => {
+    if (!newsList.value.next_page_url) {
+        return Promise.resolve();
+    }
+
+    return axios(newsList.value.next_page_url).then(response => {
+        newsList.value = {
+            ...response.data,
+            data: [...newsList.value.data, ...response.data.data]
         };
-    },
-
-    methods: {
-        loadMoreNews() {
-            if (!this.newsList.next_page_url) {
-                return Promise.resolve();
-            }
-
-            return axios(this.newsList.next_page_url).then(response => {
-                this.newsList = {
-                    ...response.data,
-                    data: [...this.newsList.data, ...response.data.data]
-                };
-            });
-        }
-    },
+    });
 };
 </script>

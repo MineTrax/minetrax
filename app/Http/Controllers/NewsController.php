@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\News;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 class NewsController extends Controller
 {
@@ -19,8 +20,9 @@ class NewsController extends Controller
             ->simplePaginate(5);
 
         $news->each(function ($n) {
-            $n->append(['body_html']);
-            $n->body_html_small = \Str::limit($n->body_html, 500);
+            $converter = new GithubFlavoredMarkdownConverter();
+            $strippedBody = \Str::words($n->body, 250);
+            $n->body_html_small = $converter->convertToHtml($strippedBody)->getContent();
         });
 
         if ($request->wantsJson()) {
