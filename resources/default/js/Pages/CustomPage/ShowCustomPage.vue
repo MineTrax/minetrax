@@ -2,7 +2,7 @@
     <AppLayout>
         <AppHead :title="customPage.title" />
 
-        <div v-if="!customPage.is_visible" class="py-4 px-2 max-w-7xl mx-auto">
+        <div v-if="!customPage.is_visible" class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
             <AlertCard variant="warning" class="mb-4">
                 {{ __("Page is hidden!") }}
                 <template #body>
@@ -15,7 +15,7 @@
         <div v-if="customPage.is_html_page" v-html="customPage.body_html" />
 
         <!-- If not HTML Page -->
-        <div v-else class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
+        <div v-else class="py-4 px-2 md:py-6 md:px-10 max-w-screen-2xl mx-auto">
             <div class="flex flex-col md:flex-row md:space-x-4">
                 <div :class="customPage.is_sidebar_visible
                         ? 'md:w-9/12'
