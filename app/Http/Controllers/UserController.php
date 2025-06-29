@@ -24,10 +24,10 @@ class UserController extends Controller
                 $query->where('is_staff', true)
                     ->where('is_hidden_from_staff_list', false);
             })
-            ->select(['id', 'name', 'username', 'profile_photo_path', 'verified_at'])
+            ->select(['id', 'name', 'username', 'profile_photo_path', 'cover_image_path', 'verified_at'])
             ->get();
 
-        $staffsWithRole = $staffsWithRole->sortByDesc(function($staff, $key) {
+        $staffsWithRole = $staffsWithRole->sortByDesc(function ($staff, $key) {
             return $staff->roles->sortBy('weight')->first()->weight;
         })->values()->all();
 

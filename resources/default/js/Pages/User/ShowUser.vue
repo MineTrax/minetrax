@@ -3,10 +3,8 @@
     <app-head :title="__(':name profile', { name: profileUser.name })" />
 
     <div class="max-w-6xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
-      <AlertCard
+      <AlertCard variant="destructive"
         v-if="profileUser.banned_at"
-        text-color="text-error-600 dark:text-error-400"
-        border-color="border-error-500"
       >
         {{ __("This User is Banned!") }}
         <template #icon>
@@ -31,8 +29,7 @@
           $page.props.jetstream.hasEmailVerification &&
             profileUser.email_verified_at === null
         "
-        text-color="text-orange-800 dark:text-orange-500"
-        border-color="border-orange-500"
+        variant="warning"
       >
         {{ __("This user hasn't verified his email yet!") }}
       </AlertCard>
