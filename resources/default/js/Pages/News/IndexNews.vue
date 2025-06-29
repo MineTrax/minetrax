@@ -31,14 +31,15 @@
 
                   <!-- Title section -->
                   <div class="mb-4">
-                    <inertia-link
+                    <Link
                       :href="route('news.show', news.slug)"
                       class="group/title"
+                      prefetch
                     >
                       <h2 class="text-2xl sm:text-3xl font-bold leading-tight text-card-foreground group-hover/title:text-primary transition-colors duration-200 mb-2">
                         {{ news.title }}
                       </h2>
-                    </inertia-link>
+                    </Link>
                   </div>
 
                   <!-- Metadata section -->
@@ -65,13 +66,14 @@
                           class="h-8 w-8 rounded-full border border-border/20"
                         >
                         <div class="text-sm">
-                          <inertia-link
+                          <Link
                             :href="route('user.public.get', news.creator.username)"
                             class="font-medium text-card-foreground hover:text-primary transition-colors cursor-pointer"
                             :style="[news.creator.roles[0].color ? {color: news.creator.roles[0].color} : null]"
+                            prefetch
                           >
                             {{ news.creator.name }}
-                          </inertia-link>
+                          </Link>
                         </div>
                       </div>
                       <div class="text-sm text-muted-foreground">
@@ -94,13 +96,14 @@
 
                   <!-- Read more indicator -->
                   <div class="mt-6 pt-4 border-t border-border/50">
-                    <inertia-link
+                    <Link
                       :href="route('news.show', news.slug)"
                       class="inline-flex items-center space-x-2 text-sm font-medium text-primary hover:text-primary/90 transition-colors group/link"
+                      prefetch
                     >
                       <span>{{ __("Read full article") }}</span>
                       <icon name="arrow-right" class="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
-                    </inertia-link>
+                  </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -143,6 +146,7 @@ import {
   Card,
   CardContent,
 } from '@/Components/ui/card'
+import { Link } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({

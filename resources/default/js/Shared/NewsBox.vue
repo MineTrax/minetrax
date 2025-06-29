@@ -17,12 +17,13 @@
             <div class="flex-1 min-w-0">
                                           <!-- News Title -->
               <h4 class="font-semibold text-foreground mb-2 leading-tight">
-                <inertia-link
+                <Link
                   :href="route('news.show', news.slug)"
                   class="hover:text-primary transition-colors duration-200 line-clamp-2"
+                  prefetch
                 >
                   {{ news.title }}
-                </inertia-link>
+                </Link>
               </h4>
 
               <!-- News Meta Information -->
@@ -63,11 +64,13 @@ import {
   Card,
   CardContent,
 } from '@/Components/ui/card'
+import { Link } from '@inertiajs/vue3';
 
 export default {
     components: {
         Card,
         CardContent,
+        Link,
     },
     props: {
         newslist: Array

@@ -23,6 +23,7 @@ const classes = computed(() => {
     v-if="!openInNewTab"
     :href="href"
     :class="classes"
+    prefetch
   >
     <slot />
 </Link>

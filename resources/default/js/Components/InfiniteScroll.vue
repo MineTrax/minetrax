@@ -8,7 +8,10 @@
     name="loading"
   >
     <div class="p-5 text-center text-foreground dark:text-foreground text-sm">
-      {{ loadingText }}
+        <span class="flex items-center justify-center gap-2">
+            <Loader2Icon class="w-4 h-4 animate-spin" />
+            {{ loadingText }}
+        </span>
     </div>
   </slot>
 </template>
@@ -16,6 +19,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useInfiniteScroll } from '@vueuse/core'
+import { Loader2Icon } from 'lucide-vue-next'
 
 const props = defineProps({
   loadMore: {
