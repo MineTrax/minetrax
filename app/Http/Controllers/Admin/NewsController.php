@@ -80,17 +80,8 @@ class NewsController extends Controller
             $news->addMediaFromRequest('photo')->toMediaCollection('news');
         }
 
-        return redirect()->route('admin.news.show', $news->id)
+        return redirect()->route('news.show', $news->slug)
             ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('News is created successfully')]]);
-    }
-
-    public function show(News $news): \Inertia\Response
-    {
-        $this->authorize('view', $news);
-
-        return Inertia::render('Admin/News/ShowNews', [
-            'news' => $news->append(['body_html'])->load('creator:id,name,username,profile_photo_path'),
-        ]);
     }
 
     public function edit(News $news): \Inertia\Response
@@ -127,7 +118,7 @@ class NewsController extends Controller
         }
 
         // Redirect to listing page
-        return redirect()->route('admin.news.show', $news->id)
+        return redirect()->route('news.show', $news->slug)
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('News updated successfully')]]);
     }
 
