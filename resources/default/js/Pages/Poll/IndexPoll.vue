@@ -4,7 +4,7 @@
       :title="__('Polls')"
     />
 
-    <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto">
+    <div class="px-2 py-4 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="hidden md:flex flex-col space-y-4 flex-none w-1/4 h-screen sticky top-5">
           <did-you-know-box :enabled="$page.props.generalSettings.enable_didyouknowbox" />
