@@ -37,13 +37,12 @@
                         id="question"
                         v-model="form.question"
                         :label="__('Poll Question')"
-                        :help="__('Eg: Do you think minecraft is best game?')"
+                        :placeholder="__('Eg: Do you think minecraft is best game?')"
                         :error="form.errors.question"
                         type="text"
                         name="question"
                       />
                     </div>
-
 
                     <div class="col-span-6 sm:col-span-6 flex-col space-y-1">
                       <div
@@ -53,7 +52,7 @@
                       >
                         <button
                           type="button"
-                          class="focus:outline-none group flex mt-4"
+                          class="focus:outline-none group flex mt-2.5"
                           @click="deleteOption(index)"
                         >
                           <icon

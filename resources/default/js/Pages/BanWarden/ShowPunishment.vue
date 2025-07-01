@@ -1408,6 +1408,8 @@ function reloadPageWithTimeout() {
         </DialogHeader>
         <div class="grid gap-4 py-4">
           <XInput
+            id="reason"
+            name="reason"
             v-model="pardonForm.reason"
             :label="__('Reason for Pardon')"
             :error="pardonForm.errors.reason"
@@ -1497,6 +1499,8 @@ function reloadPageWithTimeout() {
             <h4 class="mb-2 font-medium">{{ __("Attach as URL") }}</h4>
             <div class="flex space-x-2">
               <XInput
+                id="url"
+                name="url"
                 class="w-full"
                 :error="uploadEvidenceAsUrlForm.errors.url"
                 :placeholder="__('Enter URL')"
