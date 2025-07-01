@@ -4,7 +4,7 @@ import { useChartTheme } from "@/Composables/useChartTheme.js";
 const { getThemeColor, getChartColorPalette } = useChartTheme();
 
 const contrastColor = getThemeColor("--color-foreground", "#374151");
-const backgroundColor = getThemeColor("--color-white", "#ffffff");
+const backgroundColor = getThemeColor("transparent", "transparent");
 const axisCommon = function () {
     return {
         axisLine: {

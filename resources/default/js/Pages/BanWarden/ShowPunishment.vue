@@ -16,6 +16,7 @@ import { ref } from 'vue';
 import { LinkIcon, PaperClipIcon, XCircleIcon } from '@heroicons/vue/24/solid';
 import XInput from '@/Components/Form/XInput.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
+import { CardContent, Card } from "@/Components/ui/card";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
@@ -272,7 +273,7 @@ function reloadPageWithTimeout() {
     <div class="px-2 py-4 mx-auto md:py-12 md:px-10 max-w-7xl">
       <div class="flex flex-col md:flex-row justify-between mb-8">
         <div class="flex items-center">
-          <h1 class="text-lg font-bold text-foreground md:text-3xl dark:text-foreground">
+          <h1 class="text-lg font-bold md:text-3xl">
             {{ __("Punishment #:id", {
               id: punishment.id,
               punish: punishment.type.value
@@ -304,15 +305,16 @@ function reloadPageWithTimeout() {
           </Link>
         </div>
       </div>
-      <div class="flex flex-col space-y-8 text-foreground dark:text-foreground">
+      <div class="flex flex-col space-y-8">
         <!-- Details Start -->
         <div class="grid w-full gap-2 md:grid-cols-3">
-          <div class="w-full grid-cols-3 gap-6 p-2 leading-8 bg-white rounded shadow dark:bg-surface-800 md:p-5 md:col-span-2 md:grid">
-            <h3 class="col-span-3 -mb-4 text-lg font-bold text-foreground dark:text-foreground">
-              {{ __("Punishment Details") }}
-            </h3>
+          <Card class="md:col-span-2">
+            <CardContent class="grid-cols-3 gap-6 leading-8 md:grid">
+              <h3 class="col-span-3 -mb-4 mt-4 text-lg font-bold">
+                {{ __("Punishment Details") }}
+              </h3>
             <div>
-              <p class="font-semibold text-foreground dark:text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Type") }}
               </p>
               <p class="font-bold">
@@ -321,7 +323,7 @@ function reloadPageWithTimeout() {
             </div>
 
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("ID") }}
               </p>
               <p class="font-bold">
@@ -329,7 +331,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Status") }}
               </p>
               <p class="font-bold">
@@ -339,7 +341,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Player") }}
               </p>
               <div v-if="punishment.uuid && punishment.victim_player">
@@ -413,7 +415,7 @@ function reloadPageWithTimeout() {
               </div>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("IP :punish", {
                   punish: punishment.type.value
                 }) }}
@@ -425,7 +427,7 @@ function reloadPageWithTimeout() {
             <div
               v-if="canShowMaskedIp"
             >
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("IP Address") }}
               </p>
               <p class="font-bold">
@@ -440,7 +442,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Country") }}
               </p>
               <div class="flex items-center font-bold">
@@ -453,7 +455,7 @@ function reloadPageWithTimeout() {
               </div>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Date") }}
               </p>
               <div class="flex flex-col font-bold">
@@ -466,7 +468,7 @@ function reloadPageWithTimeout() {
               </div>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Expires") }}
               </p>
               <div
@@ -488,7 +490,7 @@ function reloadPageWithTimeout() {
               </div>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Reason") }}
               </p>
               <p class="mt-1 font-bold leading-normal">
@@ -496,7 +498,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Notes") }}
               </p>
               <p class="mt-1 font-bold leading-normal">
@@ -504,7 +506,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Server Scope") }}
               </p>
               <p class="font-bold">
@@ -512,7 +514,7 @@ function reloadPageWithTimeout() {
               </p>
             </div>
             <div>
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Punished by") }}
               </p>
               <div>
@@ -573,7 +575,7 @@ function reloadPageWithTimeout() {
 
             <template v-if="punishment.removed_at && (punishment.remover_uuid || punishment.remover_username)">
               <div>
-                <p class="font-semibold text-foreground">
+                <p class="font-semibold text-muted-foreground">
                   {{ __("Pardon by") }}
                 </p>
                 <div>
@@ -632,7 +634,7 @@ function reloadPageWithTimeout() {
                 </div>
               </div>
               <div>
-                <p class="font-semibold text-foreground">
+                <p class="font-semibold text-muted-foreground">
                   {{ __("Pardon at") }}
                 </p>
                 <div
@@ -647,7 +649,7 @@ function reloadPageWithTimeout() {
                 </div>
               </div>
               <div>
-                <p class="font-semibold text-foreground">
+                <p class="font-semibold text-muted-foreground">
                   {{ __("Pardon Reason") }}
                 </p>
                 <p class="mt-1 font-bold leading-normal">
@@ -657,7 +659,7 @@ function reloadPageWithTimeout() {
             </template>
 
             <div v-if="punishment.plugin_punishment_id">
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Plugin Punishment ID") }}
               </p>
               <p class="mt-1 font-bold leading-normal">
@@ -666,7 +668,7 @@ function reloadPageWithTimeout() {
             </div>
 
             <div v-if="punishment.origin_server_name">
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Origin Server") }}
               </p>
               <p class="font-bold mt-0.5 leading-normal">
@@ -676,7 +678,7 @@ function reloadPageWithTimeout() {
 
             <!-- Evidence -->
             <div v-if="permissions['canViewEvidence']">
-              <p class="font-semibold text-foreground">
+              <p class="font-semibold text-muted-foreground">
                 {{ __("Attached Evidence") }}
               </p>
               <p v-if="punishment.evidences <= 0 && !permissions['canCreateEvidence']">
@@ -737,11 +739,13 @@ function reloadPageWithTimeout() {
                 </button>
               </div>
             </div>
-          </div>
-          <div class="w-full p-2 bg-white rounded shadow dark:bg-surface-800 md:p-5 md:col-span-1">
-            <h3 class="col-span-3 text-lg font-bold text-foreground dark:text-foreground">
-              {{ __("AI Insights") }}
-            </h3>
+            </CardContent>
+          </Card>
+          <Card class="md:col-span-1">
+            <CardContent>
+              <h3 class="text-lg font-bold mt-4">
+                {{ __("AI Insights") }}
+              </h3>
             <Chart
               v-if="punishment.insights && punishment.insights.score"
               :options="{
@@ -860,20 +864,21 @@ function reloadPageWithTimeout() {
             >
               {{ __("Generating insights. Hang tight!") }} <br> {{ __("Please refresh the page after few seconds.") }}
             </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
         <!-- Details End -->
 
         <!-- Punishment History Start -->
         <div>
-          <h3 class="mb-2 text-2xl font-bold text-foreground dark:text-foreground">
+          <h3 class="mb-2 text-2xl font-bold">
             {{ __("Last 5 Punishments") }}
           </h3>
-          <div class="w-full bg-white rounded shadow dark:bg-surface-800">
+          <Card class="w-full overflow-hidden">
             <ArrayTable
               :url="route('player.punishment.show.history', punishment.id)"
               :header="punishmentHistoryHeaders"
-              class="w-full bg-white rounded shadow dark:bg-surface-800"
+              class="w-full"
             >
               <template #default="{ item }">
                 <DtRowItem>
@@ -1118,7 +1123,7 @@ function reloadPageWithTimeout() {
                 </td>
               </template>
             </ArrayTable>
-          </div>
+        </Card>
         </div>
         <!-- Punishment History End -->
 
@@ -1126,17 +1131,17 @@ function reloadPageWithTimeout() {
         <div
           v-if="permissions['canViewSessions']"
         >
-          <h3 class="mb-2 text-2xl font-bold text-foreground dark:text-foreground">
+          <h3 class="mb-2 text-2xl font-bold">
             {{ __("Last 5 Sessions") }}
             <span class="text-sm">
               {{ __("(before this punishment)") }}
             </span>
           </h3>
-          <div class="w-full bg-white rounded shadow dark:bg-surface-800">
+          <Card class="w-full overflow-hidden">
             <ArrayTable
               :url="route('player.punishment.show.session', punishment.id)"
               :header="sessionHeaders"
-              class="w-full bg-white rounded shadow dark:bg-surface-800"
+              class="w-full"
             >
               <template #default="{ item }">
                 <td
@@ -1255,7 +1260,7 @@ function reloadPageWithTimeout() {
                 </td>
               </template>
             </ArrayTable>
-          </div>
+          </Card>
         </div>
         <!-- Past Sessions End -->
 
@@ -1263,17 +1268,17 @@ function reloadPageWithTimeout() {
         <div
           v-if="permissions['canViewAlts']"
         >
-          <h3 class="mb-2 text-2xl font-bold text-foreground dark:text-foreground">
+          <h3 class="mb-2 text-2xl font-bold">
             {{ __("Possible Alts") }}
             <span class="text-sm">
               {{ __("(players with similar ip address)") }}
             </span>
           </h3>
-          <div class="w-full bg-white rounded shadow dark:bg-surface-800">
+          <Card class="w-full overflow-hidden">
             <ArrayTable
               :url="route('player.punishment.show.alt', punishment.id)"
               :header="altHeaders"
-              class="w-full bg-white rounded shadow dark:bg-surface-800"
+              class="w-full"
             >
               <template #default="{ item }">
                 <td
@@ -1390,7 +1395,7 @@ function reloadPageWithTimeout() {
                 </td>
               </template>
             </ArrayTable>
-          </div>
+          </Card>
         </div>
         <!-- Possible Alts End -->
       </div>
