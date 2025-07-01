@@ -4,7 +4,7 @@
       :title="__('Your Notifications')"
     />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
+    <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex justify-between mb-8">
         <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
           {{ __("Notifications") }}
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="flex flex-col md:flex-row md:space-x-4">
-        <div class="flex flex-col space-y-4  md:w-8/12 bg-white p-4 rounded dark:bg-surface-800 text-foreground dark:text-foreground">
+        <div class="flex flex-col space-y-4  md:w-9/12 bg-white p-4 rounded dark:bg-surface-800 text-foreground dark:text-foreground">
           <infinite-scroll :load-more="loadNotifications" :can-load-more="notifications.next_page_url !== null">
             <transition-group
               name="list"
@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <div class="hidden md:block md:w-4/12 flex-1 space-y-4 mt-4 md:mt-0">
+        <div class="hidden md:block md:w-3/12 flex-1 space-y-4 mt-4 md:mt-0">
           <server-status-box />
           <shout-box />
         </div>
