@@ -101,7 +101,7 @@
                                         profileUser.id
                                     )
                                         "
-                                        class="inline-flex items-center px-2 py-2 text-sm font-medium text-primary border-2 border-primary rounded-full hover:bg-primary hover:text-primary-foreground">
+                                        class="inline-flex items-center px-2 py-2 text-sm font-medium text-green-500 border-2 border-green-500 rounded-full hover:bg-green-500 hover:text-white">
                                         <PencilSquareIcon class="w-5 h-5 stroke-2" />
                                     </Link>
                                 </div>

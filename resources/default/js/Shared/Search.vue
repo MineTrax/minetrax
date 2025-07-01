@@ -4,7 +4,7 @@
       <input
         v-model="searchString"
         aria-label="search"
-        class="focus:border bg-background h-10 px-5 pr-10 w-48 rounded-full text-sm focus:outline-none focus:ring-0 transition-all duration-300 ease-in-out"
+        class="border bg-background h-10 px-5 pr-10 w-48 rounded-full text-sm focus:outline-none focus:ring-0 transition-all duration-300 ease-in-out"
         :class="{'w-80': showResults || isFocused}"
         type="search"
         name="search"
