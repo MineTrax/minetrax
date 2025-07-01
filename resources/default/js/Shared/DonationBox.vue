@@ -11,7 +11,7 @@
 
       <div class="mt-3 flex justify-center">
         <Button
-          variant="outline"
+          variant="default"
           size="lg"
           as="a"
           target="_blank"

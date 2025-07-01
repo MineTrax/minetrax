@@ -33,7 +33,7 @@
                 <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
                   <div class="grid grid-cols-6 gap-6">
                     <div class="col-span-6 sm:col-span-6">
-                      <x-input
+                      <XInput
                         id="question"
                         v-model="form.question"
                         :label="__('Poll Question')"
@@ -53,16 +53,17 @@
                       >
                         <button
                           type="button"
-                          class="focus:outline-none group"
+                          class="focus:outline-none group flex mt-4"
                           @click="deleteOption(index)"
                         >
                           <icon
-                            class="w-5 h-5 text-foreground group-hover:text-error-500"
+                            class="w-4 h-4 text-muted-foreground group-hover:text-destructive"
                             name="trash"
                           />
                         </button>
                         <div class="flex-1">
-                          <x-input
+                          <XInput
+                            :show-label="false"
                             :id="`option${index}`"
                             v-model="option.name"
                             :label="__('Option :number', {number: index+1})"
@@ -74,13 +75,14 @@
                       </div>
 
                       <div class="flex justify-end mt-1">
-                        <button
+                        <Button
                           type="button"
-                          class="p-1.5 text-xs text-primary rounded border border-primary focus:outline-none"
+                          variant="outline"
+                          size="sm"
                           @click="addMoreOption"
                         >
                           {{ __("Add More") }}
-                        </button>
+                        </Button>
                       </div>
 
                       <div class="flex justify-end">
@@ -137,7 +139,6 @@
                 <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Create Poll") }}
@@ -160,6 +161,7 @@ import Icon from '@/Components/Icon.vue';
 import DatePicker from 'vue-datepicker-next';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { Button } from '@/Components/ui/button';
 
 export default {
     components: {
@@ -168,7 +170,8 @@ export default {
         LoadingButton,
         XInput,
         Icon,
-        DatePicker
+        DatePicker,
+        Button
     },
     data() {
         return {

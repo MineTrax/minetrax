@@ -1,46 +1,53 @@
 <template>
   <div
-    class="floating-input relative w-full"
-    :class="divClass"
+    :class="cn('space-y-2', divClass)"
   >
-    <input
+    <!-- Label -->
+    <Label
+      v-if="label && showLabel"
+      :for="id"
+      :class="cn(
+        'text-sm font-medium',
+        error ? 'text-destructive' : 'text-foreground'
+      )"
+    >
+      {{ label }}
+      <span v-if="required" class="text-destructive ml-1">*</span>
+    </Label>
+
+    <!-- Input -->
+    <Input
       :id="id"
-      ref="input"
+      ref="inputRef"
+      v-model="modelValue"
       :type="type"
       :name="name"
-      class="dark:bg-surface-900 dark:text-foreground border focus:outline-none rounded-md w-full p-3 h-14 disabled:opacity-50 focus:border-primary focus:ring text-sm focus:ring-primary focus:ring-opacity-50 disabled:cursor-not-allowed"
-      :class="borderColor + ' ' + inputClass"
-      :placeholder="label"
+      :class="inputClasses"
       :autocomplete="autocomplete"
-      :value="modelValue"
       :autofocus="autofocus"
       :required="required"
       :disabled="disabled"
-      @input="$emit('update:modelValue', $event.target.value)"
-      @focus="hasFocus = true"
-      @blur="hasFocus = false"
-    >
-    <label
-      :for="id"
-      :class="textColor"
-      class="absolute top-0 left-0 px-3 py-5 text-sm h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out "
-    >{{
-      label
-    }}</label>
+      :placeholder="label"
+    />
 
+    <!-- Help and Error Messages -->
     <div
-      class="info mt-1 flex"
-      :class="help ? 'justify-between ' + helpErrorFlex : 'justify-end ' + helpErrorFlex "
+      v-if="help || error"
+      class="flex gap-1"
+      :class="cn(
+        help && error ? 'justify-between' : error ? 'justify-end' : 'justify-start',
+        helpErrorFlex
+      )"
     >
       <p
-        v-show="help"
-        class="text-xs text-foreground"
+        v-if="help"
+        class="text-xs text-muted-foreground"
       >
         {{ help }}
       </p>
       <p
-        v-show="error"
-        class="text-xs text-error-500"
+        v-if="error"
+        class="text-xs text-destructive"
       >
         {{ error }}
       </p>
@@ -48,77 +55,88 @@
   </div>
 </template>
 
-<script>
-export default {
-    props: {
-        modelValue: [Number, String, Array, Object, Boolean, Date],
-        name: String,
-        help: String,
-        label: String,
-        type: String,
-        id: String,
-        error: String,
-        autocomplete: {
-            type: String,
-            default: 'off'
-        },
-        autofocus: {
-            type: [String, Boolean],
-            default: false
-        },
-        required: {
-            type: [String, Boolean],
-            default: false
-        },
-        disabled: {
-            type: [String, Boolean],
-            default: false
-        },
-        helpErrorFlex: {
-            type: String,
-            default: 'flex-col'
-        },
-        inputClass: {
-            type: String,
-            default: ''
-        },
-        divClass: {
-            type: String,
-            default: ''
-        }
-    },
+<script setup>
+import { computed, ref } from 'vue'
+import { useVModel } from '@vueuse/core'
+import { Input } from '@/Components/ui/input'
+import { Label } from '@/Components/ui/label'
+import { cn } from '@/lib/utils'
 
-    data() {
-        return {
-            hasFocus: false
-        };
-    },
+const props = defineProps({
+  modelValue: {
+    type: [Number, String, Array, Object, Boolean, Date],
+    default: ''
+  },
+  name: String,
+  help: String,
+  label: String,
+  type: {
+    type: String,
+    default: 'text'
+  },
+  id: String,
+  error: String,
+  autocomplete: {
+    type: String,
+    default: 'off'
+  },
+  autofocus: {
+    type: [String, Boolean],
+    default: false
+  },
+  required: {
+    type: [String, Boolean],
+    default: false
+  },
+  disabled: {
+    type: [String, Boolean],
+    default: false
+  },
+  helpErrorFlex: {
+    type: String,
+    default: 'flex-col'
+  },
+  inputClass: {
+    type: String,
+    default: ''
+  },
+  divClass: {
+    type: String,
+    default: ''
+  },
+  showLabel: {
+    type: [Boolean],
+    default: true
+  }
+})
 
-    computed: {
-        borderColor() {
-            if(this.error) {
-                return 'border-error-400 dark:border-error-600';
-            } else {
-                return 'border-foreground dark:border-foreground';
-            }
-        },
-        textColor() {
-            if (this.hasFocus) {
-                return 'text-primary';
-            }
+const emits = defineEmits(['update:modelValue'])
 
-            if(this.error) {
-                return 'text-error-400 dark:text-error-600';
-            } else {
-                return 'text-foreground dark:text-foreground';
-            }
-        }
-    },
+const inputRef = ref(null)
 
-    methods: {
-        focus() {
-            this.$refs.input.focus();
-        }
-    }
-};
+const modelValue = useVModel(props, 'modelValue', emits, {
+  passive: true,
+  defaultValue: props.modelValue,
+})
+
+const inputClasses = computed(() => {
+  return cn(
+    // Base input styles with proper height
+    'transition-colors h-12',
+    // Error state styling
+    props.error && 'border-destructive focus-visible:ring-destructive',
+    // Custom classes
+    props.inputClass
+  )
+})
+
+const focus = () => {
+  if (inputRef.value) {
+    inputRef.value.focus()
+  }
+}
+
+defineExpose({
+  focus
+})
 </script>
