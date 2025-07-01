@@ -158,16 +158,6 @@ class PhpVarsToJsTransformer extends Component
                         'key' => 'route-news-01',
                         'authenticated' => false,
                     ],
-                    ...($enablePosts ? [
-                        [
-                            'type' => 'route',
-                            'name' => 'Posts',
-                            'title' => 'Posts',
-                            'route' => 'post.index',
-                            'key' => 'route-posts-01',
-                            'authenticated' => false,
-                        ]
-                    ] : []),
                     [
                         'type' => 'route',
                         'name' => 'Polls',
@@ -176,6 +166,16 @@ class PhpVarsToJsTransformer extends Component
                         'key' => 'route-polls-01',
                         'authenticated' => false,
                     ],
+                    ...($enablePosts ? [
+                        [
+                            'type' => 'route',
+                            'name' => 'Post Feed',
+                            'title' => 'Post Feed',
+                            'route' => 'post.index',
+                            'key' => 'route-posts-01',
+                            'authenticated' => false,
+                        ]
+                    ] : []),
                     [
                         'type' => 'route',
                         'name' => 'Downloads',

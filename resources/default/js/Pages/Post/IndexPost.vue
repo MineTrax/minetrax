@@ -1,14 +1,14 @@
 <template>
-  <app-layout>
-    <app-head
-      :title="__('Posts')"
+  <AppLayout>
+    <AppHead
+      :title="__('Post Feed')"
     />
 
     <div class="px-2 py-4 md:py-12 md:px-8 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
         <div class="hidden md:flex flex-col space-y-4 flex-none w-1/4 h-screen sticky" :class="{'top-16': isStickyNav, 'top-5': !isStickyNav}">
-          <did-you-know-box :enabled="page.props.generalSettings.enable_didyouknowbox" />
-          <discord-server-box
+          <DidYouKnowBox :enabled="page.props.generalSettings.enable_didyouknowbox" />
+          <DiscordServerBox
             :enabled="page.props.generalSettings.enable_discordbox"
             :server="page.props.generalSettings.discord_server_id"
           />
@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-  </app-layout>
+  </AppLayout>
 </template>
 
 <script setup>
