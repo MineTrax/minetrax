@@ -84,11 +84,13 @@ class PlayerController extends Controller
             $totalPlayersCount = Player::fastCount();
             $activePlayersCount = Player::where('last_seen_at', '>=', $playerActiveLastDay)->count();
             $totalPlayTime = Player::sum('play_time');
+            $totalLinkedPlayers = Player::whereHas('users')->count();
 
             return [
                 'totalPlayersCount' => $totalPlayersCount,
                 'activePlayersCount' => $activePlayersCount,
                 'totalPlayTime' => $totalPlayTime,
+                'totalLinkedPlayers' => $totalLinkedPlayers ?? 0,
             ];
         });
 

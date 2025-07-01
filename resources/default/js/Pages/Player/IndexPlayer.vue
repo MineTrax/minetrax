@@ -8,7 +8,7 @@
                     <Deferred data="stats">
                         <template #fallback>
                             <!-- Loading Skeleton Stats -->
-                        <div class="col-span-12 md:col-span-4">
+                        <div class="col-span-12 md:col-span-3">
                             <Card>
                                 <CardContent class="p-4">
                                     <div class="flex flex-row">
@@ -30,7 +30,7 @@
                                 </CardContent>
                             </Card>
                         </div>
-                        <div class="col-span-12 md:col-span-4">
+                        <div class="col-span-12 md:col-span-3">
                             <Card>
                                 <CardContent class="p-4">
                                     <div class="flex flex-row">
@@ -52,7 +52,29 @@
                                 </CardContent>
                             </Card>
                         </div>
-                        <div class="col-span-12 md:col-span-4">
+                        <div class="col-span-12 md:col-span-3">
+                            <Card>
+                                <CardContent class="p-4">
+                                    <div class="flex flex-row">
+                                        <div
+                                            class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-purple-500/10 text-purple-500">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                            </svg>
+                                        </div>
+                                        <div class="flex flex-col flex-grow ml-4">
+                                            <div class="text-sm text-muted-foreground">
+                                                {{ __("Linked Players") }}
+                                            </div>
+                                            <Skeleton class="h-7 w-16 mt-1" />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                        <div class="col-span-12 md:col-span-3">
                             <Card>
                                 <CardContent class="p-4">
                                     <div class="flex flex-row">
@@ -77,7 +99,7 @@
                         </template>
 
                         <!-- Actual Stats -->
-                        <div class="col-span-12 md:col-span-4">
+                        <div class="col-span-12 md:col-span-3">
                             <Card>
                                 <CardContent class="p-4">
                                     <div class="flex flex-row">
@@ -86,7 +108,7 @@
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                             </svg>
                                         </div>
                                         <div class="flex flex-col flex-grow ml-4">
@@ -101,7 +123,7 @@
                                 </CardContent>
                             </Card>
                         </div>
-                        <div class="col-span-12 md:col-span-4">
+                        <div class="col-span-12 md:col-span-3">
                             <Card>
                                 <CardContent class="p-4">
                                     <div class="flex flex-row">
@@ -125,7 +147,31 @@
                                 </CardContent>
                             </Card>
                         </div>
-                        <div class="col-span-12 md:col-span-4">
+                        <div class="col-span-12 md:col-span-3">
+                            <Card>
+                                <CardContent class="p-4">
+                                    <div class="flex flex-row">
+                                        <div
+                                            class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-purple-500/10 text-purple-500">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                            </svg>
+                                        </div>
+                                        <div class="flex flex-col flex-grow ml-4">
+                                            <div class="text-sm text-muted-foreground">
+                                                {{ __("Linked Players") }}
+                                            </div>
+                                            <div class="font-bold text-lg text-card-foreground">
+                                                {{ stats.totalLinkedPlayers }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                        <div class="col-span-12 md:col-span-3">
                             <Card>
                                 <CardContent class="p-4">
                                     <div class="flex flex-row">
