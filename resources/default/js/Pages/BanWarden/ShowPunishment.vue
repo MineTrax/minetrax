@@ -9,14 +9,20 @@ import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 import { EyeIcon, DocumentMagnifyingGlassIcon, PlusSmallIcon } from '@heroicons/vue/24/outline';
 import ArrayTable from '@/Components/DataTable/ArrayTable.vue';
 import Chart from '@/Components/Dashboard/Chart.vue';
-import LoadingSpinner from '@/Components/LoadingSpinner.vue';
-import JetDialogModal from '@/Jetstream/DialogModal.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import { ref } from 'vue';
 import { LinkIcon, PaperClipIcon, XCircleIcon } from '@heroicons/vue/24/solid';
 import XInput from '@/Components/Form/XInput.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import { CardContent, Card } from "@/Components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/Components/ui/dialog';
+import { Button } from '@/Components/ui/button';
+import { Loader2Icon } from 'lucide-vue-next';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
@@ -292,17 +298,11 @@ function reloadPageWithTimeout() {
         <div class="flex space-x-2">
           <button
             v-if="permissions['canPardon'] && punishment.is_active"
-            class="inline-flex items-center px-4 py-2 bg-success-500 dark:bg-cool-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-success-600 active:bg-success-700 focus:outline-none focus:border-success-800 focus:shadow-outline-green transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-success-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-success-600 active:bg-success-700 focus:outline-none focus:border-success-800 focus:shadow-outline-green transition ease-in-out duration-150"
             @click="showingPardonForm = true"
           >
             <span>{{ __("Pardon") }}</span>
           </button>
-          <Link
-            :href="route('player.punishment.index')"
-            class="hidden md:inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Back") }}</span>
-          </Link>
         </div>
       </div>
       <div class="flex flex-col space-y-8">
@@ -360,12 +360,12 @@ function reloadPageWithTimeout() {
                       v-tippy
                       as="a"
                       :href="route('player.show', punishment.victim_player.uuid)"
-                      class="font-medium text-foreground cursor-pointer dark:text-foreground focus:outline-none hover:underline"
+                      class="font-medium text-foreground cursor-pointer focus:outline-none hover:underline"
                       :content="punishment.victim_player.uuid"
                     >
                       <span
                         v-if="punishment.victim_player.username"
-                        class="font-extrabold text-foreground dark:text-foreground"
+                        class="font-extrabold text-foreground"
                       >{{ punishment.victim_player.username }}</span>
                       <span
                         v-else
@@ -389,7 +389,7 @@ function reloadPageWithTimeout() {
                   <div class="ml-2">
                     <div
                       v-tippy
-                      class="font-medium text-foreground dark:text-foreground"
+                      class="font-medium text-foreground"
                       :content="punishment.uuid"
                     >
                       <span
@@ -409,7 +409,7 @@ function reloadPageWithTimeout() {
                   alt=""
                 >
                 <span
-                  class="text-sm font-bold text-foreground dark:text-foreground"
+                  class="text-sm font-bold text-foreground"
                 >{{ __("IP :punish", {punish: punishment.type.key}) }}
                 </span>
               </div>
@@ -462,7 +462,7 @@ function reloadPageWithTimeout() {
                 <span>
                   {{ formatTimeAgoToNow(punishment.start_at) }}
                 </span>
-                <span class="text-xs text-foreground dark:text-foreground">
+                <span class="text-xs text-foreground">
                   {{ formatToDayDateString(punishment.start_at) }}
                 </span>
               </div>
@@ -478,7 +478,7 @@ function reloadPageWithTimeout() {
                 <span>
                   {{ formatTimeAgoToNow(punishment.end_at) }}
                 </span>
-                <span class="text-xs text-foreground dark:text-foreground">
+                <span class="text-xs text-foreground">
                   {{ formatToDayDateString(punishment.end_at) }}
                 </span>
               </div>
@@ -534,12 +534,12 @@ function reloadPageWithTimeout() {
                         v-tippy
                         as="a"
                         :href="punishment.creator_player ? route('player.show', punishment.creator_player.uuid): '#'"
-                        class="font-medium text-foreground cursor-pointer dark:text-foreground focus:outline-none hover:underline"
+                        class="font-medium text-foreground cursor-pointer focus:outline-none hover:underline"
                         :content="punishment.creator_uuid"
                       >
                         <span
                           v-if="punishment.creator_player?.username || punishment.creator_username"
-                          class="font-extrabold text-foreground dark:text-foreground"
+                          class="font-extrabold text-foreground"
                         >{{ punishment.creator_player?.username || punishment.creator_username }}</span>
                         <span
                           v-else
@@ -560,13 +560,13 @@ function reloadPageWithTimeout() {
                   >
                   <span
                     v-if="punishment.creator_username && punishment.creator_username !== 'Console'"
-                    class="text-sm font-bold text-foreground dark:text-foreground"
+                    class="text-sm font-bold text-foreground"
                   >
                   {{ punishment.creator_username }}
                   </span>
                   <span
                     v-else
-                    class="text-sm font-bold text-foreground dark:text-foreground"
+                    class="text-sm font-bold text-foreground"
                   >{{ __("CONSOLE") }}
                   </span>
                 </div>
@@ -595,12 +595,12 @@ function reloadPageWithTimeout() {
                           v-tippy
                           as="a"
                           :href="punishment.remover_player ? route('player.show', punishment.remover_player.uuid): '#'"
-                          class="font-medium text-foreground cursor-pointer dark:text-foreground focus:outline-none hover:underline"
+                          class="font-medium text-foreground cursor-pointer focus:outline-none hover:underline"
                           :content="punishment.remover_uuid"
                         >
                           <span
                             v-if="punishment.remover_player?.username || punishment.creator_username"
-                            class="font-extrabold text-foreground dark:text-foreground"
+                            class="font-extrabold text-foreground"
                           >{{ punishment.remover_player?.username || punishment.creator_username }}</span>
                           <span
                             v-else
@@ -621,13 +621,13 @@ function reloadPageWithTimeout() {
                     >
                     <span
                       v-if="punishment.remover_username && punishment.remover_username !== 'Console'"
-                      class="text-sm font-bold text-foreground dark:text-foreground"
+                      class="text-sm font-bold text-foreground"
                     >
                     {{ punishment.remover_username }}
                     </span>
                     <span
                       v-else
-                      class="text-sm font-bold text-foreground dark:text-foreground"
+                      class="text-sm font-bold text-foreground"
                     >{{ __("CONSOLE") }}
                     </span>
                   </div>
@@ -643,7 +643,7 @@ function reloadPageWithTimeout() {
                   <span>
                     {{ formatTimeAgoToNow(punishment.removed_at) }}
                   </span>
-                  <span class="text-xs text-foreground dark:text-foreground">
+                  <span class="text-xs text-foreground">
                     {{ formatToDayDateString(punishment.removed_at) }}
                   </span>
                 </div>
@@ -688,7 +688,7 @@ function reloadPageWithTimeout() {
                 <div
                   v-for="evidence in punishment.evidences"
                   :key="evidence.data.id"
-                  class="p-1.5 relative dark:bg-surface-900 bg-surface-200 rounded group"
+                  class="p-1.5 relative bg-background rounded group"
                 >
                   <a
                     v-tippy
@@ -723,14 +723,14 @@ function reloadPageWithTimeout() {
                     })"
                   >
                     <XCircleIcon
-                      class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-error-400 absolute -top-2 -right-2 w-5 h-5 p-0.5 text-foreground dark:text-foreground cursor-pointer"
+                      class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-destructive absolute -top-2 -right-2 w-5 h-5 p-0.5 text-foreground cursor-pointer"
                     />
                   </Link>
                 </div>
                 <button
                   v-if="permissions['canCreateEvidence']"
                   :disabled="uploadEvidenceAsFileForm.processing || uploadEvidenceAsUrlForm.processing"
-                  class="p-1.5 dark:bg-surface-900 bg-surface-200 rounded"
+                  class="p-1.5 bg-background rounded"
                   @click="showingUploadDialog = true"
                 >
                   <PlusSmallIcon
@@ -887,7 +887,7 @@ function reloadPageWithTimeout() {
                     as="a"
                     :href="route('player.punishment.show', item.id)"
                     class="cursor-pointer focus:outline-none hover:underline"
-                    :class="item.is_active ? 'font-bold dark:text-foreground' : ''"
+                    :class="item.is_active ? 'font-bold' : ''"
                     :content="__('View details')"
                   >
                     {{ item.id }}
@@ -933,12 +933,12 @@ function reloadPageWithTimeout() {
                           v-tippy
                           as="a"
                           :href="route('player.show', item.victim_player.uuid)"
-                          class="text-sm font-medium text-foreground cursor-pointer dark:text-foreground focus:outline-none hover:underline"
+                          class="text-sm font-medium text-foreground cursor-pointer focus:outline-none hover:underline"
                           :content="item.victim_player.uuid"
                         >
                           <span
                             v-if="item.victim_player.username"
-                            class="font-extrabold text-foreground dark:text-foreground"
+                            class="font-extrabold text-foreground"
                           >{{ item.victim_player.username }}</span>
                           <span
                             v-else
@@ -962,7 +962,7 @@ function reloadPageWithTimeout() {
                       <div class="ml-2">
                         <div
                           v-tippy
-                          class="text-sm font-medium text-foreground dark:text-foreground"
+                          class="text-sm font-medium text-foreground"
                           :content="item.uuid"
                         >
                           <span
@@ -982,7 +982,7 @@ function reloadPageWithTimeout() {
                       alt=""
                     >
                     <span
-                      class="text-xs font-bold text-foreground dark:text-foreground"
+                      class="text-xs font-bold text-foreground"
                     >{{ __("IP :punish", {punish: item.type.key}) }}
                     </span>
                   </div>
@@ -1024,12 +1024,12 @@ function reloadPageWithTimeout() {
                           v-tippy
                           as="a"
                           :href="item.creator_player ? route('player.show', item.creator_player.uuid): '#'"
-                          class="text-sm font-medium text-foreground cursor-pointer dark:text-foreground focus:outline-none hover:underline"
+                          class="text-sm font-medium text-foreground cursor-pointer focus:outline-none hover:underline"
                           :content="item.creator_uuid"
                         >
                           <span
                             v-if="item.creator_player?.username || item.creator_username"
-                            class="font-extrabold text-foreground dark:text-foreground"
+                            class="font-extrabold text-foreground"
                           >{{ item.creator_player?.username || item.creator_username }}</span>
                           <span
                             v-else
@@ -1050,13 +1050,13 @@ function reloadPageWithTimeout() {
                     >
                     <span
                       v-if="item.creator_username && item.creator_username !== 'Console'"
-                      class="text-sm font-bold text-foreground dark:text-foreground"
+                      class="text-sm font-bold text-foreground"
                     >
                     {{ item.creator_username }}
                     </span>
                     <span
                       v-else
-                      class="text-sm font-bold text-foreground dark:text-foreground"
+                      class="text-sm font-bold text-foreground"
                     >{{ __("CONSOLE") }}
                     </span>
                   </div>
@@ -1116,7 +1116,7 @@ function reloadPageWithTimeout() {
                         'player.punishment.show', item.id
                       )
                     "
-                    class="inline-flex items-center justify-center text-primary hover:text-primary"
+                    class="inline-flex items-center justify-center text-primary hover:text-primary/75"
                   >
                     <EyeIcon class="inline-block w-5 h-5" />
                   </Link>
@@ -1145,13 +1145,13 @@ function reloadPageWithTimeout() {
             >
               <template #default="{ item }">
                 <td
-                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
                 >
                   {{ item.id }}
                 </td>
 
                 <td
-                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
                 >
                   <div class="flex items-center">
                     <div
@@ -1169,7 +1169,7 @@ function reloadPageWithTimeout() {
                 </td>
 
                 <td
-                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
                 >
                   <div class="flex items-center">
                     <InertiaLink
@@ -1178,9 +1178,9 @@ function reloadPageWithTimeout() {
                         player: item.player_uuid,
                         session: item.id,
                       })"
-                      class="text-sm font-medium text-foreground cursor-pointer dark:text-foreground focus:outline-none hover:underline"
+                      class="text-sm font-medium text-foreground cursor-pointer focus:outline-none hover:underline"
                     >
-                      <span class="font-extrabold text-foreground dark:text-foreground">
+                      <span class="font-extrabold text-foreground">
                         {{ item.player_displayname }} ({{ item.player_username }})
                       </span>
                     </InertiaLink>
@@ -1252,7 +1252,7 @@ function reloadPageWithTimeout() {
                       player: item.player_uuid,
                       session: item.id,
                     })"
-                    class="inline-flex items-center justify-center text-primary hover:text-primary"
+                    class="inline-flex items-center justify-center text-primary hover:text-primary/75"
                     :title="__('View Session Details')"
                   >
                     <EyeIcon class="inline-block w-5 h-5" />
@@ -1282,13 +1282,13 @@ function reloadPageWithTimeout() {
             >
               <template #default="{ item }">
                 <td
-                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
                 >
                   {{ item.id }}
                 </td>
 
                 <td
-                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
                 >
                   <div class="flex items-center">
                     <div
@@ -1306,7 +1306,7 @@ function reloadPageWithTimeout() {
                 </td>
 
                 <td
-                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+                  class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
                 >
                   <div class="flex items-center">
                     <div class="flex-shrink-0 h-7 w-7">
@@ -1321,12 +1321,12 @@ function reloadPageWithTimeout() {
                         v-tippy
                         as="a"
                         :href="route('player.show', item.uuid)"
-                        class="text-sm font-medium text-foreground cursor-pointer dark:text-foreground focus:outline-none hover:underline"
+                        class="text-sm font-medium text-foreground cursor-pointer focus:outline-none hover:underline"
                         :content="item.uuid"
                       >
                         <span
                           v-if="item.username"
-                          class="font-extrabold text-foreground dark:text-foreground"
+                          class="font-extrabold text-foreground"
                         >{{ item.username }}</span>
                         <span
                           v-else
@@ -1387,7 +1387,7 @@ function reloadPageWithTimeout() {
                     :href="route('player.show', {
                       player: item.uuid,
                     })"
-                    class="inline-flex items-center justify-center text-primary hover:text-primary"
+                    class="inline-flex items-center justify-center text-primary hover:text-primary/75"
                     :title="__('View Details')"
                   >
                     <EyeIcon class="inline-block w-5 h-5" />
@@ -1401,149 +1401,125 @@ function reloadPageWithTimeout() {
       </div>
     </div>
 
-    <JetDialogModal
-      :show="showingPardonForm"
-      @close="showingPardonForm = false"
-    >
-      <template #title>
-        <h3 class="text-lg font-bold">
-          {{ __("Pardon") }}
-        </h3>
-      </template>
-
-      <template #content>
-        <XInput
-          v-model="pardonForm.reason"
-          :label="__('Please provide a reason..')"
-          :error="pardonForm.errors.reason"
-        />
-      </template>
-
-      <template #footer>
-        <JetSecondaryButton
-          class="mr-2"
-          @click="showingPardonForm = false"
-        >
-          {{ __("Cancel") }}
-        </JetSecondaryButton>
-        <LoadingButton
-          :loading="pardonForm.processing"
-          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-success-500 border border-transparent rounded-md hover:bg-success-700 active:bg-success-900 focus:outline-none focus:border-success-900 focus:shadow-outline-gray"
-          @click="() => {
-            pardonForm.delete(route('player.punishment.pardon', {
-              playerPunishment: punishment.id,
-            }), {
-              onSuccess: () => {
-                showingPardonForm = false;
-                reloadPageWithTimeout();
-              },
-            })
-          }"
-        >
-          {{ __("Pardon") }}
-        </LoadingButton>
-      </template>
-    </JetDialogModal>
-
-
-    <JetDialogModal
-    :show="showingUploadDialog"
-    @close="showingUploadDialog = false"
->
-    <template #title>
-        <h3 class="text-lg font-bold">
-            {{ __("Attach Evidence") }}
-        </h3>
-    </template>
-
-    <template #content>
-        <div class="space-y-6">
-            <!-- File Upload Section -->
-            <div>
-                <h4 class="mb-2 font-medium">{{ __("Attach as File") }}</h4>
-                <div class="flex items-center justify-center space-x-2">
-                <input
-                  v-if="permissions['canCreateEvidence']"
-                  ref="fileRef"
-                  type="file"
-                  class="hidden"
-                  @input="handleEvidenceAsFileUpload"
-                >
-                <button
-                  v-if="permissions['canCreateEvidence']"
-                  :disabled="uploadEvidenceAsFileForm.processing"
-                  class="flex items-center px-4 py-2 space-x-1 rounded text-white tracking-widest text-xs uppercase font-semibold bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-                  @click="triggerEvidenceAsFileUploadInput"
-                >
-                  <PaperClipIcon
-                    v-if="!uploadEvidenceAsFileForm.processing"
-                    class="w-5 h-5"
-                  />
-                  <LoadingSpinner
-                    :loading="uploadEvidenceAsFileForm.processing"
-                    class="w-5 h-5"
-                  />
-                  <span>{{ __("Upload File") }}</span>
-                </button>
-                </div>
-                <p
-                    v-if="uploadEvidenceAsFileForm?.errors?.file"
-                    class="mt-1 text-xs text-error-400"
-                >
-                    {{ uploadEvidenceAsFileForm?.errors?.file }}
-                </p>
-            </div>
-
-            <!-- Divider -->
-            <div class="relative">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-foreground dark:border-foreground"></div>
-                </div>
-                <div class="relative flex justify-center text-sm">
-                    <span class="px-2 text-foreground bg-white dark:bg-surface-800">
-                        {{ __("OR") }}
-                    </span>
-                </div>
-            </div>
-
-            <!-- URL Upload Section -->
-            <div>
-                <h4 class="mb-2 font-medium">{{ __("Attach as URL") }}</h4>
-                <div class="flex items-center space-x-2">
-          <input
-            v-model="uploadEvidenceAsUrlForm.url"
-            :disabled="uploadEvidenceAsUrlForm.processing"
-            :placeholder="__('Enter URL')"
-            aria-label="url"
-            type="text"
-            class="inline-block w-full bg-surface-100 border border-foreground rounded-md dark:bg-surface-900 focus:border-foreground dark:border-foreground dark:focus:border-foreground dark:text-foreground focus:ring-0 sm:text-sm disabled:opacity-50"
-            @keyup.enter="handleEvidenceAsUrlUpload"
-          >
-                    <LoadingButton
-                        :loading="uploadEvidenceAsUrlForm.processing"
-                        class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest uppercase transition border border-transparent rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-                        @click="handleEvidenceAsUrlUpload"
-                    >
-                        {{ __("Submit") }}
-                    </LoadingButton>
-                </div>
-                <p
-                    v-if="uploadEvidenceAsUrlForm?.errors?.url"
-                    class="mt-1 text-xs text-error-400"
-                >
-                    {{ uploadEvidenceAsUrlForm?.errors?.url }}
-                </p>
-            </div>
+    <Dialog :open="showingPardonForm" @update:open="showingPardonForm = $event">
+      <DialogContent class="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>{{ __("Pardon") }}</DialogTitle>
+        </DialogHeader>
+        <div class="grid gap-4 py-4">
+          <XInput
+            v-model="pardonForm.reason"
+            :label="__('Reason for Pardon')"
+            :error="pardonForm.errors.reason"
+          />
         </div>
-    </template>
+        <DialogFooter>
+          <Button variant="outline" @click="showingPardonForm = false">
+            {{ __("Cancel") }}
+          </Button>
+          <LoadingButton
+            :loading="pardonForm.processing"
+            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-success-500 border border-transparent rounded-md hover:bg-success-700 active:bg-success-900 focus:outline-none focus:border-success-900 focus:shadow-outline-gray"
+            @click="() => {
+              pardonForm.delete(route('player.punishment.pardon', {
+                playerPunishment: punishment.id,
+              }), {
+                onSuccess: () => {
+                  showingPardonForm = false;
+                  reloadPageWithTimeout();
+                },
+              })
+            }"
+          >
+            {{ __("Pardon") }}
+          </LoadingButton>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
 
-    <template #footer>
-        <JetSecondaryButton
-            @click="showingUploadDialog = false"
-        >
+
+    <Dialog :open="showingUploadDialog" @update:open="showingUploadDialog = $event">
+      <DialogContent class="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>{{ __("Attach Evidence") }}</DialogTitle>
+        </DialogHeader>
+        <div class="space-y-6">
+          <!-- File Upload Section -->
+          <div>
+            <h4 class="mb-2 font-medium">{{ __("Attach as File") }}</h4>
+            <div class="flex items-center justify-center space-x-2">
+              <input
+                v-if="permissions['canCreateEvidence']"
+                ref="fileRef"
+                type="file"
+                class="hidden"
+                @input="handleEvidenceAsFileUpload"
+              >
+              <Button
+                v-if="permissions['canCreateEvidence']"
+                :disabled="uploadEvidenceAsFileForm.processing"
+                size="lg"
+                @click="triggerEvidenceAsFileUploadInput"
+              >
+                <PaperClipIcon
+                  v-if="!uploadEvidenceAsFileForm.processing"
+                  class="w-5 h-5"
+                />
+                <Loader2Icon
+                  v-if="uploadEvidenceAsFileForm.processing"
+                  class="w-4 h-4 animate-spin"
+                />
+                <span>{{ __("Upload File") }}</span>
+              </Button>
+            </div>
+            <p
+              v-if="uploadEvidenceAsFileForm?.errors?.file"
+              class="mt-1 text-xs text-destructive"
+            >
+              {{ uploadEvidenceAsFileForm?.errors?.file }}
+            </p>
+          </div>
+
+          <!-- Divider -->
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 text-muted-foreground bg-popover">
+                {{ __("OR") }}
+              </span>
+            </div>
+          </div>
+
+          <!-- URL Upload Section -->
+          <div>
+            <h4 class="mb-2 font-medium">{{ __("Attach as URL") }}</h4>
+            <div class="flex space-x-2">
+              <XInput
+                class="w-full"
+                :error="uploadEvidenceAsUrlForm.errors.url"
+                :placeholder="__('Enter URL')"
+                v-model="uploadEvidenceAsUrlForm.url"
+                :disabled="uploadEvidenceAsUrlForm.processing"
+                type="text"
+                @keyup.enter="handleEvidenceAsUrlUpload"
+              />
+              <LoadingButton
+                :loading="uploadEvidenceAsUrlForm.processing"
+                @click="handleEvidenceAsUrlUpload"
+              >
+                {{ __("Submit") }}
+              </LoadingButton>
+            </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" @click="showingUploadDialog = false">
             {{ __("Close") }}
-        </JetSecondaryButton>
-    </template>
-    </JetDialogModal>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </AppLayout>
 </template>

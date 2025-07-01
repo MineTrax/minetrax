@@ -224,25 +224,33 @@
 
       <!-- Join Button at Bottom -->
       <div class="join-section">
-        <a
+        <Button
+          as="a"
           v-if="discordData.instant_invite"
           :href="discordData.instant_invite"
           target="_blank"
           rel="noopener noreferrer"
-          class="join-button"
+          variant="outline"
+          size="lg"
+          class="w-full"
         >
           {{ __("Join Discord") }}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
           </svg>
-        </a>
+        </Button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { Button } from '@/Components/ui/button'
+
 export default {
+    components: {
+        Button
+    },
     props: {
         enabled: Boolean,
         server: String,
@@ -657,28 +665,6 @@ export default {
   padding: 12px 16px;
   border-top: 1px solid hsl(var(--border));
   background: hsl(var(--muted) / 0.2);
-}
-
-.join-button {
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
-  text-decoration: none;
-  padding: 10px 16px;
-  border-radius: var(--radius);
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-  border: 1px solid hsl(var(--border));
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-}
-
-.join-button:hover {
-  background: hsl(var(--accent));
 }
 
 /* Custom scrollbar for members container */

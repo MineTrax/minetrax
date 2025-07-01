@@ -4,7 +4,7 @@
   >
     <!-- Label -->
     <Label
-      v-if="label && showLabel"
+      v-if="label"
       :for="id"
       :class="cn(
         'text-sm font-medium',
@@ -27,7 +27,7 @@
       :autofocus="autofocus"
       :required="required"
       :disabled="disabled"
-      :placeholder="label"
+      :placeholder="placeholder"
     />
 
     <!-- Help and Error Messages -->
@@ -104,10 +104,7 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  showLabel: {
-    type: [Boolean],
-    default: true
-  }
+  placeholder: String,
 })
 
 const emits = defineEmits(['update:modelValue'])
@@ -122,7 +119,7 @@ const modelValue = useVModel(props, 'modelValue', emits, {
 const inputClasses = computed(() => {
   return cn(
     // Base input styles with proper height
-    'transition-colors h-12',
+    'transition-colors',
     // Error state styling
     props.error && 'border-destructive focus-visible:ring-destructive',
     // Custom classes

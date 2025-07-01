@@ -63,10 +63,9 @@
                         </button>
                         <div class="flex-1">
                           <XInput
-                            :show-label="false"
                             :id="`option${index}`"
                             v-model="option.name"
-                            :label="__('Option :number', {number: index+1})"
+                            :placeholder="__('Option :number', {number: index+1})"
                             :error="form.errors[`options.${index}.name`]"
                             type="text"
                             :name="`option${index}`"

@@ -33,12 +33,12 @@
                   </transition-group>
                 </infinite-scroll>
 
-                <div
+                <Card
                   v-if="pollList.data <= 0"
-                  class="p-3 md:px-5 bg-white dark:bg-surface-800 rounded shadow italic text-foreground dark:text-foreground text-center text-sm font-semibold"
+                  class="p-3 italic text-center text-sm text-muted-foreground font-semibold"
                 >
                   {{ __("No Polls Found") }}
-                </div>
+                </Card>
               </div>
             </div>
           </div>
@@ -61,6 +61,7 @@ import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 import PollBox from '@/Shared/PollBox.vue';
 import DidYouKnowBox from '@/Shared/DidYouKnowBox.vue';
 import DiscordServerBox from '@/Shared/DiscordServerBox.vue';
+import Card from '@/Components/ui/card/Card.vue';
 
 export default {
 
@@ -71,7 +72,8 @@ export default {
         AppLayout,
         ShoutBox,
         InfiniteScroll,
-        PollBox
+        PollBox,
+        Card
     },
     props: {
         polls: Object,
