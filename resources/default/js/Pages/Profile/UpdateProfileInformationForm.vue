@@ -180,7 +180,7 @@
           :error="form.errors.profile_photo_source"
           :label="__('Use Avatar from')"
           :select-list="{linked_player: 'Linked Player', gravatar: 'Gravatar'}"
-          placeholder="Uploaded Photo"
+          :placeholder="__('Uploaded Photo')"
         />
       </div>
 

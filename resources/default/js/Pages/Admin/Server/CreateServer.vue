@@ -146,11 +146,13 @@
 
                     <div class="col-span-6 sm:col-span-3">
                       <x-select
+                        :required="true"
                         id="minecraft_version"
                         v-model="form.minecraft_version"
                         name="minecraft_version"
                         :error="form.errors.minecraft_version"
                         :label="__('Version')"
+                        :placeholder="__('Select Version')"
                         :select-list="versionsArray"
                       />
                     </div>
