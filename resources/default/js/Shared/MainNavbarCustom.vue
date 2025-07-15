@@ -1,10 +1,19 @@
 <script>
-import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue';
-import Search from '@/Shared/Search.vue';
-import ColorThemeToggle from '@/Components/ColorThemeToggle.vue';
-import NavDynamicItem from '@/Components/Navigation/NavDynamicItem.vue';
-import NavDynamicItemResponsive from '@/Components/Navigation/NavDynamicItemResponsive.vue';
-import {useAuthorizable} from '@/Composables/useAuthorizable';
+import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink.vue";
+import Search from "@/Shared/Search.vue";
+import ColorThemeToggle from "@/Components/ColorThemeToggle.vue";
+import NavDynamicItem from "@/Components/Navigation/NavDynamicItem.vue";
+import NavDynamicItemResponsive from "@/Components/Navigation/NavDynamicItemResponsive.vue";
+import { useAuthorizable } from "@/Composables/useAuthorizable";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/Components/ui/sheet";
+import { MenuIcon } from "lucide-vue-next";
 
 export default {
     components: {
@@ -13,10 +22,17 @@ export default {
         JetResponsiveNavLink,
         Search,
         ColorThemeToggle,
+        Sheet,
+        SheetContent,
+        SheetDescription,
+        SheetHeader,
+        SheetTitle,
+        SheetTrigger,
+        MenuIcon,
     },
     setup() {
-        const {canWild, isStaff} = useAuthorizable();
-        return {canWild, isStaff};
+        const { canWild, isStaff } = useAuthorizable();
+        return { canWild, isStaff };
     },
 
     data() {
@@ -24,7 +40,6 @@ export default {
             leftItems: window._customnav.data?.left ?? [],
             middleItems: window._customnav.data?.middle ?? [],
             rightItems: window._customnav.data?.right ?? [],
-            showingNavigationDropdown: false,
         };
     },
 
@@ -39,215 +54,167 @@ export default {
 
     methods: {
         logout() {
-            this.$inertia.post(route('logout'));
+            this.$inertia.post(route("logout"));
         },
-    }
+    },
 };
 </script>
 
 <template>
-  <nav
-    class="bg-sidebar shadow z-40 w-full"
-    :class="{'sticky top-0': isStickyHeader, 'overflow-y-auto': isStickyHeader && showingNavigationDropdown}"
-  >
-    <!-- Primary Navigation Menu -->
-    <div class="px-4 mx-auto max-w-11xl md:px-6 lg:px-8">
-      <div class="flex justify-between font-semibold h-14">
-        <div class="left-menu-items flex space-x-4">
-          <NavDynamicItem
-            v-for="item in leftItems"
-            :key="item.key"
-            :can-show-admin-sidebar="canShowAdminSidebar"
-            :item="item"
-            @logout="logout"
-          />
-        </div>
+    <nav class="bg-sidebar shadow z-40 w-full" :class="{
+        'sticky top-0': isStickyHeader,
+    }">
+        <!-- Primary Navigation Menu -->
+        <div class="px-4 mx-auto max-w-11xl md:px-6 lg:px-8">
+            <div class="flex justify-between font-semibold h-14">
+                <div class="left-menu-items flex space-x-4">
+                    <NavDynamicItem v-for="item in leftItems" :key="item.key"
+                        :can-show-admin-sidebar="canShowAdminSidebar" :item="item" @logout="logout" />
+                </div>
 
-        <div class="middle-menu-items flex space-x-4">
-          <!--              Add middle items here-->
-          <NavDynamicItem
-            v-for="item in middleItems"
-            :key="item.key"
-            :can-show-admin-sidebar="canShowAdminSidebar"
-            :item="item"
-            @logout="logout"
-          />
-        </div>
+                <div class="middle-menu-items flex space-x-4">
+                    <!--              Add middle items here-->
+                    <NavDynamicItem v-for="item in middleItems" :key="item.key"
+                        :can-show-admin-sidebar="canShowAdminSidebar" :item="item" @logout="logout" />
+                </div>
 
-        <div class="right-menu-items flex space-x-4">
-          <NavDynamicItem
-            v-for="item in rightItems"
-            :key="item.key"
-            :can-show-admin-sidebar="canShowAdminSidebar"
-            :item="item"
-            @logout="logout"
-          />
-        </div>
+                <div class="right-menu-items flex space-x-4">
+                    <NavDynamicItem v-for="item in rightItems" :key="item.key"
+                        :can-show-admin-sidebar="canShowAdminSidebar" :item="item" @logout="logout" />
+                </div>
 
-        <!-- Hamburger -->
-        <div class="flex items-center -mr-2 md:hidden">
-          <color-theme-toggle class="flex items-center justify-center space-x-8 md:ml-8 md:hidden" />
+                <!-- Mobile Menu -->
+                <div class="flex items-center -mr-2 md:hidden">
+                    <color-theme-toggle class="flex items-center justify-center space-x-8 md:ml-8 md:hidden" />
 
-          <button
-            class="inline-flex items-center justify-center p-2 text-foreground transition duration-150 ease-in-out rounded-md dark:text-foreground hover:text-foreground dark:hover:text-foreground hover:bg-surface-100 dark:hover:bg-surface-900 focus:outline-none focus:bg-surface-100 dark:focus:bg-surface-900 focus:text-foreground dark:focus:text-foreground"
-            @click="showingNavigationDropdown = ! showingNavigationDropdown"
-          >
-            <svg
-              class="w-6 h-6"
-              stroke="currentColor"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                :class="{'hidden': showingNavigationDropdown, 'inline-flex': ! showingNavigationDropdown }"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-              <path
-                :class="{'hidden': ! showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
+                    <Sheet>
+                        <SheetTrigger>
+                            <MenuIcon class="w-6 h-6" />
+                        </SheetTrigger>
+                        <SheetContent class="bg-sidebar overflow-y-auto">
+                            <div class="mt-4">
+                                <div class="flex mb-2">
+                                    <search class="inline-block md:hidden" />
+                                </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div
-      :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}"
-      class="md:hidden"
-    >
-      <div class="pt-2 pb-3 space-y-1">
-        <NavDynamicItemResponsive
-          v-for="item in leftItems"
-          :key="item.key"
-          :can-show-admin-sidebar="canShowAdminSidebar"
-          :item="item"
-          @logout="logout"
-        />
+                                <NavDynamicItemResponsive v-for="item in leftItems" :key="item.key"
+                                    :can-show-admin-sidebar="canShowAdminSidebar
+                                        " :item="item" @logout="logout" />
 
-        <NavDynamicItemResponsive
-          v-for="item in middleItems"
-          :key="item.key"
-          :can-show-admin-sidebar="canShowAdminSidebar"
-          :item="item"
-          @logout="logout"
-        />
+                                <NavDynamicItemResponsive v-for="item in middleItems" :key="item.key"
+                                    :can-show-admin-sidebar="canShowAdminSidebar
+                                        " :item="item" @logout="logout" />
 
-        <NavDynamicItemResponsive
-          v-for="item in rightItems"
-          :key="item.key"
-          :can-show-admin-sidebar="canShowAdminSidebar"
-          :item="item"
-          @logout="logout"
-        />
-      </div>
+                                <NavDynamicItemResponsive v-for="item in rightItems" :key="item.key"
+                                    :can-show-admin-sidebar="canShowAdminSidebar
+                                        " :item="item" @logout="logout" />
 
-      <!-- Responsive Settings Options / Not configurable by CustomNav -->
-      <div
-        v-if="$page.props.auth.user"
-        class="pt-4 pb-1 border-t border-foreground dark:border-foreground"
-      >
-        <inertia-link
-          as="a"
-          :href="route('user.public.get', $page.props.auth.user.username)"
-          class="flex items-center px-4"
-        >
-          <div
-            v-if="$page.props.jetstream.managesProfilePhotos"
-            class="flex-shrink-0 mr-3"
-          >
-            <img
-              class="object-cover w-10 h-10 rounded-full"
-              :src="$page.props.auth.user.profile_photo_url"
-              :alt="$page.props.auth.user.name"
-            >
-          </div>
+                                <div v-if="$page.props.auth.user" class="pt-4 mt-4 pb-1 border-t border-border">
+                                    <inertia-link as="a" :href="route(
+                                        'user.public.get',
+                                        $page.props.auth.user.username
+                                    )
+                                        " class="flex items-center px-4">
+                                        <div v-if="
+                                            $page.props.jetstream
+                                                .managesProfilePhotos
+                                        " class="flex-shrink-0 mr-3">
+                                            <img class="object-cover w-10 h-10 rounded-full" :src="$page.props.auth.user
+                                                .profile_photo_url
+                                                " :alt="$page.props.auth.user.name
+                                                    " />
+                                        </div>
 
-          <div>
-            <div class="text-base font-medium text-foreground dark:text-foreground">
-              {{ $page.props.auth.user.name }}
+                                        <div>
+                                            <div class="text-base font-medium text-foreground dark:text-foreground">
+                                                {{ $page.props.auth.user.name }}
+                                            </div>
+                                            <div class="text-sm font-medium text-foreground">
+                                                {{
+                                                    $page.props.auth.user.email
+                                                }}
+                                            </div>
+                                        </div>
+                                    </inertia-link>
+
+                                    <div class="mt-3 space-y-1">
+                                        <jet-responsive-nav-link :href="route('profile.show')" :active="route().current('profile.show')
+                                            ">
+                                            {{ __("Edit Profile") }}
+                                        </jet-responsive-nav-link>
+
+                                        <jet-responsive-nav-link :href="route('linked-player.list')" :active="route().current(
+                                            'linked-player.list'
+                                        )
+                                            ">
+                                            {{ __("Linked Players") }}
+                                        </jet-responsive-nav-link>
+
+                                        <jet-responsive-nav-link :href="route(
+                                            'recruitment-submission.index'
+                                        )
+                                            " :active="route().current(
+                                                'recruitment-submission.index'
+                                            )
+                                                ">
+                                            {{ __("My Applications") }}
+                                        </jet-responsive-nav-link>
+
+                                        <jet-responsive-nav-link v-if="
+                                            $page.props?.pluginSettings
+                                                ?.playerPasswordResetEnabled
+                                        " :href="route(
+                                            'reset-player-password.show'
+                                        )
+                                            " :active="route().current(
+                                                    'reset-player-password.show'
+                                                )
+                                                    ">
+                                            {{ __("Reset Player Password") }}
+                                        </jet-responsive-nav-link>
+
+                                        <jet-responsive-nav-link v-if="
+                                            $page.props
+                                                .playerSkinChangerEnabled
+                                        " :href="route('change-player-skin.show')
+                                            " :active="route().current(
+                                                    'change-player-skin.show'
+                                                )
+                                                    ">
+                                            {{ __("Change Player Skin") }}
+                                        </jet-responsive-nav-link>
+
+                                        <jet-responsive-nav-link :href="route('notification.index')" :active="route().current(
+                                            'notification.index'
+                                        )
+                                            ">
+                                            {{ __("Notifications") }}
+                                        </jet-responsive-nav-link>
+
+                                        <jet-responsive-nav-link v-if="
+                                            $page.props.jetstream
+                                                .hasApiFeatures
+                                        " :href="route('api-tokens.index')" :active="route().current(
+                                            'api-tokens.index'
+                                        )
+                                            ">
+                                            API Tokens
+                                        </jet-responsive-nav-link>
+
+                                        <!-- Authentication -->
+                                        <form method="POST" @submit.prevent="logout">
+                                            <jet-responsive-nav-link as="button">
+                                                {{ __("Logout") }}
+                                            </jet-responsive-nav-link>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                </div>
+                <!-- Mobile Menu End -->
             </div>
-            <div class="text-sm font-medium text-foreground">
-              {{ $page.props.auth.user.email }}
-            </div>
-          </div>
-        </inertia-link>
-
-        <div class="mt-3 space-y-1">
-          <jet-responsive-nav-link
-            :href="route('profile.show')"
-            :active="route().current('profile.show')"
-          >
-            {{ __("Edit Profile") }}
-          </jet-responsive-nav-link>
-
-          <jet-responsive-nav-link
-            :href="route('linked-player.list')"
-            :active="route().current('linked-player.list')"
-          >
-            {{ __("Linked Players") }}
-          </jet-responsive-nav-link>
-
-          <jet-responsive-nav-link
-            :href="route('recruitment-submission.index')"
-            :active="route().current('recruitment-submission.index')"
-          >
-            {{ __("My Applications") }}
-          </jet-responsive-nav-link>
-
-          <jet-responsive-nav-link
-            v-if="$page.props?.pluginSettings?.playerPasswordResetEnabled"
-            :href="route('reset-player-password.show')"
-            :active="route().current('reset-player-password.show')"
-          >
-            {{ __("Reset Player Password") }}
-          </jet-responsive-nav-link>
-
-          <jet-responsive-nav-link
-            v-if="$page.props.playerSkinChangerEnabled"
-            :href="route('change-player-skin.show')"
-            :active="route().current('change-player-skin.show')"
-          >
-            {{ __("Change Player Skin") }}
-          </jet-responsive-nav-link>
-
-          <jet-responsive-nav-link
-            :href="route('notification.index')"
-            :active="route().current('notification.index')"
-          >
-            {{ __("Notifications") }}
-          </jet-responsive-nav-link>
-
-          <jet-responsive-nav-link
-            v-if="$page.props.jetstream.hasApiFeatures"
-            :href="route('api-tokens.index')"
-            :active="route().current('api-tokens.index')"
-          >
-            API Tokens
-          </jet-responsive-nav-link>
-
-          <!-- Authentication -->
-          <form
-            method="POST"
-            @submit.prevent="logout"
-          >
-            <jet-responsive-nav-link as="button">
-              {{ __("Logout") }}
-            </jet-responsive-nav-link>
-          </form>
         </div>
-      </div>
-
-      <div class="flex pb-2 just-center">
-        <search class="inline-block md:hidden" />
-      </div>
-    </div>
-  </nav>
+    </nav>
 </template>
