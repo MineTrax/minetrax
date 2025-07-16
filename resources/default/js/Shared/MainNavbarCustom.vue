@@ -1,4 +1,7 @@
-<script>
+<script setup>
+import { ref, computed } from 'vue'
+import { usePage } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink.vue";
 import Search from "@/Shared/Search.vue";
 import ColorThemeToggle from "@/Components/ColorThemeToggle.vue";
@@ -8,55 +11,31 @@ import { useAuthorizable } from "@/Composables/useAuthorizable";
 import {
     Sheet,
     SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
     SheetTrigger,
 } from "@/Components/ui/sheet";
 import { MenuIcon } from "lucide-vue-next";
 
-export default {
-    components: {
-        NavDynamicItemResponsive,
-        NavDynamicItem,
-        JetResponsiveNavLink,
-        Search,
-        ColorThemeToggle,
-        Sheet,
-        SheetContent,
-        SheetDescription,
-        SheetHeader,
-        SheetTitle,
-        SheetTrigger,
-        MenuIcon,
-    },
-    setup() {
-        const { canWild, isStaff } = useAuthorizable();
-        return { canWild, isStaff };
-    },
+// Composables
+const { isStaff } = useAuthorizable();
+const page = usePage();
 
-    data() {
-        return {
-            leftItems: window._customnav.data?.left ?? [],
-            middleItems: window._customnav.data?.middle ?? [],
-            rightItems: window._customnav.data?.right ?? [],
-        };
-    },
+// Reactive data
+const leftItems = ref(window._customnav.data?.left ?? []);
+const middleItems = ref(window._customnav.data?.middle ?? []);
+const rightItems = ref(window._customnav.data?.right ?? []);
 
-    computed: {
-        canShowAdminSidebar() {
-            return this.isStaff(this.$page.props.auth.user);
-        },
-        isStickyHeader() {
-            return this.$page.props.generalSettings.enable_sticky_header_menu;
-        },
-    },
+// Computed properties
+const canShowAdminSidebar = computed(() => {
+    return isStaff(page.props.auth.user);
+});
 
-    methods: {
-        logout() {
-            this.$inertia.post(route("logout"));
-        },
-    },
+const isStickyHeader = computed(() => {
+    return page.props.generalSettings.enable_sticky_header_menu;
+});
+
+// Methods
+const logout = () => {
+    router.post(route("logout"));
 };
 </script>
 
