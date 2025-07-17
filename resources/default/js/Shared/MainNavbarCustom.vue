@@ -1,19 +1,23 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { usePage } from '@inertiajs/vue3'
-import { router } from '@inertiajs/vue3'
-import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink.vue";
-import Search from "@/Shared/Search.vue";
 import ColorThemeToggle from "@/Components/ColorThemeToggle.vue";
 import NavDynamicItem from "@/Components/Navigation/NavDynamicItem.vue";
 import NavDynamicItemResponsive from "@/Components/Navigation/NavDynamicItemResponsive.vue";
-import { useAuthorizable } from "@/Composables/useAuthorizable";
 import {
     Sheet,
     SheetContent,
     SheetTrigger,
 } from "@/Components/ui/sheet";
+import { useAuthorizable } from "@/Composables/useAuthorizable";
+import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink.vue";
+import Search from "@/Shared/Search.vue";
+import { router, usePage } from '@inertiajs/vue3';
 import { MenuIcon } from "lucide-vue-next";
+import { computed, ref } from 'vue';
+
+import {
+    NavigationMenu,
+    NavigationMenuList
+} from '@/Components/ui/navigation-menu';
 
 // Composables
 const { isStaff } = useAuthorizable();
@@ -45,22 +49,22 @@ const logout = () => {
     }">
         <!-- Primary Navigation Menu -->
         <div class="px-4 mx-auto max-w-11xl md:px-6 lg:px-8">
-            <div class="flex justify-between font-semibold h-14">
-                <div class="left-menu-items flex space-x-4">
+            <NavigationMenu class="flex justify-between font-semibold h-14">
+                <NavigationMenuList class="left-menu-items flex">
                     <NavDynamicItem v-for="item in leftItems" :key="item.key"
                         :can-show-admin-sidebar="canShowAdminSidebar" :item="item" @logout="logout" />
-                </div>
+                </NavigationMenuList>
 
-                <div class="middle-menu-items flex space-x-4">
+                <NavigationMenuList class="middle-menu-items flex">
                     <!--              Add middle items here-->
                     <NavDynamicItem v-for="item in middleItems" :key="item.key"
                         :can-show-admin-sidebar="canShowAdminSidebar" :item="item" @logout="logout" />
-                </div>
+                </NavigationMenuList>
 
-                <div class="right-menu-items flex space-x-4">
+                <NavigationMenuList class="right-menu-items flex">
                     <NavDynamicItem v-for="item in rightItems" :key="item.key"
                         :can-show-admin-sidebar="canShowAdminSidebar" :item="item" @logout="logout" />
-                </div>
+                </NavigationMenuList>
 
                 <!-- Mobile Menu -->
                 <div class="flex items-center -mr-2 md:hidden">
@@ -146,9 +150,9 @@ const logout = () => {
                                             'reset-player-password.show'
                                         )
                                             " :active="route().current(
-                                                    'reset-player-password.show'
-                                                )
-                                                    ">
+                                                'reset-player-password.show'
+                                            )
+                                                ">
                                             {{ __("Reset Player Password") }}
                                         </jet-responsive-nav-link>
 
@@ -157,9 +161,9 @@ const logout = () => {
                                                 .playerSkinChangerEnabled
                                         " :href="route('change-player-skin.show')
                                             " :active="route().current(
-                                                    'change-player-skin.show'
-                                                )
-                                                    ">
+                                                'change-player-skin.show'
+                                            )
+                                                ">
                                             {{ __("Change Player Skin") }}
                                         </jet-responsive-nav-link>
 
@@ -193,7 +197,7 @@ const logout = () => {
                     </Sheet>
                 </div>
                 <!-- Mobile Menu End -->
-            </div>
+            </NavigationMenu>
         </div>
     </nav>
 </template>
