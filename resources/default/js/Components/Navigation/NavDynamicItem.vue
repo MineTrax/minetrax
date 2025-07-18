@@ -41,10 +41,12 @@
         </div>
 
         <!--      Profile Dropdown-->
-        <div v-if="$page.props.auth.user &&
-            item.type === 'component' && item.component === 'ProfileDropdown'" class="hidden md:flex items-center mx-2">
-            <ProfileDropdown :can-show-admin-sidebar="canShowAdminSidebar" @logout="emit('logout')" />
-        </div>
+        <NavigationMenuItem v-if="$page.props.auth.user &&
+            item.type === 'component' && item.component === 'ProfileDropdown'"
+            class="hidden md:flex items-center mx-2">
+            <ProfileDropdown v-if="$page.props.auth.user" :can-show-admin-sidebar="canShowAdminSidebar"
+                @logout="emit('logout')" />
+        </NavigationMenuItem>
 
         <!--    Search Component -->
         <div v-if="item.type === 'component' && item.component === 'NavbarSearch'"
