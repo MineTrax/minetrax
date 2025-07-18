@@ -29,8 +29,8 @@
             <div class="flex items-center justify-between p-4 border-b">
                 <div class="flex items-center gap-2">
                     <BellIcon class="w-5 h-5 text-foreground" />
-                    <h2 class="text-lg font-semibold text-foreground">
-                        {{ __("Notifications") }}
+                    <h2 class="font-semibold text-foreground">
+                        {{ __("Unread Notifications") }}
                     </h2>
                 </div>
                 <inertia-link v-if="unreadCount > 0" as="button" :href="route('notification.mark-as-read')"

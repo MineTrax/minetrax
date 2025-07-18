@@ -144,31 +144,31 @@ const getNotificationTitle = () => {
 
     switch (type) {
         case 'App\\Notifications\\PostCommentedByUser':
-            return __('New comment on your post')
+            return __('Someone commented on your post')
         case 'App\\Notifications\\PostLikedByUser':
-            return __('Your post was liked')
+            return __('Someone liked your post')
         case 'App\\Notifications\\UserYouAreMuted':
             return __('You have been muted')
         case 'App\\Notifications\\UserYouAreBanned':
             return __('You have been banned')
         case 'App\\Notifications\\CustomFormSubmissionCreatedNotification':
-            return __('New form submission')
+            return __('New form submission received')
         case 'App\\Notifications\\NewsCommentedByUserNotification':
-            return __('New comment on news')
+            return __('New comment on news article')
         case 'App\\Notifications\\RecruitmentSubmissionCreatedNotification':
-            return __('New application submitted')
+            return __('New application received')
         case 'App\\Notifications\\RecruitmentSubmissionStatusChangedNotification':
             const status = data.status
-            if (status === 'approved') return __('Application approved')
+            if (status === 'approved') return __('Application approved! 🎉')
             if (status === 'rejected') return __('Application rejected')
-            if (status === 'onhold') return __('Application on hold')
-            if (status === 'inprogress') return __('Application in progress')
+            if (status === 'onhold') return __('Application put on hold')
+            if (status === 'inprogress') return __('Application being processed')
             if (status === 'withdrawn') return __('Application withdrawn')
-            return __('Application status changed')
+            return __('Application status updated')
         case 'App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification':
-            return data.for_staff ? __('New message on application') : __('New message on your application')
+            return data.for_staff ? __('New message on application') : __('Message received on your application')
         default:
-            return __('New notification')
+            return __('You have a notification')
     }
 }
 
@@ -178,28 +178,34 @@ const getNotificationDescription = () => {
 
     switch (type) {
         case 'App\\Notifications\\PostCommentedByUser':
-            return __(':user commented on your post', { user: data.causer.name })
+            return __(':user left a comment on your post. Click to view and reply.', { user: data.causer.name })
         case 'App\\Notifications\\PostLikedByUser':
-            return __(':user liked your post', { user: data.causer.name })
+            return __(':user liked your post. Thanks for sharing great content!', { user: data.causer.name })
         case 'App\\Notifications\\UserYouAreMuted':
-            return __(':user has muted you', { user: data.causer.name })
+            return __('You have been muted by :user. You cannot send messages during this period.', { user: data.causer.name })
         case 'App\\Notifications\\UserYouAreBanned':
-            return __(':user has banned you', { user: data.causer.name })
+            return __('You have been banned by :user. Please contact support if you believe this is an error.', { user: data.causer.name })
         case 'App\\Notifications\\CustomFormSubmissionCreatedNotification':
-            const submitter = data.causer ? data.causer.name : __('Anonymous user')
-            return __(':user submitted a form', { user: submitter })
+            const submitter = data.causer ? data.causer.name : __('an anonymous user')
+            return __('A new form submission has been received from :user. Click to review the details.', { user: submitter })
         case 'App\\Notifications\\NewsCommentedByUserNotification':
-            return __(':user commented on a news article', { user: data.causer.name })
+            return __(':user commented on a news article. Check out what they had to say!', { user: data.causer.name })
         case 'App\\Notifications\\RecruitmentSubmissionCreatedNotification':
-            return __(':user submitted an application', { user: data.causer.name })
+            return __(':user has submitted a new application. Click to review their submission.', { user: data.causer.name })
         case 'App\\Notifications\\RecruitmentSubmissionStatusChangedNotification':
-            return __(':user changed your application status', { user: data.causer.name })
+            const status = data.status
+            if (status === 'approved') return __('Great news! :user has approved your application. Welcome to the team!', { user: data.causer.name })
+            if (status === 'rejected') return __('Unfortunately, :user has rejected your application. Click to view feedback.', { user: data.causer.name })
+            if (status === 'onhold') return __(':user has put your application on hold for further review.', { user: data.causer.name })
+            if (status === 'inprogress') return __(':user is now reviewing your application. Stay tuned for updates!', { user: data.causer.name })
+            if (status === 'withdrawn') return __('The application has been withdrawn by :user.', { user: data.causer.name })
+            return __(':user has updated your application status. Click to see the latest changes.', { user: data.causer.name })
         case 'App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification':
             return data.for_staff
-                ? __('New message received on an application')
-                : __(':user sent you a message', { user: data.causer.name })
+                ? __('A new message has been received on an application. Click to view and respond.')
+                : __(':user sent you a message regarding your application. Click to read and respond.', { user: data.causer.name })
         default:
-            return __('You have a new notification')
+            return __('You have received a new notification. Click to view more details.')
     }
 }
 
