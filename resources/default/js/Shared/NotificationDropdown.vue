@@ -1,7 +1,9 @@
 <template>
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <button class="ml-4 relative hover:cursor-pointer">
+            <button
+            @click="error ? fetchNotifications() : null"
+            class="ml-4 relative hover:cursor-pointer">
                 <BellIcon :class="[
                     'w-5 h-5 transition-all duration-300',
                     notifications && notifications.length > 0
