@@ -36,30 +36,31 @@
         <!--    Notification Component -->
         <div v-if="$page.props.auth.user &&
             item.type === 'component' && item.component === 'NotificationDropdown'"
-            class="hidden md:flex items-center">
+            class="hidden md:flex items-center mx-2">
             <NotificationDropdown />
         </div>
 
         <!--      Profile Dropdown-->
         <div v-if="$page.props.auth.user &&
-            item.type === 'component' && item.component === 'ProfileDropdown'" class="hidden md:flex items-center">
+            item.type === 'component' && item.component === 'ProfileDropdown'" class="hidden md:flex items-center mx-2">
             <ProfileDropdown :can-show-admin-sidebar="canShowAdminSidebar" @logout="emit('logout')" />
         </div>
 
         <!--    Search Component -->
-        <div v-if="item.type === 'component' && item.component === 'NavbarSearch'" class="hidden md:flex items-center">
+        <div v-if="item.type === 'component' && item.component === 'NavbarSearch'"
+            class="hidden md:flex items-center mx-2">
             <Search />
         </div>
 
         <!--  Light Dark Theme Selector Component -->
         <div v-if="item.type === 'component' && item.component === 'LightDarkSelector'"
-            class="hidden md:flex items-center">
+            class="hidden md:flex items-center mx-2">
             <LightDarkSelector />
         </div>
 
         <!--  Locale Selector Component -->
         <div v-if="item.type === 'component' && item.component === 'LocaleSelector' && $page.props.localeSwitcherEnabled"
-            class="hidden md:flex items-center">
+            class="hidden md:flex items-center mx-2">
             <LocaleSelector />
         </div>
     </template>
