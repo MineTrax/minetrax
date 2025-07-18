@@ -144,31 +144,31 @@ const getNotificationTitle = () => {
 
     switch (type) {
         case 'App\\Notifications\\PostCommentedByUser':
-            return 'New comment on your post'
+            return __('New comment on your post')
         case 'App\\Notifications\\PostLikedByUser':
-            return 'Your post was liked'
+            return __('Your post was liked')
         case 'App\\Notifications\\UserYouAreMuted':
-            return 'You have been muted'
+            return __('You have been muted')
         case 'App\\Notifications\\UserYouAreBanned':
-            return 'You have been banned'
+            return __('You have been banned')
         case 'App\\Notifications\\CustomFormSubmissionCreatedNotification':
-            return 'New form submission'
+            return __('New form submission')
         case 'App\\Notifications\\NewsCommentedByUserNotification':
-            return 'New comment on news'
+            return __('New comment on news')
         case 'App\\Notifications\\RecruitmentSubmissionCreatedNotification':
-            return 'New application submitted'
+            return __('New application submitted')
         case 'App\\Notifications\\RecruitmentSubmissionStatusChangedNotification':
             const status = data.status
-            if (status === 'approved') return 'Application approved'
-            if (status === 'rejected') return 'Application rejected'
-            if (status === 'onhold') return 'Application on hold'
-            if (status === 'inprogress') return 'Application in progress'
-            if (status === 'withdrawn') return 'Application withdrawn'
-            return 'Application status changed'
+            if (status === 'approved') return __('Application approved')
+            if (status === 'rejected') return __('Application rejected')
+            if (status === 'onhold') return __('Application on hold')
+            if (status === 'inprogress') return __('Application in progress')
+            if (status === 'withdrawn') return __('Application withdrawn')
+            return __('Application status changed')
         case 'App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification':
-            return data.for_staff ? 'New message on application' : 'New message on your application'
+            return data.for_staff ? __('New message on application') : __('New message on your application')
         default:
-            return 'New notification'
+            return __('New notification')
     }
 }
 
@@ -178,28 +178,28 @@ const getNotificationDescription = () => {
 
     switch (type) {
         case 'App\\Notifications\\PostCommentedByUser':
-            return `${data.causer.name} commented on your post`
+            return __(':user commented on your post', { user: data.causer.name })
         case 'App\\Notifications\\PostLikedByUser':
-            return `${data.causer.name} liked your post`
+            return __(':user liked your post', { user: data.causer.name })
         case 'App\\Notifications\\UserYouAreMuted':
-            return `${data.causer.name} has muted you`
+            return __(':user has muted you', { user: data.causer.name })
         case 'App\\Notifications\\UserYouAreBanned':
-            return `${data.causer.name} has banned you`
+            return __(':user has banned you', { user: data.causer.name })
         case 'App\\Notifications\\CustomFormSubmissionCreatedNotification':
-            const submitter = data.causer ? data.causer.name : 'Anonymous user'
-            return `${submitter} submitted a form`
+            const submitter = data.causer ? data.causer.name : __('Anonymous user')
+            return __(':user submitted a form', { user: submitter })
         case 'App\\Notifications\\NewsCommentedByUserNotification':
-            return `${data.causer.name} commented on a news article`
+            return __(':user commented on a news article', { user: data.causer.name })
         case 'App\\Notifications\\RecruitmentSubmissionCreatedNotification':
-            return `${data.causer.name} submitted an application`
+            return __(':user submitted an application', { user: data.causer.name })
         case 'App\\Notifications\\RecruitmentSubmissionStatusChangedNotification':
-            return `${data.causer.name} changed your application status`
+            return __(':user changed your application status', { user: data.causer.name })
         case 'App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification':
             return data.for_staff
-                ? 'New message received on an application'
-                : `${data.causer.name} sent you a message`
+                ? __('New message received on an application')
+                : __(':user sent you a message', { user: data.causer.name })
         default:
-            return 'You have a new notification'
+            return __('You have a new notification')
     }
 }
 
