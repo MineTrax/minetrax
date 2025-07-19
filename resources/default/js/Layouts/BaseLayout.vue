@@ -19,7 +19,7 @@ const title = ref('MineTrax')
 
         <Link v-if="$page.props.isImpersonating" v-tippy :title="__('Leave Impersonation')" as="a"
             :href="route('admin.impersonate.leave')"
-            class="fixed flex p-2 text-white bg-error-500 rounded-full bottom-4 right-4 hover:bg-error-700 z-50">
+            class="fixed flex p-2 text-white bg-destructive rounded-full bottom-4 hover:bg-destructive/90 right-4 z-50">
         <icon name="ban" class="w-8 h-8" />
         </Link>
 
