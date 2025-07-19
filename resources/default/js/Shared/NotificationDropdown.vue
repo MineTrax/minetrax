@@ -1,9 +1,7 @@
 <template>
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <button
-            @click="error ? fetchNotifications() : null"
-            class="ml-4 relative hover:cursor-pointer">
+            <button @click="error ? fetchNotifications() : null" class="ml-4 relative hover:cursor-pointer">
                 <BellIcon :class="[
                     'w-5 h-5 transition-all duration-300',
                     notifications && notifications.length > 0
@@ -45,7 +43,7 @@
             </div>
 
             <!-- Content -->
-            <div class="max-h-[500px] overflow-y-auto">
+            <ScrollArea class="h-[500px]">
                 <!-- Loading Spinner -->
                 <div v-if="loading" class="flex items-center justify-center py-8">
                     <svg class="animate-spin h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -79,7 +77,7 @@
                         {{ __("You're all caught up!") }}
                     </p>
                 </div>
-            </div>
+            </ScrollArea>
 
             <!-- Footer -->
             <div class="p-4 border-t">
@@ -99,6 +97,7 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger
 } from '@/Components/ui/dropdown-menu'
+import { ScrollArea } from '@/Components/ui/scroll-area'
 import { BellIcon } from '@heroicons/vue/24/outline'
 import { CheckCheckIcon } from 'lucide-vue-next'
 import { onMounted, ref } from 'vue'
