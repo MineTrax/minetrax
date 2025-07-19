@@ -1,6 +1,6 @@
 <template>
     <AppLayout>
-        <AppHead :title="__('Your Notifications')" />
+        <AppHead :title="__('Notifications')" />
 
         <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
             <div class="flex space-x-4 mb-4 justify-between md:justify-normal">
