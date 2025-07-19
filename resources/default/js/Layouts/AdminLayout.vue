@@ -1,7 +1,6 @@
 <script setup>
 import AdminSideMenu from '@/Shared/AdminSideMenu.vue';
 import MainNavbarCustom from '@/Shared/MainNavbarCustom.vue';
-import MainFooter from '@/Shared/MainFooter.vue';
 import { useStorage } from '@vueuse/core';
 import BaseLayout from './BaseLayout.vue';
 
@@ -12,7 +11,7 @@ function toggleMenuCollapse() {
 </script>
 
 <template>
-    <BaseLayout :hide-footer="true">
+    <BaseLayout>
         <!-- Admin NavBar -->
         <MainNavbarCustom />
 
@@ -23,9 +22,6 @@ function toggleMenuCollapse() {
         ]">
             <slot />
 
-            <MainFooter />
         </main>
-
-        <!-- Admin Footer -->
     </BaseLayout>
 </template>

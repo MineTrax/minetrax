@@ -7,13 +7,6 @@ import AppHead from '@/Components/AppHead.vue';
 import CookieConsent from '@/Components/CookieConsent.vue';
 import { Link } from '@inertiajs/vue3';
 
-const props = defineProps({
-    hideFooter: {
-        type: Boolean,
-        default: false,
-    }
-})
-
 const title = ref('MineTrax')
 </script>
 
