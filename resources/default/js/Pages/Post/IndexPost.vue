@@ -4,7 +4,9 @@
       :title="__('Post Feed')"
     />
 
-    <div class="px-2 py-4 md:py-12 md:px-8 max-w-screen-2xl mx-auto">
+    <AppBreadcrumb :items="breadcrumbItems" />
+
+    <div class="px-2 py-4 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
         <div class="hidden md:flex flex-col space-y-4 flex-none w-1/4 h-screen sticky" :class="{'top-16': isStickyNav, 'top-5': !isStickyNav}">
           <DidYouKnowBox :enabled="page.props.generalSettings.enable_didyouknowbox" />
@@ -40,9 +42,25 @@ import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 import PostListBox from '@/Shared/PostListBox.vue';
 import DidYouKnowBox from '@/Shared/DidYouKnowBox.vue';
 import DiscordServerBox from '@/Shared/DiscordServerBox.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import { usePage } from '@inertiajs/vue3';
+import { useTranslations } from '@/Composables/useTranslations';
+
+const { __ } = useTranslations();
 
 const page = usePage();
 
 const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Posts'),
+        current: true
+    }
+];
 </script>

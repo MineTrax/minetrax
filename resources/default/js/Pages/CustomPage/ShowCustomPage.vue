@@ -2,6 +2,8 @@
     <AppLayout>
         <AppHead :title="customPage.title" />
 
+        <AppBreadcrumb :items="breadcrumbItems" />
+
         <div v-if="!customPage.is_visible" class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
             <AlertCard variant="warning" class="mb-4">
                 {{ __("Page is hidden!") }}
@@ -53,6 +55,11 @@ import ShoutBox from "@/Shared/ShoutBox.vue";
 import AlertCard from "@/Components/AlertCard.vue";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { usePage } from "@inertiajs/vue3";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import { truncate } from "lodash";
+
+const { __ } = useTranslations();
 
 const page = usePage();
 const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;
@@ -63,4 +70,16 @@ const props = defineProps({
         required: true,
     },
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: truncate(props.customPage.title),
+        current: true
+    }
+];
 </script>

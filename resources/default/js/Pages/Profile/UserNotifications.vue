@@ -2,7 +2,9 @@
     <AppLayout>
         <AppHead :title="__('Notifications')" />
 
-        <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
+        <AppBreadcrumb :items="breadcrumbItems" />
+
+        <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
             <div class="flex space-x-4 mb-4 justify-between md:justify-normal">
                 <h1 class="font-bold text-3xl text-foreground">
                     {{ __("Notifications") }}
@@ -37,8 +39,8 @@
 
                 <div class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 h-screen sticky"
                     :class="{ 'top-16': isStickyNav, 'top-5': !isStickyNav }">
-                    <server-status-box />
-                    <shout-box />
+                    <ServerStatusBox />
+                    <ShoutBox />
                 </div>
             </div>
         </div>
@@ -61,10 +63,27 @@ import {
 import { Button } from '@/Components/ui/button';
 import AppHead from '@/Components/AppHead.vue';
 import { CheckCheck } from 'lucide-vue-next';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+
+const { __ } = useTranslations();
+
 
 const props = defineProps({
     notificationsList: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Notifications'),
+        current: true
+    }
+];
 
 const page = usePage();
 

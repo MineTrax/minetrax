@@ -2,7 +2,9 @@
     <AppLayout>
         <AppHead :title="__('Players')" />
 
-        <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
+        <AppBreadcrumb :items="breadcrumbItems" />
+
+        <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
             <div class="flex-grow">
                 <div class="grid grid-cols-12 gap-4 mb-4">
                     <Deferred data="stats">
@@ -354,12 +356,28 @@ import { Card, CardContent } from "@/Components/ui/card";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useHelpers } from "@/Composables/useHelpers";
 import { ClockIcon, Loader2Icon, PaperclipIcon, Users2Icon } from "lucide-vue-next";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { useTranslations } from "@/Composables/useTranslations";
 
 // Define props
 const props = defineProps({
     players: Object,
     stats: Object,
 });
+
+const { __ } = useTranslations();
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Players'),
+        current: true
+    }
+];
 
 // Use composables
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } =

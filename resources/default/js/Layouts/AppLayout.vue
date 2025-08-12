@@ -3,6 +3,7 @@ import MainNavbarCustom from '@/Shared/MainNavbarCustom.vue';
 import MainFooter from '@/Shared/MainFooter.vue';
 import HeaderBroadcastBar from '@/Shared/HeaderBroadcastBar.vue';
 import BaseLayout from './BaseLayout.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 </script>
 
 <template>
@@ -12,6 +13,7 @@ import BaseLayout from './BaseLayout.vue';
 
         <!-- App Content with Broadcast Bar -->
         <HeaderBroadcastBar />
+
         <slot />
 
         <!-- App Footer -->

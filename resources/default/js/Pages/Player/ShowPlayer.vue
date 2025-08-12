@@ -2,6 +2,9 @@
   <app-layout>
     <app-head :title="__(':username - Player Details', {username: player.username})" />
 
+
+    <AppBreadcrumb :items="breadcrumbItems" />
+
     <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto space-y-4">
       <PlayerSubMenu
         :player="player"
@@ -798,6 +801,7 @@ import PlayerSubMenu from '@/Shared/PlayerSubMenu.vue';
 import { LockOpenIcon } from '@heroicons/vue/24/outline';
 import { useTranslations } from '@/Composables/useTranslations';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 
 const { __ } = useTranslations();
 const { can } = useAuthorizable();
@@ -810,6 +814,23 @@ const props = defineProps({
 });
 
 const { secondsToHMS, formatTimeAgoToNow, formatToDayDateString } = useHelpers();
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Players'),
+        url: route('player.index'),
+        current: false
+    },
+    {
+        text: props.player.username || props.player.uuid,
+        current: true
+    }
+];
 
 const playerAnimationEnabled = ref(true);
 let skinViewer = null;
