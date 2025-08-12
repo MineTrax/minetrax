@@ -1,74 +1,48 @@
 <template>
-  <jet-action-section>
-    <template #title>
-      {{ __("Delete Account") }}
-    </template>
+    <div>
+        <div class="max-w-xl text-sm text-foreground dark:text-foreground">
+            {{ __("Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.") }}
+        </div>
 
-    <template #description>
-      {{ __("Permanently delete your account.") }}
-    </template>
+        <div class="mt-5">
+            <jet-danger-button @click="confirmUserDeletion">
+                {{ __("Delete Account") }}
+            </jet-danger-button>
+        </div>
 
-    <template #content>
-      <div class="max-w-xl text-sm text-foreground dark:text-foreground">
-        {{ __("Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.") }}
-      </div>
+        <!-- Delete Account Confirmation Modal -->
+        <jet-dialog-modal :show="confirmingUserDeletion" @close="closeModal">
+            <template #title>
+                {{ __("Delete Account") }}
+            </template>
 
-      <div class="mt-5">
-        <jet-danger-button @click="confirmUserDeletion">
-          {{ __("Delete Account") }}
-        </jet-danger-button>
-      </div>
+            <template #content>
+                {{ __("Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted.Please enter your password to confirm you would like to permanently delete your account.") }}
 
-      <!-- Delete Account Confirmation Modal -->
-      <jet-dialog-modal
-        :show="confirmingUserDeletion"
-        @close="closeModal"
-      >
-        <template #title>
-          {{ __("Delete Account") }}
-        </template>
+                <div class="mt-4">
+                    <jet-input ref="password" v-model="form.password" type="password" class="mt-1 block w-3/4"
+                        placeholder="Password" @keyup.enter.native="deleteUser" />
 
-        <template #content>
-          {{ __("Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.") }}
+                    <jet-input-error :message="form.errors.password" class="mt-2" />
+                </div>
+            </template>
 
-          <div class="mt-4">
-            <jet-input
-              ref="password"
-              v-model="form.password"
-              type="password"
-              class="mt-1 block w-3/4"
-              placeholder="Password"
-              @keyup.enter.native="deleteUser"
-            />
+            <template #footer>
+                <jet-secondary-button @click="closeModal">
+                    {{ __("Nevermind") }}
+                </jet-secondary-button>
 
-            <jet-input-error
-              :message="form.errors.password"
-              class="mt-2"
-            />
-          </div>
-        </template>
-
-        <template #footer>
-          <jet-secondary-button @click="closeModal">
-            {{ __("Nevermind") }}
-          </jet-secondary-button>
-
-          <jet-danger-button
-            class="ml-2"
-            :class="{ 'opacity-25': form.processing }"
-            :disabled="form.processing"
-            @click="deleteUser"
-          >
-            {{ __("Delete Account") }}
-          </jet-danger-button>
-        </template>
-      </jet-dialog-modal>
-    </template>
-  </jet-action-section>
+                <jet-danger-button class="ml-2" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
+                    @click="deleteUser">
+                    {{ __("Delete Account") }}
+                </jet-danger-button>
+            </template>
+        </jet-dialog-modal>
+    </div>
 </template>
 
 <script>
-import JetActionSection from '@/Jetstream/ActionSection.vue';
+
 import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetDangerButton from '@/Jetstream/DangerButton.vue';
 import JetInput from '@/Jetstream/Input.vue';
@@ -78,7 +52,7 @@ import { useForm } from '@inertiajs/vue3';
 
 export default {
     components: {
-        JetActionSection,
+
         JetDangerButton,
         JetDialogModal,
         JetInput,

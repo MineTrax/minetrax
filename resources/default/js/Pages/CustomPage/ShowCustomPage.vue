@@ -2,7 +2,7 @@
     <AppLayout>
         <AppHead :title="customPage.title" />
 
-        <AppBreadcrumb :items="breadcrumbItems" />
+        <AppBreadcrumb v-if="!customPage.is_html_page" :items="breadcrumbItems" />
 
         <div v-if="!customPage.is_visible" class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
             <AlertCard variant="warning" class="mb-4">
@@ -20,8 +20,8 @@
         <div v-else class="py-4 px-2 md:py-6 md:px-10 max-w-screen-2xl mx-auto">
             <div class="flex flex-col md:flex-row md:space-x-4">
                 <div :class="customPage.is_sidebar_visible
-                        ? 'md:w-9/12'
-                        : 'md:w-full'
+                    ? 'md:w-9/12'
+                    : 'md:w-full'
                     ">
                     <Card class="transition-shadow duration-300 hover:shadow-lg">
                         <CardHeader>
