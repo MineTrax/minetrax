@@ -1,13 +1,13 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { ref, computed, watch } from "vue";
+import { router } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 
-import JetButton from '@/Jetstream/Button.vue';
-import JetConfirmsPassword from '@/Jetstream/ConfirmsPassword.vue';
-import JetDangerButton from '@/Jetstream/DangerButton.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import XInput from '@/Components/Form/XInput.vue';
+import JetButton from "@/Jetstream/Button.vue";
+import JetConfirmsPassword from "@/Jetstream/ConfirmsPassword.vue";
+import JetDangerButton from "@/Jetstream/DangerButton.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import XInput from "@/Components/Form/XInput.vue";
 
 const props = defineProps({
     requiresConfirmation: Boolean,
@@ -21,12 +21,10 @@ const setupKey = ref(null);
 const recoveryCodes = ref([]);
 
 const confirmationForm = useForm({
-    code: '',
+    code: "",
 });
 
-const twoFactorEnabled = computed(
-    () => !enabling.value && usePage().props.auth?.user?.two_factor_enabled,
-);
+const twoFactorEnabled = computed(() => !enabling.value && usePage().props.auth?.user?.two_factor_enabled);
 
 watch(twoFactorEnabled, () => {
     if (!twoFactorEnabled.value) {
@@ -38,41 +36,41 @@ watch(twoFactorEnabled, () => {
 const enableTwoFactorAuthentication = () => {
     enabling.value = true;
 
-    router.post('/user/two-factor-authentication', {}, {
-        preserveScroll: true,
-        onSuccess: () => Promise.all([
-            showQrCode(),
-            showSetupKey(),
-            showRecoveryCodes(),
-        ]),
-        onFinish: () => {
-            enabling.value = false;
-            confirming.value = props.requiresConfirmation;
-        },
-    });
+    router.post(
+        "/user/two-factor-authentication",
+        {},
+        {
+            preserveScroll: true,
+            onSuccess: () => Promise.all([showQrCode(), showSetupKey(), showRecoveryCodes()]),
+            onFinish: () => {
+                enabling.value = false;
+                confirming.value = props.requiresConfirmation;
+            },
+        }
+    );
 };
 
 const showQrCode = () => {
-    return axios.get('/user/two-factor-qr-code').then(response => {
+    return axios.get("/user/two-factor-qr-code").then((response) => {
         qrCode.value = response.data.svg;
     });
 };
 
 const showSetupKey = () => {
-    return axios.get('/user/two-factor-secret-key').then(response => {
+    return axios.get("/user/two-factor-secret-key").then((response) => {
         setupKey.value = response.data.secretKey;
     });
 };
 
 const showRecoveryCodes = () => {
-    return axios.get('/user/two-factor-recovery-codes').then(response => {
+    return axios.get("/user/two-factor-recovery-codes").then((response) => {
         recoveryCodes.value = response.data;
     });
 };
 
 const confirmTwoFactorAuthentication = () => {
-    confirmationForm.post('/user/confirmed-two-factor-authentication', {
-        errorBag: 'confirmTwoFactorAuthentication',
+    confirmationForm.post("/user/confirmed-two-factor-authentication", {
+        errorBag: "confirmTwoFactorAuthentication",
         preserveScroll: true,
         preserveState: true,
         onSuccess: () => {
@@ -84,15 +82,13 @@ const confirmTwoFactorAuthentication = () => {
 };
 
 const regenerateRecoveryCodes = () => {
-    axios
-        .post('/user/two-factor-recovery-codes')
-        .then(() => showRecoveryCodes());
+    axios.post("/user/two-factor-recovery-codes").then(() => showRecoveryCodes());
 };
 
 const disableTwoFactorAuthentication = () => {
     disabling.value = true;
 
-    router.delete('/user/two-factor-authentication', {
+    router.delete("/user/two-factor-authentication", {
         preserveScroll: true,
         onSuccess: () => {
             disabling.value = false;
@@ -126,8 +122,7 @@ const disableTwoFactorAuthentication = () => {
             <div v-if="qrCode">
                 <div class="mt-4 max-w-xl text-sm text-foreground dark:text-foreground">
                     <p v-if="confirming" class="font-semibold">
-                        {{ __("To finish enabling two factor authentication, scan the following QR code using your phone's authenticator application or enter the setup key and provide the generated OTP code.")
-                        }}
+                        {{ __("To finish enabling two factor authentication, scan the following QR code using your phone's authenticator application or enter the setup key and provide the generated OTP code.") }}
                     </p>
 
                     <p v-else>
@@ -138,16 +133,23 @@ const disableTwoFactorAuthentication = () => {
                 <div class="mt-4 dark:bg-white dark:p-4 dark:rounded" v-html="qrCode" />
 
                 <div v-if="setupKey" class="mt-4 max-w-xl text-sm text-foreground dark:text-foreground">
-                    <p class="font-semibold">
-                        {{ __("Setup Key") }}: <span v-html="setupKey" />
-                    </p>
+                    <p class="font-semibold">{{ __("Setup Key") }}: <span v-html="setupKey" /></p>
                 </div>
 
                 <div v-if="confirming" class="mt-4">
-                    <XInput id="code" v-model="confirmationForm.code" inputmode="numeric" :label="__('Code')"
-                        :error="confirmationForm.errors.code" autocomplete="one-time-code" autofocus
-                        class="block mt-1 w-1/2" type="text" name="code"
-                        @keyup.enter="confirmTwoFactorAuthentication" />
+                    <XInput
+                        id="code"
+                        v-model="confirmationForm.code"
+                        inputmode="numeric"
+                        :label="__('Code')"
+                        :error="confirmationForm.errors.code"
+                        autocomplete="one-time-code"
+                        autofocus
+                        class="block mt-1 w-1/2"
+                        type="text"
+                        name="code"
+                        @keyup.enter="confirmTwoFactorAuthentication"
+                    />
                 </div>
             </div>
 
@@ -158,8 +160,7 @@ const disableTwoFactorAuthentication = () => {
                     </p>
                 </div>
 
-                <div
-                    class="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-surface-100 dark:bg-surface-900 dark:text-foreground rounded-lg">
+                <div class="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-surface-100 dark:bg-surface-900 dark:text-foreground rounded-lg">
                     <div v-for="code in recoveryCodes" :key="code">
                         {{ code }}
                     </div>
@@ -178,8 +179,7 @@ const disableTwoFactorAuthentication = () => {
 
             <div v-else>
                 <JetConfirmsPassword @confirmed="confirmTwoFactorAuthentication">
-                    <JetButton v-if="confirming" type="button" class="mr-3" :class="{ 'opacity-25': enabling }"
-                        :disabled="enabling">
+                    <JetButton v-if="confirming" type="button" class="mr-3" :class="{ 'opacity-25': enabling }" :disabled="enabling">
                         {{ __("Confirm") }}
                     </JetButton>
                 </JetConfirmsPassword>
