@@ -65,8 +65,8 @@
                 <x-date-picker id="dob" v-model="form.dob" :label="__('Date of Birth')" :placeholder="__('Select your date of birth')" :error="form.errors.dob" name="dob" />
             </div>
 
-            <div v-if="form.dob" class="col-span-6 sm:col-span-3">
-                <x-checkbox id="show_yob" v-model="form.show_yob" :label="__('Show Year of Birth')" :help="__('Show Year of Birth in your public profile.')" name="show_yob" :error="form.errors.show_yob" />
+            <div v-if="form.dob" class="col-span-6 sm:col-span-3 md:mt-9">
+                <x-switch id="show_yob" v-model="form.show_yob" :label="__('Show Year of Birth')" :help="__('Show Year of Birth in your public profile.')" name="show_yob" :error="form.errors.show_yob" />
             </div>
 
             <!-- Gender -->
@@ -83,7 +83,7 @@
             </div>
 
             <div v-if="form.gender" class="col-span-6 sm:col-span-3">
-                <x-checkbox id="show_gender" v-model="form.show_gender" :label="__('Show Gender')" :help="__('Show Gender in your public profile.')" name="show_gender" :error="form.errors.show_gender" />
+                <x-switch id="show_gender" v-model="form.show_gender" :label="__('Show Gender')" :help="__('Show Gender in your public profile.')" name="show_gender" :error="form.errors.show_gender" />
             </div>
 
             <!-- s_discord_username -->
@@ -235,7 +235,7 @@ import { ref, onMounted } from "vue";
 import { useForm, usePage, router } from "@inertiajs/vue3";
 import LoadingButton from "@/Components/LoadingButton.vue";
 import XInput from "@/Components/Form/XInput.vue";
-import XCheckbox from "@/Components/Form/XCheckbox.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XTextarea from "@/Components/Form/XTextarea.vue";
 import XDatePicker from "@/Components/Form/XDatePicker.vue";
