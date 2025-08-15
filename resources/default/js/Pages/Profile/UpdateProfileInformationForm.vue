@@ -234,7 +234,6 @@
 import { ref, onMounted } from "vue";
 import { useForm, usePage, router } from "@inertiajs/vue3";
 import LoadingButton from "@/Components/LoadingButton.vue";
-import JetInputError from "@/Jetstream/InputError.vue";
 import XInput from "@/Components/Form/XInput.vue";
 import XCheckbox from "@/Components/Form/XCheckbox.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
