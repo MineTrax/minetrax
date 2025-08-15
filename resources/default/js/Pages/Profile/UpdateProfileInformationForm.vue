@@ -2,7 +2,7 @@
     <form @submit.prevent="updateProfileInformation">
         <div class="grid grid-cols-6 gap-6">
             <!-- Profile Photo -->
-            <div v-if="$page.props.jetstream.managesProfilePhotos" class="col-span-6 sm:col-span-3">
+            <div v-if="page.props.jetstream.managesProfilePhotos" class="col-span-6 sm:col-span-3">
                 <ImageUpload
                     id="photo"
                     name="photo"
@@ -61,20 +61,8 @@
             </div>
 
             <!-- DOB -->
-            <div class="col-span-6 sm:col-span-3 relative">
-                <date-picker
-                    id="dob"
-                    v-model:value="form.dob"
-                    :placeholder="__('Select your date of birth')"
-                    class="w-full"
-                    value-type="format"
-                    input-class="border-foreground h-14 p-3 text-sm pt-7 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-foreground dark:border-foreground"
-                />
-
-                <label for="dob" class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-foreground h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-foreground">{{
-                    __("Date of Birth")
-                }}</label>
-                <jet-input-error :message="form.errors.dob" class="mt-1" />
+            <div class="col-span-6 sm:col-span-3">
+                <x-date-picker id="dob" v-model="form.dob" :label="__('Date of Birth')" :placeholder="__('Select your date of birth')" :error="form.errors.dob" name="dob" />
             </div>
 
             <div v-if="form.dob" class="col-span-6 sm:col-span-3">
@@ -229,139 +217,127 @@
                 <x-textarea id="about" v-model="form.about" :label="__('About Yourself')" :help="__('Something about yourself in 255 characters.')" :error="form.errors.about" name="about" />
             </div>
 
-            <div v-if="$page.props.localeSwitcherEnabled" class="col-span-6 sm:col-span-3">
+            <div v-if="page.props.localeSwitcherEnabled" class="col-span-6 sm:col-span-3">
                 <x-select id="locale" v-model="form.locale" name="locale" :error="form.errors.locale" :label="__('Language')" :placeholder="__('Select Language...')" :select-list="availableLocales" />
             </div>
         </div>
 
         <div class="flex items-center justify-end pt-6 gap-4">
-            <jet-action-message :on="form.recentlySuccessful" class="mr-3">
-                {{ __("Saved.") }}
-            </jet-action-message>
-
-            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing" :loading="form.processing">
+            <LoadingButton :loading="form.processing">
                 {{ __("Save") }}
-            </jet-button>
+            </LoadingButton>
         </div>
     </form>
 </template>
 
-<script>
-import JetButton from "@/Jetstream/Button.vue";
-
+<script setup>
+import { ref, onMounted } from "vue";
+import { useForm, usePage, router } from "@inertiajs/vue3";
+import LoadingButton from "@/Components/LoadingButton.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
-import JetActionMessage from "@/Jetstream/ActionMessage.vue";
-import DatePicker from "vue-datepicker-next";
 import XInput from "@/Components/Form/XInput.vue";
 import XCheckbox from "@/Components/Form/XCheckbox.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XTextarea from "@/Components/Form/XTextarea.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
 import ImageUpload from "@/Components/Form/ImageUpload.vue";
-import { useForm } from "@inertiajs/vue3";
+import { useTranslations } from "@/Composables/useTranslations";
 
-export default {
-    components: {
-        ImageUpload,
-        XTextarea,
-        XSelect,
-        XCheckbox,
-        XInput,
-        JetActionMessage,
-        JetButton,
-        JetInputError,
-        DatePicker,
-    },
+const { __ } = useTranslations();
 
-    props: ["user"],
+// Define props
+const props = defineProps(["user"]);
 
-    data() {
-        return {
-            form: useForm({
-                _method: "PUT",
-                name: this.user.name,
-                photo: null,
-                cover_image: null,
-                dob: this.user.dob,
-                gender: this.user.gender,
-                cover_image_url: this.user.cover_image_url,
-                s_discord_username: this.user?.social_links?.s_discord_username ?? null,
-                s_steam_profile_url: this.user?.social_links?.s_steam_profile_url ?? null,
-                s_twitter_url: this.user?.social_links?.s_twitter_url ?? null,
-                s_youtube_url: this.user?.social_links?.s_youtube_url ?? null,
-                s_facebook_url: this.user?.social_links?.s_facebook_url ?? null,
-                s_twitch_url: this.user?.social_links?.s_twitch_url ?? null,
-                s_linkedin_url: this.user?.social_links?.s_linkedin_url ?? null,
-                s_tiktok_url: this.user?.social_links?.s_tiktok_url ?? null,
-                s_website_url: this.user?.social_links?.s_website_url ?? null,
-                about: this.user.about,
+// Get page data
+const page = usePage();
 
-                profile_photo_source: this.user.settings && this.user.settings.profile_photo_source ? this.user.settings.profile_photo_source : null,
-                show_gender: this.user.settings ? !!+this.user.settings.show_gender : false, // coz in old version, data store as string 1,0
-                show_yob: this.user.settings ? !!+this.user.settings.show_yob : false, // coz in old version, data store as string 1,0
-                locale: this.user.locale,
-            }),
+// Expose user for template
+const user = props.user;
 
-            availableLocales: {},
-        };
-    },
+// Reactive data
+const availableLocales = ref({});
 
-    created() {
-        if (this.$page.props.localeSwitcherEnabled) {
-            this.getAvailableLocales();
-        }
-    },
+// Form setup
+const form = useForm({
+    _method: "PUT",
+    name: props.user.name,
+    photo: null,
+    cover_image: null,
+    dob: props.user.dob,
+    gender: props.user.gender,
+    cover_image_url: props.user.cover_image_url,
+    s_discord_username: props.user?.social_links?.s_discord_username ?? null,
+    s_steam_profile_url: props.user?.social_links?.s_steam_profile_url ?? null,
+    s_twitter_url: props.user?.social_links?.s_twitter_url ?? null,
+    s_youtube_url: props.user?.social_links?.s_youtube_url ?? null,
+    s_facebook_url: props.user?.social_links?.s_facebook_url ?? null,
+    s_twitch_url: props.user?.social_links?.s_twitch_url ?? null,
+    s_linkedin_url: props.user?.social_links?.s_linkedin_url ?? null,
+    s_tiktok_url: props.user?.social_links?.s_tiktok_url ?? null,
+    s_website_url: props.user?.social_links?.s_website_url ?? null,
+    about: props.user.about,
+    profile_photo_source: props.user.settings && props.user.settings.profile_photo_source ? props.user.settings.profile_photo_source : null,
+    show_gender: props.user.settings ? !!+props.user.settings.show_gender : false,
+    show_yob: props.user.settings ? !!+props.user.settings.show_yob : false,
+    locale: props.user.locale,
+});
 
-    methods: {
-        updateProfileInformation() {
-            const localeChanged = this.form.locale !== this.user.locale;
+// Methods
+const updateProfileInformation = () => {
+    const localeChanged = form.locale !== props.user.locale;
 
-            this.form.post(route("user-profile-information.update"), {
-                errorBag: "updateProfileInformation",
-                preserveScroll: true,
-                preserveState: "errors",
-                onSuccess: () => {
-                    if (localeChanged) {
-                        location.reload();
-                    }
-                },
+    form.post(route("user-profile-information.update"), {
+        errorBag: "updateProfileInformation",
+        preserveScroll: true,
+        preserveState: "errors",
+        onSuccess: () => {
+            Toast.fire({
+                icon: "success",
+                title: __("Profile Updated!"),
+                timer: 3000,
             });
-        },
 
-        deletePhoto() {
-            this.$inertia.delete(route("current-user-photo.destroy"), {
-                preserveScroll: true,
-                preserveState: false,
-                onSuccess: () => {},
-            });
+            if (localeChanged) {
+                location.reload();
+            }
         },
-
-        deleteCoverImage() {
-            this.$inertia.delete(route("current-user-cover.destroy"), {
-                preserveScroll: true,
-                preserveState: false,
-                onSuccess: () => {},
-            });
-        },
-
-        getAvailableLocales() {
-            axios
-                .get(route("locale.list"))
-                .then((response) => {
-                    const locales = response.data;
-                    locales.forEach((locale) => {
-                        this.availableLocales[locale.code] = locale.display;
-                    });
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
-    },
+    });
 };
-</script>
 
-<style scoped>
-.mx-datepicker {
-    width: 100% !important;
-}
-</style>
+const deletePhoto = () => {
+    router.delete(route("current-user-photo.destroy"), {
+        preserveScroll: true,
+        preserveState: false,
+        onSuccess: () => {},
+    });
+};
+
+const deleteCoverImage = () => {
+    router.delete(route("current-user-cover.destroy"), {
+        preserveScroll: true,
+        preserveState: false,
+        onSuccess: () => {},
+    });
+};
+
+const getAvailableLocales = () => {
+    axios
+        .get(route("locale.list"))
+        .then((response) => {
+            const locales = response.data;
+            locales.forEach((locale) => {
+                availableLocales.value[locale.code] = locale.display;
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+
+// Lifecycle hooks
+onMounted(() => {
+    if (page.props.localeSwitcherEnabled) {
+        getAvailableLocales();
+    }
+});
+</script>
