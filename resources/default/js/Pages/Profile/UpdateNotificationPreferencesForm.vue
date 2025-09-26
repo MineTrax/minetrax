@@ -250,7 +250,7 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex items-center justify-end pt-4 sm:pt-6 gap-3 sm:gap-4 border-t border-border">
+        <div class="flex items-center justify-end pt-4 sm:pt-6 gap-3 sm:gap-4">
             <LoadingButton :loading="form.processing">
                 {{ __("Save") }}
             </LoadingButton>
