@@ -41,10 +41,10 @@
             </div>
         </div>
 
-        <div class="flex items-center mt-5">
-            <jet-button @click="confirmLogout">
+        <div class="flex items-center justify-end mt-5">
+            <LoadingButton @click="confirmLogout">
                 {{ __("Logout Other Browser Sessions") }}
-            </jet-button>
+            </LoadingButton>
 
             <jet-action-message :on="form.recentlySuccessful" class="ml-3">
                 {{ __("Done") }}.
@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import LoadingButton from '@/Components/LoadingButton.vue';
 import JetActionMessage from '@/Jetstream/ActionMessage.vue';
 
 import JetButton from '@/Jetstream/Button.vue';
@@ -102,6 +103,7 @@ export default {
         JetInput,
         JetInputError,
         JetSecondaryButton,
+        LoadingButton,
     },
     props: ['sessions'],
 

@@ -8,6 +8,7 @@ import JetConfirmsPassword from "@/Jetstream/ConfirmsPassword.vue";
 import JetDangerButton from "@/Jetstream/DangerButton.vue";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import XInput from "@/Components/Form/XInput.vue";
+import LoadingButton from "@/Components/LoadingButton.vue";
 
 const props = defineProps({
     requiresConfirmation: Boolean,
@@ -169,11 +170,11 @@ const disableTwoFactorAuthentication = () => {
         </div>
 
         <div class="mt-5">
-            <div v-if="!twoFactorEnabled">
+            <div class="flex items-center justify-end" v-if="!twoFactorEnabled">
                 <JetConfirmsPassword @confirmed="enableTwoFactorAuthentication">
-                    <JetButton type="button" :class="{ 'opacity-25': enabling }" :disabled="enabling">
+                    <LoadingButton :class="{ 'opacity-25': enabling }" :disabled="enabling">
                         {{ __("Enable") }}
-                    </JetButton>
+                    </LoadingButton>
                 </JetConfirmsPassword>
             </div>
 
