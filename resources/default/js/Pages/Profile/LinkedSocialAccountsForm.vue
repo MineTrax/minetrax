@@ -65,7 +65,7 @@ const unlinkAccount = (id) => {
             </div>
 
             <JetConfirmsPassword @confirmed="unlinkAccount(account.id)">
-              <LoadingButton v-tippy :title="__('Unlink Account')">
+              <LoadingButton variant="ghost" size="icon" v-tippy :title="__('Unlink Account')">
                 <XMarkIcon class="h-5 w-5 text-foreground rounded hover:bg-error-400 hover:text-white" />
               </LoadingButton>
             </JetConfirmsPassword>

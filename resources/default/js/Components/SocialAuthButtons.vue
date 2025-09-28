@@ -16,7 +16,7 @@
             <a
                 v-if="pageProps.enabledSocialAuths.google"
                 :href="route('social.login', 'google')"
-                class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-red-500 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-red-500 hover:bg-gray-50 dark:hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-red-500 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-red-500 hover:bg-gray-50 dark:hover:bg-red-600 focus:outline-none disabled:opacity-50"
             >
                 <icon name="google" class="w-5 h-5 fill-current" />
                 <span v-if="pageProps.disableEmailPasswordAuth">{{ __("Continue with Google") }} </span>
@@ -24,7 +24,7 @@
             <a
                 v-if="pageProps.enabledSocialAuths.facebook"
                 :href="route('social.login', 'facebook')"
-                class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-blue-700 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-blue-700 hover:bg-gray-50 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 disabled:opacity-50"
+                class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-blue-700 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-blue-700 hover:bg-gray-50 dark:hover:bg-blue-800 focus:outline-none disabled:opacity-50"
             >
                 <icon name="facebook" class="w-5 h-5 fill-current" />
                 <span v-if="pageProps.disableEmailPasswordAuth">{{ __("Continue with Facebook") }} </span>
@@ -32,7 +32,7 @@
             <a
                 v-if="pageProps.enabledSocialAuths.twitter"
                 :href="route('social.login', 'twitter')"
-                class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white text-sky-400 dark:bg-sky-400 hover:bg-gray-50 dark:hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 disabled:opacity-50"
+                class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white text-sky-400 dark:bg-sky-400 hover:bg-gray-50 dark:hover:bg-sky-500 focus:outline-none disabled:opacity-50"
             >
                 <icon name="twitter" class="w-5 h-5 fill-current" />
                 <span v-if="pageProps.disableEmailPasswordAuth">{{ __("Continue with Twitter") }} </span>
@@ -40,7 +40,7 @@
             <a
                 v-if="pageProps.enabledSocialAuths.discord"
                 :href="route('social.login', 'discord')"
-                class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-indigo-500 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-indigo-500 hover:bg-gray-50 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 disabled:opacity-50"
+                class="inline-flex justify-center py-2 mt-1 space-x-4 text-sm font-medium text-indigo-500 border rounded-md shadow-sm px-9 dark:border-transparent dark:text-white dark:bg-indigo-500 hover:bg-gray-50 dark:hover:bg-indigo-600 focus:outline-none disabled:opacity-50"
             >
                 <icon name="discord" class="w-5 h-5 fill-current" />
                 <span v-if="pageProps.disableEmailPasswordAuth">{{ __("Continue with Discord") }} </span>
