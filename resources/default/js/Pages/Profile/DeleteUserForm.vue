@@ -1,96 +1,81 @@
 <template>
     <div>
-        <div class="max-w-xl text-sm text-foreground dark:text-foreground">
+        <div class="max-w-xl text-sm text-muted-foreground">
             {{ __("Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.") }}
         </div>
 
-        <div class="mt-5">
-            <jet-danger-button @click="confirmUserDeletion">
+        <div class="flex items-center justify-end mt-5">
+            <Button variant="destructive" @click="confirmUserDeletion">
                 {{ __("Delete Account") }}
-            </jet-danger-button>
+            </Button>
         </div>
 
         <!-- Delete Account Confirmation Modal -->
-        <jet-dialog-modal :show="confirmingUserDeletion" @close="closeModal">
-            <template #title>
-                {{ __("Delete Account") }}
-            </template>
+        <Dialog :open="confirmingUserDeletion" @update:open="(value) => !value && closeModal()">
+            <DialogContent class="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle class="text-foreground">
+                        {{ __("Delete Account") }}
+                    </DialogTitle>
+                </DialogHeader>
 
-            <template #content>
-                {{ __("Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted.Please enter your password to confirm you would like to permanently delete your account.") }}
+                <div class="space-y-4">
+                    <p class="text-sm text-muted-foreground">
+                        {{
+                            __(
+                                "Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account."
+                            )
+                        }}
+                    </p>
 
-                <div class="mt-4">
-                    <jet-input ref="password" v-model="form.password" type="password" class="mt-1 block w-3/4"
-                        placeholder="Password" @keyup.enter.native="deleteUser" />
-
-                    <jet-input-error :message="form.errors.password" class="mt-2" />
+                    <XInput ref="password" v-model="form.password" type="password" :label="__('Password')" :error="form.errors.password" :placeholder="__('Password')" @keyup.enter="deleteUser" />
                 </div>
-            </template>
 
-            <template #footer>
-                <jet-secondary-button @click="closeModal">
-                    {{ __("Nevermind") }}
-                </jet-secondary-button>
+                <DialogFooter class="flex-col-reverse sm:flex-row sm:justify-end gap-2">
+                    <Button variant="outline" @click="closeModal">
+                        {{ __("Nevermind") }}
+                    </Button>
 
-                <jet-danger-button class="ml-2" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
-                    @click="deleteUser">
-                    {{ __("Delete Account") }}
-                </jet-danger-button>
-            </template>
-        </jet-dialog-modal>
+                    <LoadingButton variant="destructive" :loading="form.processing" @click="deleteUser">
+                        {{ __("Delete Account") }}
+                    </LoadingButton>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from "vue";
+import { Button } from "@/Components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/Components/ui/dialog";
+import XInput from "@/Components/Form/XInput.vue";
+import LoadingButton from "@/Components/LoadingButton.vue";
+import { useForm } from "@inertiajs/vue3";
 
-import JetDialogModal from '@/Jetstream/DialogModal.vue';
-import JetDangerButton from '@/Jetstream/DangerButton.vue';
-import JetInput from '@/Jetstream/Input.vue';
-import JetInputError from '@/Jetstream/InputError.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import { useForm } from '@inertiajs/vue3';
+const confirmingUserDeletion = ref(false);
+const password = ref(null);
 
-export default {
-    components: {
+const form = useForm({
+    password: "",
+});
 
-        JetDangerButton,
-        JetDialogModal,
-        JetInput,
-        JetInputError,
-        JetSecondaryButton,
-    },
+const confirmUserDeletion = () => {
+    confirmingUserDeletion.value = true;
+    setTimeout(() => password.value.focus(), 250);
+};
 
-    data() {
-        return {
-            confirmingUserDeletion: false,
+const deleteUser = () => {
+    form.delete(route("current-user.destroy"), {
+        preserveScroll: true,
+        onSuccess: () => closeModal(),
+        onError: () => password.value.focus(),
+        onFinish: () => form.reset(),
+    });
+};
 
-            form: useForm({
-                password: '',
-            })
-        };
-    },
-
-    methods: {
-        confirmUserDeletion() {
-            this.confirmingUserDeletion = true;
-
-            setTimeout(() => this.$refs.password.focus(), 250);
-        },
-
-        deleteUser() {
-            this.form.delete(route('current-user.destroy'), {
-                preserveScroll: true,
-                onSuccess: () => this.closeModal(),
-                onError: () => this.$refs.password.focus(),
-                onFinish: () => this.form.reset(),
-            });
-        },
-
-        closeModal() {
-            this.confirmingUserDeletion = false;
-
-            this.form.reset();
-        },
-    },
+const closeModal = () => {
+    confirmingUserDeletion.value = false;
+    form.reset();
 };
 </script>
