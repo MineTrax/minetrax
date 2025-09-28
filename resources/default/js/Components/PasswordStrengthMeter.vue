@@ -9,7 +9,7 @@
       >
         <div
           class="h-2 rounded-xl transition-colors"
-          :class="i<score?(score<=2?'bg-error-400':(score<=4?'bg-warning-400':'bg-success-500')):'bg-surface-200 dark:bg-surface-900'"
+          :class="i<score?(score<=2?'bg-error-400':(score<=4?'bg-warning-400':'bg-success-500')):'bg-background'"
         />
       </div>
     </template>

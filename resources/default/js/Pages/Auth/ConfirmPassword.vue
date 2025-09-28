@@ -38,7 +38,7 @@
         <div class="flex justify-end mt-4">
           <loading-button
             :loading="form.processing"
-            class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+            class="ml-4"
           >
             {{ __("Confirm") }}
           </loading-button>

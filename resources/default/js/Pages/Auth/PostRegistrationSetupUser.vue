@@ -36,7 +36,7 @@
         <div class="flex items-center justify-end mt-4">
           <loading-button
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+            class="ml-4"
           >
             {{ __("Continue") }}
           </loading-button>
