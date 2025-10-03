@@ -85,7 +85,7 @@ const success = computed(() => {
                 <Multiselect
                     id="username"
                     v-model="selectedPlayer"
-                    class="w-full md:w-1/3 bg-background border-input rounded-md shadow-sm focus:ring-ring focus:border-input sm:text-sm"
+                    class="w-full md:w-1/3 rounded-md shadow-sm focus:ring-ring focus:border-input sm:text-sm"
                     :options="players"
                     :multiple="false"
                     :placeholder="__('Search') + '...'"

@@ -253,23 +253,23 @@ body.swal2-shown > [aria-hidden="true"] {
 
 /* Fix multiselect in darkmode */
 .multiselect .multiselect__tags {
-    @apply dark:bg-surface-900 dark:border-foreground dark:text-foreground;
+    @apply bg-card border-border text-foreground;
 }
 
 .multiselect__tags .multiselect__single {
-    @apply dark:bg-surface-900;
+    @apply bg-card;
 }
 
 .multiselect .multiselect__input {
-    @apply dark:bg-surface-900;
+    @apply bg-card;
 }
 
 .multiselect .multiselect__content-wrapper {
-    @apply dark:bg-surface-900 dark:text-foreground dark:border-foreground;
+    @apply bg-card text-foreground border-border;
 }
 
 .multiselect .multiselect__option--selected {
-    @apply dark:bg-surface-700 dark:text-foreground;
+    @apply bg-background text-foreground;
 }
 
 .multiselect__tag {
