@@ -133,7 +133,7 @@ const headerRow = [
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="users"
         :filters="filters"

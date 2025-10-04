@@ -1,6 +1,6 @@
 <script setup>
 import Icon from "@/Components/Icon.vue";
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { Popover, PopoverTrigger, PopoverContent } from "@/Components/ui/popover";
 import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
 import Multiselect from "vue-multiselect";
 import { reactive, watch } from "vue";
@@ -45,6 +45,10 @@ const filters = reactive({
     perPage: props.filters.perPage ?? 10,
     servers: props.filters.servers ?? undefined, // Handle for special server filter for ServerIntel pages.
 });
+
+// Track popover open state
+const popoverOpenStates = reactive({});
+
 watch(
     filters,
     throttle((newParams) => {
@@ -150,119 +154,111 @@ function toggleSorting(key) {
             <div class="overflow-x-auto">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden">
-                        <table class="min-w-full divide-y divide-border">
-                            <thead class="bg-muted">
+                        <table class="min-w-full divide-y divide-border/50">
+                            <thead class="bg-popover">
                                 <tr>
                                     <slot name="header">
                                         <th v-for="th in header" :key="th.key" scope="col" class="px-4 py-3 text-xs font-semibold text-left text-muted-foreground" :class="[th.class ? th.class : '']">
                                             <div class="inline-flex items-center">
-                                                <Popover v-if="th.filterable">
-                                                    <PopoverButton class="focus:outline-none">
+                                                <Popover v-if="th.filterable" @update:open="popoverOpenStates[th.key] = $event" :open="popoverOpenStates[th.key]">
+                                                    <PopoverTrigger class="focus:outline-none">
                                                         <Icon
                                                             v-if="Array.isArray(th.filterable) ? th.filterable.some((filter) => filters.filter[filter.key ?? th.key]) : filters.filter[th.filterable.key ?? th.key]"
                                                             name="funnel-fill"
                                                             class="inline-block h-4 mr-1 text-primary cursor-pointer hover:text-primary/80"
                                                         />
                                                         <Icon v-else name="funnel-outline" class="inline-block h-4 mr-1 text-muted-foreground cursor-pointer hover:text-foreground" />
-                                                    </PopoverButton>
+                                                    </PopoverTrigger>
 
-                                                    <transition
-                                                        enter-active-class="transition duration-200 ease-out"
-                                                        enter-from-class="translate-y-1 opacity-0"
-                                                        enter-to-class="translate-y-0 opacity-100"
-                                                        leave-active-class="transition duration-150 ease-in"
-                                                        leave-from-class="translate-y-0 opacity-100"
-                                                        leave-to-class="translate-y-1 opacity-0"
-                                                    >
-                                                        <PopoverPanel v-slot="{ close }" class="absolute z-10 p-4 text-popover-foreground bg-popover border border-border rounded shadow min-w-64">
-                                                            <h3 class="mb-1 text-sm font-semibold">
-                                                                {{ Array.isArray(th.filterable) ? th.filterable.title ?? null : th.filterable.title ?? __("Filters for :column", { column: th.label }) }}
-                                                            </h3>
+                                                    <PopoverContent class="min-w-64" align="start" @open-auto-focus.prevent>
+                                                        <h3 class="mb-1 text-sm font-semibold">
+                                                            {{ Array.isArray(th.filterable) ? th.filterable.title ?? null : th.filterable.title ?? __("Filters for :column", { column: th.label }) }}
+                                                        </h3>
 
-                                                            <div>
-                                                                <!-- If: Array Filterable -->
-                                                                <template v-if="Array.isArray(th.filterable)">
-                                                                    <div v-for="filter in th.filterable" :key="filter.key ?? th.key" class="mb-4">
-                                                                        <h4 class="mb-1 text-sm font-medium">
-                                                                            {{ filter.title ?? __("Filters for :column", { column: filter.label }) }}
-                                                                        </h4>
-                                                                        <input
-                                                                            v-if="filter.type === 'text'"
-                                                                            v-model="filters.filter[filter.key ?? th.key]"
-                                                                            class="block w-full p-2 border-input rounded-md shadow-sm bg-background text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
-                                                                            :placeholder="`Enter ${filter.title ?? filter.label}...`"
-                                                                            type="text"
-                                                                        />
-                                                                        <Multiselect
-                                                                            v-if="['multiselect', 'select'].includes(filter.type)"
-                                                                            v-model="filters.filter[filter.key ?? th.key]"
-                                                                            class="block w-full border-input rounded-md shadow-sm focus:ring-ring focus:border-primary sm:text-sm"
-                                                                            :options="filter.options"
-                                                                            :multiple="filter.type === 'multiselect'"
-                                                                            :close-on-select="filter.type === 'select'"
-                                                                            :limit="1"
-                                                                            :clear-on-select="false"
-                                                                            :searchable="filter.searchable ?? false"
-                                                                            :placeholder="`Select ${filter.title ?? filter.label}...`"
-                                                                        />
-                                                                        <button
-                                                                            class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-destructive-foreground bg-destructive hover:bg-destructive/90 focus:outline-none disabled:opacity-50"
-                                                                            :disabled="!filters.filter[filter.key ?? th.key]"
-                                                                            type="button"
-                                                                            @click="
-                                                                                () => {
-                                                                                    if (!filters.filter[filter.key ?? th.key]) {
-                                                                                        return;
-                                                                                    }
-                                                                                    delete filters.filter[filter.key ?? th.key];
-                                                                                }
-                                                                            "
-                                                                        >
-                                                                            {{ __("Clear") }}
-                                                                        </button>
-                                                                    </div>
-                                                                </template>
-                                                                <!-- Else: Single Object -->
-                                                                <template v-else>
+                                                        <div>
+                                                            <!-- If: Array Filterable -->
+                                                            <template v-if="Array.isArray(th.filterable)">
+                                                                <div v-for="filter in th.filterable" :key="filter.key ?? th.key" class="mb-4">
+                                                                    <h4 class="mb-1 text-sm font-medium">
+                                                                        {{ filter.title ?? __("Filters for :column", { column: filter.label }) }}
+                                                                    </h4>
                                                                     <input
-                                                                        v-if="th.filterable.type === 'text'"
-                                                                        v-model="filters.filter[th.filterable.key ?? th.key]"
+                                                                        v-if="filter.type === 'text'"
+                                                                        v-model="filters.filter[filter.key ?? th.key]"
                                                                         class="block w-full p-2 border-input rounded-md shadow-sm bg-background text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
-                                                                        :placeholder="`Enter ${th.label}...`"
+                                                                        :placeholder="`Enter ${filter.title ?? filter.label}...`"
                                                                         type="text"
                                                                     />
                                                                     <Multiselect
-                                                                        v-if="['multiselect', 'select'].includes(th.filterable.type)"
-                                                                        v-model="filters.filter[th.filterable.key ?? th.key]"
+                                                                        v-if="['multiselect', 'select'].includes(filter.type)"
+                                                                        v-model="filters.filter[filter.key ?? th.key]"
                                                                         class="block w-full border-input rounded-md shadow-sm focus:ring-ring focus:border-primary sm:text-sm"
-                                                                        :options="th.filterable.options"
-                                                                        :multiple="th.filterable.type === 'multiselect'"
-                                                                        :close-on-select="th.filterable.type === 'select'"
+                                                                        :options="filter.options"
+                                                                        :multiple="filter.type === 'multiselect'"
+                                                                        :close-on-select="filter.type === 'select'"
                                                                         :limit="1"
                                                                         :clear-on-select="false"
-                                                                        :searchable="th.filterable.searchable ?? false"
-                                                                        :placeholder="`Select ${th.label}...`"
+                                                                        :searchable="filter.searchable ?? false"
+                                                                        :placeholder="`Select ${filter.title ?? filter.label}...`"
                                                                     />
                                                                     <button
                                                                         class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-destructive-foreground bg-destructive hover:bg-destructive/90 focus:outline-none disabled:opacity-50"
-                                                                        :disabled="!filters.filter[th.filterable.key ?? th.key]"
+                                                                        :disabled="!filters.filter[filter.key ?? th.key]"
                                                                         type="button"
                                                                         @click="
                                                                             () => {
-                                                                                if (!filters.filter[th.filterable.key ?? th.key]) {
+                                                                                if (!filters.filter[filter.key ?? th.key]) {
                                                                                     return;
                                                                                 }
-                                                                                delete filters.filter[th.filterable.key ?? th.key];
-                                                                                close();
+                                                                                delete filters.filter[filter.key ?? th.key];
+                                                                                popoverOpenStates[th.key] = false;
                                                                             }
                                                                         "
                                                                     >
                                                                         {{ __("Clear") }}
                                                                     </button>
-                                                                </template>
-                                                            </div>
-                                                        </PopoverPanel>
-                                                    </transition>
+                                                                </div>
+                                                            </template>
+                                                            <!-- Else: Single Object -->
+                                                            <template v-else>
+                                                                <input
+                                                                    v-if="th.filterable.type === 'text'"
+                                                                    v-model="filters.filter[th.filterable.key ?? th.key]"
+                                                                    class="block w-full p-2 border-input rounded-md shadow-sm bg-background text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
+                                                                    :placeholder="`Enter ${th.label}...`"
+                                                                    type="text"
+                                                                />
+                                                                <Multiselect
+                                                                    v-if="['multiselect', 'select'].includes(th.filterable.type)"
+                                                                    v-model="filters.filter[th.filterable.key ?? th.key]"
+                                                                    class="block w-full border-input rounded-md shadow-sm focus:ring-ring focus:border-primary sm:text-sm"
+                                                                    :options="th.filterable.options"
+                                                                    :multiple="th.filterable.type === 'multiselect'"
+                                                                    :close-on-select="th.filterable.type === 'select'"
+                                                                    :limit="1"
+                                                                    :clear-on-select="false"
+                                                                    :searchable="th.filterable.searchable ?? false"
+                                                                    :placeholder="`Select ${th.label}...`"
+                                                                />
+                                                                <button
+                                                                    class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-destructive-foreground bg-destructive hover:bg-destructive/90 focus:outline-none disabled:opacity-50"
+                                                                    :disabled="!filters.filter[th.filterable.key ?? th.key]"
+                                                                    type="button"
+                                                                    @click="
+                                                                        () => {
+                                                                            if (!filters.filter[th.filterable.key ?? th.key]) {
+                                                                                return;
+                                                                            }
+                                                                            delete filters.filter[th.filterable.key ?? th.key];
+                                                                            popoverOpenStates[th.key] = false;
+                                                                        }
+                                                                    "
+                                                                >
+                                                                    {{ __("Clear") }}
+                                                                </button>
+                                                            </template>
+                                                        </div>
+                                                    </PopoverContent>
                                                 </Popover>
                                                 <div class="inline-flex items-center uppercase" :class="[th.sortable ? 'cursor-pointer' : '']" @click="th.sortable ? toggleSorting(th.key) : null">
                                                     {{ th.label }}
@@ -296,7 +292,7 @@ function toggleSorting(key) {
             </div>
         </div>
 
-        <div id="tableFooter" class="flex items-center justify-between px-4 py-3 border-t border-border">
+        <div id="tableFooter" class="flex items-center justify-between px-4 py-3 border-t border-border/50">
             <div class="flex justify-between flex-1 sm:hidden">
                 <InertiaLink
                     :href="data.prev_page_url ?? '#'"
