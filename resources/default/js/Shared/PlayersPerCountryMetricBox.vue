@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import axios from "axios";
 import Chart from "@/Components/Dashboard/Chart.vue";
+import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
 import { useChartTheme } from "@/Composables/useChartTheme.js";
 
 const { getMapColorPalette, getTooltipStyle, getToolboxStyle, getMapStyle, getNoDataColor } = useChartTheme();
@@ -118,10 +119,12 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="bg-card text-card-foreground rounded-lg border w-full h-full space-y-2 p-3 shadow">
-        <h3 class="font-extrabold text-card-foreground flex items-center">
-            {{ __("Player's Country") }}
-        </h3>
-        <Chart :autoresize="true" :options="option" :height="mapHeight" :loading="isLoading" />
-    </div>
+    <Card class="w-full h-full">
+        <CardHeader>
+            <CardTitle>{{ __("Player's Country") }}</CardTitle>
+        </CardHeader>
+        <CardContent class="pt-0">
+            <Chart :autoresize="true" :options="option" :height="mapHeight" :loading="isLoading" />
+        </CardContent>
+    </Card>
 </template>

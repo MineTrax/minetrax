@@ -1,5 +1,6 @@
 <script setup>
 import Icon from "@/Components/Icon.vue";
+import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
 
 defineProps({
     title: {
@@ -29,20 +30,22 @@ defineProps({
 </script>
 
 <template>
-    <div class="bg-card text-card-foreground p-4 rounded-lg border flex space-x-4 justify-between shadow">
-        <div id="left">
-            <h3 class="text-card-foreground text-sm font-bold" :class="color">
-                {{ title }}
-            </h3>
-            <p class="text-2xl font-bold text-card-foreground">
-                {{ value }}
-            </p>
-            <p v-if="desc" class="text-xs text-muted-foreground">
-                {{ desc }}
-            </p>
-        </div>
-        <div id="right" class="flex justify-center items-center">
-            <icon v-if="icon" class="w-16" :class="color" :name="icon" />
-        </div>
-    </div>
+    <Card>
+        <CardContent class="flex space-x-4 justify-between items-center">
+            <div>
+                <h3 class="text-sm font-semibold mb-2" :class="color">
+                    {{ title }}
+                </h3>
+                <p class="text-2xl font-bold text-card-foreground">
+                    {{ value }}
+                </p>
+                <p v-if="desc" class="text-xs text-muted-foreground">
+                    {{ desc }}
+                </p>
+            </div>
+            <div class="flex justify-center items-center">
+                <icon v-if="icon" class="w-16" :class="color" :name="icon" />
+            </div>
+        </CardContent>
+    </Card>
 </template>

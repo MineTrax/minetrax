@@ -1,5 +1,6 @@
 <script setup>
 import LoadingSpinner from "@/Components/LoadingSpinner.vue";
+import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
 import { FaceSmileIcon, UserGroupIcon, UserPlusIcon, FaceFrownIcon, ChartBarIcon, ArrowTrendingUpIcon } from "@heroicons/vue/24/outline";
 import { useAxios } from "@vueuse/integrations/useAxios";
 import millify from "millify";
@@ -10,12 +11,12 @@ const { data, isFinished, isLoading, error } = useAxios(route("admin.graph.netwo
 </script>
 
 <template>
-    <div class="bg-card text-card-foreground rounded-lg border w-full shadow">
-        <h3 class="p-3 font-extrabold text-card-foreground flex items-center">
-            {{ __("Network Trends") }}
-        </h3>
+    <Card class="w-full">
+        <CardHeader>
+            <CardTitle>{{ __("Network Trends") }}</CardTitle>
+        </CardHeader>
 
-        <div class="flex flex-col">
+        <CardContent class="pt-0">
             <LoadingSpinner class="w-full mt-10" :loading="isLoading && !isFinished" />
 
             <div v-if="error" class="p-3 text-center bg-destructive/10 text-destructive">
@@ -218,6 +219,6 @@ const { data, isFinished, isLoading, error } = useAxios(route("admin.graph.netwo
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </CardContent>
+    </Card>
 </template>

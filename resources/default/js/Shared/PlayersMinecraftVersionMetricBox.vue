@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import axios from "axios";
 import Chart from "@/Components/Dashboard/Chart.vue";
+import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
 
 const props = defineProps({
     servers: {
@@ -71,10 +72,12 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="bg-card text-card-foreground rounded-lg border w-full h-full space-y-2 p-3 shadow">
-        <h3 class="font-extrabold text-card-foreground flex items-center">
-            {{ __("Player Client Versions") }}
-        </h3>
-        <Chart :options="option" :height="chartHeight" :loading="isLoading" :autoresize="true" />
-    </div>
+    <Card class="w-full h-full">
+        <CardHeader>
+            <CardTitle>{{ __("Player Client Versions") }}</CardTitle>
+        </CardHeader>
+        <CardContent class="pt-0">
+            <Chart :options="option" :height="chartHeight" :loading="isLoading" :autoresize="true" />
+        </CardContent>
+    </Card>
 </template>
