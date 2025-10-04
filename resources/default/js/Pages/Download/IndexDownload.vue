@@ -55,18 +55,10 @@ const headerRow = [
         <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
           {{ __("Downloads") }}
         </h1>
-        <div class="flex">
-          <Link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </Link>
-        </div>
       </div>
       <div class="flex flex-col md:flex-row md:space-x-4">
         <DataTable
-          class="bg-white rounded shadow dark:bg-surface-800 w-full"
+          class="rounded-lg border bg-card text-card-foreground shadow w-full"
           :header="headerRow"
           :data="downloads"
           :filters="filters"

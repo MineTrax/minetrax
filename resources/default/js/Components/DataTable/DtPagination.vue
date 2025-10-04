@@ -1,6 +1,6 @@
 <script setup>
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
-import {  computed, ref, watchEffect } from 'vue';
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/outline";
+import { computed, ref, watchEffect } from "vue";
 let pages = ref([]);
 let previousPage = ref({});
 let nextPage = ref({});
@@ -24,7 +24,7 @@ watchEffect(() => {
 
 // Generate Pagination Links
 function generatePaginationLinks() {
-    if(isSimplePagination.value) {
+    if (isSimplePagination.value) {
         return;
     }
 
@@ -74,23 +74,16 @@ function pagination(currentPage, pageCount) {
         range.end += 1;
     }
 
-    let pages =
-        currentPage > delta
-            ? getRange(
-                Math.min(range.start, pageCount - delta),
-                Math.min(range.end, pageCount)
-            )
-            : getRange(1, Math.min(pageCount, delta + 1));
+    let pages = currentPage > delta ? getRange(Math.min(range.start, pageCount - delta), Math.min(range.end, pageCount)) : getRange(1, Math.min(pageCount, delta + 1));
 
-    const withDots = (value, pair) =>
-        pages.length + 1 !== pageCount ? pair : [value];
+    const withDots = (value, pair) => (pages.length + 1 !== pageCount ? pair : [value]);
 
     if (pages[0] !== 1) {
-        pages = withDots(1, [1, '...']).concat(pages);
+        pages = withDots(1, [1, "..."]).concat(pages);
     }
 
     if (pages[pages.length - 1] < pageCount) {
-        pages = pages.concat(withDots(pageCount, ['...', pageCount]));
+        pages = pages.concat(withDots(pageCount, ["...", pageCount]));
     }
 
     return pages;
@@ -99,93 +92,59 @@ function pagination(currentPage, pageCount) {
 </script>
 
 <template>
-  <nav
-    v-if="isSimplePagination"
-    class="isolate inline-flex space-x-2 rounded-md shadow-sm"
-  >
-    <InertiaLink
-      v-if="props.data.prev_page_url"
-      :href="data.prev_page_url"
-      class="relative inline-flex items-center rounded-md border border-foreground dark:border-foreground dark:bg-surface-700 dark:text-foreground dark:hover:bg-surface-600 bg-white px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-50"
-    >
-      {{ __("Previous") }}
-    </InertiaLink>
-    <button
-      v-else
-      disabled
-      class="relative inline-flex items-center rounded-md border border-foreground dark:border-foreground dark:bg-surface-700 dark:text-foreground  bg-white px-4 py-2 text-sm font-medium text-foreground cursor-not-allowed"
-    >
-      {{ __("Previous") }}
-    </button>
-    <InertiaLink
-      v-if="props.data.next_page_url"
-      :href="data.next_page_url"
-      class="relative ml-3 inline-flex items-center rounded-md border border-foreground dark:border-foreground dark:bg-surface-700 dark:text-foreground dark:hover:bg-surface-600 bg-white px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-50"
-    >
-      {{ __("Next") }}
-    </InertiaLink>
-    <button
-      v-else
-      disabled
-      class="relative inline-flex items-center rounded-md border border-foreground dark:border-foreground dark:bg-surface-700 dark:text-foreground  bg-white px-4 py-2 text-sm font-medium text-foreground cursor-not-allowed"
-    >
-      {{ __("Next") }}
-    </button>
-  </nav>
+    <nav v-if="isSimplePagination" class="isolate inline-flex space-x-2 rounded-md shadow-sm">
+        <InertiaLink
+            v-if="props.data.prev_page_url"
+            :href="data.prev_page_url"
+            class="relative inline-flex items-center rounded-md border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 text-sm font-medium"
+        >
+            {{ __("Previous") }}
+        </InertiaLink>
+        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
+            {{ __("Previous") }}
+        </button>
+        <InertiaLink
+            v-if="props.data.next_page_url"
+            :href="data.next_page_url"
+            class="relative ml-3 inline-flex items-center rounded-md border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 text-sm font-medium"
+        >
+            {{ __("Next") }}
+        </InertiaLink>
+        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
+            {{ __("Next") }}
+        </button>
+    </nav>
 
-  <nav
-    v-else
-    class="isolate inline-flex -space-x-px rounded-md shadow-sm"
-    aria-label="Pagination"
-  >
-    <InertiaLink
-      :href="previousPage.url ?? '#'"
-      class="relative disabled:bg-surface-900 inline-flex items-center rounded-l-md px-2 py-2 text-foreground dark:text-foreground ring-1 ring-inset ring-foreground dark:ring-foreground focus:z-20 focus:outline-offset-0"
-      :class="[
-        previousPage.url == null
-          ? 'pointer-events-none'
-          : 'hover:bg-surface-50 dark:hover:bg-surface-700',
-      ]"
-    >
-      <span class="sr-only">{{ __("Previous") }}</span>
-      <ChevronLeftIcon class="h-5 w-5" />
-    </InertiaLink>
-    <!-- Current: "z-10 bg-primary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-foreground ring-1 ring-inset ring-foreground hover:bg-surface-50 focus:outline-offset-0" -->
+    <nav v-else class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+        <InertiaLink
+            :href="previousPage.url ?? '#'"
+            class="relative inline-flex items-center rounded-l-md px-2 py-2 text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"
+            :class="[previousPage.url == null ? 'pointer-events-none opacity-50' : 'hover:bg-accent hover:text-accent-foreground']"
+        >
+            <span class="sr-only">{{ __("Previous") }}</span>
+            <ChevronLeftIcon class="h-5 w-5" />
+        </InertiaLink>
 
-    <template
-      v-for="(page, index) in pageGenArray"
-      :key="index"
-    >
-      <span
-        v-if="page === '...'"
-        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-foreground dark:text-foreground ring-1 ring-inset ring-foreground dark:ring-foreground focus:outline-offset-0"
-      >...</span>
-      <InertiaLink
-        v-else
-        :href="pages[page - 1].url"
-        class="relative inline-flex items-center px-4 py-2 text-sm text-foreground dark:text-foreground ring-1 ring-inset ring-foreground dark:ring-foreground focus:z-20 focus:outline-offset-0"
-        :class="[
-          pages[page - 1].active
-            ? 'bg-surface-300 dark:bg-surface-900 font-semibold'
-            : 'hover:bg-surface-50 dark:hover:bg-surface-700',
-        ]"
-      >
-        {{ pages[page - 1].label }}
-      </InertiaLink>
-    </template>
+        <template v-for="(page, index) in pageGenArray" :key="index">
+            <span v-if="page === '...'" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-muted-foreground ring-1 ring-inset ring-border focus:outline-offset-0">...</span>
+            <InertiaLink
+                v-else
+                :href="pages[page - 1].url"
+                class="relative inline-flex items-center px-4 py-2 text-sm text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"
+                :class="[pages[page - 1].active ? 'bg-accent text-accent-foreground font-semibold' : 'hover:bg-accent/50']"
+            >
+                {{ pages[page - 1].label }}
+            </InertiaLink>
+        </template>
 
-    <InertiaLink
-      :disabled="!nextPage.url == null"
-      :href="nextPage.url ?? '#'"
-      class="relative inline-flex items-center rounded-r-md px-2 py-2 text-foreground dark:text-foreground ring-1 ring-inset ring-foreground dark:ring-foreground focus:z-20 focus:outline-offset-0"
-      :class="[
-        nextPage.url == null
-          ? 'pointer-events-none'
-          : 'hover:bg-surface-50 dark:hover:bg-surface-700',
-      ]"
-    >
-      <span class="sr-only">{{ __("Next") }}</span>
-      <ChevronRightIcon class="h-5 w-5" />
-    </InertiaLink>
-  </nav>
+        <InertiaLink
+            :disabled="!nextPage.url == null"
+            :href="nextPage.url ?? '#'"
+            class="relative inline-flex items-center rounded-r-md px-2 py-2 text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"
+            :class="[nextPage.url == null ? 'pointer-events-none opacity-50' : 'hover:bg-accent hover:text-accent-foreground']"
+        >
+            <span class="sr-only">{{ __("Next") }}</span>
+            <ChevronRightIcon class="h-5 w-5" />
+        </InertiaLink>
+    </nav>
 </template>

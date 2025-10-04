@@ -237,7 +237,7 @@ const headerRow = [
             </div>
 
             <div class="flex flex-col md:flex-row md:space-x-4">
-                <DataTable class="bg-white rounded shadow dark:bg-surface-800 w-full" :header="headerRow"
+                <DataTable class="bg-card rounded-lg shadow w-full" :header="headerRow"
                     :data="punishments" :filters="filters">
                     <template #default="{ item }">
                         <DtRowItem>
