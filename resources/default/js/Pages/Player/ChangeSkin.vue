@@ -9,6 +9,10 @@ import { useForm } from "@inertiajs/vue3";
 import LoadingButton from "@/Components/LoadingButton.vue";
 import AlertCard from "@/Components/AlertCard.vue";
 import { computed } from "vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+
+const { __ } = useTranslations();
 
 const props = defineProps({
     uuid: {
@@ -109,12 +113,26 @@ const validSkinUrlSampleList = [
 const formDisabled = computed(() => {
     return !props.hasServersWithFeature || form.processing || !selectedPlayer.value;
 });
+
+// Breadcrumb data stored in JSON format
+const breadcrumbItems = computed(() => [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Change Player Skin'),
+        current: true
+    }
+]);
 </script>
 
 <template>
     <AppLayout>
         <AppHead :title="__('Change Player Skin')" />
-        <div class="max-w-6xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
+        <AppBreadcrumb class="max-w-screen-xl mx-auto" :items="breadcrumbItems" />
+        <div class="max-w-screen-xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                 <h2 v-if="selectedPlayer" class="text-lg mb-2 md:mb-0 md:text-2xl font-bold text-foreground">
                     {{

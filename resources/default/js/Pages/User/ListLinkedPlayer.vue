@@ -2,7 +2,8 @@
     <AppLayout>
         <AppHead :title="__('Your Linked Players')" />
 
-        <div class="max-w-6xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
+        <AppBreadcrumb class="max-w-screen-xl mx-auto" :items="breadcrumbItems" />
+        <div class="max-w-screen-xl mx-auto py-4 px-2 sm:py-6 sm:px-4 lg:px-8">
             <Card
                 class="border-t-4 relative overflow-hidden transition-all duration-300"
                 :class="{
@@ -276,6 +277,7 @@ import { PaintBrushIcon, BookmarkSlashIcon, LockClosedIcon } from "@heroicons/vu
 import CopyToClipboard from "@/Components/CopyToClipboard.vue";
 import { Card, CardContent } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -349,4 +351,17 @@ onUnmounted(() => {
 
     clearInterval(otpExpiryCountdownInterval.value);
 });
+
+// Breadcrumb data stored in JSON format
+const breadcrumbItems = computed(() => [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Linked Players'),
+        current: true
+    }
+]);
 </script>

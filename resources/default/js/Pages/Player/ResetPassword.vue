@@ -11,6 +11,7 @@ import { ArrowPathIcon, CheckCircleIcon } from "@heroicons/vue/24/solid";
 import { useHelpers } from "@/Composables/useHelpers";
 import { Card, CardContent } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 
 const { __ } = useTranslations();
 const { generateRandomString, secondsToHMS } = useHelpers();
@@ -61,11 +62,25 @@ const formDisabled = computed(() => {
 const success = computed(() => {
     return usePage().props?.toast?.type === "success";
 });
+
+// Breadcrumb data stored in JSON format
+const breadcrumbItems = computed(() => [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Reset Player Password'),
+        current: true
+    }
+]);
 </script>
 
 <template>
     <AppLayout>
         <AppHead :title="__('Reset Player Password')" />
+        <AppBreadcrumb class="max-w-4xl mx-auto" :items="breadcrumbItems" />
         <div class="max-w-4xl px-2 py-3 mx-auto space-y-4 md:py-12 md:px-10">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>

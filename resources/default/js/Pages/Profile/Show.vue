@@ -9,7 +9,8 @@
         </template>
 
         <div>
-            <div class="max-w-7xl mx-auto py-4 px-2 sm:py-6 sm:px-4 lg:py-10 lg:px-8">
+            <AppBreadcrumb class="max-w-screen-xl mx-auto" :items="breadcrumbItems" />
+            <div class="max-w-screen-xl mx-auto py-4 px-2 sm:py-6 sm:px-4 lg:px-8">
                 <Tabs default-value="profile" orientation="vertical" class="w-full">
                     <!-- Mobile: Stack vertically, Desktop: Side by side -->
                     <div class="flex flex-col md:flex-row gap-4">
@@ -135,6 +136,8 @@ import UpdatePasswordForm from "./UpdatePasswordForm.vue";
 import UpdateProfileInformationForm from "./UpdateProfileInformationForm.vue";
 import UpdateNotificationPreferencesForm from "@/Pages/Profile/UpdateNotificationPreferencesForm.vue";
 import LinkedSocialAccountsForm from "@/Pages/Profile/LinkedSocialAccountsForm.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { computed } from "vue";
 
 const { __ } = useTranslations();
 const page = usePage();
@@ -146,4 +149,17 @@ defineProps({
         required: true,
     },
 });
+
+// Breadcrumb data stored in JSON format
+const breadcrumbItems = computed(() => [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Edit Profile'),
+        current: true
+    }
+]);
 </script>
