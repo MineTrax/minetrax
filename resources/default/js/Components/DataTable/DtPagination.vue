@@ -92,30 +92,30 @@ function pagination(currentPage, pageCount) {
 </script>
 
 <template>
-    <nav v-if="isSimplePagination" class="isolate inline-flex space-x-2 rounded-md shadow-sm">
+    <nav v-if="isSimplePagination" class="isolate inline-flex space-x-2 rounded-md">
         <InertiaLink
             v-if="props.data.prev_page_url"
             :href="data.prev_page_url"
-            class="relative inline-flex items-center rounded-md border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 text-sm font-medium"
+            class="relative inline-flex items-center rounded-md border border-border text-secondary-foreground hover:bg-accent/50 px-4 py-2 text-sm font-medium"
         >
             {{ __("Previous") }}
         </InertiaLink>
-        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
+        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border text-secondary-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
             {{ __("Previous") }}
         </button>
         <InertiaLink
             v-if="props.data.next_page_url"
             :href="data.next_page_url"
-            class="relative ml-3 inline-flex items-center rounded-md border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 text-sm font-medium"
+            class="relative ml-3 inline-flex items-center rounded-md border border-border text-secondary-foreground hover:bg-accent/50 px-4 py-2 text-sm font-medium"
         >
             {{ __("Next") }}
         </InertiaLink>
-        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
+        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border text-secondary-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
             {{ __("Next") }}
         </button>
     </nav>
 
-    <nav v-else class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+    <nav v-else class="isolate inline-flex -space-x-px rounded-md" aria-label="Pagination">
         <InertiaLink
             :href="previousPage.url ?? '#'"
             class="relative inline-flex items-center rounded-l-md px-2 py-2 text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"

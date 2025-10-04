@@ -1,6 +1,7 @@
 <script setup>
 import Icon from "@/Components/Icon.vue";
 import { Popover, PopoverTrigger, PopoverContent } from "@/Components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
 import Multiselect from "vue-multiselect";
 import { reactive, watch } from "vue";
@@ -42,7 +43,7 @@ const props = defineProps({
 const filters = reactive({
     filter: props.filters.filter ?? { q: "" },
     sort: props.filters.sort ?? "",
-    perPage: props.filters.perPage ?? 10,
+    perPage: props.filters.perPage ? +props.filters.perPage : 10,
     servers: props.filters.servers ?? undefined, // Handle for special server filter for ServerIntel pages.
 });
 
@@ -310,12 +311,17 @@ function toggleSorting(key) {
             <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div class="flex items-center">
                     <div>
-                        <select id="perPage" v-model="filters.perPage" class="block w-full text-sm text-foreground border border-input rounded-lg bg-background focus:ring-ring focus:border-primary">
-                            <option :value="10" :selected="data.per_page == 10">10 {{ __("per page") }}</option>
-                            <option :value="20" :selected="data.per_page == 20">20 {{ __("per page") }}</option>
-                            <option :value="50" :selected="data.per_page == 50">50 {{ __("per page") }}</option>
-                            <option :value="100" :selected="data.per_page == 100">100 {{ __("per page") }}</option>
-                        </select>
+                        <Select v-model="filters.perPage">
+                            <SelectTrigger class="w-[140px]">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem :value="10">10 {{ __("per page") }}</SelectItem>
+                                <SelectItem :value="20">20 {{ __("per page") }}</SelectItem>
+                                <SelectItem :value="50">50 {{ __("per page") }}</SelectItem>
+                                <SelectItem :value="100">100 {{ __("per page") }}</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <p v-if="data.total != undefined" class="ml-2 text-sm text-foreground">
                         {{ __("Showing") }}
