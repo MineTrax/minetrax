@@ -1,43 +1,43 @@
 <script setup>
-import {onMounted, ref} from 'vue';
-import axios from 'axios';
-import Chart from '@/Components/Dashboard/Chart.vue';
+import { onMounted, ref } from "vue";
+import axios from "axios";
+import Chart from "@/Components/Dashboard/Chart.vue";
 
 let option = ref({});
 let graphData = ref(null);
 let isLoading = ref(true);
 
 onMounted(async () => {
-    const response = await axios.get(route('admin.graph.online-players'));
+    const response = await axios.get(route("admin.graph.online-players"));
     isLoading.value = false;
     graphData.value = response.data;
     option.value = {
         tooltip: {
-            trigger: 'axis',
+            trigger: "axis",
             position: function (pt) {
-                return [pt[0], '10%'];
-            }
+                return [pt[0], "10%"];
+            },
         },
         legend: {},
         toolbox: {
             feature: {
                 dataZoom: {
-                    yAxisIndex: 'none'
+                    yAxisIndex: "none",
                 },
                 restore: {},
-                saveAsImage: {}
-            }
+                saveAsImage: {},
+            },
         },
         xAxis: {
-            type: 'time',
+            type: "time",
         },
         yAxis: {
-            type: 'value',
-            boundaryGap: [0, '10%']
+            type: "value",
+            boundaryGap: [0, "10%"],
         },
         dataZoom: [
             {
-                type: 'inside',
+                type: "inside",
                 start: 90,
                 end: 100,
                 zoomLock: true,
@@ -45,42 +45,35 @@ onMounted(async () => {
             {
                 start: 90,
                 end: 100,
-            }
+            },
         ],
-        series: graphData.value.servers.map(
-            (serverName, index) => {
-                return {
-                    name: serverName,
-                    type: 'line',
-                    smooth: true,
-                    symbol: 'none',
-                    seriesLayoutBy: 'column',
-                    encode: {
-                        y: index + 1
-                    },
-                    emphasis: {
-                        focus: 'series'
-                    },
-                };
-            }
-        ),
+        series: graphData.value.servers.map((serverName, index) => {
+            return {
+                name: serverName,
+                type: "line",
+                smooth: true,
+                symbol: "none",
+                seriesLayoutBy: "column",
+                encode: {
+                    y: index + 1,
+                },
+                emphasis: {
+                    focus: "series",
+                },
+            };
+        }),
         dataset: {
-            source: graphData.value.data
-        }
+            source: graphData.value.data,
+        },
     };
 });
 </script>
 
 <template>
-  <div class="bg-white dark:bg-surface-800 rounded w-full h-full space-y-2 p-3 shadow">
-    <h3 class="font-extrabold text-foreground dark:text-foreground flex items-center">
-      {{ __("Online Players") }}
-    </h3>
-    <Chart
-      :options="option"
-      height="350px"
-      :loading="isLoading"
-      :autoresize="true"
-    />
-  </div>
+    <div class="bg-card text-card-foreground rounded-lg border w-full h-full space-y-2 p-3 shadow">
+        <h3 class="font-extrabold text-card-foreground flex items-center">
+            {{ __("Online Players") }}
+        </h3>
+        <Chart :options="option" height="350px" :loading="isLoading" :autoresize="true" />
+    </div>
 </template>

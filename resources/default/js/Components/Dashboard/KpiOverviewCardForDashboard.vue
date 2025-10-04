@@ -1,6 +1,6 @@
 <script setup>
-import millify from 'millify';
-import KpiOverviewCard from '@/Components/Dashboard/KpiOverviewCard.vue';
+import millify from "millify";
+import KpiOverviewCard from "@/Components/Dashboard/KpiOverviewCard.vue";
 
 defineProps({
     icon: {
@@ -10,7 +10,7 @@ defineProps({
     iconClass: {
         type: [Array, String],
         required: false,
-        default: 'text-foreground bg-surface-100 dark:bg-surface-500 dark:text-white'
+        default: "text-muted-foreground bg-muted",
     },
     title: {
         type: [String, Number],
@@ -41,25 +41,20 @@ defineProps({
         default: null,
     },
 });
-
 </script>
 
 <template>
-  <KpiOverviewCard
-    class="flex-1"
-    :title="title"
-    :value="millify(value)"
-    :sub-value="`(+${subValue})`"
-    :sub-value-class="[
-      subValue > 0 ? 'text-success-500' : 'text-foreground',
-    ]"
-    :change="`+${millify(change, {precision: 2})}%`"
-    :change-class="[
-      change > 0 ? 'text-success-500 bg-success-100' : 'text-foreground bg-surface-100',
-    ]"
-    :change-desc="changeDesc"
-    :icon="icon"
-    :icon-class="iconClass"
-    :description="description"
-  />
+    <KpiOverviewCard
+        class="flex-1"
+        :title="title"
+        :value="millify(value)"
+        :sub-value="`(+${subValue})`"
+        :sub-value-class="[subValue > 0 ? 'text-green-500' : 'text-muted-foreground']"
+        :change="`+${millify(change, { precision: 2 })}%`"
+        :change-class="[change > 0 ? 'text-green-500' : 'text-muted-foreground']"
+        :change-desc="changeDesc"
+        :icon="icon"
+        :icon-class="iconClass"
+        :description="description"
+    />
 </template>

@@ -1,16 +1,10 @@
 <script setup>
-import {onMounted, ref} from 'vue';
-import axios from 'axios';
-import Chart from '@/Components/Dashboard/Chart.vue';
-import { useChartTheme } from '@/Composables/useChartTheme.js';
+import { onMounted, ref } from "vue";
+import axios from "axios";
+import Chart from "@/Components/Dashboard/Chart.vue";
+import { useChartTheme } from "@/Composables/useChartTheme.js";
 
-const {
-    getMapColorPalette,
-    getTooltipStyle,
-    getToolboxStyle,
-    getMapStyle,
-    getNoDataColor
-} = useChartTheme();
+const { getMapColorPalette, getTooltipStyle, getToolboxStyle, getMapStyle, getNoDataColor } = useChartTheme();
 
 let option = ref({});
 let graphData = ref(null);
@@ -20,13 +14,13 @@ const props = defineProps({
     routeName: {
         type: String,
         required: false,
-        default: route('admin.graph.players-per-country'),
+        default: route("admin.graph.players-per-country"),
     },
     mapHeight: {
         type: String,
         required: false,
-        default: '410px',
-    }
+        default: "410px",
+    },
 });
 
 onMounted(async () => {
@@ -35,8 +29,8 @@ onMounted(async () => {
     isLoading.value = false;
     graphData.value = response.data;
 
-        // Get theme-aware styling
-    const isDark = window.colorMode === 'dark';
+    // Get theme-aware styling
+    const isDark = window.colorMode === "dark";
     const tooltipStyle = getTooltipStyle();
     const toolboxStyle = getToolboxStyle();
     const mapStyle = getMapStyle();
@@ -45,7 +39,7 @@ onMounted(async () => {
 
     option.value = {
         tooltip: {
-            formatter: function(params) {
+            formatter: function (params) {
                 const { name, value } = params.data;
                 const image = params.data.image;
                 return `
@@ -60,7 +54,7 @@ onMounted(async () => {
                         </div>
                     </div>`;
             },
-            ...tooltipStyle
+            ...tooltipStyle,
         },
 
         toolbox: {
@@ -69,43 +63,43 @@ onMounted(async () => {
                 saveAsImage: {},
                 dataView: { readOnly: true },
             },
-            ...toolboxStyle
+            ...toolboxStyle,
         },
         visualMap: {
             min: 0,
             max: graphData.value.max,
-            left: 'left',
-            top: 'bottom',
-            text: ['High', 'Low'],
+            left: "left",
+            top: "bottom",
+            text: ["High", "Low"],
             textStyle: {
-                color: tooltipStyle.textStyle.color
+                color: tooltipStyle.textStyle.color,
             },
             calculable: true,
             inRange: {
-                color: mapColors
+                color: mapColors,
             },
             // Handle areas with no data
             outOfRange: {
-                color: noDataColor
-            }
+                color: noDataColor,
+            },
         },
         series: [
             {
-                name: 'Players',
-                type: 'map',
-                mapType: 'world',
+                name: "Players",
+                type: "map",
+                mapType: "world",
                 roam: true,
                 itemStyle: {
                     normal: {
                         // Areas with no data will use background color
                         areaColor: noDataColor,
-                        borderColor: isDark ? 'rgba(100, 116, 139, 0.3)' : 'rgba(148, 163, 184, 0.3)',
-                        borderWidth: 0.5
+                        borderColor: isDark ? "rgba(100, 116, 139, 0.3)" : "rgba(148, 163, 184, 0.3)",
+                        borderWidth: 0.5,
                     },
                     emphasis: {
-                        areaColor: isDark ? 'rgba(100, 116, 139, 0.6)' : 'rgba(148, 163, 184, 0.6)',
+                        areaColor: isDark ? "rgba(100, 116, 139, 0.6)" : "rgba(148, 163, 184, 0.6)",
                         borderColor: mapColors[mapColors.length - 1],
-                        borderWidth: 1
+                        borderWidth: 1,
                     },
                 },
                 label: {
@@ -124,15 +118,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="bg-white dark:bg-surface-800 rounded w-full h-full space-y-2 p-3 shadow">
-    <h3 class="font-extrabold text-foreground dark:text-foreground flex items-center">
-      {{ __("Player's Country") }}
-    </h3>
-    <Chart
-      :autoresize="true"
-      :options="option"
-      :height="mapHeight"
-      :loading="isLoading"
-    />
-  </div>
+    <div class="bg-card text-card-foreground rounded-lg border w-full h-full space-y-2 p-3 shadow">
+        <h3 class="font-extrabold text-card-foreground flex items-center">
+            {{ __("Player's Country") }}
+        </h3>
+        <Chart :autoresize="true" :options="option" :height="mapHeight" :loading="isLoading" />
+    </div>
 </template>

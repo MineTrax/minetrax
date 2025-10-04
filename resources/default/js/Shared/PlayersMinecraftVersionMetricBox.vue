@@ -1,7 +1,7 @@
 <script setup>
-import {onMounted, ref} from 'vue';
-import axios from 'axios';
-import Chart from '@/Components/Dashboard/Chart.vue';
+import { onMounted, ref } from "vue";
+import axios from "axios";
+import Chart from "@/Components/Dashboard/Chart.vue";
 
 const props = defineProps({
     servers: {
@@ -10,7 +10,7 @@ const props = defineProps({
     },
     chartHeight: {
         type: String,
-        default: '350px',
+        default: "350px",
     },
     topCount: {
         type: Number,
@@ -25,61 +25,56 @@ let isLoading = ref(true);
 onMounted(async () => {
     const params = {};
     if (props.servers && props.servers.length > 0) {
-        params['servers'] = props.servers;
+        params["servers"] = props.servers;
     }
     if (props.topCount) {
-        params['top'] = props.topCount;
+        params["top"] = props.topCount;
     }
-    const response = await axios.get(route('admin.graph.player-minecraft-versions', params));
+    const response = await axios.get(route("admin.graph.player-minecraft-versions", params));
     isLoading.value = false;
     graphData.value = response.data ?? [];
 
     option.value = {
         tooltip: {
-            trigger: 'axis',
+            trigger: "axis",
             axisPointer: {
-                type: 'shadow'
-            }
+                type: "shadow",
+            },
         },
         toolbox: {
             feature: {
                 dataZoom: {
-                    yAxisIndex: 'none',
+                    yAxisIndex: "none",
                 },
                 restore: {},
                 saveAsImage: {},
                 dataView: { readOnly: true },
-            }
+            },
         },
         xAxis: {
-            type: 'category',
+            type: "category",
             data: graphData.value.map((item) => item.name),
         },
         yAxis: {
-            type: 'value'
+            type: "value",
         },
         series: [
             {
-                name: 'Players',
-                type: 'bar',
-                barWidth: '60%',
-                data: graphData.value.map((item) => item.value)
-            }
-        ]
+                name: "Players",
+                type: "bar",
+                barWidth: "60%",
+                data: graphData.value.map((item) => item.value),
+            },
+        ],
     };
 });
 </script>
 
 <template>
-  <div class="bg-white dark:bg-surface-800 rounded w-full h-full space-y-2 p-3 shadow">
-    <h3 class="font-extrabold text-foreground dark:text-foreground flex items-center">
-      {{ __("Player Client Versions") }}
-    </h3>
-    <Chart
-      :options="option"
-      :height="chartHeight"
-      :loading="isLoading"
-      :autoresize="true"
-    />
-  </div>
+    <div class="bg-card text-card-foreground rounded-lg border w-full h-full space-y-2 p-3 shadow">
+        <h3 class="font-extrabold text-card-foreground flex items-center">
+            {{ __("Player Client Versions") }}
+        </h3>
+        <Chart :options="option" :height="chartHeight" :loading="isLoading" :autoresize="true" />
+    </div>
 </template>
