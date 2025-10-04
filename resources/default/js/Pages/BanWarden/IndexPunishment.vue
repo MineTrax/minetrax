@@ -9,6 +9,7 @@ import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 import { Card, CardContent } from "@/Components/ui/card";
 import { ArrowRightOnRectangleIcon, ExclamationTriangleIcon, EyeIcon, NoSymbolIcon, ScaleIcon, SpeakerXMarkIcon } from "@heroicons/vue/24/outline";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -134,13 +135,26 @@ const headerRow = [
         class: "w-1 text-right",
     },
 ];
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+    },
+    {
+        text: __('Punishments'),
+        current: true,
+    },
+];
 </script>
 
 <template>
     <AppLayout>
         <AppHead :title="__('Punishments')" />
 
-        <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
+        <AppBreadcrumb :items="breadcrumbItems" />
+
+        <div class="py-4 px-2 md:py-4 md:px-10 max-w-screen-2xl mx-auto">
             <div class="grid-cols-5 gap-4 mb-4 hidden md:grid">
                 <div class="col-span-full md:col-span-1">
                     <Card>

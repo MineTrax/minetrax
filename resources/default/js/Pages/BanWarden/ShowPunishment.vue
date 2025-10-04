@@ -17,6 +17,8 @@ import { CardContent, Card } from "@/Components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Loader2Icon } from "lucide-vue-next";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { truncate } from "lodash";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
@@ -263,13 +265,33 @@ function reloadPageWithTimeout() {
         location.reload();
     }, 5000);
 }
+
+// Breadcrumb data stored in JSON format
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Punishments'),
+        url: route('player.punishment.index'),
+        current: false
+    },
+    {
+        text: '#' + props.punishment.id.toString(),
+        current: true
+    }
+];
 </script>
 
 <template>
     <AppLayout>
         <AppHead :title="__('Punishments')" />
 
-        <div class="px-2 py-4 mx-auto md:py-12 md:px-10 max-w-7xl">
+        <AppBreadcrumb class="max-w-7xl mx-auto" :items="breadcrumbItems" />
+
+        <div class="px-2 py-4 mx-auto md:py-4 md:px-10 max-w-7xl">
             <div class="flex flex-col md:flex-row justify-between mb-8">
                 <div class="flex items-center">
                     <h1 class="text-lg font-bold md:text-3xl">
