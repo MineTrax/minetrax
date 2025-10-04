@@ -143,9 +143,9 @@ function toggleSorting(key) {
             </div>
             <div id="headerRight" class="flex">
                 <div v-show="showFilterResetButton" id="resetButton">
-                    <button class="hidden px-4 py-1 font-semibold text-secondary-foreground bg-secondary border border-border rounded md:block hover:bg-secondary/80" @click="resetFilters()">
+                    <button class="hidden px-3 py-2 text-sm text-secondary-foreground bg-secondary border border-border rounded md:block hover:bg-secondary/80" @click="resetFilters()">
                         <XMarkIcon class="inline-block w-4 h-4 text-secondary-foreground" />
-                        {{ __("Reset") }}
+                        {{ __("Clear Filters") }}
                     </button>
                 </div>
             </div>
