@@ -66,7 +66,7 @@ const breadcrumbItems = [
 
     <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
 
-    <div class="px-2 py-4 mx-auto md:py-4 md:px-10  max-w-screen-2xl ">
+    <div class="px-2 py-4 mx-auto md:py-4 md:px-10  max-w-screen-2xl">
       <div class="flex flex-col md:flex-row md:space-x-4">
         <DataTable
           class="rounded-lg border bg-card text-card-foreground shadow w-full"

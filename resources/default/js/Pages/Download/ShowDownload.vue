@@ -72,7 +72,7 @@ const breadcrumbItems = [
                     </div>
                 </div>
 
-                <div class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 h-screen sticky" :class="{ 'top-16': isStickyNav, 'top-5': !isStickyNav }">
+                <div class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 sticky" :class="{ 'top-16': isStickyNav, 'top-5': !isStickyNav }">
                     <ServerStatusBox />
                 </div>
             </div>
