@@ -7,6 +7,7 @@ import {useHelpers} from '@/Composables/useHelpers';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import {CloudArrowDownIcon, EyeIcon} from '@heroicons/vue/24/outline';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -44,18 +45,28 @@ const headerRow = [
         class: 'w-1/12 text-right',
     },
 ];
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Downloads'),
+        url: route('download.index'),
+        current: true
+    }
+];
 </script>
 
 <template>
   <AppLayout>
     <AppHead :title="__('Downloads')" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
-          {{ __("Downloads") }}
-        </h1>
-      </div>
+    <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
+
+    <div class="px-2 py-4 mx-auto md:py-4 md:px-10  max-w-screen-2xl ">
       <div class="flex flex-col md:flex-row md:space-x-4">
         <DataTable
           class="rounded-lg border bg-card text-card-foreground shadow w-full"

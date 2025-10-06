@@ -5,33 +5,44 @@ import {Link} from '@inertiajs/vue3';
 import AppHead from '@/Components/AppHead.vue';
 import {useTranslations} from '@/Composables/useTranslations';
 import {useHelpers} from '@/Composables/useHelpers';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { truncate } from 'lodash';
 
 const { __ } = useTranslations();
 const { formatToDayDateString } = useHelpers();
 
-defineProps({
+const props = defineProps({
     download: {
         type: Object,
         required: true,
     },
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Downloads'),
+        url: route('download.index'),
+        current: false
+    },
+    {
+        text: truncate(props.download.name, { length: 50 }),
+        current: true
+    }
+];
 </script>
 
 <template>
   <AppLayout>
     <AppHead :title="__(':title - Downloads', {title: download.name})" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-end mb-8">
-        <div class="flex">
-          <Link
-            :href="route('download.index')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Back") }}</span>
-          </Link>
-        </div>
-      </div>
+    <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
+
+    <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="-my-2 md:w-9/12 overflow-x-auto md:-mx-6 lg:-mx-8">
           <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
