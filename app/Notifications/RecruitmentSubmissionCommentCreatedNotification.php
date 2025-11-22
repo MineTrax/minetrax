@@ -12,7 +12,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\RateLimiter;
 use NotificationChannels\Discord\DiscordMessage;
-const NOTIFICATION_DELAY = 60;
+const NOTIFICATION_DELAY = 300; // 5 minutes
 
 class RecruitmentSubmissionCommentCreatedNotification extends Notification implements ShouldQueue
 {
