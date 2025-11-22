@@ -1,5 +1,6 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import { Card, CardContent } from '@/Components/ui/card';
 
 defineProps({
     player: {
@@ -25,77 +26,79 @@ defineProps({
 </script>
 
 <template>
-  <ul
-    class="flex justify-between bg-white shadow dark:bg-surface-800 p-4 rounded font-semibold"
-  >
-    <div class="flex">
-      <li>
-        <Link
-          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
-          :class="{
-            'bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900':
-              route().current('player.show'),
-          }"
-          :href="route('player.show', { player: player.uuid })"
-        >
-          {{ __("Overview") }}
-        </Link>
-      </li>
-    </div>
+  <Card>
+    <CardContent class="p-3">
+      <ul class="flex flex-wrap justify-between items-center gap-2 font-semibold">
+        <div class="flex">
+          <li>
+            <Link
+              class="text-muted-foreground hover:text-foreground rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+              :class="{
+                'bg-secondary text-secondary-foreground hover:bg-secondary/80':
+                  route().current('player.show'),
+              }"
+              :href="route('player.show', { player: player.uuid })"
+            >
+              {{ __("Overview") }}
+            </Link>
+          </li>
+        </div>
 
-    <div class="flex space-x-4">
-      <li v-if="canChangePlayerPassword">
-        <Link
-          :href="
-            route('reset-player-password.show', {
-              player_uuid: player.uuid,
-            })
-          "
-          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
-        >
-          {{ __("Change Password") }}
-        </Link>
-      </li>
-      <li v-if="canChangePlayerSkin">
-        <Link
-          :href="
-            route('change-player-skin.show', {
-              player_uuid: player.uuid,
-            })
-          "
-          :class="{
-            'bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900':
-              route().current('player.intel.session.index'),
-          }"
-          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
-        >
-          {{ __("Change Skin") }}
-        </Link>
-      </li>
-      <li v-if="canShowPlayerIntel">
-        <Link
-          :href="
-            route('player.intel.session.index', {
-              player: player.uuid,
-            })
-          "
-          :class="{
-            'bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900':
-              route().current('player.intel.session.index'),
-          }"
-          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
-        >
-          {{ __("Sessions") }}
-        </Link>
-      </li>
+        <div class="flex flex-wrap gap-2">
+          <li v-if="canChangePlayerPassword">
+            <Link
+              :href="
+                route('reset-player-password.show', {
+                  player_uuid: player.uuid,
+                })
+              "
+              class="text-muted-foreground hover:text-foreground rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+            >
+              {{ __("Change Password") }}
+            </Link>
+          </li>
+          <li v-if="canChangePlayerSkin">
+            <Link
+              :href="
+                route('change-player-skin.show', {
+                  player_uuid: player.uuid,
+                })
+              "
+              :class="{
+                'bg-secondary text-secondary-foreground hover:bg-secondary/80':
+                  route().current('player.intel.session.index'),
+              }"
+              class="text-muted-foreground hover:text-foreground rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+            >
+              {{ __("Change Skin") }}
+            </Link>
+          </li>
+          <li v-if="canShowPlayerIntel">
+            <Link
+              :href="
+                route('player.intel.session.index', {
+                  player: player.uuid,
+                })
+              "
+              :class="{
+                'bg-secondary text-secondary-foreground hover:bg-secondary/80':
+                  route().current('player.intel.session.index'),
+              }"
+              class="text-muted-foreground hover:text-foreground rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+            >
+              {{ __("Sessions") }}
+            </Link>
+          </li>
 
-      <li v-if="route().current('player.intel.session.show')">
-        <span
-          class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600 bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900"
-        >
-          {{ __("Session Details") }}
-        </span>
-      </li>
-    </div>
-  </ul>
+          <li v-if="route().current('player.intel.session.show')">
+            <span
+              class="rounded-md px-3 py-2 text-sm font-medium bg-secondary text-secondary-foreground"
+            >
+              {{ __("Session Details") }}
+            </span>
+          </li>
+        </div>
+      </ul>
+    </CardContent>
+  </Card>
 </template>
