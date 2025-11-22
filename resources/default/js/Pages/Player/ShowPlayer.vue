@@ -858,10 +858,12 @@ const toggle3dPlayerAnimation = () => {
     if (playerAnimationEnabled.value) {
         // Disable Animation
         skinViewer.animation.paused = true;
+        skinViewer.autoRotate = false;
         playerAnimationEnabled.value = false;
     } else {
         // Enable Animation
         skinViewer.animation.paused = false;
+        skinViewer.autoRotate = true;
         playerAnimationEnabled.value = true;
     }
 };

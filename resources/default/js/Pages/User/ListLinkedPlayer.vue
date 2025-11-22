@@ -3,7 +3,7 @@
         <AppHead :title="__('Your Linked Players')" />
 
         <AppBreadcrumb class="max-w-screen-xl mx-auto" :items="breadcrumbItems" />
-        <div class="max-w-screen-xl mx-auto py-4 px-2 sm:py-6 sm:px-4 lg:px-8">
+        <div class="max-w-screen-xl space-y-4 mx-auto py-4 px-2 sm:py-6 sm:px-4 lg:px-8">
             <Card
                 class="border-t-4 relative overflow-hidden transition-all duration-300"
                 :class="{
