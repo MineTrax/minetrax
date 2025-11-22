@@ -9,8 +9,8 @@ import { FormKitSchema } from '@formkit/vue';
 import {useFormKit} from '@/Composables/useFormKit';
 import RecruitmentMessagesBox from '@/Shared/RecruitmentMessagesBox.vue';
 import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
-import JetDialogModal from '@/Jetstream/DialogModal.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/Components/ui/dialog';
+import { Button } from '@/Components/ui/button';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
@@ -249,56 +249,55 @@ const breadcrumbItems = [
       </div>
     </div>
 
-    <JetDialogModal
-      :show="showingWithdrawForm"
-      @close="showingWithdrawForm = false"
-    >
-      <template #title>
-        <h3 class="text-lg font-bold">
-          {{ __("Withdraw & Cancel Application") }}
-        </h3>
-        <p
-          v-if="submission.recruitment.submission_cooldown_in_seconds"
-          class="text-xs text-foreground"
-        >
-          {{ __("Please note that you won't be apply again for a given cooldown period of :hms.", {
-            hms: secondsToHMS(submission.recruitment.submission_cooldown_in_seconds, true)
-          }) }}
-        </p>
-      </template>
+    <Dialog :open="showingWithdrawForm" @update:open="showingWithdrawForm = $event">
+      <DialogContent class="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>{{ __("Withdraw & Cancel Application") }}</DialogTitle>
+          <div
+            v-if="submission.recruitment.submission_cooldown_in_seconds"
+            class="text-xs text-muted-foreground mt-1"
+          >
+            {{ __("Please note that you won't be apply again for a given cooldown period of :hms.", {
+              hms: secondsToHMS(submission.recruitment.submission_cooldown_in_seconds, true)
+            }) }}
+          </div>
+        </DialogHeader>
 
-      <template #content>
-        <XTextarea
-          v-model="withdrawForm.reason"
-          :label="__('Please provide a reason for withdrawing.')"
-          :error="withdrawForm.errors.reason"
-        />
-      </template>
+        <div class="grid gap-4 py-4">
+          <XTextarea
+            v-model="withdrawForm.reason"
+            :placeholder="__('Please provide a reason for withdrawing.')"
+            :error="withdrawForm.errors.reason"
+          />
+        </div>
 
-      <template #footer>
-        <JetSecondaryButton
-          class="mr-2"
-          @click="showingWithdrawForm = false"
-        >
-          {{ __("Cancel") }}
-        </JetSecondaryButton>
-        <LoadingButton
-          :loading="withdrawForm.processing"
-          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-500 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-gray"
-          @click="() => {
-            withdrawForm.post(route('recruitment-submission.withdraw', {
-              submission: submission.id,
-              recruitment: submission.recruitment.slug
-            }), {
-              onSuccess: () => {
-                showingWithdrawForm = false;
-              },
-            })
-          }"
-        >
-          {{ __("Withdraw") }}
-        </LoadingButton>
-      </template>
-    </JetDialogModal>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            class="mr-2"
+            @click="showingWithdrawForm = false"
+          >
+            {{ __("Cancel") }}
+          </Button>
+          <LoadingButton
+            variant="destructive"
+            :loading="withdrawForm.processing"
+            class="px-4 py-2"
+            @click="() => {
+              withdrawForm.post(route('recruitment-submission.withdraw', {
+                submission: submission.id,
+                recruitment: submission.recruitment.slug
+              }), {
+                onSuccess: () => {
+                  showingWithdrawForm = false;
+                },
+              })
+            }"
+          >
+            {{ __("Withdraw") }}
+          </LoadingButton>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </AppLayout>
 </template>
