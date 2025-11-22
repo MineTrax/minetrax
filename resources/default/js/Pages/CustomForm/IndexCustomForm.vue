@@ -12,6 +12,7 @@ import Icon from '@/Components/Icon.vue';
 import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 import { startCase } from 'lodash';
+import { Button } from '@/Components/ui/button';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -133,15 +134,22 @@ const headerRow = [
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-              <Link
+            <Button
                 v-tippy
-                as="a"
-                :href="route('custom-form.show', item.slug)"
-                class="inline-flex items-center justify-center text-primary dark:text-primary hover:text-primary dark:hover:text-primary"
+                as-child
+                variant="outline"
+                size="sm"
                 :title="__('Show Details')"
               >
-                <EyeIcon class="inline-block w-5 h-5" />
-              </Link>
+                <Link
+                  as="a"
+                  :href="
+                    route('custom-form.show', item.slug)
+                  "
+                >
+                  <EyeIcon class="inline-block w-5 h-5" />
+                </Link>
+              </Button>
             </td>
           </template>
         </DataTable>
