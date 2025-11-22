@@ -9,6 +9,8 @@ import { ref, watchEffect } from 'vue';
 import AlertCard from '@/Components/AlertCard.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 import { useHelpers } from '@/Composables/useHelpers';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { truncate } from 'lodash';
 
 const { __ } = useTranslations();
 const { secondsToHMS, formatToDayDateString } = useHelpers();
@@ -43,6 +45,25 @@ const props = defineProps({
 const formSchema = useFormKit().generateSchemaFromFieldsArray(
     props.recruitment.fields
 );
+const page = usePage();
+const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Application Forms'),
+        url: route('recruitment.index'),
+        current: false
+    },
+    {
+        text: truncate(props.recruitment.title, { length: 50 }),
+        current: true
+    }
+];
 
 const submitForm = async (values) => {
     await promisifyForm(values);
@@ -153,27 +174,14 @@ watchEffect(() => {
 
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <app-layout>
-    <app-head :title="recruitment.title" />
+  <AppLayout>
+    <AppHead :title="recruitment.title" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between md:mb-4">
-        <h1
-          class="text-center font-bold text-2xl text-foreground dark:text-foreground mb-5"
-        >
-          {{ recruitment.title }}
-        </h1>
-        <div class="">
-          <inertia-link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </inertia-link>
-        </div>
-      </div>
+    <AppBreadcrumb :items="breadcrumbItems" />
+
+    <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
-        <div class="overflow-x-auto md:w-9/12">
+        <div class="md:w-9/12 flex-1">
           <AlertCard
             v-if="formDisabled && disabledErrorMessage.title"
             text-color="text-error-800 dark:text-error-500"
@@ -264,11 +272,15 @@ watchEffect(() => {
 
           <div class="min-w-full">
             <div
-              class="shadow max-w-none bg-white dark:bg-surface-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded"
+              class="bg-card text-card-foreground border rounded-lg shadow p-4 md:p-6"
             >
+              <h1 class="font-bold text-4xl text-foreground mb-5">
+                {{ recruitment.title }}
+              </h1>
+
               <div
                 v-if="recruitment.description"
-                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b dark:border-foreground"
+                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b border-border"
                 v-html="recruitment.description_html"
               />
 
@@ -287,7 +299,7 @@ watchEffect(() => {
                     recruitment.max_submission_per_user &&
                     userSubmissionsCount > 0
                 "
-                class="text-xs text-foreground dark:text-foreground text-right"
+                class="text-xs text-muted-foreground text-right"
               >
                 {{
                   __(
@@ -304,11 +316,14 @@ watchEffect(() => {
           </div>
         </div>
 
-        <div class="md:w-3/12 flex-1 space-y-4 mt-4 md:mt-0">
-          <server-status-box />
-          <shout-box />
+        <div
+          class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 sticky"
+          :class="{ 'top-16': isStickyNav, 'top-5': !isStickyNav }"
+        >
+          <ServerStatusBox />
+          <ShoutBox />
         </div>
       </div>
     </div>
-  </app-layout>
+  </AppLayout>
 </template>

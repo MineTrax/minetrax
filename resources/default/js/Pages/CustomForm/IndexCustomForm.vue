@@ -9,6 +9,7 @@ import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import {EyeIcon} from '@heroicons/vue/24/outline';
 import {UserIcon} from '@heroicons/vue/24/solid';
 import Icon from '@/Components/Icon.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -17,6 +18,19 @@ defineProps({
     forms: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Forms'),
+        url: route('custom-form.index'),
+        current: true
+    }
+];
 
 const headerRow = [
     {
@@ -62,23 +76,12 @@ const headerRow = [
   <AppLayout>
     <AppHead :title="__('Custom Forms')" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
-          {{ __("Forms") }}
-        </h1>
-        <div class="flex">
-          <Link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </Link>
-        </div>
-      </div>
+    <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
+
+    <div class="py-4 px-2 md:py-4 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
         <DataTable
-          class="bg-white rounded shadow dark:bg-surface-800 w-full"
+          class="rounded-lg border bg-card text-card-foreground shadow w-full"
           :header="headerRow"
           :data="forms"
           :filters="filters"
