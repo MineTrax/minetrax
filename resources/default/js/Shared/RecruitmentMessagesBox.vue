@@ -417,7 +417,7 @@ const pollServerForNewMessages = () => {
         </LoadingButton>
         <LoadingButton
           :disabled="!submission.i_can_send_message || isSendingMessage"
-          class="px-4 py-2 text-white rounded bg-primary hover:bg-primary disabled:cursor-not-allowed disabled:opacity-25"
+          class="px-4 py-2"
           :loading="isSendingMessage"
           @click="
             forAdmin
