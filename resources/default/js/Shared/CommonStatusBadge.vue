@@ -8,6 +8,11 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    value: {
+        type: String,
+        required: false,
+        default: null,
+    },
 });
 
 const colorClass = computed(() => {
@@ -19,12 +24,14 @@ const colorClass = computed(() => {
             return "bg-sky-500/15 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300 border border-sky-500/30 dark:border-sky-500/30";
         case "approved":
         case "completed":
+        case "green":
             return "bg-green-500/15 text-green-700 dark:bg-green-500/20 dark:text-green-300 border border-green-500/30 dark:border-green-500/30";
         case "rejected":
         case "failed":
         case "ban":
         case "active":
         case "permanent":
+        case "red":
             return "bg-red-500/15 text-red-700 dark:bg-red-500/20 dark:text-red-300 border border-red-500/30 dark:border-red-500/30";
         case "onhold":
         case "deferred":
@@ -41,6 +48,6 @@ const colorClass = computed(() => {
 
 <template>
     <Badge :color-class="colorClass">
-        {{ startCase(status) }}
+        {{ value ? value : startCase(status) }}
     </Badge>
 </template>

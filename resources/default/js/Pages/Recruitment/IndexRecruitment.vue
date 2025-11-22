@@ -10,6 +10,8 @@ import {DocumentCheckIcon} from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
 import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import { Button } from '@/Components/ui/button';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
+import { startCase } from 'lodash';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -129,7 +131,7 @@ const headerRow = [
             </DtRowItem>
 
             <DtRowItem class="text-right hidden md:table-cell">
-              {{ item.status.value }}
+              <CommonStatusBadge :status="item.status.value == 'active' ? 'green' : 'red'" :value="startCase(item.status.value)" />
             </DtRowItem>
 
             <DtRowItem class="whitespace-nowrap hidden md:table-cell text-right">
