@@ -7,11 +7,12 @@ import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PlayerSubMenu from '@/Shared/PlayerSubMenu.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
 
-defineProps({
+const props = defineProps({
     player: {
         type: Object,
         required: true,
@@ -33,13 +34,13 @@ const headerRow = [
         key: 'id',
         label: __('ID'),
         sortable: true,
-        class: 'text-left',
+        class: 'text-left w-12',
     },
     {
         key: 'country_id',
         label: __('Flag'),
         sortable: true,
-        class: 'text-left',
+        class: 'text-left w-12',
     },
     {
         key: 'player_displayname',
@@ -80,6 +81,25 @@ const headerRow = [
         class: 'text-right',
     },
 ];
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+    },
+    {
+        text: __('Players'),
+        url: route('player.index'),
+    },
+    {
+        text: props.player.username,
+        url: route('player.show', props.player.uuid),
+    },
+    {
+        text: __('Sessions'),
+        current: true,
+    },
+];
 </script>
 
 <template>
@@ -90,7 +110,9 @@ const headerRow = [
       })"
     />
 
-    <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto space-y-4">
+    <AppBreadcrumb :items="breadcrumbItems" />
+
+    <div class="px-2 py-4 md:px-10 max-w-screen-2xl mx-auto space-y-4">
       <PlayerSubMenu
         :player="player"
         :can-show-player-intel="canShowPlayerIntel"
@@ -98,7 +120,7 @@ const headerRow = [
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-surface-800"
+          class="bg-card border rounded-lg shadow w-full"
           :header="headerRow"
           :data="sessions"
           :filters="filters"
@@ -106,13 +128,13 @@ const headerRow = [
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
             >
               {{ item.id }}
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
             >
               <div class="flex items-center">
                 <div
@@ -130,7 +152,7 @@ const headerRow = [
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
             >
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10">
@@ -147,9 +169,9 @@ const headerRow = [
                       player: item.player_uuid,
                       session: item.id,
                     })"
-                    class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
+                    class="text-sm font-medium text-foreground focus:outline-none cursor-pointer hover:underline"
                   >
-                    <span class="font-extrabold text-foreground dark:text-foreground">
+                    <span class="font-extrabold text-foreground">
                       {{ item.player_displayname }} ({{ item.player_username }})
                     </span>
                   </InertiaLink>
@@ -207,7 +229,7 @@ const headerRow = [
                   player: item.player_uuid,
                   session: item.id,
                 })"
-                class="inline-flex items-center justify-center text-primary hover:text-primary"
+                class="inline-flex items-center justify-center text-primary hover:text-primary/75"
                 :title="__('View Session Details')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
