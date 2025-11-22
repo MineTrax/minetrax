@@ -57,6 +57,7 @@ const headerRow = [
         key: 'status',
         label: __('Status'),
         sortable: true,
+        class: 'text-right w-1/12 whitespace-nowrap',
         filterable: {
             type: 'multiselect',
             options: ['pending', 'inprogress', 'approved', 'rejected', 'withdrawn', 'onhold'],
