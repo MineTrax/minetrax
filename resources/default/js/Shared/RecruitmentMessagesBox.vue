@@ -194,7 +194,7 @@ const pollServerForNewMessages = () => {
 
     <div
       v-if="isLoading"
-      class="flex items-center justify-center p-4 min-h-64"
+      class="flex items-center justify-center p-4 min-h-28"
     >
       <LoadingSpinner :loading="isLoading" />
     </div>
