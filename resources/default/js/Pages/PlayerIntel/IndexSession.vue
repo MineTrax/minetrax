@@ -78,7 +78,7 @@ const headerRow = [
         key: 'actions',
         label: __('Actions'),
         sortable: false,
-        class: 'text-right',
+        class: 'w-1 text-right',
     },
 ];
 
@@ -221,7 +221,7 @@ const breadcrumbItems = [
               {{ secondsToHMS(item.afk_time, true) }}
             </DtRowItem>
 
-            <td class="px-4 py-3 text-sm font-medium text-center whitespace-nowrap">
+            <td class="px-4 py-3 text-sm font-medium text-right whitespace-nowrap">
               <InertiaLink
                 v-tippy
                 as="a"
