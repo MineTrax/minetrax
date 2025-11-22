@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, onUnmounted, ref, nextTick, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
@@ -13,6 +14,8 @@ import CommonStatusBadge from './CommonStatusBadge.vue';
 const { purifyAndLinkifyText, formatTimeAgoToNow, formatToDayDateString } =
     useHelpers();
 const { can } = useAuthorizable();
+const page = usePage();
+const currentUser = page.props.auth.user;
 
 const props = defineProps({
     submission: {
@@ -84,6 +87,37 @@ onUnmounted(() => {
     clearInterval(messageQueryInterval.value);
 });
 
+const addUniqueMessages = (newMessagesList) => {
+    const uniqueMessages = newMessagesList.filter(
+        (newMsg) => !messages.value.some((msg) => msg.id === newMsg.id)
+    );
+
+    if (uniqueMessages.length > 0) {
+        // Mark new messages on the plain objects first
+        uniqueMessages.forEach((msg) => {
+            if (currentUser && msg.commentator.id !== currentUser.id) {
+                msg.is_new = true;
+            }
+        });
+
+        // Add to reactive array
+        messages.value = [...messages.value, ...uniqueMessages];
+
+        // Set timeouts to remove 'is_new' status
+        // We must find the message in the reactive array to trigger updates
+        uniqueMessages.forEach((msg) => {
+            if (currentUser && msg.commentator.id !== currentUser.id) {
+                setTimeout(() => {
+                    const reactiveMsg = messages.value.find((m) => m.id === msg.id);
+                    if (reactiveMsg) {
+                        reactiveMsg.is_new = false;
+                    }
+                }, 30000);
+            }
+        });
+    }
+};
+
 const sendMessage = (type = null) => {
     if (isSendingMessage.value) return;
 
@@ -96,8 +130,7 @@ const sendMessage = (type = null) => {
         })
         .then((data) => {
             if (data.status === 200) {
-                messages.value.push(data.data.data);
-                scrollToBottom();
+                addUniqueMessages([data.data.data]);
             }
         })
         .catch((e) => {
@@ -135,7 +168,7 @@ const pollServerForNewMessages = () => {
     axios.get(indexRouteWithAfter).then((data) => {
         const newMessages = data.data;
         if (newMessages.length > 0) {
-            messages.value = [...messages.value, ...newMessages];
+            addUniqueMessages(newMessages);
         }
     });
 };
@@ -261,7 +294,7 @@ const pollServerForNewMessages = () => {
               }"
             >
               <div
-                class="flex flex-col px-4 py-2 text-foreground rounded-2xl dark:bg-opacity-25 dark:text-foreground"
+                class="relative flex flex-col px-4 py-2 text-foreground rounded-2xl dark:bg-opacity-25 dark:text-foreground"
                 :class="
                   {
                     'bg-orange-100 dark:bg-warning-300': comment.type.value === 'recruitment_staff_whisper',
@@ -269,6 +302,10 @@ const pollServerForNewMessages = () => {
                     'bg-surface-100 dark:bg-surface-600': comment.type.value === 'recruitment_applicant_message'
                   }"
               >
+                <span
+                  v-if="comment.is_new"
+                  class="absolute -top-1 -right-1 w-3 h-3 bg-error-500 rounded-full animate-pulse"
+                ></span>
                 <InertiaLink
                   as="a"
                   class="hover:cursor-pointer hover:underline"

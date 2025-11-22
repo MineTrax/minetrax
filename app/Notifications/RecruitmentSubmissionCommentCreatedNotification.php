@@ -10,7 +10,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\RateLimiter;
 use NotificationChannels\Discord\DiscordMessage;
+const NOTIFICATION_DELAY = 60;
 
 class RecruitmentSubmissionCommentCreatedNotification extends Notification implements ShouldQueue
 {
@@ -31,7 +33,21 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
      */
     public function via(object $notifiable): array
     {
-        return $notifiable->notificationPreferencesFor('recruitment_submission_comment_created');
+        $channels = $notifiable->notificationPreferencesFor('recruitment_submission_comment_created');
+
+        if (empty($channels)) {
+            return [];
+        }
+
+        $key = 'notification_recruitment_submission_comment_created::' . $notifiable->id . '::' . $this->submission->id;
+
+        if (RateLimiter::tooManyAttempts($key, 1)) {
+            return [];
+        }
+
+        RateLimiter::hit($key, NOTIFICATION_DELAY);
+
+        return $channels;
     }
 
     /**
@@ -39,17 +55,17 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
+        $applicant = $this->submission->user->name . ' (@' . $this->submission->user->username . ')';
         [$title, $body, $route] = $this->generateTitleBodyRoute();
 
         return (new MailMessage)
             ->subject($title)
             ->line($body)
-            ->line('"'.$this->comment->comment.'"')
+            ->line('"' . $this->comment->comment . '"')
             ->action('View Request', $route)
-            ->line('Applicant: '.$applicant)
-            ->line('Status: '.ucfirst($this->submission->status->value))
-            ->line('Application: '.$this->submission->recruitment->title);
+            ->line('Applicant: ' . $applicant)
+            ->line('Status: ' . ucfirst($this->submission->status->value))
+            ->line('Application: ' . $this->submission->recruitment->title);
     }
 
     /**
@@ -77,7 +93,7 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
 
     public function toDiscord($notifiable)
     {
-        $applicant = $this->submission->user->name.' (@'.$this->submission->user->username.')';
+        $applicant = $this->submission->user->name . ' (@' . $this->submission->user->username . ')';
         [$title, $body, $route, $causer] = $this->generateTitleBodyRoute();
 
         return DiscordMessage::create()->embed([
@@ -117,7 +133,7 @@ class RecruitmentSubmissionCommentCreatedNotification extends Notification imple
     private function generateTitleBodyRoute(): array
     {
         $title = $body = $route = '';
-        $causer = $this->causer->name.' (@'.$this->causer->username.')';
+        $causer = $this->causer->name . ' (@' . $this->causer->username . ')';
         if ($this->comment->type == CommentType::RECRUITMENT_APPLICANT_MESSAGE) {
             // Sent to staffs
             $title = __('[Notification] New message received on a application request.');
