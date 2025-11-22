@@ -10,6 +10,7 @@ import { useAuthorizable } from '@/Composables/useAuthorizable';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
 import Icon from '@/Components/Icon.vue';
 import CommonStatusBadge from './CommonStatusBadge.vue';
+import AlertCard from '@/Components/AlertCard.vue';
 
 const { purifyAndLinkifyText, formatTimeAgoToNow, formatToDayDateString } =
     useHelpers();
@@ -175,23 +176,21 @@ const pollServerForNewMessages = () => {
 </script>
 
 <template>
-  <div class="flex flex-col p-3 space-y-4">
-    <h3 class="font-extrabold text-foreground dark:text-foreground">
+  <div class="flex flex-col p-4 space-y-4">
+    <h3 class="font-extrabold text-foreground dark:text-foreground text-lg">
       {{ __("Messages Box") }}
     </h3>
 
-    <span
-      v-if="
-        forAdmin && !submission.recruitment.is_allow_messages_from_users
-      "
-      class="p-1.5 text-sm text-error-500 bg-error-100 border border-error-500 rounded dark:text-error-400 dark:bg-error-200 dark:bg-opacity-10"
+    <AlertCard
+      v-if="forAdmin && !submission.recruitment.is_allow_messages_from_users"
+      variant="destructive"
     >
       {{
         __(
           "Messages feature is disabled for this recruitment. Applicant can't send messages."
         )
       }}
-    </span>
+    </AlertCard>
 
     <div
       v-if="isLoading"
@@ -294,12 +293,12 @@ const pollServerForNewMessages = () => {
               }"
             >
               <div
-                class="relative flex flex-col px-4 py-2 text-foreground rounded-2xl dark:bg-opacity-25 dark:text-foreground"
+                class="relative flex flex-col px-4 py-2 text-foreground rounded-2xl"
                 :class="
                   {
-                    'bg-orange-100 dark:bg-warning-300': comment.type.value === 'recruitment_staff_whisper',
-                    'bg-surface-200 dark:bg-surface-500': comment.type.value === 'recruitment_staff_message',
-                    'bg-surface-100 dark:bg-surface-600': comment.type.value === 'recruitment_applicant_message'
+                    'bg-amber-100 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50': comment.type.value === 'recruitment_staff_whisper',
+                    'bg-secondary text-secondary-foreground': comment.type.value === 'recruitment_staff_message',
+                    'bg-muted text-muted-foreground': comment.type.value === 'recruitment_applicant_message'
                   }"
               >
                 <span
@@ -390,17 +389,18 @@ const pollServerForNewMessages = () => {
         ref="inputbox"
         v-model="currentMessage"
         :disabled="
-          !submission.i_can_send_message
+          !submission.i_can_send_message || isSendingMessage
         "
-        label="Write your message here..."
+        placeholder="Write your message here... (Shift + Enter to send)"
         class="w-full"
         :error="error"
+        @keydown.enter.shift.exact.prevent="forAdmin ? sendMessage('recruitment_staff_message') : sendMessage()"
       />
       <div class="flex justify-end mt-2">
         <LoadingButton
           v-if="forAdmin"
           v-tippy
-          :disabled="!submission.i_can_send_message"
+          :disabled="!submission.i_can_send_message || isSendingMessage"
           :title="
             __(
               'Send whisper to other staff members. This message will be private and only visible to staff members.'
@@ -416,7 +416,7 @@ const pollServerForNewMessages = () => {
           />
         </LoadingButton>
         <LoadingButton
-          :disabled="!submission.i_can_send_message"
+          :disabled="!submission.i_can_send_message || isSendingMessage"
           class="px-4 py-2 text-white rounded bg-primary hover:bg-primary disabled:cursor-not-allowed disabled:opacity-25"
           :loading="isSendingMessage"
           @click="

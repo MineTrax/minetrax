@@ -15,9 +15,10 @@ import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
-import { startCase } from 'lodash';
+import { startCase, truncate } from 'lodash';
 import AlertCard from '@/Components/AlertCard.vue';
 import { CheckCircleIcon } from '@heroicons/vue/24/solid';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
@@ -43,6 +44,28 @@ const showingWithdrawForm = ref(false);
 const withdrawForm = useForm({
     reason: '',
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Application Forms'),
+        url: route('recruitment.index'),
+        current: false
+    },
+    {
+        text: __('My Application Requests'),
+        url: route('recruitment-submission.index'),
+        current: true
+    },
+    {
+        text: __('Submission #') + props.submission.id,
+        current: true
+    }
+];
 </script>
 
 <template>
@@ -54,9 +77,12 @@ const withdrawForm = useForm({
       })"
     />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-xl text-foreground dark:text-foreground">
+    <AppBreadcrumb :items="breadcrumbItems" />
+
+    <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="font-bold text-xl text-foreground dark:text-foreground flex items-center">
           <span class="mr-3">
             {{
               __('Application for :recruitmenttitle #:index', {
@@ -67,16 +93,9 @@ const withdrawForm = useForm({
           </span>
           <CommonStatusBadge :status="submission.status.value" />
         </h1>
-        <div class="flex space-x-2">
-          <Link
-            :href="route('recruitment-submission.index')"
-            class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Back") }}</span>
-          </Link>
-        </div>
       </div>
 
+      <!-- Alert -->
       <AlertCard
         v-if="submission.status.value === 'pending'"
         title-class="flex items-center"
@@ -89,130 +108,133 @@ const withdrawForm = useForm({
         </template>
       </AlertCard>
 
-      <div class="flex flex-col md:flex-row md:space-x-4">
-        <div class="flex w-full gap-4 flex-col md:flex-row">
-          <div class="md:w-1/2 space-y-4">
-            <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800">
-              <ul class="flex flex-col mt-3">
-                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
-                  <div class="flex items-center justify-between w-full">
-                    <span>{{ __("Applicant") }}</span>
-                    <div>
-                      {{ __("You") }}
-                    </div>
+      <!-- Main Content -->
+      <div class="flex flex-col md:flex-row gap-4">
+        <!-- Left Column (Details & Messages) -->
+        <div class="md:w-1/2 space-y-4">
+          <div class="bg-card text-card-foreground border rounded-lg shadow p-4">
+            <ul class="flex flex-col mt-3">
+              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
+                <div class="flex items-center justify-between w-full">
+                  <span>{{ __("Applicant") }}</span>
+                  <div>
+                    {{ __("You") }}
                   </div>
-                </li>
+                </div>
+              </li>
 
-                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
-                  <div class="flex items-center justify-between w-full">
-                    <span>{{ __("Application") }}</span>
-                    <span>{{ submission.recruitment.title }}</span>
-                  </div>
-                </li>
+              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
+                <div class="flex items-center justify-between w-full">
+                  <span>{{ __("Application") }}</span>
+                  <span>{{ submission.recruitment.title }}</span>
+                </div>
+              </li>
 
-                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
-                  <div class="flex items-center justify-between w-full">
-                    <span>{{ __("Created At") }}</span>
-                    <span
-                      v-tippy
-                      :title="formatTimeAgoToNow(submission.created_at)"
-                    >{{ formatToDayDateString(submission.created_at) }}</span>
-                  </div>
-                </li>
+              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
+                <div class="flex items-center justify-between w-full">
+                  <span>{{ __("Created At") }}</span>
+                  <span
+                    v-tippy
+                    :title="formatTimeAgoToNow(submission.created_at)"
+                  >{{ formatToDayDateString(submission.created_at) }}</span>
+                </div>
+              </li>
 
-                <li
-                  class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground"
-                >
-                  <div class="flex items-center justify-between w-full">
-                    <span>{{ __("Last Updated At") }}</span>
-                    <span
-                      v-tippy
-                      :title="formatTimeAgoToNow(submission.updated_at)"
-                    >{{ formatToDayDateString(submission.updated_at) }}
-                    </span>
-                  </div>
-                </li>
+              <li
+                class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground"
+              >
+                <div class="flex items-center justify-between w-full">
+                  <span>{{ __("Last Updated At") }}</span>
+                  <span
+                    v-tippy
+                    :title="formatTimeAgoToNow(submission.updated_at)"
+                  >{{ formatToDayDateString(submission.updated_at) }}
+                  </span>
+                </div>
+              </li>
 
+              <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
+                <div class="flex items-center justify-between w-full">
+                  <span>{{ __("Request Status") }}</span>
+                  <CommonStatusBadge :status="submission.status.value" />
+                </div>
+              </li>
 
-                <li class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground">
-                  <div class="flex items-center justify-between w-full">
-                    <span>{{ __("Request Status") }}</span>
-                    <CommonStatusBadge :status="submission.status.value" />
-                  </div>
-                </li>
+              <li
+                v-if="submission.last_act_reason"
+                class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground"
+              >
+                <div class="flex items-center justify-between w-full">
+                  <span>{{ __("Reason") }}</span>
+                  <span class="w-1/2 whitespace-pre-line text-right">{{ submission.last_act_reason }}</span>
+                </div>
+              </li>
 
-                <li
-                  v-if="submission.last_act_reason"
-                  class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground"
-                >
-                  <div class="flex items-center justify-between w-full">
-                    <span>{{ __("Reason") }}</span>
-                    <span class="w-1/2 whitespace-pre-line text-right">{{ submission.last_act_reason }}</span>
-                  </div>
-                </li>
-
-                <li
-                  v-if="submission.last_act_by"
-                  class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground"
-                >
-                  <div class="flex items-center justify-between w-full">
-                    <span>
-                      {{ __("Marked :status By", {
-                        status: startCase(submission.status.value),
-                      }) }}
-                    </span>
-                    <span>
-                      <InertiaLink
-                        :href="route('user.public.get', submission.last_actor.username)"
-                        class="flex items-center"
-                      >
-                        <div class="flex-shrink-0 h-10 w-10 mr-2">
-                          <img
-                            class="h-10 w-10 rounded-full"
-                            :src="submission.last_actor.profile_photo_url"
-                            alt="Avatar"
-                          >
+              <li
+                v-if="submission.last_act_by"
+                class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-foreground gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:text-foreground"
+              >
+                <div class="flex items-center justify-between w-full">
+                  <span>
+                    {{ __("Marked :status By", {
+                      status: startCase(submission.status.value),
+                    }) }}
+                  </span>
+                  <span>
+                    <InertiaLink
+                      :href="route('user.public.get', submission.last_actor.username)"
+                      class="flex items-center"
+                    >
+                      <div class="flex-shrink-0 h-10 w-10 mr-2">
+                        <img
+                          class="h-10 w-10 rounded-full"
+                          :src="submission.last_actor.profile_photo_url"
+                          alt="Avatar"
+                        >
+                      </div>
+                      <div class="flex-col">
+                        <div
+                          class="text-sm font-semibold text-foreground dark:text-foreground whitespace-nowrap truncate"
+                          :style="[submission.last_actor.roles[0].color ? {color: submission.last_actor.roles[0].color} : null]"
+                        >
+                          {{ submission.last_actor.name }}
                         </div>
-                        <div class="flex-col">
-                          <div
-                            class="text-sm font-semibold text-foreground dark:text-foreground whitespace-nowrap truncate"
-                            :style="[submission.last_actor.roles[0].color ? {color: submission.last_actor.roles[0].color} : null]"
-                          >
-                            {{ submission.last_actor.name }}
-                          </div>
-                          <div class="text-sm text-foreground">
-                            @{{ submission.last_actor.username }}
-                          </div>
+                        <div class="text-sm text-foreground">
+                          @{{ submission.last_actor.username }}
                         </div>
-                      </InertiaLink>
+                      </div>
+                    </InertiaLink>
 
-                    </span>
-                  </div>
-                </li>
-              </ul>
+                  </span>
+                </div>
+              </li>
+            </ul>
 
-              <div class="button-group flex space-x-4 justify-end p-4">
-                <button
-                  v-if="submission.i_can_withdraw"
-                  class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-500 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-gray"
-                  @click="showingWithdrawForm = true"
-                >
-                  <span>{{ __("Withdraw") }}</span>
-                </button>
-              </div>
-            </div>
-
-
-            <div class="p-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800">
-              <RecruitmentMessagesBox
-                :submission="submission"
-                :for-admin="false"
-              />
+            <div
+              v-if="submission.i_can_withdraw"
+              class="flex justify-end mt-4 pt-4 border-t border-border"
+            >
+              <button
+                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-500 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-gray"
+                @click="showingWithdrawForm = true"
+              >
+                <span>{{ __("Withdraw") }}</span>
+              </button>
             </div>
           </div>
 
+          <div class="bg-card text-card-foreground border rounded-lg shadow overflow-hidden">
+            <RecruitmentMessagesBox
+              :submission="submission"
+              :for-admin="false"
+            />
+          </div>
+        </div>
 
-          <div class="md:w-1/2 px-3 py-2 overflow-hidden bg-white rounded shadow max-w-none dark:bg-surface-800 md:px-10 md:py-5 no-disabled-effect">
+        <!-- Right Column (Form Data) -->
+        <div class="md:w-1/2">
+          <div class="bg-card text-card-foreground border rounded-lg shadow p-4 md:p-6 no-disabled-effect">
+            <h3 class="font-extrabold text-lg mb-4">{{ __("Submission Details") }}</h3>
             <FormKit
               :disabled="true"
               type="form"
