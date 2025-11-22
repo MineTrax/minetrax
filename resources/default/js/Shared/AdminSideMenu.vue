@@ -212,7 +212,7 @@ const navItems = [
         active: false,
         children: [
             {
-                label: "List Application Forms",
+                label: "List Applications",
                 href: route("admin.recruitment.index"),
                 active: route().current("admin.recruitment.index"),
                 children: [],

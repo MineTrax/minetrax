@@ -86,12 +86,12 @@ const headerRow = [
 
 <template>
   <AdminLayout>
-    <app-head :title="__('Manage Application Forms')" />
+    <app-head :title="__('Manage Applications')" />
 
     <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
         <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Manage Application Forms") }}
+          {{ __("Manage Applications") }}
         </h1>
         <div class="flex">
           <InertiaLink

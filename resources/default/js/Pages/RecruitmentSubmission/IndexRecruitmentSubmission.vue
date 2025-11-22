@@ -30,7 +30,7 @@ const breadcrumbItems = [
         current: false
     },
     {
-        text: __('Application Forms'),
+        text: __('Applications'),
         url: route('recruitment.index'),
         current: false
     },

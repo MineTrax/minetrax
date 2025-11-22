@@ -28,7 +28,7 @@ const breadcrumbItems = [
         current: false
     },
     {
-        text: __('Application Forms'),
+        text: __('Applications'),
         url: route('recruitment.index'),
         current: true
     }
@@ -76,7 +76,7 @@ const headerRow = [
 
 <template>
   <AppLayout>
-    <AppHead :title="__('Application Forms')" />
+    <AppHead :title="__('Applications')" />
 
     <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
 
