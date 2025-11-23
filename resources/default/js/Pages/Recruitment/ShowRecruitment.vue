@@ -11,6 +11,7 @@ import { useTranslations } from '@/Composables/useTranslations';
 import { useHelpers } from '@/Composables/useHelpers';
 import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import { truncate } from 'lodash';
+import { Button } from '@/Components/ui/button';
 
 const { __ } = useTranslations();
 const { secondsToHMS, formatToDayDateString } = useHelpers();
@@ -214,18 +215,22 @@ watchEffect(() => {
               </p>
 
               <div class="flex mt-2">
-                <InertiaLink
-                  class="p-2 border border-primary dark:border-primary rounded text-primary dark:text-primary hover:bg-primary dark:hover:bg-primary"
-                  :href="
-                    route('recruitment-submission.show', {
-                      recruitment: recruitment.slug,
-                      submission:
-                        userLastActiveSubmission.id,
-                    })
-                  "
+                <Button
+                  as-child
+                  variant="outline"
                 >
-                  {{ __("View Request") }}
-                </InertiaLink>
+                  <InertiaLink
+                    :href="
+                      route('recruitment-submission.show', {
+                        recruitment: recruitment.slug,
+                        submission:
+                          userLastActiveSubmission.id,
+                      })
+                    "
+                  >
+                    {{ __("View Request") }}
+                  </InertiaLink>
+                </Button>
               </div>
             </template>
           </AlertCard>
@@ -254,18 +259,22 @@ watchEffect(() => {
               </p>
 
               <div class="flex mt-2">
-                <InertiaLink
-                  class="p-2 border border-orange-800 dark:border-orange-500 rounded text-orange-800 dark:text-orange-500 hover:bg-orange-200 dark:hover:bg-orange-900"
-                  :href="
-                    route('recruitment-submission.show', {
-                      recruitment: recruitment.slug,
-                      submission:
-                        userLastApprovedSubmission.id,
-                    })
-                  "
+                <Button
+                  as-child
+                  variant="outline"
                 >
-                  {{ __("View Approved Request") }}
-                </InertiaLink>
+                  <InertiaLink
+                    :href="
+                      route('recruitment-submission.show', {
+                        recruitment: recruitment.slug,
+                        submission:
+                          userLastApprovedSubmission.id,
+                      })
+                    "
+                  >
+                    {{ __("View Approved Request") }}
+                  </InertiaLink>
+                </Button>
               </div>
             </template>
           </AlertCard>
