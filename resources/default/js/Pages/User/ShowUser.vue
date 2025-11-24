@@ -308,6 +308,58 @@
                         </CardContent>
                     </Card>
 
+                    <Card v-if="can('read users')" class="flex flex-col w-full space-y-2 border-amber-500">
+                        <CardContent class="p-4 space-y-2">
+                            <h3 class="font-bold text-card-foreground border-b pb-2 mb-2">
+                                {{ __("Staff Only") }}
+                            </h3>
+
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">{{ __("Email") }}</span>
+                                <div class="text-right">
+                                    <span class="font-semibold text-card-foreground block">{{ profileUser.email }}</span>
+                                    <span v-if="profileUser.email_verified_at" class="text-green-500 text-xs">
+                                        ({{ __("Verified") }} {{ formatTimeAgoToNow(profileUser.email_verified_at) }})
+                                    </span>
+                                    <span v-else class="text-destructive text-xs">({{ __("Unverified") }})</span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">{{ __("Last Login") }}</span>
+                                <span v-if="profileUser.last_login_at" class="font-semibold text-card-foreground" :title="formatToDayDateString(profileUser.last_login_at)">
+                                    {{ formatTimeAgoToNow(profileUser.last_login_at) }}
+                                </span>
+                                <span v-else class="text-sm italic text-muted-foreground">{{ __("Never") }}</span>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">{{ __("Discord ID") }}</span>
+                                <span class="font-semibold text-card-foreground">{{ profileUser.discord_user_id || __("None") }}</span>
+                            </div>
+
+                            <div v-if="profileUser.social_accounts && profileUser.social_accounts.length > 0" class="pt-2 mt-2">
+                                <h3 class="font-bold text-card-foreground border-b pb-2 mb-2">
+                                    {{ __("Linked Social Accounts") }}
+                                </h3>
+                                <div class="flex flex-col space-y-2">
+                                    <div v-for="account in profileUser.social_accounts" :key="account.id" class="bg-muted p-2 rounded text-xs">
+                                        <div class="grid grid-cols-2 gap-1">
+                                            <span class="font-bold">{{ __("Provider") }}:</span> <span>{{ account.provider_name || account.provider }}</span>
+                                            <span class="font-bold">{{ __("ID") }}:</span> <span class="truncate" :title="account.provider_id">{{ account.provider_id }}</span>
+                                            <template v-if="account.name">
+                                                <span class="font-bold">{{ __("Name") }}:</span> <span>{{ account.name }}</span>
+                                            </template>
+                                            <template v-if="account.email">
+                                                <span class="font-bold">{{ __("Email") }}:</span> <span>{{ account.email }}</span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     <SocialChannelBox v-if="profileUser.social_links" :enabled="!!profileUser.social_links"
                         :show-title="false" :facebook="profileUser.social_links.s_facebook_url"
                         :youtube="profileUser.social_links.s_youtube_url"
