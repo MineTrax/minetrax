@@ -43,9 +43,12 @@ const isEnabled = true; // page.props.generalSettings.enable_breadcrumb;
                         <BreadcrumbLink v-if="!item.current && item.url" :as="Link" :href="item.url">
                             {{ item.text }}
                         </BreadcrumbLink>
-                        <BreadcrumbPage v-else>
+                        <BreadcrumbPage v-else-if="item.current">
                             {{ item.text }}
                         </BreadcrumbPage>
+                        <span v-else class="font-normal text-muted-foreground transition-colors hover:text-foreground">
+                             {{ item.text }}
+                        </span>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator v-if="index < items.length - 1" />
                 </template>

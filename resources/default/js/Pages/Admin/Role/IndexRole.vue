@@ -94,10 +94,11 @@ const headerRow = [
         <div class="flex">
           <Button
             v-if="can('create roles')"
-            as="a"
-            :href="route('admin.role.create')"
+            as-child
           >
-            {{ __("Create Role") }}
+            <Link :href="route('admin.role.create')">
+              {{ __("Create Role") }}
+            </Link>
           </Button>
         </div>
       </div>
