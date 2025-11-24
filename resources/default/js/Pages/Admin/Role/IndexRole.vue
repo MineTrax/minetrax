@@ -88,10 +88,9 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Users Roles Administration')" />
 
-    <AppBreadcrumb breadcrumb-class="max-w-none" :items="breadcrumbItems" />
-
     <div class="px-10 py-8 mx-auto text-foreground">
-      <div class="flex justify-end mb-4">
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
         <div class="flex">
           <Button
             v-if="can('create roles')"

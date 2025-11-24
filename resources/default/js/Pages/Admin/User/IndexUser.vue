@@ -137,9 +137,9 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Users Administration')" />
 
-    <AppBreadcrumb breadcrumb-class="max-w-none" :items="breadcrumbItems" />
-
     <div class="px-10 py-8 mx-auto text-foreground">
+      <AppBreadcrumb class="mt-0 mb-4" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+
       <DataTable
         class="bg-card rounded-lg shadow"
         :header="headerRow"
