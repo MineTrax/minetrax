@@ -6,6 +6,7 @@ import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import {
     EyeIcon,
     ArrowUpOnSquareStackIcon,
@@ -25,6 +26,17 @@ const props = defineProps({
     users: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Users'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -125,13 +137,9 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Users Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-foreground">
-      <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Users") }}
-        </h1>
-      </div>
+    <AppBreadcrumb breadcrumb-class="max-w-none" :items="breadcrumbItems" />
 
+    <div class="px-10 py-8 mx-auto text-foreground">
       <DataTable
         class="bg-card rounded-lg shadow"
         :header="headerRow"

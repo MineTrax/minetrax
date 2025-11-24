@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Badge } from '@/Components/ui/badge';
+import { Button } from '@/Components/ui/button';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
 import { Link } from '@inertiajs/vue3';
@@ -17,6 +20,17 @@ defineProps({
     roles: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('User Roles & Permissions'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -74,25 +88,23 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Users Roles Administration')" />
 
+    <AppBreadcrumb breadcrumb-class="max-w-none" :items="breadcrumbItems" />
+
     <div class="px-10 py-8 mx-auto text-foreground">
-      <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("User Roles & Permissions") }}
-        </h1>
+      <div class="flex justify-end mb-4">
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create roles')"
+            as="a"
             :href="route('admin.role.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
           >
-            <span>{{ __("Create New") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Role") }}</span>
-          </InertiaLink>
+            {{ __("Create Role") }}
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="roles"
         :filters="filters"
@@ -174,20 +186,23 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-4 py-3 space-x-1 text-sm font-medium"
+            class="px-4 py-3 space-x-1 space-y-1 text-sm font-medium"
           >
-            <span
+            <Badge
               v-if="item.name === 'superadmin'"
-              class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-success-800 bg-success-100 rounded-full dark:bg-opacity-10 dark:text-success-400"
+              variant="outline"
+              class="bg-primary/10 text-primary"
             >{{ __("All Permissions") }}
-            </span>
+            </Badge>
 
             <template v-else-if="item.permissions.length > 0">
-              <span
+              <Badge
                 v-for="permission in item.permissions"
                 :key="permission.id"
-                class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-primary bg-primary rounded-full dark:bg-opacity-10 dark:text-primary"
-              >{{ permission.name }}</span>
+                variant="outline"
+              >
+                {{ permission.name }}
+              </Badge>
             </template>
             <span
               v-else
