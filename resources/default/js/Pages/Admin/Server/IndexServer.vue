@@ -5,11 +5,15 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link } from '@inertiajs/vue3';
 import { useStorage } from '@vueuse/core';
 import {
     EyeIcon,
     PencilSquareIcon,
     TrashIcon,
+    ArrowPathIcon,
 } from '@heroicons/vue/24/outline';
 import AlertCard from '@/Components/AlertCard.vue';
 import { nextTick, reactive, watchEffect } from 'vue';
@@ -24,6 +28,17 @@ const props = defineProps({
     servers: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Servers'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -159,48 +174,50 @@ function getServerWebQueryStatus(serverId) {
         </template>
       </AlertCard>
 
-      <div class="flex justify-between mb-8">
-        <h1
-          class="font-bold text-3xl text-foreground dark:text-foreground flex items-center"
-        >
-          {{ __("Servers") }}
-          <InertiaLink
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+        <div class="flex gap-2">
+          <Button
             v-if="can('create servers')"
-            v-tippy
-            as="button"
-            :title="
-              __(
-                'MineTrax automatically sync player stats every hour or as per schedule define in .env file. Click here to force a sync now.'
-              )
-            "
-            :href="route('admin.server.force-scan')"
-            method="post"
-            class="ml-2 inline-flex items-center px-4 py-2 border-2 border-error-600 rounded-md font-semibold text-xs text-error-600 uppercase tracking-widest focus:outline-none transition ease-in-out duration-150 dark:text-error-500 dark:border-error-700 hover:border-error-300 dark:hover:border-error-500  hover:bg-error-500 hover:text-white dark:hover:text-white"
+            v-confirm="{
+                title: 'Force Resync!',
+              message:
+                'MineTrax automatically sync player stats every 30 minutes or as per schedule defined in .env file. You are about to force resync player statistics for all servers. Are you sure you want to proceed?',
+            }"
+            variant="destructive"
+            size="icon"
+            as-child
           >
-            <span>{{ __("Sync Player Statistics") }}</span>
-          </InertiaLink>
-        </h1>
-        <div class="flex">
-          <InertiaLink
+            <Link
+              :href="route('admin.server.force-scan')"
+              method="post"
+              as="button"
+            >
+              <ArrowPathIcon class="w-5 h-5" />
+            </Link>
+          </Button>
+          <Button
             v-if="can('create servers')"
-            :href="route('admin.server.create')"
-            class="mr-1 inline-flex items-center px-4 py-2 bg-surface-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
+            as-child
           >
-            <span>{{ __("Add") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Server") }}</span>
-          </InertiaLink>
-          <InertiaLink
+            <Link :href="route('admin.server.create')">
+              {{ __("Add Server") }}
+            </Link>
+          </Button>
+          <Button
             v-if="can('create servers') && canCreateBungeeServer"
-            :href="route('admin.server.create-bungee')"
-            class="inline-flex items-center px-4 py-2 border-2 border-foreground rounded-md font-semibold text-xs text-foreground uppercase tracking-widest focus:outline-none focus:border-foreground transition ease-in-out duration-150 dark:text-foreground dark:border-foreground dark:hover:border-foreground"
+            variant="outline"
+            as-child
           >
-            <span>{{ __("Add Proxy Server") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.server.create-bungee')">
+              {{ __("Add Proxy Server") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="servers"
         :filters="filters"
@@ -330,7 +347,7 @@ function getServerWebQueryStatus(serverId) {
               v-else
               class="flex space-x-2"
             >
-              <InertiaLink
+              <Link
                 v-tippy
                 as="a"
                 :title="__('View Server Intel')"
@@ -338,8 +355,8 @@ function getServerWebQueryStatus(serverId) {
                 class="inline-flex items-center justify-center text-primary hover:text-primary"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
+              </Link>
+              <Link
                 v-if="can('update servers')"
                 v-tippy
                 as="a"
@@ -348,8 +365,8 @@ function getServerWebQueryStatus(serverId) {
                 :title="__('Edit Server')"
               >
                 <PencilSquareIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
+              </Link>
+              <Link
                 v-if="can('delete servers')"
                 v-confirm="{
                   title: 'Delete Server?',
@@ -364,7 +381,7 @@ function getServerWebQueryStatus(serverId) {
                 :title="__('Delete Server')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
+              </Link>
             </div>
           </td>
         </template>

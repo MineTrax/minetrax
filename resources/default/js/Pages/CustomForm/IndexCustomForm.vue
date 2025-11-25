@@ -22,6 +22,21 @@ defineProps({
     filters: Object,
 });
 
+function getStatusColor(status) {
+    switch (status) {
+        case 'active':
+            return 'green';
+        case 'draft':
+            return 'pending';
+        case 'disabled':
+            return 'red';
+        case 'archived':
+            return 'deferred';
+        default:
+            return status;
+    }
+}
+
 const breadcrumbItems = [
     {
         text: __('Home'),
@@ -119,7 +134,7 @@ const headerRow = [
             </DtRowItem>
 
             <DtRowItem class="text-right hidden md:table-cell">
-              <CommonStatusBadge :status="item.status.value == 'active' ? 'green' : 'red'" :value="startCase(item.status.value)" />
+              <CommonStatusBadge :status="getStatusColor(item.status.value)" :value="startCase(item.status.value)" />
             </DtRowItem>
 
             <DtRowItem class="whitespace-nowrap hidden md:table-cell text-right">

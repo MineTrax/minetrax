@@ -2,11 +2,23 @@
 import AppHead from '@/Components/AppHead.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import Icon from '@/Components/Icon.vue';
 import { Link } from '@inertiajs/vue3';
 const { __ } = useTranslations();
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Ask DB'),
+        current: true,
+    }
+];
 
 const props = defineProps({
     featureEnabled: {
@@ -117,10 +129,12 @@ function scrollToBottom() {
     <AppHead :title="__('AskDB - AI based database query.')" />
 
     <div class="p-10 mx-auto space-y-4 max-w-5xl h-[94vh] flex flex-col">
+      <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+
       <!-- Feature not enabled -->
       <div
         v-if="!featureEnabled"
-        class="p-5 mb-2 text-center text-error-500 bg-white rounded dark:bg-surface-800"
+        class="p-5 mb-2 text-center text-error-500 bg-card rounded-lg"
       >
         {{ __("This feature is not enabled!") }}
       </div>
@@ -170,7 +184,7 @@ function scrollToBottom() {
                 v-for="example in examples"
                 :key="example"
                 :disabled="!featureEnabled"
-                class="block w-full p-6 text-sm font-normal text-foreground bg-white border border-foreground rounded-lg shadow hover:bg-surface-100 dark:bg-surface-800 dark:border-foreground dark:hover:bg-surface-700 dark:text-foreground disabled:cursor-not-allowed"
+                class="block w-full p-6 text-sm font-normal text-foreground bg-card border border-foreground rounded-lg shadow hover:bg-surface-100 dark:border-foreground dark:hover:bg-surface-700 dark:text-foreground disabled:cursor-not-allowed"
                 @click="askWithExample(example)"
               >
                 {{ example }}
@@ -288,7 +302,7 @@ function scrollToBottom() {
 
                 <p
                   v-if="appDebug && form.verboseError"
-                  class="p-2 text-sm text-center text-error-400 bg-white rounded shadow dark:bg-surface-800"
+                  class="p-2 text-sm text-center text-error-400 bg-card rounded-lg shadow"
                 >
                   {{ form.verboseError }}
                 </p>

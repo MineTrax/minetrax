@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link } from '@inertiajs/vue3';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import AlertCard from '@/Components/AlertCard.vue';
 import { useStorage } from '@vueuse/core';
@@ -18,6 +21,17 @@ defineProps({
     ranks: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Player Ranks'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -121,33 +135,35 @@ const headerRow = [
       </AlertCard>
 
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Manage Player Ranks") }}
-        </h1>
-        <div class="flex">
-          <InertiaLink
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+        <div class="flex gap-2">
+          <Button
             v-if="can('update ranks')"
-            v-confirm="{message: 'Are you sure you want to Reset all Ranks? This will remove current rank of all players.'}"
-            method="post"
-            as="button"
-            :href="route('admin.rank.reset')"
-            class="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-error-600 border border-transparent rounded-md hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-red"
+            variant="destructive"
+            as-child
           >
-            {{ __("Reset to Default Ranks") }}
-          </InertiaLink>
-          <InertiaLink
+            <Link
+              v-confirm="{message: 'Are you sure you want to Reset all Ranks? This will remove current rank of all players.'}"
+              method="post"
+              as="button"
+              :href="route('admin.rank.reset')"
+            >
+              {{ __("Reset to Default Ranks") }}
+            </Link>
+          </Button>
+          <Button
             v-if="can('create ranks')"
-            :href="route('admin.rank.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create New") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Rank") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.rank.create')">
+              {{ __("Create Rank") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="ranks"
         :filters="filters"
@@ -203,7 +219,7 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="can('update ranks')"
               v-tippy
               as="a"
@@ -212,8 +228,8 @@ const headerRow = [
               :title="__('Edit Rank')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete ranks')"
               v-confirm="{
                 message:
@@ -227,7 +243,7 @@ const headerRow = [
               :title="__('Delete Rank')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>

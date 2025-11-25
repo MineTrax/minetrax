@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link } from '@inertiajs/vue3';
 import {
     EyeIcon,
     PencilSquareIcon,
@@ -20,6 +23,17 @@ defineProps({
     customPages: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Custom Pages'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -83,23 +97,21 @@ const headerRow = [
 
     <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Manage Custom Pages") }}
-        </h1>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create custom_pages')"
-            :href="route('admin.custom-page.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Custom Page") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.custom-page.create')">
+              {{ __("Create Custom Page") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="customPages"
         :filters="filters"
@@ -203,14 +215,14 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="!item.is_open_in_new_tab"
               as="a"
               :href="route('custom-page.show', item.path)"
               class="inline-flex items-center justify-center text-primary hover:text-primary"
             >
               <EyeIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
             <a
               v-else
               :href="route('custom-page.show', item.path)"
@@ -219,7 +231,7 @@ const headerRow = [
             >
               <EyeIcon class="inline-block w-5 h-5" />
             </a>
-            <InertiaLink
+            <Link
               v-if="can('update custom_pages')"
               v-tippy
               as="a"
@@ -228,8 +240,8 @@ const headerRow = [
               :title="__('Edit Custom Page')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete custom_pages')"
               v-confirm="{
                 message:
@@ -243,7 +255,7 @@ const headerRow = [
               :title="__('Delete Custom Page')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>

@@ -3,6 +3,8 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Link } from '@inertiajs/vue3';
 
 const { __ } = useTranslations();
 
@@ -10,6 +12,17 @@ defineProps({
     sessions : Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Online Users & Guests'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -53,13 +66,11 @@ const headerRow = [
 
     <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Online Users & Guests") }}
-        </h1>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="sessions"
         :filters="filters"
@@ -83,7 +94,7 @@ const headerRow = [
             </div>
           </td>
           <td class="px-4">
-            <InertiaLink
+            <Link
               v-if="item.user"
               :href="route('user.public.get', item.user.username)"
               class="flex items-center"
@@ -106,7 +117,7 @@ const headerRow = [
                   @{{ item.user.username }}
                 </div>
               </div>
-            </InertiaLink>
+            </Link>
             <div
               v-else
               class="flex items-center italic text-sm text-foreground dark:text-foreground"

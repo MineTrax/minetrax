@@ -5,6 +5,8 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
 import { TrashIcon, ArrowPathIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 import JetDialogModal from '@/Jetstream/DialogModal.vue';
@@ -21,6 +23,17 @@ defineProps({
     commandQueues: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Command History'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -121,20 +134,25 @@ const showDetails = (commandQueue) => {
 
         <div class="px-10 py-8 mx-auto text-foreground">
             <div class="flex justify-between mb-4">
-                <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-                    {{ __("Command History") }}
-                </h1>
+                <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
                 <div class="flex">
-                    <InertiaLink v-if="can('create command_queues')"
-                        v-confirm="{ message: 'Are you sure you wanna retry all failed & cancelled command queues? Please note that failed commands automatically get retried till they reach the max attempts.' }"
-                        :href="route('admin.command-queue.retry')" method="post" as="button"
-                        class="mr-2 inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-success-500 border border-transparent rounded-md hover:bg-success-700 active:bg-success-900 focus:outline-none focus:border-success-900 focus:shadow-outline-gray">
-                        {{ __("Retry All Failed") }}
-                    </InertiaLink>
+                    <Button
+                        v-if="can('create command_queues')"
+                        as-child
+                    >
+                        <Link
+                            v-confirm="{ message: 'Are you sure you wanna retry all failed & cancelled command queues? Please note that failed commands automatically get retried till they reach the max attempts.' }"
+                            :href="route('admin.command-queue.retry')"
+                            method="post"
+                            as="button"
+                        >
+                            {{ __("Retry All Failed") }}
+                        </Link>
+                    </Button>
                 </div>
             </div>
 
-            <DataTable class="bg-white rounded shadow dark:bg-surface-800" :header="headerRow" :data="commandQueues"
+            <DataTable class="bg-card rounded-lg shadow" :header="headerRow" :data="commandQueues"
                 :filters="filters">
                 <template #default="{ item }">
                     <td class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground">
@@ -185,14 +203,14 @@ const showDetails = (commandQueue) => {
                     </DtRowItem>
 
                     <DtRowItem class="text-center">
-                        <inertia-link v-if="item.player_id" v-tippy as="a"
+                        <Link v-if="item.player_id" v-tippy as="a"
                             :href="route('player.show', item.player.uuid)"
                             class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
                             :content="item.player.uuid">
                             <span v-if="item.player.username" class="text-foreground dark:text-foreground">{{
                                 item.player.username }}</span>
                             <span v-else class="text-error-500 italic">{{ __("Unknown") }}</span>
-                        </inertia-link>
+                        </Link>
                         <div v-else class="italic text-foreground">
                             {{ __("none") }}
                         </div>
@@ -221,15 +239,15 @@ const showDetails = (commandQueue) => {
                             :title="__('View Details')">
                             <EyeIcon class="inline-block w-5 h-5" />
                         </button>
-                        <InertiaLink
+                        <Link
                             v-if="can('create command_queues') && ['failed', 'cancelled'].includes(item.status.value)"
                             v-tippy as="button" method="post" :data="{ id: item.id }"
                             :href="route('admin.command-queue.retry')"
                             class="inline-flex items-center justify-center text-success-600 dark:text-success-500 hover:text-success-800 dark:hover:text-success-800"
                             :title="__('Retry Command')">
                             <ArrowPathIcon class="inline-block w-5 h-5" />
-                        </InertiaLink>
-                        <InertiaLink
+                        </Link>
+                        <Link
                             v-if="can('delete command_queues') && ['pending', 'failed', 'cancelled', 'completed', 'deferred'].includes(item.status.value)"
                             v-confirm="{
                                 message:
@@ -239,7 +257,7 @@ const showDetails = (commandQueue) => {
                             class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
                             :title="__('Delete Command')">
                             <TrashIcon class="inline-block w-5 h-5" />
-                        </InertiaLink>
+                        </Link>
                     </td>
                 </template>
             </DataTable>

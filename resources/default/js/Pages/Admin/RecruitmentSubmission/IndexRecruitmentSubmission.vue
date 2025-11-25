@@ -5,11 +5,12 @@ import { useTranslations } from '@/Composables/useTranslations';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
 import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import XSelect from '@/Components/Form/XSelect.vue';
 import { computed, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Link } from '@inertiajs/vue3';
 import { pickBy } from 'lodash';
 import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
@@ -133,6 +134,17 @@ watch(selectedForms, (newSelectedForms) => {
 
     router.get(route(route().current()), pickBy(query));
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: props.closed ? __('Closed Requests - Applications') : __('Open Requests - Applications'),
+        current: true,
+    }
+];
 </script>
 
 <template>
@@ -145,18 +157,9 @@ watch(selectedForms, (newSelectedForms) => {
       "
     />
 
-    <div class="p-4 mx-auto space-y-4 px-10">
+    <div class="px-10 py-8 mx-auto space-y-4">
       <div class="flex items-center justify-between">
-        <h3
-          class="text-xl font-extrabold text-foreground dark:text-foreground"
-        >
-          {{
-            closed
-              ? __("Closed Requests:")
-              : __("Open Requests:")
-          }}
-          {{ showing ?? __("All Applications") }}
-        </h3>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
 
         <x-select
           id="selectForms"
@@ -170,7 +173,7 @@ watch(selectedForms, (newSelectedForms) => {
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-surface-800"
+          class="bg-card rounded-lg shadow"
           :header="headerRow"
           :data="submissions"
           :filters="filters"
@@ -179,7 +182,7 @@ watch(selectedForms, (newSelectedForms) => {
             <td
               class="text-sm px-4 font-medium text-left text-foreground whitespace-nowrap dark:text-foreground"
             >
-              <InertiaLink
+              <Link
                 as="a"
                 :href="
                   route(
@@ -190,11 +193,11 @@ watch(selectedForms, (newSelectedForms) => {
                 class="hover:text-primary"
               >
                 {{ item.id }}
-              </InertiaLink>
+              </Link>
             </td>
 
             <td class="px-4">
-              <InertiaLink
+              <Link
                 :href="
                   route(
                     'admin.recruitment-submission.show',
@@ -249,7 +252,7 @@ watch(selectedForms, (newSelectedForms) => {
                     @{{ item.user.username }}
                   </div>
                 </div>
-              </InertiaLink>
+              </Link>
             </td>
 
             <DtRowItem>
@@ -327,7 +330,8 @@ watch(selectedForms, (newSelectedForms) => {
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-              <InertiaLink
+              <Link
+                v-tippy
                 as="a"
                 :href="
                   route(
@@ -336,10 +340,11 @@ watch(selectedForms, (newSelectedForms) => {
                   )
                 "
                 class="inline-flex items-center justify-center text-primary hover:text-primary"
+                :title="__('View Submission')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
+              </Link>
+              <Link
                 v-if="
                   can('delete recruitment_submissions') &&
                     closed
@@ -361,7 +366,7 @@ watch(selectedForms, (newSelectedForms) => {
                 :title="__('Delete Submission')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
+              </Link>
             </td>
           </template>
         </DataTable>

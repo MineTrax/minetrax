@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link } from '@inertiajs/vue3';
 import { TrashIcon, ArrowPathIcon } from '@heroicons/vue/24/outline';
 
 const { can } = useAuthorizable();
@@ -15,6 +18,17 @@ defineProps({
     jobs: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Failed Jobs'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -62,33 +76,39 @@ const headerRow = [
 
     <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Failed Jobs") }}
-        </h1>
-        <div class="flex">
-          <InertiaLink
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+        <div class="flex gap-2">
+          <Button
             v-if="can('retry failed_jobs')"
-            :href="route('admin.failed-job.retry')"
-            method="post"
-            class="mr-2 inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-success-500 border border-transparent rounded-md hover:bg-success-700 active:bg-success-900 focus:outline-none focus:border-success-900 focus:shadow-outline-gray"
+            variant="default"
+            as-child
           >
-            {{ __("Retry All Jobs") }}
-          </InertiaLink>
-          <InertiaLink
+            <Link
+              :href="route('admin.failed-job.retry')"
+              method="post"
+            >
+              {{ __("Retry All Jobs") }}
+            </Link>
+          </Button>
+          <Button
             v-if="can('delete failed_jobs')"
-            v-confirm="{message: 'Are you sure you want to delete all failed jobs?'}"
-            method="delete"
-            as="button"
-            :href="route('admin.failed-job.clear')"
-            class="inline-flex items-center px-4 py-2 bg-error-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-error-700 active:bg-error-900 focus:outline-none focus:border-error-900 focus:shadow-outline-red transition ease-in-out duration-150"
+            variant="destructive"
+            as-child
           >
-            {{ __("Clear All Jobs") }}
-          </InertiaLink>
+            <Link
+              v-confirm="{message: 'Are you sure you want to delete all failed jobs?'}"
+              method="delete"
+              as="button"
+              :href="route('admin.failed-job.clear')"
+            >
+              {{ __("Clear All Jobs") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="jobs"
         :filters="filters"
@@ -142,7 +162,7 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="can('retry failed_jobs')"
               v-tippy
               as="button"
@@ -153,8 +173,8 @@ const headerRow = [
               :title="__('Retry Job')"
             >
               <ArrowPathIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete failed_jobs')"
               v-confirm="{
                 message:
@@ -169,7 +189,7 @@ const headerRow = [
               :title="__('Delete Job')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>

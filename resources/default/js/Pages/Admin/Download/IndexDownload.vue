@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link } from '@inertiajs/vue3';
 import { CloudArrowDownIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
 import millify from 'millify';
@@ -17,6 +20,17 @@ defineProps({
     downloads: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Downloads'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -85,23 +99,21 @@ const headerRow = [
 
     <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Downloads") }}
-        </h1>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create downloads')"
-            :href="route('admin.download.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Download") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.download.create')">
+              {{ __("Create Download") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="downloads"
         :filters="filters"
@@ -211,7 +223,7 @@ const headerRow = [
             >
               <CloudArrowDownIcon class="inline-block w-5 h-5" />
             </a>
-            <InertiaLink
+            <Link
               v-if="can('update downloads')"
               v-tippy
               as="a"
@@ -220,8 +232,8 @@ const headerRow = [
               :title="__('Edit Download')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete downloads')"
               v-confirm="{
                 message:
@@ -235,7 +247,7 @@ const headerRow = [
               :title="__('Delete Download')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>

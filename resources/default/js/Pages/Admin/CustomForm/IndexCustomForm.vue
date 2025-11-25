@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link } from '@inertiajs/vue3';
 import {
     EyeIcon,
     PencilSquareIcon,
@@ -12,6 +15,8 @@ import {
     ChartBarSquareIcon,
 } from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
+import { startCase } from 'lodash';
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
@@ -21,6 +26,32 @@ defineProps({
     customForms: Object,
     filters: Object,
 });
+
+function getStatusColor(status) {
+    switch (status) {
+        case 'active':
+            return 'green';
+        case 'draft':
+            return 'pending';
+        case 'disabled':
+            return 'red';
+        case 'archived':
+            return 'deferred';
+        default:
+            return status;
+    }
+}
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Custom Forms'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -90,23 +121,21 @@ const headerRow = [
 
     <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Manage Custom Forms") }}
-        </h1>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create custom_forms')"
-            :href="route('admin.custom-form.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Custom Form") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.custom-form.create')">
+              {{ __("Create Custom Form") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="customForms"
         :filters="filters"
@@ -119,23 +148,17 @@ const headerRow = [
           </td>
 
           <DtRowItem class="">
-            <InertiaLink
+            <Link
               as="a"
               :href="route('admin.custom-form.show', item.id)"
               class="dark:hover:text-foreground hover:text-primary"
             >
               {{ item.title }}
-            </InertiaLink>
+            </Link>
           </DtRowItem>
 
-          <DtRowItem class="px-4 whitespace-normal">
-            <div class="flex items-center">
-              <div
-                class="text-sm font-medium text-foreground dark:text-foreground"
-              >
-                {{ item.status.value }}
-              </div>
-            </div>
+          <DtRowItem>
+            <CommonStatusBadge :status="getStatusColor(item.status.value)" :value="startCase(item.status.value)" />
           </DtRowItem>
 
           <td class="px-4 whitespace-normal">
@@ -194,7 +217,7 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="['active', 'disabled'].includes(item.status.value)"
               v-tippy
               as="a"
@@ -203,8 +226,8 @@ const headerRow = [
               :title="__('Show Public View')"
             >
               <EyeIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-tippy
               as="a"
               :href="route('admin.custom-form.show', item.id)"
@@ -212,8 +235,8 @@ const headerRow = [
               :title="__('Show Intel')"
             >
               <ChartBarSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('update custom_forms')"
               v-tippy
               as="a"
@@ -222,8 +245,8 @@ const headerRow = [
               :title="__('Edit Custom Form')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete custom_forms')"
               v-confirm="{
                 message:
@@ -237,7 +260,7 @@ const headerRow = [
               :title="__('Delete Custom Form')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>

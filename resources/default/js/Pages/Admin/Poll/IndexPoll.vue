@@ -5,6 +5,10 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Badge } from '@/Components/ui/badge';
+import { Link } from '@inertiajs/vue3';
 import { LockClosedIcon, LockOpenIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
 
@@ -16,6 +20,17 @@ defineProps({
     polls: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Polls'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -74,23 +89,21 @@ const headerRow = [
 
     <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Manage Polls") }}
-        </h1>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create polls')"
-            :href="route('admin.poll.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-800 border border-transparent rounded-md hover:bg-surface-700 active:bg-surface-900 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create New") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Poll") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.poll.create')">
+              {{ __("Create Poll") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-surface-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="polls"
         :filters="filters"
@@ -108,13 +121,15 @@ const headerRow = [
             </div>
           </DtRowItem>
 
-          <td class="px-4 text-sm">
+          <td class="px-4 py-3 space-x-1 space-y-1 text-sm">
             <template v-if="item.options.length > 0">
-              <span
+              <Badge
                 v-for="option in item.options"
                 :key="option.id"
-                class="px-2 mr-1 mb-1 inline-flex text-xs leading-5 font-semibold rounded bg-surface-100 text-foreground dark:bg-surface-700 dark:text-foreground"
-              >{{ option.name }}</span>
+                variant="outline"
+              >
+                {{ option.name }}
+              </Badge>
             </template>
             <span
               v-else
@@ -183,7 +198,7 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="can('update polls') && !item.is_closed"
               v-tippy
               as="button"
@@ -193,8 +208,8 @@ const headerRow = [
               :title="__('Lock Poll')"
             >
               <LockClosedIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('update polls') && item.is_closed"
               v-tippy
               as="button"
@@ -204,8 +219,8 @@ const headerRow = [
               :title="__('Unlock Poll')"
             >
               <LockOpenIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete polls')"
               v-confirm="{
                 message:
@@ -219,7 +234,7 @@ const headerRow = [
               :title="__('Delete Poll')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>
