@@ -5,8 +5,10 @@ import { useTranslations } from '@/Composables/useTranslations';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import { Link } from '@inertiajs/vue3';
 import millify from 'millify';
 import { LockClosedIcon, PaintBrushIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
@@ -35,6 +37,17 @@ const props = defineProps({
         type: Boolean,
     },
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Players'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -132,16 +145,18 @@ const headerRow = [
   <AdminLayout>
     <AppHead :title="__('Players - PlayerIntel')" />
 
-    <div class="p-4 mx-auto space-y-4 px-10">
-      <ServerIntelServerSelector
-        :title="__('Players')"
-        :server-list="serverList"
-        :filters="filters"
-      />
+    <div class="px-10 py-8 mx-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+        <ServerIntelServerSelector
+          :server-list="serverList"
+          :filters="filters"
+        />
+      </div>
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-surface-800"
+          class="bg-card rounded-lg shadow"
           :header="headerRow"
           :data="data"
           :filters="filters"
@@ -177,7 +192,7 @@ const headerRow = [
                   >
                 </div>
                 <div class="ml-4">
-                  <inertia-link
+                  <Link
                     v-tippy
                     as="a"
                     :href="route('player.show', item.player.uuid)"
@@ -192,7 +207,7 @@ const headerRow = [
                       v-else
                       class="text-error-500 italic"
                     >{{ __("Unknown") }}</span>
-                  </inertia-link>
+                  </Link>
                 </div>
               </div>
             </td>
@@ -255,7 +270,7 @@ const headerRow = [
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-              <InertiaLink
+              <Link
                 v-if="canChangeAnyPlayerSkin"
                 v-tippy
                 as="a"
@@ -266,9 +281,9 @@ const headerRow = [
                 :title="__('Change Skin of this player.')"
               >
                 <PaintBrushIcon class="w-5 h-5" />
-              </InertiaLink>
+              </Link>
 
-              <InertiaLink
+              <Link
                 v-if="canResetAnyPlayerPassword"
                 v-tippy
                 as="a"
@@ -279,9 +294,9 @@ const headerRow = [
                 :title="__('Change Password of this player.')"
               >
                 <LockClosedIcon class="w-5 h-5" />
-              </InertiaLink>
+              </Link>
 
-              <InertiaLink
+              <Link
                 v-if="can('delete players')"
                 v-confirm="{
                   message:
@@ -295,7 +310,7 @@ const headerRow = [
                 :title="__('Delete Player')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
+              </Link>
             </td>
           </template>
         </DataTable>

@@ -144,7 +144,7 @@ const breadcrumbItems = [
           name="selectForms"
           :select-list="forms"
           :placeholder="__('All Forms')"
-          class="w-48 max-w-48 dark:border dark:rounded dark:border-foreground"
+          class="w-48 max-w-48 border rounded bg-card"
         />
       </div>
 
