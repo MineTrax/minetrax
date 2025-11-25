@@ -94,10 +94,13 @@ const headerRow = [
         <div class="flex">
           <Button
             v-if="can('create roles')"
-            as="a"
-            :href="route('admin.role.create')"
+            as-child
           >
-            {{ __("Create Role") }}
+            <Link
+              :href="route('admin.role.create')"
+            >
+              {{ __("Create Role") }}
+            </Link>
           </Button>
         </div>
       </div>
@@ -218,7 +221,7 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="can('update roles')"
               v-tippy
               as="a"
@@ -227,8 +230,8 @@ const headerRow = [
               :title="__('Edit Role')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete roles')"
               v-confirm="{
                 message:
@@ -242,7 +245,7 @@ const headerRow = [
               :title="__('Delete Role')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>
