@@ -206,7 +206,6 @@ function getServerWebQueryStatus(serverId) {
           </Button>
           <Button
             v-if="can('create servers') && canCreateBungeeServer"
-            variant="outline"
             as-child
           >
             <Link :href="route('admin.server.create-bungee')">
