@@ -29,7 +29,7 @@ const breadcrumbItems = [
         current: true,
     },
     {
-        text: props.badge.name,
+        text: '#' + props.badge.id,
         current: true,
     }
 ];
