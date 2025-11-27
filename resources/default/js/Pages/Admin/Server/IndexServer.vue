@@ -344,7 +344,7 @@ function getServerWebQueryStatus(serverId) {
             </div>
             <div
               v-else
-              class="flex space-x-2"
+              class="space-x-2"
             >
               <Link
                 v-tippy
