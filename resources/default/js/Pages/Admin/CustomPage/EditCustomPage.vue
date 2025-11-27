@@ -1,237 +1,40 @@
-<template>
-  <AdminLayout>
-    <app-head :title="`Edit Custom Page: ${customPage.title}`" />
-
-    <div class="py-12 px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
-          {{ __("Edit Custom Page") }}
-        </h1>
-        <inertia-link
-          :href="route('admin.custom-page.index')"
-          class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-        >
-          <span>{{ __("Cancel") }}</span>
-        </inertia-link>
-      </div>
-
-      <div class="mt-10 sm:mt-0">
-        <div class="md:grid md:grid-cols-4 md:gap-6">
-          <div class="md:col-span-1">
-            <div class="px-4 sm:px-0">
-              <h3 class="text-lg font-medium leading-6 text-foreground dark:text-foreground">
-                {{ __("Overview") }}
-              </h3>
-              <p class="mt-1 text-sm text-foreground dark:text-foreground">
-                {{
-                  __("Using custom pages you can create a page based on markdown to show information like privacy, rules etc.")
-                }} <br> {{ __("Using custom pages you can also redirect to some external links.") }}
-              </p>
-            </div>
-          </div>
-          <div class="mt-5 md:mt-0 md:col-span-3">
-            <form @submit.prevent="updateCustomPage">
-              <div class="shadow overflow-hidden sm:rounded-md">
-                <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
-                  <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-6">
-                      <x-input
-                        id="title"
-                        v-model="form.title"
-                        :label="__('Title of Page')"
-                        :help="__('Eg: Privacy & Policy')"
-                        :error="form.errors.title"
-                        type="text"
-                        name="title"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-
-                    <div class="col-span-6 sm:col-span-6">
-                      <x-input
-                        id="path"
-                        v-model="form.path"
-                        :label="__('URL Path')"
-                        :help="__('Eg: privacy-policy')"
-                        :error="form.errors.path"
-                        type="text"
-                        name="path"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div
-                      class="col-span-6 sm:col-span-6"
-                    >
-                      <x-select
-                        id="page_type"
-                        v-model="pageType"
-                        name="page_type"
-                        :label="__('Page Type')"
-                        :placeholder="__('Select a type of page..')"
-                        :disable-null="true"
-                        :select-list="pageTypeList"
-                      />
-
-                      <div
-                        v-if="pageType === 'html'"
-                        class="text-sm mt-4 p-4 border border-orange-700 rounded bg-orange-200 text-orange-700 dark:bg-orange-700 dark:bg-opacity-25 dark:text-orange-400"
-                      >
-                        {{
-                          __("Please be careful with this option, adding malicious code can expose your website to security risks. Make sure you know what you are doing.")
-                        }}
-                      </div>
-                    </div>
-
-
-                    <div
-                      v-show="pageType === 'redirect'"
-                      class="col-span-6 sm:col-span-6"
-                    >
-                      <x-input
-                        id="redirect_url"
-                        v-model="form.redirect_url"
-                        :label="__('Redirect URL')"
-                        :help="__('Eg: https://my-custom-shop.com')"
-                        :error="form.errors.redirect_url"
-                        type="text"
-                        name="redirect_url"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div
-                      v-show="pageType === 'html'"
-                      class="col-span-6 sm:col-span-6"
-                    >
-                      <codemirror
-                        v-model="code"
-                        placeholder="Paste your HTML/CSS code here..."
-                        :style="{ height: '400px'}"
-                        :indent-with-tab="true"
-                        :tab-size="2"
-                        :extensions="extensions"
-                        @ready="handleReady"
-                      />
-
-                      <jet-input-error
-                        :message="form.errors.body"
-                        class="mt-2 text-right"
-                      />
-                    </div>
-
-                    <div
-                      v-show="pageType === 'markdown'"
-                      class="col-span-6 sm:col-span-6"
-                    >
-                      <textarea
-                        id="body"
-                        v-model="bodyMarkdown"
-                        aria-label="body"
-                        name="body"
-                        class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-foreground rounded-md"
-                      />
-                      <jet-input-error
-                        :message="form.errors.body"
-                        class="mt-2"
-                      />
-                    </div>
-
-                    <div class="flex items-center col-span-6 sm:col-span-6">
-                      <fieldset>
-                        <legend class="text-base font-medium text-foreground dark:text-foreground">
-                          {{ __("Options") }}
-                        </legend>
-
-                        <div class="mt-4 flex space-x-4">
-                          <XCheckbox
-                            id="is_visible"
-                            v-model="form.is_visible"
-                            :label="__('Visible')"
-                            :help="__('General public can access this URL via link')"
-                            name="is_visible"
-                          />
-
-                          <XCheckbox
-                            id="is_in_navbar"
-                            v-model="form.is_in_navbar"
-                            :label="__('Add to Navbar')"
-                            :help="__('Add this page link to the top Navigation bar')"
-                            name="is_in_navbar"
-                          />
-
-                          <XCheckbox
-                            id="is_open_in_new_tab"
-                            v-model="form.is_open_in_new_tab"
-                            :label="__('Open in New Tab')"
-                            :help="__('Should this page open in new tab')"
-                            name="is_open_in_new_tab"
-                          />
-
-                          <XCheckbox
-                            v-show="pageType !== 'redirect' && pageType !== 'html'"
-                            id="is_sidebar_visible"
-                            v-model="form.is_sidebar_visible"
-                            :label="__('Sidebar Visible')"
-                            :help="__('Should right sidebar be visible when user open this page')"
-                            name="is_sidebar_visible"
-                          />
-                        </div>
-
-
-                        <jet-input-error
-                          :message="form.errors.is_in_navbar"
-                          class="mt-2"
-                        />
-                        <jet-input-error
-                          :message="form.errors.is_visible"
-                          class="mt-2"
-                        />
-                        <jet-input-error
-                          :message="form.errors.is_sidebar_visible"
-                          class="mt-2"
-                        />
-                      </fieldset>
-                    </div>
-                  </div>
-                </div>
-                <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
-                  <loading-button
-                    :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-                    type="submit"
-                  >
-                    {{ __("Update Page") }}
-                  </loading-button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </AdminLayout>
-</template>
-
 <script setup>
-import JetInputError from '@/Jetstream/InputError.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
-import EasyMDE from 'easymde';
-import XSelect from '@/Components/Form/XSelect.vue';
-import {defineProps, onMounted, ref, shallowRef} from 'vue';
-import {useForm} from '@inertiajs/vue3';
-import {Codemirror} from 'vue-codemirror';
-import {basicSetup} from 'codemirror';
-import {html} from '@codemirror/lang-html';
-import {oneDark} from '@/Data/CodeMirror/darkTheme.js';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link, useForm } from '@inertiajs/vue3';
+import XInput from '@/Components/Form/XInput.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XSwitch from '@/Components/Form/XSwitch.vue';
+import { Codemirror } from 'vue-codemirror';
+import { basicSetup } from 'codemirror';
+import { html } from '@codemirror/lang-html';
+import { oneDark } from '@/Data/CodeMirror/darkTheme.js';
+import EasyMDE from 'easymde';
+import { onMounted, ref, shallowRef } from 'vue';
+
+const { __ } = useTranslations();
 
 const props = defineProps({
     customPage: Object
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Custom Pages'),
+        url: route('admin.custom-page.index'),
+        current: false,
+    },
+    {
+        text: __('Edit Custom Page'),
+        current: true,
+    }
+];
 
 const pageType = ref(props.customPage.is_redirect ? 'redirect' : props.customPage.is_html_page ? 'html' : 'markdown');
 const bodyMarkdown = ref(props.customPage.body);
@@ -240,6 +43,7 @@ const pageTypeList = {
     html: 'HTML - Add your content in code using HTML/CSS',
     redirect: 'Redirect - This page will redirect to another URL',
 };
+
 const form = useForm({
     title: props.customPage.title,
     body: props.customPage.body,
@@ -284,3 +88,211 @@ onMounted(() => {
     });
 });
 </script>
+
+<template>
+  <AdminLayout>
+    <app-head :title="__('Edit Custom Page: :title', { title: customPage.title })" />
+
+    <div class="px-10 py-8 mx-auto max-w-6xl text-foreground">
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
+      </div>
+
+      <div class="mt-6">
+        <form @submit.prevent="updateCustomPage">
+          <div class="shadow overflow-hidden rounded-lg">
+            <div class="px-4 py-5 bg-card sm:p-6">
+              <div class="grid grid-cols-6 gap-6">
+                <div class="col-span-6 sm:col-span-6">
+                  <XInput
+                    id="title"
+                    v-model="form.title"
+                    :label="__('Title of Page')"
+                    :help="__('Eg: Privacy & Policy')"
+                    :error="form.errors.title"
+                    type="text"
+                    name="title"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-6">
+                  <XInput
+                    id="path"
+                    v-model="form.path"
+                    :label="__('URL Path')"
+                    :help="__('Eg: privacy-policy')"
+                    :error="form.errors.path"
+                    type="text"
+                    name="path"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-6">
+                  <XSelect
+                    id="page_type"
+                    v-model="pageType"
+                    name="page_type"
+                    :label="__('Page Type')"
+                    :placeholder="__('Select a type of page..')"
+                    :disable-null="true"
+                    :select-list="pageTypeList"
+                  />
+
+                  <div
+                    v-if="pageType === 'html'"
+                    class="text-sm mt-4 p-4 border border-warning-600 rounded bg-warning-100 text-warning-700 dark:bg-warning-900/25 dark:text-warning-400"
+                  >
+                    {{
+                      __("Please be careful with this option, adding malicious code can expose your website to security risks. Make sure you know what you are doing.")
+                    }}
+                  </div>
+                </div>
+
+                <div
+                  v-show="pageType === 'redirect'"
+                  class="col-span-6 sm:col-span-6"
+                >
+                  <XInput
+                    id="redirect_url"
+                    v-model="form.redirect_url"
+                    :label="__('Redirect URL')"
+                    :help="__('Eg: https://my-custom-shop.com')"
+                    :error="form.errors.redirect_url"
+                    type="text"
+                    name="redirect_url"
+                  />
+                </div>
+
+                <div
+                  v-show="pageType === 'html'"
+                  class="col-span-6 sm:col-span-6"
+                >
+                  <Codemirror
+                    v-model="code"
+                    placeholder="Paste your HTML/CSS code here..."
+                    :style="{ height: '400px'}"
+                    :indent-with-tab="true"
+                    :tab-size="2"
+                    :extensions="extensions"
+                    @ready="handleReady"
+                  />
+                  <p
+                    v-if="form.errors.body"
+                    class="text-xs text-destructive mt-2 text-right"
+                  >
+                    {{ form.errors.body }}
+                  </p>
+                </div>
+
+                <div
+                  v-show="pageType === 'markdown'"
+                  class="col-span-6 sm:col-span-6"
+                >
+                  <textarea
+                    id="body"
+                    v-model="bodyMarkdown"
+                    aria-label="body"
+                    name="body"
+                    class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-input bg-background rounded-md"
+                  />
+                  <p
+                    v-if="form.errors.body"
+                    class="text-xs text-destructive mt-2 text-right"
+                  >
+                    {{ form.errors.body }}
+                  </p>
+                </div>
+
+                <div class="col-span-6 sm:col-span-6">
+                  <fieldset>
+                    <legend class="text-sm font-medium text-foreground mb-4">
+                      {{ __("Options") }}
+                    </legend>
+                    <div class="flex flex-wrap gap-6">
+                      <XSwitch
+                        id="is_visible"
+                        v-model="form.is_visible"
+                        :label="__('Visible')"
+                        :help="__('General public can access this URL via link')"
+                        name="is_visible"
+                        :error="form.errors.is_visible"
+                      />
+
+                      <XSwitch
+                        id="is_in_navbar"
+                        v-model="form.is_in_navbar"
+                        :label="__('Add to Navbar')"
+                        :help="__('Add this page link to the top Navigation bar')"
+                        name="is_in_navbar"
+                        :error="form.errors.is_in_navbar"
+                      />
+
+                      <XSwitch
+                        id="is_open_in_new_tab"
+                        v-model="form.is_open_in_new_tab"
+                        :label="__('Open in New Tab')"
+                        :help="__('Should this page open in new tab')"
+                        name="is_open_in_new_tab"
+                      />
+
+                      <XSwitch
+                        v-show="pageType !== 'redirect' && pageType !== 'html'"
+                        id="is_sidebar_visible"
+                        v-model="form.is_sidebar_visible"
+                        :label="__('Sidebar Visible')"
+                        :help="__('Should right sidebar be visible when user open this page')"
+                        name="is_sidebar_visible"
+                        :error="form.errors.is_sidebar_visible"
+                      />
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+            </div>
+            <div class="px-4 py-3 bg-card border-t border-border sm:px-6 flex justify-end gap-2">
+              <Button
+                variant="outline"
+                as-child
+              >
+                <Link :href="route('admin.custom-page.index')">
+                  {{ __("Back") }}
+                </Link>
+              </Button>
+              <Button
+                type="submit"
+                :disabled="form.processing"
+              >
+                <svg
+                  v-if="form.processing"
+                  class="animate-spin -ml-1 mr-2 h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                {{ __("Update Page") }}
+              </Button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
