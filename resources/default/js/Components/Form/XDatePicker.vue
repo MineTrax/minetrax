@@ -16,7 +16,9 @@
                 :disabled="disabled"
                 :required="required"
                 :name="name"
-                value-type="format"
+                :type="type"
+                :format="format"
+                :value-type="valueType"
                 class="w-full"
                 :input-class="inputClasses"
             />
@@ -74,6 +76,18 @@ const props = defineProps({
     placeholder: {
         type: String,
         default: "Select date...",
+    },
+    type: {
+        type: String,
+        default: "date",
+    },
+    format: {
+        type: String,
+        default: "YYYY-MM-DD",
+    },
+    valueType: {
+        type: String,
+        default: "format",
     },
 });
 
