@@ -1,260 +1,203 @@
+<script setup>
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link, useForm } from '@inertiajs/vue3';
+import XInput from '@/Components/Form/XInput.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XSwitch from '@/Components/Form/XSwitch.vue';
+import ImageUpload from '@/Components/Form/ImageUpload.vue';
+import EasyMDE from 'easymde';
+import { onMounted, ref } from 'vue';
+
+const { __ } = useTranslations();
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('News'),
+        url: route('admin.news.index'),
+        current: false,
+    },
+    {
+        text: __('Create News'),
+        current: true,
+    }
+];
+
+const easyMDE = ref(null);
+
+const form = useForm({
+    title: '',
+    body: '',
+    type: '0',
+    is_published: true,
+    is_pinned: false,
+    is_commentable: true,
+    photo: null,
+});
+
+onMounted(() => {
+    easyMDE.value = new EasyMDE({
+        element: document.getElementById('body'),
+        previewClass: 'editor-preview prose max-w-none'
+    });
+});
+
+function addNews() {
+    form.body = easyMDE.value.value();
+    form.post(route('admin.news.store'), {
+        preserveScroll: true
+    });
+}
+</script>
+
 <template>
   <AdminLayout>
-    <app-head title="Create News" />
+    <app-head :title="__('Create News')" />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
-          {{ __("Create News") }}
-        </h1>
-        <inertia-link
-          :href="route('admin.news.index')"
-          class="inline-flex items-center px-4 py-2 bg-surface-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-        >
-          <span>{{ __("Cancel") }}</span>
-        </inertia-link>
+    <div class="px-10 py-8 mx-auto max-w-6xl text-foreground">
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
       </div>
 
-      <div class="mt-10 sm:mt-0">
-        <div class="mt-5 md:mt-0">
-          <form @submit.prevent="addNews">
-            <div class="shadow overflow-hidden sm:rounded-md">
-              <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
-                <div class="grid grid-cols-6 gap-6">
-                  <div class="col-span-6 sm:col-span-6">
-                    <x-select
-                      id="type"
-                      v-model="form.type"
-                      name="type"
-                      :error="form.errors.type"
-                      :label="__('News Category')"
-                      :select-list="{0: __('General'), 1: __('Announcement'), 2: __('Event')}"
+      <div class="mt-6">
+        <form @submit.prevent="addNews">
+          <div class="shadow rounded-lg">
+            <div class="px-4 py-5 bg-card sm:p-6">
+              <div class="grid grid-cols-6 gap-6">
+                <div class="col-span-6 sm:col-span-3">
+                  <XSelect
+                    id="type"
+                    v-model="form.type"
+                    name="type"
+                    :error="form.errors.type"
+                    :label="__('News Category')"
+                    :select-list="{'0': __('General'), '1': __('Announcement'), '2': __('Event')}"
+                    :disable-null="true"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <ImageUpload
+                    id="photo"
+                    name="photo"
+                    :label="__('Featured Image (Optional)')"
+                    v-model="form.photo"
+                    :error="form.errors.photo"
+                    :removable="false"
+                    shape="rect"
+                    :preview-class="'h-64 w-full'"
+                    :upload-label="__('Upload')"
+                    :change-label="__('Change')"
+                  />
+                </div>
+
+                <div class="col-span-6">
+                  <XInput
+                    id="title"
+                    v-model="form.title"
+                    :label="__('Title')"
+                    :error="form.errors.title"
+                    type="text"
+                    name="title"
+                  />
+                </div>
+
+                <div class="col-span-6">
+                  <label
+                    for="body"
+                    class="block text-sm font-medium text-foreground mb-2"
+                  >{{ __("Content") }}</label>
+                  <textarea
+                    id="body"
+                    v-model="form.body"
+                    aria-label="body"
+                    name="body"
+                  />
+                  <p
+                    v-if="form.errors.body"
+                    class="text-xs text-destructive mt-2"
+                  >
+                    {{ form.errors.body }}
+                  </p>
+                </div>
+
+                <div class="col-span-6">
+                  <div class="flex flex-wrap gap-6">
+                    <XSwitch
+                      id="is_published"
+                      v-model="form.is_published"
+                      :label="__('Published')"
+                      name="is_published"
+                      :error="form.errors.is_published"
                     />
-                  </div>
-
-                  <div class="col-span-6 sm:col-span-6">
-                    <x-input
-                      id="title"
-                      v-model="form.title"
-                      :label="__('Title')"
-                      :error="form.errors.title"
-                      type="text"
-                      name="title"
-                      help-error-flex="flex-row"
+                    <XSwitch
+                      id="is_pinned"
+                      v-model="form.is_pinned"
+                      :label="__('Pinned')"
+                      name="is_pinned"
+                      :error="form.errors.is_pinned"
                     />
-                  </div>
-
-                  <div class="col-span-6 sm:col-span-6">
-                    <textarea
-                      id="body"
-                      v-model="form.body"
-                      aria-label="body"
-                      name="body"
-                      class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-foreground rounded-md"
+                    <XSwitch
+                      id="is_commentable"
+                      v-model="form.is_commentable"
+                      :label="__('Allow Comments')"
+                      name="is_commentable"
+                      :error="form.errors.is_commentable"
                     />
-                    <jet-input-error
-                      :message="form.errors.body"
-                      class="mt-2"
-                    />
-                  </div>
-
-                  <div class="col-span-6 sm:col-span-3">
-                    <!-- Profile Photo File Input -->
-                    <input
-                      id="photo"
-                      ref="photo"
-                      type="file"
-                      class="hidden"
-                      @change="updatePhotoPreview"
-                    >
-
-                    <label
-                      for="photo"
-                      class="block text-sm font-medium text-foreground dark:text-foreground"
-                    >{{ __("Image") }}</label>
-
-                    <!-- New Profile Photo Preview -->
-                    <div
-                      v-show="photoPreview"
-                      class="mt-2"
-                    >
-                      <span
-                        class="block rounded w-48 h-32"
-                        :style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'"
-                      />
-                    </div>
-
-                    <jet-secondary-button
-                      class="mt-2 mr-2"
-                      type="button"
-                      @click.prevent="selectNewPhoto"
-                    >
-                      {{ __("Select A New Image") }}
-                    </jet-secondary-button>
-
-                    <jet-input-error
-                      :message="form.errors.photo"
-                      class="mt-2"
-                    />
-                  </div>
-
-                  <div class="flex items-center col-span-6 sm:col-span-3">
-                    <fieldset>
-                      <legend class="text-base font-medium text-foreground dark:text-foreground">
-                        {{ __("Options") }}
-                      </legend>
-                      <div class="mt-4 flex space-x-4">
-                        <div class="flex items-start">
-                          <div class="flex items-center h-5">
-                            <input
-                              id="is_published"
-                              v-model="form.is_published"
-                              name="is_published"
-                              type="checkbox"
-                              class="focus:ring-primary h-4 w-4 text-primary border-foreground rounded dark:border-foreground rounded dark:bg-surface-900"
-                            >
-                          </div>
-                          <div class="ml-3 text-sm">
-                            <label
-                              for="is_published"
-                              class="font-medium text-foreground dark:text-foreground"
-                            >{{ __("Published") }}</label>
-                            <!--                                                            <p class="text-foreground">Get notified when someones posts a comment on a posting.</p>-->
-                          </div>
-                        </div>
-                        <div class="flex items-start">
-                          <div class="flex items-center h-5">
-                            <input
-                              id="is_pinned"
-                              v-model="form.is_pinned"
-                              name="is_pinned"
-                              type="checkbox"
-                              class="focus:ring-primary h-4 w-4 text-primary border-foreground rounded dark:border-foreground rounded dark:bg-surface-900"
-                            >
-                          </div>
-                          <div class="ml-3 text-sm">
-                            <label
-                              for="is_pinned"
-                              class="font-medium text-foreground dark:text-foreground"
-                            >{{ __("Pinned") }}</label>
-                            <!--                                                            <p class="text-foreground">Get notified when a candidate applies for a job.</p>-->
-                          </div>
-                        </div>
-                        <div class="flex items-start">
-                          <div class="flex items-center h-5">
-                            <input
-                              id="is_commentable"
-                              v-model="form.is_commentable"
-                              name="is_commentable"
-                              type="checkbox"
-                              class="focus:ring-primary h-4 w-4 text-primary border-foreground rounded dark:border-foreground rounded dark:bg-surface-900"
-                            >
-                          </div>
-                          <div class="ml-3 text-sm">
-                            <label
-                              for="is_commentable"
-                              class="font-medium text-foreground dark:text-foreground"
-                            >{{ __("Allow Comments") }}</label>
-                            <!--                                                            <p class="text-foreground">Get notified when a candidate applies for a job.</p>-->
-                          </div>
-                        </div>
-                      </div>
-                      <jet-input-error
-                        :message="form.errors.is_pinned"
-                        class="mt-2"
-                      />
-                      <jet-input-error
-                        :message="form.errors.is_published"
-                        class="mt-2"
-                      />
-                      <jet-input-error
-                        :message="form.errors.is_commentable"
-                        class="mt-2"
-                      />
-                    </fieldset>
                   </div>
                 </div>
               </div>
-              <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
-                <loading-button
-                  :loading="form.processing"
-                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-                  type="submit"
-                >
-                  {{ __("Add News") }}
-                </loading-button>
-              </div>
             </div>
-          </form>
-        </div>
+            <div class="px-4 py-3 bg-card border-t border-border sm:px-6 flex justify-end gap-2">
+              <Button
+                variant="outline"
+                as-child
+              >
+                <Link :href="route('admin.news.index')">
+                  {{ __("Cancel") }}
+                </Link>
+              </Button>
+              <Button
+                type="submit"
+                :disabled="form.processing"
+              >
+                <svg
+                  v-if="form.processing"
+                  class="animate-spin -ml-1 mr-2 h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                {{ __("Add News") }}
+              </Button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </AdminLayout>
 </template>
-
-<script>
-import JetInputError from '@/Jetstream/InputError.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import EasyMDE from 'easymde';
-import XSelect from '@/Components/Form/XSelect.vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-
-export default {
-    components: {
-        AdminLayout,
-        XSelect,
-        JetInputError,
-        LoadingButton,
-        JetSecondaryButton,
-        XInput
-    },
-    data() {
-        return {
-            form: useForm({
-                title: '',
-                body: '',
-                type: 0,
-                is_published: true,
-                is_pinned: false,
-                is_commentable: true,
-                photo: null,
-            }),
-            photoPreview: null,
-            easyMDE: null
-        };
-    },
-
-    mounted() {
-        this.easyMDE = new EasyMDE({
-            previewClass: 'editor-preview prose max-w-none'
-        });
-    },
-
-    methods: {
-        addNews() {
-            if (this.$refs.photo) {
-                this.form.photo = this.$refs.photo.files[0];
-            }
-
-            this.form.body = this.easyMDE.value();
-
-            this.form.post(route('admin.news.store'), {});
-        },
-        updatePhotoPreview() {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                this.photoPreview = e.target.result;
-            };
-
-            reader.readAsDataURL(this.$refs.photo.files[0]);
-        },
-        selectNewPhoto() {
-            this.$refs.photo.click();
-        },
-    }
-};
-</script>
