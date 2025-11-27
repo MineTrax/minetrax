@@ -34,7 +34,11 @@ const breadcrumbItems = computed(() => [
     {
         text: isCreateOperation.value ? __('Add Proxy Server') : __('Edit Proxy Server'),
         current: true,
-    }
+    },
+    ...(!isCreateOperation.value ? [{
+        text: '#' + props.server.id,
+        current: true,
+    }] : []),
 ]);
 
 const form = useForm({

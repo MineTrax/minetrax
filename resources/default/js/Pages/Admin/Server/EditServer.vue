@@ -31,6 +31,10 @@ const breadcrumbItems = [
     {
         text: __('Edit Server'),
         current: true,
+    },
+    {
+        text: '#' + props.server.id,
+        current: true,
     }
 ];
 

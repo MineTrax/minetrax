@@ -29,6 +29,10 @@ const breadcrumbItems = [
     {
         text: __('Edit Download'),
         current: true,
+    },
+    {
+        text: '#' + props.download.id,
+        current: true,
     }
 ];
 

@@ -33,6 +33,10 @@ const breadcrumbItems = [
     {
         text: __('Edit Custom Page'),
         current: true,
+    },
+    {
+        text: '#' + props.customPage.id,
+        current: true,
     }
 ];
 
