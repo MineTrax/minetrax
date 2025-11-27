@@ -87,11 +87,11 @@ const props = defineProps({
     id: String,
     error: String,
     help: String,
-    hint: { type: String, default: "PNG, JPG, GIF up to 10MB" },
+    hint: { type: String, default: "PNG, JPG, GIF up to 2MB" },
     required: { type: [Boolean, String], default: false },
     disabled: { type: [Boolean, String], default: false },
     accept: { type: String, default: "image/*" },
-    maxSizeMb: { type: Number, default: 100 },
+    maxSizeMb: { type: Number, default: 2 },
     shape: { type: String, default: "rect" }, // 'rect' | 'circle'
     previewClass: { type: String, default: "" }, // consumer can set sizes e.g. 'h-28 w-28' or 'h-28 w-full'
     divClass: { type: String, default: "" },
@@ -102,6 +102,7 @@ const props = defineProps({
     clearLabel: { type: String, default: "Clear" },
     removeLabel: { type: String, default: "Remove" },
     showRemoveIcon: { type: Boolean, default: true },
+    objectFit: { type: String, default: "cover" }, // 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
 });
 
 const emits = defineEmits(["update:modelValue", "remove"]);
@@ -124,7 +125,18 @@ const containerClasses = computed(() => {
     return cn("relative overflow-hidden", previewWrapperClass.value, shapeClass.value);
 });
 
-const imageClasses = computed(() => cn("absolute inset-0 h-full w-full object-cover", shapeClass.value));
+const objectFitClass = computed(() => {
+    const fitMap = {
+        cover: "object-cover",
+        contain: "object-contain",
+        fill: "object-fill",
+        none: "object-none",
+        "scale-down": "object-scale-down",
+    };
+    return fitMap[props.objectFit] || "object-cover";
+});
+
+const imageClasses = computed(() => cn("absolute inset-0 h-full w-full", objectFitClass.value, shapeClass.value));
 
 const emptyClasses = computed(() => {
     return cn(
