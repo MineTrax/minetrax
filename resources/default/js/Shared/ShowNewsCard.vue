@@ -1,11 +1,15 @@
 <script setup>
 import { useHelpers } from '@/Composables/useHelpers';
+import { useTranslations } from '@/Composables/useTranslations';
 import Comments from '@/Components/Comments.vue';
+import AlertCard from '@/Components/AlertCard.vue';
 import {
   Card,
   CardContent,
 } from '@/Components/ui/card'
+import { EyeSlashIcon } from '@heroicons/vue/24/outline';
 
+const { __ } = useTranslations();
 const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
 
 defineProps({
@@ -18,6 +22,20 @@ defineProps({
 
 <template>
   <div class="space-y-6">
+    <!-- Unpublished Banner -->
+    <AlertCard
+      v-if="!news.published_at"
+      variant="warning"
+    >
+      <template #icon>
+        <EyeSlashIcon class="h-6 w-6 mr-4 text-yellow-500" />
+      </template>
+      {{ __("This news is not published") }}
+      <template #body>
+        {{ __("Only administrators can see this preview. Publish it to make it visible to everyone.") }}
+      </template>
+    </AlertCard>
+
     <Card class="group relative overflow-hidden transition-shadow duration-300 hover:shadow-lg">
       <CardContent class="p-6 sm:p-8">
         <!-- Image section -->
