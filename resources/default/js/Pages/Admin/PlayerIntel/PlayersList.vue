@@ -111,6 +111,7 @@ const headerRow = [
         filterable: {
             type: 'multiselect',
             options: [
+                '1.21',
                 '1.20',
                 '1.19',
                 '1.18',
