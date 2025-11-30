@@ -38,6 +38,7 @@ const props = defineProps({
     },
 });
 
+let selectedServers = props.filters?.servers?.length ? props.filters?.servers[0] : null;
 const breadcrumbItems = [
     {
         text: __('Admin'),
@@ -45,6 +46,10 @@ const breadcrumbItems = [
     },
     {
         text: __('Players'),
+        current: true,
+    },
+    {
+        text: props.serverList[selectedServers] ?? __('All Servers'),
         current: true,
     }
 ];

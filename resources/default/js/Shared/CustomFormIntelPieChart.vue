@@ -1,5 +1,6 @@
 <script setup>
 import Chart from '@/Components/Dashboard/Chart.vue';
+import { Card, CardContent } from '@/Components/ui/card';
 import { ref } from 'vue';
 
 let option = ref({});
@@ -62,14 +63,16 @@ option.value = {
 </script>
 
 <template>
-  <div class="bg-white dark:bg-surface-800 rounded w-full h-full space-y-2 p-3 shadow">
-    <h3 class="font-extrabold text-foreground dark:text-foreground flex items-center">
-      {{ title }}
-    </h3>
-    <Chart
-      :options="option"
-      height="350px"
-      :autoresize="true"
-    />
-  </div>
+  <Card class="w-full h-full">
+    <CardContent class="p-4 space-y-2">
+      <h3 class="font-extrabold text-foreground flex items-center">
+        {{ title }}
+      </h3>
+      <Chart
+        :options="option"
+        height="350px"
+        :autoresize="true"
+      />
+    </CardContent>
+  </Card>
 </template>

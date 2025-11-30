@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import Icon from '@/Components/Icon.vue';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import {useHelpers} from '@/Composables/useHelpers';
+import { Card, CardContent } from '@/Components/ui/card';
 const { secondsToHMS } = useHelpers();
 
 const props = defineProps({
@@ -40,14 +41,15 @@ onMounted(async () => {
 
 <template>
   <div class="flex">
-    <div class="bg-white dark:bg-surface-800 rounded w-full h-full p-3 shadow">
-      <h3 class="font-extrabold text-foreground dark:text-foreground flex mt-2 items-center">
-        <Icon
-          name="calculator"
-          class="w-6 mr-1"
-        />
-        {{ __("Numbers") }}
-      </h3>
+    <Card class="w-full h-full">
+      <CardContent class="p-4">
+        <h3 class="font-extrabold text-foreground flex mt-2 items-center">
+          <Icon
+            name="calculator"
+            class="w-6 mr-2"
+          />
+          {{ __("Numbers") }}
+        </h3>
 
       <div
         v-if="isLoading"
@@ -61,7 +63,7 @@ onMounted(async () => {
         class="m-0 p-0"
       >
         <table class="table-auto min-w-full text-sm dark:text-foreground text-foreground">
-          <thead class="border-b dark:border-foreground">
+          <thead class="border-b border-border">
             <tr>
               <th
                 scope="col"
@@ -294,6 +296,7 @@ onMounted(async () => {
           </tbody>
         </table>
       </div>
-    </div>
+      </CardContent>
+    </Card>
   </div>
 </template>

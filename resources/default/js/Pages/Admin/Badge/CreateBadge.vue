@@ -55,10 +55,10 @@ function addBadge() {
       </div>
 
       <div class="mt-6">
-        <form @submit.prevent="addBadge">
+            <form @submit.prevent="addBadge">
           <div class="shadow rounded-lg">
             <div class="px-4 py-5 bg-card sm:p-6">
-              <div class="grid grid-cols-6 gap-6">
+                  <div class="grid grid-cols-6 gap-6">
                 <div class="col-span-6">
                   <ImageUpload
                     id="photo"
@@ -78,51 +78,51 @@ function addBadge() {
 
                 <div class="col-span-6 sm:col-span-3">
                   <XInput
-                    id="name"
-                    v-model="form.name"
-                    :label="__('Badge Name')"
-                    :help="__('Eg: Special')"
-                    :error="form.errors.name"
-                    type="text"
-                    name="name"
-                  />
-                </div>
+                        id="name"
+                        v-model="form.name"
+                        :label="__('Badge Name')"
+                        :help="__('Eg: Special')"
+                        :error="form.errors.name"
+                        type="text"
+                        name="name"
+                      />
+                    </div>
 
                 <div class="col-span-6 sm:col-span-3">
                   <XInput
-                    id="shortname"
-                    v-model="form.shortname"
-                    :label="__('Short Name')"
-                    :help="__('Eg: special')"
-                    :error="form.errors.shortname"
-                    type="text"
-                    name="shortname"
-                  />
-                </div>
+                        id="shortname"
+                        v-model="form.shortname"
+                        :label="__('Short Name')"
+                        :help="__('Eg: special')"
+                        :error="form.errors.shortname"
+                        type="text"
+                        name="shortname"
+                      />
+                    </div>
 
-                <div class="col-span-6 sm:col-span-3">
+                    <div class="col-span-6 sm:col-span-3">
                   <XInput
-                    id="sort_order"
-                    v-model="form.sort_order"
-                    :label="__('Sort Order')"
-                    :error="form.errors.sort_order"
-                    type="number"
-                    name="sort_order"
-                  />
-                </div>
+                        id="sort_order"
+                        v-model="form.sort_order"
+                        :label="__('Sort Order')"
+                        :error="form.errors.sort_order"
+                        type="number"
+                        name="sort_order"
+                      />
+                    </div>
 
                 <div class="col-span-6">
                   <XSwitch
-                    id="is_sticky"
-                    v-model="form.is_sticky"
-                    :label="__('Is Sticky')"
-                    :help="__('Tick if you want this badge to always appear with username')"
-                    name="is_sticky"
-                    :error="form.errors.is_sticky"
-                  />
-                </div>
-              </div>
-            </div>
+                        id="is_sticky"
+                        v-model="form.is_sticky"
+                        :label="__('Is Sticky')"
+                        :help="__('Tick if you want this badge to always appear with username')"
+                        name="is_sticky"
+                        :error="form.errors.is_sticky"
+                      />
+                    </div>
+                    </div>
+                  </div>
             <div class="px-4 py-3 bg-card border-t border-border sm:px-6 flex justify-end gap-2">
               <Button
                 variant="outline"
@@ -133,7 +133,7 @@ function addBadge() {
                 </Link>
               </Button>
               <Button
-                type="submit"
+                    type="submit"
                 :disabled="form.processing"
               >
                 <svg
@@ -157,11 +157,11 @@ function addBadge() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                {{ __("Add Badge") }}
+                    {{ __("Add Badge") }}
               </Button>
-            </div>
-          </div>
-        </form>
+                </div>
+              </div>
+            </form>
       </div>
     </div>
   </AdminLayout>
