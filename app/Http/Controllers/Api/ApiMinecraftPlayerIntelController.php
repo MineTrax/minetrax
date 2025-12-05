@@ -45,7 +45,8 @@ class ApiMinecraftPlayerIntelController extends ApiController
 
         try {
             $playerCountryId = $geolocationService->getCountryIdFromIP($request->input('data.ip_address'));
-            $carbonDate = Carbon::createFromTimestampMs($request->input('data.session_started_at'));
+            $timezone = config('app.timezone');
+            $carbonDate = Carbon::createFromTimestampMs($request->input('data.session_started_at'), $timezone);
             // trim join address last .
             $fixedJoinAddress = $request->input('data.join_address') ? trim($request->input('data.join_address'), '.') : null;
             // Start the session
@@ -116,7 +117,8 @@ class ApiMinecraftPlayerIntelController extends ApiController
         $minecraftPlayerSession = MinecraftPlayerSession::where('uuid', $request->input('data.session_uuid'))->firstOrFail();
         try {
             $minecraftServerWorld = MinecraftServerWorld::where('server_id', $minecraftPlayerSession->server_id)->where('world_name', $request->input('data.world_name'))->first();
-            $killedAt = Carbon::createFromTimestampMs($request->input('data.killed_at'));
+            $timezone = config('app.timezone');
+            $killedAt = Carbon::createFromTimestampMs($request->input('data.killed_at'), $timezone);
 
             $minecraftPlayerPvpKill = MinecraftPlayerPvpKill::create([
                 'session_id' => $minecraftPlayerSession->id,
@@ -160,7 +162,8 @@ class ApiMinecraftPlayerIntelController extends ApiController
         $minecraftPlayerSession = MinecraftPlayerSession::where('uuid', $request->input('data.session_uuid'))->firstOrFail();
         try {
             $minecraftServerWorld = MinecraftServerWorld::where('server_id', $minecraftPlayerSession->server_id)->where('world_name', $request->input('data.world_name'))->first();
-            $diedAt = Carbon::createFromTimestampMs($request->input('data.died_at'));
+            $timezone = config('app.timezone');
+            $diedAt = Carbon::createFromTimestampMs($request->input('data.died_at'), $timezone);
 
             $minecraftPlayerDeath = MinecraftPlayerDeath::create([
                 'session_id' => $minecraftPlayerSession->id,
@@ -253,7 +256,8 @@ class ApiMinecraftPlayerIntelController extends ApiController
         DB::beginTransaction();
         try {
             // Report data to MinecraftPlayerSessions table and end the session if condition there.
-            $sessionEndedCarbonDate = $request->input('data.session_ended_at') ? Carbon::createFromTimestampMs($request->input('data.session_ended_at')) : null;
+            $timezone = config('app.timezone');
+            $sessionEndedCarbonDate = $request->input('data.session_ended_at') ? Carbon::createFromTimestampMs($request->input('data.session_ended_at'), $timezone) : null;
             MinecraftPlayerSession::where('uuid', $request->input('data.session_uuid'))->update([
                 'player_ping' => $request->input('data.player_ping'),
                 'mob_kills' => $request->input('data.mob_kills'),
