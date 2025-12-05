@@ -1,1 +1,0 @@
-import{o as e,d as t,t as a,r as n}from"./app-CCKLH5ME.js";const r={class:"block font-medium text-sm text-foreground dark:text-foreground"},l={key:0},c={key:1},_={__name:"Label",props:{value:String},setup(o){return(s,d)=>(e(),t("label",r,[o.value?(e(),t("span",l,a(o.value),1)):(e(),t("span",c,[n(s.$slots,"default")]))]))}};export{_};
