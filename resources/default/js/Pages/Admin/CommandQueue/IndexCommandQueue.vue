@@ -5,6 +5,8 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
 import { TrashIcon, ArrowPathIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 import JetDialogModal from '@/Jetstream/DialogModal.vue';
@@ -21,6 +23,17 @@ defineProps({
     commandQueues: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Command History'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -119,25 +132,30 @@ const showDetails = (commandQueue) => {
     <AdminLayout>
         <app-head :title="__('Command History')" />
 
-        <div class="px-10 py-8 mx-auto text-gray-400">
+        <div class="px-10 py-8 mx-auto text-foreground">
             <div class="flex justify-between mb-4">
-                <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
-                    {{ __("Command History") }}
-                </h1>
+                <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
                 <div class="flex">
-                    <InertiaLink v-if="can('create command_queues')"
-                        v-confirm="{ message: 'Are you sure you wanna retry all failed & cancelled command queues? Please note that failed commands automatically get retried till they reach the max attempts.' }"
-                        :href="route('admin.command-queue.retry')" method="post" as="button"
-                        class="mr-2 inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-500 border border-transparent rounded-md hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:shadow-outline-gray">
-                        {{ __("Retry All Failed") }}
-                    </InertiaLink>
+                    <Button
+                        v-if="can('create command_queues')"
+                        as-child
+                    >
+                        <Link
+                            v-confirm="{ message: 'Are you sure you wanna retry all failed & cancelled command queues? Please note that failed commands automatically get retried till they reach the max attempts.' }"
+                            :href="route('admin.command-queue.retry')"
+                            method="post"
+                            as="button"
+                        >
+                            {{ __("Retry All Failed") }}
+                        </Link>
+                    </Button>
                 </div>
             </div>
 
-            <DataTable class="bg-white rounded shadow dark:bg-gray-800" :header="headerRow" :data="commandQueues"
+            <DataTable class="bg-card rounded-lg shadow" :header="headerRow" :data="commandQueues"
                 :filters="filters">
                 <template #default="{ item }">
-                    <td class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200">
+                    <td class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground">
                         {{ item.id }}
                     </td>
 
@@ -158,10 +176,10 @@ const showDetails = (commandQueue) => {
                             :title="formatToDayDateString(item.last_attempt_at)">
                             {{ formatTimeAgoToNow(item.last_attempt_at) }}
                         </div>
-                        <div v-else class="text-gray-500 italic">
+                        <div v-else class="text-foreground italic">
                             {{ "not yet" }}
                         </div>
-                        <div class="text-xs dark:text-gray-500">
+                        <div class="text-xs dark:text-foreground">
                             {{ __("Attempts: :attempts/:max_attempts", {
                                 attempts: item.attempts,
                                 max_attempts: item.max_attempts ?? 1,
@@ -171,11 +189,11 @@ const showDetails = (commandQueue) => {
 
                     <DtRowItem>
                         <div v-if="item.execute_at" v-tippy
-                            class="text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap"
+                            class="text-sm font-medium text-foreground dark:text-foreground whitespace-nowrap"
                             :title="formatToDayDateString(item.execute_at)">
                             {{ formatTimeAgoToNow(item.execute_at) }}
                         </div>
-                        <div v-else class="text-gray-500 italic">
+                        <div v-else class="text-foreground italic">
                             {{ "no delay" }}
                         </div>
                     </DtRowItem>
@@ -185,15 +203,15 @@ const showDetails = (commandQueue) => {
                     </DtRowItem>
 
                     <DtRowItem class="text-center">
-                        <inertia-link v-if="item.player_id" v-tippy as="a"
+                        <Link v-if="item.player_id" v-tippy as="a"
                             :href="route('player.show', item.player.uuid)"
-                            class="text-sm font-medium text-gray-900 dark:text-gray-400 focus:outline-none cursor-pointer hover:underline"
+                            class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
                             :content="item.player.uuid">
-                            <span v-if="item.player.username" class="text-gray-600 dark:text-gray-400">{{
+                            <span v-if="item.player.username" class="text-foreground dark:text-foreground">{{
                                 item.player.username }}</span>
-                            <span v-else class="text-red-500 italic">{{ __("Unknown") }}</span>
-                        </inertia-link>
-                        <div v-else class="italic text-gray-500">
+                            <span v-else class="text-error-500 italic">{{ __("Unknown") }}</span>
+                        </Link>
+                        <div v-else class="italic text-foreground">
                             {{ __("none") }}
                         </div>
                     </DtRowItem>
@@ -209,7 +227,7 @@ const showDetails = (commandQueue) => {
 
 
                     <DtRowItem>
-                        <div v-tippy class="text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap"
+                        <div v-tippy class="text-sm font-medium text-foreground dark:text-foreground whitespace-nowrap"
                             :title="formatToDayDateString(item.created_at)">
                             {{ formatTimeAgoToNow(item.created_at) }}
                         </div>
@@ -217,29 +235,29 @@ const showDetails = (commandQueue) => {
 
                     <td class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap">
                         <button v-tippy @click="showDetails(item)"
-                            class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                            class="inline-flex items-center justify-center text-primary hover:text-primary"
                             :title="__('View Details')">
                             <EyeIcon class="inline-block w-5 h-5" />
                         </button>
-                        <InertiaLink
+                        <Link
                             v-if="can('create command_queues') && ['failed', 'cancelled'].includes(item.status.value)"
                             v-tippy as="button" method="post" :data="{ id: item.id }"
                             :href="route('admin.command-queue.retry')"
-                            class="inline-flex items-center justify-center text-green-600 dark:text-green-500 hover:text-green-800 dark:hover:text-green-800"
+                            class="inline-flex items-center justify-center text-success-600 dark:text-success-500 hover:text-success-800 dark:hover:text-success-800"
                             :title="__('Retry Command')">
                             <ArrowPathIcon class="inline-block w-5 h-5" />
-                        </InertiaLink>
-                        <InertiaLink
+                        </Link>
+                        <Link
                             v-if="can('delete command_queues') && ['pending', 'failed', 'cancelled', 'completed', 'deferred'].includes(item.status.value)"
                             v-confirm="{
                                 message:
                                     'Are you sure you want to delete this command history?',
                             }" v-tippy as="button" method="DELETE" :data="{ id: item.id }"
                             :href="route('admin.command-queue.delete')"
-                            class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                            class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
                             :title="__('Delete Command')">
                             <TrashIcon class="inline-block w-5 h-5" />
-                        </InertiaLink>
+                        </Link>
                     </td>
                 </template>
             </DataTable>
@@ -255,7 +273,7 @@ const showDetails = (commandQueue) => {
             <template #content>
                 <div class="w-full text-sm grid-cols-2 gap-6 leading-7 md:col-span-2 md:grid">
                     <div class="col-span-2">
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Command") }}
                         </p>
                         <code>
@@ -263,18 +281,18 @@ const showDetails = (commandQueue) => {
                         </code>
                     </div>
                     <div class="col-span-2">
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Output") }}
                         </p>
                         <code v-if="selectedCommandQueue.output">
                             {{ selectedCommandQueue.output }}
                         </code>
-                        <div v-else class="italic text-gray-500">
+                        <div v-else class="italic text-foreground">
                             {{ __("none") }}
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("ID") }}
                         </p>
                         <p class="">
@@ -282,18 +300,18 @@ const showDetails = (commandQueue) => {
                         </p>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Command ID") }}
                         </p>
                         <p v-if="selectedCommandQueue.command_id">
                             {{ selectedCommandQueue.command_id }}
                         </p>
-                        <p v-else class="italic text-gray-500">
+                        <p v-else class="italic text-foreground">
                             {{ __("none") }}
                         </p>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Server") }}
                         </p>
                         <p class="">
@@ -301,13 +319,13 @@ const showDetails = (commandQueue) => {
                         </p>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Status") }}
                         </p>
                         <CommonStatusBadge :status="selectedCommandQueue.status.value" />
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Last Attempted") }}
                         </p>
                         <div class="flex items-center">
@@ -315,7 +333,7 @@ const showDetails = (commandQueue) => {
                                 :title="formatToDayDateString(selectedCommandQueue.last_attempt_at)">
                                 {{ formatTimeAgoToNow(selectedCommandQueue.last_attempt_at) }}
                             </div>
-                            <div v-else class="text-gray-500 italic">
+                            <div v-else class="text-foreground italic">
                                 {{ "not yet" }}
                             </div>
                             &nbsp;&#9679;&nbsp;
@@ -328,22 +346,22 @@ const showDetails = (commandQueue) => {
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Execute At") }}
                         </p>
                         <div class="flex items-center">
                             <div v-if="selectedCommandQueue.execute_at" v-tippy
-                                class="text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap"
+                                class="text-sm font-medium text-foreground dark:text-foreground whitespace-nowrap"
                                 :title="formatToDayDateString(selectedCommandQueue.execute_at)">
                                 {{ formatTimeAgoToNow(selectedCommandQueue.execute_at) }}
                             </div>
-                            <div v-else class="text-gray-500 italic">
+                            <div v-else class="text-foreground italic">
                                 {{ "no delay" }}
                             </div>
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("For Player") }}
                         </p>
                         <div>
@@ -353,22 +371,22 @@ const showDetails = (commandQueue) => {
                                 </div>
                                 <div class="ml-2">
                                     <Link v-tippy as="a" :href="route('player.show', selectedCommandQueue.player.uuid)"
-                                        class="font-medium text-gray-900 cursor-pointer dark:text-gray-200 focus:outline-none hover:underline"
+                                        class="font-medium text-foreground cursor-pointer dark:text-foreground focus:outline-none hover:underline"
                                         :content="selectedCommandQueue.player.uuid">
                                     <span v-if="selectedCommandQueue.player.username"
-                                        class="font-extrabold text-gray-700 dark:text-gray-300">{{
+                                        class="font-extrabold text-foreground dark:text-foreground">{{
                                             selectedCommandQueue.player.username }}</span>
-                                    <span v-else class="italic text-red-500">{{ __("Unknown") }}</span>
+                                    <span v-else class="italic text-error-500">{{ __("Unknown") }}</span>
                                     </Link>
                                 </div>
                             </div>
-                            <div v-else class="italic text-gray-500">
+                            <div v-else class="italic text-foreground">
                                 {{ __("none") }}
                             </div>
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("User") }}
                         </p>
                         <div>
@@ -378,13 +396,13 @@ const showDetails = (commandQueue) => {
                                         text-class="text-sm" />
                                 </Link>
                             </div>
-                            <div v-else class="italic text-gray-500">
+                            <div v-else class="italic text-foreground">
                                 {{ __("none") }}
                             </div>
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Tags") }}
                         </p>
                         <p class="">
@@ -392,24 +410,24 @@ const showDetails = (commandQueue) => {
                         </p>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Created At") }}
                         </p>
                         <div class="flex items-center">
-                            <div v-tippy class="text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap"
+                            <div v-tippy class="text-sm font-medium text-foreground dark:text-foreground whitespace-nowrap"
                                 :title="formatToDayDateString(selectedCommandQueue.created_at)">
                                 {{ formatTimeAgoToNow(selectedCommandQueue.created_at) }}
                             </div>
                         </div>
                     </div>
                     <div class="col-span-2">
-                        <p class="font-semibold text-gray-500">
+                        <p class="font-semibold text-foreground">
                             {{ __("Config") }}
                         </p>
                         <code v-if="selectedCommandQueue.config">
                             {{ selectedCommandQueue.config }}
                         </code>
-                        <div v-else class="italic text-gray-500">
+                        <div v-else class="italic text-foreground">
                             {{ __("none") }}
                         </div>
                     </div>

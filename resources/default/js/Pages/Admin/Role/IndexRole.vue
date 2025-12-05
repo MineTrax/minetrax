@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Badge } from '@/Components/ui/badge';
+import { Button } from '@/Components/ui/button';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
 import { Link } from '@inertiajs/vue3';
@@ -17,6 +20,17 @@ defineProps({
     roles: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('User Roles & Permissions'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -74,32 +88,32 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Users Roles Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
-          {{ __("User Roles & Permissions") }}
-        </h1>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create roles')"
-            :href="route('admin.role.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create New") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Role") }}</span>
-          </InertiaLink>
+            <Link
+              :href="route('admin.role.create')"
+            >
+              {{ __("Create Role") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="roles"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -113,7 +127,7 @@ const headerRow = [
               >
               <div
                 v-else
-                class="inline-flex font-bold uppercase leading-5 p-1.5 bg-sky-400 text-white rounded-sm"
+                class="inline-flex font-bold uppercase leading-5 p-1.5 bg-primary text-white rounded-sm"
                 :style="`background-color: ${item.color};`"
               >
                 {{ item.display_name }}
@@ -124,7 +138,7 @@ const headerRow = [
           <td class="px-4 whitespace-nowrap">
             <div class="items-center">
               <div
-                class="text-sm font-semibold text-gray-900 dark:text-gray-300"
+                class="text-sm font-semibold text-foreground dark:text-foreground"
                 :style="[
                   item.color ? { color: item.color } : null,
                 ]"
@@ -132,7 +146,7 @@ const headerRow = [
                 {{ item.display_name }}
               </div>
               <div
-                class="text-sm text-gray-500 dark:text-gray-400"
+                class="text-sm text-foreground dark:text-foreground"
               >
                 {{ item.name }}
               </div>
@@ -141,7 +155,7 @@ const headerRow = [
 
           <DtRowItem>
             <Link
-              class="hover:text-blue-400"
+              class="hover:text-primary"
               :href="
                 route('admin.user.index', {
                   filter: { 'roles.display_name' : item.display_name}
@@ -155,12 +169,12 @@ const headerRow = [
           <DtRowItem>
             <Icon
               v-if="item.is_staff"
-              class="text-green-500"
+              class="text-success-500"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </DtRowItem>
@@ -174,24 +188,27 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-4 py-3 space-x-1 text-sm font-medium"
+            class="px-4 py-3 space-x-1 space-y-1 text-sm font-medium"
           >
-            <span
+            <Badge
               v-if="item.name === 'superadmin'"
-              class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full dark:bg-opacity-10 dark:text-green-400"
+              variant="outline"
+              class="bg-primary/10 text-primary"
             >{{ __("All Permissions") }}
-            </span>
+            </Badge>
 
             <template v-else-if="item.permissions.length > 0">
-              <span
+              <Badge
                 v-for="permission in item.permissions"
                 :key="permission.id"
-                class="inline-flex px-2 mb-1 mr-1 text-xs font-semibold leading-5 text-blue-800 bg-blue-100 rounded-full dark:bg-opacity-10 dark:text-light-blue-400"
-              >{{ permission.name }}</span>
+                variant="outline"
+              >
+                {{ permission.name }}
+              </Badge>
             </template>
             <span
               v-else
-              class="italic text-gray-500"
+              class="italic text-foreground"
             >{{
               __("No administration permissions for this role.")
             }}</span>
@@ -204,17 +221,17 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="can('update roles')"
               v-tippy
               as="a"
               :href="route('admin.role.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit Role')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete roles')"
               v-confirm="{
                 message:
@@ -224,11 +241,11 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.role.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Role')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>

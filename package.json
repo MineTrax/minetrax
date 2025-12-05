@@ -18,7 +18,7 @@
         "@tsparticles/vue3": "^3.0.1",
         "@vitejs/plugin-vue": "^5.2",
         "@vue/server-renderer": "^3.5.13",
-        "@vueuse/core": "^12.4.0",
+        "@vueuse/core": "^12.8.2",
         "@vueuse/integrations": "^12.4.0",
         "autolinker": "^4.1.0",
         "autoprefixer": "^10.4.20",
@@ -56,5 +56,13 @@
         "xterm-addon-fit": "^0.8.0",
         "xterm-addon-web-links": "^0.9.0",
         "zxcvbn": "^4.4.2"
+    },
+    "dependencies": {
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "lucide-vue-next": "^0.522.0",
+        "reka-ui": "^2.5.1",
+        "tailwind-merge": "^3.3.1",
+        "tailwindcss-animate": "^1.0.7"
     }
 }

@@ -9,6 +9,10 @@ import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import {EyeIcon} from '@heroicons/vue/24/outline';
 import {UserIcon} from '@heroicons/vue/24/solid';
 import Icon from '@/Components/Icon.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
+import { startCase } from 'lodash';
+import { Button } from '@/Components/ui/button';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -17,6 +21,34 @@ defineProps({
     forms: Object,
     filters: Object,
 });
+
+function getStatusColor(status) {
+    switch (status) {
+        case 'active':
+            return 'green';
+        case 'draft':
+            return 'pending';
+        case 'disabled':
+            return 'red';
+        case 'archived':
+            return 'deferred';
+        default:
+            return status;
+    }
+}
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Forms'),
+        url: route('custom-form.index'),
+        current: true
+    }
+];
 
 const headerRow = [
     {
@@ -62,23 +94,12 @@ const headerRow = [
   <AppLayout>
     <AppHead :title="__('Custom Forms')" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("Forms") }}
-        </h1>
-        <div class="flex">
-          <Link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </Link>
-        </div>
-      </div>
+    <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
+
+    <div class="py-4 px-2 md:py-4 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800 w-full"
+          class="rounded-lg border bg-card text-card-foreground shadow w-full"
           :header="headerRow"
           :data="forms"
           :filters="filters"
@@ -87,7 +108,7 @@ const headerRow = [
             <DtRowItem>
               <Link
                 :href="route('custom-form.show', item.slug)"
-                class="hover:text-light-blue-400 hover:underline"
+                class="hover:text-primary hover:underline"
               >
                 {{ item.title }}
               </Link>
@@ -100,7 +121,7 @@ const headerRow = [
               >
                 <UserIcon
                   v-if="item.can_create_submission === 'auth'"
-                  class="inline-block w-4 h-4 text-light-blue-400"
+                  class="inline-block w-4 h-4 text-primary"
                 />
               </span>
               <Icon
@@ -113,7 +134,7 @@ const headerRow = [
             </DtRowItem>
 
             <DtRowItem class="text-right hidden md:table-cell">
-              {{ item.status.value }}
+              <CommonStatusBadge :status="getStatusColor(item.status.value)" :value="startCase(item.status.value)" />
             </DtRowItem>
 
             <DtRowItem class="whitespace-nowrap hidden md:table-cell text-right">
@@ -128,15 +149,22 @@ const headerRow = [
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-              <Link
+            <Button
                 v-tippy
-                as="a"
-                :href="route('custom-form.show', item.slug)"
-                class="inline-flex items-center justify-center text-light-blue-600 dark:text-light-blue-500 hover:text-light-blue-800 dark:hover:text-light-blue-800"
+                as-child
+                variant="outline"
+                size="sm"
                 :title="__('Show Details')"
               >
-                <EyeIcon class="inline-block w-5 h-5" />
-              </Link>
+                <Link
+                  as="a"
+                  :href="
+                    route('custom-form.show', item.slug)
+                  "
+                >
+                  <EyeIcon class="inline-block w-5 h-5" />
+                </Link>
+              </Button>
             </td>
           </template>
         </DataTable>

@@ -12,6 +12,7 @@ use App\Services\MinecraftApiService;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 Route::get('time', function () {
@@ -213,3 +214,6 @@ Route::get('askdb-service', function (AskDbService $askDbService) {
     ];
 });
 
+Route::get('ui-test', function () {
+    return Inertia::render('Extra/Dev');
+});

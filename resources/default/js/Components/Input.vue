@@ -1,7 +1,7 @@
 <template>
   <input
     ref="input"
-    class="mt-1 block w-full border-gray-300 disabled:opacity-50 focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md shadow-sm"
+    class="mt-1 block w-full border-foreground disabled:opacity-50 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md shadow-sm"
     :value="value"
     :placeholder="placeholder"
     @input="$emit('input', $event.target.value)"

@@ -3,9 +3,11 @@ import {provide} from 'vue';
 import VChart, {THEME_KEY} from 'vue-echarts';
 import * as echarts from 'echarts';
 import darkmineTheme from '@/Components/Dashboard/darkmineTheme';
+import lightmineTheme from '@/Components/Dashboard/lightmineTheme';
 import wordMap from '@/Data/Maps/world.json';
 
 echarts.registerTheme('darkmine', darkmineTheme);
+echarts.registerTheme('lightmine', lightmineTheme);
 echarts.registerMap('world', wordMap);
 
 defineProps({
@@ -25,11 +27,18 @@ defineProps({
 
 if (window.colorMode === 'dark') {
     provide(THEME_KEY, 'darkmine');
+} else {
+    provide(THEME_KEY, 'lightmine');
 }
+
+// Get CSS custom properties for dynamic theming
+const getThemeColor = (property) => {
+    return getComputedStyle(document.documentElement).getPropertyValue(property).trim();
+};
 
 const loadingOptions = {
     text: 'Loading...',
-    color: '#39b9f1',
+                    color: getThemeColor('--color-primary') || '#00bbff',
     textColor: window.colorMode === 'dark' ? '#fff' : '#000',
     maskColor: 'transparent',
 };

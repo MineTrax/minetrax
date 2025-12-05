@@ -1,13 +1,17 @@
 <script setup>
 import AppHead from '@/Components/AppHead.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
 import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
-import {computed} from 'vue';
+import { computed } from 'vue';
 import PlayersJoinAddressMetricBox from '@/Shared/PlayersJoinAddressMetricBox.vue';
 import PlayersMinecraftVersionMetricBox from '@/Shared/PlayersMinecraftVersionMetricBox.vue';
 import PlayersJoinAddressOverTimeMetricBox from '@/Shared/PlayersJoinAddressOverTimeMetricBox.vue';
 import PlayersMinecraftVersionOverTimeMetricBox from '@/Shared/PlayersMinecraftVersionOverTimeMetricBox.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+
+const { __ } = useTranslations();
 
 const props = defineProps({
     serverList: {
@@ -17,6 +21,26 @@ const props = defineProps({
         type: Object,
     },
 });
+
+let selectedServers = props.filters?.servers?.length ? props.filters?.servers[0] : null;
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Server Intel'),
+        current: false,
+    },
+    {
+        text: __('Playerbase'),
+        current: true,
+    },
+    {
+        text: props.serverList[selectedServers] ?? __('All Servers'),
+        current: true,
+    }
+];
 
 const countryMapRoute = computed(() => {
     return route('admin.intel.server.playerbase.countries', {
@@ -29,12 +53,18 @@ const countryMapRoute = computed(() => {
   <AdminLayout>
     <AppHead :title="__('Playerbase - ServerIntel')" />
 
-    <div class="p-4 mx-auto space-y-4 px-10">
-      <ServerIntelServerSelector
-        :title="__('Playerbase')"
-        :server-list="serverList"
-        :filters="filters"
-      />
+    <div class="px-10 py-8 mx-auto space-y-4">
+      <div class="flex justify-between items-center">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
+        <ServerIntelServerSelector
+          :server-list="serverList"
+          :filters="filters"
+        />
+      </div>
 
       <div id="row1">
         <PlayersPerCountryMetricBox

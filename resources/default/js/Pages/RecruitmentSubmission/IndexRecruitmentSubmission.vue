@@ -8,6 +8,8 @@ import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -20,6 +22,24 @@ defineProps({
         type: Object,
     },
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Applications'),
+        url: route('recruitment.index'),
+        current: false
+    },
+    {
+        text: __('My Application Requests'),
+        url: route('recruitment-submission.index'),
+        current: true
+    }
+];
 
 const headerRow = [
     {
@@ -37,6 +57,7 @@ const headerRow = [
         key: 'status',
         label: __('Status'),
         sortable: true,
+        class: 'text-right w-1/12 whitespace-nowrap',
         filterable: {
             type: 'multiselect',
             options: ['pending', 'inprogress', 'approved', 'rejected', 'withdrawn', 'onhold'],
@@ -56,7 +77,7 @@ const headerRow = [
     },
     {
         key: 'actions',
-        label: __('Actions'),
+        label: '',
         sortable: false,
         class: 'w-1/12 text-right',
     },
@@ -68,30 +89,19 @@ const headerRow = [
   <AppLayout>
     <AppHead :title="__('My Application Requests')" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-lg md:text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("My Application Requests") }}
-        </h1>
-        <div class="flex space-x-2">
-          <Link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </Link>
-        </div>
-      </div>
+    <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
+
+    <div class="py-4 px-2 md:py-4 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800 w-full"
+          class="rounded-lg border bg-card text-card-foreground shadow w-full"
           :header="headerRow"
           :data="submissions"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="text-sm px-4 font-medium text-left text-foreground whitespace-nowrap dark:text-foreground"
             >
               <InertiaLink
                 as="a"
@@ -132,21 +142,28 @@ const headerRow = [
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-              <InertiaLink
-                as="a"
-                :href="
-                  route(
-                    'recruitment-submission.show',
-                    {
-                      recruitment: item.recruitment.slug,
-                      submission: item.id,
-                    }
-                  )
-                "
-                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              <Button
+                v-tippy
+                as-child
+                variant="outline"
+                size="sm"
+                :title="__('View Application')"
               >
-                <EyeIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
+                <InertiaLink
+                  as="a"
+                  :href="
+                    route(
+                      'recruitment-submission.show',
+                      {
+                        recruitment: item.recruitment.slug,
+                        submission: item.id,
+                      }
+                    )
+                  "
+                >
+                  <EyeIcon class="inline-block w-5 h-5" />
+                </InertiaLink>
+              </Button>
             </td>
           </template>
         </DataTable>

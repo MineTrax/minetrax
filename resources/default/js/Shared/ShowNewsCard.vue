@@ -1,6 +1,15 @@
 <script setup>
 import { useHelpers } from '@/Composables/useHelpers';
+import { useTranslations } from '@/Composables/useTranslations';
 import Comments from '@/Components/Comments.vue';
+import AlertCard from '@/Components/AlertCard.vue';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
+import { EyeSlashIcon } from '@heroicons/vue/24/outline';
+
+const { __ } = useTranslations();
 const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
 
 defineProps({
@@ -12,77 +21,112 @@ defineProps({
 </script>
 
 <template>
-  <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-    <div class="px-3 py-2 overflow-hidden bg-white border-b border-gray-200 rounded shadow max-w-none md:px-10 md:py-5 md:rounded-lg dark:bg-cool-gray-800 dark:border-none">
-      <span
-        v-if="news.type.value === 0"
-        class="inline-flex px-3 mb-3 text-sm font-bold leading-7 text-white rounded bg-light-blue-400"
-      >{{ news.type.key }}</span>
-      <span
-        v-else-if="news.type.value === 1"
-        class="inline-flex px-3 mb-3 text-sm font-bold leading-7 text-white bg-orange-600 rounded"
-      >{{ news.type.key }}</span>
-      <span
-        v-else-if="news.type.value === 2"
-        class="inline-flex px-3 mb-3 text-sm font-bold leading-7 text-white bg-green-600 rounded"
-      >{{ news.type.key }}</span>
-      <span
-        v-else
-        class="inline-flex px-3 mb-3 text-sm font-bold leading-7 text-white bg-gray-600 rounded"
-      >{{ news.type.key }}</span>
-
-      <img
-        v-if="news.photo_url"
-        class="w-full mb-5 rounded"
-        :src="news.photo_url"
-        :alt="news.title"
-      >
-
-      <h1 class="mb-5 text-2xl font-bold text-gray-900 md:text-4xl dark:text-gray-200">
-        {{ news.title }}
-      </h1>
-
-      <div class="flex w-full mb-5 md:w-auto">
-        <img
-          :src="news.creator.profile_photo_url"
-          alt="Profile"
-          class="w-12 h-12 mr-3 rounded-full"
-        >
-        <div>
-          <inertia-link
-            as="p"
-            :href="route('user.public.get', news.creator.username)"
-            class="font-bold text-gray-700 cursor-pointer hover:underline dark:text-gray-300"
-            :style="[news.creator.roles[0].color ? {color: news.creator.roles[0].color} : null]"
-          >
-            {{ news.creator.name }}
-          </inertia-link>
-          <p
-            v-tippy
-            :title="formatTimeAgoToNow(news.created_at)"
-            class="text-sm text-gray-500 dark:text-gray-400 focus:outline-none"
-          >
-            {{ formatToDayDateString(news.published_at) }}
-          </p>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ news.time_to_read }} {{ __("read") }}
-          </p>
-        </div>
-      </div>
-      <div
-        class="prose dark:prose-invert max-w-none"
-        v-html="news.body_html"
-      />
-    </div>
-
-    <div
-      v-if="news.is_commentable"
-      class="px-3 py-2 mt-2 overflow-hidden bg-white border-b border-gray-200 rounded shadow max-w-none md:px-10 md:py-5 md:rounded-lg dark:bg-cool-gray-800 dark:border-none"
+  <div class="space-y-6">
+    <!-- Unpublished Banner -->
+    <AlertCard
+      v-if="!news.published_at"
+      variant="warning"
     >
-      <Comments
-        :commentable="news"
-        commentable-type="news"
-      />
-    </div>
+      <template #icon>
+        <EyeSlashIcon class="h-6 w-6 mr-4 text-yellow-500" />
+      </template>
+      {{ __("This news is not published") }}
+      <template #body>
+        {{ __("Only administrators can see this preview. Publish it to make it visible to everyone.") }}
+      </template>
+    </AlertCard>
+
+    <Card class="group relative overflow-hidden transition-shadow duration-300 hover:shadow-lg">
+      <CardContent class="p-6 sm:p-8">
+        <!-- Image section -->
+        <div
+          v-if="news.photo_url"
+          class="relative mb-6 -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 overflow-hidden"
+        >
+          <div class="aspect-video relative">
+            <img
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              :src="news.photo_url"
+              :alt="news.title"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </div>
+        </div>
+
+        <!-- Type badge -->
+        <div class="mb-4">
+          <span
+            class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full"
+            :class="{
+              'bg-primary/10 text-primary border border-primary/20': news.type.value === 0,
+              'bg-orange-100 text-orange-700 border border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800': news.type.value === 1,
+              'bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800': news.type.value === 2
+            }"
+          >
+            {{ news.type.key }}
+          </span>
+        </div>
+
+        <!-- Title section -->
+        <div class="mb-6">
+          <h1 class="text-3xl sm:text-4xl font-bold leading-tight text-card-foreground mb-2">
+            {{ news.title }}
+          </h1>
+        </div>
+
+        <!-- Metadata section -->
+        <div class="flex items-center justify-between mb-6 pb-6 border-b border-border/30">
+          <div class="flex items-center space-x-3">
+            <img
+              :src="news.creator.profile_photo_url"
+              alt="Profile"
+              class="h-12 w-12 rounded-full border-2 border-border/20"
+            >
+            <div>
+              <inertia-link
+                :href="route('user.public.get', news.creator.username)"
+                class="font-semibold text-card-foreground hover:text-primary transition-colors cursor-pointer block"
+                :style="[news.creator.roles[0].color ? {color: news.creator.roles[0].color} : null]"
+              >
+                {{ news.creator.name }}
+              </inertia-link>
+              <div class="text-sm text-muted-foreground">
+                <span
+                  v-tippy
+                  :content="formatTimeAgoToNow(news.created_at)"
+                  class="cursor-help"
+                >
+                  {{ formatToDayDateString(news.published_at) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content section -->
+        <div
+          class="prose max-w-none text-card-foreground/90 prose-headings:text-card-foreground prose-p:text-card-foreground/90 prose-strong:text-card-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary/30 prose-blockquote:text-card-foreground/70 prose-code:text-primary prose-code:bg-muted prose-code:rounded prose-code:px-1 prose-pre:bg-muted prose-img:rounded-lg"
+          v-html="news.body_html"
+        />
+      </CardContent>
+    </Card>
+
+    <!-- Comments section -->
+    <Card
+      v-if="news.is_commentable"
+      class="transition-shadow duration-300 hover:shadow-md"
+    >
+      <CardContent class="p-6 sm:p-8">
+        <div class="mb-4">
+          <h3 class="text-xl font-semibold text-card-foreground">
+            {{ __("Comments") }}
+          </h3>
+        </div>
+        <Comments
+          :commentable="news"
+          commentable-type="news"
+        />
+      </CardContent>
+    </Card>
   </div>
 </template>

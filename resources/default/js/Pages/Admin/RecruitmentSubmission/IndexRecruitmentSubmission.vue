@@ -5,11 +5,12 @@ import { useTranslations } from '@/Composables/useTranslations';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
 import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import XSelect from '@/Components/Form/XSelect.vue';
 import { computed, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Link } from '@inertiajs/vue3';
 import { pickBy } from 'lodash';
 import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
@@ -133,6 +134,17 @@ watch(selectedForms, (newSelectedForms) => {
 
     router.get(route(route().current()), pickBy(query));
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: props.closed ? __('Closed Requests - Applications') : __('Open Requests - Applications'),
+        current: true,
+    }
+];
 </script>
 
 <template>
@@ -145,18 +157,9 @@ watch(selectedForms, (newSelectedForms) => {
       "
     />
 
-    <div class="p-4 mx-auto space-y-4 px-10">
+    <div class="px-10 py-8 mx-auto space-y-4">
       <div class="flex items-center justify-between">
-        <h3
-          class="text-xl font-extrabold text-gray-800 dark:text-gray-200"
-        >
-          {{
-            closed
-              ? __("Closed Requests:")
-              : __("Open Requests:")
-          }}
-          {{ showing ?? __("All Applications") }}
-        </h3>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
 
         <x-select
           id="selectForms"
@@ -164,22 +167,22 @@ watch(selectedForms, (newSelectedForms) => {
           name="selectForms"
           :select-list="forms"
           :placeholder="__('All Applications')"
-          class="w-48 max-w-48 dark:border dark:rounded dark:border-gray-700"
+          class="w-48 max-w-48 border rounded bg-card"
         />
       </div>
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-card rounded-lg shadow"
           :header="headerRow"
           :data="submissions"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="text-sm px-4 font-medium text-left text-foreground whitespace-nowrap dark:text-foreground"
             >
-              <InertiaLink
+              <Link
                 as="a"
                 :href="
                   route(
@@ -187,14 +190,14 @@ watch(selectedForms, (newSelectedForms) => {
                     item.id
                   )
                 "
-                class="hover:text-sky-500"
+                class="hover:text-primary"
               >
                 {{ item.id }}
-              </InertiaLink>
+              </Link>
             </td>
 
             <td class="px-4">
-              <InertiaLink
+              <Link
                 :href="
                   route(
                     'admin.recruitment-submission.show',
@@ -212,7 +215,7 @@ watch(selectedForms, (newSelectedForms) => {
                 </div>
                 <div class="flex-col">
                   <div
-                    class="text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap truncate"
+                    class="text-sm font-semibold text-foreground dark:text-foreground whitespace-nowrap truncate"
                     :style="[
                       item.user.roles[0].color
                         ? {
@@ -228,7 +231,7 @@ watch(selectedForms, (newSelectedForms) => {
                         v-tippy
                         name="verified-check-fill"
                         :title="__('Verified Account')"
-                        class="inline mb-1 fill-current focus:outline-none text-light-blue-400 w-5 h-5"
+                        class="inline mb-1 fill-current focus:outline-none text-primary w-5 h-5"
                         />
                         <Icon
                         v-if="item.user.is_staff"
@@ -242,14 +245,14 @@ watch(selectedForms, (newSelectedForms) => {
                         v-tippy
                         name="volume-off-fill"
                         :title="__('Muted User')"
-                        class="inline mb-1 text-red-500 fill-current focus:outline-none w-5 h-5"
+                        class="inline mb-1 text-error-500 fill-current focus:outline-none w-5 h-5"
                         />
                   </div>
-                  <div class="text-sm text-gray-500">
+                  <div class="text-sm text-foreground">
                     @{{ item.user.username }}
                   </div>
                 </div>
-              </InertiaLink>
+              </Link>
             </td>
 
             <DtRowItem>
@@ -271,17 +274,17 @@ watch(selectedForms, (newSelectedForms) => {
             >
               <UserDisplayname
                 v-if="item.last_actor"
-                text-class="text-sm text-gray-700 dark:text-gray-400"
+                text-class="text-sm text-foreground dark:text-foreground"
                 :user="item.last_actor"
                 :show-badges="true"
               >
-                <div class="text-xs text-gray-400 dark:text-gray-500">
+                <div class="text-xs text-foreground dark:text-foreground">
                   {{ formatTimeAgoToNow(item.last_act_at) }}
                 </div>
               </UserDisplayname>
               <span
                 v-else
-                class="text-gray-400 text-sm italic"
+                class="text-foreground text-sm italic"
               >
                 {{ __('None') }}
               </span>
@@ -292,17 +295,17 @@ watch(selectedForms, (newSelectedForms) => {
             >
               <UserDisplayname
                 v-if="item.last_commentor"
-                text-class="text-sm text-gray-700 dark:text-gray-400"
+                text-class="text-sm text-foreground dark:text-foreground"
                 :user="item.last_commentor"
                 :show-badges="true"
               >
-                <div class="text-xs text-gray-400 dark:text-gray-500">
+                <div class="text-xs text-foreground dark:text-foreground">
                   {{ formatTimeAgoToNow(item.last_comment_at) }}
                 </div>
               </UserDisplayname>
               <span
                 v-else
-                class="text-gray-400 text-sm italic"
+                class="text-foreground text-sm italic"
               >
                 {{ __('None') }}
               </span>
@@ -327,7 +330,8 @@ watch(selectedForms, (newSelectedForms) => {
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-              <InertiaLink
+              <Link
+                v-tippy
                 as="a"
                 :href="
                   route(
@@ -335,11 +339,12 @@ watch(selectedForms, (newSelectedForms) => {
                     item.id
                   )
                 "
-                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                class="inline-flex items-center justify-center text-primary hover:text-primary"
+                :title="__('View Submission')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
+              </Link>
+              <Link
                 v-if="
                   can('delete recruitment_submissions') &&
                     closed
@@ -357,11 +362,11 @@ watch(selectedForms, (newSelectedForms) => {
                     item.id
                   )
                 "
-                class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
                 :title="__('Delete Submission')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
+              </Link>
             </td>
           </template>
         </DataTable>

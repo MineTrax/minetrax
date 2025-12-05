@@ -4,6 +4,7 @@ import Icon from '@/Components/Icon.vue';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import {useHelpers} from '@/Composables/useHelpers';
 import { ClockIcon, FireIcon, QrCodeIcon, UserGroupIcon, UsersIcon } from '@heroicons/vue/24/outline';
+import { Card, CardContent } from '@/Components/ui/card';
 const { secondsToHMS } = useHelpers();
 import millify from 'millify';
 
@@ -41,13 +42,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="bg-white dark:bg-cool-gray-800 rounded w-full h-full p-3 shadow">
-    <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex mt-2 items-center">
-      <QrCodeIcon
-        class="w-6 mr-1"
-      />
-      {{ __("Numbers") }}
-    </h3>
+  <Card class="w-full h-full">
+    <CardContent class="p-4">
+      <h3 class="font-extrabold text-foreground flex mt-2 items-center">
+        <QrCodeIcon class="w-6 mr-2" />
+        {{ __("Numbers") }}
+      </h3>
 
     <div
       v-if="isLoading"
@@ -60,8 +60,8 @@ onMounted(async () => {
       v-else
       class="m-0 p-0"
     >
-      <table class="table-auto min-w-full text-sm dark:text-gray-300 text-gray-700">
-        <thead class="border-b dark:border-gray-700">
+      <table class="table-auto min-w-full text-sm dark:text-foreground text-foreground">
+        <thead class="border-b border-border">
           <tr>
             <th
               scope="col"
@@ -97,7 +97,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <UserGroupIcon
-                class="w-5 text-indigo-500 mr-1"
+                class="w-5 text-primary mr-1"
               />
               {{ __("Total Players") }}
             </td>
@@ -118,7 +118,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <ClockIcon
-                class="w-5 text-green-500 mr-1"
+                class="w-5 text-success-500 mr-1"
               />
               {{ __("Total Play Time") }}
             </td>
@@ -139,7 +139,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <ClockIcon
-                class="w-5 text-red-500 mr-1"
+                class="w-5 text-error-500 mr-1"
               />
               {{ __("Total Afk Time") }}
             </td>
@@ -160,7 +160,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <UsersIcon
-                class="w-5 text-green-500 mr-1"
+                class="w-5 text-success-500 mr-1"
               />
               {{ __("Total Sessions") }}
             </td>
@@ -244,7 +244,7 @@ onMounted(async () => {
           <tr>
             <td class="p-2 flex">
               <FireIcon
-                class="w-5 text-green-500 mr-1"
+                class="w-5 text-success-500 mr-1"
               />
               {{ __("Total Mob Kills") }}
             </td>
@@ -266,7 +266,7 @@ onMounted(async () => {
             <td class="p-2 flex">
               <icon
                 name="skull-outline"
-                class="w-5 text-red-500 mr-1"
+                class="w-5 text-error-500 mr-1"
               />
               {{ __("Total Deaths") }}
             </td>
@@ -286,5 +286,6 @@ onMounted(async () => {
         </tbody>
       </table>
     </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>

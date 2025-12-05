@@ -1,20 +1,62 @@
-Last revised on [DATE]
+Last updated: [DATE]
 
-### Your Account
+Welcome to our Minecraft server! Please read and follow these rules to ensure everyone has a fun and safe experience.
 
-* You may not use the Service if You are a person barred from receiving the Service under the laws of the United States or other countries, including the country in which You are resident or from which You use the Service.
-* You may not use the service unless you are over the age of 13.
-* You must be a human. Account created by automated methods are not permitted.
+## General Rules
 
-### Use of the Service
+### 1. Respect Everyone
+* Treat all players, staff, and community members with respect
+* No harassment, bullying, or toxic behavior
+* Be kind and helpful to new players
+* Use appropriate language at all times
 
-* You must provide accurate and complete registration information any time You register to use the Service.
-* You are responsible for the security of Your passwords and for any use of Your account.
-* Your use of the Service must comply with all applicable laws, regulations and ordinances.
-* You agree to not engage in any activity that interferes with or disrupts the Service.
-* [COMPANY] reserves the right to enforce quotas and usage limits (to any resources, including the API) at its sole discretion, with or without notice, which may result in [COMPANY] disabling or throttling your usage of the Service for any amount of time.
-* You may not allow multiple people to use the same account or otherwise access the Service in a manner intended to avoid incurring fees.
+### 2. Follow Server Guidelines
+* Familiarize yourself with and follow all server-specific rules and policies
+* Respect the intended gameplay style and server objectives
+* When in doubt, ask staff for clarification
+* Understand that different servers may have different rules
 
-### Service Policies and Privacy
+### 3. Be a Positive Community Member
+* Contribute positively to the server community
+* Help maintain a welcoming environment for all players
+* Use common sense in your interactions and decisions
+* Report issues or concerns to staff through proper channels
 
-The Service shall be subject to the privacy policy for the Service available at privacy policy. You agree to the use of Your data in accordance with [COMPANY]'s privacy policies.
+### 4. Appropriate Communication
+* No spam, excessive caps, or chat flooding
+* No advertising other servers or services
+* No inappropriate, offensive, or NSFW content
+
+
+## Discord Rules
+
+### General Discord Conduct
+* Use appropriate usernames and profile pictures
+* Stay on topic in respective channels
+* No spamming, excessive emoji use, or ping abuse
+* Respect channel purposes and use them accordingly
+
+### Voice Channels
+* Use push-to-talk or ensure your mic isn't picking up background noise
+* No music bots unless permitted by staff
+* Be respectful during voice conversations
+* No screaming, loud noises, or voice changers
+
+### Linking and Media
+* No NSFW content in any form
+* No malicious links or files
+* No advertising other Discord servers without permission
+* Use spoiler tags for potential spoilers
+
+## Additional Information
+
+* Rules may be updated at any time
+* Ignorance of rules is not an excuse
+* Alt accounts are subject to the same rules
+* Staff may use discretion in rule enforcement
+
+---
+
+**Remember**: These rules exist to ensure everyone can enjoy their time on the server. When in doubt, ask a staff member!
+
+For questions about these rules, contact our staff team.

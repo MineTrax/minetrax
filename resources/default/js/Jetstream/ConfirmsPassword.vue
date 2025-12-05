@@ -1,42 +1,41 @@
 <script setup>
-import { ref, reactive, nextTick } from 'vue';
-import JetButton from './Button.vue';
-import JetDialogModal from './DialogModal.vue';
-import JetInput from './Input.vue';
-import JetInputError from './InputError.vue';
-import JetSecondaryButton from './SecondaryButton.vue';
+import { ref, reactive, nextTick } from "vue";
+import { Button } from "@/Components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/Components/ui/dialog";
+import XInput from "@/Components/Form/XInput.vue";
+import LoadingButton from "@/Components/LoadingButton.vue";
 
-const emit = defineEmits(['confirmed']);
+const emit = defineEmits(["confirmed"]);
 
 defineProps({
     title: {
         type: String,
-        default: 'Confirm Password',
+        default: "Confirm Password",
     },
     content: {
         type: String,
-        default: 'For your security, please confirm your password to continue.',
+        default: "For your security, please confirm your password to continue.",
     },
     button: {
         type: String,
-        default: 'Confirm',
+        default: "Confirm",
     },
 });
 
 const confirmingPassword = ref(false);
 
 const form = reactive({
-    password: '',
-    error: '',
+    password: "",
+    error: "",
     processing: false,
 });
 
 const passwordInput = ref(null);
 
 const startConfirmingPassword = () => {
-    axios.get(route('password.confirmation')).then(response => {
+    axios.get(route("password.confirmation")).then((response) => {
         if (response.data.confirmed) {
-            emit('confirmed');
+            emit("confirmed");
         } else {
             confirmingPassword.value = true;
 
@@ -48,81 +47,66 @@ const startConfirmingPassword = () => {
 const confirmPassword = () => {
     form.processing = true;
 
-    axios.post(route('password.confirm'), {
-        password: form.password,
-    }).then(() => {
-        form.processing = false;
+    axios
+        .post(route("password.confirm"), {
+            password: form.password,
+        })
+        .then(() => {
+            form.processing = false;
 
-        closeModal();
-        nextTick().then(() => emit('confirmed'));
-
-    }).catch(error => {
-        form.processing = false;
-        form.error = error.response.data.errors.password[0];
-        passwordInput.value.focus();
-    });
+            closeModal();
+            nextTick().then(() => emit("confirmed"));
+        })
+        .catch((error) => {
+            form.processing = false;
+            form.error = error.response.data.errors.password[0];
+            passwordInput.value.focus();
+        });
 };
 
 const closeModal = () => {
     confirmingPassword.value = false;
-    form.password = '';
-    form.error = '';
+    form.password = "";
+    form.error = "";
 };
 </script>
 
 <template>
-  <span>
-    <span @click="startConfirmingPassword">
-      <slot />
-    </span>
-
-    <JetDialogModal
-      :show="confirmingPassword"
-      @close="closeModal"
-    >
-      <template #title>
-        {{ title }}
-      </template>
-
-      <template #content>
-        {{ content }}
-
-        <div class="mt-4">
-          <JetInput
-            ref="passwordInput"
-            v-model="form.password"
-            type="password"
-            class="mt-1 block w-3/4"
-            :placeholder="__('Password')"
-            @keyup.enter="confirmPassword"
-          />
-
-          <JetInputError
-            :message="form.error"
-            class="mt-2"
-          />
-        </div>
-
-
-        <span class="text-gray-500 text-xs italic">
-          {{ __("Continue with empty password if you have no password.") }}
+    <span>
+        <span @click="startConfirmingPassword">
+            <slot />
         </span>
-      </template>
 
-      <template #footer>
-        <JetSecondaryButton @click="closeModal">
-          {{ __("Cancel") }}
-        </JetSecondaryButton>
+        <Dialog :open="confirmingPassword" @update:open="(value) => !value && closeModal()">
+            <DialogContent class="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle class="text-foreground">
+                        {{ title }}
+                    </DialogTitle>
+                </DialogHeader>
 
-        <JetButton
-          class="ml-3"
-          :class="{ 'opacity-25': form.processing }"
-          :disabled="form.processing"
-          @click="confirmPassword"
-        >
-          {{ button }}
-        </JetButton>
-      </template>
-    </JetDialogModal>
-  </span>
+                <div class="space-y-4">
+                    <p class="text-sm text-muted-foreground">
+                        {{ content }}
+                    </p>
+
+                    <XInput ref="passwordInput" v-model="form.password" type="password" :label="__('Password')" :error="form.error" :placeholder="__('Password')" @keyup.enter="confirmPassword" />
+
+                    <p class="text-xs text-muted-foreground italic">
+                        {{ __("Continue with empty password if you have no password.") }}
+                    </p>
+                </div>
+
+                <DialogFooter class="flex-col-reverse sm:flex-row sm:justify-end gap-2">
+                    <Button variant="outline" @click="closeModal">
+                        {{ __("Cancel") }}
+                    </Button>
+
+                    <LoadingButton :loading="form.processing" @click="confirmPassword">
+                        {{ button }}
+                    </LoadingButton>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    </span>
 </template>

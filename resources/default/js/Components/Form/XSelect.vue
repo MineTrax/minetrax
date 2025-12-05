@@ -1,139 +1,168 @@
 <template>
-  <div class="floating-input relative w-full">
-    <select
-      :id="id"
-      ref="input"
-      class="border-gray-300 text-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 rounded-md block w-full p-3 dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
-      :class="[
-        error ? 'border-red-400 dark:border-red-400' : 'border-gray-300',
-        label ? 'pt-6 h-14' : '',
-        selectClass,
-      ]"
-      :value="modelValue"
-      :autofocus="autofocus"
-      :required="required"
-      :disabled="disabled"
-      :name="name"
-      @change="$emit('update:modelValue', $event.target.value)"
-      @focus="hasFocus = true"
-      @blur="hasFocus = false"
-    >
-      <option
-        v-if="placeholder"
-        class="text-gray-500 dark:text-gray-400"
-        value=""
-        :disabled="disableNull"
-      >
-        {{ placeholder }}
-      </option>
-      <option
-        v-for="(lbl, value) in computedList"
-        :key="value"
-        :value="value"
-      >
-        {{ lbl }}
-      </option>
-    </select>
-
-    <label
+  <div :class="cn('space-y-2', divClass)">
+    <!-- Label -->
+    <Label
       v-if="label"
       :for="id"
-      :class="textColor"
-      class="absolute -top-3 left-0 px-3 py-5 text-xs h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-gray-400"
-    >{{
-      label
-    }}</label>
-
-    <div
-      class="info mt-1 flex"
-      :class="help ? 'justify-between ' + helpErrorFlex : 'justify-end ' + helpErrorFlex "
+      :class="cn('text-sm font-medium', error ? 'text-destructive' : 'text-foreground')"
     >
-      <p
-        v-show="help"
-        class="text-xs text-gray-500 dark:text-gray-400"
-      >
-        {{ help }}
-      </p>
-      <p
-        v-show="error"
-        class="text-xs text-red-500"
-      >
-        {{ error }}
-      </p>
+      {{ label }}
+      <span v-if="required" class="text-destructive ml-1">*</span>
+    </Label>
+
+    <!-- Select -->
+    <Select
+      v-model="internalValue"
+      :name="name"
+      :disabled="disabled"
+      :required="required"
+      :id="id"
+      :autofocus="autofocus"
+    >
+      <SelectTrigger :class="triggerClasses" ref="triggerRef">
+        <SelectValue :placeholder="placeholder" />
+      </SelectTrigger>
+
+      <SelectContent>
+        <!-- Null / Clear option -->
+        <template v-if="showNullItem">
+          <SelectItem :value="null">
+            {{ nullItemLabel }}
+          </SelectItem>
+        </template>
+        <SelectItem
+          v-for="(lbl, value) in computedList"
+          :key="value"
+          :value="value"
+        >
+          {{ lbl }}
+        </SelectItem>
+      </SelectContent>
+    </Select>
+
+    <!-- Help and Error Messages -->
+    <div
+      v-if="help || error"
+      class="flex gap-1"
+      :class="cn(help && error ? 'justify-between' : error ? 'justify-end' : 'justify-start', helpErrorFlex)"
+    >
+      <p v-if="help" class="text-xs text-muted-foreground">{{ help }}</p>
+      <p v-if="error" class="text-xs text-destructive">{{ error }}</p>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-    props: {
-        selectList: [Object, Array],
-        modelValue: [Number, String, Array, Object, Boolean, Date],
-        name: String,
-        placeholder: String,
-        help: String,
-        label: String,
-        id: String,
-        error: String,
-        autofocus: {
-            type: [String, Boolean],
-            default: false
-        },
-        required: {
-            type: [String, Boolean],
-            default: false
-        },
-        disabled: {
-            type: [String, Boolean],
-            default: false
-        },
-        helpErrorFlex: {
-            type: String,
-            default: 'flex-col'
-        },
-        disableNull: {
-            type: Boolean,
-            default: false
-        },
-        selectClass: {
-            type: String,
-            required: false,
-        }
-    },
+<script setup>
+import { computed, ref, nextTick } from 'vue'
+import { useVModel } from '@vueuse/core'
+import { cn } from '@/lib/utils'
+import { Label } from '@/Components/ui/label'
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from '@/Components/ui/select'
 
-    data() {
-        return {
-            hasFocus: false
-        };
-    },
+// Props definition
+const props = defineProps({
+  selectList: [Object, Array],
+  modelValue: [Number, String, Array, Object, Boolean, Date],
+  name: String,
+  placeholder: String,
+  help: String,
+  label: String,
+  id: String,
+  error: String,
+  autofocus: {
+    type: [String, Boolean],
+    default: false,
+  },
+  required: {
+    type: [String, Boolean],
+    default: false,
+  },
+  disabled: {
+    type: [String, Boolean],
+    default: false,
+  },
+  helpErrorFlex: {
+    type: String,
+    default: 'flex-col',
+  },
+  disableNull: {
+    type: Boolean,
+    default: false,
+  },
+  selectClass: {
+    type: String,
+    default: '',
+  },
+  divClass: {
+    type: String,
+    default: '',
+  },
+})
 
-    computed: {
-        computedList() {
-            if (!Array.isArray(this.selectList)) {
-                return this.selectList;
-            }
+const emits = defineEmits(['update:modelValue'])
 
-            return this.selectList.reduce((acc,value) => {
-                return {[value]: value, ...acc};
-            }, {});
-        },
-        textColor() {
-            if (this.hasFocus) {
-                return 'text-light-blue-400';
-            }
+// Two-way binding for modelValue
+const internalValue = useVModel(props, 'modelValue', emits, {
+  passive: true,
+  defaultValue: props.modelValue,
+})
 
-            if (this.error) {
-                return 'text-red-400';
-            } else {
-                return 'text-gray-500';
-            }
-        }
-    },
+// Ref for focusing
+const triggerRef = ref(null)
 
-    methods: {
-        focus() {
-            this.$refs.input.focus();
-        }
+// Compute list for Select items
+const computedList = computed(() => {
+  if (!Array.isArray(props.selectList)) {
+    return props.selectList
+  }
+  return props.selectList.reduce((acc, value) => {
+    return { [value]: value, ...acc }
+  }, {})
+})
+
+// Whether to include a null/clear item
+const showNullItem = computed(() => {
+  // Do not show if explicitly disabled or field is required
+  if (props.disableNull || props.required) return false
+  return true
+})
+
+// Label for null item – placeholder if provided else "—"
+const nullItemLabel = computed(() => {
+  return props.placeholder ?? '—'
+})
+
+// Classes for SelectTrigger
+const triggerClasses = computed(() => {
+  return cn(
+    // Allow consumer to override/extend styles
+    props.selectClass,
+    // Error state styling
+    props.error && 'border-destructive focus-visible:ring-destructive'
+  )
+})
+
+// Handle autofocus once mounted
+if (props.autofocus) {
+  nextTick(() => {
+    if (triggerRef.value?.$el) {
+      triggerRef.value.$el.focus()
     }
-};
+  })
+}
+
+// Expose focus method similar to previous API
+const focus = () => {
+  if (triggerRef.value?.$el) {
+    triggerRef.value.$el.focus()
+  }
+}
+
+defineExpose({ focus })
 </script>

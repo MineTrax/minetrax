@@ -1,14 +1,14 @@
 <template>
   <div
     v-if="show"
-    class="z-50 fixed p-2 bottom-0 bg-black w-full text-gray-300 text-center bg-opacity-90 dark:bg-opacity-60"
+    class="z-50 fixed p-2 bottom-0 bg-black w-full text-foreground text-center bg-opacity-90 dark:bg-opacity-60"
   >
     <div>
       <span>
         {{ __("We use cookies to enhance your browsing experience. By continuing, you consent to our cookie policy.") }}
       </span>
       <button
-        class="text-light-blue-400 cursor-pointer ml-0.5 hover:text-light-blue-500"
+        class="text-primary cursor-pointer ml-0.5 hover:text-primary"
         @click.prevent="close"
       >
         {{ __("I Understand") }}

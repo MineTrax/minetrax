@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link } from '@inertiajs/vue3';
 import {
     EyeIcon,
     PencilSquareIcon,
@@ -20,6 +23,17 @@ defineProps({
     customPages: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Custom Pages'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -81,32 +95,30 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage Custom Pages')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
-          {{ __("Manage Custom Pages") }}
-        </h1>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create custom_pages')"
-            :href="route('admin.custom-page.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Custom Page") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.custom-page.create')">
+              {{ __("Create Custom Page") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="customPages"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -122,7 +134,7 @@ const headerRow = [
           <td class="px-4 whitespace-normal">
             <div class="flex items-center">
               <div
-                class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                class="text-sm font-medium text-foreground dark:text-foreground"
               >
                 {{
                   item.is_redirect
@@ -135,58 +147,58 @@ const headerRow = [
             </div>
           </td>
 
-          <td class="py-4 text-sm text-gray-500 px-9">
+          <td class="py-4 text-sm text-foreground px-9">
             <Icon
               v-if="item.is_visible"
-              class="text-green-500 focus:outline-none"
+              class="text-success-500 focus:outline-none"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </td>
           <td
-            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_in_navbar"
-              class="text-green-500"
+              class="text-success-500"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </td>
           <td
-            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_sidebar_visible"
-              class="text-green-500 focus:outline-none"
+              class="text-success-500 focus:outline-none"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </td>
 
           <td
-            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_open_in_new_tab"
-              class="text-green-500 focus:outline-none"
+              class="text-success-500 focus:outline-none"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </td>
@@ -203,33 +215,33 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="!item.is_open_in_new_tab"
               as="a"
               :href="route('custom-page.show', item.path)"
-              class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              class="inline-flex items-center justify-center text-primary hover:text-primary"
             >
               <EyeIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
             <a
               v-else
               :href="route('custom-page.show', item.path)"
-              class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              class="inline-flex items-center justify-center text-primary hover:text-primary"
               target="_blank"
             >
               <EyeIcon class="inline-block w-5 h-5" />
             </a>
-            <InertiaLink
+            <Link
               v-if="can('update custom_pages')"
               v-tippy
               as="a"
               :href="route('admin.custom-page.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit Custom Page')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete custom_pages')"
               v-confirm="{
                 message:
@@ -239,11 +251,11 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.custom-page.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Custom Page')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>

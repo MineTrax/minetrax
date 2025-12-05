@@ -1,7 +1,7 @@
 <template>
-  <div v-if="enabled">
-    <div class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow break-words">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+  <Card v-if="enabled">
+    <CardContent class="p-3 sm:px-5 break-words">
+      <h3 class="font-extrabold text-card-foreground">
         {{ __("Server Status") }}
       </h3>
 
@@ -11,7 +11,7 @@
         class="flex p-4 justify-center"
       >
         <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-light-blue-600 dark:text-light-blue-400"
+          class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -41,16 +41,17 @@
         v-if="!loading && !error"
         class="flex flex-col"
       >
-        <div class="mt-3 text-gray-700 dark:text-gray-300 text-center font-semibold">
-          {{ __("Join") }} <span class="font-bold text-light-blue-500 dark:text-light-blue-400">{{ serverInfo.players.online }}</span> {{ __("Online Players") }}!
+        <div class="mt-3 text-card-foreground text-center font-semibold">
+          {{ __("Join") }} <span class="font-bold text-primary">{{ serverInfo.players.online }}</span> {{ __("Online Players") }}!
         </div>
 
         <copy-to-clipboard v-slot="props">
-          <button
+          <Button
+            class="mt-3 font-extrabold"
+            size="lg"
             v-tippy
             :title="__('Click to Copy')"
             type="button"
-            class="text-center font-extrabold mt-3 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded p-2 hover:text-light-blue-500 dark:hover:text-light-blue-400 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900 hover:border-light-blue-500 dark:hover:border-cool-gray-800 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 transition duration-150 ease-in-out focus:outline-none"
             @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
           >
             <span v-if="props.status !== 'copied'">
@@ -59,20 +60,24 @@
             <span v-else>
               {{ __("Copied!") }}
             </span>
-          </button>
+        </Button>
         </copy-to-clipboard>
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script>
-
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 import CopyToClipboard from '@/Components/CopyToClipboard.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
+import Button from '@/Components/ui/button/Button.vue';
 
 export default {
-    components: {ErrorMessage, CopyToClipboard},
+    components: {ErrorMessage, CopyToClipboard, Card, CardContent, Button},
 
     props: {
         server: Object,

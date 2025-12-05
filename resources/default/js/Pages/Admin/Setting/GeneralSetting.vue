@@ -7,8 +7,8 @@
     <div class="flex max-w-6xl px-10 py-12 mx-auto">
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="w-full bg-white rounded shadow dark:bg-cool-gray-800">
-            <div class="px-6 py-4 font-bold border-b dark:border-gray-700 dark:text-gray-200">
+          <div class="w-full bg-white rounded shadow dark:bg-surface-800">
+            <div class="px-6 py-4 font-bold border-b dark:border-foreground dark:text-foreground">
               {{ __("General Settings") }}
             </div>
 
@@ -20,7 +20,7 @@
                     @submit.prevent="saveSetting"
                   >
                     <div class="overflow-hidden shadow sm:rounded-md">
-                      <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
+                      <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
                           <div class="col-span-6 sm:col-span-3">
                             <!-- Profile Photo File Input -->
@@ -34,7 +34,7 @@
 
                             <label
                               for="photo"
-                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Site Header Logo Image Light (200x40)") }}</label>
 
 
@@ -82,7 +82,7 @@
 
                             <label
                               for="photo_dark"
-                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Site Header Logo Image Dark (200x40)") }}</label>
 
 
@@ -509,10 +509,10 @@
                               <div class="w-5" />
                               <div class="w-5" />
                               <label
-                                class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                               >{{ __("Voting Site Link") }}</label>
                               <label
-                                class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                               >{{ __("Display Name") }}</label>
                             </div>
 
@@ -527,7 +527,7 @@
                                 <div class="flex space-x-4 items-start">
                                   <div class="drag-handle cursor-move mt-6">
                                     <ArrowsUpDownIcon
-                                      class="w-5 h-5 text-gray-400 hover:text-gray-600"
+                                      class="w-5 h-5 text-foreground hover:text-foreground"
                                     />
                                   </div>
                                   <button
@@ -536,7 +536,7 @@
                                     @click="deleteVotingSite(index)"
                                   >
                                     <icon
-                                      class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                      class="w-5 h-5 text-foreground group-hover:text-error-500"
                                       name="trash"
                                     />
                                   </button>
@@ -565,7 +565,7 @@
                             <div class="flex justify-end mt-1">
                               <button
                                 type="button"
-                                class="p-1.5 text-xs text-light-blue-500 rounded border border-light-blue-500 focus:outline-none"
+                                class="p-1.5 text-xs text-primary rounded border border-primary focus:outline-none"
                                 @click="addMoreVotingSite"
                               >
                                 {{ __("Add More") }}
@@ -578,7 +578,7 @@
                               id="enable_status_feed"
                               v-model="form.enable_status_feed"
                               :label="__('Enable Status Feed')"
-                              :help="__('Let player post status on homepage?')"
+                              :help="__('Let player post status on post page?')"
                               name="enable_status_feed"
                               :error="form.errors.enable_status_feed"
                             />
@@ -604,7 +604,7 @@
                               v-model="form.welcomebox_content"
                               aria-label="welcomebox"
                               name="welcomebox_content"
-                              class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                              class="block w-full mt-1 border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                             />
                             <jet-input-error
                               :message="form.errors.welcomebox_content"
@@ -636,10 +636,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="flex justify-end px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6">
+                      <div class="flex justify-end px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6">
                         <loading-button
                           :loading="form.processing"
-                          class="inline-flex justify-center px-4 py-2 text-sm font-bold text-white border border-transparent rounded-md shadow-sm bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
+                          class="inline-flex justify-center px-4 py-2 text-sm font-bold text-white border border-transparent rounded-md shadow-sm bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                           type="submit"
                         >
                           {{ __("Save General Settings") }}

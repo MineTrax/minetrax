@@ -9,6 +9,9 @@ import { ref, watchEffect } from 'vue';
 import AlertCard from '@/Components/AlertCard.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 import { useHelpers } from '@/Composables/useHelpers';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { truncate } from 'lodash';
+import { Button } from '@/Components/ui/button';
 
 const { __ } = useTranslations();
 const { secondsToHMS, formatToDayDateString } = useHelpers();
@@ -43,6 +46,25 @@ const props = defineProps({
 const formSchema = useFormKit().generateSchemaFromFieldsArray(
     props.recruitment.fields
 );
+const page = usePage();
+const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Applications'),
+        url: route('recruitment.index'),
+        current: false
+    },
+    {
+        text: truncate(props.recruitment.title, { length: 50 }),
+        current: true
+    }
+];
 
 const submitForm = async (values) => {
     await promisifyForm(values);
@@ -153,31 +175,18 @@ watchEffect(() => {
 
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <app-layout>
-    <app-head :title="recruitment.title" />
+  <AppLayout>
+    <AppHead :title="recruitment.title" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between md:mb-4">
-        <h1
-          class="text-center font-bold text-2xl text-gray-900 dark:text-gray-200 mb-5"
-        >
-          {{ recruitment.title }}
-        </h1>
-        <div class="">
-          <inertia-link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </inertia-link>
-        </div>
-      </div>
+    <AppBreadcrumb :items="breadcrumbItems" />
+
+    <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
-        <div class="overflow-x-auto md:w-9/12">
+        <div class="md:w-9/12 flex-1">
           <AlertCard
             v-if="formDisabled && disabledErrorMessage.title"
-            text-color="text-red-800 dark:text-red-500"
-            border-color="border-red-500"
+            text-color="text-error-800 dark:text-error-500"
+            border-color="border-error-500"
           >
             {{ disabledErrorMessage.title }}
             <template #body>
@@ -187,8 +196,8 @@ watchEffect(() => {
 
           <AlertCard
             v-if="formDisabled && userLastActiveSubmission"
-            text-color="text-sky-800 dark:text-sky-500"
-            border-color="border-sky-500"
+            text-color="text-primary dark:text-primary"
+            border-color="border-primary"
           >
             {{ __("You have already applied!") }}
             <template #body>
@@ -206,18 +215,22 @@ watchEffect(() => {
               </p>
 
               <div class="flex mt-2">
-                <InertiaLink
-                  class="p-2 border border-sky-800 dark:border-sky-500 rounded text-sky-800 dark:text-sky-500 hover:bg-sky-200 dark:hover:bg-sky-900"
-                  :href="
-                    route('recruitment-submission.show', {
-                      recruitment: recruitment.slug,
-                      submission:
-                        userLastActiveSubmission.id,
-                    })
-                  "
+                <Button
+                  as-child
+                  variant="outline"
                 >
-                  {{ __("View Request") }}
-                </InertiaLink>
+                  <InertiaLink
+                    :href="
+                      route('recruitment-submission.show', {
+                        recruitment: recruitment.slug,
+                        submission:
+                          userLastActiveSubmission.id,
+                      })
+                    "
+                  >
+                    {{ __("View Request") }}
+                  </InertiaLink>
+                </Button>
               </div>
             </template>
           </AlertCard>
@@ -246,29 +259,37 @@ watchEffect(() => {
               </p>
 
               <div class="flex mt-2">
-                <InertiaLink
-                  class="p-2 border border-orange-800 dark:border-orange-500 rounded text-orange-800 dark:text-orange-500 hover:bg-orange-200 dark:hover:bg-orange-900"
-                  :href="
-                    route('recruitment-submission.show', {
-                      recruitment: recruitment.slug,
-                      submission:
-                        userLastApprovedSubmission.id,
-                    })
-                  "
+                <Button
+                  as-child
+                  variant="outline"
                 >
-                  {{ __("View Approved Request") }}
-                </InertiaLink>
+                  <InertiaLink
+                    :href="
+                      route('recruitment-submission.show', {
+                        recruitment: recruitment.slug,
+                        submission:
+                          userLastApprovedSubmission.id,
+                      })
+                    "
+                  >
+                    {{ __("View Approved Request") }}
+                  </InertiaLink>
+                </Button>
               </div>
             </template>
           </AlertCard>
 
           <div class="min-w-full">
             <div
-              class="shadow max-w-none bg-white dark:bg-cool-gray-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded"
+              class="bg-card text-card-foreground border rounded-lg shadow p-4 md:p-6"
             >
+              <h1 class="font-bold text-4xl text-foreground mb-5">
+                {{ recruitment.title }}
+              </h1>
+
               <div
                 v-if="recruitment.description"
-                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b dark:border-gray-700"
+                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b border-border"
                 v-html="recruitment.description_html"
               />
 
@@ -287,7 +308,7 @@ watchEffect(() => {
                     recruitment.max_submission_per_user &&
                     userSubmissionsCount > 0
                 "
-                class="text-xs text-gray-500 dark:text-gray-400 text-right"
+                class="text-xs text-muted-foreground text-right"
               >
                 {{
                   __(
@@ -304,11 +325,14 @@ watchEffect(() => {
           </div>
         </div>
 
-        <div class="md:w-3/12 flex-1 space-y-4 mt-4 md:mt-0">
-          <server-status-box />
-          <shout-box />
+        <div
+          class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 sticky"
+          :class="{ 'top-16': isStickyNav, 'top-5': !isStickyNav }"
+        >
+          <ServerStatusBox />
+          <ShoutBox />
         </div>
       </div>
     </div>
-  </app-layout>
+  </AppLayout>
 </template>

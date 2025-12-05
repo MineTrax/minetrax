@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, onUnmounted, ref, nextTick, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
@@ -9,10 +10,13 @@ import { useAuthorizable } from '@/Composables/useAuthorizable';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
 import Icon from '@/Components/Icon.vue';
 import CommonStatusBadge from './CommonStatusBadge.vue';
+import AlertCard from '@/Components/AlertCard.vue';
 
 const { purifyAndLinkifyText, formatTimeAgoToNow, formatToDayDateString } =
     useHelpers();
 const { can } = useAuthorizable();
+const page = usePage();
+const currentUser = page.props.auth.user;
 
 const props = defineProps({
     submission: {
@@ -84,6 +88,37 @@ onUnmounted(() => {
     clearInterval(messageQueryInterval.value);
 });
 
+const addUniqueMessages = (newMessagesList) => {
+    const uniqueMessages = newMessagesList.filter(
+        (newMsg) => !messages.value.some((msg) => msg.id === newMsg.id)
+    );
+
+    if (uniqueMessages.length > 0) {
+        // Mark new messages on the plain objects first
+        uniqueMessages.forEach((msg) => {
+            if (currentUser && msg.commentator.id !== currentUser.id) {
+                msg.is_new = true;
+            }
+        });
+
+        // Add to reactive array
+        messages.value = [...messages.value, ...uniqueMessages];
+
+        // Set timeouts to remove 'is_new' status
+        // We must find the message in the reactive array to trigger updates
+        uniqueMessages.forEach((msg) => {
+            if (currentUser && msg.commentator.id !== currentUser.id) {
+                setTimeout(() => {
+                    const reactiveMsg = messages.value.find((m) => m.id === msg.id);
+                    if (reactiveMsg) {
+                        reactiveMsg.is_new = false;
+                    }
+                }, 30000);
+            }
+        });
+    }
+};
+
 const sendMessage = (type = null) => {
     if (isSendingMessage.value) return;
 
@@ -96,8 +131,7 @@ const sendMessage = (type = null) => {
         })
         .then((data) => {
             if (data.status === 200) {
-                messages.value.push(data.data.data);
-                scrollToBottom();
+                addUniqueMessages([data.data.data]);
             }
         })
         .catch((e) => {
@@ -135,34 +169,32 @@ const pollServerForNewMessages = () => {
     axios.get(indexRouteWithAfter).then((data) => {
         const newMessages = data.data;
         if (newMessages.length > 0) {
-            messages.value = [...messages.value, ...newMessages];
+            addUniqueMessages(newMessages);
         }
     });
 };
 </script>
 
 <template>
-  <div class="flex flex-col p-3 space-y-4">
-    <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+  <div class="flex flex-col p-4 space-y-4">
+    <h3 class="font-extrabold text-foreground dark:text-foreground text-lg">
       {{ __("Messages Box") }}
     </h3>
 
-    <span
-      v-if="
-        forAdmin && !submission.recruitment.is_allow_messages_from_users
-      "
-      class="p-1.5 text-sm text-red-500 bg-red-100 border border-red-500 rounded dark:text-red-400 dark:bg-red-200 dark:bg-opacity-10"
+    <AlertCard
+      v-if="forAdmin && !submission.recruitment.is_allow_messages_from_users"
+      variant="destructive"
     >
       {{
         __(
           "Messages feature is disabled for this recruitment. Applicant can't send messages."
         )
       }}
-    </span>
+    </AlertCard>
 
     <div
       v-if="isLoading"
-      class="flex items-center justify-center p-4 min-h-64"
+      class="flex items-center justify-center p-4 min-h-28"
     >
       <LoadingSpinner :loading="isLoading" />
     </div>
@@ -173,7 +205,7 @@ const pollServerForNewMessages = () => {
     >
       <div
         v-if="!isLoading && messages && messages.length === 0"
-        class="flex justify-center pt-4 text-sm text-gray-500 dark:text-gray-400"
+        class="flex justify-center pt-4 text-sm text-foreground dark:text-foreground"
       >
         {{ __("No messages found.") }}
       </div>
@@ -191,7 +223,7 @@ const pollServerForNewMessages = () => {
             v-if="comment.type.value === 'recruitment_action'"
           >
             <div
-              class="italic text-sm text-gray-700 dark:text-gray-300"
+              class="italic text-sm text-foreground dark:text-foreground"
             >
               <InertiaLink
                 as="span"
@@ -216,7 +248,7 @@ const pollServerForNewMessages = () => {
               <CommonStatusBadge :status="comment.comment" />
               <span
                 v-tippy
-                class="inline ml-1 text-xs text-gray-500 dark:text-gray-400 focus:outline-none"
+                class="inline ml-1 text-xs text-foreground dark:text-foreground focus:outline-none"
                 :title="
                   formatToDayDateString(comment.created_at)
                 "
@@ -251,7 +283,7 @@ const pollServerForNewMessages = () => {
               "
             >
               <ShieldCheckIcon
-                class="w-5 h-5 text-yellow-400 dark:text-yellow-300"
+                class="w-5 h-5 text-warning-400 dark:text-warning-300"
               />
             </div>
             <div
@@ -261,14 +293,18 @@ const pollServerForNewMessages = () => {
               }"
             >
               <div
-                class="flex flex-col px-4 py-2 text-gray-700 rounded-2xl dark:bg-opacity-25 dark:text-gray-200"
+                class="relative flex flex-col px-4 py-2 text-foreground rounded-2xl"
                 :class="
                   {
-                    'bg-orange-100 dark:bg-yellow-300': comment.type.value === 'recruitment_staff_whisper',
-                    'bg-gray-200 dark:bg-cool-gray-500': comment.type.value === 'recruitment_staff_message',
-                    'bg-gray-100 dark:bg-cool-gray-600': comment.type.value === 'recruitment_applicant_message'
+                    'bg-amber-100 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50': comment.type.value === 'recruitment_staff_whisper',
+                    'bg-secondary text-secondary-foreground': comment.type.value === 'recruitment_staff_message',
+                    'bg-muted text-muted-foreground': comment.type.value === 'recruitment_applicant_message'
                   }"
               >
+                <span
+                  v-if="comment.is_new"
+                  class="absolute -top-1 -right-1 w-3 h-3 bg-error-500 rounded-full animate-pulse"
+                ></span>
                 <InertiaLink
                   as="a"
                   class="hover:cursor-pointer hover:underline"
@@ -286,7 +322,7 @@ const pollServerForNewMessages = () => {
                   >
                     <span
                       v-tippy
-                      class="inline ml-1 text-xs text-gray-500 dark:text-gray-400 focus:outline-none"
+                      class="inline ml-1 text-xs text-foreground dark:text-foreground focus:outline-none"
                       :title="
                         formatToDayDateString(
                           comment.created_at
@@ -336,7 +372,7 @@ const pollServerForNewMessages = () => {
             >
               <Icon
                 name="trash"
-                class="w-4 h-4 text-gray-200 hover:text-red-400 dark:text-gray-500 dark:hover:text-red-500"
+                class="w-4 h-4 text-foreground hover:text-error-400 dark:text-foreground dark:hover:text-error-500"
               />
             </InertiaLink>
           </template>
@@ -353,23 +389,24 @@ const pollServerForNewMessages = () => {
         ref="inputbox"
         v-model="currentMessage"
         :disabled="
-          !submission.i_can_send_message
+          !submission.i_can_send_message || isSendingMessage
         "
-        label="Write your message here..."
+        placeholder="Write your message here... (Shift + Enter to send)"
         class="w-full"
         :error="error"
+        @keydown.enter.shift.exact.prevent="forAdmin ? sendMessage('recruitment_staff_message') : sendMessage()"
       />
       <div class="flex justify-end mt-2">
         <LoadingButton
           v-if="forAdmin"
           v-tippy
-          :disabled="!submission.i_can_send_message"
+          :disabled="!submission.i_can_send_message || isSendingMessage"
           :title="
             __(
               'Send whisper to other staff members. This message will be private and only visible to staff members.'
             )
           "
-          class="px-4 py-2 mr-2 font-bold text-yellow-500 bg-transparent rounded hover:text-yellow-400 dark:text-white disabled:cursor-not-allowed disabled:opacity-25"
+          class="px-4 py-2 mr-2 font-bold text-warning-500 bg-transparent rounded hover:text-warning-400 dark:text-white disabled:cursor-not-allowed disabled:opacity-25"
           :loading="isSendingMessage"
           @click="sendMessage('recruitment_staff_whisper')"
         >
@@ -379,8 +416,8 @@ const pollServerForNewMessages = () => {
           />
         </LoadingButton>
         <LoadingButton
-          :disabled="!submission.i_can_send_message"
-          class="px-4 py-2 text-white rounded bg-sky-500 hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-25"
+          :disabled="!submission.i_can_send_message || isSendingMessage"
+          class="px-4 py-2"
           :loading="isSendingMessage"
           @click="
             forAdmin

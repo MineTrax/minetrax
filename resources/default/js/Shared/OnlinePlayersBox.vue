@@ -1,11 +1,11 @@
 <template>
-  <div v-if="enabled">
-    <div class="p-3 sm:px-5 bg-white dark:bg-gray-800 rounded shadow">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+  <Card v-if="enabled">
+    <CardContent class="p-3 sm:px-5">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Online Players") }}
         <span
           v-if="!loading && !error"
-          class="float-right text-green-500 font-semibold"
+          class="float-right text-success-500 font-semibold"
         >
           <span v-if="serverInfo['MaxPlayers']">
             {{ serverInfo["Players"] }} /
@@ -23,7 +23,7 @@
         class="flex p-4 justify-center"
       >
         <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-light-blue-600"
+          class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -50,7 +50,7 @@
 
       <div
         v-if="!loading && !error"
-        class="mt-3 text-gray-500 flex flex-wrap justify-center"
+        class="mt-3 text-foreground flex flex-wrap justify-center"
       >
         <div
           v-for="pl of playersList"
@@ -80,18 +80,22 @@
           !loading &&
           (!playersList || playersList.length <= 0)
         "
-        class="italic p-1 rounded text-center text-gray-400"
+        class="italic p-1 rounded text-center text-foreground"
       >
         {{ __("No players online.") }}
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script setup>
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 import { usePage } from '@inertiajs/vue3';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 const props = defineProps({
     server: {

@@ -14,6 +14,7 @@ use Exception;
 use Gate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
@@ -77,17 +78,25 @@ class PlayerController extends Controller
             return response()->json($players);
         }
 
-        $playerActiveLastDay = $playerSettings->last_seen_day_for_active == -1 ? now()->subYears(100) : now()->subDays($playerSettings->last_seen_day_for_active);
+        $cacheFor = 10 * 60; // 10 minutes
+        $stats = fn() => Cache::remember('player.index::stats', $cacheFor, function () use ($playerSettings) {
+            $playerActiveLastDay = $playerSettings->last_seen_day_for_active == -1 ? now()->subYears(100) : now()->subDays($playerSettings->last_seen_day_for_active);
+            $totalPlayersCount = Player::fastCount();
+            $activePlayersCount = Player::where('last_seen_at', '>=', $playerActiveLastDay)->count();
+            $totalPlayTime = Player::sum('play_time');
+            $totalLinkedPlayers = Player::whereHas('users')->count();
 
-        $totalPlayersCount = Player::fastCount();
-        $activePlayersCount = Player::where('last_seen_at', '>=', $playerActiveLastDay)->count();
-        $totalPlayTime = Player::sum('play_time');
+            return [
+                'totalPlayersCount' => $totalPlayersCount,
+                'activePlayersCount' => $activePlayersCount,
+                'totalPlayTime' => $totalPlayTime,
+                'totalLinkedPlayers' => $totalLinkedPlayers ?? 0,
+            ];
+        });
 
         return Inertia::render('Player/IndexPlayer', [
             'players' => $players,
-            'totalPlayersCount' => $totalPlayersCount,
-            'activePlayersCount' => $activePlayersCount,
-            'totalPlayTime' => $totalPlayTime,
+            'stats' => Inertia::defer($stats),
         ]);
     }
 

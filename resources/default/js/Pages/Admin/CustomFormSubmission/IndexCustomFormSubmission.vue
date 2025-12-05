@@ -5,6 +5,7 @@ import { useTranslations } from '@/Composables/useTranslations';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
 import {
     EyeIcon,
@@ -14,7 +15,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import XSelect from '@/Components/Form/XSelect.vue';
 import { computed, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Link } from '@inertiajs/vue3';
 import { pickBy } from 'lodash';
 
 const { can } = useAuthorizable();
@@ -116,18 +117,26 @@ watch(selectedForms, (newSelectedForms) => {
 
     router.get(route(route().current()), pickBy(query));
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: props.archived ? __('Archived Custom Form Submissions') : __('Custom Form Submissions'),
+        current: true,
+    }
+];
 </script>
 
 <template>
   <AdminLayout>
     <AppHead :title="archived ? __('Archived Custom Form Submissions') : __('Custom Form Submissions')" />
 
-    <div class="p-4 mx-auto space-y-4 px-10">
+    <div class="px-10 py-8 mx-auto space-y-4">
       <div class="flex items-center justify-between">
-        <h3 class="text-xl font-extrabold text-gray-800 dark:text-gray-200">
-          {{ archived ? __("Archived Form Submissions:") : __("Form Submissions:") }}
-          {{ showing ?? __("All Forms") }}
-        </h3>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
 
         <x-select
           id="selectForms"
@@ -135,25 +144,25 @@ watch(selectedForms, (newSelectedForms) => {
           name="selectForms"
           :select-list="forms"
           :placeholder="__('All Forms')"
-          class="w-48 max-w-48 dark:border dark:rounded dark:border-gray-700"
+          class="w-48 max-w-48 border rounded bg-card"
         />
       </div>
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-card rounded-lg shadow"
           :header="headerRow"
           :data="submissions"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="text-sm px-4 font-medium text-left text-foreground whitespace-nowrap dark:text-foreground"
             >
               {{ item.id }}
             </td>
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               <div class="flex items-center">
                 <div
@@ -172,7 +181,7 @@ watch(selectedForms, (newSelectedForms) => {
             </td>
 
             <td class="px-4">
-              <InertiaLink
+              <Link
                 v-if="item.user"
                 :href="route('user.public.get', item.user.username)"
                 class="flex items-center"
@@ -186,19 +195,19 @@ watch(selectedForms, (newSelectedForms) => {
                 </div>
                 <div class="flex-col">
                   <div
-                    class="text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap truncate"
+                    class="text-sm font-semibold text-foreground dark:text-foreground whitespace-nowrap truncate"
                     :style="[item.user.roles[0].color ? {color: item.user.roles[0].color} : null]"
                   >
                     {{ item.user.name }}
                   </div>
-                  <div class="text-sm text-gray-500">
+                  <div class="text-sm text-foreground">
                     @{{ item.user.username }}
                   </div>
                 </div>
-              </InertiaLink>
+              </Link>
               <div
                 v-else
-                class="flex items-center italic text-sm text-gray-500 dark:text-gray-400"
+                class="flex items-center italic text-sm text-foreground dark:text-foreground"
               >
                 {{ __("Anonymous") }}
               </div>
@@ -228,14 +237,16 @@ watch(selectedForms, (newSelectedForms) => {
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-              <InertiaLink
+              <Link
+                v-tippy
                 as="a"
                 :href="route('admin.custom-form-submission.show', item.id)"
-                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                class="inline-flex items-center justify-center text-primary hover:text-primary"
+                :title="__('View Submission')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
+              </Link>
+              <Link
                 v-if="can('archive custom_form_submissions') && !archived"
                 v-confirm="{
                   message:
@@ -249,8 +260,8 @@ watch(selectedForms, (newSelectedForms) => {
                 :title="__('Archive Submission')"
               >
                 <ArchiveBoxArrowDownIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
+              </Link>
+              <Link
                 v-if="can('delete custom_form_submissions') && archived"
                 v-confirm="{
                   message:
@@ -260,12 +271,12 @@ watch(selectedForms, (newSelectedForms) => {
                 as="button"
                 method="POST"
                 :href="route('admin.custom-form-submission.restore', item.id)"
-                class="inline-flex items-center justify-center text-green-500 hover:text-green-900 focus:outline-none"
+                class="inline-flex items-center justify-center text-success-500 hover:text-success-900 focus:outline-none"
                 :title="__('Restore Submission')"
               >
                 <ArrowUturnUpIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
+              </Link>
+              <Link
                 v-if="can('delete custom_form_submissions')"
                 v-confirm="{
                   message:
@@ -275,11 +286,11 @@ watch(selectedForms, (newSelectedForms) => {
                 as="button"
                 method="DELETE"
                 :href="route('admin.custom-form-submission.delete', item.id)"
-                class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
                 :title="__('Delete Submission')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
+              </Link>
             </td>
           </template>
         </DataTable>

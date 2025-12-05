@@ -7,7 +7,7 @@
       :disabled="disabled"
       type="checkbox"
       :name="name"
-      class="rounded border-gray-300 dark:border-gray-900 text-light-blue-500 shadow-sm focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150 dark:bg-cool-gray-900 dark:checked:bg-light-blue-500"
+      class="rounded border-foreground dark:border-foreground text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 disabled:opacity-25 transition ease-in-out duration-150 dark:bg-surface-900 dark:checked:bg-primary"
       :class="checkboxSizeClass"
       :required="required"
       @input="$emit('input', $event.target.value)"
@@ -15,16 +15,16 @@
 
     <label
       :for="id"
-      class="font-medium text-sm flex flex-col text-gray-600 dark:text-gray-400 ml-2 leading-tight"
+      class="font-medium text-sm flex flex-col text-foreground dark:text-foreground ml-2 leading-tight"
     >
       <span v-if="label">{{ label }}</span>
       <span
         v-if="help"
-        class="text-xs text-gray-400"
+        class="text-xs text-foreground"
       >{{ help }}</span>
       <span
         v-if="error"
-        class="text-xs text-red-500"
+        class="text-xs text-error-500"
       >{{ error }}</span>
     </label>
   </div>

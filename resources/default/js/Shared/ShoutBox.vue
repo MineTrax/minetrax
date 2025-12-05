@@ -1,32 +1,69 @@
 <template>
-  <div v-if="$page.props.generalSettings.enable_shoutbox">
-    <div class="p-3 space-y-4 bg-white rounded shadow dark:bg-cool-gray-800">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+  <Card v-if="$page.props.generalSettings.enable_shoutbox" ref="box">
+    <CardContent class="p-3 space-y-4">
+      <h3 class="font-extrabold text-card-foreground">
         {{ __("Shout Box") }}
       </h3>
 
-      <div class="flex-col space-y-4 overflow-auto max-h-96 hide-scrollbar">
+      <div class="overflow-auto flex-col space-y-4 max-h-96 hide-scrollbar">
         <!--Loading-->
         <div
           v-if="loading"
           class="space-y-4"
         >
-          <div class="w-full max-w-sm mx-auto">
-            <div class="flex space-x-4 animate-pulse">
-              <div class="w-8 h-8 bg-gray-300 rounded-full dark:bg-cool-gray-700" />
-              <div class="flex-1 py-1 space-y-1">
-                <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
-                <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+          <!-- Other user message skeleton -->
+          <div class="chat-message">
+            <div class="flex">
+              <div class="order-2 items-start mx-2 space-y-2 max-w-xs text-sm">
+                <div class="flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg bg-muted">
+                  <div class="mb-2">
+                    <Skeleton class="inline-block w-16 h-4" />
+                    <Skeleton class="inline-block ml-1 w-12 h-3" />
+                  </div>
+                  <div class="space-y-1">
+                    <Skeleton class="w-32 h-4" />
+                    <Skeleton class="w-24 h-4" />
+                  </div>
+                </div>
               </div>
+              <Skeleton class="order-1 mt-2 w-8 h-8 rounded-full" />
             </div>
           </div>
-          <div class="w-full max-w-sm mx-auto">
-            <div class="flex space-x-4 animate-pulse">
-              <div class="w-8 h-8 bg-gray-300 rounded-full dark:bg-cool-gray-700" />
-              <div class="flex-1 py-1 space-y-1">
-                <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
-                <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+
+          <!-- Self message skeleton -->
+          <div class="chat-message">
+            <div class="flex justify-end">
+              <div class="order-1 items-start mx-2 space-y-2 max-w-xs text-sm">
+                <div class="flex flex-col px-4 py-2 rounded-2xl rounded-tr-lg bg-primary">
+                  <div class="mb-2 text-right">
+                    <Skeleton class="inline-block mr-1 w-12 h-3" />
+                    <Skeleton class="inline-block w-16 h-4" />
+                  </div>
+                  <div class="space-y-1">
+                    <Skeleton class="w-28 h-4" />
+                    <Skeleton class="w-20 h-4" />
+                  </div>
+                </div>
               </div>
+              <Skeleton class="order-2 mt-2 w-8 h-8 rounded-full" />
+            </div>
+          </div>
+
+          <!-- Another other user message skeleton -->
+          <div class="chat-message">
+            <div class="flex">
+              <div class="order-2 items-start mx-2 space-y-2 max-w-xs text-sm">
+                <div class="flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg bg-muted">
+                  <div class="mb-2">
+                    <Skeleton class="inline-block w-20 h-4" />
+                    <Skeleton class="inline-block ml-1 w-10 h-3" />
+                  </div>
+                  <div class="space-y-1">
+                    <Skeleton class="w-36 h-4" />
+                  </div>
+                </div>
+              </div>
+              <Skeleton class="order-1 mt-2 w-8 h-8 rounded-full" />
             </div>
           </div>
         </div>
@@ -41,9 +78,9 @@
             v-if="!$page.props.auth.user || shout.user_id !== $page.props.auth.user.id"
             class="flex"
           >
-            <div class="items-start order-2 max-w-xs mx-2 space-y-2 text-sm">
+            <div class="order-2 items-start mx-2 space-y-2 max-w-xs text-sm">
               <div
-                class="flex flex-col inline-block px-4 py-2 text-gray-700 bg-gray-100 rounded-tl-lg rounded-2xl dark:bg-cool-gray-600 dark:bg-opacity-25 dark:text-gray-200"
+                class="flex flex-col px-4 py-2 rounded-2xl rounded-tl-lg text-card-foreground bg-muted"
               >
                 <div>
                   <inertia-link
@@ -56,7 +93,7 @@
                   </inertia-link>
                   <span
                     v-tippy
-                    class="ml-1 text-xs text-gray-500 dark:text-gray-400 focus:outline-none"
+                    class="ml-1 text-xs text-muted-foreground focus:outline-none"
                     :title="formatToDayDateString(shout.created_at)"
                   >
                     {{ formatTimeAgoToNow(shout.created_at, false) }}
@@ -70,7 +107,7 @@
             <img
               :src="shout.user.profile_photo_url"
               alt="My profile"
-              class="order-1 w-8 h-8 mt-2 rounded-full"
+              class="order-1 mt-2 w-8 h-8 rounded-full"
             >
             <inertia-link
               v-if="$page.props.auth.user && shout.permissions.delete"
@@ -82,7 +119,7 @@
               :href="route('shout.delete', shout.id)"
             >
               <icon
-                class="w-4 h-4 text-gray-200 dark:text-gray-500 hover:text-red-400 dark:hover:text-red-500"
+                class="w-4 h-4 text-muted-foreground hover:text-destructive"
                 name="trash"
               />
             </inertia-link>
@@ -104,18 +141,18 @@
               :href="route('shout.delete', shout.id)"
             >
               <icon
-                class="w-4 h-4 text-gray-200 dark:text-gray-500 hover:text-red-400 dark:hover:text-red-500"
+                class="w-4 h-4 text-muted-foreground hover:text-destructive"
                 name="trash"
               />
             </inertia-link>
-            <div class="items-start order-1 max-w-xs mx-2 space-y-2 text-sm">
+            <div class="order-1 items-start mx-2 space-y-2 max-w-xs text-sm">
               <div
-                class="flex flex-col inline-block px-4 py-2 text-gray-700 rounded-tr-lg rounded-2xl bg-light-blue-100 dark:bg-cool-gray-900 dark:bg-opacity-40 dark:text-gray-200"
+                class="flex flex-col px-4 py-2 rounded-2xl rounded-tr-lg text-primary-foreground bg-primary"
               >
                 <div class="text-right">
                   <span
                     v-tippy
-                    class="mr-1 text-xs text-gray-500 dark:text-gray-400 focus:outline-none"
+                    class="mr-1 text-xs text-primary-foreground/70 focus:outline-none"
                     :title="formatToDayDateString(shout.created_at)"
                   >
                     {{ formatTimeAgoToNow(shout.created_at, false) }}
@@ -137,7 +174,7 @@
             <img
               :src="shout.user.profile_photo_url"
               alt="My profile"
-              class="order-2 w-8 h-8 mt-2 rounded-full"
+              class="order-2 mt-2 w-8 h-8 rounded-full"
             >
           </div>
           <!-- self end -->
@@ -145,35 +182,34 @@
 
         <div
           v-if="!loading && (!shouts || shouts.length <= 0)"
-          class="italic text-gray-500 dark:text-gray-400 text-center"
+          class="italic text-center text-muted-foreground"
         >
           {{ __("No shouts yet.") }}
         </div>
       </div>
 
       <div v-if="$page.props.auth.user">
-        <input
+        <Input
           v-if="!loading"
           ref="inputbox"
           v-model="message"
           :disabled="sending"
           aria-label="Shout"
-          class="block w-full mt-1 bg-gray-100 border-none rounded-md focus:ring-gray-300 sm:text-sm disabled:opacity-50 focus:bg-white dark:bg-cool-gray-900 dark:text-gray-200 dark:focus:bg-gray-900 dark:focus:ring-gray-700"
           type="text"
           :placeholder="__('Say something..')"
           @keypress.enter="sendShout"
-        >
+        />
         <span
           v-if="error"
-          class="text-xs text-red-400"
+          class="text-xs text-destructive"
         >{{ error }}</span>
       </div>
       <div
         v-else
-        class="text-sm text-center text-gray-600 dark:text-gray-400"
+        class="text-sm text-center text-card-foreground"
       >
         <inertia-link
-          class="font-semibold text-light-blue-500"
+          class="font-semibold text-primary"
           :href="route('login')"
         >
           {{ __("Login") }}
@@ -181,7 +217,7 @@
         <template v-if="$page.props.hasRegistrationFeature">
           {{ " " + __("or") }}
           <inertia-link
-            class="font-semibold text-light-blue-500"
+            class="font-semibold text-primary"
             :href="route('register')"
           >
             {{ __("Register") }}
@@ -189,20 +225,30 @@
         </template>
         {{ __("to Shout") }}
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script>
 import Icon from '@/Components/Icon.vue';
 import { useHelpers } from '@/Composables/useHelpers';
+import { Input } from '@/Components/ui/input';
 import {USE_WEBSOCKETS} from '@/constants';
+import { ref } from 'vue';
+import { useElementVisibility } from '@vueuse/core';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
+import { Skeleton } from '@/Components/ui/skeleton'
 
 export default {
-    components: {Icon},
+    components: {Icon, Card, CardContent, Input, Skeleton},
     setup() {
         const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
-        return {formatTimeAgoToNow,formatToDayDateString};
+        const box = ref(null);
+        const isVisible = useElementVisibility(box);
+        return {formatTimeAgoToNow,formatToDayDateString, box, isVisible};
     },
     data() {
         return {
@@ -229,7 +275,12 @@ export default {
                 this.shouts.unshift(data.data);
             });
         } else {
-            this.shoutQueryInterval = setInterval(() => this.pollServerForNewShouts(), 5000);
+            this.shoutQueryInterval = setInterval(() => {
+                if (!this.isVisible) {
+                    return;
+                }
+                this.pollServerForNewShouts();
+            }, 5000);
         }
     },
 
@@ -260,7 +311,7 @@ export default {
                 this.message = '';
                 this.sending = false;
                 this.$nextTick(() => {
-                    this.$refs.inputbox.focus();
+                    this.$refs.inputbox.$el.focus();
                 });
             });
         },

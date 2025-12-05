@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link } from '@inertiajs/vue3';
 import {
     EyeIcon,
     PencilSquareIcon,
@@ -12,6 +15,23 @@ import {
     ChartBarSquareIcon,
 } from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
+import { startCase } from 'lodash';
+
+function getStatusColor(status) {
+    switch (status) {
+        case 'active':
+            return 'green';
+        case 'draft':
+            return 'pending';
+        case 'disabled':
+            return 'red';
+        case 'archived':
+            return 'deferred';
+        default:
+            return status;
+    }
+}
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
@@ -21,6 +41,17 @@ defineProps({
     recruitments: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Application Forms'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -86,84 +117,76 @@ const headerRow = [
 
 <template>
   <AdminLayout>
-    <app-head :title="__('Manage Application Forms')" />
+    <app-head :title="__('Manage Applications')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
-          {{ __("Manage Application Forms") }}
-        </h1>
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create recruitments')"
-            :href="route('admin.recruitment.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Application Form") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.recruitment.create')">
+              {{ __("Create Application Form") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="recruitments"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
 
           <DtRowItem class="">
-            <InertiaLink
+            <Link
               as="a"
               :href="route('admin.recruitment.show', item.id)"
-              class="dark:hover:text-gray-200 hover:text-light-blue-400"
+              class="dark:hover:text-foreground hover:text-primary"
             >
               {{ item.title }}
-            </InertiaLink>
+            </Link>
           </DtRowItem>
 
-          <DtRowItem class="px-4 whitespace-normal">
-            <div class="flex items-center">
-              <div
-                class="text-sm font-medium text-gray-900 dark:text-gray-400"
-              >
-                {{ item.status.value }}
-              </div>
-            </div>
+          <DtRowItem>
+            <CommonStatusBadge :status="getStatusColor(item.status.value)" :value="startCase(item.status.value)" />
           </DtRowItem>
 
           <td
-            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_notify_staff_on_submission"
-              class="text-green-500 focus:outline-none"
+              class="text-success-500 focus:outline-none"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </td>
 
           <td
-            class="py-4 text-sm text-center text-gray-500 align-middle px-9 whitespace-nowrap"
+            class="py-4 text-sm text-center text-foreground align-middle px-9 whitespace-nowrap"
           >
             <Icon
               v-if="item.is_allow_messages_from_users"
-              class="text-green-500 focus:outline-none"
+              class="text-success-500 focus:outline-none"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-error-500"
               name="cross-circle"
             />
           </td>
@@ -188,36 +211,36 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="['active', 'disabled'].includes(item.status.value)"
               v-tippy
               as="a"
               :href="route('recruitment.show', item.slug)"
-              class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+              class="inline-flex items-center justify-center text-primary hover:text-primary"
               :title="__('Show Public View')"
             >
               <EyeIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-tippy
               as="a"
               :href="route('admin.recruitment.show', item.id)"
-              class="inline-flex items-center justify-center text-green-500 hover:text-green-800"
+              class="inline-flex items-center justify-center text-success-500 hover:text-success-800"
               :title="__('Show Intel')"
             >
               <ChartBarSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('update recruitments')"
               v-tippy
               as="a"
               :href="route('admin.recruitment.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit Application Form')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete recruitments')"
               v-confirm="{
                 message:
@@ -227,11 +250,11 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.recruitment.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Application Form')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>

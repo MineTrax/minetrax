@@ -45,18 +45,13 @@ watch(selectedServers, (newSelectedServers) => {
 
 <template>
   <div class="flex items-center justify-between">
-    <h3 class="text-xl font-extrabold text-gray-800 dark:text-gray-200">
-      {{ title }}:
-      {{ showing ?? __("All Servers") }}
-    </h3>
-
     <x-select
       id="select_servers"
       v-model="selectedServers"
       name="select_servers"
       :select-list="props.serverList"
       :placeholder="__('All Servers')"
-      class="w-48 max-w-48 dark:border dark:rounded dark:border-gray-700"
+      class="w-48 max-w-48 border rounded bg-card"
     />
   </div>
 </template>

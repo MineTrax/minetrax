@@ -7,8 +7,8 @@
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-cool-gray-800 shadow w-full rounded">
-            <div class="px-6 py-4 border-b dark:border-gray-700 dark:text-gray-300 font-bold">
+          <div class="bg-white dark:bg-surface-800 shadow w-full rounded">
+            <div class="px-6 py-4 border-b dark:border-foreground dark:text-foreground font-bold">
               {{ __("Plugin Settings") }}
             </div>
 
@@ -23,7 +23,7 @@
                       as="button"
                       method="post"
                       :href="route('admin.setting.plugin.keygen')"
-                      class="inline-flex justify-center py-2 px-4 border border-2 border-red-500 shadow-sm text-sm font-bold rounded-md text-red-500 hover:bg-red-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                      class="inline-flex justify-center py-2 px-4 border border-2 border-error-500 shadow-sm text-sm font-bold rounded-md text-error-500 hover:bg-error-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error-500 disabled:opacity-50"
                     >
                       {{ __("Regenerate API Credentials") }}
                     </inertia-link>
@@ -34,7 +34,7 @@
                     @submit.prevent="savePluginSetting"
                   >
                     <div class="shadow overflow-hidden sm:rounded-md">
-                      <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
+                      <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
                           <div class="flex items-center col-span-6 sm:col-span-4">
                             <x-checkbox
@@ -110,22 +110,22 @@
                             v-show="form.enable_account_link"
                             class="flex-col col-span-6 space-y-1 sm:col-span-6"
                           >
-                            <legend class="text-sm text-gray-700 font-bold dark:font-semibold dark:text-gray-300">
+                            <legend class="text-sm text-foreground font-bold dark:font-semibold dark:text-foreground">
                               {{ __("Account Link Success Commands") }}
-                              <span class="text-xs font-light text-gray-400">{{ __("(runs when a player is linked to account)") }}</span>
+                              <span class="text-xs font-light text-foreground">{{ __("(runs when a player is linked to account)") }}</span>
                             </legend>
 
                             <div class="w-full space-y-2">
                               <div class="flex flex-col items-end">
-                                <h3 class="text-gray-700 dark:text-gray-300 text-sm font-semibold">
+                                <h3 class="text-foreground dark:text-foreground text-sm font-semibold">
                                   {{ __("Available Placeholders") }}
                                 </h3>
-                                <ol class="text-sm text-right text-gray-600 dark:text-gray-400">
+                                <ol class="text-sm text-right text-foreground dark:text-foreground">
                                   <li>
-                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player which is linked.") }}
+                                    <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player which is linked.") }}
                                   </li>
                                   <li>
-                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player which is linked.") }}
+                                    <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player which is linked.") }}
                                   </li>
                                 </ol>
                               </div>
@@ -133,12 +133,12 @@
                               <div class="flex space-x-4">
                                 <div class="w-5" />
                                 <label
-                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                  class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                                 >{{
                                   __("Command") }}
                                 </label>
                                 <label
-                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                  class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                                 >{{
                                   __("Run on servers") }}
                                 </label>
@@ -160,7 +160,7 @@
                                     "
                                   >
                                     <Icon
-                                      class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                      class="w-5 h-5 text-foreground group-hover:text-error-500"
                                       name="trash"
                                     />
                                   </button>
@@ -169,7 +169,7 @@
                                     <div class="flex-1">
                                       <input
                                         v-model="command.command"
-                                        class="block p-2.5 dark:bg-cool-gray-900 dark:text-gray-300 w-full dark:border-gray-700 border-gray-200 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        class="block p-2.5 dark:bg-surface-900 dark:text-foreground w-full dark:border-foreground border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                                         :placeholder="`Enter Command #${index + 1}`"
                                         type="text"
                                       >
@@ -179,7 +179,7 @@
                                             `account_link_after_success_commands.${index}.command`
                                           ]
                                         "
-                                        class="text-red-500 text-sm"
+                                        class="text-error-500 text-sm"
                                       >
                                         {{
                                           form.errors[
@@ -191,7 +191,7 @@
                                     <div class="flex-1">
                                       <Multiselect
                                         v-model="command.servers"
-                                        class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        class="block w-full border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                                         :options="serversWithWebquery"
                                         :custom-label="serversWithWebqueryCustomLabel"
                                         track-by="id"
@@ -201,7 +201,7 @@
                                         :searchable="false"
                                         :placeholder="__('Leave empty to run on all servers')+'...'"
                                       />
-                                      <p class="text-sm text-red-500 mt-0.5">
+                                      <p class="text-sm text-error-500 mt-0.5">
                                         {{
                                           form.errors[
                                             `account_link_after_success_commands.${index}.servers`
@@ -239,14 +239,14 @@
 
                               <div
                                 v-if="form.account_link_after_success_commands.length <= 0"
-                                class="text-gray-500 text-sm italic text-center pt-2"
+                                class="text-foreground text-sm italic text-center pt-2"
                               >
                                 {{ __("No commands on account link.") }}
                               </div>
 
                               <p
                                 v-if="form.errors.account_link_after_success_commands"
-                                class="text-sm text-red-400 text-center"
+                                class="text-sm text-error-400 text-center"
                               >
                                 {{ form.errors.account_link_after_success_commands }}
                               </p>
@@ -254,7 +254,7 @@
                               <div class="flex justify-center pt-5">
                                 <button
                                   type="button"
-                                  class="p-2 w-1/3 text-sm text-light-blue-500 rounded border border-light-blue-500 focus:outline-none hover:text-light-blue-300 hover:border-light-blue-300 transition ease-in-out duration-150"
+                                  class="p-2 w-1/3 text-sm text-primary rounded border border-primary focus:outline-none hover:text-primary hover:border-primary transition ease-in-out duration-150"
                                   @click="addAccountLinkCommand"
                                 >
                                   {{
@@ -269,22 +269,22 @@
                             v-show="form.enable_account_link"
                             class="flex-col col-span-6 space-y-1 sm:col-span-6"
                           >
-                            <legend class="text-sm text-gray-700 font-bold dark:font-semibold dark:text-gray-300">
+                            <legend class="text-sm text-foreground font-bold dark:font-semibold dark:text-foreground">
                               {{ __("Account Unlink Success Commands") }}
-                              <span class="text-xs font-light text-gray-400">{{ __("(runs when a player is unlinked from account)") }}</span>
+                              <span class="text-xs font-light text-foreground">{{ __("(runs when a player is unlinked from account)") }}</span>
                             </legend>
 
                             <div class="w-full space-y-2">
                               <div class="flex flex-col items-end">
-                                <h3 class="text-gray-700 dark:text-gray-300 text-sm font-semibold">
+                                <h3 class="text-foreground dark:text-foreground text-sm font-semibold">
                                   {{ __("Available Placeholders") }}
                                 </h3>
-                                <ol class="text-sm text-right text-gray-600 dark:text-gray-400">
+                                <ol class="text-sm text-right text-foreground dark:text-foreground">
                                   <li>
-                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player which is unlinked.") }}
+                                    <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player which is unlinked.") }}
                                   </li>
                                   <li>
-                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player which is unlinked.") }}
+                                    <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player which is unlinked.") }}
                                   </li>
                                 </ol>
                               </div>
@@ -292,12 +292,12 @@
                               <div class="flex space-x-4">
                                 <div class="w-5" />
                                 <label
-                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                  class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                                 >{{
                                   __("Command") }}
                                 </label>
                                 <label
-                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                  class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                                 >{{
                                   __("Run on servers") }}
                                 </label>
@@ -319,7 +319,7 @@
                                     "
                                   >
                                     <Icon
-                                      class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                      class="w-5 h-5 text-foreground group-hover:text-error-500"
                                       name="trash"
                                     />
                                   </button>
@@ -328,7 +328,7 @@
                                     <div class="flex-1">
                                       <input
                                         v-model="command.command"
-                                        class="block p-2.5 dark:bg-cool-gray-900 dark:text-gray-300 w-full dark:border-gray-700 border-gray-200 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        class="block p-2.5 dark:bg-surface-900 dark:text-foreground w-full dark:border-foreground border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                                         :placeholder="`Enter Command #${index + 1}`"
                                         type="text"
                                       >
@@ -338,7 +338,7 @@
                                             `account_unlink_after_success_commands.${index}.command`
                                           ]
                                         "
-                                        class="text-red-500 text-sm"
+                                        class="text-error-500 text-sm"
                                       >
                                         {{
                                           form.errors[
@@ -350,7 +350,7 @@
                                     <div class="flex-1">
                                       <Multiselect
                                         v-model="command.servers"
-                                        class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        class="block w-full border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                                         :options="serversWithWebquery"
                                         :custom-label="serversWithWebqueryCustomLabel"
                                         track-by="id"
@@ -360,7 +360,7 @@
                                         :searchable="false"
                                         :placeholder="__('Leave empty to run on all servers')+'...'"
                                       />
-                                      <p class="text-sm text-red-500 mt-0.5">
+                                      <p class="text-sm text-error-500 mt-0.5">
                                         {{
                                           form.errors[
                                             `account_unlink_after_success_commands.${index}.servers`
@@ -398,14 +398,14 @@
 
                               <div
                                 v-if="form.account_unlink_after_success_commands.length <= 0"
-                                class="text-gray-500 text-sm italic text-center pt-2"
+                                class="text-foreground text-sm italic text-center pt-2"
                               >
                                 {{ __("No commands on account unlink.") }}
                               </div>
 
                               <p
                                 v-if="form.errors.account_unlink_after_success_commands"
-                                class="text-sm text-red-400 text-center"
+                                class="text-sm text-error-400 text-center"
                               >
                                 {{ form.errors.account_unlink_after_success_commands }}
                               </p>
@@ -413,7 +413,7 @@
                               <div class="flex justify-center pt-5">
                                 <button
                                   type="button"
-                                  class="p-2 w-1/3 text-sm text-light-blue-500 rounded border border-light-blue-500 focus:outline-none hover:text-light-blue-300 hover:border-light-blue-300 transition ease-in-out duration-150"
+                                  class="p-2 w-1/3 text-sm text-primary rounded border border-primary focus:outline-none hover:text-primary hover:border-primary transition ease-in-out duration-150"
                                   @click="addAccountUnlinkCommand"
                                 >
                                   {{
@@ -483,25 +483,25 @@
                             v-show="form.enable_player_password_reset"
                             class="flex-col col-span-6 space-y-1 sm:col-span-6"
                           >
-                            <legend class="text-sm text-gray-700 font-bold dark:font-semibold dark:text-gray-300">
+                            <legend class="text-sm text-foreground font-bold dark:font-semibold dark:text-foreground">
                               {{ __("Player Password Reset Commands") }}
-                              <span class="text-xs font-light text-gray-400">{{ __("(run when user try to reset his linked player password)") }}</span>
+                              <span class="text-xs font-light text-foreground">{{ __("(run when user try to reset his linked player password)") }}</span>
                             </legend>
 
                             <div class="w-full space-y-2">
                               <div class="flex flex-col items-end">
-                                <h3 class="text-gray-700 dark:text-gray-300 text-sm font-semibold">
+                                <h3 class="text-foreground dark:text-foreground text-sm font-semibold">
                                   {{ __("Available Placeholders") }}
                                 </h3>
-                                <ol class="text-sm text-right text-gray-600 dark:text-gray-400">
+                                <ol class="text-sm text-right text-foreground dark:text-foreground">
                                   <li>
-                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player whose password is being reset.") }}
+                                    <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player whose password is being reset.") }}
                                   </li>
                                   <li>
-                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player whose password is being reset.") }}
+                                    <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player whose password is being reset.") }}
                                   </li>
                                   <li>
-                                    <code class="text-sm bg-gray-100 dark:bg-cool-gray-700 dark:text-gray-300 p-1 rounded-md">{PASSWORD}</code> - {{ __("New validated password entered by user.") }}
+                                    <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PASSWORD}</code> - {{ __("New validated password entered by user.") }}
                                   </li>
                                 </ol>
                               </div>
@@ -509,12 +509,12 @@
                               <div class="flex space-x-4">
                                 <div class="w-5" />
                                 <label
-                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                  class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                                 >{{
                                   __("Command") }}
                                 </label>
                                 <label
-                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                  class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                                 >{{
                                   __("Run on servers") }}
                                 </label>
@@ -536,7 +536,7 @@
                                     "
                                   >
                                     <Icon
-                                      class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                      class="w-5 h-5 text-foreground group-hover:text-error-500"
                                       name="trash"
                                     />
                                   </button>
@@ -545,7 +545,7 @@
                                     <div class="flex-1">
                                       <input
                                         v-model="command.command"
-                                        class="block p-2.5 dark:bg-cool-gray-900 dark:text-gray-300 w-full dark:border-gray-700 border-gray-200 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        class="block p-2.5 dark:bg-surface-900 dark:text-foreground w-full dark:border-foreground border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                                         :placeholder="`Enter Command #${index + 1}`"
                                         type="text"
                                       >
@@ -555,7 +555,7 @@
                                             `player_password_reset_commands.${index}.command`
                                           ]
                                         "
-                                        class="text-red-500 text-sm"
+                                        class="text-error-500 text-sm"
                                       >
                                         {{
                                           form.errors[
@@ -567,7 +567,7 @@
                                     <div class="flex-1">
                                       <Multiselect
                                         v-model="command.servers"
-                                        class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-blue-500 focus:border-light-blue-500 sm:text-sm"
+                                        class="block w-full border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                                         :options="serversWithWebquery"
                                         :custom-label="serversWithWebqueryCustomLabel"
                                         track-by="id"
@@ -577,7 +577,7 @@
                                         :searchable="false"
                                         :placeholder="__('Leave empty to run on all servers')+'...'"
                                       />
-                                      <p class="text-sm text-red-500 mt-0.5">
+                                      <p class="text-sm text-error-500 mt-0.5">
                                         {{
                                           form.errors[
                                             `player_password_reset_commands.${index}.servers`
@@ -604,14 +604,14 @@
 
                               <div
                                 v-if="form.errors.player_password_reset_commands && form.player_password_reset_commands.length <= 0"
-                                class="text-red-500 text-sm italic text-center pt-2"
+                                class="text-error-500 text-sm italic text-center pt-2"
                               >
                                 {{ form.errors.player_password_reset_commands }}
                               </div>
 
                               <div
                                 v-if="form.player_password_reset_commands.length <= 0"
-                                class="text-gray-500 text-sm italic text-center pt-2"
+                                class="text-foreground text-sm italic text-center pt-2"
                               >
                                 {{ __("No commands added. Please add at least one command, as required by your authentication plugin, for password reset functionality.") }}
                                 <br>
@@ -620,7 +620,7 @@
 
                               <p
                                 v-if="form.errors.account_link_after_success_commands"
-                                class="text-sm text-red-400 text-center"
+                                class="text-sm text-error-400 text-center"
                               >
                                 {{ form.errors.account_link_after_success_commands }}
                               </p>
@@ -628,7 +628,7 @@
                               <div class="flex justify-center pt-5">
                                 <button
                                   type="button"
-                                  class="p-2 w-1/3 text-sm text-light-blue-500 rounded border border-light-blue-500 focus:outline-none hover:text-light-blue-300 hover:border-light-blue-300 transition ease-in-out duration-150"
+                                  class="p-2 w-1/3 text-sm text-primary rounded border border-primary focus:outline-none hover:text-primary hover:border-primary transition ease-in-out duration-150"
                                   @click="addPlayerPasswordResetCommand"
                                 >
                                   {{
@@ -640,10 +640,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
+                      <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                         <loading-button
                           :loading="form.processing"
-                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
+                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                           type="submit"
                         >
                           {{ __("Save Plugin Settings") }}

@@ -1,6 +1,8 @@
 <script setup>
+import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
     href: String,
     as: String,
     btnClass: String,
@@ -8,36 +10,36 @@ defineProps({
         type: Boolean,
         default: false,
     },
+    active: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+const classes = computed(() => {
+    return props.active
+        ? 'block px-4 py-2 text-sm leading-5 text-accent-foreground bg-accent/50 hover:bg-accent hover:text-accent-foreground focus:outline-none focus:bg-accent focus:text-accent-foreground transition duration-150 ease-in-out'
+        : 'block px-4 py-2 text-sm leading-5 text-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus:bg-accent focus:text-accent-foreground transition duration-150 ease-in-out';
+});
+
+const buttonClasses = computed(() => {
+    return props.active
+        ? 'block w-full px-4 py-2 text-sm leading-5 text-accent-foreground text-left bg-accent/50 hover:bg-accent hover:text-accent-foreground focus:outline-none focus:bg-accent focus:text-accent-foreground transition duration-150 ease-in-out'
+        : 'block w-full px-4 py-2 text-sm leading-5 text-foreground text-left hover:bg-accent hover:text-accent-foreground focus:outline-none focus:bg-accent focus:text-accent-foreground transition duration-150 ease-in-out';
 });
 </script>
 
 <template>
-  <div>
-    <button
-      v-if="as == 'button'"
-      type="submit"
-      class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-400 text-left hover:bg-cool-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-cool-gray-100 dark:focus:bg-cool-gray-900 transition duration-150 ease-in-out"
-      :class="btnClass"
-    >
-      <slot />
-    </button>
+    <div>
+        <button v-if="as == 'button'" type="submit" :class="[buttonClasses, btnClass]">
+            <slot />
+        </button>
 
-    <InertiaLink
-      v-else-if="as != 'button' && !openInNewTab"
-      :href="href"
-      class="block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-400 hover:bg-cool-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-cool-gray-100 dark:focus:bg-cool-gray-900 transition duration-150 ease-in-out"
-      :class="btnClass"
-    >
-      <slot />
-    </InertiaLink>
-    <a
-      v-else
-      target="_blank"
-      :href="href"
-      class="block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-400 hover:bg-cool-gray-100 dark:hover:bg-cool-gray-900 focus:outline-none focus:bg-cool-gray-100 dark:focus:bg-cool-gray-900 transition duration-150 ease-in-out"
-      :class="btnClass"
-    >
-      <slot />
-    </a>
-  </div>
+        <Link v-else-if="as != 'button' && !openInNewTab" :href="href" :class="[classes, btnClass]" prefetch>
+        <slot />
+        </Link>
+        <a v-else target="_blank" :href="href" :class="[classes, btnClass]">
+            <slot />
+        </a>
+    </div>
 </template>

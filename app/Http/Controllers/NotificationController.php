@@ -14,9 +14,9 @@ class NotificationController extends Controller
         ]);
         $isUnreadOnly = $request->get('unread_only');
         if ($isUnreadOnly) {
-            $notifications = $request->user()->unreadNotifications()->latest()->cursorPaginate();
+            $notifications = $request->user()->unreadNotifications()->latest()->paginate();
         } else {
-            $notifications = $request->user()->notifications()->latest()->cursorPaginate();
+            $notifications = $request->user()->notifications()->latest()->paginate();
         }
 
         if ($request->wantsJson()) {

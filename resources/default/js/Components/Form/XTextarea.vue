@@ -1,129 +1,151 @@
 <template>
-  <div class="floating-input relative w-full">
-    <textarea
-      :id="id"
-      ref="input"
-      :name="name"
-      class="border hide-scrollbar resize-none focus:outline-none rounded-md w-full p-3 min-h-16 h-20 disabled:opacity-50 focus:border-light-blue-300 focus:ring text-sm focus:ring-light-blue-200 focus:ring-opacity-50 dark:bg-cool-gray-900 dark:border-cool-gray-900 dark:text-gray-300"
-      :class="borderColor"
-      :placeholder="label"
-      :autocomplete="autocomplete"
-      :value="modelValue"
-      :autofocus="autofocus"
-      :required="required"
-      :disabled="disabled"
-      @input="handleInputEvent"
-      @focus="hasFocus = true"
-      @blur="hasFocus = false"
-    />
-    <label
-      :for="id"
-      :class="textColor"
-      class="absolute top-0 left-0 px-3 pt-5 text-sm pointer-events-none transform origin-left transition-all duration-100 ease-in-out dark:text-gray-400"
-    >{{
-      label
-    }}
-    </label>
+    <div :class="cn('space-y-2', divClass)">
+        <!-- Label -->
+        <Label v-if="label" :for="id" :class="cn('text-sm font-medium', error ? 'text-destructive' : 'text-foreground')">
+            {{ label }}
+            <span v-if="required" class="text-destructive ml-1">*</span>
+        </Label>
 
-    <div
-      class="info -mt-0.5 flex"
-      :class="help ? 'justify-between ' + helpErrorFlex : 'justify-end ' + helpErrorFlex "
-    >
-      <p
-        v-show="help"
-        class="text-xs text-gray-500"
-      >
-        {{ help }}
-      </p>
-      <p
-        v-show="error"
-        class="text-xs text-red-500"
-      >
-        {{ error }}
-      </p>
+        <!-- Textarea -->
+        <Textarea
+            :id="id"
+            ref="textareaRef"
+            v-model="modelValue"
+            :name="name"
+            :class="textareaClasses"
+            :autocomplete="autocomplete"
+            :autofocus="autofocus"
+            :required="required"
+            :disabled="disabled"
+            :placeholder="placeholder"
+            @input="handleTextareaInput"
+        />
+
+        <!-- Help and Error Messages -->
+        <div v-if="help || error" class="flex gap-1" :class="cn(help && error ? 'justify-between' : error ? 'justify-end' : 'justify-start', helpErrorFlex)">
+            <p v-if="help" class="text-xs text-muted-foreground">
+                {{ help }}
+            </p>
+            <p v-if="error" class="text-xs text-destructive">
+                {{ error }}
+            </p>
+        </div>
     </div>
-  </div>
 </template>
 
-<script>
-export default {
-    props: {
-        modelValue: [Number, String, Array, Object, Boolean, Date],
-        name: String,
-        help: String,
-        label: String,
+<script setup>
+import { computed, ref, nextTick, watch, onMounted } from "vue";
+import { useVModel } from "@vueuse/core";
+import { Textarea } from "@/Components/ui/textarea";
+import { Label } from "@/Components/ui/label";
+import { cn } from "@/lib/utils";
+
+const props = defineProps({
+    modelValue: {
+        type: [Number, String, Array, Object, Boolean, Date],
+        default: "",
+    },
+    name: String,
+    help: String,
+    label: String,
+    id: String,
+    error: String,
+    autocomplete: {
         type: String,
-        id: String,
-        error: String,
-        autocomplete: {
-            type: String,
-            default: 'off'
-        },
-        autofocus: {
-            type: [String, Boolean],
-            default: false
-        },
-        required: {
-            type: [String, Boolean],
-            default: false
-        },
-        disabled: {
-            type: [String, Boolean],
-            default: false
-        },
-        helpErrorFlex: {
-            type: String,
-            default: 'flex-col'
-        },
-        autoResize: {
-            type: Boolean,
-            default: true
+        default: "off",
+    },
+    autofocus: {
+        type: [String, Boolean],
+        default: false,
+    },
+    required: {
+        type: [String, Boolean],
+        default: false,
+    },
+    disabled: {
+        type: [String, Boolean],
+        default: false,
+    },
+    helpErrorFlex: {
+        type: String,
+        default: "flex-col",
+    },
+    autoResize: {
+        type: Boolean,
+        default: true,
+    },
+    textareaClass: {
+        type: String,
+        default: "",
+    },
+    divClass: {
+        type: String,
+        default: "",
+    },
+    placeholder: String,
+    rows: {
+        type: Number,
+        default: 3,
+    },
+});
+
+const emits = defineEmits(["update:modelValue"]);
+
+const textareaRef = ref(null);
+
+const modelValue = useVModel(props, "modelValue", emits, {
+    passive: true,
+    defaultValue: props.modelValue,
+});
+
+const textareaClasses = computed(() => {
+    return cn(
+        // Base textarea styles
+        "transition-colors resize-none",
+        `min-h-[${props.rows * 1.5 + 2}rem]`,
+        // Hide scrollbar when autoresize is enabled
+        props.autoResize && "hide-scrollbar",
+        // Error state styling
+        props.error && "border-destructive focus-visible:ring-destructive",
+        // Custom classes
+        props.textareaClass
+    );
+});
+
+const resizeTextarea = async () => {
+    if (props.autoResize && textareaRef.value) {
+        await nextTick();
+        const textarea = textareaRef.value.$el || textareaRef.value;
+        if (textarea) {
+            textarea.style.height = "auto";
+            textarea.style.height = `${textarea.scrollHeight}px`;
         }
-    },
-
-    data() {
-        return {
-            hasFocus: false
-        };
-    },
-
-    computed: {
-        borderColor() {
-            if(this.error) {
-                return 'border-red-400';
-            } else {
-                return 'border-gray-300';
-            }
-        },
-        textColor() {
-            if (this.hasFocus) {
-                return 'text-light-blue-400';
-            }
-
-            if(this.error) {
-                return 'text-red-400';
-            } else {
-                if (this.disabled) {
-                    return 'text-gray-400 dark:text-gray-600';
-                }
-
-                return 'text-gray-500';
-            }
-        }
-    },
-
-    methods: {
-        focus() {
-            this.$refs.input.focus();
-        },
-        handleInputEvent($event) {
-            this.$emit('update:modelValue', $event.target.value);
-            if (this.autoResize) {
-                const textarea = this.$refs['input'];
-                textarea.style.height = 'initial';
-                textarea.style.height = `${textarea.scrollHeight}px`;
-            }
-        },
     }
 };
+
+const handleTextareaInput = async (event) => {
+    await resizeTextarea();
+};
+
+// Watch for changes in modelValue to trigger resize
+watch(modelValue, async () => {
+    await resizeTextarea();
+});
+
+// Resize on mount if there's initial content
+onMounted(async () => {
+    await resizeTextarea();
+});
+
+const focus = () => {
+    if (textareaRef.value) {
+        const textarea = textareaRef.value.$el || textareaRef.value;
+        textarea.focus();
+    }
+};
+
+defineExpose({
+    focus,
+    resizeTextarea,
+});
 </script>

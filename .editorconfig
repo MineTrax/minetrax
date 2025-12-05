@@ -19,3 +19,6 @@ indent_size = 4
 
 [*.blade.php]
 php_diagnostic = false
+
+[*.vue]
+max_line_length = 220

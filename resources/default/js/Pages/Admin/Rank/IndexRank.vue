@@ -5,6 +5,9 @@ import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link } from '@inertiajs/vue3';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import AlertCard from '@/Components/AlertCard.vue';
 import { useStorage } from '@vueuse/core';
@@ -18,6 +21,17 @@ defineProps({
     ranks: Object,
     filters: Object,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Player Ranks'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -72,24 +86,24 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Manage Player Ranks')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <AlertCard
         v-if="showPlayerRankSyncAlert"
         :close-button="true"
-        text-color="text-light-blue-800 dark:text-light-blue-500"
-        border-color="border-light-blue-500"
+        text-color="text-primary dark:text-primary"
+        border-color="border-primary"
         @close="showPlayerRankSyncAlert = false"
       >
         {{ __("Do you know! MineTrax can also sync rank from server instead of calculating using algorithm.") }}
         <template #body>
-          <p class="text-gray-600 dark:text-gray-400">
+          <p class="text-foreground dark:text-foreground">
             {{
               __(
                 "If you want to sync player rank from your minecraft server, follow the steps below:"
               )
             }}
           </p>
-          <ul class="text-gray-600 list-disc list-inside dark:text-gray-400">
+          <ul class="text-foreground list-disc list-inside dark:text-foreground">
             <li>
               {{
 
@@ -110,7 +124,7 @@ const headerRow = [
             </li>
           </ul>
 
-          <p class="italic text-gray-400 dark:text-gray-500">
+          <p class="italic text-foreground dark:text-foreground">
             {{
               __(
                 "Note: This is optional feature. You can safely close this alert if you don't want to use it. You can always do it later."
@@ -121,40 +135,42 @@ const headerRow = [
       </AlertCard>
 
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
-          {{ __("Manage Player Ranks") }}
-        </h1>
-        <div class="flex">
-          <InertiaLink
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+        <div class="flex gap-2">
+          <Button
             v-if="can('update ranks')"
-            v-confirm="{message: 'Are you sure you want to Reset all Ranks? This will remove current rank of all players.'}"
-            method="post"
-            as="button"
-            :href="route('admin.rank.reset')"
-            class="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-red-600 border border-transparent rounded-md hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red"
+            variant="destructive"
+            as-child
           >
-            {{ __("Reset to Default Ranks") }}
-          </InertiaLink>
-          <InertiaLink
+            <Link
+              v-confirm="{message: 'Are you sure you want to Reset all Ranks? This will remove current rank of all players.'}"
+              method="post"
+              as="button"
+              :href="route('admin.rank.reset')"
+            >
+              {{ __("Reset to Default Ranks") }}
+            </Link>
+          </Button>
+          <Button
             v-if="can('create ranks')"
-            :href="route('admin.rank.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create New") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Rank") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.rank.create')">
+              {{ __("Create Rank") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="ranks"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -170,10 +186,10 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div>
-              <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
+              <div class="text-sm font-medium text-foreground dark:text-foreground">
                 {{ item.name }}
               </div>
-              <div class="text-sm text-gray-500 dark:text-gray-400">
+              <div class="text-sm text-foreground dark:text-foreground">
                 {{ item.shortname }}
               </div>
             </div>
@@ -203,17 +219,17 @@ const headerRow = [
           <td
             class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
+            <Link
               v-if="can('update ranks')"
               v-tippy
               as="a"
               :href="route('admin.rank.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
               :title="__('Edit Rank')"
             >
               <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
               v-if="can('delete ranks')"
               v-confirm="{
                 message:
@@ -223,11 +239,11 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.rank.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+              class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
               :title="__('Delete Rank')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            </Link>
           </td>
         </template>
       </DataTable>

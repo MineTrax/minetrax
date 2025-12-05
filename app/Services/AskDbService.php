@@ -44,7 +44,7 @@ class AskDbService
 
         if (count($messagesHistory) > 0) {
             // Pick last 20 messages from history to avoid using too many tokens when chat is long.
-            $messagesHistory = array_slice($messagesHistory, -20);
+            $messagesHistory = array_slice($messagesHistory, -100);
             $messages = [
                 ...$messagesHistory,
                 new UserMessage($prompt),
@@ -66,11 +66,11 @@ class AskDbService
             $tools,
             null,
             null,
-            7,
+            50,
         );
 
-        $oneDayInSeconds = 60 * 60 * 24;
-        Cache::put("askdb::user_chat_session::{$user->id}", $response->steps->last()->messages, $oneDayInSeconds);
+        $oneWeekInSeconds = 60 * 60 * 24 * 7;
+        Cache::put("askdb::user_chat_session::{$user->id}", $response->steps->last()->messages, $oneWeekInSeconds);
 
         return $response;
     }

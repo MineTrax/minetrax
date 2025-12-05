@@ -1,11 +1,11 @@
 <template>
-  <div v-if="enabled && votingsites && votingsites.length > 0">
-    <div class="p-3 bg-white dark:bg-cool-gray-800 rounded shadow space-y-2">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+  <Card v-if="enabled && votingsites && votingsites.length > 0">
+    <CardContent class="p-3 space-y-2">
+      <h3 class="font-extrabold text-card-foreground">
         {{ __("Vote for Server") }}
       </h3>
 
-      <p class="rounded text-sm text-gray-600 dark:text-gray-400 text-center p-1">
+      <p class="rounded text-sm text-card-foreground text-center p-1">
         {{ __("Vote on these sites and win rewards!") }}
       </p>
 
@@ -13,34 +13,41 @@
         <div
           v-for="(votingsite, index) in votingsites"
           :key="index"
-          class="rounded flex justify-between items-center p-2 bg-gray-100 dark:bg-cool-gray-900"
+          class="flex justify-between items-center"
         >
           <div
             v-tippy
             :content="votingsite.url"
-            class="text-gray-500 dark:text-gray-300 text-sm font-bold focus:outline-none"
+            class="text-card-foreground text-sm font-bold focus:outline-none"
           >
             {{ votingsite.name }}
           </div>
           <div>
-            <a
+            <Button
+              variant="outline"
+              size="sm"
+              as="a"
               target="_blank"
-              class="rounded tracking-wider text-sm px-2 py-1 text-gray-500 dark:text-gray-300 bg-white dark:bg-cool-gray-800 shadow hover:shadow-md"
               :href="votingsite.url"
-            >{{ __("Vote") }}</a>
+            >
+              {{ __("Vote") }}
+            </Button>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
-<script>
+<script setup>
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
+import { Button } from '@/Components/ui/button'
 
-export default {
-    props: {
-        votingsites: Array,
-        enabled: Boolean
-    },
-};
+defineProps({
+  votingsites: Array,
+  enabled: Boolean,
+});
 </script>

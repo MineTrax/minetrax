@@ -3,7 +3,7 @@
     <app-head :title="__('Server #:id', {id: server.id})" />
 
     <div class="max-w-6xl px-10 py-12 mx-auto space-y-4">
-      <h2 class="text-2xl text-gray-600 dark:text-gray-200">
+      <h2 class="text-2xl text-foreground dark:text-foreground">
         <span class="font-bold">#{{ server.id }}</span>
         -
         <span class="font-bold">{{ server.name }}</span>
@@ -16,7 +16,7 @@
           :title="__('Online Players')"
           :value="onlinePlayers"
           :desc="__('Maximum limit: :max', {max: maxPlayersAllowed})"
-          color="text-green-300"
+          color="text-success-300"
           icon="users"
           class="flex-1"
         />
@@ -24,7 +24,7 @@
           :title="__('Total PvP Kills')"
           :value="millify(serverAggrData.pvp_kills, {precision: 2})"
           :desc="__('Mob Kills: :mob_kills', {mob_kills: millify(serverAggrData.mob_kills, {precision: 2}) })"
-          color="text-yellow-300"
+          color="text-warning-300"
           icon="swords-cross"
           class="flex-1"
         />
@@ -32,7 +32,7 @@
           :title="__('Total Deaths')"
           :value="millify(serverAggrData.player_deaths, {precision: 2})"
           :desc="__('Total Damage: :player_damage_taken', { player_damage_taken: millify(serverAggrData.player_damage_taken, {precision: 2}) })"
-          color="text-red-500"
+          color="text-error-500"
           icon="skull-bones-outline"
           class="flex-1"
         />
@@ -40,7 +40,7 @@
           :title="__('Total Players')"
           :value="serverAggrData.total_players"
           :desc="__(':active_players active players', {active_players: serverAggrData.active_players})"
-          color="text-light-blue-300"
+          color="text-primary"
           icon="users"
           class="flex-1"
         />
@@ -48,14 +48,14 @@
 
       <div
         id="server-general-data"
-        class="w-full p-2 space-y-4 text-sm text-gray-700 bg-white rounded shadow dark:text-gray-300 dark:bg-cool-gray-800 md:p-5"
+        class="w-full p-2 space-y-4 text-sm text-foreground bg-white rounded shadow dark:text-foreground dark:bg-surface-800 md:p-5"
       >
-        <div class="flex justify-between pb-4 space-x-8 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex justify-between pb-4 space-x-8 border-b border-foreground dark:border-foreground">
           <div class="flex-1 space-y-4">
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-light-blue-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -75,7 +75,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-green-500"
+                  class="w-5 h-5 text-success-500"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -123,7 +123,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-green-500"
+                  class="w-5 h-5 text-success-500"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +165,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-light-blue-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -183,7 +183,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-green-500"
+                  class="w-5 h-5 text-success-500"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -208,7 +208,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-indigo-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -231,12 +231,12 @@
           </div>
         </div>
 
-        <div class="flex justify-between space-x-8 dark:border-gray-700">
+        <div class="flex justify-between space-x-8 dark:border-foreground">
           <div class="flex-1 space-y-4">
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-light-blue-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -256,7 +256,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-green-500"
+                  class="w-5 h-5 text-success-500"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -299,7 +299,7 @@
             <div class="flex justify-between">
               <div class="flex">
                 <svg
-                  class="w-5 h-5 text-light-blue-500"
+                  class="w-5 h-5 text-primary"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 16 16"
@@ -327,10 +327,10 @@
 
       <div
         id="terminal-container"
-        class="p-3 bg-white rounded shadow dark:bg-cool-gray-800"
+        class="p-3 bg-white rounded shadow dark:bg-surface-800"
       >
         <div class="flex justify-between">
-          <h3 class="mb-1 font-extrabold text-gray-800 dark:text-gray-200">
+          <h3 class="mb-1 font-extrabold text-foreground dark:text-foreground">
             {{ __("Server Logs") }}
           </h3>
         </div>
@@ -344,13 +344,13 @@
             v-model="commandText"
             :disabled="sendingCommand"
             aria-label="Commander"
-            class="block w-full mt-1 bg-gray-100 border-none rounded focus:ring-gray-300 dark:focus:ring-gray-700 sm:text-sm disabled:opacity-50 dark:bg-cool-gray-900 dark:text-gray-200 focus:bg-white dark:focus:bg-cool-gray-900"
+            class="block w-full mt-1 bg-surface-100 border-none rounded focus:ring-foreground dark:focus:ring-foreground sm:text-sm disabled:opacity-50 dark:bg-surface-900 dark:text-foreground focus:bg-white dark:focus:bg-surface-900"
             type="text"
             :placeholder="__('Type a command and press Enter to run...')"
           >
           <span
             v-if="commandError"
-            class="text-xs text-red-400"
+            class="text-xs text-error-400"
           >{{ commandError }}</span>
         </form>
       </div>

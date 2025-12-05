@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import Icon from '@/Components/Icon.vue';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import {useHelpers} from '@/Composables/useHelpers';
+import { Card, CardContent } from '@/Components/ui/card';
 const { secondsToHMS } = useHelpers();
 
 const props = defineProps({
@@ -40,14 +41,15 @@ onMounted(async () => {
 
 <template>
   <div class="flex">
-    <div class="bg-white dark:bg-cool-gray-800 rounded w-full h-full p-3 shadow">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex mt-2 items-center">
-        <Icon
-          name="calculator"
-          class="w-6 mr-1"
-        />
-        {{ __("Numbers") }}
-      </h3>
+    <Card class="w-full h-full">
+      <CardContent class="p-4">
+        <h3 class="font-extrabold text-foreground flex mt-2 items-center">
+          <Icon
+            name="calculator"
+            class="w-6 mr-2"
+          />
+          {{ __("Numbers") }}
+        </h3>
 
       <div
         v-if="isLoading"
@@ -60,8 +62,8 @@ onMounted(async () => {
         v-else
         class="m-0 p-0"
       >
-        <table class="table-auto min-w-full text-sm dark:text-gray-300 text-gray-700">
-          <thead class="border-b dark:border-gray-700">
+        <table class="table-auto min-w-full text-sm dark:text-foreground text-foreground">
+          <thead class="border-b border-border">
             <tr>
               <th
                 scope="col"
@@ -98,7 +100,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="users"
-                  class="w-5 text-green-500 mr-1"
+                  class="w-5 text-success-500 mr-1"
                 />
                 {{ __("Peak Online Players") }}
               </td>
@@ -120,7 +122,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="finger-print"
-                  class="w-5 text-indigo-500 mr-1"
+                  class="w-5 text-primary mr-1"
                 />
                 {{ __("Avg Player Session Length") }}
               </td>
@@ -142,7 +144,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="moon-outline"
-                  class="w-5 text-gray-500 mr-1"
+                  class="w-5 text-foreground mr-1"
                 />
                 {{ __("Avg Player AFK Time") }}
               </td>
@@ -186,7 +188,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="cpu"
-                  class="w-5 text-blue-500 mr-1"
+                  class="w-5 text-primary mr-1"
                 />
                 {{ __("Avg CPU Usage") }}
               </td>
@@ -252,7 +254,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="server"
-                  class="w-5 text-light-blue-500 mr-1"
+                  class="w-5 text-primary mr-1"
                 />
                 {{ __("Min Free Disk") }}
               </td>
@@ -274,7 +276,7 @@ onMounted(async () => {
               <td class="p-2 flex">
                 <icon
                   name="toggle-off"
-                  class="w-5 text-red-500 mr-1"
+                  class="w-5 text-error-500 mr-1"
                 />
                 {{ __("Total Restarts") }}
               </td>
@@ -294,6 +296,7 @@ onMounted(async () => {
           </tbody>
         </table>
       </div>
-    </div>
+      </CardContent>
+    </Card>
   </div>
 </template>

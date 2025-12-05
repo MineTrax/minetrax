@@ -1,4 +1,5 @@
 <script setup>
+import { Card, CardContent } from '@/Components/ui/card';
 
 defineProps({
     title: {
@@ -12,22 +13,24 @@ defineProps({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-cool-gray-800 rounded w-full h-[405px] space-y-2 p-3 shadow overflow-y-auto">
-    <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex items-center">
-      {{ title }}
-    </h3>
-    <div>
-      <ul class="space-y-2">
-        <li
-          v-for="(value, key) in data.filter(x => x != null)"
-          :key="key"
-          class="bg-gray-100 p-2 rounded dark:bg-gray-900 dark:text-gray-300"
-        >
-          <p class="whitespace-pre-line">
-            {{ value }}
-          </p>
-        </li>
-      </ul>
-    </div>
-  </div>
+  <Card class="w-full h-[405px] overflow-y-auto">
+    <CardContent class="p-4 space-y-2">
+      <h3 class="font-extrabold text-foreground flex items-center">
+        {{ title }}
+      </h3>
+      <div>
+        <ul class="space-y-2">
+          <li
+            v-for="(value, key) in data.filter(x => x != null)"
+            :key="key"
+            class="bg-muted p-2 rounded text-foreground"
+          >
+            <p class="whitespace-pre-line">
+              {{ value }}
+            </p>
+          </li>
+        </ul>
+      </div>
+    </CardContent>
+  </Card>
 </template>

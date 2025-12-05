@@ -1,13 +1,12 @@
 <template>
-  <div v-if="enabled && players && players.length > 0">
-    <div class="p-3 bg-white dark:bg-cool-gray-800 rounded shadow space-y-2">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+  <Card v-if="enabled && players && players.length > 0">
+    <CardContent class="p-3 space-y-2">
+      <h3 class="font-extrabold text-card-foreground">
         {{ title }}
       </h3>
-
       <div class="flex flex-col space-y-2">
         <table class="">
-          <thead class="bg-gray-100 dark:bg-cool-gray-900 dark:bg-opacity-50 text-gray-700 dark:text-gray-300">
+          <thead class="bg-background">
             <tr>
               <th
                 scope="col"
@@ -29,47 +28,35 @@
               </th>
               <th
                 scope="col"
-                class="p-1 text-left text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
+                class="p-1 text-center text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
               >
                 {{ __("Rating") }}
               </th>
               <th
                 scope="col"
-                class="p-1 text-left text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
+                class="p-1 text-right text-xs font-bold uppercase tracking-wider hidden sm:table-cell"
               >
                 {{ __("Last Seen") }}
               </th>
             </tr>
           </thead>
-
-          <tbody class="bg-white dark:bg-cool-gray-800">
+          <tbody class="divide-y divide-border/50">
             <tr
               v-for="(player, index) in players"
-              :key="index"
-              :class="{'bg-gray-50 dark:bg-cool-gray-600 dark:bg-opacity-10': index % 2 === 1}"
+              :key="player.uuid"
             >
-              <td class="p-1 text-sm text-light-blue-400 font-extrabold">
-                <span
-                  v-if="player.position"
-                  class="border-2 rounded text-sm px-1 border-light-blue-300 bg-light-blue-50 dark:bg-cool-gray-800"
-                >
-                  {{ player.position }}
-                </span>
+              <td class="p-1 font-semibold text-foreground dark:text-foreground text-sm">
+                {{ index + 1 }}
               </td>
               <td class="p-1">
-                <div class="flex items-center">
-                  <div
-                    v-tippy
-                    class="flex-shrink-0 h-6 w-6 focus:outline-none"
-                    :content="player.country.name"
-                  >
-                    <img
-                      class="h-6 w-6"
-                      :src="player.country.photo_path"
-                      :alt="player.country.name"
-                    >
-                  </div>
-                </div>
+                <img
+                  v-tippy
+                  :content="player.country?.name"
+                  v-if="player.country"
+                  class="h-6 w-6"
+                  :src="`/images/flags/flags-iso/shiny/48/${player.country?.iso_code?.toLowerCase() ?? '_unknown'}.png`"
+                  :alt="player.country?.name"
+                >
               </td>
               <td class="p-1">
                 <div class="flex items-center">
@@ -85,36 +72,36 @@
                       v-tippy
                       as="div"
                       :href="route('player.show', player.uuid)"
-                      class="text-sm text-gray-900 focus:outline-none cursor-pointer hover:underline"
+                      class="text-sm text-foreground focus:outline-none cursor-pointer hover:underline"
                       :content="player.uuid"
                     >
                       <span
                         v-if="player.username"
-                        class="text-gray-700 dark:text-gray-300 font-bold text-sm truncate"
+                        class="text-foreground dark:text-foreground font-bold text-sm truncate"
                       >{{ player.username }}</span>
                       <span
                         v-else
-                        class="text-red-500 dark:text-red-400 italic"
+                        class="text-destructive italic"
                       >{{ __("Unknown") }}</span>
                     </inertia-link>
                   </div>
                 </div>
               </td>
-              <td class="p-1 text-sm text-gray-700 hidden sm:table-cell">
+              <td class="p-1 text-sm text-foreground text-center hidden sm:table-cell">
                 <span v-if="player.rating != null">
                   <icon
                     v-tippy
-                    class="w-6 h-6 focus:outline-none"
+                    class="w-6 h-6 mx-auto focus:outline-none"
                     :name="`rating-${player.rating}`"
                     :content="player.rating"
                   />
                 </span>
                 <span
                   v-else
-                  class="text-gray-700 dark:text-gray-500 italic"
+                  class="text-foreground dark:text-foreground italic"
                 >{{ __("none") }}</span>
               </td>
-              <td class="p-1 text-xs text-gray-700 dark:text-gray-300 hidden sm:table-cell">
+              <td class="p-1 text-xs text-foreground dark:text-foreground text-right hidden sm:table-cell">
                 <span
                   v-tippy
                   class="focus:outline-none"
@@ -129,24 +116,29 @@
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
-<script>
-import Icon from '@/Components/Icon.vue';
-import { useHelpers } from '@/Composables/useHelpers';
+<script setup>
+import Icon from '@/Components/Icon.vue'
+import { useHelpers } from '@/Composables/useHelpers'
+import { Card, CardContent } from '@/Components/ui/card'
 
-export default {
-    components: {Icon},
-    props: {
-        title: String,
-        players: Array,
-        enabled: Boolean
-    },
-    setup() {
-        const {formatTimeAgoToNow,formatToDayDateString} = useHelpers();
-        return {formatTimeAgoToNow,formatToDayDateString};
-    },
-};
+const props = defineProps({
+  title: {
+    type: String,
+    default: '',
+  },
+  players: {
+    type: Array,
+    default: () => [],
+  },
+  enabled: {
+    type: Boolean,
+    default: true,
+  },
+})
+
+const { formatTimeAgoToNow, formatToDayDateString } = useHelpers()
 </script>

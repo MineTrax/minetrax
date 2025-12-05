@@ -9,12 +9,12 @@
         <div class="flex-grow">
           <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 text-center">
             <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-              <div class="shadow space-y-10 bg-white overflow-hidden border-b border-gray-200 rounded p-4 dark:bg-gray-800 dark:border-gray-900">
+              <div class="shadow space-y-10 bg-white overflow-hidden border-b border-foreground rounded p-4 dark:bg-surface-800 dark:border-foreground">
                 <icon
                   name="ban"
-                  class="h-40 w-40 text-red-600 inline-flex"
+                  class="h-40 w-40 text-error-600 inline-flex"
                 />
-                <h3 class="text-3xl font-extrabold text-red-900 dark:text-red-500">
+                <h3 class="text-3xl font-extrabold text-error-900 dark:text-error-500">
                   {{ __("Oops! You are Banned.") }}
                 </h3>
               </div>

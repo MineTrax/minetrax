@@ -1,17 +1,18 @@
-<template>
-  <div v-if="htmlData">
-    <div class="bg-white dark:bg-cool-gray-800 rounded px-4 py-3 shadow">
-      <div
-        class="prose dark:prose-invert max-w-none text-center"
-        v-html="htmlData"
-      />
-    </div>
-  </div>
-</template>
+<script setup lang="ts">
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
-<script>
-
-export default {
-    props: ['htmlData']
-};
+const props = defineProps<{
+    htmlData: string | null
+}>()
 </script>
+
+<template>
+    <Card v-if="htmlData">
+        <CardContent class="px-4 py-3">
+            <div class="prose dark:prose-invert max-w-none text-center" v-html="htmlData" />
+        </CardContent>
+    </Card>
+</template>

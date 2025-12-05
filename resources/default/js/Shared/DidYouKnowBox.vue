@@ -1,10 +1,10 @@
 <template>
-  <div
+  <Card
     v-if="enabled"
     ref="box"
   >
-    <div class="p-3 bg-white rounded shadow sm:px-5 dark:bg-cool-gray-800">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+    <CardContent class="p-3 sm:px-5">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Did You Know?") }}
       </h3>
 
@@ -15,10 +15,10 @@
       >
         <div class="w-full max-w-sm mx-auto">
           <div class="flex space-x-4 animate-pulse">
-            <div class="w-8 h-8 bg-gray-300 rounded dark:bg-cool-gray-700" />
+            <div class="w-8 h-8 bg-surface-300 rounded dark:bg-surface-700" />
             <div class="flex-1 py-1 space-y-1">
-              <div class="w-3/4 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
-              <div class="w-5/6 h-4 bg-gray-300 rounded dark:bg-cool-gray-700" />
+              <div class="w-3/4 h-4 bg-surface-300 rounded dark:bg-surface-700" />
+              <div class="w-5/6 h-4 bg-surface-300 rounded dark:bg-surface-700" />
             </div>
           </div>
         </div>
@@ -36,19 +36,24 @@
           alt="Image"
         >
         <div
-          class="text-sm text-gray-600 dark:text-gray-300"
+          class="text-sm text-foreground dark:text-foreground"
           :class="{ 'font-semibold text-center': imageUrl }"
         >
           {{ text }}
         </div>
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useElementVisibility } from '@vueuse/core';
 import axios from 'axios';
+import {
+  Card,
+  CardContent,
+} from '@/Components/ui/card'
 
 defineProps({
     enabled: {
@@ -61,21 +66,8 @@ const text = ref(null);
 const imageUrl = ref(null);
 const loading = ref(true);
 const box = ref(null);
+const isVisible = useElementVisibility(box);
 let interval = null;
-
-const isInViewport = () => {
-    const rect = box.value?.getBoundingClientRect();
-    if (!rect) return false;
-
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <=
-        (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <=
-        (window.innerWidth || document.documentElement.clientWidth)
-    );
-};
 
 onMounted(() => {
     axios
@@ -89,7 +81,7 @@ onMounted(() => {
         });
 
     interval = setInterval(() => {
-        if (!isInViewport()) {
+        if (!isVisible.value) {
             return;
         }
         loading.value = true;

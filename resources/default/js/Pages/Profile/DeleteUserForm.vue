@@ -1,122 +1,81 @@
 <template>
-  <jet-action-section>
-    <template #title>
-      {{ __("Delete Account") }}
-    </template>
+    <div>
+        <div class="max-w-xl text-sm text-muted-foreground">
+            {{ __("Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.") }}
+        </div>
 
-    <template #description>
-      {{ __("Permanently delete your account.") }}
-    </template>
+        <div class="flex items-center justify-end mt-5">
+            <Button variant="destructive" @click="confirmUserDeletion">
+                {{ __("Delete Account") }}
+            </Button>
+        </div>
 
-    <template #content>
-      <div class="max-w-xl text-sm text-gray-600 dark:text-gray-400">
-        {{ __("Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.") }}
-      </div>
+        <!-- Delete Account Confirmation Modal -->
+        <Dialog :open="confirmingUserDeletion" @update:open="(value) => !value && closeModal()">
+            <DialogContent class="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle class="text-foreground">
+                        {{ __("Delete Account") }}
+                    </DialogTitle>
+                </DialogHeader>
 
-      <div class="mt-5">
-        <jet-danger-button @click="confirmUserDeletion">
-          {{ __("Delete Account") }}
-        </jet-danger-button>
-      </div>
+                <div class="space-y-4">
+                    <p class="text-sm text-muted-foreground">
+                        {{
+                            __(
+                                "Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account."
+                            )
+                        }}
+                    </p>
 
-      <!-- Delete Account Confirmation Modal -->
-      <jet-dialog-modal
-        :show="confirmingUserDeletion"
-        @close="closeModal"
-      >
-        <template #title>
-          {{ __("Delete Account") }}
-        </template>
+                    <XInput ref="password" v-model="form.password" type="password" :label="__('Password')" :error="form.errors.password" :placeholder="__('Password')" @keyup.enter="deleteUser" />
+                </div>
 
-        <template #content>
-          {{ __("Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.") }}
+                <DialogFooter class="flex-col-reverse sm:flex-row sm:justify-end gap-2">
+                    <Button variant="outline" @click="closeModal">
+                        {{ __("Nevermind") }}
+                    </Button>
 
-          <div class="mt-4">
-            <jet-input
-              ref="password"
-              v-model="form.password"
-              type="password"
-              class="mt-1 block w-3/4"
-              placeholder="Password"
-              @keyup.enter.native="deleteUser"
-            />
-
-            <jet-input-error
-              :message="form.errors.password"
-              class="mt-2"
-            />
-          </div>
-        </template>
-
-        <template #footer>
-          <jet-secondary-button @click="closeModal">
-            {{ __("Nevermind") }}
-          </jet-secondary-button>
-
-          <jet-danger-button
-            class="ml-2"
-            :class="{ 'opacity-25': form.processing }"
-            :disabled="form.processing"
-            @click="deleteUser"
-          >
-            {{ __("Delete Account") }}
-          </jet-danger-button>
-        </template>
-      </jet-dialog-modal>
-    </template>
-  </jet-action-section>
+                    <LoadingButton variant="destructive" :loading="form.processing" @click="deleteUser">
+                        {{ __("Delete Account") }}
+                    </LoadingButton>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    </div>
 </template>
 
-<script>
-import JetActionSection from '@/Jetstream/ActionSection.vue';
-import JetDialogModal from '@/Jetstream/DialogModal.vue';
-import JetDangerButton from '@/Jetstream/DangerButton.vue';
-import JetInput from '@/Jetstream/Input.vue';
-import JetInputError from '@/Jetstream/InputError.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import { useForm } from '@inertiajs/vue3';
+<script setup>
+import { ref } from "vue";
+import { Button } from "@/Components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/Components/ui/dialog";
+import XInput from "@/Components/Form/XInput.vue";
+import LoadingButton from "@/Components/LoadingButton.vue";
+import { useForm } from "@inertiajs/vue3";
 
-export default {
-    components: {
-        JetActionSection,
-        JetDangerButton,
-        JetDialogModal,
-        JetInput,
-        JetInputError,
-        JetSecondaryButton,
-    },
+const confirmingUserDeletion = ref(false);
+const password = ref(null);
 
-    data() {
-        return {
-            confirmingUserDeletion: false,
+const form = useForm({
+    password: "",
+});
 
-            form: useForm({
-                password: '',
-            })
-        };
-    },
+const confirmUserDeletion = () => {
+    confirmingUserDeletion.value = true;
+    setTimeout(() => password.value.focus(), 250);
+};
 
-    methods: {
-        confirmUserDeletion() {
-            this.confirmingUserDeletion = true;
+const deleteUser = () => {
+    form.delete(route("current-user.destroy"), {
+        preserveScroll: true,
+        onSuccess: () => closeModal(),
+        onError: () => password.value.focus(),
+        onFinish: () => form.reset(),
+    });
+};
 
-            setTimeout(() => this.$refs.password.focus(), 250);
-        },
-
-        deleteUser() {
-            this.form.delete(route('current-user.destroy'), {
-                preserveScroll: true,
-                onSuccess: () => this.closeModal(),
-                onError: () => this.$refs.password.focus(),
-                onFinish: () => this.form.reset(),
-            });
-        },
-
-        closeModal() {
-            this.confirmingUserDeletion = false;
-
-            this.form.reset();
-        },
-    },
+const closeModal = () => {
+    confirmingUserDeletion.value = false;
+    form.reset();
 };
 </script>

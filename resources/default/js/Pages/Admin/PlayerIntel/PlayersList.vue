@@ -5,8 +5,10 @@ import { useTranslations } from '@/Composables/useTranslations';
 import { useAuthorizable } from '@/Composables/useAuthorizable';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import { Link } from '@inertiajs/vue3';
 import millify from 'millify';
 import { LockClosedIcon, PaintBrushIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
@@ -35,6 +37,22 @@ const props = defineProps({
         type: Boolean,
     },
 });
+
+let selectedServers = props.filters?.servers?.length ? props.filters?.servers[0] : null;
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Players'),
+        current: true,
+    },
+    {
+        text: props.serverList[selectedServers] ?? __('All Servers'),
+        current: true,
+    }
+];
 
 const headerRow = [
     {
@@ -93,6 +111,7 @@ const headerRow = [
         filterable: {
             type: 'multiselect',
             options: [
+                '1.21',
                 '1.20',
                 '1.19',
                 '1.18',
@@ -132,23 +151,25 @@ const headerRow = [
   <AdminLayout>
     <AppHead :title="__('Players - PlayerIntel')" />
 
-    <div class="p-4 mx-auto space-y-4 px-10">
-      <ServerIntelServerSelector
-        :title="__('Players')"
-        :server-list="serverList"
-        :filters="filters"
-      />
+    <div class="px-10 py-8 mx-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+        <ServerIntelServerSelector
+          :server-list="serverList"
+          :filters="filters"
+        />
+      </div>
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-card rounded-lg shadow"
           :header="headerRow"
           :data="data"
           :filters="filters"
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               <div class="flex items-center">
                 <div
@@ -166,7 +187,7 @@ const headerRow = [
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10">
@@ -177,22 +198,22 @@ const headerRow = [
                   >
                 </div>
                 <div class="ml-4">
-                  <inertia-link
+                  <Link
                     v-tippy
                     as="a"
                     :href="route('player.show', item.player.uuid)"
-                    class="text-sm font-medium text-gray-900 dark:text-gray-200 focus:outline-none cursor-pointer hover:underline"
+                    class="text-sm font-medium text-foreground dark:text-foreground focus:outline-none cursor-pointer hover:underline"
                     :content="item.player.uuid"
                   >
                     <span
                       v-if="item.player_username"
-                      class="font-extrabold text-gray-700 dark:text-gray-300"
+                      class="font-extrabold text-foreground dark:text-foreground"
                     >{{ item.player_username }}</span>
                     <span
                       v-else
-                      class="text-red-500 italic"
+                      class="text-error-500 italic"
                     >{{ __("Unknown") }}</span>
-                  </inertia-link>
+                  </Link>
                 </div>
               </div>
             </td>
@@ -255,33 +276,33 @@ const headerRow = [
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-              <InertiaLink
+              <Link
                 v-if="canChangeAnyPlayerSkin"
                 v-tippy
                 as="a"
                 :href="route('change-player-skin.show', {
                   player_uuid: item.player.uuid,
                 })"
-                class="inline-flex items-center justify-center text-sky-400 hover:text-sky-700 focus:outline-none"
+                class="inline-flex items-center justify-center text-primary hover:text-primary focus:outline-none"
                 :title="__('Change Skin of this player.')"
               >
                 <PaintBrushIcon class="w-5 h-5" />
-              </InertiaLink>
+              </Link>
 
-              <InertiaLink
+              <Link
                 v-if="canResetAnyPlayerPassword"
                 v-tippy
                 as="a"
                 :href="route('reset-player-password.show', {
                   player_uuid: item.player.uuid,
                 })"
-                class="inline-flex items-center justify-center text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 focus:outline-none"
+                class="inline-flex items-center justify-center text-foreground hover:text-foreground dark:text-foreground dark:hover:text-foreground focus:outline-none"
                 :title="__('Change Password of this player.')"
               >
                 <LockClosedIcon class="w-5 h-5" />
-              </InertiaLink>
+              </Link>
 
-              <InertiaLink
+              <Link
                 v-if="can('delete players')"
                 v-confirm="{
                   message:
@@ -291,11 +312,11 @@ const headerRow = [
                 as="button"
                 method="DELETE"
                 :href="route('admin.intel.player.delete', item.player.uuid)"
-                class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
+                class="inline-flex items-center justify-center text-error-600 hover:text-error-900 focus:outline-none"
                 :title="__('Delete Player')"
               >
                 <TrashIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
+              </Link>
             </td>
           </template>
         </DataTable>

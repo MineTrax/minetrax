@@ -1,54 +1,63 @@
 <template>
-  <app-layout>
-    <app-head :title="__(':title - News', {title: news.title})" />
+    <AppLayout>
+        <AppHead :title="__(':title - News', { title: news.title })" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-screen-2xl mx-auto">
-      <div class="flex justify-end mb-8">
-        <div class="flex">
-          <inertia-link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </inertia-link>
-        </div>
-      </div>
-      <div class="flex flex-col md:flex-row md:space-x-4">
-        <div class="-my-2 md:w-9/12 overflow-x-auto md:-mx-6 lg:-mx-8">
-          <ShowNewsCard :news="news" />
-        </div>
+        <!-- Breadcrumbs -->
+        <AppBreadcrumb :items="breadcrumbItems" />
 
-        <div class="md:w-3/12 flex-1 space-y-4 mt-4 md:mt-0">
-          <server-status-box />
-          <news-box :newslist="newslist" />
+        <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
+            <div class="flex flex-col md:flex-row md:space-x-4">
+                <div class="md:w-9/12 flex-1">
+                    <ShowNewsCard :news="news" />
+                </div>
+
+                <div class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 h-screen sticky"
+                    :class="{ 'top-16': isStickyNav, 'top-5': !isStickyNav }">
+                    <ServerStatusBox />
+                    <NewsBox :newslist="newslist" />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </app-layout>
+    </AppLayout>
 </template>
 
-<script>
-import { useHelpers } from '@/Composables/useHelpers';
+<script setup>
+import { computed } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import NewsBox from '@/Shared/NewsBox.vue';
 import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
 import ShowNewsCard from '@/Shared/ShowNewsCard.vue';
+import { usePage } from '@inertiajs/vue3';
+import { truncate } from 'lodash';
+import { useTranslations } from '@/Composables/useTranslations';
 
-export default {
+// Define props
+const props = defineProps({
+    news: Object,
+    newslist: Array
+});
 
-    components: {
-        ServerStatusBox,
-        NewsBox,
-        AppLayout,
-        ShowNewsCard
+// Composition API setup
+const page = usePage();
+const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;
+const { __ } = useTranslations();
+
+// Breadcrumb data stored in JSON format
+const breadcrumbItems = computed(() => [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
     },
-    props: {
-        news: Object,
-        newslist: Array
+    {
+        text: __('News'),
+        url: route('news.index'),
+        current: false
     },
-    setup() {
-        const {formatTimeAgoToNow, formatToDayDateString} = useHelpers();
-        return {formatTimeAgoToNow, formatToDayDateString};
-    },
-};
+    {
+        text: truncate(props.news.title, { length: 20 }),
+        current: true
+    }
+]);
 </script>

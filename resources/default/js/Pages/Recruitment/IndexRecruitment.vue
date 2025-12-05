@@ -8,6 +8,10 @@ import DataTable from '@/Components/DataTable/DataTable.vue';
 import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
 import {DocumentCheckIcon} from '@heroicons/vue/24/outline';
 import Icon from '@/Components/Icon.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
+import { startCase } from 'lodash';
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -16,6 +20,34 @@ defineProps({
     recruitments: Object,
     filters: Object,
 });
+
+function getStatusColor(status) {
+    switch (status) {
+        case 'active':
+            return 'green';
+        case 'draft':
+            return 'pending';
+        case 'disabled':
+            return 'red';
+        case 'archived':
+            return 'deferred';
+        default:
+            return status;
+    }
+}
+
+const breadcrumbItems = [
+    {
+        text: __('Home'),
+        url: route('home'),
+        current: false
+    },
+    {
+        text: __('Applications'),
+        url: route('recruitment.index'),
+        current: true
+    }
+];
 
 const headerRow = [
     {
@@ -50,7 +82,7 @@ const headerRow = [
     },
     {
         key: 'actions',
-        label: __('Actions'),
+        label: '',
         sortable: false,
         class: 'w-1/12 text-right',
     },
@@ -59,32 +91,29 @@ const headerRow = [
 
 <template>
   <AppLayout>
-    <AppHead :title="__('Application Forms')" />
+    <AppHead :title="__('Applications')" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("Application Forms") }}
-        </h1>
+    <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
+
+    <div class="py-4 px-2 md:py-4 md:px-10 max-w-screen-2xl mx-auto">
+      <div
+        v-if="$page.props.auth.user"
+        class="flex justify-end mb-6"
+      >
         <div class="flex space-x-2">
-          <Link
+          <Button
             v-if="$page.props.auth.user"
-            :href="route('recruitment-submission.index')"
-            class="inline-flex items-center px-4 py-2 bg-green-400 dark:bg-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 active:bg-green-600 focus:outline-none focus:border-green-500 focus:shadow-outline-green transition ease-in-out duration-150"
+            as-child
           >
-            <span>{{ __("View My Applications") }}</span>
-          </Link>
-          <Link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-cool-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </Link>
+            <Link :href="route('recruitment-submission.index')">
+              {{ __("View My Applications") }}
+            </Link>
+          </Button>
         </div>
       </div>
       <div class="flex flex-col md:flex-row md:space-x-4">
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800 w-full"
+          class="rounded-lg border bg-card text-card-foreground shadow w-full"
           :header="headerRow"
           :data="recruitments"
           :filters="filters"
@@ -93,7 +122,7 @@ const headerRow = [
             <DtRowItem>
               <Link
                 :href="route('recruitment.show', item.slug)"
-                class="hover:text-light-blue-400 hover:underline"
+                class="hover:text-primary hover:underline"
               >
                 {{ item.title }}
               </Link>
@@ -105,19 +134,19 @@ const headerRow = [
                 v-tippy
                 name="verified-check-fill"
                 :title="__('Only for Verified Users')"
-                class="inline mb-1 text-sky-400 h-4 fill-current focus:outline-none"
+                class="inline mb-1 text-primary h-4 fill-current focus:outline-none"
               />
               <Icon
                 v-if="item.is_allow_only_player_linked_users"
                 v-tippy
                 name="users"
                 :title="__('Only for Linked Account Users (Player linked)')"
-                class="inline mb-1 text-green-400 h-4 fill-current focus:outline-none"
+                class="inline mb-1 text-success-400 h-4 fill-current focus:outline-none"
               />
             </DtRowItem>
 
             <DtRowItem class="text-right hidden md:table-cell">
-              {{ item.status.value }}
+              <CommonStatusBadge :status="getStatusColor(item.status.value)" :value="startCase(item.status.value)" />
             </DtRowItem>
 
             <DtRowItem class="whitespace-nowrap hidden md:table-cell text-right">
@@ -132,15 +161,19 @@ const headerRow = [
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-              <Link
+              <Button
                 v-tippy
-                as="a"
-                :href="route('recruitment.show', item.slug)"
-                class="inline-flex items-center justify-center text-green-600 dark:text-green-500 hover:text-green-800 dark:hover:text-green-800"
+                as-child
+                variant="outline"
+                size="sm"
                 :title="__('Apply')"
               >
-                <DocumentCheckIcon class="inline-block w-5 h-5" />
-              </Link>
+                <Link
+                  :href="route('recruitment.show', item.slug)"
+                >
+                  {{ __("Apply") }}
+                </Link>
+              </Button>
             </td>
           </template>
         </DataTable>

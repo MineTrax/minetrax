@@ -4,12 +4,12 @@
 
     <div class="py-12 px-10 max-w-7xl mx-auto">
       <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
+        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
           {{ __("Create Application Form") }}
         </h1>
         <inertia-link
           :href="route('admin.recruitment.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
+          class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
         >
           <span>{{ __("Cancel") }}</span>
         </inertia-link>
@@ -20,7 +20,7 @@
           <div class="mt-5 md:mt-0 md:col-span-6">
             <form @submit.prevent="createRecruitment">
               <div class="shadow overflow-hidden sm:rounded-md">
-                <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
+                <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
                   <div class="grid grid-cols-6 gap-4">
                     <div class="col-span-6 sm:col-span-6">
                       <x-input
@@ -73,7 +73,7 @@
                         v-model="form.description"
                         aria-label="description"
                         name="description"
-                        class="mt-1 focus:ring-light-blue-500 focus:border-light-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-foreground rounded-md"
                       />
                       <jet-input-error
                         :message="form.errors.description
@@ -279,7 +279,7 @@
                     </div>
 
                     <div class="flex-col col-span-6 space-y-1 sm:col-span-6">
-                      <legend class="text-base font-medium text-gray-900 dark:text-gray-300">
+                      <legend class="text-base font-medium text-foreground dark:text-foreground">
                         {{ __("Fields") }}
                       </legend>
 
@@ -288,34 +288,34 @@
                           <div class="w-5" />
                           <div class="w-5" />
                           <label
-                            class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                           >{{
                              __("Name") }}
-                            <span class="text-red-500">*</span>
+                            <span class="text-error-500">*</span>
                           </label>
                           <label
-                            class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                           >{{
                              __("Type") }}
-                            <span class="text-red-500">*</span>
+                            <span class="text-error-500">*</span>
                           </label>
                           <label
-                            class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                           >{{
                             __("Validation")
                           }}</label>
                           <label
-                            class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                           >{{
                             __("Help Text")
                           }}</label>
                           <label
-                            class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                           >{{
                              __("Options") }}
-                            <span class="text-red-500">*
+                            <span class="text-error-500">*
                             </span>
-                            <span class="text-xs text-gray-500">(Eg:
+                            <span class="text-xs text-foreground">(Eg:
                               Options1,Option2)</span>
                           </label>
                         </div>
@@ -330,7 +330,7 @@
                             <div class="flex space-x-4 items-start">
                               <div class="drag-handle cursor-move mt-6">
                                 <ArrowsUpDownIcon
-                                  class="w-5 h-5 text-gray-400 hover:text-gray-600"
+                                  class="w-5 h-5 text-foreground hover:text-foreground"
                                 />
                               </div>
                               <button
@@ -339,7 +339,7 @@
                                 @click="removeField(index)"
                               >
                                 <Icon
-                                  class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                  class="w-5 h-5 text-foreground group-hover:text-error-500"
                                   name="trash"
                                 />
                               </button>
@@ -431,7 +431,7 @@
                                 />
                                 <div
                                   v-else
-                                  class="h-full text-gray-700 text-lg font-semibold dark:text-gray-300 w-full flex items-center justify-center"
+                                  class="h-full text-foreground text-lg font-semibold dark:text-foreground w-full flex items-center justify-center"
                                 >
                                   -
                                 </div>
@@ -443,7 +443,7 @@
                         <div class="flex justify-end mt-1">
                           <button
                             type="button"
-                            class="p-1.5 text-xs text-light-blue-500 rounded border border-light-blue-500 focus:outline-none hover:text-light-blue-300 hover:border-light-blue-300 transition ease-in-out duration-150"
+                            class="p-1.5 text-xs text-primary rounded border border-primary focus:outline-none hover:text-primary hover:border-primary transition ease-in-out duration-150"
                             @click="addField"
                           >
                             {{
@@ -455,9 +455,9 @@
                     </div>
                   </div>
                 </div>
-                <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-between gap-2">
+                <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-between gap-2">
                   <loading-button
-                    class="inline-flex justify-center py-2 px-4 border border-gray-200 shadow-sm text-sm font-medium rounded-md text-gray-600 bg-gray-50 hover:bg-white disabled:opacity-50 dark:bg-gray-700 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:border-gray-600"
+                    class="inline-flex justify-center py-2 px-4 border border-foreground shadow-sm text-sm font-medium rounded-md text-foreground bg-surface-50 hover:bg-white disabled:opacity-50 dark:bg-surface-700 dark:border-foreground dark:text-foreground dark:hover:bg-surface-600 dark:hover:border-foreground"
                     type="button"
                     @click="showingFormPreview = true"
                   >
@@ -465,7 +465,7 @@
                   </loading-button>
                   <loading-button
                     :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
                     type="submit"
                   >
                     {{ __("Create Application Form") }}

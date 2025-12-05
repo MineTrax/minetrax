@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Settings;
 
+use App\Enums\ColorSchemeType;
 use App\Enums\FontType;
-use App\Enums\ThemeType;
 use App\Http\Controllers\Controller;
 use App\Settings\ThemeSettings;
 use BenSampo\Enum\Rules\EnumValue;
@@ -26,7 +26,7 @@ class ThemeSettingController extends Controller
 
         return Inertia::render('Admin/Setting/ThemeSetting', [
             'settings' => $settings->toArray(),
-            'themeList' => ThemeType::asSelectArray(),
+            'colorSchemeList' => ColorSchemeType::asSelectArray(),
             'fontList' => FontType::asSelectArray(),
             'isVideoHomeHeroBgImagePathLight' => $isVideoHomeHeroBgImagePathLight,
             'isVideoHomeHeroBgImagePathDark' => $isVideoHomeHeroBgImagePathDark,
@@ -37,9 +37,8 @@ class ThemeSettingController extends Controller
     {
         $request->validate([
             'color_mode' => ['required', 'in:light,dark'],
-            'theme_name' => ['required', new EnumValue(ThemeType::class)],
+            'color_scheme' => ['required', new EnumValue(ColorSchemeType::class)],
             'primary_font' => ['required', new EnumValue(FontType::class)],
-            'secondary_font' => ['required', new EnumValue(FontType::class)],
             'enable_home_hero_section' => ['required', 'boolean'],
             'home_hero_bg_image_light' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp,webm', 'max:2048'],
             'home_hero_bg_image_dark' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp,webm', 'max:2048'],
@@ -59,9 +58,8 @@ class ThemeSettingController extends Controller
         ]);
 
         $themeSettings->color_mode = $request->color_mode;
-        $themeSettings->theme_name = $request->theme_name;
+        $themeSettings->color_scheme = $request->color_scheme;
         $themeSettings->primary_font = $request->primary_font;
-        $themeSettings->secondary_font = $request->secondary_font;
 
         $themeSettings->enable_home_hero_section = $request->enable_home_hero_section;
         $themeSettings->home_hero_bg_size_css = $request->home_hero_bg_size_css;

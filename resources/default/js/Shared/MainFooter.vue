@@ -36,7 +36,7 @@ if(customFooterData?.style == 'variant_1') {
 
 <template>
   <footer
-    class="w-full text-gray-700 bg-white dark:bg-cool-gray-800 body-font"
+    class="w-full text-foreground bg-sidebar body-font"
     :class="{'md:mt-28': canShowCustomFooter}"
   >
     <div
@@ -54,7 +54,7 @@ if(customFooterData?.style == 'variant_1') {
 
         <p
           v-if="customFooterData.site_moto"
-          class="my-4 text-sm text-gray-500 dark:text-gray-400 whitespace-pre-wrap"
+          class="my-4 text-sm text-foreground dark:text-foreground whitespace-pre-wrap"
         >
           {{ customFooterData.site_moto }}
         </p>
@@ -64,7 +64,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="facebookUrl"
               target="_blank"
               :href="facebookUrl"
-              class="text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="facebook"
@@ -75,7 +75,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="twitterUrl"
               target="_blank"
               :href="twitterUrl"
-              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="twitter"
@@ -86,7 +86,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="linkedinUrl"
               target="_blank"
               :href="linkedinUrl"
-              class="ml-3 -mt-0.5 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 -mt-0.5 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="linkedin"
@@ -98,7 +98,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="youtubeUrl"
               target="_blank"
               :href="youtubeUrl"
-              class="ml-3 -mt-0.5 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 -mt-0.5 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="youtube"
@@ -109,7 +109,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="discordUrl"
               target="_blank"
               :href="discordUrl"
-              class="ml-3 -mt-0.5 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 -mt-0.5 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="discord"
@@ -120,7 +120,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="tiktokUrl"
               target="_blank"
               :href="tiktokUrl"
-              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="tiktok"
@@ -131,7 +131,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="twitchUrl"
               target="_blank"
               :href="twitchUrl"
-              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="twitch"
@@ -143,7 +143,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="threadsUrl"
               target="_blank"
               :href="threadsUrl"
-              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="threads"
@@ -154,7 +154,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="instagramUrl"
               target="_blank"
               :href="instagramUrl"
-              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="instagram"
@@ -165,7 +165,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="whatsappUrl"
               target="_blank"
               :href="whatsappUrl"
-              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="whatsapp"
@@ -176,7 +176,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="telegramUrl"
               target="_blank"
               :href="telegramUrl"
-              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="telegram"
@@ -187,7 +187,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="redditUrl"
               target="_blank"
               :href="redditUrl"
-              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="reddit"
@@ -198,7 +198,7 @@ if(customFooterData?.style == 'variant_1') {
               v-if="githubUrl"
               target="_blank"
               :href="githubUrl"
-              class="ml-3 text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+              class="ml-3 text-foreground cursor-pointer hover:text-foreground dark:hover:text-foreground"
             >
               <Icon
                 name="github"
@@ -214,7 +214,7 @@ if(customFooterData?.style == 'variant_1') {
           :key="cIndex"
           class="flex-1 px-4"
         >
-          <h3 class="mb-3 font-bold text-gray-900 dark:text-gray-300">
+          <h3 class="mb-3 font-bold text-foreground dark:text-foreground">
             {{ column.title }}
           </h3>
           <nav class="mb-10 list-none">
@@ -225,7 +225,7 @@ if(customFooterData?.style == 'variant_1') {
             >
               <a
                 :href="item.url"
-                class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 cursor-pointer hover:text-gray-900"
+                class="text-foreground dark:text-foreground dark:hover:text-foreground cursor-pointer hover:text-foreground"
               >{{ item.title }}
               </a>
             </li>
@@ -239,7 +239,7 @@ if(customFooterData?.style == 'variant_1') {
     <div
       v-if="canShowCustomFooter && customFooterData.style == 'variant_2'"
       id="variant_2"
-      class="bg-white dark:bg-cool-gray-800"
+      class="bg-secondary"
     >
       <div class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="flex justify-center">
@@ -253,7 +253,7 @@ if(customFooterData?.style == 'variant_1') {
 
         <p
           v-if="customFooterData.site_moto"
-          class="mx-auto mt-6 max-w-md text-center whitespace-pre-wrap leading-relaxed text-gray-500 dark:text-gray-400"
+          class="mx-auto mt-6 max-w-md text-center whitespace-pre-wrap leading-relaxed text-foreground dark:text-foreground"
         >
           {{ customFooterData.site_moto }}
         </p>
@@ -266,7 +266,7 @@ if(customFooterData?.style == 'variant_1') {
             :key="index"
           >
             <a
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-300 dark:hover:text-gray-300/75"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground/75"
               :href="item.url"
             >
               {{ item.title }}
@@ -282,7 +282,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="facebookUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">Facebook</span>
               <Icon
@@ -298,7 +298,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="twitterUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">Twitter</span>
               <Icon
@@ -315,7 +315,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="linkedinUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">LinkedIn</span>
               <Icon
@@ -332,7 +332,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="youtubeUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">YouTube</span>
               <Icon
@@ -348,7 +348,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="discordUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">Discord</span>
               <Icon
@@ -364,7 +364,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="tiktokUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">TikTok</span>
               <Icon
@@ -380,7 +380,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="twitchUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">Twitch</span>
               <Icon
@@ -396,7 +396,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="threadsUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">Threads</span>
               <Icon
@@ -412,7 +412,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="instagramUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">Instagram</span>
               <Icon
@@ -428,7 +428,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="whatsappUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">WhatsApp</span>
               <Icon
@@ -444,7 +444,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="telegramUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">Telegram</span>
               <Icon
@@ -460,7 +460,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="redditUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">Reddit</span>
               <Icon
@@ -476,7 +476,7 @@ if(customFooterData?.style == 'variant_1') {
               :href="githubUrl"
               rel="noreferrer"
               target="_blank"
-              class="text-gray-700 transition hover:text-gray-700/75 dark:text-gray-400 dark:hover:text-gray-300"
+              class="text-foreground transition hover:text-foreground/75 dark:text-foreground dark:hover:text-foreground"
             >
               <span class="sr-only">Github</span>
               <Icon
@@ -491,31 +491,31 @@ if(customFooterData?.style == 'variant_1') {
 
     <div
       :class="{
-        'bg-white dark:bg-cool-gray-800 border-t border-gray-200 dark:border-gray-700': canShowCustomFooter,
-        'bg-gray-200': !canShowCustomFooter,
+        'bg-sidebar border-t': canShowCustomFooter,
+        'bg-background': !canShowCustomFooter,
       }"
-      class="flex flex-col items-center justify-center p-5 dark:bg-gray-900"
+      class="flex flex-col items-center justify-center p-5"
     >
-      <div class="text-sm text-gray-800 dark:text-gray-400">
+      <div class="text-sm text-foreground dark:text-foreground">
         &copy; {{ $page.props.generalSettings.site_name }} {{ new Date().getFullYear() }}
       </div>
       <div
         v-if="$page.props.showPoweredBy"
-        class="text-xs text-gray-500"
+        class="text-xs text-foreground"
       >
         {{ __("Powered with") }}
         <Icon
-          class="absolute inline-flex w-4 h-4 text-red-500 opacity-75 animate-ping"
+          class="absolute inline-flex w-4 h-4 text-error-500 opacity-75 animate-ping"
           name="heart-fill"
         />
         <Icon
-          class="relative inline-flex w-4 h-4 text-red-500"
+          class="relative inline-flex w-4 h-4 text-error-500"
           name="heart-fill"
         />
         by <a
           target="_blank"
           href="https://minetrax.github.io"
-          class="hover:underline hover:text-light-blue-500"
+          class="hover:underline hover:text-primary"
         >MineTrax</a>
 
         <span
@@ -525,7 +525,7 @@ if(customFooterData?.style == 'variant_1') {
           <a
             target="_blank"
             :href="$page.props.poweredByExtraLink"
-            class="hover:underline hover:text-light-blue-500"
+            class="hover:underline hover:text-primary"
           >{{ $page.props.poweredByExtraName }}</a>
         </span>
       </div>

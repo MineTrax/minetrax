@@ -1,51 +1,64 @@
 <template>
   <slot />
 
+  <div ref="sentinel"></div>
+
   <slot
     v-if="loading"
     name="loading"
   >
-    <div class="p-5 text-center text-gray-600 dark:text-gray-300 text-sm">
-      {{ loadingText }}
+    <div class="p-5 text-center text-foreground dark:text-foreground text-sm">
+        <span class="flex items-center justify-center gap-2">
+            <Loader2Icon class="w-4 h-4 animate-spin" />
+            {{ loadingText }}
+        </span>
     </div>
   </slot>
 </template>
 
-<script>
-import {debounce} from 'lodash/function';
+<script setup>
+import { ref } from 'vue'
+import { useInfiniteScroll } from '@vueuse/core'
+import { Loader2Icon } from 'lucide-vue-next'
 
-export default {
-    props: {
-        loadMore: Function,
-        loadingText: {
-            type: String,
-            default: 'Loading more...'
-        },
-        threshold: {
-            type: Number,
-            default: 200
-        }
-    },
+const props = defineProps({
+  loadMore: {
+    type: Function,
+    required: true,
+  },
+  canLoadMore: {
+    type: Boolean,
+    default: true,
+  },
+  loadingText: {
+    type: String,
+    default: 'Loading more...'
+  },
+  threshold: {
+    type: Number,
+    default: 200
+  }
+})
 
-    data() {
-        return {
-            loading: false,
-            eventListener: null
-        };
-    },
+const loading = ref(false)
+const sentinel = ref(null)
 
-    mounted() {
-        window.addEventListener('scroll', this.eventListener = debounce(e => {
-            let pixelFromBotton = document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight;
-            if (pixelFromBotton < this.threshold && !this.loading) {
-                this.loading = true;
-                this.loadMore().finally(() => this.loading = false);
-            }
-        }, 100));
-    },
+const canLoadMore = () => {
+  return props.canLoadMore
+}
 
-    unmounted() {
-        window.removeEventListener('scroll', this.eventListener);
-    }
-};
+useInfiniteScroll(
+  sentinel,
+  async () => {
+    if (loading.value) return
+    loading.value = true
+    await props.loadMore()
+    loading.value = false
+  },
+  {
+    distance: props.threshold,
+    debounce: 100,
+    canLoadMore: canLoadMore
+  }
+)
 </script>

@@ -11,11 +11,11 @@ defineProps({
 </script>
 
 <template>
-  <ul class="flex bg-white shadow dark:bg-gray-800 p-4 rounded font-semibold">
+  <ul class="flex bg-white shadow dark:bg-surface-800 p-4 rounded font-semibold">
     <li class="mr-6">
       <inertia-link
-        class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
-        :class="{ 'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900' : route().current('admin.server.show') }"
+        class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
+        :class="{ 'bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900' : route().current('admin.server.show') }"
         :href="route('admin.server.show', id)"
       >
         {{ __("Overview") }}
@@ -24,8 +24,8 @@ defineProps({
     <li class="mr-6">
       <inertia-link
         :href="route('admin.server.show.stats', id)"
-        class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
-        :class="{ 'bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-900' : route().current('admin.server.show.stats') }"
+        class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
+        :class="{ 'bg-surface-200 text-foreground dark:bg-surface-900 dark:text-foreground dark:hover:bg-surface-900' : route().current('admin.server.show.stats') }"
       >
         {{ __("Statistics") }}
       </inertia-link>
@@ -36,7 +36,7 @@ defineProps({
     >
       <inertia-link
         :href="route('admin.intel.server.performance', {servers: [id]})"
-        class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
+        class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
       >
         {{ __("Performance") }}
       </inertia-link>
@@ -47,7 +47,7 @@ defineProps({
     >
       <inertia-link
         :href="route('admin.intel.server.index', {servers: [id]})"
-        class="text-gray-700 dark:text-gray-300 rounded px-2 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600"
+        class="text-foreground dark:text-foreground rounded px-2 py-1.5 hover:bg-surface-200 dark:hover:bg-surface-600"
       >
         {{ __("Insights") }}
       </inertia-link>

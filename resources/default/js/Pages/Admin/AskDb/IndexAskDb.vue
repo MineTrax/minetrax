@@ -2,11 +2,25 @@
 import AppHead from '@/Components/AppHead.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import AlertCard from '@/Components/AlertCard.vue';
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
-import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 import Icon from '@/Components/Icon.vue';
 import { Link } from '@inertiajs/vue3';
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+
 const { __ } = useTranslations();
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Ask DB'),
+        current: true,
+    }
+];
 
 const props = defineProps({
     featureEnabled: {
@@ -117,13 +131,21 @@ function scrollToBottom() {
     <AppHead :title="__('AskDB - AI based database query.')" />
 
     <div class="p-10 mx-auto space-y-4 max-w-5xl h-[94vh] flex flex-col">
+      <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+
       <!-- Feature not enabled -->
-      <div
+      <AlertCard
         v-if="!featureEnabled"
-        class="p-5 mb-2 text-center text-red-500 bg-white rounded dark:bg-gray-800"
+        variant="destructive"
       >
+        <template #icon>
+          <ExclamationTriangleIcon class="h-6 w-6 mr-4 text-destructive" />
+        </template>
         {{ __("This feature is not enabled!") }}
-      </div>
+        <template #body>
+          {{ __("Please configure AI & AskDB in .env file to enable this feature.") }}
+        </template>
+      </AlertCard>
 
       <!-- Container -->
       <div
@@ -138,30 +160,21 @@ function scrollToBottom() {
             id="logo"
             class="flex items-center justify-center mt-8"
           >
-            <svg
-              class="w-16 mr-2 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              pathfill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
-            ><path
-              data-v-94a7a0d7=""
-              fill="currentColor"
-              d="M18.5 10.255c0 .044 0 .089-.003.133A1.537 1.537 0 0 0 17.473 10c-.162 0-.32.025-.473.074V5.75a.75.75 0 0 0-.75-.75h-8.5a.75.75 0 0 0-.75.75v4.505c0 .414.336.75.75.75h8.276l-.01.025-.003.012-.45 1.384-.01.026a1.625 1.625 0 0 1-.019.053H7.75a2.25 2.25 0 0 1-2.25-2.25V5.75A2.25 2.25 0 0 1 7.75 3.5h3.5v-.75a.75.75 0 0 1 .649-.743L12 2a.75.75 0 0 1 .743.649l.007.101-.001.75h3.5a2.25 2.25 0 0 1 2.25 2.25v4.505Zm-5.457 3.781.112-.036H6.254a2.25 2.25 0 0 0-2.25 2.25v.907a3.75 3.75 0 0 0 1.305 2.844c1.563 1.343 3.802 2 6.691 2 2.076 0 3.817-.339 5.213-1.028a1.545 1.545 0 0 1-1.169-1.003l-.004-.012-.03-.093c-1.086.422-2.42.636-4.01.636-2.559 0-4.455-.556-5.713-1.638a2.25 2.25 0 0 1-.783-1.706v-.907a.75.75 0 0 1 .75-.75H12v-.003a1.543 1.543 0 0 1 1.031-1.456l.012-.005ZM10.999 7.75a1.25 1.25 0 1 0-2.499 0 1.25 1.25 0 0 0 2.499 0ZM14.242 6.5a1.25 1.25 0 1 1 0 2.499 1.25 1.25 0 0 1 0-2.499Zm1.847 10.912a2.831 2.831 0 0 0-1.348-.955l-1.377-.448a.544.544 0 0 1 0-1.025l1.377-.448a2.84 2.84 0 0 0 1.76-1.762l.01-.034.449-1.377a.544.544 0 0 1 1.026 0l.448 1.377a2.837 2.837 0 0 0 1.798 1.796l1.378.448.027.007a.544.544 0 0 1 0 1.025l-1.378.448a2.839 2.839 0 0 0-1.798 1.796l-.447 1.377a.55.55 0 0 1-.2.263.544.544 0 0 1-.827-.263l-.448-1.377a2.834 2.834 0 0 0-.45-.848Zm7.694 3.801-.765-.248a1.577 1.577 0 0 1-.999-.998l-.249-.765a.302.302 0 0 0-.57 0l-.249.764a1.577 1.577 0 0 1-.983.999l-.766.248a.302.302 0 0 0 0 .57l.766.249a1.576 1.576 0 0 1 .998 1.002l.25.764a.303.303 0 0 0 .57 0l.248-.764a1.575 1.575 0 0 1 1-.999l.765-.248a.302.302 0 0 0 0-.57l-.016-.004Z"
-            /></svg>
-            <h1 class="text-4xl font-bold text-gray-500 dark:text-gray-500">
+            <Icon
+              name="askdb-logo"
+              class="w-16 h-16 mr-2 text-foreground"
+            />
+            <h1 class="text-4xl font-bold text-foreground">
               {{ __("Ask DB") }}
             </h1>
           </div>
-          <p class="text-sm text-center text-gray-700 dark:text-gray-400">
+          <p class="text-sm text-center text-muted-foreground">
             {{ __("Ask DB is an AI based database query system. You can ask questions in natural language and it will try to answer it.") }}
           </p>
 
           <!-- Examples -->
-          <div
-            id="examples"
-          >
-            <h1 class="mt-12 mb-2 text-xl font-bold text-center text-gray-500">
+          <div id="examples">
+            <h1 class="mt-12 mb-4 text-xl font-bold text-center text-foreground">
               {{ __("You can ask questions like:") }}
             </h1>
 
@@ -170,7 +183,7 @@ function scrollToBottom() {
                 v-for="example in examples"
                 :key="example"
                 :disabled="!featureEnabled"
-                class="block w-full p-6 text-sm font-normal text-gray-700 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-400 disabled:cursor-not-allowed"
+                class="block w-full p-6 text-sm font-normal text-left text-foreground bg-card border border-border rounded-lg shadow-sm hover:bg-accent hover:border-primary/50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 @click="askWithExample(example)"
               >
                 {{ example }}
@@ -183,7 +196,7 @@ function scrollToBottom() {
         <div
           v-if="results && results.length > 0"
           id="results"
-          class="space-y-8 text-gray-800 dark:text-gray-300"
+          class="space-y-8 text-foreground"
         >
           <div
             v-for="result in results"
@@ -194,7 +207,7 @@ function scrollToBottom() {
               class="flex justify-end w-full"
             >
               <div
-                class="px-4 py-2.5 dark:bg-gray-800 bg-gray-300 rounded-full"
+                class="px-4 py-2.5 bg-primary text-primary-foreground rounded-2xl"
                 v-html="result.content"
               />
             </div>
@@ -202,25 +215,25 @@ function scrollToBottom() {
               v-else
               class="flex w-full"
             >
-              <div>
+              <div class="flex-shrink-0">
                 <Icon
                   name="askdb-logo"
-                  class="w-6 h-6 mr-2 text-gray-500 dark:text-gray-400"
+                  class="w-6 h-6 mr-3 text-primary"
                 />
               </div>
-              <div>
+              <div class="flex-1 min-w-0">
                 <div
                   class="prose max-w-none lg:max-w-[45vw] dark:prose-invert"
                   v-html="result.content"
                 />
                 <p
                   v-if="result.usage"
-                  class="text-xs text-gray-500 mt-0.5 italic"
+                  class="text-xs text-muted-foreground mt-1 italic"
                 >
-                  <span class="">{{ __("Prompt: :prompt tokens, Completion: :completion tokens", {
+                  {{ __("Prompt: :prompt tokens, Completion: :completion tokens", {
                     prompt: result.usage?.promptTokens,
                     completion: result.usage?.completionTokens
-                  }) }}</span>
+                  }) }}
                 </p>
               </div>
             </div>
@@ -233,84 +246,98 @@ function scrollToBottom() {
         id="form"
         :class="{'opacity-25': !featureEnabled}"
       >
-        <div class="flex">
-          <form
-            class="relative flex w-full"
-            @submit.prevent="askDb"
-          >
-            <div class="w-full">
-              <div class="relative">
-                <textarea
-                  id="large-input"
-                  v-model="form.prompt"
-                  name="prompt"
-                  :placeholder="__('Enter your query in natural language..')"
-                  class="block w-full h-24 p-3 pr-12 text-gray-800 border-none rounded-lg shadow resize-none bg-gray-50 sm:text-md dark:bg-gray-800 dark:placeholder-gray-400 dark:text-gray-300 focus:outline-none focus:ring-0"
-                  :disabled="form.loading || !featureEnabled"
-                  rows="2"
-                  @keydown="handleKeydown"
-                />
+        <form
+          class="w-full"
+          @submit.prevent="askDb"
+        >
+          <div class="relative">
+            <textarea
+              id="large-input"
+              v-model="form.prompt"
+              name="prompt"
+              :placeholder="__('Enter your query in natural language..')"
+              class="block w-full h-24 p-4 pr-14 text-foreground border border-border rounded-lg shadow-sm resize-none bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              :disabled="form.loading || !featureEnabled"
+              rows="2"
+              @keydown="handleKeydown"
+            />
 
-                <button
-                  type="submit"
-                  :disabled="form.loading || !featureEnabled"
-                  class="absolute p-2 transition-colors duration-200 ease-in-out rounded-full shadow-sm bottom-2 right-2 bg-light-blue-100 dark:bg-light-blue-800 text-light-blue-600 dark:text-light-blue-300 hover:bg-light-blue-200 dark:hover:bg-light-blue-700 hover:shadow-md disabled:opacity-50"
-                >
-                  <LoadingSpinner
-                    :loading="form.loading"
-                    class="w-5 h-5"
-                  />
-                  <svg
-                    v-if="!form.loading"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 5l7 7-7 7M5 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <div class="mt-1">
-                <p
-                  v-if="form.error"
-                  class="text-sm text-right text-red-400"
-                >
-                  {{ form.error }}
-                </p>
-
-                <p
-                  v-if="appDebug && form.verboseError"
-                  class="p-2 text-sm text-center text-red-400 bg-white rounded shadow dark:bg-gray-800"
-                >
-                  {{ form.verboseError }}
-                </p>
-              </div>
-
-              <Link
-                as="button"
-                method="delete"
-                :href="route('admin.ask-db.reset')"
-                :preserve-state="false"
-                :preserve-scroll="false"
-                class="float-right mt-1.5 text-xs text-gray-600 dark:text-gray-500 hover:text-red-500"
+            <button
+              type="submit"
+              :disabled="form.loading || !featureEnabled"
+              class="absolute p-2.5 transition-colors duration-200 ease-in-out rounded-lg bottom-3 right-3 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg
+                v-if="form.loading"
+                class="animate-spin w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
               >
-                {{ __("Clear History") }}
-              </Link>
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                />
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+              <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
 
-              <p class="mt-2 hidden lg:block text-xs text-center text-gray-500">
-                {{ __("This is an experimental feature and still in beta. It may not always provide correct result. Please use with caution.") }}
-              </p>
-            </div>
-          </form>
-        </div>
+          <div class="mt-2">
+            <p
+              v-if="form.error"
+              class="text-sm text-right text-destructive"
+            >
+              {{ form.error }}
+            </p>
+
+            <p
+              v-if="appDebug && form.verboseError"
+              class="p-3 text-sm text-center text-destructive bg-destructive/10 rounded-lg"
+            >
+              {{ form.verboseError }}
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between mt-2">
+            <p class="hidden lg:block text-xs text-muted-foreground">
+              {{ __("This is an experimental feature and still in beta. It may not always provide correct result. Please use with caution.") }}
+            </p>
+            <Link
+              as="button"
+              method="delete"
+              :href="route('admin.ask-db.reset')"
+              :preserve-state="false"
+              :preserve-scroll="false"
+              class="text-xs text-muted-foreground hover:text-destructive transition-colors"
+            >
+              {{ __("Clear History") }}
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   </AdminLayout>

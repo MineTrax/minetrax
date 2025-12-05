@@ -7,8 +7,8 @@
     <div class="py-12 px-10 max-w-6xl mx-auto flex">
       <div class="flex-1">
         <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-cool-gray-800 shadow w-full rounded">
-            <div class="px-6 py-4 border-b dark:border-gray-700 dark:text-gray-300 font-bold">
+          <div class="bg-white dark:bg-surface-800 shadow w-full rounded">
+            <div class="px-6 py-4 border-b dark:border-foreground dark:text-foreground font-bold">
               {{ __("SEO Settings") }}
             </div>
 
@@ -20,7 +20,7 @@
                     @submit.prevent="saveSetting"
                   >
                     <div class="shadow overflow-hidden sm:rounded-md">
-                      <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
+                      <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
                           <!-- Favicon -->
                           <div
@@ -37,7 +37,7 @@
 
                             <label
                               for="favicon"
-                              class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                              class="block text-sm font-medium text-foreground dark:text-foreground"
                             >{{ __("Favicon Image") }}</label>
 
                             <div
@@ -52,7 +52,7 @@
                               >
                               <span
                                 v-else
-                                class="text-gray-400 italic text-xs"
+                                class="text-foreground italic text-xs"
                               >
                                 {{ __("No favicon.") }}
                               </span>
@@ -76,7 +76,7 @@
                               {{ __("Select A New Image") }}
                             </JetSecondaryButton>
 
-                            <div class="mt-2 text-xs text-gray-400">
+                            <div class="mt-2 text-xs text-foreground">
                               {{ __("Allowed") }}: .png, .ico, .svg
                             </div>
 
@@ -114,7 +114,7 @@
                           </div>
 
                           <div class="flex-col col-span-6 space-y-1 sm:col-span-6">
-                            <legend class="text-base font-medium text-gray-900 dark:text-gray-300">
+                            <legend class="text-base font-medium text-foreground dark:text-foreground">
                               {{ __("Meta Fields") }}
                             </legend>
 
@@ -122,13 +122,13 @@
                               <div class="flex space-x-4">
                                 <div class="w-5" />
                                 <label
-                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                  class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                                 >{{
                                    __("Name") }}
-                                  <span class="text-xs text-gray-500"> (Eg: description, keywords, title)</span>
+                                  <span class="text-xs text-foreground"> (Eg: description, keywords, title)</span>
                                 </label>
                                 <label
-                                  class="flex-1 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                                  class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
                                 >{{
                                   __("Content") }}
                                 </label>
@@ -149,7 +149,7 @@
                                   "
                                 >
                                   <Icon
-                                    class="w-5 h-5 text-gray-300 group-hover:text-red-500"
+                                    class="w-5 h-5 text-foreground group-hover:text-error-500"
                                     name="trash"
                                   />
                                 </button>
@@ -201,7 +201,7 @@
                               <div class="flex justify-end mt-1">
                                 <button
                                   type="button"
-                                  class="p-1.5 text-xs text-light-blue-500 rounded border border-light-blue-500 focus:outline-none hover:text-light-blue-300 hover:border-light-blue-300 transition ease-in-out duration-150"
+                                  class="p-1.5 text-xs text-primary rounded border border-primary focus:outline-none hover:text-primary hover:border-primary transition ease-in-out duration-150"
                                   @click="addMetaField"
                                 >
                                   {{
@@ -227,7 +227,7 @@
                           </div> -->
 
                           <div class="col-span-6 sm:col-span-6">
-                            <legend class="text-base font-medium text-gray-900 dark:text-gray-300">
+                            <legend class="text-base font-medium text-foreground dark:text-foreground">
                               {{ __("Code Injections") }}
                             </legend>
                             <p class="text-sm text-orange-500">
@@ -279,10 +279,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
+                      <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
                         <LoadingButton
                           :loading="form.processing"
-                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-light-blue-600 hover:bg-light-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50 dark:bg-cool-gray-700 dark:hover:bg-cool-gray-600"
+                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                           type="submit"
                         >
                           {{ __("Save SEO Settings") }}

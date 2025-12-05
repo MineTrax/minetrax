@@ -5,6 +5,7 @@ import Chart from '@/Components/Dashboard/Chart.vue';
 import DatePicker from 'vue-datepicker-next';
 import {endOfDay, endOfMonth, startOfDay, startOfMonth, startOfYear, subDays, subMonths} from 'date-fns';
 import {useTranslations} from '@/Composables/useTranslations';
+import { Card, CardContent } from '@/Components/ui/card';
 const { __ } = useTranslations();
 
 const props = defineProps({
@@ -164,28 +165,30 @@ const datePickerShortcuts = [
 </script>
 
 <template>
-  <div class="bg-white dark:bg-cool-gray-800 rounded w-full h-full space-y-2 p-3 shadow">
-    <div class="flex justify-between">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200 flex items-center">
-        {{ __("Player Client Versions over time") }}
-      </h3>
+  <Card class="w-full h-full">
+    <CardContent class="p-4 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-extrabold text-foreground flex items-center">
+          {{ __("Player Client Versions over time") }}
+        </h3>
 
-      <DatePicker
-        v-model:value="dateRange"
-        type="date"
-        range
-        :placeholder="__('View for date range')"
-        input-class="block w-full p-2 text-sm border-gray-300 rounded-md focus:border-light-blue-300 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 dark:bg-cool-gray-900 dark:text-gray-300 dark:border-gray-900"
-        :shortcuts="datePickerShortcuts"
-        @change="fetchData()"
+        <DatePicker
+          v-model:value="dateRange"
+          type="date"
+          range
+          :placeholder="__('View for date range')"
+          input-class="block w-full p-2 text-sm border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-ring"
+          :shortcuts="datePickerShortcuts"
+          @change="fetchData()"
+        />
+      </div>
+
+      <Chart
+        :options="option"
+        :height="chartHeight"
+        :loading="isLoading"
+        :autoresize="true"
       />
-    </div>
-
-    <Chart
-      :options="option"
-      :height="chartHeight"
-      :loading="isLoading"
-      :autoresize="true"
-    />
-  </div>
+    </CardContent>
+  </Card>
 </template>

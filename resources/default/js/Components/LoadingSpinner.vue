@@ -1,7 +1,7 @@
 <template>
   <svg
     v-if="loading"
-    class="animate-spin h-5 w-5 text-light-blue-600 dark:text-light-blue-400"
+    class="animate-spin h-5 w-5 text-primary dark:text-primary"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"

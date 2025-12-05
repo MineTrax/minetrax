@@ -1,7 +1,7 @@
 <template>
   <div class="vue-poll">
     <h3
-      class="qst dark:text-gray-300"
+      class="qst"
       v-html="question"
     />
     <div class="ans-cnt">
@@ -13,7 +13,7 @@
         <template v-if="!finalResults">
           <div
             v-if="!visibleResults"
-            class="hover:bg-light-blue-100 dark:hover:bg-cool-gray-900"
+            class="hover:bg-accent"
             :class="{ 'ans-no-vote noselect': true, active: a.selected }"
             @click.prevent="handleVote(a)"
           >
@@ -24,7 +24,7 @@
           </div>
           <div
             v-else
-            :class="{ 'ans-voted dark:text-gray-200': true, selected: a.selected }"
+            :class="{ 'ans-voted': true, selected: a.selected }"
           >
             <span
               v-if="a.percent"
@@ -38,12 +38,12 @@
           </div>
 
           <span
-            class="bg bg-cool-gray-200 dark:bg-cool-gray-700"
+            class="bg bg-background"
             :style="{ width: visibleResults ? a.percent : '0%' }"
           />
         </template>
         <template v-else>
-          <div :class="{ 'ans-voted final dark:text-gray-200': true, selected: a.selected }">
+          <div :class="{ 'ans-voted final': true, selected: a.selected }">
             <span
               v-if="a.percent"
               class="percent"
@@ -55,7 +55,7 @@
             />
           </div>
           <span
-            :class="{ 'bg bg-cool-gray-200 dark:bg-cool-gray-700': true, 'bg-light-blue-300 dark:bg-light-blue-500': mostVotes == a.votes }"
+            :class="{ 'bg': true, 'bg-primary': mostVotes == a.votes, 'bg-background': mostVotes != a.votes }"
             :style="{ width: a.percent }"
           />
         </template>
@@ -64,7 +64,7 @@
 
     <div
       v-if="isComingSoon"
-      class="text-gray-400 text-xs italic"
+      class="text-foreground text-xs italic"
     >
       {{ __("Poll starting") }}&nbsp;{{ formatTimeAgoToNow(started_at) }}
     </div>
@@ -77,7 +77,7 @@
       />
       <div
         v-if="!isComingSoon && closed_at && !finalResults"
-        class="text-gray-400 text-xs italic"
+        class="text-foreground text-xs italic"
       >
         {{ __("Poll closing") }}&nbsp;{{ formatTimeAgoToNow(closed_at) }}
       </div>
@@ -253,7 +253,8 @@ export default{
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
+    /* Use semantic foreground color */
+    color: hsl(var(--foreground));
 }
 
 .vue-poll .noselect {
@@ -281,9 +282,10 @@ export default{
 
 .vue-poll .ans-cnt .ans-no-vote{
     text-align: center;
-    border: 1px solid #77C7F7;
+    /* Primary colored border */
+    border: 1px solid hsl(var(--border));
     box-sizing: border-box;
-    border-radius: 9999px;
+    border-radius: var(--radius);
     cursor:pointer;
     padding: 5px 0;
     transition: background .2s ease-in-out;
@@ -292,18 +294,20 @@ export default{
 }
 
 .vue-poll .ans-cnt .ans-no-vote .txt{
-    color: #77C7F7;
+    /* Primary text color */
+    color: hsl(var(--card-foreground));
     transition: color .2s ease-in-out;
     -webkit-transition: color .2s ease-in-out;
     -moz-transition: color .2s ease-in-out;
 }
 
 .vue-poll .ans-cnt .ans-no-vote.active{
-    background: #77C7F7;
+    background: hsl(var(--primary));
 }
 
 .vue-poll .ans-cnt .ans-no-vote.active .txt{
-    color: #fff;
+    /* Ensure readable text when active */
+    color: hsl(var(--primary-foreground));
 }
 
 .vue-poll .ans-cnt .ans-voted{
@@ -323,8 +327,10 @@ export default{
 }
 
 .vue-poll .ans-cnt .ans-voted.selected .txt:after{
-    content:'✔';
+    /* Bullet dot indicating the user's choice */
+    content:'👆';
     margin-left: 10px;
+    font-weight: bold;
 }
 
 .vue-poll .ans-cnt .ans .bg{
@@ -334,20 +340,19 @@ export default{
     left: 0;
     bottom: 0;
     z-index: 0;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+    border-radius: var(--radius);
     transition: all .3s cubic-bezier(0.5,1.2,.5,1.2);
     -webkit-transition: all .3s cubic-bezier(0.5,1.2,.5,1.2);
     -moz-transition: all .3s cubic-bezier(0.5,1.2,.5,1.2);
 }
 
 .vue-poll .ans-cnt .ans .bg.selected{
-    background-color: #77C7F7;
+    background-color: hsl(var(--primary));
 }
 
 .vue-poll .votes{
     font-size: 14px;
-    color:#8899A6
+    color: hsl(var(--muted-foreground));
 }
 
 .vue-poll .submit{
@@ -356,10 +361,10 @@ export default{
     margin: 0 auto;
     max-width: 80px;
     text-decoration: none;
-    background-color: #41b882;
-    color:#fff;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
     padding: 10px 25px;
-    border-radius: 5px;
+    border-radius: var(--radius);
 
 }
 </style>

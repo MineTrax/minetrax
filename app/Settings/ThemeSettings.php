@@ -8,11 +8,9 @@ class ThemeSettings extends Settings
 {
     public string $color_mode;
 
-    public string $theme_name;
+    public string $color_scheme;
 
     public string $primary_font;
-
-    public string $secondary_font;
 
     public bool $enable_home_hero_section;
 

@@ -1,252 +1,260 @@
+<script setup>
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link, useForm } from '@inertiajs/vue3';
+import XInput from '@/Components/Form/XInput.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
+import XSwitch from '@/Components/Form/XSwitch.vue';
+import { ref, onMounted } from 'vue';
+import EasyMDE from 'easymde';
+
+const { __ } = useTranslations();
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Downloads'),
+        url: route('admin.download.index'),
+        current: false,
+    },
+    {
+        text: __('Create Download'),
+        current: true,
+    }
+];
+
+const fileInput = ref(null);
+let easyMDE = null;
+
+const form = useForm({
+    name: null,
+    description: '',
+    is_external: false,
+    file_url: null,
+    file_name: null,
+    is_external_url_hidden: false,
+    is_only_auth: false,
+    min_role_weight_required: null,
+    is_active: true,
+    file: null,
+});
+
+onMounted(() => {
+    easyMDE = new EasyMDE({
+        previewClass: 'editor-preview prose max-w-none'
+    });
+});
+
+function addDownload() {
+    if (!form.is_external && fileInput.value) {
+        form.file = fileInput.value.files[0];
+    }
+
+    form.description = easyMDE.value();
+
+    form.post(route('admin.download.store'), {});
+}
+</script>
+
 <template>
   <AdminLayout>
-    <app-head title="Create Download" />
+    <app-head :title="__('Create Download')" />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-gray-500 dark:text-gray-300">
-          {{ __("Create Download") }}
-        </h1>
-        <inertia-link
-          :href="route('admin.download.index')"
-          class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
-        >
-          <span>{{ __("Cancel") }}</span>
-        </inertia-link>
+    <div class="px-10 py-8 mx-auto max-w-6xl text-foreground">
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
       </div>
 
-      <div class="mt-10 sm:mt-0">
-        <div class="md:grid md:grid-cols-3 md:gap-6">
-          <div class="md:col-span-1">
-            <div class="px-4 sm:px-0">
-              <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-400">
-                {{ __("Overview") }}
-              </h3>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                {{ __("Using downloads you can safely provide your users way to download anything like resource packs etc.") }}
-              </p>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
-                {{ __("You can restrict the download to a paricular role and even hide actual external download URL from end user by stream the file directly from within minetrax.") }}
-              </p>
-            </div>
-          </div>
-          <div class="mt-5 md:mt-0 md:col-span-2">
-            <form @submit.prevent="addDownload">
-              <div class="shadow overflow-hidden sm:rounded-md">
-                <div class="px-4 py-5 bg-white dark:bg-cool-gray-800 sm:p-6">
-                  <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-6">
-                      <x-input
-                        id="name"
-                        v-model="form.name"
-                        :label="__('Download Name/Title')"
-                        :error="form.errors.name"
-                        type="text"
-                        name="name"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-6">
-                      <textarea
-                        id="description"
-                        v-model="form.description"
-                        aria-label="description"
-                        name="description"
-                        class="mt-1 focus:ring-light-blue-500 focus:border-light-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                      <jet-input-error
-                        :message="form.errors.description"
-                        class="mt-2"
-                      />
-                    </div>
-
-                    <div class="flex items-center col-span-6 sm:col-span-3">
-                      <x-checkbox
-                        id="is_external"
-                        v-model="form.is_external"
-                        :label="__('External URL')"
-                        :help="__('If you want to link to an external file, check this.')"
-                        name="is_external"
-                        :error="form.errors.is_external"
-                      />
-                    </div>
-
-                    <div
-                      v-if="form.is_external"
-                      class="flex items-center col-span-6 sm:col-span-3"
-                    >
-                      <x-checkbox
-                        id="is_external_url_hidden"
-                        v-model="form.is_external_url_hidden"
-                        :label="__('Hide External URL')"
-                        :help="__('Hide the actual external URL from end users.')"
-                        name="is_external_url_hidden"
-                        :error="form.errors.is_external_url_hidden"
-                      />
-                    </div>
-
-                    <div
-                      v-if="form.is_external"
-                      class="col-span-6 sm:col-span-6"
-                    >
-                      <x-input
-                        id="file_url"
-                        v-model="form.file_url"
-                        :label="__('File Download URL')"
-                        :error="form.errors.file_url"
-                        :help="__('Eg: http://s3.amazonaws.com/bucket/file.zip')"
-                        type="text"
-                        name="file_url"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div
-                      v-if="form.is_external"
-                      class="col-span-6 sm:col-span-6"
-                    >
-                      <x-input
-                        id="file_name"
-                        v-model="form.file_name"
-                        :label="__('File Name (with extension)')"
-                        :error="form.errors.file_name"
-                        :help="__('Eg: file.zip')"
-                        type="text"
-                        name="file_name"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div
-                      v-if="!form.is_external"
-                      class="col-span-6 sm:col-span-6"
-                    >
-                      <label
-                        for="file"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-400"
-                      >{{ __("File") }}</label>
-                      <input
-                        id="file"
-                        ref="file"
-                        type="file"
-                        class="block p-2 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                      >
-                      <jet-input-error
-                        :message="form.errors.file"
-                        class="mt-2"
-                      />
-                    </div>
-
-                    <div class="flex items-center col-span-6 sm:col-span-3">
-                      <x-checkbox
-                        id="is_only_auth"
-                        v-model="form.is_only_auth"
-                        :label="__('Authenticated Users Only')"
-                        :help="__('If only authenticated users should be able to view & download this file.')"
-                        name="is_only_auth"
-                        :error="form.errors.is_only_auth"
-                      />
-                    </div>
-
-                    <div
-                      v-if="form.is_only_auth"
-                      class="col-span-6 sm:col-span-3"
-                    >
-                      <x-input
-                        id="min_role_weight_required"
-                        v-model="form.min_role_weight_required"
-                        :label="__('Minimum Role Weight')"
-                        :help="__('The minimum role weight required to download. Leave empty to allow all authenticated users.')"
-                        :error="form.errors.min_role_weight_required"
-                        type="number"
-                        name="min_role_weight_required"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div class="flex items-center col-span-6 sm:col-span-6">
-                      <x-checkbox
-                        id="is_active"
-                        v-model="form.is_active"
-                        :label="__('Active')"
-                        :help="__('Active downloads are visible to end users.')"
-                        name="is_active"
-                        :error="form.errors.is_active"
-                      />
-                    </div>
-                  </div>
+      <div class="mt-6">
+        <form @submit.prevent="addDownload">
+          <div class="shadow overflow-hidden rounded-lg">
+            <div class="px-4 py-5 bg-card sm:p-6">
+              <div class="grid grid-cols-6 gap-6">
+                <div class="col-span-6 sm:col-span-6">
+                  <XInput
+                    id="name"
+                    v-model="form.name"
+                    :label="__('Download Name/Title')"
+                    :error="form.errors.name"
+                    type="text"
+                    name="name"
+                  />
                 </div>
-                <div class="px-4 py-3 bg-gray-50 dark:bg-cool-gray-800 sm:px-6 flex justify-end">
-                  <loading-button
-                    :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
-                    type="submit"
+
+                <div class="col-span-6 sm:col-span-6">
+                  <XTextarea
+                    id="description"
+                    v-model="form.description"
+                    :label="__('Description')"
+                    :error="form.errors.description"
+                    name="description"
+                  />
+                </div>
+
+                <div class="flex items-center col-span-6 sm:col-span-3">
+                  <XSwitch
+                    id="is_external"
+                    v-model="form.is_external"
+                    :label="__('External URL')"
+                    :help="__('If you want to link to an external file, check this.')"
+                    name="is_external"
+                    :error="form.errors.is_external"
+                  />
+                </div>
+
+                <div
+                  v-if="form.is_external"
+                  class="flex items-center col-span-6 sm:col-span-3"
+                >
+                  <XSwitch
+                    id="is_external_url_hidden"
+                    v-model="form.is_external_url_hidden"
+                    :label="__('Hide External URL')"
+                    :help="__('Hide the actual external URL from end users.')"
+                    name="is_external_url_hidden"
+                    :error="form.errors.is_external_url_hidden"
+                  />
+                </div>
+
+                <div
+                  v-if="form.is_external"
+                  class="col-span-6 sm:col-span-6"
+                >
+                  <XInput
+                    id="file_url"
+                    v-model="form.file_url"
+                    :label="__('File Download URL')"
+                    :error="form.errors.file_url"
+                    :help="__('Eg: http://s3.amazonaws.com/bucket/file.zip')"
+                    type="text"
+                    name="file_url"
+                  />
+                </div>
+
+                <div
+                  v-if="form.is_external"
+                  class="col-span-6 sm:col-span-6"
+                >
+                  <XInput
+                    id="file_name"
+                    v-model="form.file_name"
+                    :label="__('File Name (with extension)')"
+                    :error="form.errors.file_name"
+                    :help="__('Eg: file.zip')"
+                    type="text"
+                    name="file_name"
+                  />
+                </div>
+
+                <div
+                  v-if="!form.is_external"
+                  class="col-span-6 sm:col-span-6"
+                >
+                  <label
+                    for="file"
+                    class="block text-sm font-medium text-foreground mb-2"
+                  >{{ __("File") }}</label>
+                  <input
+                    id="file"
+                    ref="fileInput"
+                    type="file"
+                    class="block p-2 w-full text-sm text-foreground border border-input rounded-lg cursor-pointer bg-background focus:outline-none"
                   >
-                    {{ __("Add Download") }}
-                  </loading-button>
+                  <p
+                    v-if="form.errors.file"
+                    class="text-xs text-destructive mt-2"
+                  >
+                    {{ form.errors.file }}
+                  </p>
+                </div>
+
+                <div class="flex items-center col-span-6 sm:col-span-3">
+                  <XSwitch
+                    id="is_only_auth"
+                    v-model="form.is_only_auth"
+                    :label="__('Authenticated Users Only')"
+                    :help="__('If only authenticated users should be able to view & download this file.')"
+                    name="is_only_auth"
+                    :error="form.errors.is_only_auth"
+                  />
+                </div>
+
+                <div
+                  v-if="form.is_only_auth"
+                  class="col-span-6 sm:col-span-3"
+                >
+                  <XInput
+                    id="min_role_weight_required"
+                    v-model="form.min_role_weight_required"
+                    :label="__('Minimum Role Weight')"
+                    :help="__('The minimum role weight required to download. Leave empty to allow all authenticated users.')"
+                    :error="form.errors.min_role_weight_required"
+                    type="number"
+                    name="min_role_weight_required"
+                  />
+                </div>
+
+                <div class="flex items-center col-span-6 sm:col-span-6">
+                  <XSwitch
+                    id="is_active"
+                    v-model="form.is_active"
+                    :label="__('Active')"
+                    :help="__('Active downloads are visible to end users.')"
+                    name="is_active"
+                    :error="form.errors.is_active"
+                  />
                 </div>
               </div>
-            </form>
+            </div>
+            <div class="px-4 py-3 bg-card border-t border-border sm:px-6 flex justify-end gap-2">
+              <Button
+                variant="outline"
+                as-child
+              >
+                <Link :href="route('admin.download.index')">
+                  {{ __("Cancel") }}
+                </Link>
+              </Button>
+              <Button
+                type="submit"
+                :disabled="form.processing"
+              >
+                <svg
+                  v-if="form.processing"
+                  class="animate-spin -ml-1 mr-2 h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                {{ __("Add Download") }}
+              </Button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </AdminLayout>
 </template>
-
-<script>
-import JetInputError from '@/Jetstream/InputError.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import EasyMDE from 'easymde';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-
-export default {
-    components: {
-        AdminLayout,
-        JetInputError,
-        LoadingButton,
-        XInput,
-        XCheckbox,
-    },
-    data() {
-        return {
-            form: useForm({
-                name: null,
-                description: '',
-                is_external: false,
-                file_url: null,
-                file_name: null,
-                is_external_url_hidden: false,
-                is_only_auth: false,
-                min_role_weight_required: null,
-                is_active: true,
-                file: null,
-            }),
-            easyMDE: null
-        };
-    },
-
-    mounted() {
-        this.easyMDE = new EasyMDE({
-            previewClass: 'editor-preview prose max-w-none'
-        });
-    },
-
-    methods: {
-        addDownload() {
-            if (!this.form.is_external && this.$refs.file) {
-                this.form.file = this.$refs.file.files[0];
-            }
-
-            this.form.description = this.easyMDE.value();
-
-            this.form.post(route('admin.download.store'), {});
-        },
-    }
-};
-</script>
-

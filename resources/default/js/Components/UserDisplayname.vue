@@ -27,7 +27,7 @@ defineProps({
 
 <template>
   <div
-    class="leading-6 text-black dark:text-gray-200"
+    class="leading-6 text-black dark:text-foreground"
     :class="textClass"
     :style="[user.roles[0].color ? {color: user.roles[0].color} : null]"
   >
@@ -36,7 +36,7 @@ defineProps({
     </span>
     <span
       v-if="showUsername"
-      class="text-gray-500 dark:text-gray-300"
+      class="text-foreground dark:text-foreground"
     > @{{ user.username }}</span>
 
     <Icon
@@ -44,7 +44,7 @@ defineProps({
       v-tippy
       name="verified-check-fill"
       :title="__('Verified Account')"
-      class="inline mb-1 fill-current focus:outline-none text-light-blue-400"
+      class="inline mb-1 fill-current focus:outline-none text-primary"
       :class="iconClass"
     />
     <Icon
@@ -60,7 +60,7 @@ defineProps({
       v-tippy
       name="volume-off-fill"
       :title="__('Muted User')"
-      class="inline mb-1 text-red-500 fill-current focus:outline-none"
+      class="inline mb-1 text-error-500 fill-current focus:outline-none"
       :class="iconClass"
     />
 
@@ -70,7 +70,7 @@ defineProps({
         :key="badge.id"
         v-tippy
         :title="badge.name"
-        class="inline mb-1 ml-0.5 text-red-500 fill-current focus:outline-none"
+        class="inline mb-1 ml-0.5 text-error-500 fill-current focus:outline-none"
         :class="iconClass"
         :src="badge.photo_url"
         :alt="badge.name"

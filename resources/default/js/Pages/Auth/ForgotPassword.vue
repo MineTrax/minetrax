@@ -5,13 +5,13 @@
     />
 
     <jet-authentication-card>
-      <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+      <div class="mb-4 text-sm text-foreground dark:text-foreground">
         {{ __("Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.") }}
       </div>
 
       <div
         v-if="status"
-        class="mb-4 font-medium text-sm text-green-600 dark:text-green-400"
+        class="mb-4 font-medium text-sm text-success-600 dark:text-success-400"
       >
         {{ status }}
       </div>
@@ -35,7 +35,7 @@
         <div class="flex items-center justify-end mt-4">
           <loading-button
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+            class="ml-4"
           >
             {{ __("Email Password Reset Link") }}
           </loading-button>
