@@ -54,7 +54,7 @@
                   :content="player.country?.name"
                   v-if="player.country"
                   class="h-6 w-6"
-                  :src="`/images/flags/flags-iso/shiny/48/${player.country?.iso_code?.toLowerCase() ?? '_unknown'}.png`"
+                  :src="player.country?.photo_path"
                   :alt="player.country?.name"
                 >
               </td>
