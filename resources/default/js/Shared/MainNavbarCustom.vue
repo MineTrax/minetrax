@@ -67,7 +67,7 @@ const logout = () => {
                 </NavigationMenuList>
 
                 <!-- Mobile Menu -->
-                <div class="flex items-center -mr-2 md:hidden">
+                <div class="flex items-center -mr-2 space-x-2 md:hidden">
                     <color-theme-toggle class="flex items-center justify-center space-x-8 md:ml-8 md:hidden" />
 
                     <Sheet>
@@ -77,7 +77,7 @@ const logout = () => {
                         <SheetContent class="bg-sidebar overflow-y-auto">
                             <div class="mt-4">
                                 <div class="flex mb-2">
-                                    <search class="inline-block md:hidden" />
+                                    <search class="inline-block md:hidden" :disable-autofocus="true" />
                                 </div>
 
                                 <NavDynamicItemResponsive v-for="item in leftItems" :key="item.key"

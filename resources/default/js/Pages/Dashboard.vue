@@ -41,11 +41,12 @@
           v-if="generalSettings.enable_welcomebox"
           :html-data="welcomeBoxContentHtml"
         />
+
+        <LatestPinnedNews :newslist="pinnedNewsList" />
         <IngameChatBox
           :default-server-id="chatDefaultServerId"
           :server-list="chatServerList"
         />
-        <LatestPinnedNews :newslist="pinnedNewsList" />
         <TopPlayersListBox
           :enabled="generalSettings.enable_topplayersbox"
           :players="top10Players"

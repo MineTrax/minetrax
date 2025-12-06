@@ -2,6 +2,7 @@
   <div ref="searchContainer" class="relative mx-auto text-foreground">
     <form @submit.prevent="performSearch">
       <input
+        ref="searchInput"
         v-model="searchString"
         aria-label="search"
         class="border bg-background h-10 px-5 pr-10 w-48 rounded-full text-sm focus:outline-none focus:ring-0 transition-all duration-300 ease-in-out"
@@ -10,9 +11,11 @@
         name="search"
         :placeholder="__('Search..')"
         autocomplete="off"
+        :tabindex="disableAutofocus && !isUserInteracted ? -1 : 0"
         @input="performSearch"
-        @focus="isFocused = true"
+        @focus="handleFocus"
         @blur="handleBlur"
+        @click="handleClick"
       >
       <button
         type="submit"
@@ -156,13 +159,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import Icon from '@/Components/Icon.vue';
 import { debounce } from 'lodash/function';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 
-// Template ref
+// Props
+const props = defineProps({
+    disableAutofocus: {
+        type: Boolean,
+        default: false
+    }
+});
+
+// Template refs
 const searchContainer = ref(null);
+const searchInput = ref(null);
 
 // Reactive data
 const showResults = ref(false);
@@ -191,6 +203,27 @@ const performSearch = debounce(() => {
         });
 }, 200);
 
+// Track user interaction to allow manual focus
+const isUserInteracted = ref(false);
+
+// Handle click event - restore tabindex to allow focus
+const handleClick = () => {
+    if (props.disableAutofocus && !isUserInteracted.value) {
+        isUserInteracted.value = true;
+        // Small delay to ensure tabindex is updated before focus
+        nextTick(() => {
+            if (searchInput.value) {
+                searchInput.value.focus();
+            }
+        });
+    }
+};
+
+// Handle focus event
+const handleFocus = () => {
+    isFocused.value = true;
+};
+
 // Handle blur event
 const handleBlur = () => {
     // Use setTimeout to allow click events on results to fire first
@@ -215,6 +248,21 @@ const handleClickOutside = (e) => {
 // Lifecycle hooks
 onMounted(() => {
     window.addEventListener('click', handleClickOutside);
+
+    // If autofocus is disabled, blur any automatic focus
+    if (props.disableAutofocus && searchInput.value) {
+        // Check and blur at various intervals to catch autofocus
+        const checkAndBlur = () => {
+            if (searchInput.value && document.activeElement === searchInput.value && !isUserInteracted.value) {
+                searchInput.value.blur();
+            }
+        };
+
+        nextTick(checkAndBlur);
+        setTimeout(checkAndBlur, 50);
+        setTimeout(checkAndBlur, 100);
+        setTimeout(checkAndBlur, 200);
+    }
 });
 
 onUnmounted(() => {
