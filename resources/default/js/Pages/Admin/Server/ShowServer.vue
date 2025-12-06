@@ -15,6 +15,7 @@ import { useAuthorizable } from '@/Composables/useAuthorizable';
 import { useHelpers } from '@/Composables/useHelpers';
 import { useTranslations } from '@/Composables/useTranslations';
 import { Card, CardContent } from '@/Components/ui/card';
+import { Input } from '@/Components/ui/input';
 
 const { can } = useAuthorizable();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -110,7 +111,7 @@ const pollServerForConsoleLogs = (term) => {
 
 onMounted(() => {
     const theme = {
-        background: '#111827',
+        background: 'black',
         cursor: 'transparent',
         black: 'rgb(19, 26, 32)',
         red: '#E54B4B',
@@ -519,7 +520,7 @@ onUnmounted(() => {
 
 
       <Card>
-        <CardContent class="p-3">
+        <CardContent class="p-5 space-y-4">
           <div class="flex justify-between">
             <h3 class="mb-1 font-extrabold text-foreground">
               {{ __("Server Logs") }}
@@ -529,16 +530,16 @@ onUnmounted(() => {
             id="terminal"
             class="break-normal"
           />
-          <form @submit.prevent="sendCommandToServer">
-            <input
+          <form @submit.prevent="sendCommandToServer" class="space-y-2">
+            <Input
               ref="inputbox"
               v-model="commandText"
               :disabled="sendingCommand"
               aria-label="Commander"
-              class="block w-full mt-1 bg-muted border-none rounded focus:ring-ring sm:text-sm disabled:opacity-50 focus:bg-background"
               type="text"
               :placeholder="__('Type a command and press Enter to run...')"
-            >
+              class="w-full"
+            />
             <span
               v-if="commandError"
               class="text-xs text-destructive"
