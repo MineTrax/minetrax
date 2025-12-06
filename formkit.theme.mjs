@@ -130,6 +130,7 @@ const classes = {
         "select-none": true,
         "group-data-[disabled]:!cursor-not-allowed": true,
         "peer-disabled:bg-muted": true,
+        "peer-disabled:peer-checked:text-muted-foreground": true,
         "group-data-[disabled]:grayscale": true,
         "shadow-sm": true,
         "peer-disabled:cursor-not-allowed": true,
