@@ -31,7 +31,7 @@ defineProps({
 
 <template>
     <Card>
-        <CardContent class="flex space-x-4 justify-between items-center">
+        <CardContent class="p-4 flex space-x-4 justify-between items-center">
             <div>
                 <h3 class="text-sm font-semibold mb-2" :class="color">
                     {{ title }}

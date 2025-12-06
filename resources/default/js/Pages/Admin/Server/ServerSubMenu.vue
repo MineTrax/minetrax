@@ -14,8 +14,8 @@ defineProps({
 
 <template>
   <Card class="p-4">
-    <ul class="flex font-semibold">
-      <li class="mr-6">
+    <ul class="flex font-semibold gap-3">
+      <li>
         <Link
           class="text-foreground rounded px-2 py-1.5 hover:bg-muted"
           :class="{ 'bg-muted text-foreground' : route().current('admin.server.show') }"
@@ -24,7 +24,7 @@ defineProps({
           {{ __("Overview") }}
         </Link>
       </li>
-      <li class="mr-6">
+      <li>
         <Link
           :href="route('admin.server.show.stats', id)"
           class="text-foreground rounded px-2 py-1.5 hover:bg-muted"
@@ -35,7 +35,6 @@ defineProps({
       </li>
       <li
         v-if="can('view server_intel')"
-        class="mr-6"
       >
         <Link
           :href="route('admin.intel.server.performance', {servers: [id]})"
@@ -46,7 +45,6 @@ defineProps({
       </li>
       <li
         v-if="can('view server_intel')"
-        class="mr-6"
       >
         <Link
           :href="route('admin.intel.server.index', {servers: [id]})"

@@ -308,7 +308,7 @@ body.swal2-shown > [aria-hidden="true"] {
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14.2857% 95.8824%;
     --secondary-foreground: 215 13.7931% 34.1176%;
-    --muted: 210 20% 98.0392%;
+    --muted: 210 20% 95.0392%;
     --muted-foreground: 220 8.9362% 46.0784%;
     --accent: 204 93.75% 93.7255%;
     --accent-foreground: 224.4444 64.2857% 32.9412%;
@@ -362,7 +362,7 @@ body.swal2-shown > [aria-hidden="true"] {
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 14.902%;
     --secondary-foreground: 0 0% 89.8039%;
-    --muted: 0 0% 14.902%;
+    --muted: 0 0% 10.902%;
     --muted-foreground: 0 0% 63.9216%;
     --accent: 224.4444 64.2857% 32.9412%;
     --accent-foreground: 213.3333 96.9231% 87.2549%;
