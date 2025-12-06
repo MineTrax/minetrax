@@ -57,9 +57,9 @@ const breadcrumbItems = [
         current: false
     },
     {
-        text: __('My Application Requests'),
+        text: __('My Requests'),
         url: route('recruitment-submission.index'),
-        current: true
+        current: false
     },
     {
         text: __('Submission #') + props.submission.id,

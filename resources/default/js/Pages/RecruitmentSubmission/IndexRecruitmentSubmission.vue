@@ -35,7 +35,7 @@ const breadcrumbItems = [
         current: false
     },
     {
-        text: __('My Application Requests'),
+        text: __('My Requests'),
         url: route('recruitment-submission.index'),
         current: true
     }
@@ -103,7 +103,7 @@ const headerRow = [
             <td
               class="text-sm px-4 font-medium text-left text-foreground whitespace-nowrap dark:text-foreground"
             >
-              <InertiaLink
+              <Link
                 as="a"
                 class="hover:underline"
                 :href="route('recruitment-submission.show', {
@@ -112,11 +112,20 @@ const headerRow = [
                 })"
               >
                 {{ item.id }}
-              </InertiaLink>
+              </Link>
             </td>
 
             <DtRowItem>
-              {{ item.recruitment.title }}
+              <Link
+                as="a"
+                :href="route('recruitment-submission.show', {
+                  submission: item.id,
+                  recruitment: item.recruitment.slug
+                })"
+                class="hover:text-primary hover:underline"
+              >
+                {{ item.recruitment.title }}
+              </Link>
             </DtRowItem>
 
             <DtRowItem>

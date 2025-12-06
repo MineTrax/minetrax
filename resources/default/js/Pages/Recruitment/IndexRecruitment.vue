@@ -106,7 +106,7 @@ const headerRow = [
             as-child
           >
             <Link :href="route('recruitment-submission.index')">
-              {{ __("View My Applications") }}
+              {{ __("View My Requests") }}
             </Link>
           </Button>
         </div>

@@ -6,7 +6,7 @@
 
         <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
             <div class="flex space-x-4 mb-4 justify-between md:justify-normal">
-                <h1 class="font-bold text-3xl text-foreground">
+                <h1 class="font-bold text-2xl text-foreground">
                     {{ __("Notifications") }}
                 </h1>
                 <div class="flex">
