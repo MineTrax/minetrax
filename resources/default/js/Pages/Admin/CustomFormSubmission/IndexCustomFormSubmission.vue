@@ -124,7 +124,12 @@ const breadcrumbItems = [
         current: false,
     },
     {
-        text: props.archived ? __('Archived Custom Form Submissions') : __('Custom Form Submissions'),
+      text: __('Custom Forms'),
+      url: route('admin.custom-form.index'),
+      current: false,
+    },
+    {
+        text: props.archived ? __('Archived Submissions') : __('Submissions'),
         current: true,
     }
 ];

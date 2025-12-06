@@ -141,7 +141,11 @@ const breadcrumbItems = [
         current: false,
     },
     {
-        text: props.closed ? __('Closed Requests - Applications') : __('Open Requests - Applications'),
+      text: __('Applications'),
+      current: false,
+    },
+    {
+        text: props.closed ? __('Closed Requests') : __('Open Requests'),
         current: true,
     }
 ];

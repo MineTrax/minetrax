@@ -45,9 +45,7 @@ const rejectForm = useForm({
     reason: '',
 });
 
-const isClosed = computed(() => {
-    return ['approved', 'rejected', 'withdrawn'].includes(props.submission.status.value);
-});
+const isClosed = ['approved', 'rejected', 'withdrawn'].includes(props.submission.status.value);
 
 const breadcrumbItems = [
     {
