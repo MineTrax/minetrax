@@ -33,7 +33,7 @@ const breadcrumbItems = [
     },
     {
         text: __('Servers'),
-        link: route('admin.server.index'),
+        url: route('admin.server.index'),
         current: false,
     },
     {

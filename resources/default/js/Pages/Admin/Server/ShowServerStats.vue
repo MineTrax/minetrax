@@ -27,11 +27,12 @@ const breadcrumbItems = [
     },
     {
         text: __('Servers'),
-        link: route('admin.server.index'),
+        url: route('admin.server.index'),
         current: false,
     },
     {
         text: props.server.name,
+        url: route('admin.server.show', props.server.id),
         current: false,
     },
     {
