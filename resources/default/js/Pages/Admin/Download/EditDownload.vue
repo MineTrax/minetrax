@@ -7,8 +7,7 @@ import { Link, useForm } from '@inertiajs/vue3';
 import XInput from '@/Components/Form/XInput.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import XSwitch from '@/Components/Form/XSwitch.vue';
-import { onMounted } from 'vue';
-import EasyMDE from 'easymde';
+import TipTapEditor from '@/Components/TipTapEditor.vue';
 
 const { __ } = useTranslations();
 
@@ -36,7 +35,7 @@ const breadcrumbItems = [
     }
 ];
 
-let easyMDE = null;
+
 
 const form = useForm({
     name: props.download.name,
@@ -49,15 +48,9 @@ const form = useForm({
     '_method': 'PUT',
 });
 
-onMounted(() => {
-    easyMDE = new EasyMDE({
-        previewClass: 'editor-preview prose max-w-none'
-    });
-});
+
 
 function updateDownload() {
-    form.description = easyMDE.value();
-
     form.post(route('admin.download.update', props.download.id), {});
 }
 </script>
@@ -92,13 +85,16 @@ function updateDownload() {
                 </div>
 
                 <div class="col-span-6 sm:col-span-6">
-                  <XTextarea
+                  <TipTapEditor
                     id="description"
                     v-model="form.description"
-                    :label="__('Description')"
-                    :error="form.errors.description"
-                    name="description"
                   />
+                  <p
+                    v-if="form.errors.description"
+                    class="text-xs text-destructive mt-2"
+                  >
+                    {{ form.errors.description }}
+                  </p>
                 </div>
 
                 <div class="flex items-center col-span-6 sm:col-span-3">

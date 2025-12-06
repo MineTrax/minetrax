@@ -11,7 +11,7 @@ import { Codemirror } from 'vue-codemirror';
 import { basicSetup } from 'codemirror';
 import { html } from '@codemirror/lang-html';
 import { oneDark } from '@/Data/CodeMirror/darkTheme.js';
-import EasyMDE from 'easymde';
+import TipTapEditor from '@/Components/TipTapEditor.vue';
 import { onMounted, ref, shallowRef } from 'vue';
 
 const { __ } = useTranslations();
@@ -64,11 +64,11 @@ const handleReady = (payload) => {
     view.value = payload.view;
 };
 
-let easyMDE = null;
+
 
 const createCustomPage = () => {
     if (pageType.value === 'markdown') {
-        form.body = easyMDE.value();
+        form.body = bodyMarkdown.value;
     } else if (pageType.value === 'html') {
         form.body = view.value.state.doc.toString();
     }
@@ -77,11 +77,7 @@ const createCustomPage = () => {
     form.post(route('admin.custom-page.store'), {});
 };
 
-onMounted(() => {
-    easyMDE = new EasyMDE({
-        previewClass: 'editor-preview prose max-w-none',
-    });
-});
+
 </script>
 
 <template>
@@ -187,12 +183,9 @@ onMounted(() => {
                   v-show="pageType === 'markdown'"
                   class="col-span-6 sm:col-span-6"
                 >
-                  <textarea
+                  <TipTapEditor
                     id="body"
                     v-model="bodyMarkdown"
-                    aria-label="body"
-                    name="body"
-                    class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-input bg-background rounded-md"
                   />
                   <p
                     v-if="form.errors.body"

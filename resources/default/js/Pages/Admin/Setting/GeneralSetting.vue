@@ -599,12 +599,9 @@
                             v-show="form.enable_welcomebox"
                             class="col-span-6 sm:col-span-6"
                           >
-                            <textarea
+                            <TipTapEditor
                               id="welcomebox_content"
                               v-model="form.welcomebox_content"
-                              aria-label="welcomebox"
-                              name="welcomebox_content"
-                              class="block w-full mt-1 border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
                             />
                             <jet-input-error
                               :message="form.errors.welcomebox_content"
@@ -663,7 +660,7 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import Icon from '@/Components/Icon.vue';
-import EasyMDE from 'easymde';
+import TipTapEditor from '@/Components/TipTapEditor.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
 import Draggable from 'vuedraggable';
 import { useForm } from '@inertiajs/vue3';
@@ -680,7 +677,8 @@ export default {
         Icon,
         XInput,
         Draggable,
-        ArrowsUpDownIcon
+        ArrowsUpDownIcon,
+        TipTapEditor
     },
     props: {
         settings: {
@@ -691,7 +689,7 @@ export default {
 
     data() {
         return {
-            easyMDE: null,
+
             form: useForm({
                 site_name: this.settings.site_name,
                 enable_mcserver_onlineplayersbox: this.settings.enable_mcserver_onlineplayersbox,
@@ -738,12 +736,7 @@ export default {
         };
     },
 
-    mounted() {
-        this.easyMDE = new EasyMDE({
-            previewClass: 'editor-preview prose max-w-none',
-            element: document.querySelector('#welcomebox_content')
-        });
-    },
+
 
     methods: {
         updatePhotoPreview() {
@@ -792,7 +785,7 @@ export default {
                 this.form.photo_dark = this.$refs.photo_dark.files[0];
             }
 
-            this.form.welcomebox_content = this.easyMDE.value();
+
 
             this.form.post(route('admin.setting.general.update'), {
                 preserveScroll: true,

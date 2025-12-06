@@ -1,5 +1,5 @@
 @import "../../../node_modules/vue-datepicker-next/index.css";
-@import "../../../node_modules/easymde/dist/easymde.min.css";
+
 @import "../../../node_modules/tippy.js/dist/tippy.css";
 @import "../../../node_modules/tippy.js/animations/perspective.css";
 @import "../../../node_modules/vue-multiselect/dist/vue-multiselect.css";
@@ -235,9 +235,7 @@ body.swal2-shown > [aria-hidden="true"] {
     background-color: inherit;
 }
 
-.cm-s-easymde .CodeMirror-cursor {
-    border-color: hsl(var(--secondary));
-}
+
 
 .no-disabled-effect .data-\[disabled\]\:opacity-50[data-disabled] {
     opacity: 1;

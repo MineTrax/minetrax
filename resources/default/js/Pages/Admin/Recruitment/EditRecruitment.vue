@@ -68,12 +68,9 @@
                     </div>
 
                     <div class="col-span-6 sm:col-span-6">
-                      <textarea
+                      <TipTapEditor
                         id="description"
                         v-model="form.description"
-                        aria-label="description"
-                        name="description"
-                        class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-foreground rounded-md"
                       />
                       <jet-input-error
                         :message="form.errors.description
@@ -508,7 +505,6 @@ import LoadingButton from '@/Components/LoadingButton.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XCheckbox from '@/Components/Form/XCheckbox.vue';
-import EasyMDE from 'easymde';
 import { onMounted, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
@@ -520,6 +516,7 @@ import {useFormKit} from '@/Composables/useFormKit';
 import { kebabCase } from 'lodash';
 import Draggable from 'vuedraggable';
 import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline';
+import TipTapEditor from '@/Components/TipTapEditor.vue';
 
 const props = defineProps({
     roles: {
@@ -583,10 +580,7 @@ const form = useForm({
     fields: props.recruitment.fields || [],
 });
 
-let easyMDE = null;
-
 const updateRecruitment = () => {
-    form.description = easyMDE.value();
     form.fields.map(item => {
         item.name = item.label.toLowerCase().replace(/ /g, '_');
     });
@@ -594,11 +588,7 @@ const updateRecruitment = () => {
     form.post(route('admin.recruitment.update', props.recruitment.id), {});
 };
 
-onMounted(() => {
-    easyMDE = new EasyMDE({
-        previewClass: 'editor-preview prose max-w-none',
-    });
-});
+
 
 function addField() {
     form.fields.push({

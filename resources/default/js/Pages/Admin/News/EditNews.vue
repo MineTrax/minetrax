@@ -8,8 +8,8 @@ import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XSwitch from '@/Components/Form/XSwitch.vue';
 import ImageUpload from '@/Components/Form/ImageUpload.vue';
-import EasyMDE from 'easymde';
-import { onMounted, ref } from 'vue';
+import TipTapEditor from '@/Components/TipTapEditor.vue';
+import { ref } from 'vue';
 
 const { __ } = useTranslations();
 
@@ -37,7 +37,6 @@ const breadcrumbItems = [
     }
 ];
 
-const easyMDE = ref(null);
 
 const form = useForm({
     title: props.news.title,
@@ -50,15 +49,9 @@ const form = useForm({
     '_method': 'PUT'
 });
 
-onMounted(() => {
-    easyMDE.value = new EasyMDE({
-        element: document.getElementById('body'),
-        previewClass: 'editor-preview prose max-w-none'
-    });
-});
+
 
 function updateNews() {
-    form.body = easyMDE.value.value();
     form.post(route('admin.news.update', props.news.id), {
         preserveScroll: true
     });
@@ -127,11 +120,10 @@ function updateNews() {
                     for="body"
                     class="block text-sm font-medium text-foreground mb-2"
                   >{{ __("Content") }}</label>
-                  <textarea
+                  <TipTapEditor
                     id="body"
                     v-model="form.body"
-                    aria-label="body"
-                    name="body"
+                    class="min-h-[400px]"
                   />
                   <p
                     v-if="form.errors.body"

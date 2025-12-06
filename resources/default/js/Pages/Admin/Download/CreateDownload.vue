@@ -7,8 +7,8 @@ import { Link, useForm } from '@inertiajs/vue3';
 import XInput from '@/Components/Form/XInput.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import XSwitch from '@/Components/Form/XSwitch.vue';
-import { ref, onMounted } from 'vue';
-import EasyMDE from 'easymde';
+import TipTapEditor from '@/Components/TipTapEditor.vue';
+import { ref } from 'vue';
 
 const { __ } = useTranslations();
 
@@ -29,7 +29,6 @@ const breadcrumbItems = [
 ];
 
 const fileInput = ref(null);
-let easyMDE = null;
 
 const form = useForm({
     name: null,
@@ -44,18 +43,12 @@ const form = useForm({
     file: null,
 });
 
-onMounted(() => {
-    easyMDE = new EasyMDE({
-        previewClass: 'editor-preview prose max-w-none'
-    });
-});
+
 
 function addDownload() {
     if (!form.is_external && fileInput.value) {
         form.file = fileInput.value.files[0];
     }
-
-    form.description = easyMDE.value();
 
     form.post(route('admin.download.store'), {});
 }
@@ -91,13 +84,16 @@ function addDownload() {
                 </div>
 
                 <div class="col-span-6 sm:col-span-6">
-                  <XTextarea
+                  <TipTapEditor
                     id="description"
                     v-model="form.description"
-                    :label="__('Description')"
-                    :error="form.errors.description"
-                    name="description"
                   />
+                  <p
+                    v-if="form.errors.description"
+                    class="text-xs text-destructive mt-2"
+                  >
+                    {{ form.errors.description }}
+                  </p>
                 </div>
 
                 <div class="flex items-center col-span-6 sm:col-span-3">
