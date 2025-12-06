@@ -178,6 +178,8 @@ function getServerWebQueryStatus(serverId) {
         <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
         <div class="flex gap-2">
           <Button
+          v-tippy
+            :title="__('Force Resync')"
             v-if="can('create servers')"
             v-confirm="{
                 title: 'Force Resync!',
