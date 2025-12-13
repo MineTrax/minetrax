@@ -1,215 +1,193 @@
+<script setup>
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link, useForm } from '@inertiajs/vue3';
+import XInput from '@/Components/Form/XInput.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
+import ImageUpload from '@/Components/Form/ImageUpload.vue';
+
+const { __ } = useTranslations();
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Player Ranks'),
+        url: route('admin.rank.index'),
+        current: false,
+    },
+    {
+        text: __('Create Player Rank'),
+        current: true,
+    }
+];
+
+const form = useForm({
+    name: '',
+    shortname: '',
+    description: '',
+    total_score_needed: '',
+    total_play_time_needed: '',
+    photo: null,
+});
+
+function addRank() {
+    form.post(route('admin.rank.store'), {
+        preserveScroll: true
+    });
+}
+</script>
+
 <template>
   <AdminLayout>
     <app-head :title="__('Add Player Rank')" />
 
-    <div class="max-w-6xl px-10 py-12 mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Add Player Rank") }}
-        </h1>
-        <inertia-link
-          :href="route('admin.rank.index')"
-          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-surface-400 border border-transparent rounded-md dark:bg-surface-600 hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray"
-        >
-          <span>{{ __("Cancel") }}</span>
-        </inertia-link>
+    <div class="px-10 py-8 mx-auto max-w-6xl text-foreground">
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
       </div>
 
-      <div class="mt-10 sm:mt-0">
-        <div class="md:grid md:grid-cols-3 md:gap-6">
-          <div class="md:col-span-1">
-            <div class="px-4 sm:px-0">
-              <h3 class="text-lg font-medium leading-6 text-foreground dark:text-foreground">
-                {{ __("Overview") }}
-              </h3>
-              <p class="mt-1 text-sm text-foreground dark:text-foreground">
-                {{ __("Ranks are assigned to players when a given criteria is matched, eg: play time, score etc.") }}<br>{{ __("Play Time Need should be provided in Seconds. So if you want to add criteria to give rank if player played at-least 1 minute then you write 60") }}
-              </p>
-              <p class="mt-3 text-sm text-foreground dark:text-foreground">
-                {{ __("Each rank is sorted according to its weight. More the score and time is more the weight.") }}
-              </p>
-              <p class="mt-3 text-sm text-foreground dark:text-foreground">
-                {{ __("If you instead want to sync player rank from server to web, you can do that too from Settings -> Player Settings. Currently Luckperms is supported. Make sure to have same Short Name for rank name what you have chosen in Luckperms. While rank sync is enabled the criteria like score and time will be ignored but while adding ranks it is recommended to enter something in them so web know which rank has more weight.") }}
-              </p>
-            </div>
-          </div>
-          <div class="mt-5 md:mt-0 md:col-span-2">
-            <form @submit.prevent="addRank">
-              <div class="overflow-hidden shadow sm:rounded-md">
-                <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
-                  <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-4">
-                      <x-input
-                        id="name"
-                        v-model="form.name"
-                        :label="__('Rank Name')"
-                        :help="__('Eg: Knight')"
-                        :error="form.errors.name"
-                        type="text"
-                        name="name"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-2">
-                      <x-input
-                        id="shortname"
-                        v-model="form.shortname"
-                        :label="__('Short Name')"
-                        :help="__('Eg: knight')"
-                        :error="form.errors.shortname"
-                        type="text"
-                        name="shortname"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-3">
-                      <x-input
-                        id="total_score_needed"
-                        v-model="form.total_score_needed"
-                        :label="__('Score Needed')"
-                        :error="form.errors.total_score_needed"
-                        type="number"
-                        name="total_score_needed"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-3">
-                      <x-input
-                        id="total_play_time_needed"
-                        v-model="form.total_play_time_needed"
-                        :label="__('Play Time Needed')"
-                        :error="form.errors.total_play_time_needed"
-                        type="number"
-                        name="total_play_time_needed"
-                      />
-                    </div>
-
-
-                    <div class="col-span-6 sm:col-span-2">
-                      <!-- Profile Photo File Input -->
-                      <input
-                        id="rank_img"
-                        ref="photo"
-                        type="file"
-                        class="hidden"
-                        @change="updatePhotoPreview"
-                      >
-
-                      <label
-                        for="rank_img"
-                        class="block text-sm font-medium text-foreground dark:text-foreground"
-                      >{{ __("Rank Image") }}</label>
-
-
-                      <div
-                        v-show="photoPreview"
-                        class="mt-2"
-                      >
-                        <span
-                          class="block h-20"
-                          :style="'background-size: contain; background-repeat: no-repeat; background-image: url(\'' + photoPreview + '\');'"
-                        />
-                      </div>
-
-                      <jet-secondary-button
-                        class="mt-2 mr-2"
-                        type="button"
-                        @click.prevent="selectNewPhoto"
-                      >
-                        {{ __("Select A New Image") }}
-                      </jet-secondary-button>
-
-
-                      <jet-input-error
-                        :message="form.errors.photo"
-                        class="mt-2"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-4">
-                      <x-textarea
-                        id="description"
-                        v-model="form.description"
-                        :rows="10"
-                        :label="__('Description')"
-                        :error="form.errors.description"
-                        name="description"
-                      />
-                    </div>
-                  </div>
+      <div class="mt-6">
+        <form @submit.prevent="addRank">
+          <div class="shadow rounded-lg">
+            <div class="px-4 py-5 bg-card sm:p-6">
+              <div class="grid grid-cols-6 gap-6">
+                <div class="col-span-6">
+                  <ImageUpload
+                    id="photo"
+                    name="photo"
+                    :label="__('Rank Image')"
+                    :hint="__('A small image (Eg: 50x50) is recommended')"
+                    v-model="form.photo"
+                    :error="form.errors.photo"
+                    :removable="false"
+                    shape="rect"
+                    :preview-class="'h-32 w-32'"
+                    :upload-label="__('Upload')"
+                    :change-label="__('Change')"
+                    object-fit="contain"
+                  />
                 </div>
-                <div class="flex justify-end px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6">
-                  <loading-button
-                    :loading="form.processing"
-                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-                    type="submit"
-                  >
-                    {{ __("Add Rank") }}
-                  </loading-button>
+
+                <div class="col-span-6 sm:col-span-4">
+                  <XInput
+                    id="name"
+                    v-model="form.name"
+                    :label="__('Rank Name')"
+                    :help="__('Eg: Knight')"
+                    :error="form.errors.name"
+                    type="text"
+                    name="name"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-2">
+                  <XInput
+                    id="shortname"
+                    v-model="form.shortname"
+                    :label="__('Short Name')"
+                    :help="__('Eg: knight')"
+                    :error="form.errors.shortname"
+                    type="text"
+                    name="shortname"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <XInput
+                    id="total_score_needed"
+                    v-model="form.total_score_needed"
+                    :label="__('Score Needed')"
+                    :error="form.errors.total_score_needed"
+                    type="number"
+                    name="total_score_needed"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <XInput
+                    id="total_play_time_needed"
+                    v-model="form.total_play_time_needed"
+                    :label="__('Play Time Needed')"
+                    :help="__('Time in seconds. Eg: 60 for 1 minute')"
+                    :error="form.errors.total_play_time_needed"
+                    type="number"
+                    name="total_play_time_needed"
+                  />
+                </div>
+
+                <div class="col-span-6">
+                  <XTextarea
+                    id="description"
+                    v-model="form.description"
+                    :rows="5"
+                    :label="__('Description')"
+                    :error="form.errors.description"
+                    name="description"
+                  />
+                </div>
+
+                <div class="col-span-6">
+                  <p class="text-sm text-muted-foreground">
+                    {{ __("Ranks are assigned to players when a given criteria is matched, eg: play time, score etc.") }}
+                  </p>
+                  <p class="mt-2 text-sm text-muted-foreground">
+                    {{ __("Each rank is sorted according to its weight. More the score and time is more the weight.") }}
+                  </p>
+                  <p class="mt-2 text-sm text-muted-foreground">
+                    {{ __("If you instead want to sync player rank from server to web, you can do that too from Settings -> Player Settings. Currently Luckperms is supported. Make sure to have same Short Name for rank name what you have chosen in Luckperms. While rank sync is enabled the criteria like score and time will be ignored but while adding ranks it is recommended to enter something in them so web know which rank has more weight.") }}
+                  </p>
                 </div>
               </div>
-            </form>
+            </div>
+            <div class="px-4 py-3 bg-card border-t border-border sm:px-6 flex justify-end gap-2">
+              <Button
+                variant="outline"
+                as-child
+              >
+                <Link :href="route('admin.rank.index')">
+                  {{ __("Cancel") }}
+                </Link>
+              </Button>
+              <Button
+                type="submit"
+                :disabled="form.processing"
+              >
+                <svg
+                  v-if="form.processing"
+                  class="animate-spin -ml-1 mr-2 h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                {{ __("Add Rank") }}
+              </Button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </AdminLayout>
 </template>
-
-<script>
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import JetInputError from '@/Jetstream/InputError.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-
-export default {
-    components: {
-        AdminLayout,
-        XTextarea,
-        JetInputError,
-        LoadingButton,
-        JetSecondaryButton,
-        XInput
-    },
-    data() {
-        return {
-            form: useForm({
-                name: '',
-                shortname: '',
-                description: '',
-                total_score_needed: '',
-                total_play_time_needed: '',
-                photo: null,
-            }),
-            photoPreview: null,
-        };
-    },
-
-    methods: {
-        addRank() {
-            if (this.$refs.photo) {
-                this.form.photo = this.$refs.photo.files[0];
-            }
-
-            this.form.post(route('admin.rank.store'), {
-                preserveScroll: true
-            });
-        },
-        updatePhotoPreview() {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                this.photoPreview = e.target.result;
-            };
-
-            reader.readAsDataURL(this.$refs.photo.files[0]);
-        },
-        selectNewPhoto() {
-            this.$refs.photo.click();
-        },
-    }
-};
-</script>
