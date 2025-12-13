@@ -1,385 +1,288 @@
+<script setup>
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { useForm } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
+import XInput from '@/Components/Form/XInput.vue';
+import XSelect from '@/Components/Form/XSelect.vue';
+import XSwitch from '@/Components/Form/XSwitch.vue';
+import XTextarea from '@/Components/Form/XTextarea.vue';
+import ImageUpload from '@/Components/Form/ImageUpload.vue';
+
+const { __ } = useTranslations();
+
+const props = defineProps({
+    settings: Object,
+    colorSchemeList: Object,
+    fontList: Object,
+    isVideoHomeHeroBgImagePathLight: Boolean,
+    isVideoHomeHeroBgImagePathDark: Boolean,
+});
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Settings'),
+        current: false,
+    },
+    {
+        text: __('Theme Settings'),
+        current: true,
+    }
+];
+
+const form = useForm({
+    color_mode: props.settings.color_mode,
+    color_scheme: props.settings.color_scheme,
+    primary_font: props.settings.primary_font,
+    enable_home_hero_section: props.settings.enable_home_hero_section,
+    home_hero_bg_size_css: props.settings.home_hero_bg_size_css,
+    home_hero_bg_position_css: props.settings.home_hero_bg_position_css,
+    home_hero_bg_repeat_css: props.settings.home_hero_bg_repeat_css,
+    home_hero_bg_attachment_css: props.settings.home_hero_bg_attachment_css,
+    home_hero_bg_height_css: props.settings.home_hero_bg_height_css,
+    show_join_box_in_home_hero: props.settings.show_join_box_in_home_hero,
+    home_hero_bg_image_light: null,
+    home_hero_bg_image_dark: null,
+    show_fg_image_box_in_home_hero: props.settings.show_fg_image_box_in_home_hero,
+    show_discord_box_in_home_hero: props.settings.show_discord_box_in_home_hero,
+    home_hero_bg_particles: props.settings.home_hero_bg_particles,
+    home_hero_fg_image_light: null,
+    home_hero_fg_image_dark: null,
+    loading_gif: null,
+    remove_loading_gif: false,
+});
+
+const backgroundPositionList = [
+    'left top',
+    'left center',
+    'left bottom',
+    'right top',
+    'right center',
+    'right bottom',
+    'center top',
+    'center center',
+    'center bottom',
+];
+
+const backgroundRepeatList = [
+    'no-repeat',
+    'repeat',
+    'repeat-x',
+    'repeat-y',
+    'space',
+    'round',
+];
+
+const backgroundSizeList = [
+    'none',
+    'fill',
+    'auto',
+    'contain',
+    'cover',
+];
+
+const backgroundAttachmentList = [
+    'scroll',
+    'fixed',
+    'local',
+];
+
+function removeLoadingGif() {
+    form.reset();
+    form.loading_gif = null;
+    form.remove_loading_gif = true;
+    form.post(route('admin.setting.theme.update'), {
+        preserveScroll: true,
+    });
+}
+
+function saveThemeSetting() {
+    form.post(route('admin.setting.theme.update'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            router.get(route('admin.setting.theme.show'), {}, {
+                preserveState: false,
+                preserveScroll: true,
+                replace: true,
+            });
+        }
+    });
+}
+</script>
+
 <template>
   <AdminLayout>
-    <app-head
-      :title="__('Theme Settings')"
-    />
+    <app-head :title="__('Theme Settings')" />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto flex">
-      <div class="flex-1">
-        <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-surface-800 shadow w-full rounded">
-            <div class="px-6 py-4 border-b dark:border-foreground dark:text-foreground font-bold">
-              {{ __("Theme Settings") }}
-            </div>
+    <div class="px-10 py-8 mx-auto max-w-6xl text-foreground">
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
+      </div>
 
-            <div class="mt-10 sm:mt-0">
-              <div class="md:grid md:grid-cols-3 md:gap-6">
-                <div class="mt-5 md:mt-0 md:col-span-3">
-                  <form
-                    autocomplete="off"
-                    @submit.prevent="saveThemeSetting"
-                  >
-                    <div class="shadow overflow-hidden sm:rounded-md">
-                      <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
-                        <div class="grid grid-cols-6 gap-6">
-                          <!-- ColorMode -->
-                          <div class="col-span-6 sm:col-span-6">
-                            <x-select
-                              id="color_mode"
-                              v-model="form.color_mode"
-                              name="color_mode"
-                              :error="form.errors.color_mode"
-                              :label="__('Default Color Mode')"
-                              :placeholder="__('Select default color mode..')"
-                              :disable-null="true"
-                              :select-list="{dark: __('Dark'), light: __('Light')}"
-                            />
-                          </div>
+      <div class="mt-6">
+        <form
+          autocomplete="off"
+          @submit.prevent="saveThemeSetting"
+        >
+          <div class="shadow rounded-lg">
+            <div class="px-4 py-5 bg-card sm:p-6">
+              <div class="grid grid-cols-6 gap-6">
+                <!-- Theme Basics -->
+                <div class="col-span-6">
+                  <fieldset>
+                    <div class="grid grid-cols-6 gap-4">
+                      <div class="col-span-6">
+                        <XSelect
+                          id="color_mode"
+                          v-model="form.color_mode"
+                          name="color_mode"
+                          :error="form.errors.color_mode"
+                          :label="__('Default Color Mode')"
+                          :placeholder="__('Select default color mode..')"
+                          :disable-null="true"
+                          :select-list="{ dark: __('Dark'), light: __('Light') }"
+                        />
+                      </div>
 
-                          <!-- ColorScheme -->
-                          <div
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <x-select
-                              id="color_scheme"
-                              v-model="form.color_scheme"
-                              name="color_scheme"
-                              :error="form.errors.color_scheme"
-                              :label="__('Color Scheme')"
-                              :placeholder="__('Select color scheme..')"
-                              :disable-null="true"
-                              :select-list="colorSchemeList"
-                            />
-                          </div>
+                      <div class="col-span-6 sm:col-span-3">
+                        <XSelect
+                          id="color_scheme"
+                          v-model="form.color_scheme"
+                          name="color_scheme"
+                          :error="form.errors.color_scheme"
+                          :label="__('Color Scheme')"
+                          :placeholder="__('Select color scheme..')"
+                          :disable-null="true"
+                          :select-list="colorSchemeList"
+                        />
+                      </div>
 
+                      <div class="col-span-6 sm:col-span-3">
+                        <XSelect
+                          id="primary_font"
+                          v-model="form.primary_font"
+                          name="primary_font"
+                          :error="form.errors.primary_font"
+                          :label="__('Font Family')"
+                          :placeholder="__('Select font family..')"
+                          :disable-null="true"
+                          :select-list="fontList"
+                        />
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
 
-                          <!-- Primary Font -->
-                          <div
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <x-select
-                              id="primary_font"
-                              v-model="form.primary_font"
-                              name="primary_font"
-                              :error="form.errors.primary_font"
-                              :label="__('Font Family')"
-                              :placeholder="__('Select font family..')"
-                              :disable-null="true"
-                              :select-list="fontList"
-                            />
-                          </div>
+                <!-- Hero Section -->
+                <div class="col-span-6">
+                  <fieldset>
+                    <div class="space-y-6">
+                      <XSwitch
+                        id="enable_home_hero_section"
+                        v-model="form.enable_home_hero_section"
+                        :label="__('Hero Section at Homepage')"
+                        :help="__('Enable hero image section on home page.')"
+                        name="enable_home_hero_section"
+                        :error="form.errors.enable_home_hero_section"
+                      />
 
-                          <!-- Home Hero Section -->
-                          <div class="flex items-center col-span-6 sm:col-span-6 border-t border-foreground dark:border-foreground pt-4">
-                            <x-checkbox
-                              id="enable_home_hero_section"
-                              v-model="form.enable_home_hero_section"
-                              :label="__('Hero Section at Homepage')"
-                              :help="__('Enable hero image section on home page.')"
-                              name="enable_home_hero_section"
-                              :error="form.errors.enable_home_hero_section"
-                            />
-                          </div>
-
-                          <!-- Hero Foreground Image Light -->
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <input
+                      <template v-if="form.enable_home_hero_section">
+                        <!-- Hero Foreground Images -->
+                        <div class="grid grid-cols-6 gap-4">
+                          <div class="col-span-6 sm:col-span-3">
+                            <ImageUpload
                               id="home_hero_fg_image_light"
-                              ref="home_hero_fg_image_light"
-                              type="file"
-                              accept="image/*"
-                              class="hidden"
-                              @change="updateHomeHeroFgImageLightPreview"
-                            >
-
-                            <label
-                              for="home_hero_fg_image_light"
-                              class="block text-sm font-medium text-foreground dark:text-foreground"
-                            >{{ __("Hero Foreground Image Light") }}</label>
-
-                            <div
-                              v-show="!homeHeroFgImageLightPreview"
-                              class="mt-2 flex justify-center items-center h-40"
-                            >
-                              <img
-                                v-if="settings.home_hero_fg_image_path_light"
-                                :src="settings.home_hero_fg_image_path_light"
-                                alt="home_hero_fg_image_light"
-                                class="rounded h-40"
-                              >
-                              <span
-                                v-else
-                                class="text-foreground italic text-xs"
-                              >
-                                {{ __("No Foreground Image.") }}
-                              </span>
-                            </div>
-
-                            <div
-                              v-show="homeHeroFgImageLightPreview"
-                              class="mt-2"
-                            >
-                              <span
-                                class="block rounded h-40"
-                                :style="`background-size: contain; background-repeat: no-repeat; background-position: center center; background-image: url(${homeHeroFgImageLightPreview});`"
-                              />
-                            </div>
-
-                            <jet-secondary-button
-                              class="mt-2 mr-2"
-                              type="button"
-                              @click.prevent="selectHomeHeroFgImageLight"
-                            >
-                              {{ __("Select A New Image") }}
-                            </jet-secondary-button>
-
-                            <div class="mt-2 text-xs text-foreground">
-                              {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp
-                            </div>
-
-                            <jet-input-error
-                              :message="form.errors.home_hero_fg_image_light"
-                              class="mt-2"
+                              name="home_hero_fg_image_light"
+                              :label="__('Hero Foreground Image Light')"
+                              v-model="form.home_hero_fg_image_light"
+                              :current-url="settings.home_hero_fg_image_path_light"
+                              :error="form.errors.home_hero_fg_image_light"
+                              :removable="false"
+                              shape="rect"
+                              :preview-class="'h-40 w-full'"
+                              :upload-label="__('Upload')"
+                              :change-label="__('Change')"
+                              object-fit="contain"
+                              :hint="__('jpg, jpeg, png, bmp, gif, svg, webp')"
+                              :max-size-mb="2"
                             />
                           </div>
 
-
-                          <!-- Hero Foreground Image Dark -->
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <input
+                          <div class="col-span-6 sm:col-span-3">
+                            <ImageUpload
                               id="home_hero_fg_image_dark"
-                              ref="home_hero_fg_image_dark"
-                              type="file"
-                              accept="image/*"
-                              class="hidden"
-                              @change="updateHomeHeroFgImageDarkPreview"
-                            >
-
-                            <label
-                              for="home_hero_fg_image_dark"
-                              class="block text-sm font-medium text-foreground dark:text-foreground"
-                            >{{ __("Hero Foreground Image Dark") }}</label>
-
-                            <div
-                              v-show="!homeHeroFgImageDarkPreview"
-                              class="mt-2 flex justify-center items-center h-40"
-                            >
-                              <img
-                                v-if="settings.home_hero_fg_image_path_dark"
-                                :src="settings.home_hero_fg_image_path_dark"
-                                alt="home_hero_fg_image_dark"
-                                class="rounded h-40 object-center"
-                              >
-                              <span
-                                v-else
-                                class="text-foreground italic text-xs"
-                              >
-                                {{ __("No Foreground Image.") }}
-                              </span>
-                            </div>
-
-                            <div
-                              v-show="homeHeroFgImageDarkPreview"
-                              class="mt-2"
-                            >
-                              <span
-                                class="block rounded h-40"
-                                :style="`background-size: contain; background-repeat: no-repeat; background-position: center center; background-image: url(${homeHeroFgImageDarkPreview});`"
-                              />
-                            </div>
-
-                            <jet-secondary-button
-                              class="mt-2 mr-2"
-                              type="button"
-                              @click.prevent="selectHomeHeroFgImageDark"
-                            >
-                              {{ __("Select A New Image") }}
-                            </jet-secondary-button>
-
-                            <div class="mt-2 text-xs text-foreground">
-                              {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp
-                            </div>
-
-                            <jet-input-error
-                              :message="form.errors.home_hero_fg_image_dark"
-                              class="mt-2"
+                              name="home_hero_fg_image_dark"
+                              :label="__('Hero Foreground Image Dark')"
+                              v-model="form.home_hero_fg_image_dark"
+                              :current-url="settings.home_hero_fg_image_path_dark"
+                              :error="form.errors.home_hero_fg_image_dark"
+                              :removable="false"
+                              shape="rect"
+                              :preview-class="'h-40 w-full'"
+                              :upload-label="__('Upload')"
+                              :change-label="__('Change')"
+                              object-fit="contain"
+                              :hint="__('jpg, jpeg, png, bmp, gif, svg, webp')"
+                              :max-size-mb="2"
                             />
                           </div>
+                        </div>
 
-
-                          <!-- Hero Image Light -->
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <input
+                        <!-- Hero Background Images -->
+                        <div class="grid grid-cols-6 gap-4">
+                          <div class="col-span-6 sm:col-span-3">
+                            <ImageUpload
                               id="home_hero_bg_image_light"
-                              ref="home_hero_bg_image_light"
-                              type="file"
-                              accept="image/*, video/*"
-                              class="hidden"
-                              @change="updateHomeHeroBgImageLightPreview"
-                            >
-
-                            <label
-                              for="home_hero_bg_image_light"
-                              class="block text-sm font-medium text-foreground dark:text-foreground"
-                            >{{ __("Hero Background Image Light") }}</label>
-
-                            <div
-                              v-show="!homeHeroBgImageLightPreview"
-                              class="mt-2"
-                            >
-                              <img
-                                v-if="!isVideoHomeHeroBgImagePathLight"
-                                :src="settings.home_hero_bg_image_path_light"
-                                alt="home_hero_bg_image_light"
-                                class="rounded h-40 object-cover w-full"
-                              >
-                              <video
-                                v-else
-                                id="home_hero_bg_image_light_video"
-                                class="rounded h-40 object-cover w-full"
-                                autoplay
-                                loop
-                                muted
-                              >
-                                <source
-                                  :src="settings.home_hero_bg_image_path_light"
-                                  type="video/webm"
-                                >
-                              </video>
-                            </div>
-
-                            <div
-                              v-show="homeHeroBgImageLightPreview"
-                              class="mt-2"
-                            >
-                              <span
-                                v-if="!homeHeroBgImageLightPreviewIsVideo"
-                                class="block rounded h-40"
-                                :style="`background-size: ${form.home_hero_bg_size_css}; background-repeat: ${form.home_hero_bg_repeat_css}; background-position: ${form.home_hero_bg_position_css}; background-image: url(${homeHeroBgImageLightPreview});`"
-                              />
-
-                              <div
-                                v-else
-                                class="h-40 flex items-center justify-center text-foreground text-sm italic"
-                              >
-                                {{ __("Upload preview not available for this type. Please save to see the changes.") }}
-                              </div>
-                            </div>
-
-                            <jet-secondary-button
-                              class="mt-2 mr-2"
-                              type="button"
-                              @click.prevent="selectHomeHeroBgImageLight"
-                            >
-                              {{ __("Select A New Image") }}
-                            </jet-secondary-button>
-
-                            <div class="mt-2 text-xs text-foreground">
-                              {{ __("Allowed") }}: jpg, jpeg, png, bmp, gif, svg, webp, webm
-                            </div>
-
-                            <jet-input-error
-                              :message="form.errors.home_hero_bg_image_light"
-                              class="mt-2"
+                              name="home_hero_bg_image_light"
+                              :label="__('Hero Background Image Light')"
+                              v-model="form.home_hero_bg_image_light"
+                              :current-url="settings.home_hero_bg_image_path_light"
+                              :error="form.errors.home_hero_bg_image_light"
+                              :removable="false"
+                              shape="rect"
+                              :preview-class="'h-40 w-full'"
+                              :upload-label="__('Upload')"
+                              :change-label="__('Change')"
+                              object-fit="cover"
+                              :hint="__('jpg, jpeg, png, bmp, gif, svg, webp')"
+                              :max-size-mb="2"
                             />
                           </div>
 
-
-                          <!-- Hero Image Dark -->
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <input
+                          <div class="col-span-6 sm:col-span-3">
+                            <ImageUpload
                               id="home_hero_bg_image_dark"
-                              ref="home_hero_bg_image_dark"
-                              type="file"
-                              accept="image/*, video/*"
-                              class="hidden"
-                              @change="updateHomeHeroBgImageDarkPreview"
-                            >
-
-                            <label
-                              for="home_hero_bg_image_dark"
-                              class="block text-sm font-medium text-foreground dark:text-foreground"
-                            >{{ __("Hero Background Image Dark") }}</label>
-
-                            <div
-                              v-show="!homeHeroBgImageDarkPreview"
-                              class="mt-2"
-                            >
-                              <img
-                                v-if="!isVideoHomeHeroBgImagePathDark"
-                                :src="settings.home_hero_bg_image_path_dark"
-                                alt="home_hero_bg_image_dark"
-                                class="rounded h-40 object-cover w-full"
-                              >
-                              <video
-                                v-else
-                                id="home_hero_bg_image_light_video"
-                                class="rounded h-40 object-cover w-full"
-                                autoplay
-                                loop
-                                muted
-                              >
-                                <source
-                                  :src="settings.home_hero_bg_image_path_dark"
-                                  type="video/webm"
-                                >
-                              </video>
-                            </div>
-
-                            <div
-                              v-show="homeHeroBgImageDarkPreview"
-                              class="mt-2"
-                            >
-                              <span
-                                v-if="!homeHeroBgImageDarkPreviewIsVideo"
-                                class="block rounded h-40"
-                                :style="`background-size: ${form.home_hero_bg_size_css}; background-repeat: ${form.home_hero_bg_repeat_css}; background-position: ${form.home_hero_bg_position_css}; background-image: url(${homeHeroBgImageDarkPreview});`"
-                              />
-
-                              <div
-                                v-else
-                                class="h-40 flex items-center justify-center text-foreground text-sm italic"
-                              >
-                                {{ __("Upload preview not available for this type. Please save to see the changes.") }}
-                              </div>
-                            </div>
-
-                            <jet-secondary-button
-                              class="mt-2 mr-2"
-                              type="button"
-                              @click.prevent="selectHomeHeroBgImageDark"
-                            >
-                              {{ __("Select A New Image") }}
-                            </jet-secondary-button>
-
-
-                            <div class="mt-2 text-xs text-foreground">
-                              {{ __("Max Size") }}: 2 MB
-                            </div>
-
-                            <jet-input-error
-                              :message="form.errors.home_hero_bg_image_dark"
-                              class="mt-2"
+                              name="home_hero_bg_image_dark"
+                              :label="__('Hero Background Image Dark')"
+                              v-model="form.home_hero_bg_image_dark"
+                              :current-url="settings.home_hero_bg_image_path_dark"
+                              :error="form.errors.home_hero_bg_image_dark"
+                              :removable="false"
+                              shape="rect"
+                              :preview-class="'h-40 w-full'"
+                              :upload-label="__('Upload')"
+                              :change-label="__('Change')"
+                              object-fit="cover"
+                              :hint="__('Max Size: 2MB')"
+                              :max-size-mb="2"
                             />
                           </div>
+                        </div>
 
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <x-select
+                        <!-- Background CSS Settings -->
+                        <div class="grid grid-cols-6 gap-4">
+                          <div class="col-span-6 sm:col-span-3">
+                            <XSelect
                               id="home_hero_bg_size_css"
                               v-model="form.home_hero_bg_size_css"
                               name="home_hero_bg_size_css"
@@ -391,12 +294,8 @@
                             />
                           </div>
 
-
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <x-select
+                          <div class="col-span-6 sm:col-span-3">
+                            <XSelect
                               id="home_hero_bg_position_css"
                               v-model="form.home_hero_bg_position_css"
                               name="home_hero_bg_position_css"
@@ -408,11 +307,8 @@
                             />
                           </div>
 
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <x-select
+                          <div class="col-span-6 sm:col-span-3">
+                            <XSelect
                               id="home_hero_bg_repeat_css"
                               v-model="form.home_hero_bg_repeat_css"
                               name="home_hero_bg_repeat_css"
@@ -424,11 +320,8 @@
                             />
                           </div>
 
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-6 sm:col-span-3"
-                          >
-                            <x-select
+                          <div class="col-span-6 sm:col-span-3">
+                            <XSelect
                               id="home_hero_bg_attachment_css"
                               v-model="form.home_hero_bg_attachment_css"
                               name="home_hero_bg_attachment_css"
@@ -440,12 +333,8 @@
                             />
                           </div>
 
-
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-3 sm:col-span-3"
-                          >
-                            <x-input
+                          <div class="col-span-6 sm:col-span-3">
+                            <XInput
                               id="home_hero_bg_height_css"
                               v-model="form.home_hero_bg_height_css"
                               :label="__('Hero background height')"
@@ -454,379 +343,115 @@
                               name="home_hero_bg_height_css"
                             />
                           </div>
-
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="flex items-center col-span-3 sm:col-span-3"
-                          >
-                            <x-checkbox
-                              id="show_join_box_in_home_hero"
-                              v-model="form.show_join_box_in_home_hero"
-                              :label="__('Show Join Box in Hero Section')"
-                              :help="__('If enabled, will show server join details like player count & join hostname in hero section. (left side)')"
-                              name="show_join_box_in_home_hero"
-                              :error="form.errors.show_join_box_in_home_hero"
-                            />
-                          </div>
-
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="flex items-center col-span-3 sm:col-span-3"
-                          >
-                            <x-checkbox
-                              id="show_fg_image_box_in_home_hero"
-                              v-model="form.show_fg_image_box_in_home_hero"
-                              :label="__('Show Foreground Image Box in Hero Section')"
-                              :help="__('If enabled, will show middle foreground image box in hero section (middle).')"
-                              name="show_fg_image_box_in_home_hero"
-                              :error="form.errors.show_fg_image_box_in_home_hero"
-                            />
-                          </div>
-
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="flex items-center col-span-3 sm:col-span-3"
-                          >
-                            <x-checkbox
-                              id="show_discord_box_in_home_hero"
-                              v-model="form.show_discord_box_in_home_hero"
-                              :label="__('Show Discord Box in Hero Section')"
-                              :help="__('If enabled, will show discord box in hero section (right side). Make sure to add Discord Invite URL & Discord Server ID in General Settings.')"
-                              name="show_discord_box_in_home_hero"
-                              :error="form.errors.show_discord_box_in_home_hero"
-                            />
-                          </div>
-
-                          <div
-                            v-if="form.enable_home_hero_section"
-                            class="col-span-6 sm:col-span-6"
-                          >
-                            <x-textarea
-                              id="home_hero_bg_particles"
-                              v-model="form.home_hero_bg_particles"
-                              :auto-resize="false"
-                              :label="__('Particle Effect Options')"
-                              :help="__('tsParticles Options json. See https://minetrax.github.io/docs/web/theme-settings for more info. (Set it empty to disable particles effect)')"
-                              :error="form.errors.home_hero_bg_particles"
-                              name="home_hero_bg_particles"
-                            />
-                          </div>
-
-                          <!-- Loading Gif -->
-                          <div
-                            class="col-span-6 sm:col-span-6 border-t border-foreground dark:border-foreground pt-4"
-                          >
-                            <input
-                              id="loading_gif"
-                              ref="loading_gif"
-                              type="file"
-                              class="hidden"
-                              accept="image/gif, image/svg+xml"
-                              @change="updateLoadingGifPreview"
-                            >
-
-                            <label
-                              for="loading_gif"
-                              class="block text-sm font-medium text-foreground dark:text-foreground"
-                            >{{ __("Animated Loading Image") }}</label>
-
-                            <div
-                              v-show="!loadingGifPreview"
-                              class="mt-2 flex items-center p-6"
-                            >
-                              <img
-                                v-if="settings.loading_gif"
-                                :src="settings.loading_gif"
-                                alt="loading_gif"
-                                class="h-14 w-14"
-                              >
-                              <span
-                                v-else
-                                class="text-foreground italic text-xs"
-                              >
-                                {{ __("No Animated Loading Image.") }}
-                              </span>
-                            </div>
-
-                            <div
-                              v-show="loadingGifPreview"
-                              class="mt-2 p-4"
-                            >
-                              <span
-                                class="block rounded h-14 w-14"
-                                :style="`background-size: contain; background-repeat: no-repeat; background-position: center center; background-image: url(${loadingGifPreview});`"
-                              />
-                            </div>
-
-                            <jet-secondary-button
-                              class="mt-2 mr-2"
-                              type="button"
-                              @click.prevent="selectLoadingGif"
-                            >
-                              {{ __("Select A New Image") }}
-                            </jet-secondary-button>
-
-                            <jet-secondary-button
-                              class="mt-2 mr-2"
-                              type="button"
-                              @click.prevent="removeLoadingGif"
-                            >
-                              {{ __("Remove Image") }}
-                            </jet-secondary-button>
-
-                            <div class="mt-2 text-xs text-foreground">
-                              {{ __("Allowed") }}:  gif & svg
-                            </div>
-
-                            <jet-input-error
-                              :message="form.errors.loading_gif"
-                              class="mt-2"
-                            />
-                          </div>
                         </div>
-                      </div>
-                      <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
-                        <loading-button
-                          :loading="form.processing"
-                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
-                          type="submit"
-                        >
-                          {{ __("Save Theme Settings") }}
-                        </loading-button>
-                      </div>
-                    </div>
-                  </form>
 
-                  <div
-                    v-if="false"
-                    class="flex p-5 justify-center items-center text-error-500 italic"
-                  >
-                    {{ __("Not implemented from here! Theme can be be customized by accessing 'resources' folder.") }}
-                  </div>
+                        <!-- Hero Section Options -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <XSwitch
+                            id="show_join_box_in_home_hero"
+                            v-model="form.show_join_box_in_home_hero"
+                            :label="__('Show Join Box in Hero Section')"
+                            :help="__('If enabled, will show server join details like player count & join hostname in hero section. (left side)')"
+                            name="show_join_box_in_home_hero"
+                            :error="form.errors.show_join_box_in_home_hero"
+                          />
+
+                          <XSwitch
+                            id="show_fg_image_box_in_home_hero"
+                            v-model="form.show_fg_image_box_in_home_hero"
+                            :label="__('Show Foreground Image Box in Hero Section')"
+                            :help="__('If enabled, will show middle foreground image box in hero section (middle).')"
+                            name="show_fg_image_box_in_home_hero"
+                            :error="form.errors.show_fg_image_box_in_home_hero"
+                          />
+
+                          <XSwitch
+                            id="show_discord_box_in_home_hero"
+                            v-model="form.show_discord_box_in_home_hero"
+                            :label="__('Show Discord Box in Hero Section')"
+                            :help="__('If enabled, will show discord box in hero section (right side). Make sure to add Discord Invite URL & Discord Server ID in General Settings.')"
+                            name="show_discord_box_in_home_hero"
+                            :error="form.errors.show_discord_box_in_home_hero"
+                          />
+                        </div>
+
+                        <!-- Particles Effect -->
+                        <div>
+                          <XTextarea
+                            id="home_hero_bg_particles"
+                            v-model="form.home_hero_bg_particles"
+                            :auto-resize="false"
+                            :label="__('Particle Effect Options')"
+                            :help="__('tsParticles Options json. See https://minetrax.github.io/docs/web/theme-settings for more info. (Set it empty to disable particles effect)')"
+                            :error="form.errors.home_hero_bg_particles"
+                            name="home_hero_bg_particles"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                  </fieldset>
+                </div>
+
+                <!-- Loading Animation -->
+                <div class="col-span-6">
+                  <fieldset>
+                    <div class="space-y-4">
+                      <ImageUpload
+                        id="loading_gif"
+                        name="loading_gif"
+                        :label="__('Animated Loader')"
+                        v-model="form.loading_gif"
+                        :current-url="settings.loading_gif"
+                        :error="form.errors.loading_gif"
+                        :removable="!!settings.loading_gif"
+                        shape="rect"
+                        :preview-class="'h-32 w-32'"
+                        :upload-label="__('Upload')"
+                        :change-label="__('Change')"
+                        :remove-label="__('Remove Image')"
+                        object-fit="contain"
+                        accept="image/gif, image/svg+xml"
+                        :hint="__('gif & svg only')"
+                        :max-size-mb="1"
+                        @remove="removeLoadingGif"
+                      />
+                    </div>
+                  </fieldset>
                 </div>
               </div>
             </div>
+            <div class="px-4 py-3 bg-card border-t border-border sm:px-6 flex justify-end gap-2">
+              <Button
+                type="submit"
+                :disabled="form.processing"
+              >
+                <svg
+                  v-if="form.processing"
+                  class="animate-spin -ml-1 mr-2 h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                {{ __("Save Theme Settings") }}
+              </Button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </AdminLayout>
 </template>
-
-<script>
-import LoadingButton from '@/Components/LoadingButton.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import JetInputError from '@/Jetstream/InputError.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-
-export default {
-    components: {
-        AdminLayout,
-        XCheckbox,
-        XSelect,
-        XTextarea,
-        LoadingButton,
-        XInput,
-        JetInputError,
-        JetSecondaryButton,
-    },
-    props: {
-        settings: Object,
-        colorSchemeList: Object,
-        fontList: Object,
-        isVideoHomeHeroBgImagePathLight: Boolean,
-        isVideoHomeHeroBgImagePathDark: Boolean,
-    },
-
-    data() {
-        return {
-            form: useForm({
-                color_mode: this.settings.color_mode,
-                color_scheme: this.settings.color_scheme,
-                primary_font: this.settings.primary_font,
-                enable_home_hero_section: this.settings.enable_home_hero_section,
-                home_hero_bg_size_css: this.settings.home_hero_bg_size_css,
-                home_hero_bg_position_css: this.settings.home_hero_bg_position_css,
-                home_hero_bg_repeat_css: this.settings.home_hero_bg_repeat_css,
-                home_hero_bg_attachment_css: this.settings.home_hero_bg_attachment_css,
-                home_hero_bg_height_css: this.settings.home_hero_bg_height_css,
-                show_join_box_in_home_hero: this.settings.show_join_box_in_home_hero,
-                home_hero_bg_image_light: null,
-                home_hero_bg_image_dark: null,
-                show_fg_image_box_in_home_hero: this.settings.show_fg_image_box_in_home_hero,
-                show_discord_box_in_home_hero: this.settings.show_discord_box_in_home_hero,
-                home_hero_bg_particles: this.settings.home_hero_bg_particles,
-                home_hero_fg_image_light: null,
-                home_hero_fg_image_dark: null,
-                loading_gif: null,
-                remove_loading_gif: false,
-            }),
-            homeHeroFgImageLightPreview: null,
-            homeHeroFgImageDarkPreview: null,
-            homeHeroBgImageLightPreview: null,
-            homeHeroBgImageLightPreviewIsVideo: false,
-            homeHeroBgImageDarkPreview: null,
-            homeHeroBgImageDarkPreviewIsVideo: false,
-            loadingGifPreview: null,
-            backgroundPositionList: [
-                'left top',
-                'left center',
-                'left bottom',
-                'right top',
-                'right center',
-                'right bottom',
-                'center top',
-                'center center',
-                'center bottom',
-            ],
-            backgroundRepeatList: [
-                'no-repeat',
-                'repeat',
-                'repeat-x',
-                'repeat-y',
-                'space',
-                'round',
-            ],
-            backgroundSizeList: [
-                'none',
-                'fill',
-                'auto',
-                'contain',
-                'cover',
-            ],
-            backgroundAttachmentList: [
-                'scroll',
-                'fixed',
-                'local',
-            ],
-        };
-    },
-
-    methods: {
-        updateHomeHeroBgImageLightPreview() {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                this.homeHeroBgImageLightPreview = e.target.result;
-
-                if (this.$refs.home_hero_bg_image_light.files[0].type.includes('video')) {
-                    this.homeHeroBgImageLightPreviewIsVideo = true;
-                } else {
-                    this.homeHeroBgImageLightPreviewIsVideo = false;
-                }
-            };
-
-            reader.readAsDataURL(this.$refs.home_hero_bg_image_light.files[0]);
-        },
-        selectHomeHeroBgImageLight() {
-            this.$refs.home_hero_bg_image_light.click();
-        },
-
-        updateHomeHeroBgImageDarkPreview() {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                this.homeHeroBgImageDarkPreview = e.target.result;
-
-                if (this.$refs.home_hero_bg_image_dark.files[0].type.includes('video')) {
-                    this.homeHeroBgImageDarkPreviewIsVideo = true;
-                } else {
-                    this.homeHeroBgImageDarkPreviewIsVideo = false;
-                }
-            };
-
-            reader.readAsDataURL(this.$refs.home_hero_bg_image_dark.files[0]);
-        },
-        selectHomeHeroBgImageDark() {
-            this.$refs.home_hero_bg_image_dark.click();
-        },
-
-        updateHomeHeroFgImageDarkPreview() {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                this.homeHeroFgImageDarkPreview = e.target.result;
-            };
-
-            reader.readAsDataURL(this.$refs.home_hero_fg_image_dark.files[0]);
-        },
-        selectHomeHeroFgImageDark() {
-            this.$refs.home_hero_fg_image_dark.click();
-        },
-
-        updateHomeHeroFgImageLightPreview() {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                this.homeHeroFgImageLightPreview = e.target.result;
-            };
-
-            reader.readAsDataURL(this.$refs.home_hero_fg_image_light.files[0]);
-        },
-        selectHomeHeroFgImageLight() {
-            this.$refs.home_hero_fg_image_light.click();
-        },
-
-        updateLoadingGifPreview() {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                this.loadingGifPreview = e.target.result;
-            };
-
-            reader.readAsDataURL(this.$refs.loading_gif.files[0]);
-        },
-        selectLoadingGif() {
-            this.$refs.loading_gif.click();
-        },
-
-        saveThemeSetting() {
-            if (this.$refs.home_hero_bg_image_light) {
-                this.form.home_hero_bg_image_light = this.$refs.home_hero_bg_image_light.files[0];
-            }
-
-            if (this.$refs.home_hero_bg_image_dark) {
-                this.form.home_hero_bg_image_dark = this.$refs.home_hero_bg_image_dark.files[0];
-            }
-
-            if (this.$refs.home_hero_fg_image_light) {
-                this.form.home_hero_fg_image_light = this.$refs.home_hero_fg_image_light.files[0];
-            }
-
-            if (this.$refs.home_hero_fg_image_dark) {
-                this.form.home_hero_fg_image_dark = this.$refs.home_hero_fg_image_dark.files[0];
-            }
-
-            if (this.$refs.loading_gif) {
-                this.form.loading_gif = this.$refs.loading_gif.files[0];
-            }
-
-            this.form.post(route('admin.setting.theme.update'), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    this.$inertia.get(route('admin.setting.theme.show'), {
-                        preserveState: false,
-                        preserveScroll: true,
-                        replace: true,
-                    });
-                }
-            });
-        },
-
-        removeLoadingGif() {
-            this.form.reset();
-            this.form.loading_gif = null;
-            this.form.remove_loading_gif = true;
-            this.form.post(route('admin.setting.theme.update'), {
-                preserveScroll: true,
-                onSuccess: () => (this.loadingGifPreview = null),
-            });
-        }
-    }
-};
-</script>
