@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{o,d as r,r as s}from"./app-Ia0bJDXi.js";const n={},c={class:"px-4 py-3 text-sm text-foreground dark:text-foreground"};function a(t,d){return o(),r("td",c,[s(t.$slots,"default")])}const m=e(n,[["render",a]]);export{m as D};
