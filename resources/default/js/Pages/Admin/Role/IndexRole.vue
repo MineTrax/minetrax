@@ -127,7 +127,7 @@ const headerRow = [
               >
               <div
                 v-else
-                class="inline-flex font-bold uppercase leading-5 p-1.5 bg-primary text-white rounded-sm"
+                class="inline-flex whitespace-nowrap font-bold uppercase leading-5 p-1.5 bg-primary text-white rounded-sm"
                 :style="`background-color: ${item.color};`"
               >
                 {{ item.display_name }}
