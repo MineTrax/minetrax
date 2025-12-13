@@ -1,14 +1,18 @@
 <script setup>
-import LoadingButton from '@/Components/LoadingButton.vue';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
+import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import XSwitch from '@/Components/Form/XSwitch.vue';
 import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
 import XTextarea from '@/Components/Form/XTextarea.vue';
 import Draggable from 'vuedraggable';
 import Icon from '@/Components/Icon.vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { ref } from 'vue';
+import { useTranslations } from '@/Composables/useTranslations';
+
+const { __ } = useTranslations();
 
 const footerStyleList = [
     'variant_2',
@@ -20,6 +24,21 @@ const props = defineProps({
     generalSettings: Object,
     availableNavItems: Array,
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Settings'),
+        current: false,
+    },
+    {
+        text: __('Navigation Settings'),
+        current: true,
+    }
+];
 
 const leftNavList = ref(props.settings.custom_navbar_data?.left || []);
 const middleNavList = ref(props.settings.custom_navbar_data?.middle || []);
@@ -110,7 +129,7 @@ function cloneNavItem(item) {
     let clone = JSON.parse(JSON.stringify(item));
     return {
         ...clone,
-        key: item.key + '-' +  Math.random(),
+        key: item.key + '-' + Math.random(),
     };
 }
 
@@ -119,415 +138,441 @@ function removeNavItem(idx, list) {
 }
 </script>
 
-
-
 <template>
   <AdminLayout>
-    <app-head
-      :title="__('Navigation Settings')"
-    />
+    <app-head :title="__('Navigation Settings')" />
 
-    <div class="py-12 px-10 max-w-6xl mx-auto flex">
-      <div class="flex-1">
-        <div class="flex flex-col w-full">
-          <div class="bg-white dark:bg-surface-800 shadow w-full rounded">
-            <div class="px-6 py-4 border-b dark:border-foreground dark:text-foreground font-bold">
-              {{ __("Navigation Settings") }}
-            </div>
+    <div class="px-10 py-8 mx-auto max-w-6xl text-foreground">
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
+      </div>
 
-            <div class="mt-10 sm:mt-0">
-              <div class="md:grid md:grid-cols-3 md:gap-6">
-                <div class="mt-5 md:mt-0 md:col-span-3">
-                  <form
-                    autocomplete="off"
-                    @submit.prevent="saveSetting"
-                  >
-                    <div class="shadow overflow-hidden sm:rounded-md">
-                      <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
-                        <div class="grid grid-cols-6 gap-6">
-                          <div class="flex items-center col-span-3 sm:col-span-3">
-                            <x-checkbox
-                              id="enable_sticky_header_menu"
-                              v-model="form.enable_sticky_header_menu"
-                              :label="__('Sticky Navigation Menu')"
-                              :help="__('Navigation menu will be fixed on top when scroll.')"
-                              name="enable_sticky_header_menu"
-                              :error="form.errors.enable_sticky_header_menu"
-                            />
-                          </div>
+      <div class="mt-6">
+        <form
+          autocomplete="off"
+          @submit.prevent="saveSetting"
+        >
+          <div class="shadow rounded-lg">
+            <div class="px-4 py-5 bg-card sm:p-6">
+              <div class="grid grid-cols-6 gap-6">
+                <!-- Navigation Bar Settings -->
+                <div class="col-span-6">
+                  <fieldset>
+                    <legend class="text-sm font-medium text-foreground mb-4">
+                      {{ __("Navigation Bar") }}
+                    </legend>
 
-                          <div class="col-span-6 sm:col-span-6">
-                            <x-checkbox
-                              id="is_custom_rating_enabled"
-                              v-model="form.enable_custom_navbar"
-                              :label="__('Enable Custom Navigation Bar')"
-                              :help="__('Let you customize the top navigation bar.')"
-                              name="is_custom_rating_enabled"
-                              :error="form.errors.enable_custom_navbar"
-                            />
-                          </div>
+                    <div class="space-y-6">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <XSwitch
+                          id="enable_sticky_header_menu"
+                          v-model="form.enable_sticky_header_menu"
+                          :label="__('Sticky Navigation Menu')"
+                          :help="__('Navigation menu will be fixed on top when scroll.')"
+                          name="enable_sticky_header_menu"
+                          :error="form.errors.enable_sticky_header_menu"
+                        />
 
-                          <div class="col-span-6 sm:col-span-6">
-                            <h3 class="text-foreground dark:text-foreground mb-1 font-bold">
-                              {{ __("Available Items") }}
-                            </h3>
-                            <Draggable
-                              :sort="false"
-                              class="dragArea grid grid-cols-5 gap-2 min-h-[5rem] cursor-move"
-                              :list="availableNavItems"
-                              :group="{ name: 'navbar', pull: 'clone', put: false }"
-                              :clone="cloneNavItem"
-                              item-key="key"
-                            >
-                              <template #item="{ element }">
-                                <div class="bg-surface-200 dark:bg-surface-700 rounded p-2 text-foreground shadow-sm text-center">
-                                  <p class="text-sm text-foreground">
-                                    {{ element.type }}
-                                  </p>
-                                  <p class="text-foreground dark:text-foreground">
-                                    {{ element.name }}
-                                  </p>
+                        <XSwitch
+                          id="enable_custom_navbar"
+                          v-model="form.enable_custom_navbar"
+                          :label="__('Enable Custom Navigation Bar')"
+                          :help="__('Let you customize the top navigation bar.')"
+                          name="enable_custom_navbar"
+                          :error="form.errors.enable_custom_navbar"
+                        />
+                      </div>
+
+                      <!-- Available Items -->
+                      <div>
+                        <h3 class="text-foreground mb-2 font-semibold text-sm">
+                          {{ __("Available Items") }}
+                        </h3>
+                        <Draggable
+                          :sort="false"
+                          class="dragArea grid grid-cols-5 gap-2 min-h-[5rem] cursor-move bg-muted/30 rounded-lg p-3"
+                          :list="availableNavItems"
+                          :group="{ name: 'navbar', pull: 'clone', put: false }"
+                          :clone="cloneNavItem"
+                          item-key="key"
+                        >
+                          <template #item="{ element }">
+                            <div class="bg-muted rounded p-2 text-foreground shadow-sm text-center">
+                              <p class="text-xs text-muted-foreground">
+                                {{ element.type }}
+                              </p>
+                              <p class="text-foreground text-sm">
+                                {{ element.name }}
+                              </p>
+                            </div>
+                          </template>
+                        </Draggable>
+                      </div>
+
+                      <!-- Nav Columns -->
+                      <div class="flex gap-4 border-t border-border pt-4">
+                        <div class="flex-1">
+                          <h3 class="text-center text-foreground font-semibold text-sm mb-2">
+                            {{ __("Left") }}
+                          </h3>
+                          <Draggable
+                            :swap-threshold="0.65"
+                            class="dragArea flex flex-col gap-3 min-h-[8rem] h-full bg-muted/30 rounded-lg p-3"
+                            :list="leftNavList"
+                            :group="{ name: 'navbar' }"
+                            item-key="key"
+                          >
+                            <template #item="{ element, index }">
+                              <div class="bg-muted shadow-sm relative rounded p-2 text-foreground text-center">
+                                <p class="text-xs text-muted-foreground">
+                                  {{ element.type }}
+                                </p>
+                                <p class="text-sm">{{ element.name }}</p>
+                                <XInput
+                                  v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
+                                  v-model="element.title"
+                                  :label="__('Title')"
+                                  type="text"
+                                />
+
+                                <Icon
+                                  class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-muted-foreground hover:text-destructive"
+                                  name="close"
+                                  @click="removeNavItem(index, leftNavList)"
+                                />
+
+                                <!-- Dropdown children -->
+                                <div v-if="element.type === 'dropdown'">
+                                  <Draggable
+                                    :swap-threshold="0.65"
+                                    class="dragArea flex flex-col gap-2 rounded border border-border p-2 min-h-[5rem] bg-card mt-2"
+                                    :list="element.children"
+                                    :group="{ name: 'navbar' }"
+                                    item-key="key"
+                                  >
+                                    <template #item="{ element: el, index: idx }">
+                                      <div class="bg-muted relative rounded p-2 text-foreground text-center">
+                                        <p class="text-xs text-muted-foreground">
+                                          {{ el.type }}
+                                        </p>
+                                        <p class="text-sm">
+                                          {{ el.name }}
+                                        </p>
+                                        <XInput
+                                          v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(el.type)"
+                                          v-model="el.title"
+                                          :label="__('Title')"
+                                          type="text"
+                                        />
+
+                                        <Icon
+                                          class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-muted-foreground hover:text-destructive"
+                                          name="close"
+                                          @click="removeNavItem(idx, element.children)"
+                                        />
+                                      </div>
+                                    </template>
+                                  </Draggable>
                                 </div>
-                              </template>
-                            </Draggable>
-                          </div>
+                              </div>
+                            </template>
+                          </Draggable>
+                        </div>
 
+                        <div class="flex-1">
+                          <h3 class="text-center text-foreground font-semibold text-sm mb-2">
+                            {{ __("Middle") }}
+                          </h3>
+                          <Draggable
+                            :swap-threshold="0.65"
+                            class="dragArea flex flex-col gap-3 min-h-[8rem] h-full bg-muted/30 rounded-lg p-3"
+                            :list="middleNavList"
+                            :group="{ name: 'navbar' }"
+                            item-key="key"
+                          >
+                            <template #item="{ element, index }">
+                              <div class="bg-muted shadow-sm relative rounded p-2 text-foreground text-center">
+                                <p class="text-xs text-muted-foreground">
+                                  {{ element.type }}
+                                </p>
+                                <p class="text-sm">{{ element.name }}</p>
+                                <XInput
+                                  v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
+                                  v-model="element.title"
+                                  :label="__('Title')"
+                                  type="text"
+                                />
 
-                          <div class="flex col-span-6 border-t border-foreground dark:border-foreground pt-4 gap-5">
-                            <div class="grow">
-                              <h3 class="text-center text-foreground dark:text-foreground font-bold">
-                                Left
-                              </h3>
-                              <Draggable
-                                :swap-threshold="0.65"
-                                class="dragArea flex flex-col gap-4 min-h-[5rem] h-full"
-                                :list="leftNavList"
-                                :group="{ name: 'navbar' }"
-                                item-key="key"
-                              >
-                                <template #item="{ element, index }">
-                                  <div class="bg-surface-200 shadow-sm dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
-                                    <p class="text-sm text-foreground dark:text-foreground">
-                                      {{ element.type }}
-                                    </p>
-                                    <p>{{ element.name }}</p>
-                                    <x-input
-                                      v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
-                                      v-model="element.title"
-                                      label="Title"
-                                      type="text"
-                                    />
+                                <Icon
+                                  class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-muted-foreground hover:text-destructive"
+                                  name="close"
+                                  @click="removeNavItem(index, middleNavList)"
+                                />
 
-                                    <Icon
-                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
-                                      name="close"
-                                      @click="removeNavItem(index, leftNavList)"
-                                    />
+                                <!-- Dropdown children -->
+                                <div v-if="element.type === 'dropdown'">
+                                  <Draggable
+                                    :swap-threshold="0.65"
+                                    class="dragArea flex flex-col gap-2 rounded border border-border p-2 min-h-[5rem] bg-card mt-2"
+                                    :list="element.children"
+                                    :group="{ name: 'navbar' }"
+                                    item-key="key"
+                                  >
+                                    <template #item="{ element: el, index: idx }">
+                                      <div class="bg-muted relative rounded p-2 text-foreground text-center">
+                                        <p class="text-xs text-muted-foreground">
+                                          {{ el.type }}
+                                        </p>
+                                        <p class="text-sm">
+                                          {{ el.name }}
+                                        </p>
+                                        <XInput
+                                          v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(el.type)"
+                                          v-model="el.title"
+                                          :label="__('Title')"
+                                          type="text"
+                                        />
 
-                                    <!--Draggable list if this is dropdown-->
-                                    <div v-if="element.type === 'dropdown'">
-                                      <Draggable
-                                        :swap-threshold="0.65"
-                                        class="dragArea flex flex-col gap-2 rounded border border-foreground dark:border-foreground p-2 min-h-[5rem] bg-white dark:bg-surface-800"
-                                        :list="element.children"
-                                        :group="{ name: 'navbar' }"
-                                        item-key="key"
-                                      >
-                                        <template #item="{ element: el, index: idx }">
-                                          <div class="bg-surface-200 dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
-                                            <p class="text-sm text-foreground">
-                                              {{ el.type }}
-                                            </p>
-                                            <p class="text-foreground dark:text-foreground">
-                                              {{ el.name }}
-                                            </p>
-                                            <x-input
-                                              v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(el.type)"
-                                              v-model="el.title"
-                                              label="Title"
-                                              type="text"
-                                            />
+                                        <Icon
+                                          class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-muted-foreground hover:text-destructive"
+                                          name="close"
+                                          @click="removeNavItem(idx, element.children)"
+                                        />
+                                      </div>
+                                    </template>
+                                  </Draggable>
+                                </div>
+                              </div>
+                            </template>
+                          </Draggable>
+                        </div>
 
-                                            <Icon
-                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
-                                              name="close"
-                                              @click="removeNavItem(idx, element.children)"
-                                            />
-                                          </div>
-                                        </template>
-                                      </Draggable>
-                                    </div>
-                                  </div>
-                                </template>
-                              </Draggable>
-                            </div>
-                            <div class="grow">
-                              <h3 class="text-center text-foreground dark:text-foreground font-bold">
-                                Middle
-                              </h3>
-                              <Draggable
-                                :swap-threshold="0.65"
-                                class="dragArea flex flex-col gap-4 min-h-[5rem] h-full"
-                                :list="middleNavList"
-                                :group="{ name: 'navbar' }"
-                                item-key="key"
-                              >
-                                <template #item="{ element, index }">
-                                  <div class="bg-surface-200 shadow-sm dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
-                                    <p class="text-sm text-foreground dark:text-foreground">
-                                      {{ element.type }}
-                                    </p>
-                                    <p>{{ element.name }}</p>
-                                    <x-input
-                                      v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
-                                      v-model="element.title"
-                                      label="Title"
-                                      type="text"
-                                    />
+                        <div class="flex-1">
+                          <h3 class="text-center text-foreground font-semibold text-sm mb-2">
+                            {{ __("Right") }}
+                          </h3>
+                          <Draggable
+                            :swap-threshold="0.65"
+                            class="dragArea flex flex-col gap-3 min-h-[8rem] h-full bg-muted/30 rounded-lg p-3"
+                            :list="rightNavList"
+                            :group="{ name: 'navbar' }"
+                            item-key="key"
+                          >
+                            <template #item="{ element, index }">
+                              <div class="bg-muted shadow-sm relative rounded p-2 text-foreground text-center">
+                                <p class="text-xs text-muted-foreground">
+                                  {{ element.type }}
+                                </p>
+                                <p class="text-sm">{{ element.name }}</p>
+                                <XInput
+                                  v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
+                                  v-model="element.title"
+                                  :label="__('Title')"
+                                  type="text"
+                                />
 
-                                    <Icon
-                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
-                                      name="close"
-                                      @click="removeNavItem(index, middleNavList)"
-                                    />
+                                <Icon
+                                  class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-muted-foreground hover:text-destructive"
+                                  name="close"
+                                  @click="removeNavItem(index, rightNavList)"
+                                />
 
-                                    <!--Draggable list if this is dropdown-->
-                                    <div v-if="element.type === 'dropdown'">
-                                      <Draggable
-                                        :swap-threshold="0.65"
-                                        class="dragArea flex flex-col gap-2 rounded border border-foreground dark:border-foreground p-2 min-h-[5rem] bg-white dark:bg-surface-800"
-                                        :list="element.children"
-                                        :group="{ name: 'navbar' }"
-                                        item-key="key"
-                                      >
-                                        <template #item="{ element: el, index: idx }">
-                                          <div class="bg-surface-200 dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
-                                            <p class="text-sm text-foreground">
-                                              {{ el.type }}
-                                            </p>
-                                            <p class="text-foreground dark:text-foreground">
-                                              {{ el.name }}
-                                            </p>
-                                            <x-input
-                                              v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(el.type)"
-                                              v-model="el.title"
-                                              label="Title"
-                                              type="text"
-                                            />
+                                <!-- Dropdown children -->
+                                <div v-if="element.type === 'dropdown'">
+                                  <Draggable
+                                    :swap-threshold="0.65"
+                                    class="dragArea flex flex-col gap-2 rounded border border-border p-2 min-h-[5rem] bg-card mt-2"
+                                    :list="element.children"
+                                    :group="{ name: 'navbar' }"
+                                    item-key="key"
+                                  >
+                                    <template #item="{ element: el, index: idx }">
+                                      <div class="bg-muted relative rounded p-2 text-foreground text-center">
+                                        <p class="text-xs text-muted-foreground">
+                                          {{ el.type }}
+                                        </p>
+                                        <p class="text-sm">
+                                          {{ el.name }}
+                                        </p>
+                                        <XInput
+                                          v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(el.type)"
+                                          v-model="el.title"
+                                          :label="__('Title')"
+                                          type="text"
+                                        />
 
-                                            <Icon
-                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
-                                              name="close"
-                                              @click="removeNavItem(idx, element.children)"
-                                            />
-                                          </div>
-                                        </template>
-                                      </Draggable>
-                                    </div>
-                                  </div>
-                                </template>
-                              </Draggable>
-                            </div>
-                            <div class="grow">
-                              <h3 class="text-center text-foreground dark:text-foreground font-bold">
-                                Right
-                              </h3>
-                              <Draggable
-                                :swap-threshold="0.65"
-                                class="dragArea flex flex-col gap-4 min-h-[5rem] h-full"
-                                :list="rightNavList"
-                                :group="{ name: 'navbar' }"
-                                item-key="key"
-                              >
-                                <template #item="{ element, index }">
-                                  <div class="bg-surface-200 shadow-sm dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
-                                    <p class="text-sm text-foreground dark:text-foreground">
-                                      {{ element.type }}
-                                    </p>
-                                    <p>{{ element.name }}</p>
-                                    <x-input
-                                      v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
-                                      v-model="element.title"
-                                      label="Title"
-                                      type="text"
-                                    />
+                                        <Icon
+                                          class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-muted-foreground hover:text-destructive"
+                                          name="close"
+                                          @click="removeNavItem(idx, element.children)"
+                                        />
+                                      </div>
+                                    </template>
+                                  </Draggable>
+                                </div>
+                              </div>
+                            </template>
+                          </Draggable>
+                        </div>
+                      </div>
 
-                                    <Icon
-                                      class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
-                                      name="close"
-                                      @click="removeNavItem(index, rightNavList)"
-                                    />
+                      <p class="pt-4 text-muted-foreground text-sm text-center italic">
+                        {{ __("Tip: Start by dragging items from above 'Available Items' to down here.") }}
+                      </p>
+                    </div>
+                  </fieldset>
+                </div>
 
-                                    <!--Draggable list if this is dropdown-->
-                                    <div v-if="element.type === 'dropdown'">
-                                      <Draggable
-                                        :swap-threshold="0.65"
-                                        class="dragArea flex flex-col gap-2 rounded border border-foreground dark:border-foreground p-2 min-h-[5rem] bg-white dark:bg-surface-800"
-                                        :list="element.children"
-                                        :group="{ name: 'navbar' }"
-                                        item-key="key"
-                                      >
-                                        <template #item="{ element: el, index: idx }">
-                                          <div class="bg-surface-200 dark:bg-surface-700 relative rounded p-2 text-foreground dark:text-foreground text-center">
-                                            <p class="text-sm text-foreground">
-                                              {{ el.type }}
-                                            </p>
-                                            <p class="text-foreground dark:text-foreground">
-                                              {{ el.name }}
-                                            </p>
-                                            <x-input
-                                              v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(el.type)"
-                                              v-model="el.title"
-                                              label="Title"
-                                              type="text"
-                                            />
+                <!-- Footer Settings -->
+                <div class="col-span-6">
+                  <fieldset>
+                    <legend class="text-sm font-medium text-foreground mb-4">
+                      {{ __("Footer") }}
+                    </legend>
 
-                                            <Icon
-                                              class="w-4 h-4 absolute right-2 top-2 cursor-pointer text-foreground dark:text-foreground"
-                                              name="close"
-                                              @click="removeNavItem(idx, element.children)"
-                                            />
-                                          </div>
-                                        </template>
-                                      </Draggable>
-                                    </div>
-                                  </div>
-                                </template>
-                              </Draggable>
-                            </div>
-                          </div>
+                    <div class="space-y-6">
+                      <XSwitch
+                        id="enable_custom_footer"
+                        v-model="form.enable_custom_footer"
+                        :label="__('Enable Custom Footer')"
+                        :help="__('Let you customize the site footer and content in it.')"
+                        name="enable_custom_footer"
+                        :error="form.errors.enable_custom_footer"
+                      />
 
-                          <div class="flex col-span-6 text-foreground text-sm justify-center italic">
-                            {{ __("Tip: Start by dragging items from above 'Available Items' to down here.") }}
-                          </div>
+                      <template v-if="form.enable_custom_footer">
+                        <XSelect
+                          id="custom_footer_style"
+                          v-model="customFooterData.style"
+                          name="custom_footer_style"
+                          :error="form.errors['custom_footer_data.style']"
+                          :label="__('Custom Footer Style')"
+                          :placeholder="__('Select the style variant of the footer.')"
+                          :disable-null="true"
+                          :help="__('Select the style variant of the footer. Try variant_1 first and later change if you want.')"
+                          :select-list="footerStyleList"
+                        />
 
-                          <div class="flex items-center col-span-3 sm:col-span-6 border-t border-foreground dark:border-foreground pt-4">
-                            <x-checkbox
-                              id="enable_custom_footer"
-                              v-model="form.enable_custom_footer"
-                              :label="__('Enable Custom Footer')"
-                              :help="__('Let you customize the site footer and content in it.')"
-                              name="enable_custom_footer"
-                              :error="form.errors.enable_custom_footer"
-                            />
-                          </div>
+                        <XTextarea
+                          id="custom_footer_moto"
+                          v-model="customFooterData.site_moto"
+                          :auto-resize="true"
+                          :label="__('Footer Site Moto')"
+                          :help="__('This can be anything you want to display below Logo in footer. Eg: Think Different!')"
+                          :error="form.errors['custom_footer_data.site_moto']"
+                          name="custom_footer_moto"
+                        />
 
+                        <!-- Footer Columns -->
+                        <div class="space-y-6">
                           <div
-                            v-if="form.enable_custom_footer"
-                            class="col-span-6 sm:col-span-6"
+                            v-for="(column, column_index) in customFooterData.columns"
+                            :key="column_index"
+                            class="bg-muted/30 rounded-lg p-4 space-y-4"
                           >
-                            <x-select
-                              id="custom_footer_style"
-                              v-model="customFooterData.style"
-                              name="custom_footer_style"
-                              :error="form.errors['custom_footer_data.style']"
-                              :label="__('Custom Footer Style')"
-                              :placeholder="__('Select the style variant of the footer.')"
-                              :disable-null="true"
-                              :help="__('Select the style variant of the footer. Try variant_1 first and later change if you want.')"
-                              :select-list="footerStyleList"
+                            <XInput
+                              :id="`column_${column_index}_header`"
+                              v-model="column.title"
+                              :label="__('Footer Column :index Header Title', { index: column_index + 1 })"
+                              type="text"
+                              :name="`column_${column_index}_header`"
+                              :error="form.errors[`custom_footer_data.columns.${column_index}.title`]"
+                              help-error-flex="flex-col"
                             />
-                          </div>
 
-                          <div
-                            v-if="form.enable_custom_footer"
-                            class="col-span-6 sm:col-span-6"
-                          >
-                            <x-textarea
-                              id="custom_footer_moto"
-                              v-model="customFooterData.site_moto"
-                              :auto-resize="true"
-                              :label="__('Footer Site Moto')"
-                              :help="__('This can be anything you want to display below Logo in footer. Eg: Think Different!')"
-                              :error="form.errors['custom_footer_data.site_moto']"
-                              name="custom_footer_moto"
-                            />
-                          </div>
-
-                          <!-- Custom Footer Here -->
-                          <template
-                            v-if="form.enable_custom_footer"
-                          >
                             <div
-                              v-for="column,column_index in customFooterData.columns"
-                              :key="column_index"
-                              class="col-span-6 sm:col-span-6"
+                              v-for="(item, item_index) in column.items"
+                              :key="column_index + '_' + item_index"
+                              class="flex gap-2 items-start"
                             >
-                              <x-input
-                                :id="`column_${column_index}_header`"
-                                v-model="column.title"
-                                :label="__(`Footer Column ${column_index+1} Header Title`)"
-                                type="text"
-                                :name="`column_${column_index}_header`"
-                                :error="form.errors[`custom_footer_data.columns.${column_index}.title`]"
-                                help-error-flex="flex-col"
-                              />
-                              <div
-                                v-for="item,item_index in column.items"
-                                :key="column_index + '_' + item_index"
-                                class="flex gap-2"
-                              >
-                                <x-input
+                              <div class="flex-1">
+                                <XInput
                                   :id="`column_${column_index}_item_${item_index}_title`"
                                   v-model="item.title"
-                                  :label="__(`Item ${item_index+1} Title`)"
+                                  :label="__('Item :index Title', { index: item_index + 1 })"
                                   type="text"
                                   :name="`column_${column_index}_item_${item_index}_title`"
                                   :error="form.errors[`custom_footer_data.columns.${column_index}.items.${item_index}.title`]"
                                   help-error-flex="flex-col"
                                 />
-                                <x-input
+                              </div>
+                              <div class="flex-1">
+                                <XInput
                                   :id="`column_${column_index}_item_${item_index}_url`"
                                   v-model="item.url"
-                                  :label="__(`Item ${item_index+1} Url`)"
+                                  :label="__('Item :index URL', { index: item_index + 1 })"
                                   type="text"
                                   :name="`column_${column_index}_item_${item_index}_url`"
                                   :error="form.errors[`custom_footer_data.columns.${column_index}.items.${item_index}.url`]"
                                   help-error-flex="flex-col"
                                 />
-
-                                <div class="flex items-center justify-center">
-                                  <button
-                                    type="button"
-                                    class="focus:outline-none group"
-                                    @click="removeFooterColumnItem(column, item_index)"
-                                  >
-                                    <Icon
-                                      class="w-5 h-5 text-foreground group-hover:text-error-500"
-                                      name="trash"
-                                    />
-                                  </button>
-                                </div>
                               </div>
 
                               <button
-                                class="mt-2 float-right inline-flex items-center px-2 py-1 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
                                 type="button"
-                                @click="addFooterColumnItem(column)"
+                                class="mt-7 focus:outline-none group"
+                                @click="removeFooterColumnItem(column, item_index)"
                               >
-                                Add
+                                <Icon
+                                  class="w-5 h-5 text-muted-foreground group-hover:text-destructive"
+                                  name="trash"
+                                />
                               </button>
                             </div>
-                          </template>
-                        </div>
-                      </div>
 
-                      <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-end">
-                        <loading-button
-                          :loading="form.processing"
-                          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 dark:bg-surface-700 dark:hover:bg-surface-600"
-                          type="submit"
-                        >
-                          {{ __("Save Navigation Settings") }}
-                        </loading-button>
-                      </div>
+                            <div class="flex justify-end">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                @click="addFooterColumnItem(column)"
+                              >
+                                {{ __("Add Item") }}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
                     </div>
-                  </form>
+                  </fieldset>
                 </div>
               </div>
             </div>
+            <div class="px-4 py-3 bg-card border-t border-border sm:px-6 flex justify-end gap-2">
+              <Button
+                type="submit"
+                :disabled="form.processing"
+              >
+                <svg
+                  v-if="form.processing"
+                  class="animate-spin -ml-1 mr-2 h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                {{ __("Save Navigation Settings") }}
+              </Button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </AdminLayout>
