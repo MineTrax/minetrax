@@ -1,282 +1,42 @@
-<template>
-  <AdminLayout>
-    <app-head title="Run Command" />
-
-    <div class="max-w-6xl px-10 py-12 mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="text-3xl font-bold text-foreground dark:text-foreground">
-          {{ __("Run Command") }}
-        </h1>
-      </div>
-
-      <div class="mt-10 sm:mt-0">
-        <div class="mt-5 md:mt-0 md:col-span-2">
-          <form @submit.prevent="submitRunCommandForm">
-            <div class="shadow sm:rounded-md">
-              <div
-                class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6"
-              >
-                <div class="grid grid-cols-6 gap-6">
-                  <div class="col-span-6 sm:col-span-6">
-                    <RadioGroup
-                      v-model="form.scope"
-                      class="flex justify-between gap-2"
-                    >
-                      <RadioGroupLabel
-                        class="flex items-center flex-none w-1/12 font-semibold text-foreground dark:text-foreground"
-                      >
-                        {{ __("Scope") }}
-                      </RadioGroupLabel>
-                      <RadioGroupOption
-                        v-slot="{ checked }"
-                        class="flex-1 text-sm text-center uppercase"
-                        value="global"
-                      >
-                        <div
-                          class="p-3 rounded shadow-sm cursor-pointer"
-                          :class="
-                            checked
-                              ? 'dark:bg-surface-900 dark:text-foreground font-bold bg-primary text-white'
-                              : 'dark:bg-surface-600 dark:text-foreground bg-surface-200 text-foreground'
-                          "
-                        >
-                          <div class="flex items-center justify-center">
-                            <input
-                              :checked="checked"
-                              type="radio"
-                              disabled
-                              class="w-4 h-4 bg-surface-100 border-foreground text-primary focus:ring-primary dark:focus:ring-primary dark:ring-offset-foreground focus:ring-2 dark:bg-surface-700 dark:border-foreground"
-                            >
-                            <label
-                              class="ms-2"
-                            >{{ __("Global") }}
-                            </label>
-                          </div>
-                          <div>
-                            <span
-                              :class="checked ? 'text-foreground dark:text-foreground' : 'text-foreground'"
-                              class="text-xs"
-                            >
-                              {{ __("Run generic command") }}
-                            </span>
-                          </div>
-                        </div>
-                      </RadioGroupOption>
-                      <RadioGroupOption
-                        v-slot="{ checked }"
-                        class="flex-1 text-sm text-center uppercase"
-                        value="player"
-                      >
-                        <div
-                          class="p-3 rounded shadow-sm cursor-pointer"
-                          :class="
-                            checked
-                              ? 'dark:bg-surface-900 dark:text-foreground font-bold bg-primary text-white'
-                              : 'dark:bg-surface-600 dark:text-foreground bg-surface-200 text-foreground'
-                          "
-                        >
-                          <div class="flex items-center justify-center">
-                            <input
-                              :checked="checked"
-                              type="radio"
-                              disabled
-                              class="w-4 h-4 bg-surface-100 border-foreground text-primary focus:ring-primary dark:focus:ring-primary dark:ring-offset-foreground focus:ring-2 dark:bg-surface-700 dark:border-foreground"
-                            >
-                            <label
-                              class="ms-2"
-                            >{{ __("Player") }}
-                            </label>
-                          </div>
-                          <div>
-                            <span
-                              :class="checked ? 'text-foreground dark:text-foreground' : 'text-foreground'"
-                              class="text-xs"
-                            >
-                              {{ __("Run against players") }}
-                            </span>
-                          </div>
-                        </div>
-                      </RadioGroupOption>
-                    </RadioGroup>
-                  </div>
-
-                  <div class="col-span-6 sm:col-span-6">
-                    <p
-                      class="mb-2 text-foreground dark:text-foreground font-semibold"
-                    >
-                      {{ __("Servers to run on") }}
-                    </p>
-                    <Multiselect
-                      v-model="form.servers"
-                      class="block w-full border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
-                      :options="servers"
-                      :custom-label="serversCustomLabel"
-                      track-by="id"
-                      :multiple="true"
-                      :close-on-select="false"
-                      :clear-on-select="false"
-                      :searchable="false"
-                      :placeholder="__('Leave empty to run on all servers')+'...'"
-                    />
-                    <p class="text-sm text-error-500 mt-0.5">
-                      {{ form.errors.servers }}
-                    </p>
-                  </div>
-
-                  <div class="col-span-6 sm:col-span-6">
-                    <div
-                      v-if="form.scope === 'player'"
-                      class="flex flex-col items-end mb-2"
-                    >
-                      <h3 class="text-foreground dark:text-foreground text-sm font-semibold">
-                        {{ __("Available Placeholders") }}
-                      </h3>
-                      <ol class="text-sm text-right text-foreground dark:text-foreground">
-                        <li>
-                          <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_USERNAME}</code> - {{ __("Username of the player.") }}
-                        </li>
-                        <li>
-                          <code class="text-sm bg-surface-100 dark:bg-surface-700 dark:text-foreground p-1 rounded-md">{PLAYER_UUID}</code> - {{ __("Unique Id of the player.") }}
-                        </li>
-                      </ol>
-                    </div>
-                    <x-input
-                      id="command"
-                      v-model="form.command"
-                      :label="
-                        __('Enter command to run...')
-                      "
-                      :error="form.errors.command"
-                      type="text"
-                      name="command"
-                      :help="form.scope == 'player' ? __('Eg: give {PLAYER_USERNAME} diamond 64') : __('Eg: broadcast Hello world!')"
-                      help-error-flex="flex-row"
-                    />
-                  </div>
-
-                  <div class="col-span-6 sm:col-span-6 relative">
-                    <DatePicker
-                      id="execute_at"
-                      v-model:value="form.execute_at"
-                      :placeholder="__('Leave empty to run immediately without any delay')+'...'"
-                      class="w-full"
-                      value-type="date"
-                      type="datetime"
-                      format="YYYY-MM-DD hh:mm:ss A"
-                      input-class="border-foreground h-14 p-3 text-sm pt-7 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md block w-full dark:bg-surface-900 dark:text-foreground dark:border-foreground"
-                    />
-                    <label
-                      for="execute_at"
-                      class="absolute -top-2.5 left-0 px-3 py-5 text-xs text-foreground h-full pointer-events-none transform origin-left transition-all duration-100 ease-in-out"
-                    >{{ __("Run at") }}</label>
-                    <jet-input-error
-                      :message="form.errors.execute_at"
-                      class="mt-2"
-                    />
-                  </div>
-
-                  <div
-                    v-if="form.scope === 'player'"
-                    class="col-span-6 sm:col-span-6"
-                  >
-                    <XSelect
-                      id="players.scope"
-                      v-model="form.players.scope"
-                      :error="form.errors['players.scope']"
-                      name="players.scope"
-                      :label="__('Players to run on')"
-                      :select-list="playerRunScopeList"
-                    />
-                  </div>
-
-                  <div
-                    v-if="form.players.scope === 'custom' && form.scope === 'player'"
-                    class="col-span-6 sm:col-span-6"
-                  >
-                    <p
-                      class="mb-2 text-foreground dark:text-foreground font-semibold"
-                    >
-                      {{ __("Select players") }}
-                    </p>
-                    <Multiselect
-                      v-model="form.players.id"
-                      class="block w-full border-foreground rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
-                      :options="players"
-                      :custom-label="playersCustomLabel"
-                      track-by="id"
-                      :multiple="true"
-                      :close-on-select="false"
-                      :clear-on-select="false"
-                      :searchable="true"
-                      :hide-selected="true"
-                      :loading="isLoadingPlayers"
-                      :internal-search="false"
-                      @search-change="searchPlayers"
-                      :placeholder="__('Type to search players')+'...'"
-                      :no-options="__('Type at least 2 characters to search')"
-                    />
-                    <p class="text-sm text-error-500 mt-0.5">
-                      {{ form.errors['players.id'] }}
-                    </p>
-                  </div>
-
-                  <div
-                    v-if="form.scope === 'player'"
-                    class="col-span-6 sm:col-span-6"
-                  >
-                    <XCheckbox
-                      id="players.is_player_online_required"
-                      v-model="form.players.is_player_online_required"
-                      :label="__('Require player to be online')"
-                      :help="__('This command should only run if player is online on running server. If not online it will be queued to run when player comes online.')"
-                      name="players.is_player_online_required"
-                      :error="form.errors['players.is_player_online_required']"
-                    />
-                  </div>
-
-                  <!-- Form end -->
-                </div>
-              </div>
-              <div
-                class="flex justify-end px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6"
-              >
-                <loading-button
-                  :loading="form.processing"
-                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-success-500 hover:bg-success-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-success-500 disabled:opacity-50"
-                  type="submit"
-                >
-                  {{ form.execute_at ? __("Schedule Command") : __("Run Command") }}
-                </loading-button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </AdminLayout>
-</template>
-
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
+import { useTranslations } from '@/Composables/useTranslations';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link, useForm } from '@inertiajs/vue3';
 import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
-import { useForm } from '@inertiajs/vue3';
+import XSwitch from '@/Components/Form/XSwitch.vue';
+import { Tabs, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import Multiselect from 'vue-multiselect';
-import DatePicker from 'vue-datepicker-next';
-import JetInputError from '@/Jetstream/InputError.vue';
-import { useTranslations } from '@/Composables/useTranslations';
+import XDatePicker from '@/Components/Form/XDatePicker.vue';
 import axios from 'axios';
 import { ref } from 'vue';
+import { GlobeAltIcon, UserIcon } from '@heroicons/vue/24/outline';
+
 const { __ } = useTranslations();
 
-defineProps({
+const props = defineProps({
     servers: {
         type: Array,
     },
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Commands'),
+        url: route('admin.command-queue.index'),
+        current: false,
+    },
+    {
+        text: __('Run Command'),
+        current: true,
+    }
+];
 
 const playerRunScopeList = {
     all: 'All - for every player in the web',
@@ -350,3 +110,270 @@ const submitRunCommandForm = () => {
     });
 };
 </script>
+
+<template>
+  <AdminLayout>
+    <app-head :title="__('Run Command')" />
+
+    <div class="px-10 py-8 mx-auto max-w-6xl text-foreground">
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
+      </div>
+
+      <div class="mt-6">
+        <form @submit.prevent="submitRunCommandForm">
+          <div class="shadow rounded-lg">
+            <div class="px-4 py-5 bg-card sm:p-6">
+              <div class="grid grid-cols-6 gap-6">
+                <!-- Scope Selection -->
+                <div class="col-span-6">
+                  <label class="block text-sm font-medium text-foreground mb-3">
+                    {{ __("Scope") }}
+                  </label>
+                  <Tabs
+                    v-model="form.scope"
+                    class="w-full"
+                  >
+                    <TabsList class="grid w-full grid-cols-2 h-auto gap-3 bg-transparent p-0">
+                      <TabsTrigger
+                        value="global"
+                        class="relative flex flex-col items-center justify-center gap-2 p-4 rounded-lg border-2 transition-all duration-200 data-[state=inactive]:border-border data-[state=inactive]:bg-muted/30 data-[state=inactive]:text-muted-foreground data-[state=inactive]:shadow-none hover:data-[state=inactive]:border-primary/50 hover:data-[state=inactive]:bg-muted/50 data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none [&>span]:w-full"
+                      >
+                        <div
+                          class="flex items-center justify-center w-10 h-10 rounded-full transition-colors mx-auto"
+                          :class="form.scope === 'global' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'"
+                        >
+                          <GlobeAltIcon class="w-5 h-5" />
+                        </div>
+                        <div class="text-center">
+                          <div class="font-semibold" :class="form.scope === 'global' ? 'text-primary' : 'text-foreground'">
+                            {{ __("Global") }}
+                          </div>
+                          <div class="text-xs text-muted-foreground mt-0.5 whitespace-normal">
+                            {{ __("Run generic command") }}
+                          </div>
+                        </div>
+                        <div
+                          v-if="form.scope === 'global'"
+                          class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary"
+                        />
+                      </TabsTrigger>
+
+                      <TabsTrigger
+                        value="player"
+                        class="relative flex flex-col items-center justify-center gap-2 p-4 rounded-lg border-2 transition-all duration-200 data-[state=inactive]:border-border data-[state=inactive]:bg-muted/30 data-[state=inactive]:text-muted-foreground data-[state=inactive]:shadow-none hover:data-[state=inactive]:border-primary/50 hover:data-[state=inactive]:bg-muted/50 data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none [&>span]:w-full"
+                      >
+                        <div
+                          class="flex items-center justify-center w-10 h-10 rounded-full transition-colors mx-auto"
+                          :class="form.scope === 'player' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'"
+                        >
+                          <UserIcon class="w-5 h-5" />
+                        </div>
+                        <div class="text-center">
+                          <div class="font-semibold" :class="form.scope === 'player' ? 'text-primary' : 'text-foreground'">
+                            {{ __("Player") }}
+                          </div>
+                          <div class="text-xs text-muted-foreground mt-0.5 whitespace-normal">
+                            {{ __("Run against players") }}
+                          </div>
+                        </div>
+                        <div
+                          v-if="form.scope === 'player'"
+                          class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary"
+                        />
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </div>
+
+                <!-- Servers Selection -->
+                <div class="col-span-6">
+                  <label
+                    for="servers"
+                    class="block text-sm font-medium text-foreground mb-2"
+                  >
+                    {{ __("Servers to run on") }}
+                  </label>
+                  <Multiselect
+                    id="servers"
+                    v-model="form.servers"
+                    class="block w-full border-input rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                    :options="servers"
+                    :custom-label="serversCustomLabel"
+                    track-by="id"
+                    :multiple="true"
+                    :close-on-select="false"
+                    :clear-on-select="false"
+                    :searchable="false"
+                    :placeholder="__('Leave empty to run on all servers')+'...'"
+                  />
+                  <p
+                    v-if="form.errors.servers"
+                    class="text-xs text-destructive mt-2"
+                  >
+                    {{ form.errors.servers }}
+                  </p>
+                </div>
+
+                <!-- Command Input -->
+                <div class="col-span-6">
+                  <div
+                    v-if="form.scope === 'player'"
+                    class="flex flex-col items-end mb-3 p-3 bg-muted rounded-md"
+                  >
+                    <h3 class="text-sm font-semibold text-foreground">
+                      {{ __("Available Placeholders") }}
+                    </h3>
+                    <ul class="text-sm text-right text-muted-foreground mt-1 space-y-1">
+                      <li>
+                        <code class="text-xs bg-background px-1.5 py-0.5 rounded font-mono">{PLAYER_USERNAME}</code>
+                        <span class="ml-1">- {{ __("Username of the player.") }}</span>
+                      </li>
+                      <li>
+                        <code class="text-xs bg-background px-1.5 py-0.5 rounded font-mono">{PLAYER_UUID}</code>
+                        <span class="ml-1">- {{ __("Unique Id of the player.") }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <XInput
+                    id="command"
+                    v-model="form.command"
+                    :label="__('Command to run')"
+                    :error="form.errors.command"
+                    type="text"
+                    name="command"
+                    :placeholder="form.scope == 'player' ? __('Eg: give {PLAYER_USERNAME} diamond 64') : __('Eg: broadcast Hello world!')"
+                  />
+                </div>
+
+                <!-- Execute At -->
+                <div class="col-span-6">
+                  <XDatePicker
+                    id="execute_at"
+                    v-model="form.execute_at"
+                    :label="__('Run at')"
+                    :placeholder="__('Leave empty to run immediately without any delay')+'...'"
+                    :error="form.errors.execute_at"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                  />
+                </div>
+
+                <!-- Player Scope Selection -->
+                <div
+                  v-if="form.scope === 'player'"
+                  class="col-span-6"
+                >
+                  <XSelect
+                    id="players.scope"
+                    v-model="form.players.scope"
+                    :error="form.errors['players.scope']"
+                    name="players.scope"
+                    :label="__('Players to run on')"
+                    :select-list="playerRunScopeList"
+                  />
+                </div>
+
+                <!-- Custom Player Selection -->
+                <div
+                  v-if="form.players.scope === 'custom' && form.scope === 'player'"
+                  class="col-span-6"
+                >
+                  <label
+                    for="players_id"
+                    class="block text-sm font-medium text-foreground mb-2"
+                  >
+                    {{ __("Select players") }}
+                  </label>
+                  <Multiselect
+                    id="players_id"
+                    v-model="form.players.id"
+                    class="block w-full border-input rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                    :options="players"
+                    :custom-label="playersCustomLabel"
+                    track-by="id"
+                    :multiple="true"
+                    :close-on-select="false"
+                    :clear-on-select="false"
+                    :searchable="true"
+                    :hide-selected="true"
+                    :loading="isLoadingPlayers"
+                    :internal-search="false"
+                    :placeholder="__('Type to search players')+'...'"
+                    :no-options="__('Type at least 2 characters to search')"
+                    @search-change="searchPlayers"
+                  />
+                  <p
+                    v-if="form.errors['players.id']"
+                    class="text-xs text-destructive mt-2"
+                  >
+                    {{ form.errors['players.id'] }}
+                  </p>
+                </div>
+
+                <!-- Require Online -->
+                <div
+                  v-if="form.scope === 'player'"
+                  class="col-span-6"
+                >
+                  <XSwitch
+                    id="players.is_player_online_required"
+                    v-model="form.players.is_player_online_required"
+                    :label="__('Require player to be online')"
+                    :help="__('This command should only run if player is online on running server. If not online it will be queued to run when player comes online.')"
+                    name="players.is_player_online_required"
+                    :error="form.errors['players.is_player_online_required']"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Footer -->
+            <div class="px-4 py-4 bg-card border-t border-border sm:px-6 flex justify-end gap-2">
+              <Button
+                variant="outline"
+                as-child
+              >
+                <Link :href="route('admin.command-queue.index')">
+                  {{ __("Cancel") }}
+                </Link>
+              </Button>
+              <Button
+                type="submit"
+                :disabled="form.processing"
+              >
+                <svg
+                  v-if="form.processing"
+                  class="animate-spin -ml-1 mr-2 h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                {{ form.execute_at ? __("Schedule Command") : __("Run Command") }}
+              </Button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </AdminLayout>
+</template>

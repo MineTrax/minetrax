@@ -9,8 +9,7 @@ import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
 import { Button } from '@/Components/ui/button';
 import { TrashIcon, ArrowPathIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
-import JetDialogModal from '@/Jetstream/DialogModal.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/Components/ui/dialog';
 import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import UserDisplayname from '@/Components/UserDisplayname.vue';
@@ -30,7 +29,8 @@ const breadcrumbItems = [
         current: false,
     },
     {
-        text: __('Command History'),
+        text: __('Commands'),
+        url: route('admin.command-queue.index'),
         current: true,
     }
 ];
@@ -263,182 +263,164 @@ const showDetails = (commandQueue) => {
             </DataTable>
         </div>
 
-        <JetDialogModal :show="showingDetailsModel" @close="showingDetailsModel = false">
-            <template #title>
-                <h3 class="text-lg font-bold">
-                    {{ __("Run Details") }}
-                </h3>
-            </template>
+        <Dialog :open="showingDetailsModel" @update:open="showingDetailsModel = $event">
+            <DialogContent class="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                    <DialogTitle>{{ __("Run Details") }}</DialogTitle>
+                </DialogHeader>
 
-            <template #content>
-                <div class="w-full text-sm grid-cols-2 gap-6 leading-7 md:col-span-2 md:grid">
+                <div class="w-full text-sm grid grid-cols-2 gap-4 py-4">
                     <div class="col-span-2">
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Command") }}
                         </p>
-                        <code>
+                        <code class="block bg-muted px-3 py-2 rounded text-sm font-mono break-all">
                             {{ selectedCommandQueue.parsed_command }}
                         </code>
                     </div>
                     <div class="col-span-2">
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Output") }}
                         </p>
-                        <code v-if="selectedCommandQueue.output">
+                        <code v-if="selectedCommandQueue.output" class="block bg-muted px-3 py-2 rounded text-sm font-mono break-all">
                             {{ selectedCommandQueue.output }}
                         </code>
-                        <div v-else class="italic text-foreground">
+                        <div v-else class="italic text-muted-foreground">
                             {{ __("none") }}
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("ID") }}
                         </p>
-                        <p class="">
-                            {{ selectedCommandQueue.id }}
-                        </p>
+                        <p>{{ selectedCommandQueue.id }}</p>
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Command ID") }}
                         </p>
                         <p v-if="selectedCommandQueue.command_id">
                             {{ selectedCommandQueue.command_id }}
                         </p>
-                        <p v-else class="italic text-foreground">
+                        <p v-else class="italic text-muted-foreground">
                             {{ __("none") }}
                         </p>
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Server") }}
                         </p>
-                        <p class="">
-                            {{ selectedCommandQueue.server.name }}
-                        </p>
+                        <p>{{ selectedCommandQueue.server.name }}</p>
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Status") }}
                         </p>
                         <CommonStatusBadge :status="selectedCommandQueue.status.value" />
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Last Attempted") }}
                         </p>
-                        <div class="flex items-center">
-                            <div v-if="selectedCommandQueue.last_attempt_at" v-tippy class="whitespace-nowrap"
+                        <div class="flex items-center gap-2">
+                            <span v-if="selectedCommandQueue.last_attempt_at" v-tippy class="whitespace-nowrap"
                                 :title="formatToDayDateString(selectedCommandQueue.last_attempt_at)">
                                 {{ formatTimeAgoToNow(selectedCommandQueue.last_attempt_at) }}
-                            </div>
-                            <div v-else class="text-foreground italic">
+                            </span>
+                            <span v-else class="text-muted-foreground italic">
                                 {{ "not yet" }}
-                            </div>
-                            &nbsp;&#9679;&nbsp;
-                            <div class="text-sm">
+                            </span>
+                            <span class="text-muted-foreground">•</span>
+                            <span class="text-sm text-muted-foreground">
                                 {{ __("Attempts: :attempts/:max_attempts", {
                                     attempts: selectedCommandQueue.attempts,
                                     max_attempts: selectedCommandQueue.max_attempts ?? 1,
                                 }) }}
-                            </div>
+                            </span>
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Execute At") }}
                         </p>
-                        <div class="flex items-center">
-                            <div v-if="selectedCommandQueue.execute_at" v-tippy
-                                class="text-sm font-medium text-foreground dark:text-foreground whitespace-nowrap"
+                        <div>
+                            <span v-if="selectedCommandQueue.execute_at" v-tippy
+                                class="text-sm font-medium whitespace-nowrap"
                                 :title="formatToDayDateString(selectedCommandQueue.execute_at)">
                                 {{ formatTimeAgoToNow(selectedCommandQueue.execute_at) }}
-                            </div>
-                            <div v-else class="text-foreground italic">
+                            </span>
+                            <span v-else class="text-muted-foreground italic">
                                 {{ "no delay" }}
-                            </div>
+                            </span>
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("For Player") }}
                         </p>
-                        <div>
-                            <div v-if="selectedCommandQueue.player_id" class="flex items-center">
-                                <div class="flex-shrink-0 w-8 h-8">
-                                    <img class="w-8 h-8" :src="selectedCommandQueue.player.avatar_url" alt="">
-                                </div>
-                                <div class="ml-2">
-                                    <Link v-tippy as="a" :href="route('player.show', selectedCommandQueue.player.uuid)"
-                                        class="font-medium text-foreground cursor-pointer dark:text-foreground focus:outline-none hover:underline"
-                                        :content="selectedCommandQueue.player.uuid">
-                                    <span v-if="selectedCommandQueue.player.username"
-                                        class="font-extrabold text-foreground dark:text-foreground">{{
-                                            selectedCommandQueue.player.username }}</span>
-                                    <span v-else class="italic text-error-500">{{ __("Unknown") }}</span>
-                                    </Link>
-                                </div>
-                            </div>
-                            <div v-else class="italic text-foreground">
-                                {{ __("none") }}
-                            </div>
+                        <div v-if="selectedCommandQueue.player_id" class="flex items-center gap-2">
+                            <img class="w-8 h-8 rounded" :src="selectedCommandQueue.player.avatar_url" alt="">
+                            <Link v-tippy as="a" :href="route('player.show', selectedCommandQueue.player.uuid)"
+                                class="font-medium hover:underline"
+                                :content="selectedCommandQueue.player.uuid">
+                                <span v-if="selectedCommandQueue.player.username" class="font-semibold">
+                                    {{ selectedCommandQueue.player.username }}
+                                </span>
+                                <span v-else class="italic text-destructive">{{ __("Unknown") }}</span>
+                            </Link>
+                        </div>
+                        <div v-else class="italic text-muted-foreground">
+                            {{ __("none") }}
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("User") }}
                         </p>
-                        <div>
-                            <div v-if="selectedCommandQueue.user_id" class="flex items-center">
-                                <Link :href="route('user.public.get', selectedCommandQueue.user.username)">
-                                    <UserDisplayname :user="selectedCommandQueue.user" icon-class="w-4 h-4"
-                                        text-class="text-sm" />
-                                </Link>
-                            </div>
-                            <div v-else class="italic text-foreground">
-                                {{ __("none") }}
-                            </div>
+                        <div v-if="selectedCommandQueue.user_id">
+                            <Link :href="route('user.public.get', selectedCommandQueue.user.username)">
+                                <UserDisplayname :user="selectedCommandQueue.user" icon-class="w-4 h-4"
+                                    text-class="text-sm" />
+                            </Link>
+                        </div>
+                        <div v-else class="italic text-muted-foreground">
+                            {{ __("none") }}
                         </div>
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Tags") }}
                         </p>
-                        <p class="">
-                            {{ selectedCommandQueue.tag ?? __("none") }}
-                        </p>
+                        <p>{{ selectedCommandQueue.tag ?? __("none") }}</p>
                     </div>
                     <div>
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Created At") }}
                         </p>
-                        <div class="flex items-center">
-                            <div v-tippy class="text-sm font-medium text-foreground dark:text-foreground whitespace-nowrap"
-                                :title="formatToDayDateString(selectedCommandQueue.created_at)">
-                                {{ formatTimeAgoToNow(selectedCommandQueue.created_at) }}
-                            </div>
-                        </div>
+                        <span v-tippy class="text-sm font-medium whitespace-nowrap"
+                            :title="formatToDayDateString(selectedCommandQueue.created_at)">
+                            {{ formatTimeAgoToNow(selectedCommandQueue.created_at) }}
+                        </span>
                     </div>
                     <div class="col-span-2">
-                        <p class="font-semibold text-foreground">
+                        <p class="font-semibold text-foreground mb-1">
                             {{ __("Config") }}
                         </p>
-                        <code v-if="selectedCommandQueue.config">
+                        <code v-if="selectedCommandQueue.config" class="block bg-muted px-3 py-2 rounded text-sm font-mono break-all">
                             {{ selectedCommandQueue.config }}
                         </code>
-                        <div v-else class="italic text-foreground">
+                        <div v-else class="italic text-muted-foreground">
                             {{ __("none") }}
                         </div>
                     </div>
                 </div>
-            </template>
 
-            <template #footer>
-                <JetSecondaryButton @click="showingDetailsModel = false">
-                    {{ __("Close") }}
-                </JetSecondaryButton>
-            </template>
-        </JetDialogModal>
+                <DialogFooter>
+                    <Button variant="outline" @click="showingDetailsModel = false">
+                        {{ __("Close") }}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </AdminLayout>
 </template>
