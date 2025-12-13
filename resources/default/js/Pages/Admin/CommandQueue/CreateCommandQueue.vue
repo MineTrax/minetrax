@@ -276,6 +276,7 @@ const submitRunCommandForm = () => {
                     name="players.scope"
                     :label="__('Players to run on')"
                     :select-list="playerRunScopeList"
+                    :disable-null="true"
                   />
                 </div>
 

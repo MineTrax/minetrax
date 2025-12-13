@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\CommandQueue;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateCommandQueueRequest extends FormRequest
 {
@@ -32,7 +33,10 @@ class CreateCommandQueueRequest extends FormRequest
             'players' => 'required_if:scope,player|array',
             'players.scope' => 'required_if:scope,player|in:all,linked,unlinked,custom',
             'players.is_player_online_required' => 'required_if:scope,player|boolean',
-            'players.id' => 'required_if:players.scope,custom|array',
+            'players.id' => [
+                Rule::requiredIf(fn() => $this->input('scope') === 'player' && $this->input('players.scope') === 'custom'),
+                'array',
+            ],
         ];
     }
 }
