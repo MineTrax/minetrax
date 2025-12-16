@@ -42,7 +42,7 @@ const form = useForm({
     enable_account_link: props.settings.enable_account_link,
     max_players_link_per_account: props.settings.max_players_link_per_account,
     enable_sync_player_ranks_from_server: props.settings.enable_sync_player_ranks_from_server,
-    sync_player_ranks_from_server_id: props.settings.sync_player_ranks_from_server_id,
+    sync_player_ranks_from_server_id: props.settings.sync_player_ranks_from_server_id ? String(props.settings.sync_player_ranks_from_server_id) : null,
     account_link_after_success_commands: props.settingsAccountLinkAfterSuccessCommands,
     account_unlink_after_success_commands: props.settingsAccountUnlinkAfterSuccessCommands,
     enable_player_password_reset: props.settings.enable_player_password_reset,
