@@ -9,7 +9,8 @@
                 <div class="hidden md:flex flex-col space-y-4 flex-none w-1/4 h-screen sticky top-5">
                     <DidYouKnowBox :enabled="$page.props.generalSettings.enable_didyouknowbox" />
                     <DiscordServerBox :enabled="$page.props.generalSettings.enable_discordbox"
-                        :server="$page.props.generalSettings.discord_server_id" />
+                        :server="$page.props.generalSettings.discord_server_id"
+                        :invite="$page.props.generalSettings.discord_invite_url" />
                 </div>
 
                 <div class="flex-grow">

@@ -13,6 +13,7 @@
           <DiscordServerBox
             :enabled="page.props.generalSettings.enable_discordbox"
             :server="page.props.generalSettings.discord_server_id"
+            :invite="page.props.generalSettings.discord_invite_url"
           />
         </div>
 

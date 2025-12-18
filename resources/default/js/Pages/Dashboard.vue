@@ -29,6 +29,7 @@
         <DiscordServerBox
           :enabled="generalSettings.enable_discordbox"
           :server="generalSettings.discord_server_id"
+          :invite="generalSettings.discord_invite_url"
         />
         <DonationBox />
       </div>

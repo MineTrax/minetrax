@@ -25,8 +25,8 @@
           </div>
           <div class="server-details">
             <a
-              v-if="discordData.instant_invite"
-              :href="discordData.instant_invite"
+              v-if="invite || discordData.instant_invite"
+              :href="invite || discordData.instant_invite"
               target="_blank"
               rel="noopener noreferrer"
               class="server-name-link"
@@ -226,8 +226,8 @@
       <div class="join-section">
         <Button
           as="a"
-          v-if="discordData.instant_invite"
-          :href="discordData.instant_invite"
+          v-if="invite || discordData.instant_invite"
+          :href="invite || discordData.instant_invite"
           target="_blank"
           rel="noopener noreferrer"
           variant="outline"
@@ -254,6 +254,7 @@ export default {
     props: {
         enabled: Boolean,
         server: String,
+        invite: String | null,
     },
     data() {
         return {
