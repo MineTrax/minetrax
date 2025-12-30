@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Settings;
 
+use App\Jobs\ResetPlayerIntelStatsJob;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Controller;
 use App\Jobs\TruncatePlayerIntelJob;
@@ -33,6 +34,7 @@ class DangerSettingController extends Controller
                 'truncatePlayerIntelData' => Cache::get('dangerzone::truncate_player_intel_data'),
                 'truncateServerIntelData' => Cache::get('dangerzone::truncate_server_intel_data'),
                 'truncatePlayerPunishments' => Cache::get('dangerzone::truncate_player_punishments'),
+                'resetPlayerIntelStats' => Cache::get('dangerzone::reset_player_intel_stats'),
             ]
         ]);
     }
@@ -113,5 +115,18 @@ class DangerSettingController extends Controller
 
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'milliseconds' => 10000, 'title' => __('Queued Successfully! Player Punishments data will be deleted shortly. It may take upto few minute to complete.')]]);
+    }
+
+    public function resetPlayerIntelStats(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        Log::alert('RESET_PLAYER_INTEL_STATS', [
+            'causer' => $request->user()->username,
+        ]);
+
+        Cache::put('dangerzone::reset_player_intel_stats', now(), 3600 * 24);
+        ResetPlayerIntelStatsJob::dispatch();
+
+        return redirect()->back()
+            ->with(['toast' => ['type' => 'success', 'milliseconds' => 10000, 'title' => __('Queued Successfully! Player Intel stats will be reset shortly. It may take upto few minute to complete.')]]);
     }
 }

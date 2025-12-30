@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Cache;
+use Illuminate\Support\Facades\Log;
 
 class TruncatePlayerPunishmentJob implements ShouldQueue
 {
@@ -27,6 +28,7 @@ class TruncatePlayerPunishmentJob implements ShouldQueue
      */
     public function handle(): void
     {
+        Log::info('[TruncatePlayerPunishmentJob] Starting job...');
         Cache::put('dangerzone::truncate_player_punishments', now(), 3600 * 24);
 
         PlayerPunishment::lazyById()->each(function ($punishment) {
@@ -34,5 +36,6 @@ class TruncatePlayerPunishmentJob implements ShouldQueue
         });
 
         Cache::forget('dangerzone::truncate_player_punishments');
+        Log::info('[TruncatePlayerPunishmentJob] Job completed successfully');
     }
 }

@@ -17,6 +17,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Cache;
+use Illuminate\Support\Facades\Log;
 
 class TruncatePlayerIntelJob implements ShouldQueue
 {
@@ -27,7 +28,7 @@ class TruncatePlayerIntelJob implements ShouldQueue
      */
     public function __construct()
     {
-        //
+        $this->onQueue('longtask');
     }
 
     /**
@@ -35,6 +36,7 @@ class TruncatePlayerIntelJob implements ShouldQueue
      */
     public function handle(): void
     {
+        Log::info('[TruncatePlayerIntelJob] Starting job...');
         Cache::put('dangerzone::truncate_player_intel_data', now(), 3600 * 24);
 
         DB::transaction(function () {
@@ -50,5 +52,6 @@ class TruncatePlayerIntelJob implements ShouldQueue
         }, 3);
 
         Cache::forget('dangerzone::truncate_player_intel_data');
+        Log::info('[TruncatePlayerIntelJob] Job completed successfully');
     }
 }
