@@ -163,6 +163,43 @@ const breadcrumbItems = [
               </div>
             </div>
 
+            <!-- Reset Player Intel Stats -->
+            <div class="flex justify-between p-5">
+              <div class="flex flex-col">
+                <h3 class="text-base font-semibold leading-6 text-foreground">
+                  {{ __("Reset Player Intel Stats") }}
+                </h3>
+                <p class="mt-1 text-sm text-muted-foreground">
+                  {{ __("Reset all player statistics (kills, deaths, sessions, etc.) to zero while keeping player data intact.") }}
+                </p>
+
+                <div
+                  v-if="inProgressList?.resetPlayerIntelStats"
+                  class="text-sm mt-4 p-4 max-w-2xl border border-orange-500/50 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400"
+                >
+                  <p>
+                    {{ __("Action already in progress. Please wait before starting again.") }}
+                  </p>
+                  <p>
+                    {{ __("Last Run: :at", { at: formatTimeAgoToNow(inProgressList?.resetPlayerIntelStats) }) }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <InertiaLink
+                  v-tippy
+                  v-confirm="{message: __('Are you sure you want to reset all Player Intel Stats?')}"
+                  as="button"
+                  :href="route('admin.setting.danger.reset.playerintelstats')"
+                  method="delete"
+                >
+                  <Button variant="destructive">
+                    {{ __("Reset Player Stats") }}
+                  </Button>
+                </InertiaLink>
+              </div>
+            </div>
+
             <!-- Delete Player Intel -->
             <div class="flex justify-between p-5">
               <div class="flex flex-col">

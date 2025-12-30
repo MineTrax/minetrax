@@ -34,12 +34,10 @@ class TruncateServerIntelJob implements ShouldQueue
         Log::info('[TruncateServerIntelJob] Starting job...');
         Cache::put('dangerzone::truncate_server_intel_data', now(), 3600 * 24);
 
-        DB::transaction(function () {
-            // Delete server intel.
-            MinecraftWorldLiveInfo::query()->delete();
-            MinecraftServerWorld::query()->delete();
-            MinecraftServerLiveInfo::query()->delete();
-        }, 3);
+        // Delete server intel.
+        MinecraftWorldLiveInfo::query()->delete();
+        MinecraftServerWorld::query()->delete();
+        MinecraftServerLiveInfo::query()->delete();
 
         Cache::forget('dangerzone::truncate_server_intel_data');
         Log::info('[TruncateServerIntelJob] Job completed successfully');

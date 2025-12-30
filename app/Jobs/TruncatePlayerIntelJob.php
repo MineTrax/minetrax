@@ -39,17 +39,15 @@ class TruncatePlayerIntelJob implements ShouldQueue
         Log::info('[TruncatePlayerIntelJob] Starting job...');
         Cache::put('dangerzone::truncate_player_intel_data', now(), 3600 * 24);
 
-        DB::transaction(function () {
-            // Delete player intel.
-            MinecraftPlayerDeath::query()->delete();
-            MinecraftPlayerEvent::query()->delete();
-            MinecraftPlayerMobKill::query()->delete();
-            MinecraftPlayerPvpKill::query()->delete();
-            MinecraftPlayerWorldStat::query()->delete();
-            MinecraftPlayerSession::query()->delete();
-            MinecraftPlayer::query()->delete();
-            Player::query()->delete();
-        }, 3);
+        // Delete player intel.
+        MinecraftPlayerDeath::query()->delete();
+        MinecraftPlayerEvent::query()->delete();
+        MinecraftPlayerMobKill::query()->delete();
+        MinecraftPlayerPvpKill::query()->delete();
+        MinecraftPlayerWorldStat::query()->delete();
+        MinecraftPlayerSession::query()->delete();
+        MinecraftPlayer::query()->delete();
+        Player::query()->delete();
 
         Cache::forget('dangerzone::truncate_player_intel_data');
         Log::info('[TruncatePlayerIntelJob] Job completed successfully');
