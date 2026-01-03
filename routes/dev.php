@@ -9,11 +9,13 @@ use App\Models\Server;
 use App\Services\AiService;
 use App\Services\AskDbService;
 use App\Services\MinecraftApiService;
+use App\Settings\GeneralSettings;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
+use GuzzleHttp\Client;
 
 Route::get('time', function () {
     $timestamp = 1644663318245;
@@ -216,4 +218,190 @@ Route::get('askdb-service', function (AskDbService $askDbService) {
 
 Route::get('ui-test', function () {
     return Inertia::render('Extra/Dev');
+});
+
+
+// private function forceJoinDiscordServer($socialUser)
+// {
+//     $serverID = app(GeneralSettings::class)->discord_server_id;
+//     $botToken = config('services.discord.token');
+//     $forceJoinServer = config('services.discord.force_join_server');
+
+//     if (!$serverID || !$botToken || !$forceJoinServer) {
+//         return;
+//     }
+
+//     try {
+//         $client = new Client();
+//         $response = $client->put("https://discord.com/api/v10/guilds/{$serverID}/members/{$socialUser->getId()}", [
+//             'headers' => [
+//                 'Authorization' => 'Bot ' . $botToken,
+//                 'Content-Type' => 'application/json',
+//             ],
+//             'json' => [
+//                 'access_token' => $socialUser->token,
+//             ],
+//         ]);
+
+//         if ($response->getStatusCode() === 201) {
+//             Log::info("User {$socialUser->getId()} joined Discord server {$serverID}");
+//         }
+//     } catch (\Exception $e) {
+//         Log::error("Failed to add user to Discord server: " . $e->getMessage());
+//     }
+// }
+
+Route::get('refresh-discord-token', function (Illuminate\Http\Request $request) {
+    // Get user_id from query param, default to 1
+    $userId = $request->query('user_id', 1);
+    $user = \App\Models\User::find($userId);
+
+    if (!$user) {
+        return response()->json(['error' => 'User not found'], 404);
+    }
+
+    $socialAccount = $user->socialAccounts()->where('provider', 'discord')->first();
+
+    if (!$socialAccount) {
+        return response()->json(['error' => 'Discord social account not found for this user'], 404);
+    }
+
+    if (!$socialAccount->refresh_token) {
+        return response()->json(['error' => 'No refresh token available for this user'], 400);
+    }
+
+    try {
+        $client = new Client();
+        $response = $client->post('https://discord.com/api/oauth2/token', [
+            'form_params' => [
+                'client_id' => config('services.discord.client_id'),
+                'client_secret' => config('services.discord.client_secret'),
+                'grant_type' => 'refresh_token',
+                'refresh_token' => $socialAccount->refresh_token,
+            ],
+            'headers' => [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+        ]);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        // Update the social account with new tokens
+        $socialAccount->update([
+            'token' => $data['access_token'],
+            'refresh_token' => $data['refresh_token'],
+            'expires_at' => now()->addSeconds($data['expires_in']),
+        ]);
+
+        Log::info("Discord token refreshed for user {$userId}");
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Discord token refreshed successfully',
+            'access_token' => $data['access_token'],
+            'refresh_token' => $data['refresh_token'],
+            'expires_in' => $data['expires_in'],
+            'token_type' => $data['token_type'],
+        ]);
+    } catch (\GuzzleHttp\Exception\ClientException $e) {
+        $errorBody = json_decode($e->getResponse()->getBody()->getContents(), true);
+        Log::error("Failed to refresh Discord token: " . json_encode($errorBody));
+        return response()->json([
+            'error' => 'Failed to refresh Discord token',
+            'details' => $errorBody,
+        ], $e->getResponse()->getStatusCode());
+    } catch (\Exception $e) {
+        Log::error("Failed to refresh Discord token: " . $e->getMessage());
+        return response()->json([
+            'error' => 'Failed to refresh Discord token',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+});
+
+Route::get('test-force-join-discord-server', function (Illuminate\Http\Request $request) {
+    // Get user_id from query param, default to 1
+    $userId = $request->query('user_id', 1);
+    $user = \App\Models\User::find($userId);
+
+    if (!$user) {
+        return response()->json(['error' => 'User not found'], 404);
+    }
+
+    $socialAccount = $user->socialAccounts()->where('provider', 'discord')->first();
+
+    if (!$socialAccount) {
+        return response()->json(['error' => 'Discord social account not found for this user'], 404);
+    }
+
+    $serverID = "508594544598712330"; // app(GeneralSettings::class)->discord_server_id;
+    $botToken = config('services.discord.token');
+
+    if (!$serverID) {
+        return response()->json(['error' => 'Discord server ID not configured in settings'], 400);
+    }
+
+    if (!$botToken) {
+        return response()->json(['error' => 'Discord bot token not configured'], 400);
+    }
+
+    $discordUserId = $socialAccount->provider_id;
+    $userToken = $socialAccount->token;
+
+    if (!$userToken) {
+        return response()->json(['error' => 'No Discord access token available for this user'], 400);
+    }
+
+    try {
+        $client = new Client();
+        $url = "https://discord.com/api/v10/guilds/{$serverID}/members/{$discordUserId}";
+        $response = $client->put($url, [
+            'headers' => [
+                'Authorization' => 'Bot ' . $botToken,
+                'Content-Type' => 'application/json',
+                'User-Agent' => 'DiscordBot (https://crazymc.net, v0.1)',
+            ],
+            'json' => [
+                'access_token' => $userToken,
+            ]
+        ]);
+
+        $statusCode = $response->getStatusCode();
+        if ($statusCode === 201) {
+            Log::info("User {$discordUserId} joined Discord server {$serverID}");
+            return response()->json([
+                'success' => true,
+                'message' => "User successfully added to Discord server",
+                'discord_user_id' => $discordUserId,
+                'server_id' => $serverID,
+            ]);
+        } elseif ($statusCode === 204) {
+            // User is already a member
+            return response()->json([
+                'success' => true,
+                'message' => "User is already a member of the Discord server",
+                'discord_user_id' => $discordUserId,
+                'server_id' => $serverID,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Request completed",
+            'status_code' => $statusCode,
+        ]);
+    } catch (\GuzzleHttp\Exception\ClientException $e) {
+        $errorBody = json_decode($e->getResponse()->getBody()->getContents(), true);
+        Log::error("Failed to add user to Discord server: " . json_encode($errorBody));
+        return response()->json([
+            'error' => 'Failed to add user to Discord server',
+            'details' => $errorBody,
+        ], $e->getResponse()->getStatusCode());
+    } catch (\Exception $e) {
+        Log::error("Failed to add user to Discord server: " . $e->getMessage());
+        return response()->json([
+            'error' => 'Failed to add user to Discord server',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
 });
