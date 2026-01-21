@@ -28,6 +28,7 @@ const props = defineProps({
                 perPage: "",
                 filter: {},
                 servers: undefined, // Handle for special server filter for ServerIntel pages.
+                forms: undefined, // Handle for special forms filter for Recruitment & CustomForm Submission pages.
             };
         },
     },
@@ -45,6 +46,7 @@ const filters = reactive({
     sort: props.filters.sort ?? "",
     perPage: props.filters.perPage ? +props.filters.perPage : 10,
     servers: props.filters.servers ?? undefined, // Handle for special server filter for ServerIntel pages.
+    forms: props.filters.forms ?? undefined, // Handle for special forms filter for Recruitment & CustomForm Submission pages.
 });
 
 // Track popover open state
