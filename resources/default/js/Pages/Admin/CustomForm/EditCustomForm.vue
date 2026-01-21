@@ -1,431 +1,46 @@
-<template>
-  <AdminLayout>
-    <app-head title="Edit Custom Form" />
-
-    <div class="py-12 px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between mb-8">
-        <h1 class="font-bold text-3xl text-foreground dark:text-foreground">
-          {{ __("Edit Custom Form") }}
-        </h1>
-        <inertia-link
-          :href="route('admin.custom-form.index')"
-          class="inline-flex items-center px-4 py-2 bg-surface-400 dark:bg-surface-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-surface-500 active:bg-surface-600 focus:outline-none focus:border-foreground focus:shadow-outline-gray transition ease-in-out duration-150"
-        >
-          <span>{{ __("Cancel") }}</span>
-        </inertia-link>
-      </div>
-
-      <div class="mt-10 sm:mt-0">
-        <div class="md:grid md:grid-cols-6 md:gap-6">
-          <div class="mt-5 md:mt-0 md:col-span-6">
-            <form @submit.prevent="submitForm">
-              <div class="shadow overflow-hidden sm:rounded-md">
-                <div class="px-4 py-5 bg-white dark:bg-surface-800 sm:p-6">
-                  <div class="grid grid-cols-6 gap-4">
-                    <div class="col-span-6 sm:col-span-6">
-                      <x-input
-                        id="title"
-                        v-model="form.title"
-                        :label="__('Title of Custom Form')
-                        "
-                        :help="__('Eg: Contact Us')"
-                        :error="form.errors.title"
-                        type="text"
-                        name="title"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-6">
-                      <x-input
-                        id="slug"
-                        v-model="form.slug"
-                        :label="__('Form Slug')"
-                        :help="__(
-                          'Only alphabet, number and dashes. Eg: contact-us'
-                        )
-                        "
-                        :error="form.errors.slug"
-                        type="text"
-                        name="slug"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-6">
-                      <x-select
-                        id="status"
-                        v-model="form.status"
-                        name="status"
-                        :label="__('Form Status')"
-                        :placeholder="__(
-                          'Select a status of form..'
-                        )
-                        "
-                        :disable-null="true"
-                        :select-list="formStatusList"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-6">
-                      <TipTapEditor
-                        id="description"
-                        v-model="form.description"
-                      />
-                      <jet-input-error
-                        :message="form.errors.description
-                        "
-                        class="mt-2 text-right"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-3">
-                      <x-select
-                        id="can_create_submission"
-                        v-model="form.can_create_submission
-                        "
-                        name="can_create_submission"
-                        :label="__(
-                          'Permission to Create Submission'
-                        )
-                        "
-                        :placeholder="__(
-                          'Select a who can create submittion for this form..'
-                        )
-                        "
-                        :disable-null="true"
-                        :select-list="canCreateSubmissionList
-                        "
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-3">
-                      <x-input
-                        v-if="form.can_create_submission !== 'anyone'"
-                        id="max_submission_per_user"
-                        v-model="form.max_submission_per_user"
-                        :label="__('Max Submission Per User')
-                        "
-                        :help="__('Leave empty to allow unlimited submission per user.')"
-                        :error="form.errors.max_submission_per_user"
-                        type="number"
-                        name="max_submission_per_user"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-3">
-                      <x-input
-                        id="min_role_weight_to_view_submission"
-                        v-model="form.min_role_weight_to_view_submission"
-                        :label="__('Min Staff Role Weight to View Submission')
-                        "
-                        :help="__('Leave empty to allow any staff with view custom_form_submissions permission to view submissions.')"
-                        :error="form.errors.min_role_weight_to_view_submission"
-                        type="number"
-                        name="min_role_weight_to_view_submission"
-                        help-error-flex="flex-row"
-                      />
-                    </div>
-
-                    <div class="flex items-center col-span-6 sm:col-span-3">
-                      <fieldset>
-                        <div class="mt-4 flex space-x-4">
-                          <XCheckbox
-                            id="is_notify_staff_on_submission"
-                            v-model="form.is_notify_staff_on_submission
-                            "
-                            :label="__(
-                              'Notify Staff on Submission'
-                            )
-                            "
-                            :help="__(
-                              'Notify staff members (with view submission permission) when new submission is made for this form.'
-                            )
-                            "
-                            name="is_notify_staff_on_submission"
-                          />
-                        </div>
-                        <jet-input-error
-                          :message="form.errors.is_notify_staff_on_submission
-                          "
-                          class="mt-2"
-                        />
-                      </fieldset>
-                    </div>
-
-                    <div class="flex items-center col-span-6 sm:col-span-3">
-                      <fieldset>
-                        <div class="mt-4 flex space-x-4">
-                          <XCheckbox
-                            id="is_visible_in_listing"
-                            v-model="form.is_visible_in_listing
-                            "
-                            :label="__(
-                              'Is Visible in Listing'
-                            )
-                            "
-                            :help="__(
-                              'Allow this form to be listed in custom form listing page.'
-                            )
-                            "
-                            name="is_visible_in_listing"
-                          />
-                        </div>
-                        <jet-input-error
-                          :message="form.errors.is_visible_in_listing
-                          "
-                          class="mt-2"
-                        />
-                      </fieldset>
-                    </div>
-
-                    <div class="flex-col col-span-6 space-y-1 sm:col-span-6">
-                      <legend class="text-base font-medium text-foreground dark:text-foreground">
-                        {{ __("Fields") }}
-                      </legend>
-
-                      <div class="w-full space-y-1">
-                        <div class="flex space-x-4">
-                          <div class="w-5" />
-                          <div class="w-5" />
-                          <label
-                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
-                          >{{
-                             __("Name") }}
-                            <span class="text-error-500">*</span>
-                          </label>
-                          <label
-                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
-                          >{{
-                             __("Type") }}
-                            <span class="text-error-500">*</span>
-                          </label>
-                          <label
-                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
-                          >{{
-                            __("Validation")
-                          }}</label>
-                          <label
-                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
-                          >{{
-                            __("Help Text")
-                          }}</label>
-                          <label
-                            class="flex-1 block text-sm font-medium text-foreground dark:text-foreground"
-                          >{{
-                             __("Options") }}
-                            <span class="text-error-500">*
-                            </span>
-                            <span class="text-xs text-foreground">(Eg:
-                              Options1,Option2)</span>
-                          </label>
-                        </div>
-
-                        <Draggable
-                          v-model="form.fields"
-                          :swap-threshold="0.65"
-                          class="space-y-2"
-                          handle=".drag-handle"
-                        >
-                          <template #item="{ element: field, index }">
-                            <div class="flex space-x-4 items-start">
-                              <div class="drag-handle cursor-move mt-6">
-                                <ArrowsUpDownIcon
-                                  class="w-5 h-5 text-foreground hover:text-foreground"
-                                />
-                              </div>
-                              <button
-                                type="button"
-                                class="focus:outline-none group mt-6"
-                                @click="removeField(index)"
-                              >
-                                <Icon
-                                  class="w-5 h-5 text-foreground group-hover:text-error-500"
-                                  name="trash"
-                                />
-                              </button>
-                              <div class="flex-1">
-                                <x-input
-                                  v-model="field.label"
-                                  :label="__(
-                                    'Name Field :index',
-                                    {
-                                      index: index + 1,
-                                    }
-                                  )"
-                                  :error="form.errors[
-                                    `fields.${index}.label`
-                                  ] ||
-                                    form.errors[
-                                      `fields.${index}.name`
-                                    ]
-                                  "
-                                  type="text"
-                                  help-error-flex="flex-col"
-                                  :required="true"
-                                />
-                              </div>
-                              <div class="flex-1">
-                                <x-select
-                                  v-model="field.type"
-                                  :label="__('Field Type')"
-                                  :error="form.errors[
-                                    `fields.${index}.type`
-                                  ]"
-                                  help-error-flex="flex-col"
-                                  :select-list="Object.keys(
-                                    formFieldType
-                                  )"
-                                  :required="true"
-                                />
-                              </div>
-                              <div class="flex-1">
-                                <x-input
-                                  v-model="field.validation"
-                                  :label="__(
-                                    'Validation Field :index',
-                                    {
-                                      index: index + 1,
-                                    }
-                                  )"
-                                  :error="form.errors[
-                                    `fields.${index}.validation`
-                                  ]"
-                                  type="text"
-                                  help-error-flex="flex-col"
-                                />
-                              </div>
-                              <div class="flex-1">
-                                <x-input
-                                  v-model="field.help"
-                                  :label="__(
-                                    'Help Text Field :index',
-                                    {
-                                      index: index + 1,
-                                    }
-                                  )"
-                                  :error="form.errors[
-                                    `fields.${index}.help`
-                                  ]"
-                                  type="text"
-                                  help-error-flex="flex-col"
-                                />
-                              </div>
-                              <div class="flex-1">
-                                <x-input
-                                  v-if="formFieldType[
-                                    field.type
-                                  ].hasOptions"
-                                  v-model="field.options"
-                                  :label="__(
-                                    'Options Field :index',
-                                    {
-                                      index: index + 1,
-                                    }
-                                  )"
-                                  :error="form.errors[
-                                    `fields.${index}.options`
-                                  ]"
-                                  type="text"
-                                  help-error-flex="flex-col"
-                                  :required="true"
-                                />
-                                <div
-                                  v-else
-                                  class="h-full text-foreground text-lg font-semibold dark:text-foreground w-full flex items-center justify-center"
-                                >
-                                  -
-                                </div>
-                              </div>
-                            </div>
-                          </template>
-                        </Draggable>
-
-                        <div class="flex justify-end mt-1">
-                          <button
-                            type="button"
-                            class="p-1.5 text-xs text-primary rounded border border-primary focus:outline-none hover:text-primary hover:border-primary transition ease-in-out duration-150"
-                            @click="addField"
-                          >
-                            {{
-                              __("Add New Field")
-                            }}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="px-4 py-3 bg-surface-50 dark:bg-surface-800 sm:px-6 flex justify-between gap-2">
-                  <loading-button
-                    class="inline-flex justify-center py-2 px-4 border border-foreground shadow-sm text-sm font-medium rounded-md text-foreground bg-surface-50 hover:bg-white disabled:opacity-50 dark:bg-surface-700 dark:border-foreground dark:text-foreground dark:hover:bg-surface-600 dark:hover:border-foreground"
-                    type="button"
-                    @click="showingFormPreview = true"
-                  >
-                    {{ __("Preview Form") }}
-                  </loading-button>
-                  <loading-button
-                    :loading="form.processing"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-                    type="submit"
-                  >
-                    {{ __("Update Custom Form") }}
-                  </loading-button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <JetDialogModal
-        :show="showingFormPreview"
-        @close="showingFormPreview = false"
-      >
-        <template #title>
-          <h3 class="text-lg font-bold">
-            {{ __("Form Preview") }}
-          </h3>
-        </template>
-
-        <template #content>
-          <FormKitSchema :schema="computedFormSchema" />
-        </template>
-
-        <template #footer>
-          <jet-secondary-button @click="showingFormPreview = false">
-            {{ __("Close") }}
-          </jet-secondary-button>
-        </template>
-      </JetDialogModal>
-    </div>
-  </AdminLayout>
-</template>
-
 <script setup>
 import { FormKitSchema } from '@formkit/vue';
-import JetInputError from '@/Jetstream/InputError.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import { Button } from '@/Components/ui/button';
+import { Link, useForm } from '@inertiajs/vue3';
 import XInput from '@/Components/Form/XInput.vue';
 import XSelect from '@/Components/Form/XSelect.vue';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
-import { onMounted, ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import Icon from '@/Components/Icon.vue';
-import { computed, watch } from 'vue';
-import JetDialogModal from '@/Jetstream/DialogModal.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
-import {useFormKit} from '@/Composables/useFormKit';
+import XSwitch from '@/Components/Form/XSwitch.vue';
+import { computed, ref, watch } from 'vue';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/Components/ui/dialog';
+import { useFormKit } from '@/Composables/useFormKit';
 import { kebabCase } from 'lodash';
 import Draggable from 'vuedraggable';
-import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline';
+import { ArrowsUpDownIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import TipTapEditor from '@/Components/TipTapEditor.vue';
+
+const { __ } = useTranslations();
 
 const props = defineProps({
     customForm: Object
 });
+
+const breadcrumbItems = [
+    {
+        text: __('Admin'),
+        current: false,
+    },
+    {
+        text: __('Custom Forms'),
+        url: route('admin.custom-form.index'),
+        current: false,
+    },
+    {
+        text: __('Edit Custom Form'),
+        current: true,
+    },
+    {
+        text: `#${props.customForm.id}`,
+        current: true,
+    }
+];
 
 const formStatusList = {
     draft: 'Draft - Form is under development and not visible to users',
@@ -466,6 +81,7 @@ const formFieldType = {
 };
 
 const form = useForm({
+    '_method': 'PUT',
     title: props.customForm.title,
     slug: props.customForm.slug,
     status: props.customForm.status.value,
@@ -476,10 +92,7 @@ const form = useForm({
     is_notify_staff_on_submission: props.customForm.is_notify_staff_on_submission,
     is_visible_in_listing: props.customForm.is_visible_in_listing,
     fields: props.customForm.fields,
-    '_method': 'PUT',
 });
-
-
 
 const submitForm = () => {
     form.fields.map(item => {
@@ -492,8 +105,6 @@ const submitForm = () => {
 
     form.post(route('admin.custom-form.update', props.customForm.id), {});
 };
-
-
 
 function addField() {
     form.fields.push({
@@ -521,3 +132,326 @@ watch(() => form.title, (value) => {
     form.slug = kebabCase(value);
 });
 </script>
+
+<template>
+  <AdminLayout>
+    <app-head :title="__('Edit Custom Form')" />
+
+    <div class="px-10 py-8 mx-auto max-w-6xl text-foreground">
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
+      </div>
+
+      <div class="mt-6">
+        <form @submit.prevent="submitForm">
+          <div class="shadow overflow-hidden rounded-lg">
+            <div class="px-4 py-5 bg-card sm:p-6">
+              <div class="grid grid-cols-6 gap-6">
+                <div class="col-span-6">
+                  <XInput
+                    id="title"
+                    v-model="form.title"
+                    :label="__('Title of Custom Form')"
+                    :help="__('Eg: Contact Us')"
+                    :error="form.errors.title"
+                    type="text"
+                    name="title"
+                  />
+                </div>
+
+                <div class="col-span-6">
+                  <XInput
+                    id="slug"
+                    v-model="form.slug"
+                    :label="__('Form Slug')"
+                    :help="__('Only alphabet, number and dashes. Eg: contact-us')"
+                    :error="form.errors.slug"
+                    type="text"
+                    name="slug"
+                  />
+                </div>
+
+                <div class="col-span-6">
+                  <XSelect
+                    id="status"
+                    v-model="form.status"
+                    name="status"
+                    :label="__('Form Status')"
+                    :placeholder="__('Select a status of form..')"
+                    :disable-null="true"
+                    :select-list="formStatusList"
+                  />
+                </div>
+
+                <div class="col-span-6">
+                  <TipTapEditor
+                    id="description"
+                    v-model="form.description"
+                  />
+                  <p
+                    v-if="form.errors.description"
+                    class="text-xs text-destructive mt-2"
+                  >
+                    {{ form.errors.description }}
+                  </p>
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <XSelect
+                    id="can_create_submission"
+                    v-model="form.can_create_submission"
+                    name="can_create_submission"
+                    :label="__('Permission to Create Submission')"
+                    :placeholder="__('Select a who can create submittion for this form..')"
+                    :disable-null="true"
+                    :select-list="canCreateSubmissionList"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <XInput
+                    v-if="form.can_create_submission !== 'anyone'"
+                    id="max_submission_per_user"
+                    v-model="form.max_submission_per_user"
+                    :label="__('Max Submission Per User')"
+                    :help="__('Leave empty to allow unlimited submission per user.')"
+                    :error="form.errors.max_submission_per_user"
+                    type="number"
+                    name="max_submission_per_user"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <XInput
+                    id="min_role_weight_to_view_submission"
+                    v-model="form.min_role_weight_to_view_submission"
+                    :label="__('Min Staff Role Weight to View Submission')"
+                    :help="__('Leave empty to allow any staff with view custom_form_submissions permission to view submissions.')"
+                    :error="form.errors.min_role_weight_to_view_submission"
+                    type="number"
+                    name="min_role_weight_to_view_submission"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <XSwitch
+                    id="is_notify_staff_on_submission"
+                    v-model="form.is_notify_staff_on_submission"
+                    :label="__('Notify Staff on Submission')"
+                    :help="__('Notify staff members (with view submission permission) when new submission is made for this form.')"
+                    name="is_notify_staff_on_submission"
+                    :error="form.errors.is_notify_staff_on_submission"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <XSwitch
+                    id="is_visible_in_listing"
+                    v-model="form.is_visible_in_listing"
+                    :label="__('Is Visible in Listing')"
+                    :help="__('Allow this form to be listed in custom form listing page.')"
+                    name="is_visible_in_listing"
+                    :error="form.errors.is_visible_in_listing"
+                  />
+                </div>
+
+                <div class="col-span-6 space-y-4">
+                  <legend class="text-base font-medium text-foreground">
+                    {{ __("Fields") }}
+                  </legend>
+
+                  <div class="w-full space-y-2">
+                    <div class="hidden lg:flex space-x-4">
+                      <div class="w-5" />
+                      <div class="w-5" />
+                      <label class="flex-1 block text-sm font-medium text-foreground">
+                        {{ __("Name") }}
+                        <span class="text-destructive">*</span>
+                      </label>
+                      <label class="flex-1 block text-sm font-medium text-foreground">
+                        {{ __("Type") }}
+                        <span class="text-destructive">*</span>
+                      </label>
+                      <label class="flex-1 block text-sm font-medium text-foreground">
+                        {{ __("Validation") }}
+                      </label>
+                      <label class="flex-1 block text-sm font-medium text-foreground">
+                        {{ __("Help Text") }}
+                      </label>
+                      <label class="flex-1 block text-sm font-medium text-foreground">
+                        {{ __("Options") }}
+                        <span class="text-destructive">*</span>
+                        <span class="text-xs text-muted-foreground">(Eg: Option1,Option2)</span>
+                      </label>
+                    </div>
+
+                    <Draggable
+                      v-model="form.fields"
+                      :swap-threshold="0.65"
+                      class="space-y-3"
+                      handle=".drag-handle"
+                    >
+                      <template #item="{ element: field, index }">
+                        <div class="flex flex-col lg:flex-row gap-4 items-start p-3 lg:p-0 bg-muted/50 lg:bg-transparent rounded-lg">
+                          <div class="flex gap-2 lg:mt-6">
+                            <div class="drag-handle cursor-move">
+                              <ArrowsUpDownIcon
+                                class="w-5 h-5 text-muted-foreground hover:text-foreground"
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              class="focus:outline-none group"
+                              @click="removeField(index)"
+                            >
+                              <TrashIcon
+                                class="w-5 h-5 text-muted-foreground group-hover:text-destructive"
+                              />
+                            </button>
+                          </div>
+                          <div class="flex-1 w-full lg:w-auto">
+                            <XInput
+                              v-model="field.label"
+                              :label="__('Name Field :index', { index: index + 1 })"
+                              :error="form.errors[`fields.${index}.label`] || form.errors[`fields.${index}.name`]"
+                              type="text"
+                              :required="true"
+                            />
+                          </div>
+                          <div class="flex-1 w-full lg:w-auto">
+                            <XSelect
+                              v-model="field.type"
+                              :label="__('Field Type')"
+                              :error="form.errors[`fields.${index}.type`]"
+                              :select-list="Object.keys(formFieldType)"
+                              :required="true"
+                            />
+                          </div>
+                          <div class="flex-1 w-full lg:w-auto">
+                            <XInput
+                              v-model="field.validation"
+                              :label="__('Validation Field :index', { index: index + 1 })"
+                              :error="form.errors[`fields.${index}.validation`]"
+                              type="text"
+                            />
+                          </div>
+                          <div class="flex-1 w-full lg:w-auto">
+                            <XInput
+                              v-model="field.help"
+                              :label="__('Help Text Field :index', { index: index + 1 })"
+                              :error="form.errors[`fields.${index}.help`]"
+                              type="text"
+                            />
+                          </div>
+                          <div class="flex-1 w-full lg:w-auto">
+                            <XInput
+                              v-if="formFieldType[field.type].hasOptions"
+                              v-model="field.options"
+                              :label="__('Options Field :index', { index: index + 1 })"
+                              :error="form.errors[`fields.${index}.options`]"
+                              type="text"
+                              :required="true"
+                            />
+                            <div
+                              v-else
+                              class="h-full text-muted-foreground text-lg font-semibold w-full flex items-center justify-center min-h-[40px]"
+                            >
+                              -
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                    </Draggable>
+
+                    <div class="flex justify-end mt-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        @click="addField"
+                      >
+                        {{ __("Add New Field") }}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="px-4 py-3 bg-card border-t border-border sm:px-6 flex justify-between gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                @click="showingFormPreview = true"
+              >
+                {{ __("Preview Form") }}
+              </Button>
+              <div class="flex gap-2">
+                <Button
+                  variant="outline"
+                  as-child
+                >
+                  <Link :href="route('admin.custom-form.index')">
+                    {{ __("Cancel") }}
+                  </Link>
+                </Button>
+                <Button
+                  type="submit"
+                  :disabled="form.processing"
+                >
+                  <svg
+                    v-if="form.processing"
+                    class="animate-spin -ml-1 mr-2 h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    />
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  {{ __("Update Custom Form") }}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <Dialog
+        :open="showingFormPreview"
+        @update:open="showingFormPreview = $event"
+      >
+        <DialogContent class="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{{ __("Form Preview") }}</DialogTitle>
+          </DialogHeader>
+
+          <FormKitSchema :schema="computedFormSchema" />
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              @click="showingFormPreview = false"
+            >
+              {{ __("Close") }}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  </AdminLayout>
+</template>
