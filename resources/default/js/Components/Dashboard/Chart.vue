@@ -32,8 +32,18 @@ if (window.colorMode === 'dark') {
 }
 
 // Get CSS custom properties for dynamic theming
+// Resolves to hex for ECharts compatibility (modern CSS hsl syntax is not supported by zrender)
 const getThemeColor = (property) => {
-    return getComputedStyle(document.documentElement).getPropertyValue(property).trim();
+    const raw = getComputedStyle(document.documentElement).getPropertyValue(property).trim();
+    if (!raw || raw.startsWith('#') || raw.startsWith('rgb')) return raw;
+    try {
+        const ctx = document.createElement('canvas').getContext('2d');
+        ctx.fillStyle = '#000000';
+        ctx.fillStyle = raw;
+        return ctx.fillStyle;
+    } catch {
+        return raw;
+    }
 };
 
 const loadingOptions = {

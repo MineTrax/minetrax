@@ -1,33 +1,64 @@
+// Helper to resolve CSS color strings (e.g. modern hsl() syntax) to hex
+// for ECharts compatibility. ECharts/zrender cannot parse modern CSS color
+// functions like `hsl(217 91% 60%)` (space-separated), so we use a canvas
+// context which normalizes any valid CSS color to hex.
+let _colorResolverCtx = null;
+function resolveCssColor(cssColor) {
+    if (
+        !cssColor ||
+        cssColor === "transparent" ||
+        cssColor.startsWith("#") ||
+        cssColor.startsWith("rgb")
+    ) {
+        return cssColor;
+    }
+    try {
+        if (typeof document === "undefined") return cssColor;
+        if (!_colorResolverCtx) {
+            _colorResolverCtx = document
+                .createElement("canvas")
+                .getContext("2d");
+        }
+        _colorResolverCtx.fillStyle = "#000000";
+        _colorResolverCtx.fillStyle = cssColor;
+        return _colorResolverCtx.fillStyle;
+    } catch {
+        return cssColor;
+    }
+}
+
 // Dynamic theme utilities for charts as a composable
 export function useChartTheme() {
     // Dynamic theme colors using CSS custom properties
+    // Returns resolved hex color for ECharts compatibility
     const getThemeColor = (property, fallback) => {
         if (typeof document !== "undefined") {
-            return (
-                getComputedStyle(document.documentElement)
-                    .getPropertyValue(property)
-                    .trim() || fallback
-            );
+            const raw = getComputedStyle(document.documentElement)
+                .getPropertyValue(property)
+                .trim();
+            if (!raw) return fallback;
+            return resolveCssColor(raw);
         }
         return fallback;
     };
 
-    // Get theme-aware color palettes
+    // Get theme-aware color palettes for map visualMap gradient
+    // Uses --color-chart-* variables which provide distinct shades
     const getMapColorPalette = (isDark = false) => {
         return isDark
             ? [
-                  getThemeColor("--color-muted-foreground", "#374151"), // Start with subtle background-like color
-                  getThemeColor("--color-primary", "#c7d2fe"),
-                  getThemeColor("--color-primary", "#818cf8"),
-                  getThemeColor("--color-primary", "#4f46e5"),
-                  getThemeColor("--color-primary", "#3730a3"),
+                  getThemeColor("--color-muted-foreground", "#374151"), // Subtle no-data color
+                  getThemeColor("--color-chart-1", "#c7d2fe"),
+                  getThemeColor("--color-chart-2", "#818cf8"),
+                  getThemeColor("--color-chart-3", "#4f46e5"),
+                  getThemeColor("--color-chart-5", "#3730a3"),
               ]
             : [
-                  getThemeColor("--color-foreground", "#f8fafc"), // Start with very light background-like color
-                  getThemeColor("--color-primary", "#e0e7ff"),
-                  getThemeColor("--color-primary", "#a5b4fc"),
-                  getThemeColor("--color-primary", "#6366f1"),
-                  getThemeColor("--color-primary", "#4338ca"),
+                  getThemeColor("--color-muted", "#f8fafc"), // Light no-data color
+                  getThemeColor("--color-chart-1", "#e0e7ff"),
+                  getThemeColor("--color-chart-2", "#a5b4fc"),
+                  getThemeColor("--color-chart-3", "#6366f1"),
+                  getThemeColor("--color-chart-5", "#4338ca"),
               ];
     };
 
