@@ -215,7 +215,7 @@ function scrollToBottom() {
               v-else
               class="flex w-full"
             >
-              <div class="flex-shrink-0">
+              <div class="shrink-0">
                 <Icon
                   name="askdb-logo"
                   class="w-6 h-6 mr-3 text-primary"
@@ -256,7 +256,7 @@ function scrollToBottom() {
               v-model="form.prompt"
               name="prompt"
               :placeholder="__('Enter your query in natural language..')"
-              class="block w-full h-24 p-4 pr-14 text-foreground border border-border rounded-lg shadow-sm resize-none bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              class="block w-full h-24 p-4 pr-14 text-foreground border border-border rounded-lg shadow-sm resize-none bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               :disabled="form.loading || !featureEnabled"
               rows="2"
               @keydown="handleKeydown"

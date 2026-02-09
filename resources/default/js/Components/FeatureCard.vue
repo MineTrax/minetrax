@@ -1,6 +1,6 @@
 <template>
-  <div :class="`bg-white dark:bg-surface-800 shadow rounded border-t-4 border-${color}-500 p-3`">
-    <div :class="`inline px-2 py-1 bg-${color}-100 dark:bg-opacity-10 text-${color}-500 rounded text-sm font-semibold`">
+  <div :class="`bg-white dark:bg-gray-800 shadow rounded border-t-4 border-${color}-500 p-3`">
+    <div :class="`inline px-2 py-1 bg-${color}-100 dark:bg-${color}-100/10 text-${color}-500 rounded text-sm font-semibold`">
       {{ capitalize(feature.type) }}
     </div>
     <a

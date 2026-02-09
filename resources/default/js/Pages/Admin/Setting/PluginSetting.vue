@@ -144,7 +144,7 @@ function savePluginSetting() {
                         as="button"
                         method="post"
                         :href="route('admin.setting.plugin.keygen')"
-                        class="inline-flex justify-center py-2 px-4 border-2 border-destructive shadow-sm text-sm font-bold rounded-md text-destructive hover:bg-destructive hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-destructive disabled:opacity-50 transition-colors"
+                        class="inline-flex justify-center py-2 px-4 border-2 border-destructive shadow-sm text-sm font-bold rounded-md text-destructive hover:bg-destructive hover:text-white focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-destructive disabled:opacity-50 transition-colors"
                       >
                         {{ __("Regenerate API Credentials") }}
                       </Link>
@@ -279,7 +279,7 @@ function savePluginSetting() {
                             <div class="flex space-x-4">
                               <button
                                 type="button"
-                                class="focus:outline-none group"
+                                class="focus:outline-hidden group"
                                 @click="removeAccountLinkCommand(index)"
                               >
                                 <Icon
@@ -415,7 +415,7 @@ function savePluginSetting() {
                             <div class="flex space-x-4">
                               <button
                                 type="button"
-                                class="focus:outline-none group"
+                                class="focus:outline-hidden group"
                                 @click="removeAccountUnlinkCommand(index)"
                               >
                                 <Icon
@@ -624,7 +624,7 @@ function savePluginSetting() {
                             <div class="flex space-x-4">
                               <button
                                 type="button"
-                                class="focus:outline-none group"
+                                class="focus:outline-hidden group"
                                 @click="removePlayerPasswordResetCommand(index)"
                               >
                                 <Icon

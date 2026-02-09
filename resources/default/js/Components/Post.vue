@@ -26,7 +26,7 @@
                 as="a"
                 :href="route('post.show', post.id)"
                 :content="formatToDayDateString(post.created_at)"
-                class="text-sm font-light leading-snug text-muted-foreground hover:text-primary focus:outline-none transition-colors duration-200"
+                class="text-sm font-light leading-snug text-muted-foreground hover:text-primary focus:outline-hidden transition-colors duration-200"
               >
                 {{ formatTimeAgoToNow(post.created_at) }}
               </inertia-link>
@@ -43,7 +43,7 @@
           as="button"
           method="delete"
           :href="route('post.delete', post.id)"
-          class="text-muted-foreground hover:text-destructive focus:outline-none"
+          class="text-muted-foreground hover:text-destructive focus:outline-hidden"
         >
           <icon
             name="trash"

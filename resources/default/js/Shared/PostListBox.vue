@@ -9,7 +9,7 @@
                     <div v-if="imagesDisplay.length" class="grid gap-1 grid-cols-3 w-full">
                         <div v-for="(img, index) in imagesDisplay" :key="index" class="relative">
                             <button type="button"
-                                class="m-1 absolute top-0 left-0 bg-black bg-opacity-75 rounded-full cursor-pointer hover:bg-opacity-100 text-white"
+                                class="m-1 absolute top-0 left-0 bg-black/75 rounded-full cursor-pointer hover:bg-black text-white"
                                 @click="removeMedia(index)">
                                 <icon name="close" class="p-1 text-foreground dark:text-foreground" />
                             </button>
@@ -21,7 +21,7 @@
                         <input ref="file_selector" name="images" type="file" class="hidden" multiple accept="image/*"
                             @change="handleImageChangeListener" />
                         <button v-tippy :title="__('Add Media')" type="button"
-                            class="inline-flex items-center justify-center h-10 w-10 hover:bg-background rounded-full focus:outline-none"
+                            class="inline-flex items-center justify-center h-10 w-10 hover:bg-background rounded-full focus:outline-hidden"
                             @click="openImageSelector">
                             <icon name="photograph" class="h-6 w-6 text-primary" />
                         </button>

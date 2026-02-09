@@ -514,7 +514,7 @@ function removeNavItem(idx, list) {
 
                               <button
                                 type="button"
-                                class="mt-7 focus:outline-none group"
+                                class="mt-7 focus:outline-hidden group"
                                 @click="removeFooterColumnItem(column, item_index)"
                               >
                                 <Icon

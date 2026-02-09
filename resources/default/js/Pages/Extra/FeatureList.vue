@@ -9,7 +9,7 @@
         {{ __("Features & Known Bugs") }}
       </h1>
 
-      <span class="text-lg font-extrabold text-success-500 mb-4 flex items-center">
+      <span class="text-lg font-extrabold text-success mb-4 flex items-center">
         <icon
           name="verified-check-fill"
           class="h-8 w-8 animate-bounce"
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <span class="absolute hidden bg-error-100 bg-primary bg-success-100 bg-pink-100 bg-orange-100 bg-purple-100 border-error-500 border-primary border-success-500 border-pink-500 border-orange-500 border-purple-500 text-error-500 text-primary text-success-500 text-pink-500 text-orange-500 text-purple-500" />
+    <span class="absolute hidden bg-red-100 bg-primary bg-green-100 bg-pink-100 bg-orange-100 bg-purple-100 border-red-500 border-primary border-green-500 border-pink-500 border-orange-500 border-purple-500 text-red-500 text-primary text-green-500 text-pink-500 text-orange-500 text-purple-500" />
   </app-layout>
 </template>
 

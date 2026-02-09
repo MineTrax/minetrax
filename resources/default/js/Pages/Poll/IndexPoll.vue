@@ -13,7 +13,7 @@
                         :invite="$page.props.generalSettings.discord_invite_url" />
                 </div>
 
-                <div class="flex-grow">
+                <div class="grow">
                     <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
                         <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
                             <div class="">

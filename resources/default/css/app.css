@@ -1,292 +1,414 @@
-@import "../../../node_modules/vue-datepicker-next/index.css";
+@import '../../../node_modules/vue-datepicker-next/index.css' layer(base);
 
-@import "../../../node_modules/tippy.js/dist/tippy.css";
-@import "../../../node_modules/tippy.js/animations/perspective.css";
-@import "../../../node_modules/vue-multiselect/dist/vue-multiselect.css";
+@import '../../../node_modules/tippy.js/dist/tippy.css' layer(base);
+@import '../../../node_modules/tippy.js/animations/perspective.css' layer(base);
+@import '../../../node_modules/vue-multiselect/dist/vue-multiselect.css'
+  layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
-[x-cloak] {
+/* Typography plugin */
+@plugin "@tailwindcss/typography";
+
+/* Source paths for content detection (not auto-detected) */
+@source "../../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views";
+@source "../../../vendor/laravel/jetstream";
+@source "../../../storage/framework/views";
+@source "../../../formkit.theme.mjs";
+
+/* Dark mode via class strategy (default is prefers-color-scheme) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: hsl(var(--border));
+  }
+}
+
+/* =========================================================================
+   Theme configuration (replaces tailwind.config.js)
+   ========================================================================= */
+@theme {
+  /* Font families */
+  --font-sans: Nunito, sans-serif;
+  --font-serif: Source Serif 4, serif;
+  --font-mono: JetBrains Mono, monospace;
+
+  /* Spacing */
+  --spacing: 0.25rem;
+
+  /* ---- Colors - shadcn/ui HSL pattern ---- */
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  /* ---- Border Radius ---- */
+  --radius-xs: calc(var(--radius) - 6px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* ---- Shadows ---- */
+  --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+  --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+    0 1px 2px -1px hsl(0 0% 0% / 0.1);
+  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+    0 1px 2px -1px hsl(0 0% 0% / 0.1);
+  --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+    0 2px 4px -1px hsl(0 0% 0% / 0.1);
+  --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+    0 4px 6px -1px hsl(0 0% 0% / 0.1);
+  --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+    0 8px 10px -1px hsl(0 0% 0% / 0.1);
+  --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+
+  /* ---- Keyframes ---- */
+  --animate-scale: scale 0.3s ease-in-out;
+
+  @keyframes scale {
+    0% { transform: scale(1,1); }
+    50% { transform: scale(1.05,1.05); }
+    100% { transform: scale(1,1); }
+  }
+}
+
+/* =========================================================================
+   Custom utilities
+   ========================================================================= */
+@utility fade-img-light {
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      hsl(var(--background)) 100%
+    );
+    height: 40%;
+  }
+}
+
+@utility fade-img-dark {
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      hsl(var(--background)) 100%
+    );
+    height: 40%;
+  }
+}
+
+@utility rainbow {
+  animation: color-rotate 5s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+/* =========================================================================
+   Global styles
+   ========================================================================= */
+@layer utilities {
+  [x-cloak] {
     display: none;
+  }
 }
 
-@layer components {
-    .fade-img-light {
-        position: relative;
-    }
-
-    .fade-img-dark {
-        position: relative;
-    }
-
-    .fade-img-light:after {
-        content: "";
-        position: absolute;
-        pointer-events: none;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(
-            to bottom,
-            theme("colors.background" / 0%) 0%,
-            theme("colors.background") 100%
-        );
-        height: 40%;
-    }
-
-    .fade-img-dark:after {
-        content: "";
-        position: absolute;
-        pointer-events: none;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(
-            to bottom,
-            theme("colors.background" / 0%) 0%,
-            theme("colors.background") 100%
-        );
-        height: 40%;
-    }
-
-    .rainbow {
-        animation: color-rotate 5s;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
-    }
-}
-
-.hide-scrollbar::-webkit-scrollbar {
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
     display: none;
-}
+  }
 
-.hide-scrollbar {
+  .hide-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;
-}
+  }
 
-/* Let's get this party started */
-.boxscroll::-webkit-scrollbar {
+  /* Let's get this party started */
+  .boxscroll::-webkit-scrollbar {
     width: 4px;
-}
-/* Track */
-.boxscroll::-webkit-scrollbar-track {
+  }
+  /* Track */
+  .boxscroll::-webkit-scrollbar-track {
     -webkit-box-shadow: none;
     -webkit-border-radius: 10px;
     border-radius: 10px;
-}
-/* Handle */
-.boxscroll::-webkit-scrollbar-thumb {
+  }
+  /* Handle */
+  .boxscroll::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
     border-radius: 10px;
     background: rgba(134, 134, 134, 0.8);
     -webkit-box-shadow: inset 0 0 6px rgba(22, 22, 22, 0.5);
-}
-.boxscroll::-webkit-scrollbar-thumb:window-inactive {
+  }
+  .boxscroll::-webkit-scrollbar-thumb:window-inactive {
     background: rgba(229, 229, 229, 0.4);
-}
+  }
 
-/*Floating Field Form*/
-.floating-input > input::placeholder,
-.floating-input > textarea::placeholder {
+  /*Floating Field Form*/
+  .floating-input > input::placeholder,
+  .floating-input > textarea::placeholder {
     color: transparent;
-}
+  }
 
-.floating-input > input:focus,
-.floating-input > input:not(:placeholder-shown) {
+  .floating-input > input:focus,
+  .floating-input > input:not(:placeholder-shown) {
     @apply pt-8;
-}
+  }
 
-.floating-input > input:focus ~ label,
-.floating-input > input:not(:placeholder-shown) ~ label {
+  .floating-input > input:focus ~ label,
+  .floating-input > input:not(:placeholder-shown) ~ label {
     @apply scale-90 -translate-y-3 translate-x-1;
-}
+  }
 
-/* Textarea */
-.floating-input > textarea:focus,
-.floating-input > textarea:not(:placeholder-shown) {
+  /* Textarea */
+  .floating-input > textarea:focus,
+  .floating-input > textarea:not(:placeholder-shown) {
     @apply pt-7;
-}
-.floating-input > textarea:focus ~ label,
-.floating-input > textarea:not(:placeholder-shown) ~ label {
+  }
+  .floating-input > textarea:focus ~ label,
+  .floating-input > textarea:not(:placeholder-shown) ~ label {
     @apply scale-90 -translate-y-2.5 translate-x-1;
-}
+  }
 
-@keyframes color-rotate {
+  @keyframes color-rotate {
     from {
-        filter: hue-rotate(0deg);
+      filter: hue-rotate(0deg);
     }
     to {
-        filter: hue-rotate(360deg);
+      filter: hue-rotate(360deg);
     }
-}
-.logo:hover {
+  }
+  .logo:hover {
     animation: color-rotate 5s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
-}
+  }
 
-.autolink {
+  .autolink {
     color: hsl(var(--primary));
-}
+  }
 
-.autolink:hover {
+  .autolink:hover {
     text-decoration: underline;
-}
+  }
 
-/* Custom Scroll Bar */
-::-webkit-scrollbar {
+  /* Custom Scroll Bar */
+  ::-webkit-scrollbar {
     background: none;
     width: 16px;
     height: 16px;
-}
+  }
 
-::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     border: solid 0 rgb(0 0 0 / 0%);
     border-right-width: 4px;
     border-left-width: 4px;
     -webkit-border-radius: 9px 4px;
-    -webkit-box-shadow: inset 0 0 0 1px hsl(211, 10%, 53%),
-        inset 0 0 0 4px hsl(209deg 18% 30%);
-}
+    -webkit-box-shadow:
+      inset 0 0 0 1px hsl(211, 10%, 53%),
+      inset 0 0 0 4px hsl(209deg 18% 30%);
+  }
 
-::-webkit-scrollbar-track-piece {
+  ::-webkit-scrollbar-track-piece {
     margin: 4px 0;
-}
+  }
 
-::-webkit-scrollbar-thumb:horizontal {
+  ::-webkit-scrollbar-thumb:horizontal {
     border-right-width: 0;
     border-left-width: 0;
     border-top-width: 4px;
     border-bottom-width: 4px;
     -webkit-border-radius: 4px 9px;
-}
+  }
 
-::-webkit-scrollbar-thumb:hover {
-    -webkit-box-shadow: inset 0 0 0 1px hsl(var(--primary)),
-        inset 0 0 0 4px hsl(var(--primary));
-}
+  ::-webkit-scrollbar-thumb:hover {
+    -webkit-box-shadow:
+      inset 0 0 0 1px hsl(var(--primary)),
+      inset 0 0 0 4px hsl(var(--primary));
+  }
 
-::-webkit-scrollbar-corner {
+  ::-webkit-scrollbar-corner {
     background: transparent;
-}
+  }
 
-body.swal2-shown > [aria-hidden="true"] {
+  body.swal2-shown > [aria-hidden='true'] {
     transition: 0.1s filter;
     filter: blur(5px);
-}
+  }
 
-.lds-ripple {
+  .lds-ripple {
     display: inline-block;
     position: relative;
     width: 80px;
     height: 80px;
-}
-.lds-ripple div {
+  }
+  .lds-ripple div {
     position: absolute;
     border: 4px solid hsl(var(--primary));
     opacity: 1;
     border-radius: 50%;
     animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-}
-.lds-ripple div:nth-child(2) {
+  }
+  .lds-ripple div:nth-child(2) {
     animation-delay: -0.5s;
-}
-@keyframes lds-ripple {
+  }
+  @keyframes lds-ripple {
     0% {
-        top: 36px;
-        left: 36px;
-        width: 0;
-        height: 0;
-        opacity: 0;
+      top: 36px;
+      left: 36px;
+      width: 0;
+      height: 0;
+      opacity: 0;
     }
     4.9% {
-        top: 36px;
-        left: 36px;
-        width: 0;
-        height: 0;
-        opacity: 0;
+      top: 36px;
+      left: 36px;
+      width: 0;
+      height: 0;
+      opacity: 0;
     }
     5% {
-        top: 36px;
-        left: 36px;
-        width: 0;
-        height: 0;
-        opacity: 1;
+      top: 36px;
+      left: 36px;
+      width: 0;
+      height: 0;
+      opacity: 1;
     }
     100% {
-        top: 0px;
-        left: 0px;
-        width: 72px;
-        height: 72px;
-        opacity: 0;
+      top: 0px;
+      left: 0px;
+      width: 72px;
+      height: 72px;
+      opacity: 0;
     }
-}
+  }
 
-.mx-datepicker-sidebar button {
+  .mx-datepicker-sidebar button {
     font-size: small;
-}
+  }
 
-.CodeMirror {
+  .CodeMirror {
     color: hsl(var(--secondary));
     border-color: hsl(var(--secondary));
     background-color: inherit;
-}
+  }
 
-
-
-.no-disabled-effect .data-\[disabled\]\:opacity-50[data-disabled] {
+  .no-disabled-effect .data-\[disabled\]\:opacity-50[data-disabled] {
     opacity: 1;
-}
+  }
 
-.no-disabled-effect .group[data-disabled] .group-data-\[disabled\]\:opacity-50 {
+  .no-disabled-effect
+    .group[data-disabled]
+    .group-data-\[disabled\]\:opacity-50 {
     opacity: 1;
-}
+  }
 
-.no-disabled-effect .group[data-disabled] * {
+  .no-disabled-effect .group[data-disabled] * {
     opacity: 1;
-}
+  }
 
-/* Fix multiselect in darkmode */
-.multiselect .multiselect__tags {
+  /* Fix multiselect in darkmode */
+  .multiselect .multiselect__tags {
     @apply bg-card border-border text-foreground;
-}
+  }
 
-.multiselect__tags .multiselect__single {
+  .multiselect__tags .multiselect__single {
     @apply bg-card;
-}
+  }
 
-.multiselect .multiselect__input {
+  .multiselect .multiselect__input {
     @apply bg-card;
-}
+  }
 
-.multiselect .multiselect__content-wrapper {
+  .multiselect .multiselect__content-wrapper {
     @apply bg-card text-foreground border-border;
-}
+  }
 
-.multiselect .multiselect__option--selected {
+  .multiselect .multiselect__option--selected {
     @apply bg-background text-foreground;
-}
+  }
 
-.multiselect__tag {
+  .multiselect__tag {
     @apply bg-primary;
-}
+  }
 
-.multiselect__option--highlight {
+  .multiselect__option--highlight {
     @apply bg-primary;
-}
+  }
 
-.multiselect__option--highlight::after {
+  .multiselect__option--highlight::after {
     @apply bg-primary;
+  }
 }
 
-/* NEW TAILWIND THEMING */
-/* @layer base {
-    :root {
-    }
-} */
+/* =========================================================================
+   Base styles
+   ========================================================================= */
 @layer base {
     * {
         @apply border-border outline-ring/50;
@@ -295,6 +417,10 @@ body.swal2-shown > [aria-hidden="true"] {
         @apply bg-background text-foreground;
     }
 }
+
+/* =========================================================================
+   CSS Custom Properties for theming
+   ========================================================================= */
 :root {
     --background: 220 13% 91%;
     --foreground: 0 0% 20%;
@@ -312,6 +438,10 @@ body.swal2-shown > [aria-hidden="true"] {
     --accent-foreground: 224.4444 64.2857% 32.9412%;
     --destructive: 0 84.2365% 60.1961%;
     --destructive-foreground: 0 0% 100%;
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 0 0% 100%;
+    --info: 199.4 95.5% 53.8%;
+    --info-foreground: 0 0% 100%;
     --border: 220 13.0435% 90.9804%;
     --input: 220 13.0435% 90.9804%;
     --ring: 217.2193 91.2195% 59.8039%;
@@ -328,25 +458,8 @@ body.swal2-shown > [aria-hidden="true"] {
     --sidebar-accent-foreground: 224.4444 64.2857% 32.9412%;
     --sidebar-border: 220 13.0435% 90.9804%;
     --sidebar-ring: 217.2193 91.2195% 59.8039%;
-    --font-sans: Nunito, sans-serif;
-    --font-serif: Source Serif 4, serif;
-    --font-mono: JetBrains Mono, monospace;
     --radius: 0.375rem;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
     --tracking-normal: 0em;
-    --spacing: 0.25rem;
 }
 
 .dark {
@@ -366,6 +479,10 @@ body.swal2-shown > [aria-hidden="true"] {
     --accent-foreground: 213.3333 96.9231% 87.2549%;
     --destructive: 0 84.2365% 60.1961%;
     --destructive-foreground: 0 0% 100%;
+    --success: 142.1 69.2% 58%;
+    --success-foreground: 0 0% 100%;
+    --info: 198.4 93.2% 59.6%;
+    --info-foreground: 0 0% 100%;
     --border: 0 0% 25.098%;
     --input: 0 0% 25.098%;
     --ring: 217.2193 91.2195% 59.8039%;
@@ -382,21 +499,5 @@ body.swal2-shown > [aria-hidden="true"] {
     --sidebar-accent-foreground: 213.3333 96.9231% 87.2549%;
     --sidebar-border: 0 0% 25.098%;
     --sidebar-ring: 217.2193 91.2195% 59.8039%;
-    --font-sans: Nunito, sans-serif;
-    --font-serif: Source Serif 4, serif;
-    --font-mono: JetBrains Mono, monospace;
     --radius: 0.375rem;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-        0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
 }

@@ -91,7 +91,7 @@
                                         :title="otpExpiryCountdownSeconds <= 0 ? __('OTP Expired') : __('Click to Copy')"
                                         type="button"
                                         :disabled="otpExpiryCountdownSeconds <= 0"
-                                        class="p-2 mt-3 font-semibold text-center font-mono tracking-wider transition duration-150 ease-in-out border rounded-md w-full md:w-1/2 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                        class="p-2 mt-3 font-semibold text-center font-mono tracking-wider transition duration-150 ease-in-out border rounded-md w-full md:w-1/2 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                                         :class="{
                                             'text-foreground border-border hover:bg-accent hover:text-accent-foreground': otpExpiryCountdownSeconds > 0,
                                             'text-muted-foreground border-muted': otpExpiryCountdownSeconds <= 0,
@@ -164,7 +164,7 @@
 
                                     <div class="flex items-center justify-between">
                                         <p class="font-bold text-foreground">{{ __("Rating") }}:</p>
-                                        <Icon v-if="player.rating != null" v-tippy class="w-8 h-8 focus:outline-none" :name="`rating-${player.rating}`" :content="player.rating" />
+                                        <Icon v-if="player.rating != null" v-tippy class="w-8 h-8 focus:outline-hidden" :name="`rating-${player.rating}`" :content="player.rating" />
                                         <p v-else class="text-sm italic text-muted-foreground">
                                             {{ __("None") }}
                                         </p>
@@ -184,7 +184,7 @@
                                                 :src="player.rank.photo_url"
                                                 :alt="player.rank.name"
                                                 :title="player.rank.name"
-                                                class="max-h-12 max-w-12 focus:outline-none"
+                                                class="max-h-12 max-w-12 focus:outline-hidden"
                                             />
                                         </div>
                                     </div>
@@ -194,14 +194,14 @@
                                             <p class="text-foreground">
                                                 {{ player.country.name }}
                                             </p>
-                                            <img v-tippy :title="player.country.name" :src="player.country.photo_path" :alt="player.country.name" class="h-8 w-8 -mt-0.5 focus:outline-none" />
+                                            <img v-tippy :title="player.country.name" :src="player.country.photo_path" :alt="player.country.name" class="h-8 w-8 -mt-0.5 focus:outline-hidden" />
                                         </div>
                                     </div>
 
                                     <div class="flex items-center justify-between">
                                         <p class="font-bold text-foreground">{{ __("Last Seen") }}:</p>
                                         <div class="flex items-center space-x-2">
-                                            <p v-tippy class="focus:outline-none text-foreground" :title="formatToDayDateString(player.last_seen_at)">
+                                            <p v-tippy class="focus:outline-hidden text-foreground" :title="formatToDayDateString(player.last_seen_at)">
                                                 {{ formatTimeAgoToNow(player.last_seen_at) }}
                                             </p>
                                         </div>

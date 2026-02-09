@@ -21,7 +21,7 @@
                                 <h5 class="font-medium text-foreground mb-1">{{ __("Someone commented on my Post") }}</h5>
                                 <p class="text-sm text-muted-foreground hidden sm:block">{{ __("Get notified when someone comments on your posts") }}</p>
                             </div>
-                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 flex-shrink-0">
+                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
                                 <div class="flex items-center gap-2">
                                     <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
                                     <Switch :model-value="isNotificationEnabled('comment_on_post', 'mail')" @update:model-value="toggleNotification('comment_on_post', 'mail')" name="comment_on_post_mail" />
@@ -41,7 +41,7 @@
                                 <h5 class="font-medium text-foreground mb-1">{{ __("Someone liked my Post") }}</h5>
                                 <p class="text-sm text-muted-foreground hidden sm:block">{{ __("Get notified when someone likes your posts") }}</p>
                             </div>
-                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 flex-shrink-0">
+                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
                                 <div class="flex items-center gap-2">
                                     <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
                                     <Switch :model-value="isNotificationEnabled('like_on_post', 'mail')" @update:model-value="toggleNotification('like_on_post', 'mail')" name="like_on_post_mail" />
@@ -61,7 +61,7 @@
                                 <h5 class="font-medium text-foreground mb-1">{{ __("I am muted by Staff") }}</h5>
                                 <p class="text-sm text-muted-foreground hidden sm:block">{{ __("Get notified when staff mutes your account") }}</p>
                             </div>
-                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 flex-shrink-0">
+                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
                                 <div class="flex items-center gap-2">
                                     <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
                                     <Switch :model-value="isNotificationEnabled('you_are_muted', 'mail')" @update:model-value="toggleNotification('you_are_muted', 'mail')" name="you_are_muted_mail" />
@@ -80,7 +80,7 @@
                                 <h5 class="font-medium text-foreground mb-1">{{ __("I am banned by Staff") }}</h5>
                                 <p class="text-sm text-muted-foreground hidden sm:block">{{ __("Get notified when staff bans your account") }}</p>
                             </div>
-                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 flex-shrink-0">
+                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
                                 <div class="flex items-center gap-2">
                                     <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
                                     <Switch :model-value="isNotificationEnabled('you_are_banned', 'mail')" @update:model-value="toggleNotification('you_are_banned', 'mail')" name="you_are_banned_mail" />
@@ -100,7 +100,7 @@
                                 <h5 class="font-medium text-foreground mb-1">{{ __("Application request status changed") }}</h5>
                                 <p class="text-sm text-muted-foreground hidden sm:block">{{ __("Get notified when your application status is updated") }}</p>
                             </div>
-                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 flex-shrink-0">
+                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
                                 <div class="flex items-center gap-2">
                                     <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
                                     <Switch
@@ -127,7 +127,7 @@
                                 <h5 class="font-medium text-foreground mb-1">{{ __("New message in application request") }}</h5>
                                 <p class="text-sm text-muted-foreground hidden sm:block">{{ __("Get notified when someone comments on your application") }}</p>
                             </div>
-                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 flex-shrink-0">
+                            <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
                                 <div class="flex items-center gap-2">
                                     <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
                                     <Switch
@@ -167,7 +167,7 @@
                                         <h5 class="font-medium text-foreground mb-1">{{ __("Application request received") }}</h5>
                                         <p class="text-sm text-muted-foreground hidden sm:block">{{ __("Get notified when new applications are submitted") }}</p>
                                     </div>
-                                    <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 flex-shrink-0">
+                                    <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
                                         <div class="flex items-center gap-2">
                                             <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
                                             <Switch
@@ -195,7 +195,7 @@
                                         <h5 class="font-medium text-foreground mb-1">{{ __("Custom form submission received") }}</h5>
                                         <p class="text-sm text-muted-foreground hidden sm:block">{{ __("Get notified when users submit custom forms") }}</p>
                                     </div>
-                                    <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 flex-shrink-0">
+                                    <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
                                         <div class="flex items-center gap-2">
                                             <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
                                             <Switch
@@ -223,7 +223,7 @@
                                         <h5 class="font-medium text-foreground mb-1">{{ __("Someone commented on News") }}</h5>
                                         <p class="text-sm text-muted-foreground hidden sm:block">{{ __("Get notified when users comment on news posts") }}</p>
                                     </div>
-                                    <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 flex-shrink-0">
+                                    <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
                                         <div class="flex items-center gap-2">
                                             <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
                                             <Switch

@@ -443,7 +443,7 @@ export default {
   align-items: center;
   justify-content: center;
   color: hsl(var(--primary-foreground));
-  flex-shrink: 0;
+  shrink: 0;
 }
 
 .server-details {
@@ -532,13 +532,13 @@ export default {
   height: 6px;
   background: hsl(142 76% 36%);
   border-radius: 50%;
-  flex-shrink: 0;
+  shrink: 0;
   margin-top: 4px;
 }
 
 .channel-icon {
   color: hsl(var(--muted-foreground));
-  flex-shrink: 0;
+  shrink: 0;
 }
 
 .channel-name {
@@ -593,7 +593,7 @@ export default {
 
 .member-avatar {
   position: relative;
-  flex-shrink: 0;
+  shrink: 0;
 }
 
 .member-avatar img,

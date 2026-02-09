@@ -137,7 +137,7 @@ function toggleSorting(key) {
                             id="table-search"
                             v-model="filters.filter.q"
                             type="text"
-                            class="block p-2 text-sm text-foreground border border-input rounded-lg pl-9 md:w-80 bg-background focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                            class="block p-2 text-sm text-foreground border border-input rounded-lg pl-9 md:w-80 bg-background focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                             :placeholder="__('Search..')"
                         />
                     </div>
@@ -164,7 +164,7 @@ function toggleSorting(key) {
                                         <th v-for="th in header" :key="th.key" scope="col" class="px-4 py-3 text-xs font-semibold text-left text-muted-foreground" :class="[th.class ? th.class : '']">
                                             <div class="inline-flex items-center">
                                                 <Popover v-if="th.filterable" @update:open="popoverOpenStates[th.key] = $event" :open="popoverOpenStates[th.key]">
-                                                    <PopoverTrigger class="focus:outline-none">
+                                                    <PopoverTrigger class="focus:outline-hidden">
                                                         <Icon
                                                             v-if="Array.isArray(th.filterable) ? th.filterable.some((filter) => filters.filter[filter.key ?? th.key]) : filters.filter[th.filterable.key ?? th.key]"
                                                             name="funnel-fill"
@@ -188,7 +188,7 @@ function toggleSorting(key) {
                                                                     <input
                                                                         v-if="filter.type === 'text'"
                                                                         v-model="filters.filter[filter.key ?? th.key]"
-                                                                        class="block w-full p-2 border-input rounded-md shadow-sm bg-background text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
+                                                                        class="block w-full p-2 border-input rounded-md shadow-sm bg-background text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
                                                                         :placeholder="`Enter ${filter.title ?? filter.label}...`"
                                                                         type="text"
                                                                     />
@@ -205,7 +205,7 @@ function toggleSorting(key) {
                                                                         :placeholder="`Select ${filter.title ?? filter.label}...`"
                                                                     />
                                                                     <button
-                                                                        class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-destructive-foreground bg-destructive hover:bg-destructive/90 focus:outline-none disabled:opacity-50"
+                                                                        class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-destructive-foreground bg-destructive hover:bg-destructive/90 focus:outline-hidden disabled:opacity-50"
                                                                         :disabled="!filters.filter[filter.key ?? th.key]"
                                                                         type="button"
                                                                         @click="
@@ -227,7 +227,7 @@ function toggleSorting(key) {
                                                                 <input
                                                                     v-if="th.filterable.type === 'text'"
                                                                     v-model="filters.filter[th.filterable.key ?? th.key]"
-                                                                    class="block w-full p-2 border-input rounded-md shadow-sm bg-background text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
+                                                                    class="block w-full p-2 border-input rounded-md shadow-sm bg-background text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
                                                                     :placeholder="`Enter ${th.label}...`"
                                                                     type="text"
                                                                 />
@@ -244,7 +244,7 @@ function toggleSorting(key) {
                                                                     :placeholder="`Select ${th.label}...`"
                                                                 />
                                                                 <button
-                                                                    class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-destructive-foreground bg-destructive hover:bg-destructive/90 focus:outline-none disabled:opacity-50"
+                                                                    class="inline-flex w-full justify-center py-1.5 px-4 mt-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-destructive-foreground bg-destructive hover:bg-destructive/90 focus:outline-hidden disabled:opacity-50"
                                                                     :disabled="!filters.filter[th.filterable.key ?? th.key]"
                                                                     type="button"
                                                                     @click="

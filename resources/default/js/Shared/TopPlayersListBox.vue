@@ -60,7 +60,7 @@
               </td>
               <td class="p-1">
                 <div class="flex items-center">
-                  <div class="flex-shrink-0 h-6 w-6">
+                  <div class="shrink-0 h-6 w-6">
                     <img
                       class="h-6 w-6"
                       :src="player.avatar_url"
@@ -72,7 +72,7 @@
                       v-tippy
                       as="div"
                       :href="route('player.show', player.uuid)"
-                      class="text-sm text-foreground focus:outline-none cursor-pointer hover:underline"
+                      class="text-sm text-foreground focus:outline-hidden cursor-pointer hover:underline"
                       :content="player.uuid"
                     >
                       <span
@@ -91,7 +91,7 @@
                 <span v-if="player.rating != null">
                   <icon
                     v-tippy
-                    class="w-6 h-6 mx-auto focus:outline-none"
+                    class="w-6 h-6 mx-auto focus:outline-hidden"
                     :name="`rating-${player.rating}`"
                     :content="player.rating"
                   />
@@ -104,7 +104,7 @@
               <td class="p-1 text-xs text-foreground dark:text-foreground text-right hidden sm:table-cell">
                 <span
                   v-tippy
-                  class="focus:outline-none"
+                  class="focus:outline-hidden"
                   :content="formatToDayDateString(player.last_seen_at)"
                 >
                   {{

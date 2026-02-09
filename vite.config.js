@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
@@ -10,6 +11,7 @@ export default defineConfig(({ mode }) => {
     const buildDirectory = 'build/' + theme;
     return {
         plugins: [
+            tailwindcss(),
             laravel({
                 input:  `/resources/${theme}/js/app.js`,
                 buildDirectory: buildDirectory,

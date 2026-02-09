@@ -101,7 +101,7 @@ const logout = () => {
                                         <div v-if="
                                             $page.props.jetstream
                                                 .managesProfilePhotos
-                                        " class="flex-shrink-0 mr-3">
+                                        " class="shrink-0 mr-3">
                                             <img class="object-cover w-10 h-10 rounded-full" :src="$page.props.auth.user
                                                 .profile_photo_url
                                                 " :alt="$page.props.auth.user.name

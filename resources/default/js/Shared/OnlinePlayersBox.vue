@@ -36,7 +36,7 @@
         <div
           v-for="pl of playersList"
           :key="pl.uuid"
-          class="flex-shrink-0 mr-1 mb-1"
+          class="shrink-0 mr-1 mb-1"
           :class="sizeClass"
         >
           <img
@@ -50,7 +50,7 @@
             })
             "
             :alt="pl.username"
-            class="focus:outline-none"
+            class="focus:outline-hidden"
             :class="sizeClass"
           >
         </div>

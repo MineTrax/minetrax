@@ -82,7 +82,7 @@ const headerRow = [
             <div class="flex items-center justify-center">
               <div
                 v-tippy
-                class="flex-shrink-0 h-10 w-10 focus:outline-none"
+                class="shrink-0 h-10 w-10 focus:outline-hidden"
                 :content="item.country.name"
               >
                 <img
@@ -99,7 +99,7 @@ const headerRow = [
               :href="route('user.public.get', item.user.username)"
               class="flex items-center"
             >
-              <div class="flex-shrink-0 h-10 w-10 mr-2">
+              <div class="shrink-0 h-10 w-10 mr-2">
                 <img
                   class="h-10 w-10 rounded-full"
                   :src="item.user.profile_photo_url"

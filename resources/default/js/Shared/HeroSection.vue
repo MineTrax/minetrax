@@ -71,7 +71,7 @@
               </span>
               <span
                 v-if="error && !loading"
-                class="text-error-400"
+                class="text-red-400"
               >
                 {{ error }}
               </span>

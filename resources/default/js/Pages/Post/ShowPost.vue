@@ -6,7 +6,7 @@
 
         <div class="px-2 py-4 md:px-10 max-w-screen-2xl mx-auto">
             <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
-                <div class="flex-grow">
+                <div class="grow">
                     <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
                         <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
                             <div class="">

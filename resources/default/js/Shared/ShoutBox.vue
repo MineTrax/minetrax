@@ -93,7 +93,7 @@
                   </inertia-link>
                   <span
                     v-tippy
-                    class="ml-1 text-xs text-muted-foreground focus:outline-none"
+                    class="ml-1 text-xs text-muted-foreground focus:outline-hidden"
                     :title="formatToDayDateString(shout.created_at)"
                   >
                     {{ formatTimeAgoToNow(shout.created_at, false) }}
@@ -112,7 +112,7 @@
             <inertia-link
               v-if="$page.props.auth.user && shout.permissions.delete"
               v-confirm="{message:__('Delete this shout permanently?')}"
-              class="order-3 focus:outline-none"
+              class="order-3 focus:outline-hidden"
               :preserve-state="false"
               as="button"
               method="delete"
@@ -134,7 +134,7 @@
             <inertia-link
               v-if="$page.props.auth.user && shout.permissions.delete"
               v-confirm="{message:__('Delete this shout permanently?')}"
-              class="focus:outline-none"
+              class="focus:outline-hidden"
               :preserve-state="false"
               as="button"
               method="delete"
@@ -152,7 +152,7 @@
                 <div class="text-right">
                   <span
                     v-tippy
-                    class="mr-1 text-xs text-primary-foreground/70 focus:outline-none"
+                    class="mr-1 text-xs text-primary-foreground/70 focus:outline-hidden"
                     :title="formatToDayDateString(shout.created_at)"
                   >
                     {{ formatTimeAgoToNow(shout.created_at, false) }}

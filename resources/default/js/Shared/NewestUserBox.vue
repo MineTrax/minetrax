@@ -10,7 +10,7 @@
         class="cursor-pointer flex space-x-3 border border-border rounded-lg p-3 items-center hover:border-primary transition-colors duration-200 hover:bg-muted/50"
       >
         <img
-          class="w-12 h-12 rounded-full flex-shrink-0 ring-2 ring-border"
+          class="w-12 h-12 rounded-full shrink-0 ring-2 ring-border"
           :src="user.profile_photo_url"
           alt="Avatar"
         >
@@ -24,7 +24,7 @@
           </div>
           <span
             v-tippy
-            class="text-xs text-muted-foreground focus:outline-none"
+            class="text-xs text-muted-foreground focus:outline-hidden"
             :title="formatToDayDateString(user.created_at)"
           >{{ __("Joined") }} {{ formatTimeAgoToNow(user.created_at) }}</span>
         </div>

@@ -18,7 +18,7 @@
           <div
             v-tippy
             :content="votingsite.url"
-            class="text-card-foreground text-sm font-bold focus:outline-none"
+            class="text-card-foreground text-sm font-bold focus:outline-hidden"
           >
             {{ votingsite.name }}
           </div>

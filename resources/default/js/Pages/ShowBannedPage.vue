@@ -1,40 +1,40 @@
 <template>
-  <app-layout>
-    <app-head
-      :title="__('Oops! You are Banned.')"
-    />
+ <app-layout>
+ <app-head
+ :title="__('Oops! You are Banned.')"
+ />
 
-    <div class="py-12 px-10 max-w-4xl mx-auto">
-      <div class="flex space-x-4">
-        <div class="flex-grow">
-          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 text-center">
-            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-              <div class="shadow space-y-10 bg-white overflow-hidden border-b border-foreground rounded p-4 dark:bg-surface-800 dark:border-foreground">
-                <icon
-                  name="ban"
-                  class="h-40 w-40 text-error-600 inline-flex"
-                />
-                <h3 class="text-3xl font-extrabold text-error-900 dark:text-error-500">
-                  {{ __("Oops! You are Banned.") }}
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </app-layout>
+ <div class="py-12 px-10 max-w-4xl mx-auto">
+ <div class="flex space-x-4">
+ <div class="grow">
+ <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 text-center">
+ <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+ <div class="shadow space-y-10 bg-white overflow-hidden border-b border-foreground rounded p-4 dark:bg-card dark:border-foreground">
+ <icon
+ name="ban"
+ class="h-40 w-40 text-destructive inline-flex"
+ />
+ <h3 class="text-3xl font-extrabold text-destructive">
+ {{ __("Oops! You are Banned.") }}
+ </h3>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </app-layout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import Icon from '@/Components/Icon.vue';
+import AppLayout from'@/Layouts/AppLayout.vue';
+import Icon from'@/Components/Icon.vue';
 
 export default {
 
-    components: {
-        Icon,
-        AppLayout,
-    }
+ components: {
+ Icon,
+ AppLayout,
+ }
 };
 </script>

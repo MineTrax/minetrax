@@ -1,28 +1,28 @@
 <template>
-  <div class="font-sans text-foreground antialiased">
-    <div class="pt-4 bg-surface-100">
-      <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0">
-        <div>
-          <jet-authentication-card-logo />
-        </div>
+ <div class="font-sans text-foreground antialiased">
+ <div class="pt-4 bg-muted">
+ <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0">
+ <div>
+ <jet-authentication-card-logo />
+ </div>
 
-        <div
-          class="w-full sm:max-w-2xl mt-6 p-6 bg-white shadow-md overflow-hidden sm:rounded-lg prose"
-          v-html="policy"
-        />
-      </div>
-    </div>
-  </div>
+ <div
+ class="w-full sm:max-w-2xl mt-6 p-6 bg-white shadow-md overflow-hidden sm:rounded-lg prose"
+ v-html="policy"
+ />
+ </div>
+ </div>
+ </div>
 </template>
 
 <script>
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue';
+import JetAuthenticationCardLogo from'@/Jetstream/AuthenticationCardLogo.vue';
 
 export default {
 
-    components: {
-        JetAuthenticationCardLogo,
-    },
-    props: ['policy'],
+ components: {
+ JetAuthenticationCardLogo,
+ },
+ props: ['policy'],
 };
 </script>

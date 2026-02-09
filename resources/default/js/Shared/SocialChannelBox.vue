@@ -15,7 +15,7 @@
           :title="__('Youtube')"
           :href="youtube"
           target="_blank"
-          class="inline-block p-2 hover:bg-error-600 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
+          class="inline-block p-2 hover:bg-red-600 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <svg
             class="fill-current h-6 w-6"
@@ -114,7 +114,7 @@
           :title="__('Steam')"
           :href="steam"
           target="_blank"
-          class="inline-block p-2 hover:bg-surface-800 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
+          class="inline-block p-2 hover:bg-gray-800 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <svg
             class="h-6 w-6 fill-current"
@@ -138,7 +138,7 @@
           :title="__('Website')"
           :href="website"
           target="_blank"
-          class="inline-block p-2 hover:bg-success-600 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
+          class="inline-block p-2 hover:bg-green-600 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <svg
             class="h-6 w-6 fill-current"
@@ -187,7 +187,7 @@
           :title="__('WhatsApp')"
           :href="whatsapp"
           target="_blank"
-          class="inline-block p-2 hover:bg-success-500 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
+          class="inline-block p-2 hover:bg-green-500 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="whatsapp"

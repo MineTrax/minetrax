@@ -144,7 +144,7 @@ const updateCustomPage = () => {
 
                   <div
                     v-if="pageType === 'html'"
-                    class="text-sm mt-4 p-4 border border-warning-600 rounded bg-warning-100 text-warning-700 dark:bg-warning-900/25 dark:text-warning-400"
+                    class="text-sm mt-4 p-4 border border-yellow-600 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/25 dark:text-yellow-400"
                   >
                     {{
                       __("Please be careful with this option, adding malicious code can expose your website to security risks. Make sure you know what you are doing.")

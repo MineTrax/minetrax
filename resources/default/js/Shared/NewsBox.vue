@@ -43,7 +43,7 @@
             <!-- News Image -->
             <div
               v-if="news.photo_url"
-              class="flex-shrink-0"
+              class="shrink-0"
             >
               <img
                 class="h-16 w-20 object-cover rounded-lg border border-border shadow-sm"

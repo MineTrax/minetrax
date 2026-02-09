@@ -1,128 +1,128 @@
 <template>
-  <app-layout>
-    <app-head
-      :title="__('2FA Challenge confirmation')"
-    />
-    <jet-authentication-card>
-      <div class="mb-4 text-sm text-foreground dark:text-foreground">
-        <template v-if="! recovery">
-          {{ __("Please confirm access to your account by entering the authentication code provided by your authenticator application.") }}
-        </template>
+ <app-layout>
+ <app-head
+ :title="__('2FA Challenge confirmation')"
+ />
+ <jet-authentication-card>
+ <div class="mb-4 text-sm text-foreground dark:text-foreground">
+ <template v-if="! recovery">
+ {{ __("Please confirm access to your account by entering the authentication code provided by your authenticator application.") }}
+ </template>
 
-        <template v-else>
-          {{ __("Please confirm access to your account by entering one of your emergency recovery codes.") }}
-        </template>
-      </div>
+ <template v-else>
+ {{ __("Please confirm access to your account by entering one of your emergency recovery codes.") }}
+ </template>
+ </div>
 
-      <jet-validation-errors class="mb-4" />
+ <jet-validation-errors class="mb-4"/>
 
-      <form @submit.prevent="submit">
-        <div v-if="! recovery">
-          <jet-label
-            for="code"
-            :value="__('Code')"
-          />
-          <jet-input
-            id="code"
-            ref="code"
-            v-model="form.code"
-            type="text"
-            inputmode="numeric"
-            class="mt-1 block w-full dark:text-foreground"
-            autofocus
-            autocomplete="one-time-code"
-          />
-        </div>
+ <form @submit.prevent="submit">
+ <div v-if="! recovery">
+ <jet-label
+ for="code"
+ :value="__('Code')"
+ />
+ <jet-input
+ id="code"
+ ref="code"
+ v-model="form.code"
+ type="text"
+ inputmode="numeric"
+ class="mt-1 block w-full dark:text-foreground"
+ autofocus
+ autocomplete="one-time-code"
+ />
+ </div>
 
-        <div v-else>
-          <jet-label
-            for="recovery_code"
-            :value="__('Recovery Code')"
-          />
-          <jet-input
-            id="recovery_code"
-            ref="recovery_code"
-            v-model="form.recovery_code"
-            type="text"
-            class="mt-1 block w-full dark:text-foreground"
-            autocomplete="one-time-code"
-          />
-        </div>
+ <div v-else>
+ <jet-label
+ for="recovery_code"
+ :value="__('Recovery Code')"
+ />
+ <jet-input
+ id="recovery_code"
+ ref="recovery_code"
+ v-model="form.recovery_code"
+ type="text"
+ class="mt-1 block w-full dark:text-foreground"
+ autocomplete="one-time-code"
+ />
+ </div>
 
-        <div class="flex items-center justify-end mt-4">
-          <button
-            type="button"
-            class="text-sm text-foreground hover:text-foreground underline cursor-pointer dark:text-foreground dark:hover:text-foreground"
-            @click.prevent="toggleRecovery"
-          >
-            <template v-if="! recovery">
-              {{ __("Use a recovery code") }}
-            </template>
+ <div class="flex items-center justify-end mt-4">
+ <button
+ type="button"
+ class="text-sm text-foreground hover:text-foreground underline cursor-pointer dark:text-foreground dark:hover:text-foreground"
+ @click.prevent="toggleRecovery"
+ >
+ <template v-if="! recovery">
+ {{ __("Use a recovery code") }}
+ </template>
 
-            <template v-else>
-              {{ __("Use an authentication code") }}
-            </template>
-          </button>
+ <template v-else>
+ {{ __("Use an authentication code") }}
+ </template>
+ </button>
 
-          <loading-button
-            :loading="form.processing"
-            class="ml-4"
-          >
-            {{ __("Login") }}
-          </loading-button>
-        </div>
-      </form>
-    </jet-authentication-card>
-  </app-layout>
+ <loading-button
+ :loading="form.processing"
+ class="ml-4"
+ >
+ {{ __("Login") }}
+ </loading-button>
+ </div>
+ </form>
+ </jet-authentication-card>
+ </app-layout>
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
-import JetInput from '@/Jetstream/Input.vue';
-import JetLabel from '@/Jetstream/Label.vue';
-import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { useForm } from '@inertiajs/vue3';
+import JetAuthenticationCard from'@/Jetstream/AuthenticationCard.vue';
+import JetInput from'@/Jetstream/Input.vue';
+import JetLabel from'@/Jetstream/Label.vue';
+import JetValidationErrors from'@/Jetstream/ValidationErrors.vue';
+import LoadingButton from'@/Components/LoadingButton.vue';
+import AppLayout from'@/Layouts/AppLayout.vue';
+import { useForm } from'@inertiajs/vue3';
 
 export default {
-    components: {
-        AppLayout,
-        LoadingButton,
-        JetAuthenticationCard,
-        JetInput,
-        JetLabel,
-        JetValidationErrors,
-    },
+ components: {
+ AppLayout,
+ LoadingButton,
+ JetAuthenticationCard,
+ JetInput,
+ JetLabel,
+ JetValidationErrors,
+ },
 
-    data() {
-        return {
-            recovery: false,
-            form: useForm({
-                code: '',
-                recovery_code: '',
-            })
-        };
-    },
+ data() {
+ return {
+ recovery: false,
+ form: useForm({
+ code:'',
+ recovery_code:'',
+ })
+ };
+ },
 
-    methods: {
-        toggleRecovery() {
-            this.recovery ^= true;
+ methods: {
+ toggleRecovery() {
+ this.recovery ^= true;
 
-            this.$nextTick(() => {
-                if (this.recovery) {
-                    this.$refs.recovery_code.focus();
-                    this.form.code = '';
-                } else {
-                    this.$refs.code.focus();
-                    this.form.recovery_code = '';
-                }
-            });
-        },
+ this.$nextTick(() => {
+ if (this.recovery) {
+ this.$refs.recovery_code.focus();
+ this.form.code ='';
+ } else {
+ this.$refs.code.focus();
+ this.form.recovery_code ='';
+ }
+ });
+ },
 
-        submit() {
-            this.form.post(this.route('two-factor.login'));
-        }
-    }
+ submit() {
+ this.form.post(this.route('two-factor.login'));
+ }
+ }
 };
 </script>

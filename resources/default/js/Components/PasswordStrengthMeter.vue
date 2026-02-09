@@ -1,37 +1,37 @@
 <template>
-  <div class="flex -mx-1">
-    <template
-      v-for="(v,i) in 5"
-      :key="i"
-    >
-      <div
-        class="w-1/5 px-1"
-      >
-        <div
-          class="h-2 rounded-xl transition-colors"
-          :class="i<score?(score<=2?'bg-error-400':(score<=4?'bg-warning-400':'bg-success-500')):'bg-background'"
-        />
-      </div>
-    </template>
-  </div>
+ <div class="flex -mx-1">
+ <template
+ v-for="(v,i) in 5"
+ :key="i"
+ >
+ <div
+ class="w-1/5 px-1"
+ >
+ <div
+ class="h-2 rounded-xl transition-colors"
+ :class="i<score?(score<=2?'bg-destructive/60':(score<=4?'bg-yellow-400':'bg-success')):'bg-background'"
+ />
+ </div>
+ </template>
+ </div>
 </template>
 
 <script>
-import zxcvbn from 'zxcvbn';
+import zxcvbn from'zxcvbn';
 
 export default {
-    name: 'PasswordStrengthMeter',
-    props: {
-        value: {
-            type: String,
-            required: true
-        }
-    },
+ name:'PasswordStrengthMeter',
+ props: {
+ value: {
+ type: String,
+ required: true
+ }
+ },
 
-    computed: {
-        score() {
-            return this.value ? zxcvbn(this.value).score + 1 : null;
-        },
-    },
+ computed: {
+ score() {
+ return this.value ? zxcvbn(this.value).score + 1 : null;
+ },
+ },
 };
 </script>

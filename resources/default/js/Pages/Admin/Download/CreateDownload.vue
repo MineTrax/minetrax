@@ -163,7 +163,7 @@ function addDownload() {
                     id="file"
                     ref="fileInput"
                     type="file"
-                    class="block p-2 w-full text-sm text-foreground border border-input rounded-lg cursor-pointer bg-background focus:outline-none"
+                    class="block p-2 w-full text-sm text-foreground border border-input rounded-lg cursor-pointer bg-background focus:outline-hidden"
                   >
                   <p
                     v-if="form.errors.file"

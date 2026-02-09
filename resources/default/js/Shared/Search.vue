@@ -5,7 +5,7 @@
         ref="searchInput"
         v-model="searchString"
         aria-label="search"
-        class="border bg-background h-10 px-5 pr-10 w-48 rounded-full text-sm focus:outline-none focus:ring-0 transition-all duration-300 ease-in-out"
+        class="border bg-background h-10 px-5 pr-10 w-48 rounded-full text-sm focus:outline-hidden focus:ring-0 transition-all duration-300 ease-in-out"
         :class="{'w-80': showResults || isFocused}"
         type="search"
         name="search"
@@ -76,7 +76,7 @@
                 :title="user.country.name"
                 :src="user.country.photo_path"
                 alt=""
-                class="h-8 w-8 -mt-0.5 focus:outline-none"
+                class="h-8 w-8 -mt-0.5 focus:outline-hidden"
               >
             </div>
           </inertia-link>
@@ -123,7 +123,7 @@
               <Icon
                 v-show="player.rating != null"
                 v-tippy
-                class="w-8 h-8 focus:outline-none"
+                class="w-8 h-8 focus:outline-hidden"
                 :name="`rating-${player.rating}`"
                 :content="player.rating"
               />
@@ -133,14 +133,14 @@
                 :src="player.rank.photo_path"
                 :alt="player.rank.name"
                 :title="player.rank.name"
-                class="h-8 w-8 focus:outline-none"
+                class="h-8 w-8 focus:outline-hidden"
               >
               <img
                 v-tippy
                 :title="player.country.name"
                 :src="player.country.photo_path"
                 alt=""
-                class="h-8 w-8 -mt-0.5 focus:outline-none"
+                class="h-8 w-8 -mt-0.5 focus:outline-hidden"
               >
             </div>
           </inertia-link>

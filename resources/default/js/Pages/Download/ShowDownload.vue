@@ -53,7 +53,7 @@ const breadcrumbItems = [
                         </h1>
 
                         <div class="mb-4">
-                            <p class="text-muted-foreground text-sm focus:outline-none">
+                            <p class="text-muted-foreground text-sm focus:outline-hidden">
                                 {{ __("Created:") }} {{ formatToDayDateString(download.created_at) }}
                                 ▪
                                 {{ __("Total Downloads: ") }} {{ download.download_count }}

@@ -305,7 +305,7 @@ watch(() => form.title, (value) => {
                             </div>
                             <button
                               type="button"
-                              class="focus:outline-none group"
+                              class="focus:outline-hidden group"
                               @click="removeField(index)"
                             >
                               <TrashIcon

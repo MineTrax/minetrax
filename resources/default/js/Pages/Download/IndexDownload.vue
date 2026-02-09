@@ -113,7 +113,7 @@ const breadcrumbItems = [
                 v-tippy
                 as="a"
                 :href="route('download.show', item.slug)"
-                class="inline-flex items-center justify-center text-warning-600 dark:text-warning-500 hover:text-warning-800 dark:hover:text-warning-800"
+                class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
                 :title="__('Show Details')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />

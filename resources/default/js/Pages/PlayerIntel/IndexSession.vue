@@ -139,7 +139,7 @@ const breadcrumbItems = [
               <div class="flex items-center">
                 <div
                   v-tippy
-                  class="flex-shrink-0 h-10 w-10 focus:outline-none"
+                  class="shrink-0 h-10 w-10 focus:outline-hidden"
                   :content="item.country.name"
                 >
                   <img
@@ -155,7 +155,7 @@ const breadcrumbItems = [
               class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
             >
               <div class="flex items-center">
-                <div class="flex-shrink-0 h-10 w-10">
+                <div class="shrink-0 h-10 w-10">
                   <img
                     class="h-10 w-10"
                     :src="player?.avatar_url"
@@ -169,7 +169,7 @@ const breadcrumbItems = [
                       player: item.player_uuid,
                       session: item.id,
                     })"
-                    class="text-sm font-medium text-foreground focus:outline-none cursor-pointer hover:underline"
+                    class="text-sm font-medium text-foreground focus:outline-hidden cursor-pointer hover:underline"
                   >
                     <span class="font-extrabold text-foreground">
                       {{ item.player_displayname }} ({{ item.player_username }})

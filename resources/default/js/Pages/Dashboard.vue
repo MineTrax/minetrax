@@ -17,7 +17,7 @@
             generalSettings.enable_discordbox ||
             generalSettings.enable_donation_box
         "
-        class="w-full order-2 md:order-none md:w-1/4 space-y-4 flex-shrink-0"
+        class="w-full order-2 md:order-none md:w-1/4 space-y-4 shrink-0"
       >
         <OnlinePlayersBox v-if="generalSettings.enable_mcserver_onlineplayersbox" />
         <VotingSitesBox
@@ -35,7 +35,7 @@
       </div>
 
       <!-- Middle Column -->
-      <div class="w-full order-1 md:order-none md:w-2/4 space-y-4 flex-shrink-0 flex-grow">
+      <div class="w-full order-1 md:order-none md:w-2/4 space-y-4 shrink-0 grow">
         <VerifyYourEmailBox v-if="$page.props.jetstream.hasEmailVerification && $page.props.auth.user && $page.props.auth.user.email_verified_at === null" />
         <VersionCheck v-if="$page.props.auth.user && isStaff($page.props.auth.user)" />
         <WelcomeBox
@@ -65,7 +65,7 @@
             generalSettings.enable_newuserbox ||
             generalSettings.enable_socialbox
         "
-        class="w-full order-3 md:order-none md:w-1/4 space-y-4 flex-shrink-0"
+        class="w-full order-3 md:order-none md:w-1/4 space-y-4 shrink-0"
       >
         <ServerStatusBox />
         <ShoutBox />

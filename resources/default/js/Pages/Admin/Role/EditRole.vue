@@ -94,7 +94,7 @@ function updateRole() {
                 <div
                   v-tippy
                   :content="__('Role name cannot be changed!')"
-                  class="col-span-6 sm:col-span-3 focus:outline-none"
+                  class="col-span-6 sm:col-span-3 focus:outline-hidden"
                 >
                   <XInput
                     id="name"

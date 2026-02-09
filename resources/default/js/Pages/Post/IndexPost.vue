@@ -17,7 +17,7 @@
           />
         </div>
 
-        <div class="flex-grow">
+        <div class="grow">
           <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block overflow-hidden min-w-full md:px-6 lg:px-8">
               <div class="">

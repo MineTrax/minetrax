@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center flex-shrink-0">
+  <div class="flex items-center shrink-0">
     <InertiaLink :href="route('home')">
       <JetApplicationMark class="block w-auto h-9" />
     </InertiaLink>
@@ -8,7 +8,7 @@
       v-tippy
       :title="__('Administration Section')"
       aria-label="Open Menu"
-      class="ml-2 focus:outline-none"
+      class="ml-2 focus:outline-hidden"
       :href="route('admin.dashboard')"
     >
       <Icon

@@ -16,7 +16,7 @@ export function useChartTheme() {
     const getMapColorPalette = (isDark = false) => {
         return isDark
             ? [
-                  getThemeColor("--color-surface-700", "#374151"), // Start with subtle background-like color
+                  getThemeColor("--color-muted-foreground", "#374151"), // Start with subtle background-like color
                   getThemeColor("--color-primary", "#c7d2fe"),
                   getThemeColor("--color-primary", "#818cf8"),
                   getThemeColor("--color-primary", "#4f46e5"),
@@ -35,10 +35,10 @@ export function useChartTheme() {
     const getChartColorPalette = () => {
         return [
             getThemeColor("--color-primary", "#6366f1"),
-            getThemeColor("--color-green-500", "#10b981"),
+            getThemeColor("--color-success", "#10b981"),
             getThemeColor("--color-yellow-500", "#f59e0b"),
-            getThemeColor("--color-red-500", "#ef4444"),
-            getThemeColor("--color-cyan-500", "#06b6d4"),
+            getThemeColor("--color-destructive", "#ef4444"),
+            getThemeColor("--color-info", "#06b6d4"),
             getThemeColor("--color-purple-600", "#4f46e5"),
             getThemeColor("--color-emerald-600", "#059669"),
             getThemeColor("--color-amber-600", "#d97706"),
@@ -49,7 +49,7 @@ export function useChartTheme() {
     // Get theme-aware tooltip styling
     const getTooltipStyle = () => {
         return {
-            backgroundColor: getThemeColor("--color-surface-800", "#1f2937"),
+            backgroundColor: getThemeColor("--color-card", "#1f2937"),
             textStyle: {
                 color: getThemeColor("--color-foreground", "#e5e7eb"),
             },
@@ -100,7 +100,7 @@ export function useChartTheme() {
         return {
             itemStyle: {
                 normal: {
-                    areaColor: getThemeColor("--color-surface-50", "#ffffff"),
+                    areaColor: getThemeColor("--color-muted", "#ffffff"),
                     borderColor: getThemeColor(
                         "--color-foreground",
                         "#d1d5db"
@@ -133,7 +133,7 @@ export function useChartTheme() {
     // Get color for areas with no data that blends with background
     const getNoDataColor = (isDark = false) => {
         return isDark
-            ? getThemeColor("--color-surface-800", "#1e293b")
+            ? getThemeColor("--color-card", "#1e293b")
             : getThemeColor("--color-white", "#ffffff");
     };
 
@@ -141,7 +141,7 @@ export function useChartTheme() {
     const getChartTheme = (isDark = false) => {
         return {
             color: getChartColorPalette(),
-            backgroundColor: getThemeColor("--color-surface-900", "#111827"),
+            backgroundColor: getThemeColor("--color-background", "#111827"),
             textStyle: {
                 color: getThemeColor("--color-foreground", "#d1d5db"),
             },

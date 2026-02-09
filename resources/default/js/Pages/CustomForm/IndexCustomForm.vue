@@ -129,7 +129,7 @@ const headerRow = [
                 v-tippy
                 name="shield-check-fill"
                 :title="__('Staff Only')"
-                class="inline mb-1 text-amber-400 h-4 fill-current focus:outline-none"
+                class="inline mb-1 text-amber-400 h-4 fill-current focus:outline-hidden"
               />
             </DtRowItem>
 

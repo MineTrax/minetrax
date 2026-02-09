@@ -1,5 +1,5 @@
 <template>
-  <div class="w-64 flex-shrink-0 pr-10">
+  <div class="w-64 shrink-0 pr-10">
     <div class="flex flex-col">
       <div class="uppercase mb-2 text-xs tracking-wide text-foreground dark:text-foreground font-bold">
         {{ __("SETTINGS") }}

@@ -15,7 +15,7 @@
                     <!-- Mobile: Stack vertically, Desktop: Side by side -->
                     <div class="flex flex-col md:flex-row gap-4">
                         <!-- Tab Navigation -->
-                        <div class="w-full md:w-64 md:flex-shrink-0 order-1">
+                        <div class="w-full md:w-64 md:shrink-0 order-1">
                             <!-- Vertical tab navigation for all screen sizes -->
                             <TabsList class="flex flex-col h-fit w-full space-y-2 md:p-2 border shadow">
                                 <TabsTrigger
