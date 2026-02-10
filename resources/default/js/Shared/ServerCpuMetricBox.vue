@@ -1,10 +1,10 @@
 <script setup>
-import Icon from '@/Components/Icon.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import Chart from '@/Components/Dashboard/Chart.vue';
-import { Card, CardContent } from '@/Components/ui/card';
-import { ref } from 'vue';
+import Chart from "@/Components/Dashboard/Chart.vue";
+import Icon from "@/Components/Icon.vue";
+import { Card, CardContent } from "@/Components/ui/card";
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
+import { ref } from "vue";
 
 const { __ } = useTranslations();
 const { formatToDayDateString } = useHelpers();
@@ -22,27 +22,27 @@ const props = defineProps({
 
 const options = ref({
     xAxis: {
-        type: 'category',
+        type: "category",
         boundaryGap: false
     },
     yAxis: {
-        type: 'value'
+        type: "value"
     },
     tooltip: {
-        trigger: 'axis'
+        trigger: "axis"
     },
     series: [
         {
-            type: 'line',
-            symbol: 'none',
+            type: "line",
+            symbol: "none",
             areaStyle: {}
         }
     ],
     dataset: {
         source: props.liveInfo.map(data => {
             return {
-                [__('Date')]: formatToDayDateString(data.created_at),
-                [__('Cpu Load')]: data.cpu_load,
+                [__("Date")]: formatToDayDateString(data.created_at),
+                [__("Cpu Load")]: data.cpu_load,
             };
         })
     },

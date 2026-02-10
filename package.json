@@ -8,6 +8,7 @@
     },
     "devDependencies": {
         "@codemirror/lang-html": "^6.4.9",
+        "@eslint/js": "^9.18.0",
         "@formkit/icons": "^1.6.9",
         "@formkit/vue": "^1.6.9",
         "@headlessui/vue": "^1.7.23",
@@ -30,6 +31,7 @@
         "echarts": "^6.0.0",
         "eslint": "^9.18.0",
         "eslint-plugin-vue": "^9.32.0",
+        "globals": "^17.3.0",
         "laravel-echo": "^1.18.0",
         "laravel-vite-plugin": "^1.1",
         "lodash": "^4.17.21",

@@ -1,24 +1,24 @@
 <script setup>
-import {
-    ChevronDoubleLeftIcon,
-    ServerStackIcon,
-    UsersIcon,
-    HomeIcon,
-    NewspaperIcon,
-    ChartPieIcon,
-    DocumentTextIcon,
-    Cog8ToothIcon,
-    PresentationChartLineIcon,
-    CircleStackIcon,
-    TrophyIcon,
-    CloudArrowDownIcon,
-    ClipboardDocumentListIcon,
-    BugAntIcon,
-    AcademicCapIcon,
-    CommandLineIcon,
-} from "@heroicons/vue/24/outline";
 import SideNavItem from "@/Components/Navigation/SideNavItem.vue";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
+import {
+    AcademicCapIcon,
+    BugAntIcon,
+    ChartPieIcon,
+    ChevronDoubleLeftIcon,
+    CircleStackIcon,
+    ClipboardDocumentListIcon,
+    CloudArrowDownIcon,
+    Cog8ToothIcon,
+    CommandLineIcon,
+    DocumentTextIcon,
+    HomeIcon,
+    NewspaperIcon,
+    PresentationChartLineIcon,
+    ServerStackIcon,
+    TrophyIcon,
+    UsersIcon,
+} from "@heroicons/vue/24/outline";
 import { usePage } from "@inertiajs/vue3";
 const { canWild, hasRole, can } = useAuthorizable();
 
@@ -399,19 +399,29 @@ const navItems = [
 </script>
 
 <template>
-    <div :class="['min-h-screen fixed bg-sidebar text-sidebar-foreground shadow z-10 duration-300', collapsed ? 'w-16' : 'w-64']">
-        <div class="h-screen overflow-y-auto">
-            <div :class="['px-4 mt-2 flex', collapsed ? 'justify-center' : 'justify-end']">
-                <button @click.prevent="$emit('toggleCollapse')">
-                    <ChevronDoubleLeftIcon :class="['h-6 w-6 p-0.5 text-sidebar-foreground hover:text-sidebar-foreground/80', collapsed ? '-rotate-180' : '']" />
-                </button>
-            </div>
+  <div :class="['min-h-screen fixed bg-sidebar text-sidebar-foreground shadow z-10 duration-300', collapsed ? 'w-16' : 'w-64']">
+    <div class="h-screen overflow-y-auto">
+      <div :class="['px-4 mt-2 flex', collapsed ? 'justify-center' : 'justify-end']">
+        <button @click.prevent="$emit('toggleCollapse')">
+          <ChevronDoubleLeftIcon :class="['h-6 w-6 p-0.5 text-sidebar-foreground hover:text-sidebar-foreground/80', collapsed ? '-rotate-180' : '']" />
+        </button>
+      </div>
 
-            <nav class="mt-2 px-2">
-                <SideNavItem v-for="item in navItems" :key="item.label" :item="item" :collapsed="collapsed" />
-            </nav>
+      <nav class="mt-2 px-2">
+        <SideNavItem
+          v-for="item in navItems"
+          :key="item.label"
+          :item="item"
+          :collapsed="collapsed"
+        />
+      </nav>
 
-            <div v-if="!collapsed" class="mt-10 text-xs text-center text-muted-foreground">{{ __("Web Version:") }}&nbsp;{{ $page.props.webVersion || "unknown" }}</div>
-        </div>
+      <div
+        v-if="!collapsed"
+        class="mt-10 text-xs text-center text-muted-foreground"
+      >
+        {{ __("Web Version:") }}&nbsp;{{ $page.props.webVersion || "unknown" }}
+      </div>
     </div>
+  </div>
 </template>
