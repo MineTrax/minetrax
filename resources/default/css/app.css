@@ -339,10 +339,6 @@
     --accent-foreground: hsl(224.4444 64.2857% 32.9412%);
     --destructive: hsl(0 84.2365% 60.1961%);
     --destructive-foreground: hsl(0 0% 100%);
-    --success: hsl(142.1 76.2% 36.3%);
-    --success-foreground: hsl(0 0% 100%);
-    --info: hsl(199.4 95.5% 53.8%);
-    --info-foreground: hsl(0 0% 100%);
     --border: hsl(220 13.0435% 90.9804%);
     --input: hsl(220 13.0435% 90.9804%);
     --ring: hsl(217.2193 91.2195% 59.8039%);
@@ -378,6 +374,11 @@
       0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
     --tracking-normal: 0em;
+    /* CUSTOM_VARIABLES */
+    --success: hsl(142.1 76.2% 36.3%);
+    --success-foreground: hsl(0 0% 100%);
+    --info: hsl(199.4 95.5% 53.8%);
+    --info-foreground: hsl(0 0% 100%);
 }
 
 .dark {
@@ -397,10 +398,6 @@
     --accent-foreground: hsl(213.3333 96.9231% 87.2549%);
     --destructive: hsl(0 84.2365% 60.1961%);
     --destructive-foreground: hsl(0 0% 100%);
-    --success: hsl(142.1 69.2% 58%);
-    --success-foreground: hsl(0 0% 100%);
-    --info: hsl(198.4 93.2% 59.6%);
-    --info-foreground: hsl(0 0% 100%);
     --border: hsl(0 0% 25.098%);
     --input: hsl(0 0% 25.098%);
     --ring: hsl(217.2193 91.2195% 59.8039%);
@@ -436,6 +433,11 @@
       0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
     --tracking-normal: 0em;
+    /* CUSTOM_VARIABLES */
+    --success: hsl(142.1 69.2% 58%);
+    --success-foreground: hsl(0 0% 100%);
+    --info: hsl(198.4 93.2% 59.6%);
+    --info-foreground: hsl(0 0% 100%);
 }
 
 @theme inline {
@@ -455,10 +457,6 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-  --color-info: var(--info);
-  --color-info-foreground: var(--info-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -504,6 +502,12 @@
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 
   --animate-scale: scale 0.3s ease-in-out;
+
+  /* CUSTOM_VARIABLES */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
 
   @keyframes scale {
     0% { transform: scale(1,1); }
