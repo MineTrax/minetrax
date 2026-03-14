@@ -254,7 +254,7 @@ export default{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* Use semantic foreground color */
-    color: hsl(var(--foreground));
+    color: var(--foreground);
 }
 
 .vue-poll .noselect {
@@ -283,7 +283,7 @@ export default{
 .vue-poll .ans-cnt .ans-no-vote{
     text-align: center;
     /* Primary colored border */
-    border: 1px solid hsl(var(--border));
+    border: 1px solid var(--border);
     box-sizing: border-box;
     border-radius: var(--radius);
     cursor:pointer;
@@ -295,19 +295,19 @@ export default{
 
 .vue-poll .ans-cnt .ans-no-vote .txt{
     /* Primary text color */
-    color: hsl(var(--card-foreground));
+    color: var(--card-foreground);
     transition: color .2s ease-in-out;
     -webkit-transition: color .2s ease-in-out;
     -moz-transition: color .2s ease-in-out;
 }
 
 .vue-poll .ans-cnt .ans-no-vote.active{
-    background: hsl(var(--primary));
+    background: var(--primary);
 }
 
 .vue-poll .ans-cnt .ans-no-vote.active .txt{
     /* Ensure readable text when active */
-    color: hsl(var(--primary-foreground));
+    color: var(--primary-foreground);
 }
 
 .vue-poll .ans-cnt .ans-voted{
@@ -347,12 +347,12 @@ export default{
 }
 
 .vue-poll .ans-cnt .ans .bg.selected{
-    background-color: hsl(var(--primary));
+    background-color: var(--primary);
 }
 
 .vue-poll .votes{
     font-size: 14px;
-    color: hsl(var(--muted-foreground));
+    color: var(--muted-foreground);
 }
 
 .vue-poll .submit{
@@ -361,8 +361,8 @@ export default{
     margin: 0 auto;
     max-width: 80px;
     text-decoration: none;
-    background-color: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    background-color: var(--primary);
+    color: var(--primary-foreground);
     padding: 10px 25px;
     border-radius: var(--radius);
 

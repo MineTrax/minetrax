@@ -13,7 +13,7 @@
                 <!-- Enhanced notification badge with glow and bounce -->
                 <div v-if="unreadCount > 0"
                     class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-destructive-foreground bg-destructive border-2 border-background rounded-full -top-2 -end-2 cursor-pointer animate-bounce shadow-lg"
-                    style="animation-duration: 2s; box-shadow: 0 0 10px hsl(var(--destructive) / 0.6);">
+                    style="animation-duration: 2s; box-shadow: 0 0 10px color-mix(in srgb, var(--destructive) 60%, transparent);">
                     {{ unreadCount }}
                 </div>
 

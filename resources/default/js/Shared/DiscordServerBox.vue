@@ -375,9 +375,9 @@ export default {
 .loading-spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid hsl(var(--muted));
+  border: 3px solid var(--muted);
   border-radius: 50%;
-  border-top-color: hsl(var(--primary));
+  border-top-color: var(--primary);
   animation: spin 1s ease-in-out infinite;
   margin: 0 auto 16px;
 }
@@ -388,7 +388,7 @@ export default {
 
 .loading-text {
   margin: 0;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-size: 14px;
 }
 
@@ -399,14 +399,14 @@ export default {
 
 .error-text {
   margin: 0 0 16px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-size: 14px;
 }
 
 .retry-button {
-  background: hsl(var(--primary));
+  background: var(--primary);
   border: none;
-  color: hsl(var(--primary-foreground));
+  color: var(--primary-foreground);
   padding: 8px 16px;
   border-radius: var(--radius);
   cursor: pointer;
@@ -415,16 +415,16 @@ export default {
 }
 
 .retry-button:hover {
-  background: hsl(var(--primary) / 0.9);
+  background: color-mix(in srgb, var(--primary) 90%, transparent);
 }
 
 .discord-header {
-  background: hsl(var(--card));
+  background: var(--card);
   padding: 12px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid hsl(var(--border));
+  border-bottom: 1px solid var(--border);
   border-radius: var(--radius) var(--radius) 0 0;
 }
 
@@ -437,12 +437,12 @@ export default {
 .server-icon {
   width: 40px;
   height: 40px;
-  background: hsl(var(--primary));
+  background: var(--primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: hsl(var(--primary-foreground));
+  color: var(--primary-foreground);
   shrink: 0;
 }
 
@@ -466,19 +466,19 @@ export default {
   margin: 0 0 2px;
   font-size: 15px;
   font-weight: 600;
-  color: hsl(var(--card-foreground));
+  color: var(--card-foreground);
   line-height: 1.2;
 }
 
 .member-count {
   margin: 0;
   font-size: 13px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
 }
 
 .channels-section {
   padding: 12px 16px;
-  border-bottom: 1px solid hsl(var(--border));
+  border-bottom: 1px solid var(--border);
 }
 
 .section-title {
@@ -487,7 +487,7 @@ export default {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -518,13 +518,13 @@ export default {
   padding: 6px 8px;
   border-radius: var(--radius);
   font-size: 13px;
-  color: hsl(var(--card-foreground));
+  color: var(--card-foreground);
   transition: background-color 0.2s ease;
-  background: hsl(var(--muted) / 0.3);
+  background: color-mix(in srgb, var(--muted) 30%, transparent);
 }
 
 .channel-item:hover {
-  background: hsl(var(--muted) / 0.5);
+  background: color-mix(in srgb, var(--muted) 50%, transparent);
 }
 
 .channel-indicator {
@@ -537,12 +537,12 @@ export default {
 }
 
 .channel-icon {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   shrink: 0;
 }
 
 .channel-name {
-  color: hsl(var(--card-foreground));
+  color: var(--card-foreground);
   font-weight: 500;
 }
 
@@ -550,10 +550,10 @@ export default {
 .more-members {
   padding: 4px 8px;
   font-size: 11px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   text-align: left;
   margin-top: 4px;
-  background: hsl(var(--muted) / 0.2);
+  background: color-mix(in srgb, var(--muted) 20%, transparent);
   border-radius: var(--radius);
 }
 
@@ -564,7 +564,7 @@ export default {
 
 .members-section {
   padding: 12px 16px;
-  border-bottom: 1px solid hsl(var(--border));
+  border-bottom: 1px solid var(--border);
 }
 
 .members-section:last-child {
@@ -584,11 +584,11 @@ export default {
   padding: 4px 8px;
   border-radius: var(--radius);
   transition: background-color 0.2s ease;
-  background: hsl(var(--muted) / 0.2);
+  background: color-mix(in srgb, var(--muted) 20%, transparent);
 }
 
 .member-item:hover {
-  background: hsl(var(--muted) / 0.4);
+  background: color-mix(in srgb, var(--muted) 40%, transparent);
 }
 
 .member-avatar {
@@ -605,13 +605,13 @@ export default {
 }
 
 .avatar-placeholder {
-  background: hsl(var(--accent));
+  background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
-  color: hsl(var(--accent-foreground));
+  color: var(--accent-foreground);
 }
 
 .status-indicator {
@@ -621,7 +621,7 @@ export default {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 2px solid hsl(var(--card));
+  border: 2px solid var(--card);
 }
 
 .status-indicator.online {
@@ -644,7 +644,7 @@ export default {
 .member-name {
   font-size: 13px;
   font-weight: 500;
-  color: hsl(var(--card-foreground));
+  color: var(--card-foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -653,7 +653,7 @@ export default {
 
 .member-activity {
   font-size: 11px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -664,8 +664,8 @@ export default {
 
 .join-section {
   padding: 12px 16px;
-  border-top: 1px solid hsl(var(--border));
-  background: hsl(var(--muted) / 0.2);
+  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--muted) 20%, transparent);
 }
 
 /* Custom scrollbar for members container */
@@ -674,16 +674,16 @@ export default {
 }
 
 .members-container::-webkit-scrollbar-track {
-  background: hsl(var(--muted) / 0.2);
+  background: color-mix(in srgb, var(--muted) 20%, transparent);
 }
 
 .members-container::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
+  background: color-mix(in srgb, var(--muted-foreground) 30%, transparent);
   border-radius: var(--radius);
 }
 
 .members-container::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: color-mix(in srgb, var(--muted-foreground) 50%, transparent);
 }
 
 /* Responsive Design */
@@ -714,16 +714,16 @@ export default {
   padding: 2px 6px;
   border-radius: var(--radius);
   font-size: 12px;
-  background: hsl(var(--muted) / 0.1);
+  background: color-mix(in srgb, var(--muted) 10%, transparent);
   transition: background-color 0.2s ease;
 }
 
 .voice-member:hover {
-  background: hsl(var(--muted) / 0.2);
+  background: color-mix(in srgb, var(--muted) 20%, transparent);
 }
 
 .voice-member-name {
-  color: hsl(var(--card-foreground));
+  color: var(--card-foreground);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;

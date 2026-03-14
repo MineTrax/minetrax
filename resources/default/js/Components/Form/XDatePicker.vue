@@ -133,71 +133,71 @@ defineExpose({
 
 /* Style the calendar popup to match the current theme */
 :deep(.mx-datepicker-popup) {
-    border: 1px solid hsl(var(--border)) !important;
+    border: 1px solid var(--border) !important;
     border-radius: 0.375rem !important;
-    background: hsl(var(--background)) !important;
-    color: hsl(var(--foreground)) !important;
+    background: var(--background) !important;
+    color: var(--foreground) !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
 
 /* Style the calendar header */
 :deep(.mx-calendar-header) {
-    background: hsl(var(--muted)) !important;
-    color: hsl(var(--foreground)) !important;
-    border-bottom: 1px solid hsl(var(--border)) !important;
+    background: var(--muted) !important;
+    color: var(--foreground) !important;
+    border-bottom: 1px solid var(--border) !important;
 }
 
 /* Style the calendar navigation buttons */
 :deep(.mx-btn) {
     background: transparent !important;
-    color: hsl(var(--foreground)) !important;
-    border: 1px solid hsl(var(--border)) !important;
+    color: var(--foreground) !important;
+    border: 1px solid var(--border) !important;
     border-radius: 0.375rem !important;
     transition: all 0.2s !important;
 }
 
 :deep(.mx-btn:hover) {
-    background: hsl(var(--accent)) !important;
-    color: hsl(var(--accent-foreground)) !important;
+    background: var(--accent) !important;
+    color: var(--accent-foreground) !important;
 }
 
 /* Style the calendar cells */
 :deep(.mx-calendar-content .cell) {
-    color: hsl(var(--foreground)) !important;
+    color: var(--foreground) !important;
     border-radius: 0.375rem !important;
     transition: all 0.2s !important;
 }
 
 :deep(.mx-calendar-content .cell:hover) {
-    background: hsl(var(--accent)) !important;
-    color: hsl(var(--accent-foreground)) !important;
+    background: var(--accent) !important;
+    color: var(--accent-foreground) !important;
 }
 
 :deep(.mx-calendar-content .cell.active) {
-    background: hsl(var(--primary)) !important;
-    color: hsl(var(--primary-foreground)) !important;
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
 }
 
 :deep(.mx-calendar-content .cell.in-range) {
-    background: hsl(var(--muted)) !important;
-    color: hsl(var(--foreground)) !important;
+    background: var(--muted) !important;
+    color: var(--foreground) !important;
 }
 
 :deep(.mx-calendar-content .cell.disabled) {
-    color: hsl(var(--muted-foreground)) !important;
+    color: var(--muted-foreground) !important;
     opacity: 0.5 !important;
 }
 
 /* Style the today cell */
 :deep(.mx-calendar-content .cell.today) {
-    background: hsl(var(--secondary)) !important;
-    color: hsl(var(--secondary-foreground)) !important;
+    background: var(--secondary) !important;
+    color: var(--secondary-foreground) !important;
     font-weight: 500 !important;
 }
 
 /* Style month/year selectors */
 :deep(.mx-calendar-header-label) {
-    color: hsl(var(--foreground)) !important;
+    color: var(--foreground) !important;
     font-weight: 500 !important;
 }
 
@@ -209,22 +209,22 @@ defineExpose({
 
 /* Style the time picker if needed */
 :deep(.mx-time-header) {
-    background: hsl(var(--muted)) !important;
-    color: hsl(var(--foreground)) !important;
-    border-bottom: 1px solid hsl(var(--border)) !important;
+    background: var(--muted) !important;
+    color: var(--foreground) !important;
+    border-bottom: 1px solid var(--border) !important;
 }
 
 :deep(.mx-time-option) {
-    color: hsl(var(--foreground)) !important;
+    color: var(--foreground) !important;
 }
 
 :deep(.mx-time-option:hover) {
-    background: hsl(var(--accent)) !important;
-    color: hsl(var(--accent-foreground)) !important;
+    background: var(--accent) !important;
+    color: var(--accent-foreground) !important;
 }
 
 :deep(.mx-time-option.active) {
-    background: hsl(var(--primary)) !important;
-    color: hsl(var(--primary-foreground)) !important;
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
 }
 </style>
