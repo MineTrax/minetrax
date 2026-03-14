@@ -1,22 +1,22 @@
 <script setup>
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import Draggable from 'vuedraggable';
-import Icon from '@/Components/Icon.vue';
-import { useTranslations } from '@/Composables/useTranslations';
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import XTextarea from "@/Components/Form/XTextarea.vue";
+import Icon from "@/Components/Icon.vue";
+import { Button } from "@/Components/ui/button";
+import { useTranslations } from "@/Composables/useTranslations";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
+import Draggable from "vuedraggable";
 
 const { __ } = useTranslations();
 
 const footerStyleList = [
-    'variant_2',
-    'variant_1',
+    "variant_2",
+    "variant_1",
 ];
 
 const props = defineProps({
@@ -27,15 +27,15 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Settings'),
+        text: __("Settings"),
         current: false,
     },
     {
-        text: __('Navigation Settings'),
+        text: __("Navigation Settings"),
         current: true,
     }
 ];
@@ -117,7 +117,7 @@ function saveSetting() {
 
     form.custom_footer_data = customFooterData.value;
 
-    form.post(route('admin.setting.navigation.update'), {
+    form.post(route("admin.setting.navigation.update"), {
         preserveScroll: true,
         onSuccess: () => {
             location.reload();
@@ -129,7 +129,7 @@ function cloneNavItem(item) {
     let clone = JSON.parse(JSON.stringify(item));
     return {
         ...clone,
-        key: item.key + '-' + Math.random(),
+        key: item.key + "-" + Math.random(),
     };
 }
 
@@ -231,7 +231,9 @@ function removeNavItem(idx, list) {
                                 <p class="text-xs text-muted-foreground">
                                   {{ element.type }}
                                 </p>
-                                <p class="text-sm">{{ element.name }}</p>
+                                <p class="text-sm">
+                                  {{ element.name }}
+                                </p>
                                 <XInput
                                   v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
                                   v-model="element.title"
@@ -299,7 +301,9 @@ function removeNavItem(idx, list) {
                                 <p class="text-xs text-muted-foreground">
                                   {{ element.type }}
                                 </p>
-                                <p class="text-sm">{{ element.name }}</p>
+                                <p class="text-sm">
+                                  {{ element.name }}
+                                </p>
                                 <XInput
                                   v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
                                   v-model="element.title"
@@ -367,7 +371,9 @@ function removeNavItem(idx, list) {
                                 <p class="text-xs text-muted-foreground">
                                   {{ element.type }}
                                 </p>
-                                <p class="text-sm">{{ element.name }}</p>
+                                <p class="text-sm">
+                                  {{ element.name }}
+                                </p>
                                 <XInput
                                   v-if="['custom-page', 'route', 'dropdown', 'download', 'recruitment'].includes(element.type)"
                                   v-model="element.title"

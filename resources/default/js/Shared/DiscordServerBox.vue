@@ -1,26 +1,54 @@
 <template>
-  <div v-if="enabled && server" class="discord-widget w-full rounded-xl border bg-card text-card-foreground shadow">
+  <div
+    v-if="enabled && server"
+    class="discord-widget w-full rounded-xl border bg-card text-card-foreground shadow"
+  >
     <!-- Loading State -->
-    <div v-if="loading" class="discord-widget-loading">
-      <div class="loading-spinner"></div>
-      <p class="loading-text">{{ __("Loading Discord server...") }}</p>
+    <div
+      v-if="loading"
+      class="discord-widget-loading"
+    >
+      <div class="loading-spinner" />
+      <p class="loading-text">
+        {{ __("Loading Discord server...") }}
+      </p>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="discord-widget-error">
-      <div class="error-icon">⚠️</div>
-      <p class="error-text">{{ error }}</p>
-      <button @click="fetchDiscordData" class="retry-button">{{ __("Retry") }}</button>
+    <div
+      v-else-if="error"
+      class="discord-widget-error"
+    >
+      <div class="error-icon">
+        ⚠️
+      </div>
+      <p class="error-text">
+        {{ error }}
+      </p>
+      <button
+        class="retry-button"
+        @click="fetchDiscordData"
+      >
+        {{ __("Retry") }}
+      </button>
     </div>
 
     <!-- Success State -->
-    <div v-else-if="discordData" class="discord-widget-content">
+    <div
+      v-else-if="discordData"
+      class="discord-widget-content"
+    >
       <!-- Server Header -->
       <div class="discord-header">
         <div class="server-info">
           <div class="server-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419-.0190 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1568 2.4189Z"/>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419-.0190 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1568 2.4189Z" />
             </svg>
           </div>
           <div class="server-details">
@@ -33,18 +61,33 @@
             >
               <h3 class="server-name">{{ discordData.name }}</h3>
             </a>
-            <h3 v-else class="server-name">{{ discordData.name }}</h3>
-            <p class="member-count">{{ __(":count members online", { count: discordData.presence_count }) }}</p>
+            <h3
+              v-else
+              class="server-name"
+            >
+              {{ discordData.name }}
+            </h3>
+            <p class="member-count">
+              {{ __(":count members online", { count: discordData.presence_count }) }}
+            </p>
           </div>
         </div>
       </div>
 
       <!-- Voice Channels -->
-      <div v-if="voiceChannels.length > 0" class="channels-section">
+      <div
+        v-if="voiceChannels.length > 0"
+        class="channels-section"
+      >
         <h4 class="section-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
           </svg>
           {{ __("VOICE CHANNELS") }} — {{ voiceChannels.length }}
         </h4>
@@ -54,11 +97,16 @@
             :key="channel.id"
             class="channel-item"
           >
-            <div class="channel-indicator"></div>
+            <div class="channel-indicator" />
             <div class="channel-content">
-              <div class="channel-name">{{ channel.name }}</div>
+              <div class="channel-name">
+                {{ channel.name }}
+              </div>
               <!-- Members in this voice channel -->
-              <div v-if="getMembersInChannel(channel.id).length > 0" class="voice-members">
+              <div
+                v-if="getMembersInChannel(channel.id).length > 0"
+                class="voice-members"
+              >
                 <div
                   v-for="member in getMembersInChannel(channel.id)"
                   :key="member.id"
@@ -71,18 +119,24 @@
                       :alt="member.username"
                       loading="lazy"
                       @error="handleImageError"
-                    />
-                    <div v-else class="avatar-placeholder small">
+                    >
+                    <div
+                      v-else
+                      class="avatar-placeholder small"
+                    >
                       {{ member.username.charAt(0).toUpperCase() }}
                     </div>
-                    <div :class="['status-indicator', 'small', member.status]"></div>
+                    <div :class="['status-indicator', 'small', member.status]" />
                   </div>
                   <span class="voice-member-name">{{ member.username }}</span>
                 </div>
               </div>
             </div>
           </div>
-          <div v-if="voiceChannels.length > 4" class="more-channels">
+          <div
+            v-if="voiceChannels.length > 4"
+            class="more-channels"
+          >
             {{ __("+:count more channels", { count: voiceChannels.length - 4 }) }}
           </div>
         </div>
@@ -91,10 +145,22 @@
       <!-- Members Section -->
       <div class="members-container">
         <!-- Online Members -->
-        <div v-if="onlineMembers.length > 0" class="members-section">
+        <div
+          v-if="onlineMembers.length > 0"
+          class="members-section"
+        >
           <h4 class="section-title online">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="12" r="10"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
             </svg>
             {{ __("ONLINE") }}
           </h4>
@@ -111,34 +177,66 @@
                   :alt="member.username"
                   loading="lazy"
                   @error="handleImageError"
-                />
-                <div v-else class="avatar-placeholder">
+                >
+                <div
+                  v-else
+                  class="avatar-placeholder"
+                >
                   {{ member.username.charAt(0).toUpperCase() }}
                 </div>
-                <div class="status-indicator online"></div>
+                <div class="status-indicator online" />
               </div>
               <div class="member-info">
-                <div class="member-name">{{ member.username }}</div>
-                <div v-if="member.game" class="member-activity">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="12" cy="12" r="3"/>
+                <div class="member-name">
+                  {{ member.username }}
+                </div>
+                <div
+                  v-if="member.game"
+                  class="member-activity"
+                >
+                  <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    />
                   </svg>
                   {{ member.game.name }}
                 </div>
               </div>
             </div>
           </div>
-          <div v-if="onlineMembers.length > 8" class="more-members">
+          <div
+            v-if="onlineMembers.length > 8"
+            class="more-members"
+          >
             {{ __("and more...") }}
           </div>
         </div>
 
         <!-- Idle Members -->
-        <div v-if="idleMembers.length > 0" class="members-section">
+        <div
+          v-if="idleMembers.length > 0"
+          class="members-section"
+        >
           <h4 class="section-title idle">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 6v6l4 2"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <path d="M12 6v6l4 2" />
             </svg>
             {{ __("IDLE") }}
           </h4>
@@ -155,34 +253,66 @@
                   :alt="member.username"
                   loading="lazy"
                   @error="handleImageError"
-                />
-                <div v-else class="avatar-placeholder">
+                >
+                <div
+                  v-else
+                  class="avatar-placeholder"
+                >
                   {{ member.username.charAt(0).toUpperCase() }}
                 </div>
-                <div class="status-indicator idle"></div>
+                <div class="status-indicator idle" />
               </div>
               <div class="member-info">
-                <div class="member-name">{{ member.username }}</div>
-                <div v-if="member.game" class="member-activity">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="12" cy="12" r="3"/>
+                <div class="member-name">
+                  {{ member.username }}
+                </div>
+                <div
+                  v-if="member.game"
+                  class="member-activity"
+                >
+                  <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    />
                   </svg>
                   {{ member.game.name }}
                 </div>
               </div>
             </div>
           </div>
-          <div v-if="idleMembers.length > 6" class="more-members">
+          <div
+            v-if="idleMembers.length > 6"
+            class="more-members"
+          >
             {{ __("and more...") }}
           </div>
         </div>
 
         <!-- DND Members -->
-        <div v-if="dndMembers.length > 0" class="members-section">
+        <div
+          v-if="dndMembers.length > 0"
+          class="members-section"
+        >
           <h4 class="section-title dnd">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M15 9H9v6h6z"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <path d="M15 9H9v6h6z" />
             </svg>
             {{ __("DO NOT DISTURB") }}
           </h4>
@@ -199,24 +329,44 @@
                   :alt="member.username"
                   loading="lazy"
                   @error="handleImageError"
-                />
-                <div v-else class="avatar-placeholder">
+                >
+                <div
+                  v-else
+                  class="avatar-placeholder"
+                >
                   {{ member.username.charAt(0).toUpperCase() }}
                 </div>
-                <div class="status-indicator dnd"></div>
+                <div class="status-indicator dnd" />
               </div>
               <div class="member-info">
-                <div class="member-name">{{ member.username }}</div>
-                <div v-if="member.game" class="member-activity">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="12" cy="12" r="3"/>
+                <div class="member-name">
+                  {{ member.username }}
+                </div>
+                <div
+                  v-if="member.game"
+                  class="member-activity"
+                >
+                  <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    />
                   </svg>
                   {{ member.game.name }}
                 </div>
               </div>
             </div>
           </div>
-          <div v-if="dndMembers.length > 6" class="more-members">
+          <div
+            v-if="dndMembers.length > 6"
+            class="more-members"
+          >
             {{ __("and more...") }}
           </div>
         </div>
@@ -225,8 +375,8 @@
       <!-- Join Button at Bottom -->
       <div class="join-section">
         <Button
-          as="a"
           v-if="invite || discordData.instant_invite"
+          as="a"
           :href="invite || discordData.instant_invite"
           target="_blank"
           rel="noopener noreferrer"
@@ -235,8 +385,13 @@
           class="w-full"
         >
           {{ __("Join Discord") }}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
           </svg>
         </Button>
       </div>
@@ -245,7 +400,7 @@
 </template>
 
 <script>
-import { Button } from '@/Components/ui/button'
+import { Button } from "@/Components/ui/button";
 
 export default {
     components: {
@@ -258,106 +413,105 @@ export default {
     },
     data() {
         return {
-      colorMode: window.colorMode,
-      loading: false,
-      error: null,
-      discordData: null,
-      refreshInterval: null
-    }
-  },
-  computed: {
-    voiceChannels() {
-      if (!this.discordData?.channels) return []
-      return this.discordData.channels
-        .filter(channel => channel.name.includes('🎙') || channel.name.includes('voice') || channel.name.includes('vc'))
-        .sort((a, b) => a.position - b.position)
+            colorMode: window.colorMode,
+            loading: false,
+            error: null,
+            discordData: null,
+            refreshInterval: null
+        };
     },
-    onlineMembers() {
-      if (!this.discordData?.members) return []
-      return this.discordData.members.filter(member => member.status === 'online' && !member.channel_id)
-    },
-    idleMembers() {
-      if (!this.discordData?.members) return []
-      return this.discordData.members.filter(member => member.status === 'idle' && !member.channel_id)
-    },
-    dndMembers() {
-      if (!this.discordData?.members) return []
-      return this.discordData.members.filter(member => member.status === 'dnd' && !member.channel_id)
-    }
-  },
-  mounted() {
-    if (this.enabled && this.server) {
-      this.fetchDiscordData()
-      // Refresh data every 30 seconds
-      this.refreshInterval = setInterval(() => {
-        this.fetchDiscordData(true)
-      }, 30000)
-    }
-  },
-  beforeUnmount() {
-    if (this.refreshInterval) {
-      clearInterval(this.refreshInterval)
-    }
-  },
-  methods: {
-    async fetchDiscordData(silent = false) {
-      if (!silent) {
-        this.loading = true
-        this.error = null
-      }
-
-      try {
-        const response = await fetch(`https://discord.com/api/guilds/${this.server}/widget.json`)
-
-        if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error('Discord server not found or widget not enabled')
-          } else if (response.status === 403) {
-            throw new Error('Discord server widget is disabled')
-          } else {
-            throw new Error(`Discord API error: ${response.status} ${response.statusText}`)
-          }
+    computed: {
+        voiceChannels() {
+            if (!this.discordData?.channels) return [];
+            return this.discordData.channels
+                .filter(channel => channel.name.includes("🎙") || channel.name.includes("voice") || channel.name.includes("vc"))
+                .sort((a, b) => a.position - b.position);
+        },
+        onlineMembers() {
+            if (!this.discordData?.members) return [];
+            return this.discordData.members.filter(member => member.status === "online" && !member.channel_id);
+        },
+        idleMembers() {
+            if (!this.discordData?.members) return [];
+            return this.discordData.members.filter(member => member.status === "idle" && !member.channel_id);
+        },
+        dndMembers() {
+            if (!this.discordData?.members) return [];
+            return this.discordData.members.filter(member => member.status === "dnd" && !member.channel_id);
         }
-
-        const data = await response.json()
-
-        if (!data || typeof data !== 'object') {
-          throw new Error('Invalid response from Discord API')
-        }
-
-        this.discordData = data
-        this.error = null
-      } catch (err) {
-        console.error('Error fetching Discord data:', err)
-
-        if (err.name === 'TypeError' && err.message.includes('fetch')) {
-          this.error = 'Network error: Unable to connect to Discord'
-        } else if (err.name === 'SyntaxError') {
-          this.error = 'Invalid response from Discord API'
-        } else {
-          this.error = err.message || 'Failed to load Discord server'
-        }
-
-        this.discordData = null
-      } finally {
-        this.loading = false
-      }
     },
-    getMembersInChannel(channelId) {
-      if (!this.discordData?.members) return []
-      return this.discordData.members.filter(member => member.channel_id === channelId)
+    mounted() {
+        if (this.enabled && this.server) {
+            this.fetchDiscordData();
+            // Refresh data every 30 seconds
+            this.refreshInterval = setInterval(() => {
+                this.fetchDiscordData(true);
+            }, 30000);
+        }
     },
-    handleImageError(event) {
-      // Hide broken images
-      event.target.style.display = 'none'
+    beforeUnmount() {
+        if (this.refreshInterval) {
+            clearInterval(this.refreshInterval);
+        }
+    },
+    methods: {
+        async fetchDiscordData(silent = false) {
+            if (!silent) {
+                this.loading = true;
+                this.error = null;
+            }
+
+            try {
+                const response = await fetch(`https://discord.com/api/guilds/${this.server}/widget.json`);
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error("Discord server not found or widget not enabled");
+                    } else if (response.status === 403) {
+                        throw new Error("Discord server widget is disabled");
+                    } else {
+                        throw new Error(`Discord API error: ${response.status} ${response.statusText}`);
+                    }
+                }
+
+                const data = await response.json();
+
+                if (!data || typeof data !== "object") {
+                    throw new Error("Invalid response from Discord API");
+                }
+
+                this.discordData = data;
+                this.error = null;
+            } catch (err) {
+                console.error("Error fetching Discord data:", err);
+
+                if (err.name === "TypeError" && err.message.includes("fetch")) {
+                    this.error = "Network error: Unable to connect to Discord";
+                } else if (err.name === "SyntaxError") {
+                    this.error = "Invalid response from Discord API";
+                } else {
+                    this.error = err.message || "Failed to load Discord server";
+                }
+
+                this.discordData = null;
+            } finally {
+                this.loading = false;
+            }
+        },
+        getMembersInChannel(channelId) {
+            if (!this.discordData?.members) return [];
+            return this.discordData.members.filter(member => member.channel_id === channelId);
+        },
+        handleImageError(event) {
+            // Hide broken images
+            event.target.style.display = "none";
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>
 .discord-widget {
-  margin: 0 auto;
   overflow: hidden;
   font-family: var(--font-sans);
 }

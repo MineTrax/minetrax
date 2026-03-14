@@ -1,37 +1,35 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { useForm } from '@inertiajs/vue3';
-import { router } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import ImageUpload from '@/Components/Form/ImageUpload.vue';
+import ImageUpload from "@/Components/Form/ImageUpload.vue";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import XTextarea from "@/Components/Form/XTextarea.vue";
+import { Button } from "@/Components/ui/button";
+import { useTranslations } from "@/Composables/useTranslations";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { useForm } from "@inertiajs/vue3";
 
 const { __ } = useTranslations();
 
 const props = defineProps({
     settings: Object,
     colorSchemeList: Object,
-    fontList: Object,
     isVideoHomeHeroBgImagePathLight: Boolean,
     isVideoHomeHeroBgImagePathDark: Boolean,
 });
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Settings'),
+        text: __("Settings"),
         current: false,
     },
     {
-        text: __('Theme Settings'),
+        text: __("Theme Settings"),
         current: true,
     }
 ];
@@ -39,7 +37,6 @@ const breadcrumbItems = [
 const form = useForm({
     color_mode: props.settings.color_mode,
     color_scheme: props.settings.color_scheme,
-    primary_font: props.settings.primary_font,
     enable_home_hero_section: props.settings.enable_home_hero_section,
     home_hero_bg_size_css: props.settings.home_hero_bg_size_css,
     home_hero_bg_position_css: props.settings.home_hero_bg_position_css,
@@ -59,58 +56,54 @@ const form = useForm({
 });
 
 const backgroundPositionList = [
-    'left top',
-    'left center',
-    'left bottom',
-    'right top',
-    'right center',
-    'right bottom',
-    'center top',
-    'center center',
-    'center bottom',
+    "left top",
+    "left center",
+    "left bottom",
+    "right top",
+    "right center",
+    "right bottom",
+    "center top",
+    "center center",
+    "center bottom",
 ];
 
 const backgroundRepeatList = [
-    'no-repeat',
-    'repeat',
-    'repeat-x',
-    'repeat-y',
-    'space',
-    'round',
+    "no-repeat",
+    "repeat",
+    "repeat-x",
+    "repeat-y",
+    "space",
+    "round",
 ];
 
 const backgroundSizeList = [
-    'none',
-    'fill',
-    'auto',
-    'contain',
-    'cover',
+    "none",
+    "fill",
+    "auto",
+    "contain",
+    "cover",
 ];
 
 const backgroundAttachmentList = [
-    'scroll',
-    'fixed',
-    'local',
+    "scroll",
+    "fixed",
+    "local",
 ];
 
 function removeLoadingGif() {
     form.reset();
     form.loading_gif = null;
     form.remove_loading_gif = true;
-    form.post(route('admin.setting.theme.update'), {
+    form.post(route("admin.setting.theme.update"), {
         preserveScroll: true,
     });
 }
 
 function saveThemeSetting() {
-    form.post(route('admin.setting.theme.update'), {
+    form.post(route("admin.setting.theme.update"), {
         preserveScroll: true,
         onSuccess: () => {
-            router.get(route('admin.setting.theme.show'), {}, {
-                preserveState: false,
-                preserveScroll: true,
-                replace: true,
-            });
+            location.reload();
         }
     });
 }
@@ -141,19 +134,6 @@ function saveThemeSetting() {
                 <div class="col-span-6">
                   <fieldset>
                     <div class="grid grid-cols-6 gap-4">
-                      <div class="col-span-6">
-                        <XSelect
-                          id="color_mode"
-                          v-model="form.color_mode"
-                          name="color_mode"
-                          :error="form.errors.color_mode"
-                          :label="__('Default Color Mode')"
-                          :placeholder="__('Select default color mode..')"
-                          :disable-null="true"
-                          :select-list="{ dark: __('Dark'), light: __('Light') }"
-                        />
-                      </div>
-
                       <div class="col-span-6 sm:col-span-3">
                         <XSelect
                           id="color_scheme"
@@ -169,14 +149,14 @@ function saveThemeSetting() {
 
                       <div class="col-span-6 sm:col-span-3">
                         <XSelect
-                          id="primary_font"
-                          v-model="form.primary_font"
-                          name="primary_font"
-                          :error="form.errors.primary_font"
-                          :label="__('Font Family')"
-                          :placeholder="__('Select font family..')"
+                          id="color_mode"
+                          v-model="form.color_mode"
+                          name="color_mode"
+                          :error="form.errors.color_mode"
+                          :label="__('Default Color Mode')"
+                          :placeholder="__('Select default color mode..')"
                           :disable-null="true"
-                          :select-list="fontList"
+                          :select-list="{ dark: __('Dark'), light: __('Light') }"
                         />
                       </div>
                     </div>
@@ -202,9 +182,9 @@ function saveThemeSetting() {
                           <div class="col-span-6 sm:col-span-3">
                             <ImageUpload
                               id="home_hero_fg_image_light"
+                              v-model="form.home_hero_fg_image_light"
                               name="home_hero_fg_image_light"
                               :label="__('Hero Foreground Image Light')"
-                              v-model="form.home_hero_fg_image_light"
                               :current-url="settings.home_hero_fg_image_path_light"
                               :error="form.errors.home_hero_fg_image_light"
                               :removable="false"
@@ -221,9 +201,9 @@ function saveThemeSetting() {
                           <div class="col-span-6 sm:col-span-3">
                             <ImageUpload
                               id="home_hero_fg_image_dark"
+                              v-model="form.home_hero_fg_image_dark"
                               name="home_hero_fg_image_dark"
                               :label="__('Hero Foreground Image Dark')"
-                              v-model="form.home_hero_fg_image_dark"
                               :current-url="settings.home_hero_fg_image_path_dark"
                               :error="form.errors.home_hero_fg_image_dark"
                               :removable="false"
@@ -243,9 +223,9 @@ function saveThemeSetting() {
                           <div class="col-span-6 sm:col-span-3">
                             <ImageUpload
                               id="home_hero_bg_image_light"
+                              v-model="form.home_hero_bg_image_light"
                               name="home_hero_bg_image_light"
                               :label="__('Hero Background Image Light')"
-                              v-model="form.home_hero_bg_image_light"
                               :current-url="settings.home_hero_bg_image_path_light"
                               :error="form.errors.home_hero_bg_image_light"
                               :removable="false"
@@ -262,9 +242,9 @@ function saveThemeSetting() {
                           <div class="col-span-6 sm:col-span-3">
                             <ImageUpload
                               id="home_hero_bg_image_dark"
+                              v-model="form.home_hero_bg_image_dark"
                               name="home_hero_bg_image_dark"
                               :label="__('Hero Background Image Dark')"
-                              v-model="form.home_hero_bg_image_dark"
                               :current-url="settings.home_hero_bg_image_path_dark"
                               :error="form.errors.home_hero_bg_image_dark"
                               :removable="false"
@@ -398,9 +378,9 @@ function saveThemeSetting() {
                     <div class="space-y-4">
                       <ImageUpload
                         id="loading_gif"
+                        v-model="form.loading_gif"
                         name="loading_gif"
                         :label="__('Animated Loader')"
-                        v-model="form.loading_gif"
                         :current-url="settings.loading_gif"
                         :error="form.errors.loading_gif"
                         :removable="!!settings.loading_gif"
