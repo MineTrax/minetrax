@@ -1,14 +1,14 @@
 <script setup>
-import {provide} from 'vue';
-import VChart, {THEME_KEY} from 'vue-echarts';
-import * as echarts from 'echarts';
-import darkmineTheme from '@/Components/Dashboard/darkmineTheme';
-import lightmineTheme from '@/Components/Dashboard/lightmineTheme';
-import wordMap from '@/Data/Maps/world.json';
+import darkmineTheme from "@/Components/Dashboard/darkmineTheme";
+import lightmineTheme from "@/Components/Dashboard/lightmineTheme";
+import wordMap from "@/Data/Maps/world.json";
+import * as echarts from "echarts";
+import { provide } from "vue";
+import VChart, { THEME_KEY } from "vue-echarts";
 
-echarts.registerTheme('darkmine', darkmineTheme);
-echarts.registerTheme('lightmine', lightmineTheme);
-echarts.registerMap('world', wordMap);
+echarts.registerTheme("darkmine", darkmineTheme);
+echarts.registerTheme("lightmine", lightmineTheme);
+echarts.registerMap("world", wordMap);
 
 defineProps({
     options: {
@@ -21,24 +21,24 @@ defineProps({
     },
     height: {
         type: String,
-        default: '500px'
+        default: "500px"
     },
 });
 
-if (window.colorMode === 'dark') {
-    provide(THEME_KEY, 'darkmine');
+if (window.colorMode === "dark") {
+    provide(THEME_KEY, "darkmine");
 } else {
-    provide(THEME_KEY, 'lightmine');
+    provide(THEME_KEY, "lightmine");
 }
 
 // Get CSS custom properties for dynamic theming
 // Resolves to hex for ECharts compatibility (modern CSS hsl syntax is not supported by zrender)
 const getThemeColor = (property) => {
     const raw = getComputedStyle(document.documentElement).getPropertyValue(property).trim();
-    if (!raw || raw.startsWith('#') || raw.startsWith('rgb')) return raw;
+    if (!raw || raw.startsWith("#") || raw.startsWith("rgb")) return raw;
     try {
-        const ctx = document.createElement('canvas').getContext('2d');
-        ctx.fillStyle = '#000000';
+        const ctx = document.createElement("canvas").getContext("2d");
+        ctx.fillStyle = "#000000";
         ctx.fillStyle = raw;
         return ctx.fillStyle;
     } catch {
@@ -47,10 +47,10 @@ const getThemeColor = (property) => {
 };
 
 const loadingOptions = {
-    text: 'Loading...',
-                    color: getThemeColor('--color-primary') || '#00bbff',
-    textColor: window.colorMode === 'dark' ? '#fff' : '#000',
-    maskColor: 'transparent',
+    text: "Loading...",
+    color: getThemeColor("--color-primary") || "#00bbff",
+    textColor: window.colorMode === "dark" ? "#fff" : "#000",
+    maskColor: "transparent",
 };
 </script>
 

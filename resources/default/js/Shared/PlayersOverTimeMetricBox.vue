@@ -19,7 +19,10 @@ onMounted(async () => {
                 return [pt[0], "10%"];
             },
         },
-        legend: {},
+        legend: {
+            top: "2%",
+            left: "center",
+        },
         toolbox: {
             feature: {
                 dataZoom: {
@@ -71,12 +74,17 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Card class="w-full h-full">
-        <CardHeader>
-            <CardTitle>{{ __("Online Players") }}</CardTitle>
-        </CardHeader>
-        <CardContent class="pt-0">
-            <Chart :options="option" height="350px" :loading="isLoading" :autoresize="true" />
-        </CardContent>
-    </Card>
+  <Card class="w-full h-full">
+    <CardHeader>
+      <CardTitle>{{ __("Online Players") }}</CardTitle>
+    </CardHeader>
+    <CardContent class="pt-0">
+      <Chart
+        :options="option"
+        height="350px"
+        :loading="isLoading"
+        :autoresize="true"
+      />
+    </CardContent>
+  </Card>
 </template>

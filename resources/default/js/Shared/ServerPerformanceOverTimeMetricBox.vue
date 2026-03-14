@@ -65,7 +65,10 @@ async function fetchData() {
                 return [pt[0], '10%'];
             },
         },
-        legend: {},
+        legend: {
+            top: '2%',
+            left: 'center',
+        },
         toolbox: {
             feature: {
                 dataZoom: {

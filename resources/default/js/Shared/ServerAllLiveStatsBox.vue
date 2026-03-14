@@ -31,7 +31,10 @@ const options = ref({
     tooltip: {
         trigger: 'axis'
     },
-    legend: {},
+    legend: {
+        top: '2%',
+        left: 'center',
+    },
     series: [
         {
             name: __('Online Players'),
