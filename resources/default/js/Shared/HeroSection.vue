@@ -117,7 +117,7 @@
             </span>
           </div>
           <svg
-            class="w-12 h-12 text-primary shrink-0 ml-3"
+            class="w-11 h-11 text-primary shrink-0 ml-3"
             viewBox="0 0 24 24"
             fill="currentColor"
             xmlns="http://www.w3.org/2000/svg"
