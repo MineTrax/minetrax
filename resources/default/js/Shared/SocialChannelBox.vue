@@ -39,7 +39,7 @@
           :title="__('Twitter')"
           :href="twitter"
           target="_blank"
-          class="inline-block p-2 hover:bg-primary text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
+          class="inline-block p-2 hover:bg-sky-500 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="twitter"
@@ -67,7 +67,7 @@
           :title="__('Facebook')"
           :href="facebook"
           target="_blank"
-          class="inline-block p-2 hover:bg-primary text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
+          class="inline-block p-2 hover:bg-blue-500 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <svg
             class="w-6 h-6 fill-current"
@@ -159,7 +159,7 @@
           :title="__('Discord')"
           :href="discord"
           target="_blank"
-          class="inline-block p-2 hover:bg-primary text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
+          class="inline-block p-2 hover:bg-blue-600 text-card-foreground rounded-lg hover:text-white transition-colors duration-200"
         >
           <icon
             name="discord"
@@ -256,39 +256,39 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import Icon from '@/Components/Icon.vue';
+import Icon from "@/Components/Icon.vue";
 import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
+import { useTranslations } from "@/Composables/useTranslations";
+import { computed } from "vue";
 
 const props = defineProps({
-  enabled: Boolean,
-  showTitle: Boolean,
-  youtube: [String, null],
-  facebook: [String, null],
-  twitter: [String, null],
-  twitch: [String, null],
-  website: [String, null],
-  steam: [String, null],
-  discord: [String, null],
-  tiktok: [String, null],
-  linkedin: [String, null],
-  instagram: [String, null],
-  whatsapp: [String, null],
-  telegram: [String, null],
-  reddit: [String, null],
-  threads: [String, null],
-  github: [String, null],
+    enabled: Boolean,
+    showTitle: Boolean,
+    youtube: [String, null],
+    facebook: [String, null],
+    twitter: [String, null],
+    twitch: [String, null],
+    website: [String, null],
+    steam: [String, null],
+    discord: [String, null],
+    tiktok: [String, null],
+    linkedin: [String, null],
+    instagram: [String, null],
+    whatsapp: [String, null],
+    telegram: [String, null],
+    reddit: [String, null],
+    threads: [String, null],
+    github: [String, null],
 });
 
 const { __ } = useTranslations();
 
 const show = computed(() => {
-  return (
-    !!props.youtube ||
+    return (
+        !!props.youtube ||
     !!props.facebook ||
     !!props.twitter ||
     !!props.twitch ||
@@ -303,6 +303,6 @@ const show = computed(() => {
     !!props.reddit ||
     !!props.threads ||
     !!props.github
-  );
+    );
 });
 </script>

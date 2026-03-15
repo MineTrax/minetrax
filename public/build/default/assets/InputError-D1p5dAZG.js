@@ -1,0 +1,1 @@
+import{i as s,v as t,o as a,d as r,a as o,x as c}from"./app-CADi4RRA.js";const i={class:"text-xs text-destructive"},p={__name:"InputError",props:{message:String},setup(e){return(n,m)=>s((a(),r("div",null,[o("p",i,c(e.message),1)],512)),[[t,e.message]])}};export{p as _};

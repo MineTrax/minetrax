@@ -14,6 +14,9 @@ final class ColorSchemeType extends Enum
     const SKY = 'sky';
     const SAFFRON = 'saffron';
     const CAFFIENE = 'caffeine';
+    const NEO_BRUTALISM = 'neobrutalism';
+    const NOTEBOOK = 'notebook';
+
 
     /**
      * Google Fonts URLs needed for each color scheme.
@@ -34,6 +37,14 @@ final class ColorSchemeType extends Enum
             ],
             self::CAFFIENE => [
                 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+            ],
+            self::NEO_BRUTALISM => [
+                'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap',
+            ],
+            self::NOTEBOOK => [
+                'https://fonts.googleapis.com/css2?family=Architects+Daughter:wght@400;500;600;700&display=swap',
+                'https://fonts.googleapis.com/css2?family=Georgia:wght@400;500;600;700&display=swap',
+                'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap',
             ],
         ];
 
