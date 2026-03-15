@@ -1,5 +1,8 @@
 <template>
-  <div ref="searchContainer" class="relative mx-auto text-foreground">
+  <div
+    ref="searchContainer"
+    class="relative mx-auto text-foreground"
+  >
     <form @submit.prevent="performSearch">
       <input
         ref="searchInput"
@@ -159,10 +162,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
-import Icon from '@/Components/Icon.vue';
-import { debounce } from 'lodash/function';
-import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+import Icon from "@/Components/Icon.vue";
+import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
+import { debounce } from "lodash/function";
+import { nextTick, onMounted, onUnmounted, ref } from "vue";
 
 // Props
 const props = defineProps({
@@ -179,7 +182,7 @@ const searchInput = ref(null);
 // Reactive data
 const showResults = ref(false);
 const loading = ref(false);
-const searchString = ref('');
+const searchString = ref("");
 const usersList = ref([]);
 const playersList = ref([]);
 const isFocused = ref(false);
@@ -193,7 +196,7 @@ const performSearch = debounce(() => {
     showResults.value = true;
     loading.value = true;
 
-    axios.get(route('search', { q: searchString.value }))
+    axios.get(route("search", { q: searchString.value }))
         .then(data => {
             usersList.value = data.data.users;
             playersList.value = data.data.players;
@@ -240,14 +243,14 @@ const handleClickOutside = (e) => {
     // Close dropdown when clicked outside
     if (searchContainer.value && !searchContainer.value.contains(e.target)) {
         showResults.value = false;
-        searchString.value = '';
+        searchString.value = "";
         isFocused.value = false;
     }
 };
 
 // Lifecycle hooks
 onMounted(() => {
-    window.addEventListener('click', handleClickOutside);
+    window.addEventListener("click", handleClickOutside);
 
     // If autofocus is disabled, blur any automatic focus
     if (props.disableAutofocus && searchInput.value) {
@@ -266,7 +269,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    window.removeEventListener('click', handleClickOutside);
+    window.removeEventListener("click", handleClickOutside);
 });
 </script>
 
