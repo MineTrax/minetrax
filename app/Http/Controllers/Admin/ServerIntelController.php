@@ -21,7 +21,7 @@ use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-const RESPONSE_CACHE_SECONDS = 3600; // 1 hour
+const RESPONSE_CACHE_SECONDS_FORINTEL = 3600; // 1 hour
 
 class ServerIntelController extends Controller
 {
@@ -158,7 +158,7 @@ class ServerIntelController extends Controller
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
 
         $selectedServersKey = serialize($selectedServers);
-        $numbers = Cache::remember("server-overview-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS, function () use ($selectedServers) {
+        $numbers = Cache::remember("server-overview-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS_FORINTEL, function () use ($selectedServers) {
             if ($selectedServers) {
                 $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->get();
             } else {
@@ -299,7 +299,7 @@ class ServerIntelController extends Controller
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
 
         $selectedServersKey = serialize($selectedServers);
-        $numbers = Cache::remember("server-intel-performance-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS, function () use ($selectedServers) {
+        $numbers = Cache::remember("server-intel-performance-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS_FORINTEL, function () use ($selectedServers) {
             if ($selectedServers) {
                 $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->get();
             } else {
