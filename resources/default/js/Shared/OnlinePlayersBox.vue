@@ -22,7 +22,10 @@
         v-if="loading"
         class="flex p-4 justify-center"
       >
-        <LoadingSpinner :loading="loading" class="w-5 h-5" />
+        <LoadingSpinner
+          :loading="loading"
+          class="w-5 h-5"
+        />
       </div>
 
       <error-message v-if="error">
@@ -70,14 +73,14 @@
 </template>
 
 <script setup>
-import ErrorMessage from '@/Components/ErrorMessage.vue';
-import { usePage } from '@inertiajs/vue3';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import ErrorMessage from "@/Components/ErrorMessage.vue";
+import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
-import LoadingSpinner from '@/Components/LoadingSpinner.vue';
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
+import { usePage } from "@inertiajs/vue3";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
 const props = defineProps({
     server: {
@@ -89,7 +92,7 @@ let serverInfo = ref({});
 let playersList = ref([]);
 let loading = ref(true);
 let error = ref(null);
-let sizeClass = ref('w-5 h-5');
+let sizeClass = ref("w-5 h-5");
 let interval = null;
 
 function getServerQuery() {
@@ -110,7 +113,7 @@ function getServerQuery() {
 
 function tryFetchUsingQuery(serverToQuery) {
     axios
-        .get(route('server.query.get', serverToQuery.id))
+        .get(route("server.query.get", serverToQuery.id))
         .then((data) => {
             serverInfo.value = data.data.server_info;
             playersList.value = [];
@@ -119,7 +122,7 @@ function tryFetchUsingQuery(serverToQuery) {
                     username: pl,
                     uuid:
                         data.data.players_list[pl] ||
-                        '00000000-0000-0000-0000-000000000000',
+                        "00000000-0000-0000-0000-000000000000",
                     skin_texture_id: null,
                 };
                 playersList.value.push(player);
@@ -129,7 +132,7 @@ function tryFetchUsingQuery(serverToQuery) {
 
             // Change avatar size according to number of people
             if (playersList.value.length <= 5) {
-                sizeClass.value = 'w-8 h-8';
+                sizeClass.value = "w-8 h-8";
             }
         })
         .catch((err) => {
@@ -144,7 +147,7 @@ function tryFetchUsingQuery(serverToQuery) {
 
 function tryFetchUsingWebQuery(serverToQuery) {
     axios
-        .get(route('server.webquery.status', serverToQuery.id))
+        .get(route("server.webquery.status", serverToQuery.id))
         .then((data) => {
             if (data.data.players.length > 0) {
                 playersList.value = data.data.players.map((player) => {
@@ -167,7 +170,7 @@ function tryFetchUsingWebQuery(serverToQuery) {
 
             // Change avatar size according to number of people
             if (playersList.value.length <= 5) {
-                sizeClass.value = 'w-8 h-8';
+                sizeClass.value = "w-8 h-8";
             }
         })
         .catch((err) => {
