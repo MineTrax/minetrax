@@ -8,16 +8,18 @@ use App\Models\Server;
 use App\Services\GeolocationService;
 use App\Services\MinecraftServerPingService;
 use App\Services\MinecraftServerQueryService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
 class ServerController extends Controller
 {
-    public function pingServer(Server $server, MinecraftServerPingService $pingService)
+    public function pingServer(Server $server, MinecraftServerPingService $pingService, MinecraftServerQueryService $queryService)
     {
         // Check if we got cache
-        $hasCache = Cache::get('server:ping:' . $server->id);
-        if ($hasCache) {
-            return json_decode($hasCache, true);
+        $cacheKey = 'server:ping:' . $server->id;
+        $cached = Cache::get($cacheKey);
+        if ($cached) {
+            return response()->json(json_decode($cached, true));
         }
 
         // Decide what address to use to ping the server
@@ -29,21 +31,39 @@ class ServerController extends Controller
         } else {
             $pingAddress = $pingNonProxyServerUsingIPAddress ? $server->ip_address : $server->hostname;
         }
-        // Get Ping Info of the server using MinecraftPingService
-        $pingData = $pingService->pingServer($pingAddress, $server->join_port);
 
-        if ($pingData) {
-            Cache::put('server:ping:' . $server->id, json_encode($pingData), 60);
+        // Attempt 1: Standard ping
+        try {
+            $pingData = $pingService->pingServer($pingAddress, $server->join_port);
+            $result = [
+                'players' => [
+                    'online' => Arr::get($pingData, 'players.online', 0),
+                    'max' => Arr::get($pingData, 'players.max', 0),
+                ],
+            ];
+        } catch (\Exception $e) {
+            // Attempt 2: Web query protocol fallback
+            try {
+                $pingData = $queryService->getServerPingWithPluginWebQueryProtocol(
+                    $server->ip_address,
+                    $server->webquery_port
+                );
+                $result = [
+                    'players' => [
+                        'online' => Arr::get($pingData, 'online_players', 0),
+                        'max' => Arr::get($pingData, 'max_players', 0),
+                    ],
+                ];
+            } catch (\Exception $e2) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => __('Failed to ping server'),
+                ], 500);
+            }
         }
 
-        if (!$pingData) {
-            return response()->json([
-                'status' => 'error',
-                'message' => __('Failed to ping server'),
-            ], 500);
-        }
-
-        return $pingData;
+        Cache::put($cacheKey, json_encode($result), 60);
+        return response()->json($result);
     }
 
     public function queryServer(Server $server, MinecraftServerQueryService $queryService)
@@ -56,7 +76,7 @@ class ServerController extends Controller
 
         $queryProxyServerUsingIPAddress = config('minetrax.query_proxy_server_using_ip_address');
         $queryAddress = $server->ip_address;
-        if(!$queryProxyServerUsingIPAddress && $server->type->value == ServerType::Bungee) {
+        if (!$queryProxyServerUsingIPAddress && $server->type->value == ServerType::Bungee) {
             $queryAddress = $server->hostname;
         }
         // Get Query for the server using MinecraftQueryService
