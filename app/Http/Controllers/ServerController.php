@@ -35,6 +35,9 @@ class ServerController extends Controller
         // Attempt 1: Standard ping
         try {
             $pingData = $pingService->pingServer($pingAddress, $server->join_port);
+            if (!$pingData) {
+                throw new \Exception(__('Failed to ping server'));
+            }
             $result = [
                 'players' => [
                     'online' => Arr::get($pingData, 'players.online', 0),
