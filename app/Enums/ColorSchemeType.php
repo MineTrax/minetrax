@@ -8,15 +8,21 @@ use BenSampo\Enum\Enum;
  * @method static static SKY()
  * @method static static SAFFRON()
  * @method static static CAFFIENE()
+ * @method static static LIME()
  */
 final class ColorSchemeType extends Enum
 {
     const SKY = 'sky';
+
     const SAFFRON = 'saffron';
+
     const CAFFIENE = 'caffeine';
+
     const NEO_BRUTALISM = 'neobrutalism';
+
     const NOTEBOOK = 'notebook';
 
+    const LIME = 'lime';
 
     /**
      * Google Fonts URLs needed for each color scheme.
@@ -45,6 +51,10 @@ final class ColorSchemeType extends Enum
                 'https://fonts.googleapis.com/css2?family=Architects+Daughter:wght@400;500;600;700&display=swap',
                 'https://fonts.googleapis.com/css2?family=Georgia:wght@400;500;600;700&display=swap',
                 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap',
+            ],
+            self::LIME => [
+                'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+                'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap',
             ],
         ];
 
