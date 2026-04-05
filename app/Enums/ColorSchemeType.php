@@ -9,6 +9,7 @@ use BenSampo\Enum\Enum;
  * @method static static SAFFRON()
  * @method static static CAFFIENE()
  * @method static static LIME()
+ * @method static static MOSS()
  */
 final class ColorSchemeType extends Enum
 {
@@ -23,6 +24,8 @@ final class ColorSchemeType extends Enum
     const NOTEBOOK = 'notebook';
 
     const LIME = 'lime';
+
+    const MOSS = 'moss';
 
     /**
      * Google Fonts URLs needed for each color scheme.
@@ -55,6 +58,11 @@ final class ColorSchemeType extends Enum
             self::LIME => [
                 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
                 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap',
+            ],
+            self::MOSS => [
+                'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap',
+                'https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap',
+                'https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap',
             ],
         ];
 
