@@ -96,21 +96,21 @@ function pagination(currentPage, pageCount) {
         <InertiaLink
             v-if="props.data.prev_page_url"
             :href="data.prev_page_url"
-            class="relative inline-flex items-center rounded-md border border-border text-secondary-foreground hover:bg-accent/50 px-4 py-2 text-sm font-medium"
+            class="relative inline-flex items-center rounded-md border border-border text-primary hover:bg-accent/50 px-4 py-2 text-sm font-medium"
         >
             {{ __("Previous") }}
         </InertiaLink>
-        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border text-secondary-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
+        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border text-muted-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
             {{ __("Previous") }}
         </button>
         <InertiaLink
             v-if="props.data.next_page_url"
             :href="data.next_page_url"
-            class="relative ml-3 inline-flex items-center rounded-md border border-border text-secondary-foreground hover:bg-accent/50 px-4 py-2 text-sm font-medium"
+            class="relative ml-3 inline-flex items-center rounded-md border border-border text-primary hover:bg-accent/50 px-4 py-2 text-sm font-medium"
         >
             {{ __("Next") }}
         </InertiaLink>
-        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border text-secondary-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
+        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border text-muted-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
             {{ __("Next") }}
         </button>
     </nav>
