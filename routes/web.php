@@ -82,7 +82,6 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('player/punishments/{playerPunishment:id}', [\App\Http\Controllers\BanWardenController::class, 'show'])->name('player.punishment.show');
     Route::get('player/punishments/{playerPunishment:id}/history', [\App\Http\Controllers\BanWardenController::class, 'indexLastPunishments'])->name('player.punishment.show.history');
     Route::get('player/punishments/{playerPunishment:id}/sessions', [\App\Http\Controllers\BanWardenController::class, 'indexLastSessions'])->name('player.punishment.show.session');
-    Route::get('player/punishments/{playerPunishment:id}/alts', [\App\Http\Controllers\BanWardenController::class, 'indexAlts'])->name('player.punishment.show.alt');
     Route::get('player/punishments/{playerPunishment:id}/evidence/{evidence}', [\App\Http\Controllers\BanWardenController::class, 'showMediaEvidence'])->name('player.punishment.evidence.show');
 });
 

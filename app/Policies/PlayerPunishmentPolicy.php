@@ -4,14 +4,13 @@ namespace App\Policies;
 
 use App\Models\PlayerPunishment;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class PlayerPunishmentPolicy
 {
     public function before(?User $user): ?bool
     {
         $banwardenEnabled = config('minetrax.banwarden.enabled');
-        if (!$banwardenEnabled) {
+        if (! $banwardenEnabled) {
             return false;
         }
 
@@ -53,20 +52,7 @@ class PlayerPunishmentPolicy
     }
 
     /**
-     * Determine whether the user can view alts of the model.
-     */
-    public function viewAlts(User $user, PlayerPunishment $playerPunishment): bool
-    {
-        $banwardenPublic = config('minetrax.banwarden.show_public');
-        if ($user->isStaffMember() && ($user->can('read banwarden_punishments') || $banwardenPublic)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Determine whether the user can view alts of the model.
+     * Determine whether the user can view critical data of the model.
      */
     public function viewCritical(User $user): bool
     {
@@ -113,7 +99,6 @@ class PlayerPunishmentPolicy
 
         return false;
     }
-
 
     public function viewEvidence(User $user): bool
     {

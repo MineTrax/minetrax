@@ -10,13 +10,13 @@ use App\Models\Player;
 use App\Models\PlayerPunishment;
 use App\Queries\Filters\FilterMultipleFields;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class BanWardenController extends Controller
 {
@@ -77,16 +77,16 @@ class BanWardenController extends Controller
             ->allowedSorts($fields)
             ->defaultSort('-start_at')
             ->simplePaginate(perPage: $perPage)
-            ->through(fn($punishment) => $punishment->makeVisibleIf($canViewCritical, [
+            ->through(fn ($punishment) => $punishment->makeVisibleIf($canViewCritical, [
                 'ip_address',
                 'plugin_punishment_id',
                 'origin_server_name',
-            ])->makeHiddenIf(!$canShowMaskedIp, ['masked_ip_address']))
+            ])->makeHiddenIf(! $canShowMaskedIp, ['masked_ip_address']))
             ->withQueryString();
 
         $countries = Country::select(['id', 'name'])->get()->pluck('name');
 
-        # Metrics
+        // Metrics
         $metrics = Cache::remember('banwarden.public.metrics', 120, function () {
             return [
                 'total_bans' => PlayerPunishment::where('type', 'ban')->count(),
@@ -123,7 +123,7 @@ class BanWardenController extends Controller
         // Generate insights if enabled and not already generated
         $insightEnabled = config('minetrax.banwarden.ai_insights_enabled');
         $insightTypes = config('minetrax.banwarden.ai_insights_types');
-        if ($insightEnabled && !$playerPunishment->insights && in_array($playerPunishment->type->value, $insightTypes)) {
+        if ($insightEnabled && ! $playerPunishment->insights && in_array($playerPunishment->type->value, $insightTypes)) {
             GeneratePunishmentInsightsJob::dispatch($playerPunishment);
         }
 
@@ -140,7 +140,7 @@ class BanWardenController extends Controller
         if ($canViewEvidence) {
             $playerPunishment->append('evidences');
         }
-        if (!$canShowMaskedIp) {
+        if (! $canShowMaskedIp) {
             $playerPunishment->makeHidden('masked_ip_address');
         }
         $allowControlFromWeb = config('minetrax.banwarden.allow_control_from_web');
@@ -148,7 +148,6 @@ class BanWardenController extends Controller
             'punishment' => $playerPunishment,
             'permissions' => [
                 'canViewSessions' => Gate::allows('viewAnyIntel', Player::class),
-                'canViewAlts' => Gate::allows('viewAlts', $playerPunishment),
                 'canViewCritical' => $canViewCritical,
                 'canViewEvidence' => $canViewEvidence,
                 'canCreateEvidence' => Gate::allows('createEvidence', PlayerPunishment::class)
@@ -183,11 +182,11 @@ class BanWardenController extends Controller
                 ->where('id', '!=', $playerPunishment->id)
                 ->orderByDesc('start_at')
                 ->simplePaginate($perPage)
-                ->through(fn($punishment) => $punishment->makeVisibleIf($canViewCritical, [
+                ->through(fn ($punishment) => $punishment->makeVisibleIf($canViewCritical, [
                     'ip_address',
                     'plugin_punishment_id',
                     'origin_server_name',
-                ])->makeHiddenIf(!$canShowMaskedIp, ['masked_ip_address']));
+                ])->makeHiddenIf(! $canShowMaskedIp, ['masked_ip_address']));
         } else {
             $lastPunishments = PlayerPunishment::with([
                 'country:id,name,iso_code',
@@ -199,7 +198,7 @@ class BanWardenController extends Controller
                 ->where('id', '!=', $playerPunishment->id)
                 ->orderByDesc('start_at')
                 ->simplePaginate($perPage)
-                ->through(fn($punishment) => $punishment->makeVisibleIf($canViewCritical, [
+                ->through(fn ($punishment) => $punishment->makeVisibleIf($canViewCritical, [
                     'ip_address',
                     'plugin_punishment_id',
                     'origin_server_name',
@@ -225,50 +224,17 @@ class BanWardenController extends Controller
                 ->where('session_started_at', '<=', $playerPunishment->start_at)
                 ->orderByDesc('session_started_at')
                 ->simplePaginate($perPage)
-                ->through(fn($session) => $session->makeVisibleIf($canViewCritical, 'player_ip_address'));
+                ->through(fn ($session) => $session->makeVisibleIf($canViewCritical, 'player_ip_address'));
         } else {
             $pastSessions = MinecraftPlayerSession::with(['country:id,name,iso_code', 'server:id,name'])
                 ->where('player_ip_address', 'LIKE', $playerPunishment->ip_address)
                 ->where('session_started_at', '<=', $playerPunishment->start_at)
                 ->orderByDesc('session_started_at')
                 ->simplePaginate($perPage)
-                ->through(fn($session) => $session->makeVisibleIf($canViewCritical, 'player_ip_address'));
+                ->through(fn ($session) => $session->makeVisibleIf($canViewCritical, 'player_ip_address'));
         }
 
         return $pastSessions;
-    }
-
-    public function indexAlts(PlayerPunishment $playerPunishment)
-    {
-        $this->authorize('viewAlts', $playerPunishment);
-        $canViewCritical = Gate::allows('viewCritical', PlayerPunishment::class);
-
-        $perPage = request()->query('perPage', 5);
-        if ($perPage > 100) {
-            $perPage = 100;
-        }
-
-        if (!$playerPunishment->ip_address) {
-            return (object) [
-                'data' => [],
-            ];
-        }
-
-        $firstTwoOctets = explode('.', $playerPunishment->ip_address);
-        $firstTwoOctets = $firstTwoOctets[0] . '.' . $firstTwoOctets[1] . '.%';
-        $altUuids = MinecraftPlayerSession::distinct()->select('player_uuid')
-            ->where('player_uuid', '!=', $playerPunishment->uuid)
-            ->where('player_ip_address', 'LIKE', $firstTwoOctets)
-            ->pluck('player_uuid');
-        $players = Player::select(['id', 'uuid', 'username', 'skin_texture_id', 'first_seen_at', 'last_seen_at', 'country_id', 'ip_address', 'play_time'])
-            ->whereIn('uuid', $altUuids)
-            ->with('country:id,name,iso_code')
-            ->withCount('punishments')
-            ->orderByDesc('last_seen_at')
-            ->simplePaginate($perPage)
-            ->through(fn($player) => $player->makeVisibleIf($canViewCritical, 'ip_address'));
-
-        return $players;
     }
 
     public function showMediaEvidence(PlayerPunishment $playerPunishment, $evidence, Request $request)
@@ -276,7 +242,7 @@ class BanWardenController extends Controller
         $this->authorize('viewEvidence', $playerPunishment);
 
         $media = $playerPunishment->getMedia('punishment-evidence')->find($evidence);
-        if (!$media) {
+        if (! $media) {
             abort(404);
         }
 
@@ -295,8 +261,8 @@ class BanWardenController extends Controller
             'file' => [
                 'required_if:type,media',
                 'file',
-                'mimes:' . $evidenceAllowedMimetypes,
-                'max:' . $evidenceMaxSizeKb,
+                'mimes:'.$evidenceAllowedMimetypes,
+                'max:'.$evidenceMaxSizeKb,
             ],
             'url' => [
                 'required_if:type,url',
@@ -340,7 +306,7 @@ class BanWardenController extends Controller
 
         if ($type == 'media') {
             $media = $playerPunishment->getMedia('punishment-evidence')->find($evidence);
-            if (!$media) {
+            if (! $media) {
                 abort(404);
             }
             $media->delete();
@@ -373,6 +339,7 @@ class BanWardenController extends Controller
             PardonPlayerPunishmentJob::dispatchSync($playerPunishment, $request->input('reason'), $request->user()->username);
         } catch (\Exception $e) {
             Log::error($e);
+
             return redirect()->back()
                 ->with(['toast' => ['type' => 'error', 'title' => __('Pardon Failed'), 'body' => 'Failed to execute pardon job to due webquery issue.']]);
         }
