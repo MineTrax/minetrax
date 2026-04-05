@@ -33,3 +33,4 @@ auth.json
 !/public/theme-assets/default/
 /resources/*
 !/resources/default/
+.claude/settings.local.json
