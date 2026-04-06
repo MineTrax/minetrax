@@ -140,7 +140,7 @@ const resizeTextarea = async () => {
     }
 };
 
-const handleTextareaInput = async (event) => {
+const handleTextareaInput = async () => {
     await resizeTextarea();
 };
 

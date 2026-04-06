@@ -9,8 +9,6 @@ import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import ImageUpload from "@/Components/Form/ImageUpload.vue";
 import TipTapEditor from "@/Components/TipTapEditor.vue";
-import { ref } from "vue";
-
 const { __ } = useTranslations();
 
 const breadcrumbItems = [

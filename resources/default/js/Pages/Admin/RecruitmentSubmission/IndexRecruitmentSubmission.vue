@@ -14,7 +14,7 @@ import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 import { EyeIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { Link, router } from "@inertiajs/vue3";
 import { pickBy } from "lodash";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
@@ -115,17 +115,6 @@ const headerRow = [
 let selectedForms = ref(
     props.filters?.forms?.length ? props.filters?.forms[0] : null
 );
-
-const showing = computed(() => {
-    if (props.filters.forms && props.filters.forms.length > 0) {
-        return props.filters.forms
-            .map((id) => {
-                return props.forms[id];
-            })
-            .join(",");
-    }
-    return null;
-});
 
 watch(selectedForms, (newSelectedForms) => {
     const query = {

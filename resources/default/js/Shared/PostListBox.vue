@@ -207,7 +207,7 @@ export default {
             .then((response) => {
                 this.posts = response.data;
             })
-            .finally((e) => {
+            .finally(() => {
                 this.loading = false;
             });
     },

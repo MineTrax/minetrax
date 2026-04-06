@@ -282,7 +282,6 @@
 <script>
 import { Input } from"@/Components/ui/input";
 import Icon from"@/Components/Icon.vue";
-import JetSecondaryButton from"@/Jetstream/SecondaryButton.vue";
 import LoadingButton from"@/Components/LoadingButton.vue";
 import {format} from"date-fns";
 import {USE_WEBSOCKETS} from"@/constants";
@@ -312,7 +311,7 @@ import {
 } from"@/Components/ui/dialog";
 
 export default {
-    components: {Icon, JetSecondaryButton, LoadingButton, Card, CardContent, Input, Skeleton, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle},
+    components: {Icon, LoadingButton, Card, CardContent, Input, Skeleton, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle},
     props: {
         defaultServerId: Number,
         serverList: Array

@@ -12,7 +12,7 @@ import { basicSetup } from "codemirror";
 import { html } from "@codemirror/lang-html";
 import { oneDark } from "@/Data/CodeMirror/darkTheme.js";
 import TipTapEditor from "@/Components/TipTapEditor.vue";
-import { onMounted, ref, shallowRef } from "vue";
+import { ref, shallowRef } from "vue";
 
 const { __ } = useTranslations();
 

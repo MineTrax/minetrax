@@ -8,7 +8,7 @@ import { CheckCircleIcon } from"@heroicons/vue/24/outline";
 
 const { __ } = useTranslations();
 
-const props = defineProps({
+defineProps({
     server: {
         type: Object,
         required: true,

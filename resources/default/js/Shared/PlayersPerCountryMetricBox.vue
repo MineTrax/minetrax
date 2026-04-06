@@ -34,7 +34,7 @@ onMounted(async () => {
     const isDark = window.colorMode === "dark";
     const tooltipStyle = getTooltipStyle();
     const toolboxStyle = getToolboxStyle();
-    const mapStyle = getMapStyle();
+    const mapStyle = getMapStyle(); // eslint-disable-line no-unused-vars
     const mapColors = getMapColorPalette(isDark);
     const noDataColor = getNoDataColor(isDark);
 

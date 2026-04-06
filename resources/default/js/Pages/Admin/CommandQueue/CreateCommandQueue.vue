@@ -16,7 +16,7 @@ import { GlobeAltIcon, UserIcon } from "@heroicons/vue/24/outline";
 
 const { __ } = useTranslations();
 
-const props = defineProps({
+defineProps({
     servers: {
         type: Array,
     },

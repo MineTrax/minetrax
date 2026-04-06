@@ -125,7 +125,7 @@ import Icon from "@/Components/Icon.vue";
 import { useHelpers } from "@/Composables/useHelpers";
 import { Card, CardContent } from "@/Components/ui/card";
 
-const props = defineProps({
+defineProps({
     title: {
         type: String,
         default: "",

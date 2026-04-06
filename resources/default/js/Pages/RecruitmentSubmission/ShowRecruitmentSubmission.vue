@@ -1,5 +1,4 @@
 <script setup>
-import {Link} from"@inertiajs/vue3";
 import AppHead from"@/Components/AppHead.vue";
 import AppLayout from"@/Layouts/AppLayout.vue";
 import { useHelpers } from"@/Composables/useHelpers";
@@ -15,7 +14,7 @@ import { useForm } from"@inertiajs/vue3";
 import { ref } from"vue";
 import XTextarea from"@/Components/Form/XTextarea.vue";
 import LoadingButton from"@/Components/LoadingButton.vue";
-import { startCase, truncate } from"lodash";
+import { startCase } from"lodash";
 import AlertCard from"@/Components/AlertCard.vue";
 import { CheckCircleIcon } from"@heroicons/vue/24/solid";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";

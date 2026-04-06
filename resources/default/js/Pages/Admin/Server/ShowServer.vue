@@ -11,13 +11,11 @@ import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
 import OverviewCard from"@/Components/Dashboard/OverviewCard.vue";
 import ServerSubMenu from"@/Pages/Admin/Server/ServerSubMenu.vue";
 import { USE_WEBSOCKETS } from"@/constants";
-import { useAuthorizable } from"@/Composables/useAuthorizable";
 import { useHelpers } from"@/Composables/useHelpers";
 import { useTranslations } from"@/Composables/useTranslations";
 import { Card, CardContent } from"@/Components/ui/card";
 import { Input } from"@/Components/ui/input";
 
-const { can } = useAuthorizable();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
 const { __ } = useTranslations();
 

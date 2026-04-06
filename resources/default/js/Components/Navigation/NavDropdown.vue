@@ -28,7 +28,7 @@ import {
 } from "@/Components/ui/navigation-menu";
 import JetDropdownLink from "@/Jetstream/DropdownLink.vue";
 
-const props = defineProps({
+defineProps({
     title: {
         type: String,
         required: true

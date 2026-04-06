@@ -14,7 +14,7 @@ import {
     ArrowUturnUpIcon,
 } from"@heroicons/vue/24/outline";
 import XSelect from"@/Components/Form/XSelect.vue";
-import { computed, ref, watch } from"vue";
+import { ref, watch } from"vue";
 import { router, Link } from"@inertiajs/vue3";
 import { pickBy } from"lodash";
 
@@ -98,17 +98,6 @@ if (props.archived) {
 let selectedForms = ref(
     props.filters?.forms?.length ? props.filters?.forms[0] : null
 );
-
-const showing = computed(() => {
-    if (props.filters.forms && props.filters.forms.length > 0) {
-        return props.filters.forms
-            .map((id) => {
-                return props.forms[id];
-            })
-            .join(",");
-    }
-    return null;
-});
 
 watch(selectedForms, (newSelectedForms) => {
     const query = {

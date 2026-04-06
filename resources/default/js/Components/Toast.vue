@@ -1,4 +1,4 @@
-<template />
+<template><div /></template>
 
 <script>
 
@@ -17,7 +17,7 @@ export default {
     watch: {
         toast: {
             deep: true,
-            handler(o, n) {
+            handler() {
                 this.fireToast();
             }
         }

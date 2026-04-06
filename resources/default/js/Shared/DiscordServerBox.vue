@@ -409,7 +409,7 @@ export default {
     props: {
         enabled: Boolean,
         server: String,
-        invite: String | null,
+        invite: [String],
     },
     data() {
         return {

@@ -6,7 +6,6 @@ import {useTranslations} from"@/Composables/useTranslations";
 import {useHelpers} from"@/Composables/useHelpers";
 import DataTable from"@/Components/DataTable/DataTable.vue";
 import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
-import {DocumentCheckIcon} from"@heroicons/vue/24/outline";
 import Icon from"@/Components/Icon.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
 import { Button } from"@/Components/ui/button";

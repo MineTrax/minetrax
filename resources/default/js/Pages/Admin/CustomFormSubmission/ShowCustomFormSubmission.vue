@@ -9,7 +9,6 @@ import { FormKitSchema } from"@formkit/vue";
 import { useFormKit } from"@/Composables/useFormKit";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
 import { Button } from"@/Components/ui/button";
-import { ArrowLeftCircleIcon } from"@heroicons/vue/24/outline";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();

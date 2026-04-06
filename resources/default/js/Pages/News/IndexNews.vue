@@ -152,7 +152,6 @@
 import { ref } from"vue";
 import InfiniteScroll from"@/Components/InfiniteScroll.vue";
 import Icon from"@/Components/Icon.vue";
-import { useAuthorizable } from"@/Composables/useAuthorizable";
 import { useHelpers } from"@/Composables/useHelpers";
 import { useTranslations } from"@/Composables/useTranslations";
 import AppLayout from"@/Layouts/AppLayout.vue";
@@ -186,7 +185,6 @@ const breadcrumbItems = [
 ];
 
 const page = usePage();
-const { can } = useAuthorizable();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
 
 const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;

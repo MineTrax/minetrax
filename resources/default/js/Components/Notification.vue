@@ -113,6 +113,7 @@ const markAsReadSilently = (e) => {
             notifications: [props.notification.id],
         }).then(() => {
             // Update the notification object to reflect read state
+            // eslint-disable-next-line vue/no-mutating-props
             props.notification.read_at = new Date().toISOString();
             emit("marked-as-read", props.notification.id);
         }).catch(e => {
@@ -179,7 +180,7 @@ const getNotificationTitle = () => {
         return __("New comment on news article");
     case"App\\Notifications\\RecruitmentSubmissionCreatedNotification":
         return __("New application received");
-    case"App\\Notifications\\RecruitmentSubmissionStatusChangedNotification":
+    case"App\\Notifications\\RecruitmentSubmissionStatusChangedNotification": {
         const status = data.status;
         if (status ==="approved") return __("Application approved! 🎉");
         if (status ==="rejected") return __("Application rejected");
@@ -187,6 +188,7 @@ const getNotificationTitle = () => {
         if (status ==="inprogress") return __("Application being processed");
         if (status ==="withdrawn") return __("Application withdrawn");
         return __("Application status updated");
+    }
     case"App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification":
         return data.for_staff ? __("New message on application") : __("Message received on your application");
     default:
@@ -207,14 +209,15 @@ const getNotificationDescription = () => {
         return __("You have been muted by :user. You cannot send messages during this period.", { user: data.causer.name });
     case"App\\Notifications\\UserYouAreBanned":
         return __("You have been banned by :user. Please contact support if you believe this is an error.", { user: data.causer.name });
-    case"App\\Notifications\\CustomFormSubmissionCreatedNotification":
+    case"App\\Notifications\\CustomFormSubmissionCreatedNotification": {
         const submitter = data.causer ? data.causer.name : __("an anonymous user");
         return __("A new form submission has been received from :user. Click to review the details.", { user: submitter });
+    }
     case"App\\Notifications\\NewsCommentedByUserNotification":
         return __(":user commented on a news article. Check out what they had to say!", { user: data.causer.name });
     case"App\\Notifications\\RecruitmentSubmissionCreatedNotification":
         return __(":user has submitted a new application. Click to review their submission.", { user: data.causer.name });
-    case"App\\Notifications\\RecruitmentSubmissionStatusChangedNotification":
+    case"App\\Notifications\\RecruitmentSubmissionStatusChangedNotification": {
         const status = data.status;
         if (status ==="approved") return __("Great news! :user has approved your application. Welcome to the team!", { user: data.causer.name });
         if (status ==="rejected") return __("Unfortunately, :user has rejected your application. Click to view feedback.", { user: data.causer.name });
@@ -222,6 +225,7 @@ const getNotificationDescription = () => {
         if (status ==="inprogress") return __(":user is now reviewing your application. Stay tuned for updates!", { user: data.causer.name });
         if (status ==="withdrawn") return __("The application has been withdrawn by :user.", { user: data.causer.name });
         return __(":user has updated your application status. Click to see the latest changes.", { user: data.causer.name });
+    }
     case"App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification":
         return data.for_staff
             ? __("A new message has been received on an application. Click to view and respond.")

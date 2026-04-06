@@ -109,7 +109,6 @@ const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;
 
 const notifications = ref(props.notificationsList);
 const loading = ref(false);
-const error = ref(null);
 
 const loadNotifications = () => {
     if (!notifications.value.next_page_url) {

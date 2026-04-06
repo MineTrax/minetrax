@@ -146,7 +146,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import { router } from "@inertiajs/vue3";
 import { Card, CardHeader, CardContent, CardFooter } from "@/Components/ui/card";
@@ -154,7 +154,7 @@ import Icon from "@/Components/Icon.vue";
 import Comments from "@/Components/Comments.vue";
 import UserDisplayname from "@/Components/UserDisplayname.vue";
 import { useHelpers } from "@/Composables/useHelpers";
-import { cn } from "@/lib/utils";
+
 
 // Props
 const props = defineProps({

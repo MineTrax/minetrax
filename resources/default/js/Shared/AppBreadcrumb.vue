@@ -8,7 +8,6 @@ import {
     BreadcrumbSeparator,
 } from "@/Components/ui/breadcrumb";
 import { Link } from "@inertiajs/vue3";
-import { usePage } from "@inertiajs/vue3";
 import { cn } from "@/lib/utils";
 
 const props = defineProps({
@@ -21,8 +20,7 @@ const props = defineProps({
     breadcrumbClass: { type: null, required: false },
 });
 
-const page = usePage();
-const isEnabled = true; // page.props.generalSettings.enable_breadcrumb;
+const isEnabled = true;
 
 /**
  * Breadcrumb items structure:

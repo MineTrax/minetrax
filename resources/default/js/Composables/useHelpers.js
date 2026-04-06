@@ -70,7 +70,7 @@ export function useHelpers() {
                 addSuffix: addSuffix,
                 locale: myLocale,
             });
-        } catch (e) {
+        } catch {
             console.log("[formatTimeAgoToNow] Failed!");
         }
         return formattedDate;
@@ -85,7 +85,7 @@ export function useHelpers() {
                 "E, do MMM yyyy, h:mm aaa",
                 { locale: myLocale }
             );
-        } catch (e) {
+        } catch {
             console.log("[formatToDayDateString] Failed!");
         }
         return formattedDate;

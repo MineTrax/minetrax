@@ -223,7 +223,7 @@ const displayUrl = computed(() => {
 // Delete/cross icon offset: allow flowing outside the rounded container when circular
 const iconPositionClass = computed(() => (props.shape === "circle" ? "-top-2 -right-2" : "top-2 right-2"));
 
-watch(internalValue, (val, oldVal) => {
+watch(internalValue, (val) => {
     localError.value = "";
     // revoke old object URL
     if (objectUrl.value) {

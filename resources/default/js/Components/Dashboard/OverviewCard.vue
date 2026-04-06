@@ -1,6 +1,6 @@
 <script setup>
 import Icon from "@/Components/Icon.vue";
-import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
+import { Card, CardContent } from "@/Components/ui/card";
 
 defineProps({
     title: {

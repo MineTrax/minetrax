@@ -169,7 +169,7 @@ export function useChartTheme() {
     };
 
     // Get complete theme configuration for ECharts
-    const getChartTheme = (isDark = false) => {
+    const getChartTheme = () => {
         return {
             color: getChartColorPalette(),
             backgroundColor: getThemeColor("--color-background", "#111827"),

@@ -5,7 +5,6 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
-import XTextarea from "@/Components/Form/XTextarea.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import TipTapEditor from "@/Components/TipTapEditor.vue";
 import { ref } from "vue";

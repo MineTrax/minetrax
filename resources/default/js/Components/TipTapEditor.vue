@@ -11,7 +11,6 @@ import {
     Bold,
     Italic,
     Strikethrough,
-    Code,
     List,
     ListOrdered,
     Quote,
