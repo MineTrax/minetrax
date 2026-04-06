@@ -47,5 +47,5 @@ return [
     // Custom
     'enabled' => env('AI_ENABLED', false),
     'provider' => env('AI_PROVIDER', 'openai'),
-    'model' => env('AI_MODEL', 'gpt-5.2'),
+    'model' => env('AI_MODEL', 'gpt-5.4'),
 ];
