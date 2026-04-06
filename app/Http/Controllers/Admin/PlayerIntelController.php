@@ -32,7 +32,7 @@ class PlayerIntelController extends Controller
         }
 
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
@@ -93,7 +93,7 @@ class PlayerIntelController extends Controller
             $data->makeHidden([
                 'last_join_address',
                 'vault_balance',
-                'last_minecraft_version'
+                'last_minecraft_version',
             ]);
         }
 

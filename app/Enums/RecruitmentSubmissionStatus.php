@@ -2,27 +2,14 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
+use App\Enums\Concerns\HasKeyValueSerialization;
 
-final class RecruitmentSubmissionStatus extends Enum
+enum RecruitmentSubmissionStatus: string implements HasKeyValueSerialization
 {
-    const PENDING = 'pending';
-
-    const INPROGRESS = 'inprogress';
-
-    const APPROVED = 'approved';
-
-    const REJECTED = 'rejected';
-
-    const WITHDRAWN = 'withdrawn';
-
-    const ONHOLD = 'onhold';
-
-    public function toArray(): mixed
-    {
-        return [
-            'key' => $this->key,
-            'value' => $this->value,
-        ];
-    }
+    case PENDING = 'pending';
+    case INPROGRESS = 'inprogress';
+    case APPROVED = 'approved';
+    case REJECTED = 'rejected';
+    case WITHDRAWN = 'withdrawn';
+    case ONHOLD = 'onhold';
 }

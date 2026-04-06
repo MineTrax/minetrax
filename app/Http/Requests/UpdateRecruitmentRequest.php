@@ -3,9 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Enums\RecruitmentFormStatus;
-use BenSampo\Enum\Rules\EnumValue;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateRecruitmentRequest extends FormRequest
 {
@@ -20,7 +21,7 @@ class UpdateRecruitmentRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -35,7 +36,7 @@ class UpdateRecruitmentRequest extends FormRequest
                 Rule::unique('recruitments')->ignore($this->route('recruitment')),
             ],
             'description' => 'nullable|string|max:50000',
-            'status' => ['required', new EnumValue(RecruitmentFormStatus::class)],
+            'status' => ['required', new Enum(RecruitmentFormStatus::class)],
             'max_submission_per_user' => 'nullable|integer|min:1',
             'submission_cooldown_in_seconds' => 'nullable|integer|min:1',
             'is_allow_only_player_linked_users' => 'required|boolean',

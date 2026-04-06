@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Enums\PlayerPunishmentType;
+use App\Models\PlayerPunishment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PlayerPunishment>
+ * @extends Factory<PlayerPunishment>
  */
 class PlayerPunishmentFactory extends Factory
 {
@@ -18,7 +19,7 @@ class PlayerPunishmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => $this->faker->randomElement(PlayerPunishmentType::toArray()->pluck('value')),
+            'type' => $this->faker->randomElement(array_column(PlayerPunishmentType::cases(), 'value')),
             'plugin_name' => $this->faker->randomElement(['litebans', 'advancedban', 'libertybans']),
             'plugin_punishment_id' => $this->faker->uuid,
             'uuid' => $this->faker->uuid,

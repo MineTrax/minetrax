@@ -14,7 +14,6 @@
         "ext-json": "*",
         "ext-sockets": "*",
         "ext-zip": "*",
-        "bensampo/laravel-enum": "^6.0",
         "clue/socket-raw": "^1.6",
         "cybercog/laravel-love": "^10.0",
         "geoip2/geoip2": "^3.1",

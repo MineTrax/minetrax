@@ -2,23 +2,12 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
+use App\Enums\Concerns\HasKeyValueSerialization;
 
-final class CustomFormStatus extends Enum
+enum CustomFormStatus: string implements HasKeyValueSerialization
 {
-    const DRAFT = 'draft';
-
-    const ACTIVE = 'active';
-
-    const DISABLED = 'disabled';
-
-    const ARCHIVED = 'archived';
-
-    public function toArray(): mixed
-    {
-        return [
-            'key' => $this->key,
-            'value' => $this->value,
-        ];
-    }
+    case DRAFT = 'draft';
+    case ACTIVE = 'active';
+    case DISABLED = 'disabled';
+    case ARCHIVED = 'archived';
 }

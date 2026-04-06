@@ -37,7 +37,7 @@ class CommandQueuePolicy
 
     public function delete(User $user, CommandQueue $commandQueue): bool
     {
-        if ($commandQueue->status->value === CommandQueueStatus::RUNNING) {
+        if ($commandQueue->status === CommandQueueStatus::RUNNING) {
             return false;
         }
 
@@ -52,7 +52,7 @@ class CommandQueuePolicy
     {
         if (
             $user->can('create command_queues') &&
-            in_array($commandQueue->status->value, [CommandQueueStatus::FAILED, CommandQueueStatus::CANCELLED])
+            in_array($commandQueue->status, [CommandQueueStatus::FAILED, CommandQueueStatus::CANCELLED])
         ) {
             return true;
         }

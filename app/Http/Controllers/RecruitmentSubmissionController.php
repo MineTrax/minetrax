@@ -107,7 +107,7 @@ class RecruitmentSubmissionController extends Controller
         ]);
 
         // Create special comment for this action.
-        $submission->comment(RecruitmentSubmissionStatus::WITHDRAWN, CommentType::RECRUITMENT_ACTION);
+        $submission->comment(RecruitmentSubmissionStatus::WITHDRAWN->value, CommentType::RECRUITMENT_ACTION);
 
         // Fire event
         RecruitmentSubmissionStatusChanged::dispatch($submission, $request->user(), $previousStatus);

@@ -2,20 +2,12 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
+use App\Enums\Concerns\HasKeyValueSerialization;
 
-final class PlayerPunishmentType extends Enum
+enum PlayerPunishmentType: string implements HasKeyValueSerialization
 {
-    const BAN = 'ban';
-    const MUTE = 'mute';
-    const WARN = 'warn';
-    const KICK = 'kick';
-
-    public function toArray(): mixed
-    {
-        return [
-            'key' => $this->key,
-            'value' => $this->value,
-        ];
-    }
+    case BAN = 'ban';
+    case MUTE = 'mute';
+    case WARN = 'warn';
+    case KICK = 'kick';
 }

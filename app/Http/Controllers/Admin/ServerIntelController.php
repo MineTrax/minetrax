@@ -37,14 +37,14 @@ class ServerIntelController extends Controller
             'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
         ]);
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
         if ($selectedServers) {
-            $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->pluck('id');
+            $selectedServers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $selectedServers)->pluck('id');
         } else {
-            $selectedServers = Server::where('type', '!=', ServerType::Bungee())->pluck('id');
+            $selectedServers = Server::where('type', '!=', ServerType::Bungee)->pluck('id');
         }
 
         /**
@@ -160,9 +160,9 @@ class ServerIntelController extends Controller
         $selectedServersKey = serialize($selectedServers);
         $numbers = Cache::remember("server-overview-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS_FORINTEL, function () use ($selectedServers) {
             if ($selectedServers) {
-                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->get();
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $selectedServers)->get();
             } else {
-                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->get();
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee)->get();
             }
 
             $numbersData = [];
@@ -265,7 +265,7 @@ class ServerIntelController extends Controller
         ]);
 
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
@@ -301,9 +301,9 @@ class ServerIntelController extends Controller
         $selectedServersKey = serialize($selectedServers);
         $numbers = Cache::remember("server-intel-performance-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS_FORINTEL, function () use ($selectedServers) {
             if ($selectedServers) {
-                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->get();
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $selectedServers)->get();
             } else {
-                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->get();
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee)->get();
             }
 
             // NumbersData - last 24 hours, last week, last month, 3 months.
@@ -386,7 +386,7 @@ class ServerIntelController extends Controller
             'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
         ]);
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         return Inertia::render('Admin/ServerIntel/Playerbase', [
@@ -443,7 +443,7 @@ class ServerIntelController extends Controller
         }
 
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
@@ -504,7 +504,7 @@ class ServerIntelController extends Controller
         }
 
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids

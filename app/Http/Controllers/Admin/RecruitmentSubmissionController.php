@@ -224,11 +224,11 @@ class RecruitmentSubmissionController extends Controller
         $this->authorize('actOn', $submission);
 
         $request->validate([
-            'action' => 'required|in:' . implode(',', [
-                RecruitmentSubmissionStatus::INPROGRESS,
-                RecruitmentSubmissionStatus::ONHOLD,
-                RecruitmentSubmissionStatus::APPROVED,
-                RecruitmentSubmissionStatus::REJECTED,
+            'action' => 'required|in:'.implode(',', [
+                RecruitmentSubmissionStatus::INPROGRESS->value,
+                RecruitmentSubmissionStatus::ONHOLD->value,
+                RecruitmentSubmissionStatus::APPROVED->value,
+                RecruitmentSubmissionStatus::REJECTED->value,
             ]),
             'reason' => 'nullable|required_if:action,rejected|max:2000|string',
         ]);
@@ -271,11 +271,11 @@ class RecruitmentSubmissionController extends Controller
     {
         $request->validate([
             'message' => 'required|max:2000',
-            'type' => ['required', 'in:' . implode(',', [CommentType::RECRUITMENT_STAFF_WHISPER, CommentType::RECRUITMENT_STAFF_MESSAGE])],
+            'type' => ['required', 'in:'.implode(',', [CommentType::RECRUITMENT_STAFF_WHISPER->value, CommentType::RECRUITMENT_STAFF_MESSAGE->value])],
         ]);
 
         $comment = $submission->comment($request->message, $request->type);
-        if ($request->type != CommentType::RECRUITMENT_STAFF_WHISPER) {
+        if ($request->type != CommentType::RECRUITMENT_STAFF_WHISPER->value) {
             $submission->update([
                 'last_comment_by' => $request->user()->id,
                 'last_comment_at' => now(),

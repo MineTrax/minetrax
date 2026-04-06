@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Admin\Settings;
 use App\Enums\ColorSchemeType;
 use App\Http\Controllers\Controller;
 use App\Settings\ThemeSettings;
-use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Enum;
 use Inertia\Inertia;
+use Inertia\Response;
 use Storage;
 
 class ThemeSettingController extends Controller
@@ -18,7 +19,7 @@ class ThemeSettingController extends Controller
         $this->middleware(['can:update settings']);
     }
 
-    public function show(ThemeSettings $settings): \Inertia\Response
+    public function show(ThemeSettings $settings): Response
     {
         $isVideoHomeHeroBgImagePathLight = Str::contains($settings->home_hero_bg_image_path_light, '.webm');
         $isVideoHomeHeroBgImagePathDark = Str::contains($settings->home_hero_bg_image_path_dark, '.webm');
@@ -35,7 +36,7 @@ class ThemeSettingController extends Controller
     {
         $request->validate([
             'color_mode' => ['required', 'in:light,dark'],
-            'color_scheme' => ['required', new EnumValue(ColorSchemeType::class)],
+            'color_scheme' => ['required', new Enum(ColorSchemeType::class)],
             'enable_home_hero_section' => ['required', 'boolean'],
             'home_hero_bg_image_light' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp,webm', 'max:2048'],
             'home_hero_bg_image_dark' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png,bmp,gif,svg,webp,webm', 'max:2048'],

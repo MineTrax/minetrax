@@ -4,9 +4,10 @@ namespace App\Http\Requests;
 
 use App\Enums\CustomFormStatus;
 use App\Models\CustomForm;
-use BenSampo\Enum\Rules\EnumValue;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rules\Enum;
 
 class CreateCustomFormRequest extends FormRequest
 {
@@ -21,7 +22,7 @@ class CreateCustomFormRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -31,7 +32,7 @@ class CreateCustomFormRequest extends FormRequest
             'title' => 'required|string|max:255',
             'slug' => 'required|alpha_dash|max:255|unique:custom_forms,slug',
             'description' => 'nullable|string|max:50000',
-            'status' => ['required', new EnumValue(CustomFormStatus::class)],
+            'status' => ['required', new Enum(CustomFormStatus::class)],
             'can_create_submission' => 'required|string|in:anyone,auth,staff',
             'min_role_weight_to_view_submission' => 'nullable|integer',
             'max_submission_per_user' => 'nullable|integer|min:1',

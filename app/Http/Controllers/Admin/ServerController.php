@@ -16,9 +16,9 @@ use App\Rules\IpOrFqdn;
 use App\Services\GeolocationService;
 use App\Settings\PluginSettings;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
-use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rules\Enum;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -73,12 +73,12 @@ class ServerController extends Controller
             ->allowedSorts(['id', 'name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'type', 'minecraft_version', 'order', 'country_id', 'last_scanned_at', 'created_at'])
             ->defaultSort('-order')
             ->paginate($perPage)
-            ->through(fn($server) => $server->append('masked_ip_address')->makeHidden('ip_address'))
+            ->through(fn ($server) => $server->append('masked_ip_address')->makeHidden('ip_address'))
             ->withQueryString();
 
         return Inertia::render('Admin/Server/IndexServer', [
             'servers' => $servers,
-            'canCreateBungeeServer' => !$canCreateBungeeServer,
+            'canCreateBungeeServer' => ! $canCreateBungeeServer,
             'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }
@@ -152,7 +152,7 @@ class ServerController extends Controller
             'query_port' => 'required|numeric|min:0|max:65535',
             'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled|different:join_port',
             'name' => 'required',
-            'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
+            'minecraft_version' => ['required', new Enum(ServerVersion::class)],
             'is_server_intel_enabled' => 'required|boolean',
             'settings' => 'sometimes',
             'settings.server_identifier' => 'nullable|alpha_dash',
@@ -179,7 +179,7 @@ class ServerController extends Controller
             'order' => $request->order,
         ]);
 
-        if (!$request->webquery_port) {
+        if (! $request->webquery_port) {
             return redirect()->route('admin.server.index')
                 ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Proxy server added successfully')]]);
         }
@@ -241,7 +241,7 @@ class ServerController extends Controller
     {
         $this->authorize('update', $server);
 
-        if (ServerType::Bungee()->is($server->type)) {
+        if ($server->type === ServerType::Bungee) {
             return Inertia::render('Admin/Server/CreateEditBungeeServer', [
                 'server' => $server,
                 'versionsArray' => ServerVersion::getValues(),
@@ -282,7 +282,7 @@ class ServerController extends Controller
             'query_port' => 'required|numeric|min:0|max:65535',
             'webquery_port' => 'nullable|numeric|min:0|max:65535|required_if_accepted:is_server_intel_enabled|different:join_port',
             'name' => 'required',
-            'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
+            'minecraft_version' => ['required', new Enum(ServerVersion::class)],
             'is_server_intel_enabled' => 'required|boolean',
             'settings' => 'sometimes',
             'settings.server_identifier' => 'nullable|alpha_dash',
@@ -308,9 +308,9 @@ class ServerController extends Controller
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:' . $server->id);
-        Cache::forget('server:query:' . $server->id);
-        Cache::forget('server:webquery:' . $server->id);
+        Cache::forget('server:ping:'.$server->id);
+        Cache::forget('server:query:'.$server->id);
+        Cache::forget('server:webquery:'.$server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Server updated successfully')]]);
@@ -340,9 +340,9 @@ class ServerController extends Controller
         $server->save();
 
         // We forget the cached result so that new data will be shown instantly and not redundant data.
-        Cache::forget('server:ping:' . $server->id);
-        Cache::forget('server:query:' . $server->id);
-        Cache::forget('server:webquery:' . $server->id);
+        Cache::forget('server:ping:'.$server->id);
+        Cache::forget('server:query:'.$server->id);
+        Cache::forget('server:webquery:'.$server->id);
 
         return redirect()->route('admin.server.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Server updated successfully')]]);

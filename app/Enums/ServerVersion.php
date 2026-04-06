@@ -2,39 +2,21 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
-
-/**
- * @method static static v1_12()
- * @method static static v1_13()
- * @method static static v1_14()
- * @method static static v1_15()
- * @method static static v1_16()
- * @method static static v1_17()
- * @method static static v1_18()
- * @method static static v1_19()
- * @method static static v1_20()
- * @method static static v1_21()
- */
-final class ServerVersion extends Enum
+enum ServerVersion: string
 {
-    const v1_12 = '1.12';
+    case v1_12 = '1.12';
+    case v1_13 = '1.13';
+    case v1_14 = '1.14';
+    case v1_15 = '1.15';
+    case v1_16 = '1.16';
+    case v1_17 = '1.17';
+    case v1_18 = '1.18';
+    case v1_19 = '1.19';
+    case v1_20 = '1.20';
+    case v1_21 = '1.21';
 
-    const v1_13 = '1.13';
-
-    const v1_14 = '1.14';
-
-    const v1_15 = '1.15';
-
-    const v1_16 = '1.16';
-
-    const v1_17 = '1.17';
-
-    const v1_18 = '1.18';
-
-    const v1_19 = '1.19';
-
-    const v1_20 = '1.20';
-
-    const v1_21 = '1.21';
+    public static function getValues(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 }

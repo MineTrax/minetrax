@@ -28,9 +28,9 @@ class GraphController extends Controller
 
         $servers = $request->query('servers') ?? null;
         if ($servers) {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $servers)->get();
         } else {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->get();
         }
 
         $fromDate = $request->query('from_date') ?? now()->subMonth();
@@ -61,7 +61,7 @@ class GraphController extends Controller
     {
         $this->authorize('view admin_dashboard');
 
-        $servers = Server::where('type', '!=', ServerType::Bungee())
+        $servers = Server::where('type', '!=', ServerType::Bungee)
             ->withCount('minecraftPlayers')
             ->get();
 
@@ -186,7 +186,7 @@ class GraphController extends Controller
             $averagePlayerPingChangePercent = (($averagePlayerPingCurrentMonth - $averagePlayerPingPreviousMonth) / ($averagePlayerPingPreviousMonth == 0 ? 1 : $averagePlayerPingPreviousMonth)) * 100;
 
             // Peek Online Players.
-            $serverIds = Server::where('type', '!=', ServerType::Bungee())->pluck('id');
+            $serverIds = Server::where('type', '!=', ServerType::Bungee)->pluck('id');
             $peekOnlinePlayersPreviousMonth = MinecraftServerLiveInfo::getOnlinePlayersCount($serverIds, $previousMonth->startOfMonth(), $previousMonth->endOfMonth()) ?? 0;
             $peekOnlinePlayersCurrentMonth = MinecraftServerLiveInfo::getOnlinePlayersCount($serverIds, $currentMonth->startOfMonth(), $currentMonth->endOfMonth()) ?? 0;
             $peekOnlinePlayersChangePercent = (($peekOnlinePlayersCurrentMonth - $peekOnlinePlayersPreviousMonth) / ($peekOnlinePlayersPreviousMonth == 0 ? 1 : $peekOnlinePlayersPreviousMonth)) * 100;
@@ -246,9 +246,9 @@ class GraphController extends Controller
 
         $servers = $request->query('servers') ?? null;
         if ($servers) {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $servers)->get();
         } else {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->get();
         }
 
         $fromDate = $request->query('from_date') ?? now()->subWeek();
@@ -309,9 +309,9 @@ class GraphController extends Controller
 
         $servers = $request->query('servers') ?? null;
         if ($servers) {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $servers)->get();
         } else {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->get();
         }
 
         $fromDate = $request->query('from_date') ?? now()->subMonth();
@@ -360,9 +360,9 @@ class GraphController extends Controller
 
         $servers = $request->query('servers') ?? null;
         if ($servers) {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $servers)->get();
         } else {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->get();
         }
 
         $data = DB::table('minecraft_players')
@@ -399,9 +399,9 @@ class GraphController extends Controller
 
         $servers = $request->query('servers') ?? null;
         if ($servers) {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $servers)->get();
         } else {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->get();
         }
 
         $data = DB::table('minecraft_players')
@@ -436,9 +436,9 @@ class GraphController extends Controller
 
         $servers = $request->query('servers') ?? null;
         if ($servers) {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $servers)->get();
         } else {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->get();
         }
 
         $fromDate = $request->query('from_date') ?? now()->subMonth();
@@ -511,9 +511,9 @@ class GraphController extends Controller
 
         $servers = $request->query('servers') ?? null;
         if ($servers) {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $servers)->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $servers)->get();
         } else {
-            $servers = Server::where('type', '!=', ServerType::Bungee())->get();
+            $servers = Server::where('type', '!=', ServerType::Bungee)->get();
         }
 
         $fromDate = $request->query('from_date') ?? now()->subMonth();

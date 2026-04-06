@@ -3,9 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Enums\CustomFormStatus;
-use BenSampo\Enum\Rules\EnumValue;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateCustomFormRequest extends FormRequest
 {
@@ -20,7 +21,7 @@ class UpdateCustomFormRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -35,7 +36,7 @@ class UpdateCustomFormRequest extends FormRequest
                 Rule::unique('custom_forms')->ignore($this->route('customForm')),
             ],
             'description' => 'nullable|string|max:50000',
-            'status' => ['required', new EnumValue(CustomFormStatus::class)],
+            'status' => ['required', new Enum(CustomFormStatus::class)],
             'can_create_submission' => 'required|string|in:anyone,auth,staff',
             'min_role_weight_to_view_submission' => 'nullable|integer',
             'max_submission_per_user' => 'nullable|integer|min:1',
