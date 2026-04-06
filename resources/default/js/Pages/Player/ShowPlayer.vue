@@ -74,7 +74,7 @@
  <!-- Skin Viewer -->
  <Card class="flex flex-col items-center justify-center md:col-span-1 relative bg-card min-h-[500px] order-last md:order-first">
  <button
- class="focus:outline-hidden absolute top-4 left-4 z-10 bg-background/50 p-1 rounded-full hover:bg-background/80 transition"
+ class="focus:outline-hidden absolute top-4 left-4 z-10 bg-background/50 p-1 rounded-full hover:bg-background/80 transition cursor-pointer"
  @click="toggle3dPlayerAnimation"
  >
  <icon

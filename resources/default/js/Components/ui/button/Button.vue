@@ -1,14 +1,14 @@
 <script setup>
-import { Primitive } from "reka-ui";
 import { cn } from "@/lib/utils";
+import { Primitive } from "reka-ui";
 import { buttonVariants } from ".";
 
 const props = defineProps({
-  variant: { type: null, required: false },
-  size: { type: null, required: false },
-  class: { type: null, required: false },
-  asChild: { type: Boolean, required: false },
-  as: { type: null, required: false, default: "button" },
+    variant: { type: null, required: false },
+    size: { type: null, required: false },
+    class: { type: null, required: false },
+    asChild: { type: Boolean, required: false },
+    as: { type: null, required: false, default: "button" },
 });
 </script>
 

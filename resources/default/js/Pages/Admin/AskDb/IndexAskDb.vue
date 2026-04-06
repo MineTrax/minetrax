@@ -183,7 +183,7 @@ function scrollToBottom() {
                 v-for="example in examples"
                 :key="example"
                 :disabled="!featureEnabled"
-                class="block w-full p-6 text-sm font-normal text-left text-foreground bg-card border border-border rounded-lg shadow-sm hover:bg-accent hover:border-primary/50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                class="block w-full p-6 text-sm font-normal text-left text-foreground bg-card border border-border rounded-lg shadow-sm cursor-pointer hover:bg-accent hover:border-primary/50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 @click="askWithExample(example)"
               >
                 {{ example }}
@@ -265,7 +265,7 @@ function scrollToBottom() {
             <button
               type="submit"
               :disabled="form.loading || !featureEnabled"
-              class="absolute p-2.5 transition-colors duration-200 ease-in-out rounded-lg bottom-3 right-3 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="absolute p-2.5 transition-colors duration-200 ease-in-out rounded-lg bottom-3 right-3 bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg
                 v-if="form.loading"

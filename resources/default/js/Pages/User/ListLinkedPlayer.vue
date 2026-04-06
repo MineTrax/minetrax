@@ -130,7 +130,7 @@
                     :title="otpExpiryCountdownSeconds <= 0 ? __('OTP Expired') : __('Click to Copy')"
                     type="button"
                     :disabled="otpExpiryCountdownSeconds <= 0"
-                    class="p-2 mt-3 font-semibold text-center font-mono tracking-wider transition duration-150 ease-in-out border rounded-md w-full md:w-1/2 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="p-2 mt-3 font-semibold text-center font-mono tracking-wider transition duration-150 ease-in-out border rounded-md w-full md:w-1/2 cursor-pointer focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                     :class="{
                       'text-foreground border-border hover:bg-accent hover:text-accent-foreground': otpExpiryCountdownSeconds > 0,
                       'text-muted-foreground border-muted': otpExpiryCountdownSeconds <= 0,

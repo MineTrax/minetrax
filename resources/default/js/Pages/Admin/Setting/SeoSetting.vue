@@ -160,7 +160,7 @@ const removeMetaField = (index) => {
                       >
                         <button
                           type="button"
-                          class="mt-2 focus:outline-hidden group"
+                          class="mt-2 focus:outline-hidden group cursor-pointer"
                           @click="removeMetaField(index)"
                         >
                           <Icon

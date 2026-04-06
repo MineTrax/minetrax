@@ -214,12 +214,12 @@ const breadcrumbItems = [
  v-if="submission.i_can_withdraw"
  class="flex justify-end mt-4 pt-4 border-t border-border"
  >
- <button
- class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-destructive border border-transparent rounded-md hover:bg-destructive/80 active:bg-destructive/80 focus:outline-hidden focus:border-destructive focus:shadow-outline-gray"
+ <Button
+ variant="destructive"
  @click="showingWithdrawForm = true"
  >
- <span>{{ __("Withdraw") }}</span>
- </button>
+ {{ __("Withdraw") }}
+ </Button>
  </div>
  </div>
 

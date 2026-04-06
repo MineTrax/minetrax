@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="toggleTheme">
+    <button class="cursor-pointer" @click="toggleTheme">
       <span
         v-if="colorMode === 'dark'"
         v-tippy

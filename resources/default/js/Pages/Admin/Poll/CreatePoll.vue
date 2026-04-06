@@ -89,7 +89,7 @@ function createPoll() {
                       >
                         <button
                           type="button"
-                          class="focus:outline-hidden group flex mt-2.5"
+                          class="focus:outline-hidden group flex mt-2.5 cursor-pointer"
                           @click="deleteOption(index)"
                         >
                           <TrashIcon

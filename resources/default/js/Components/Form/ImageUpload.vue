@@ -10,7 +10,7 @@
         <div class="group relative" :class="cn('w-full', previewWrapperClass)">
             <button
                 type="button"
-                class="block w-full h-full focus:outline-hidden"
+                class="block w-full h-full cursor-pointer focus:outline-hidden"
                 @click="openFileDialog"
                 @dragover.prevent="isDragging = true"
                 @dragleave.prevent="isDragging = false"
@@ -51,7 +51,7 @@
                 v-if="showRemoveIcon && (hasSelection || (removable && currentUrl))"
                 type="button"
                 :disabled="disabled"
-                class="absolute z-20 inline-flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white w-6 h-6 p-1"
+                class="absolute z-20 inline-flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white w-6 h-6 p-1"
                 :class="iconPositionClass"
                 :aria-label="hasSelection ? clearLabel : removeLabel"
                 @click.stop.prevent="hasSelection ? clearSelection() : $emit('remove')"

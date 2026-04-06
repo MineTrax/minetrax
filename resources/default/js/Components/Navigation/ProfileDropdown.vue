@@ -1,12 +1,12 @@
 <template>
     <NavigationMenuTrigger>
-        <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex items-center text-sm font-medium">
+        <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex items-center text-sm font-medium cursor-pointer">
             {{ $page.props.auth.user.name }}
             <img class="h-8 w-8 ml-2 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url"
                 :alt="$page.props.auth.user.name">
         </button>
 
-        <button v-else type="button" class="flex items-center text-sm font-medium">
+        <button v-else type="button" class="flex items-center text-sm font-medium cursor-pointer">
             {{ $page.props.auth.user.name }}
             <svg class="ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd"

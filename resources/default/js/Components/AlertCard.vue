@@ -26,7 +26,7 @@
  </div>
  <button
  v-if="closeButton"
- class="absolute rounded-full bg-card border border-border hover:bg-accent p-1 -top-2 -right-2 shadow-sm"
+ class="absolute rounded-full bg-card border border-border hover:bg-accent p-1 -top-2 -right-2 shadow-sm cursor-pointer"
  @click="$emit('close')"
  >
  <XMarkIcon class="h-4 w-4"/>

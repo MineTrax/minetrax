@@ -235,7 +235,7 @@ const showDetails = (commandQueue) => {
 
  <td class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap">
  <button v-tippy @click="showDetails(item)"
- class="inline-flex items-center justify-center text-primary hover:text-primary"
+ class="inline-flex items-center justify-center text-primary hover:text-primary cursor-pointer"
  :title="__('View Details')">
  <EyeIcon class="inline-block w-5 h-5"/>
  </button>

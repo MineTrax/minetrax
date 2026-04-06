@@ -569,7 +569,7 @@ function saveSetting() {
                               </div>
                               <button
                                 type="button"
-                                class="focus:outline-hidden group mt-6"
+                                class="focus:outline-hidden group mt-6 cursor-pointer"
                                 @click="deleteVotingSite(index)"
                               >
                                 <Icon
