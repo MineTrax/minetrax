@@ -847,16 +847,9 @@ const breadcrumbItems = [
             >
               <template #default="{ item }">
                 <DtRowItem>
-                  <Link
-                    v-tippy
-                    as="a"
-                    :href="route('player.punishment.show', item.id)"
-                    class="cursor-pointer focus:outline-hidden hover:underline"
-                    :class="item.is_active ?'font-bold':''"
-                    :content="__('View details')"
-                  >
+                  <span :class="item.is_active ?'font-bold':''">
                     {{ item.id }}
-                  </Link>
+                  </span>
                 </DtRowItem>
 
                 <td class="px-3 py-4 whitespace-nowrap">
@@ -1111,18 +1104,9 @@ const breadcrumbItems = [
 
                 <td class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap">
                   <div class="flex items-center">
-                    <InertiaLink
-                      as="a"
-                      :href="
-                        route('player.intel.session.show', {
-                          player: item.player_uuid,
-                          session: item.id,
-                        })
-                      "
-                      class="text-sm font-medium text-foreground cursor-pointer focus:outline-hidden hover:underline"
-                    >
-                      <span class="font-extrabold text-foreground"> {{ item.player_displayname }} ({{ item.player_username }}) </span>
-                    </InertiaLink>
+                    <span class="text-sm font-extrabold text-foreground">
+                      {{ item.player_displayname }} ({{ item.player_username }})
+                    </span>
                   </div>
                 </td>
 

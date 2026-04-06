@@ -77,12 +77,7 @@ const breadcrumbItems = [
         >
           <template #default="{ item }">
             <DtRowItem>
-              <Link
-                :href="route('download.show', item.slug)"
-                class="hover:text-primary hover:underline"
-              >
-                {{ item.name }}
-              </Link>
+              {{ item.name }}
             </DtRowItem>
 
             <DtRowItem class="text-center hidden md:table-cell">

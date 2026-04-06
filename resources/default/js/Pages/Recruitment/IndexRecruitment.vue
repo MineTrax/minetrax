@@ -117,15 +117,11 @@ const headerRow = [
  :header="headerRow"
  :data="recruitments"
  :filters="filters"
+ :row-href="(item) => route('recruitment.show', item.slug)"
  >
  <template #default="{ item }">
  <DtRowItem>
- <Link
- :href="route('recruitment.show', item.slug)"
- class="hover:text-primary hover:underline"
- >
  {{ item.title }}
- </Link>
  </DtRowItem>
 
  <DtRowItem class="text-right space-x-1">

@@ -191,30 +191,11 @@ const breadcrumbItems = [
             <td
               class="text-sm px-4 font-medium text-left text-foreground whitespace-nowrap dark:text-foreground"
             >
-              <Link
-                as="a"
-                :href="
-                  route(
-                    'admin.recruitment-submission.show',
-                    item.id
-                  )
-                "
-                class="hover:text-primary"
-              >
-                {{ item.id }}
-              </Link>
+              {{ item.id }}
             </td>
 
             <td class="px-4">
-              <Link
-                :href="
-                  route(
-                    'admin.recruitment-submission.show',
-                    item.id
-                  )
-                "
-                class="flex items-center"
-              >
+              <div class="flex items-center">
                 <div class="shrink-0 h-10 w-10 mr-2">
                   <img
                     class="h-10 w-10 rounded-full"
@@ -261,7 +242,7 @@ const breadcrumbItems = [
                     @{{ item.user.username }}
                   </div>
                 </div>
-              </Link>
+              </div>
             </td>
 
             <DtRowItem>

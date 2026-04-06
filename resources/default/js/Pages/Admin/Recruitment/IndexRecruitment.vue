@@ -152,14 +152,8 @@ const headerRow = [
             {{ item.id }}
           </td>
 
-          <DtRowItem class="">
-            <Link
-              as="a"
-              :href="route('admin.recruitment.show', item.id)"
-              class="dark:hover:text-foreground hover:text-primary"
-            >
-              {{ item.title }}
-            </Link>
+          <DtRowItem>
+            {{ item.title }}
           </DtRowItem>
 
           <DtRowItem>

@@ -186,13 +186,11 @@ const headerRow = [
                   : null,
               ]"
             >
-              <InertiaLink :href="route('user.public.get', item.username)">
-                <UserDisplayname
-                  :user="item"
-                  icon-class="w-4 h-4"
-                  text-class="text-sm"
-                />
-              </InertiaLink>
+              <UserDisplayname
+                :user="item"
+                icon-class="w-4 h-4"
+                text-class="text-sm"
+              />
             </div>
           </td>
 

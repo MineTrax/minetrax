@@ -254,16 +254,9 @@ const breadcrumbItems = [
         >
           <template #default="{ item }">
             <DtRowItem>
-              <Link
-                v-tippy
-                as="a"
-                :href="route('player.punishment.show', item.id)"
-                class="focus:outline-hidden cursor-pointer hover:underline"
-                :class="item.is_active ?'font-bold dark:text-foreground':''"
-                :content="__('View details')"
-              >
+              <span :class="item.is_active ?'font-bold dark:text-foreground':''">
                 {{ item.id }}
-              </Link>
+              </span>
             </DtRowItem>
 
             <td class="px-4 py-3 whitespace-nowrap">

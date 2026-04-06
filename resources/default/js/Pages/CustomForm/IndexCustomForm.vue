@@ -110,12 +110,7 @@ const headerRow = [
         >
           <template #default="{ item }">
             <DtRowItem>
-              <Link
-                :href="route('custom-form.show', item.slug)"
-                class="hover:text-primary hover:underline"
-              >
-                {{ item.title }}
-              </Link>
+              {{ item.title }}
             </DtRowItem>
 
             <DtRowItem class="text-right">

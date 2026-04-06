@@ -164,18 +164,9 @@ const breadcrumbItems = [
                   >
                 </div>
                 <div class="ml-4">
-                  <InertiaLink
-                    as="a"
-                    :href="route('player.intel.session.show', {
-                      player: item.player_uuid,
-                      session: item.id,
-                    })"
-                    class="text-sm font-medium text-foreground focus:outline-hidden cursor-pointer hover:underline"
-                  >
-                    <span class="font-extrabold text-foreground">
-                      {{ item.player_displayname }} ({{ item.player_username }})
-                    </span>
-                  </InertiaLink>
+                  <span class="text-sm font-extrabold text-foreground">
+                    {{ item.player_displayname }} ({{ item.player_username }})
+                  </span>
                 </div>
               </div>
             </td>

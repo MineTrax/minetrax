@@ -220,9 +220,9 @@
 ">
  <tr v-for="(
 player, index
- ) in playersList.data":key="player.uuid":class="{
+ ) in playersList.data":key="player.uuid" class="cursor-pointer transition-colors hover:bg-muted/50" :class="{
 'bg-muted/20': index % 2 === 1,
- }">
+ }" @click="onRowClick($event, player)">
  <td
  class="px-2 py-4 whitespace-nowrap text-center text-sm text-primary font-extrabold">
  <span v-if="player.position"
@@ -258,20 +258,15 @@ player, index
 "alt=""/>
  </div>
  <div class="ml-4">
- <inertia-link v-tippy as="a":href="route(
-'player.show',
- player.uuid
- )
-"
- class="text-sm font-medium text-card-foreground focus:outline-hidden cursor-pointer hover:underline"
- :content="player.uuid
-">
- <span v-if="
- player.username
-":class="player.is_active
+ <inertia-link
+ as="a"
+ :href="route('player.show', player.uuid)"
+ class="text-sm font-extrabold hover:underline"
+ :class="player.is_active
  ?'text-card-foreground'
  :'text-muted-foreground'
-"class="font-extrabold">{{
+">
+ <span v-if="player.username">{{
  player.username
  }}</span>
  <span v-else class="text-destructive italic">{{
@@ -348,7 +343,7 @@ player, index
 
 <script setup>
 import { ref } from"vue";
-import { Deferred } from'@inertiajs/vue3';
+import { Deferred, router } from'@inertiajs/vue3';
 import AppLayout from"@/Layouts/AppLayout.vue";
 import Icon from"@/Components/Icon.vue";
 import InfiniteScroll from"@/Components/InfiniteScroll.vue";
@@ -385,6 +380,19 @@ const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } =
 
 // Reactive data
 const playersList = ref(props.players);
+
+// Row click handler
+function onRowClick(event, player) {
+ const target = event.target.closest("a, button, input, select, textarea, [role='button'], [role='menuitem']");
+ if (target) return;
+
+ const href = route('player.show', player.uuid);
+ if (event.metaKey || event.ctrlKey) {
+  window.open(href, "_blank");
+ } else {
+  router.visit(href);
+ }
+}
 
 // Methods
 const loadMorePlayers = () => {

@@ -1,7 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import AppHead from '@/Components/AppHead.vue';
-import {Link} from '@inertiajs/vue3';
 import {useTranslations} from '@/Composables/useTranslations';
 import {useHelpers} from '@/Composables/useHelpers';
 import DataTable from '@/Components/DataTable/DataTable.vue';
@@ -104,29 +103,11 @@ const headerRow = [
             <td
               class="text-sm px-4 font-medium text-left text-foreground whitespace-nowrap dark:text-foreground"
             >
-              <Link
-                as="a"
-                class="hover:underline"
-                :href="route('recruitment-submission.show', {
-                  submission: item.id,
-                  recruitment: item.recruitment.slug
-                })"
-              >
-                {{ item.id }}
-              </Link>
+              {{ item.id }}
             </td>
 
             <DtRowItem>
-              <Link
-                as="a"
-                :href="route('recruitment-submission.show', {
-                  submission: item.id,
-                  recruitment: item.recruitment.slug
-                })"
-                class="hover:text-primary hover:underline"
-              >
-                {{ item.recruitment.title }}
-              </Link>
+              {{ item.recruitment.title }}
             </DtRowItem>
 
             <DtRowItem>
