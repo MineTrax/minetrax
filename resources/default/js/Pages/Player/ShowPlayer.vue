@@ -289,7 +289,7 @@
                             as="button"
                             method="DELETE"
                             :href="route('admin.player.unlink', player.uuid)"
-                            class="text-destructive hover:text-destructive/80 focus:outline-hidden transition"
+                            class="text-destructive hover:text-destructive/80 focus:outline-hidden transition cursor-pointer"
                             :title="__('Unlink Player')"
                           >
                             <LockOpenIcon class="w-4 h-4" />

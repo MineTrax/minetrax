@@ -252,7 +252,7 @@ const headerRow = [
               as="button"
               method="DELETE"
               :href="route('admin.recruitment.delete', item.id)"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden"
+              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
               :title="__('Delete Application Form')"
             >
               <TrashIcon class="inline-block w-5 h-5" />
