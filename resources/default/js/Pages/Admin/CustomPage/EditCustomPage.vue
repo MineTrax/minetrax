@@ -1,18 +1,18 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import { Codemirror } from 'vue-codemirror';
-import { basicSetup } from 'codemirror';
-import { html } from '@codemirror/lang-html';
-import { oneDark } from '@/Data/CodeMirror/darkTheme.js';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
-import { onMounted, ref, shallowRef } from 'vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import { Codemirror } from "vue-codemirror";
+import { basicSetup } from "codemirror";
+import { html } from "@codemirror/lang-html";
+import { oneDark } from "@/Data/CodeMirror/darkTheme.js";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
+import { onMounted, ref, shallowRef } from "vue";
 
 const { __ } = useTranslations();
 
@@ -22,30 +22,30 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Custom Pages'),
-        url: route('admin.custom-page.index'),
+        text: __("Custom Pages"),
+        url: route("admin.custom-page.index"),
         current: false,
     },
     {
-        text: __('Edit Custom Page'),
+        text: __("Edit Custom Page"),
         current: true,
     },
     {
-        text: '#' + props.customPage.id,
+        text: "#" + props.customPage.id,
         current: true,
     }
 ];
 
-const pageType = ref(props.customPage.is_redirect ? 'redirect' : props.customPage.is_html_page ? 'html' : 'markdown');
+const pageType = ref(props.customPage.is_redirect ? "redirect" : props.customPage.is_html_page ? "html" : "markdown");
 const bodyMarkdown = ref(props.customPage.body);
 const pageTypeList = {
-    markdown: 'Markdown - Add your content in markdown format',
-    html: 'HTML - Add your content in code using HTML/CSS',
-    redirect: 'Redirect - This page will redirect to another URL',
+    markdown: "Markdown - Add your content in markdown format",
+    html: "HTML - Add your content in code using HTML/CSS",
+    redirect: "Redirect - This page will redirect to another URL",
 };
 
 const form = useForm({
@@ -59,13 +59,13 @@ const form = useForm({
     is_html_page: props.customPage.is_html_page,
     is_sidebar_visible: props.customPage.is_sidebar_visible,
     is_open_in_new_tab: props.customPage.is_open_in_new_tab,
-    '_method': 'PUT'
+    "_method": "PUT"
 });
 
 // Codemirror EditorView instance ref
 const view = shallowRef();
 const extensions = [basicSetup, html()];
-if (window.colorMode === 'dark') {
+if (window.colorMode === "dark") {
     extensions.push(oneDark);
 }
 const code = ref(props.customPage.body);
@@ -76,14 +76,14 @@ const handleReady = (payload) => {
 
 
 const updateCustomPage = () => {
-    if (pageType.value === 'markdown') {
+    if (pageType.value === "markdown") {
         form.body = bodyMarkdown.value;
-    } else if (pageType.value === 'html') {
+    } else if (pageType.value === "html") {
         form.body = view.value.state.doc.toString();
     }
-    form.is_redirect = pageType.value === 'redirect';
-    form.is_html_page = pageType.value === 'html';
-    form.post(route('admin.custom-page.update', props.customPage.id), {});
+    form.is_redirect = pageType.value === "redirect";
+    form.is_html_page = pageType.value === "html";
+    form.post(route("admin.custom-page.update", props.customPage.id), {});
 };
 
 

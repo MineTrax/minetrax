@@ -1,12 +1,12 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
 
 const { __ } = useTranslations();
 
@@ -20,30 +20,30 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Servers'),
-        url: route('admin.server.index'),
+        text: __("Servers"),
+        url: route("admin.server.index"),
         current: false,
     },
     {
-        text: __('Edit Server'),
+        text: __("Edit Server"),
         current: true,
     },
     {
-        text: '#' + props.server.id,
+        text: "#" + props.server.id,
         current: true,
     }
 ];
 
 const typeArray = {
-    '0': 'Paper',
-    '1': 'Spigot',
-    '2': 'Forge',
-    '3': 'Bukkit',
-    '4': 'Vanilla',
+    "0": "Paper",
+    "1": "Spigot",
+    "2": "Forge",
+    "3": "Bukkit",
+    "4": "Vanilla",
 };
 
 const form = useForm({
@@ -67,7 +67,7 @@ const form = useForm({
 });
 
 function updateServer() {
-    form.put(route('admin.server.update', props.server.id), {
+    form.put(route("admin.server.update", props.server.id), {
         preserveScroll: false
     });
 }

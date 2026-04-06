@@ -25,9 +25,9 @@
 
 
 <script setup>
-import {computed} from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import ResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue';
+import {computed} from "vue";
+import { usePage } from "@inertiajs/vue3";
+import ResponsiveNavLink from "@/Jetstream/ResponsiveNavLink.vue";
 
 const user = computed(() => usePage().props?.auth?.user);
 
@@ -43,7 +43,7 @@ const props = defineProps({
 });
 
 // eslint-disable-next-line no-unused-vars
-const emit = defineEmits(['open-admin-sidebar', 'logout']);
+const emit = defineEmits(["open-admin-sidebar", "logout"]);
 
 const shouldRender = computed(() => {
     if (props.item.authenticated && !user?.value)

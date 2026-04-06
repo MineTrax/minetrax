@@ -1,13 +1,13 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import PlayerSubMenu from '@/Shared/PlayerSubMenu.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import AppHead from "@/Components/AppHead.vue";
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
+import DataTable from "@/Components/DataTable/DataTable.vue";
+import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import PlayerSubMenu from "@/Shared/PlayerSubMenu.vue";
+import { EyeIcon } from "@heroicons/vue/24/outline";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
@@ -31,72 +31,72 @@ const props = defineProps({
 
 const headerRow = [
     {
-        key: 'id',
-        label: __('ID'),
+        key: "id",
+        label: __("ID"),
         sortable: true,
-        class: 'text-left w-12',
+        class: "text-left w-12",
     },
     {
-        key: 'country_id',
-        label: __('Flag'),
+        key: "country_id",
+        label: __("Flag"),
         sortable: true,
-        class: 'text-left w-12',
+        class: "text-left w-12",
     },
     {
-        key: 'player_displayname',
-        label: __('Display name'),
-        sortable: true,
-    },
-    {
-        key: 'session_started_at',
-        label: __('Started'),
+        key: "player_displayname",
+        label: __("Display name"),
         sortable: true,
     },
     {
-        key: 'session_ended_at',
-        label: __('Ended'),
+        key: "session_started_at",
+        label: __("Started"),
         sortable: true,
     },
     {
-        key: 'server_id',
-        label: __('Server'),
+        key: "session_ended_at",
+        label: __("Ended"),
         sortable: true,
     },
     {
-        key: 'play_time',
-        label: __('Play Time'),
+        key: "server_id",
+        label: __("Server"),
         sortable: true,
-        class: 'text-right',
     },
     {
-        key: 'afk_time',
-        label: __('Afk Time'),
+        key: "play_time",
+        label: __("Play Time"),
         sortable: true,
-        class: 'text-right',
+        class: "text-right",
     },
     {
-        key: 'actions',
-        label: __('Actions'),
+        key: "afk_time",
+        label: __("Afk Time"),
+        sortable: true,
+        class: "text-right",
+    },
+    {
+        key: "actions",
+        label: __("Actions"),
         sortable: false,
-        class: 'w-1 text-right',
+        class: "w-1 text-right",
     },
 ];
 
 const breadcrumbItems = [
     {
-        text: __('Home'),
-        url: route('home'),
+        text: __("Home"),
+        url: route("home"),
     },
     {
-        text: __('Players'),
-        url: route('player.index'),
+        text: __("Players"),
+        url: route("player.index"),
     },
     {
         text: props.player.username,
-        url: route('player.show', props.player.uuid),
+        url: route("player.show", props.player.uuid),
     },
     {
-        text: __('Sessions'),
+        text: __("Sessions"),
         current: true,
     },
 ];

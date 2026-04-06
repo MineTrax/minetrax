@@ -102,27 +102,27 @@
 
 <script>
 // Script section remains unchanged
-import AppLayout from '@/Layouts/AppLayout.vue';
-import NewsBox from '@/Shared/NewsBox.vue';
-import ShoutBox from '@/Shared/ShoutBox.vue';
-import DiscordServerBox from '@/Shared/DiscordServerBox.vue';
-import NewestUserBox from '@/Shared/NewestUserBox.vue';
-import VotingSitesBox from '@/Shared/VotingSitesBox.vue';
-import WelcomeBox from '@/Shared/WelcomeBox.vue';
-import LatestPinnedNews from '@/Shared/LatestPinnedNews.vue';
-import SocialChannelBox from '@/Shared/SocialChannelBox.vue';
-import DidYouKnowBox from '@/Shared/DidYouKnowBox.vue';
-import VersionCheck from '@/Shared/VersionCheck.vue';
-import OnlinePlayersBox from '@/Shared/OnlinePlayersBox.vue';
-import IngameChatBox from '@/Shared/IngameChatBox.vue';
-import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
-import PollBox from '@/Shared/PollBox.vue';
-import DonationBox from '@/Shared/DonationBox.vue';
-import OnlineUsersBox from '@/Shared/OnlineUsersBox.vue';
-import TopPlayersListBox from '@/Shared/TopPlayersListBox.vue';
-import VerifyYourEmailBox from '@/Shared/VerifyYourEmailBox.vue';
-import HeroSection from '@/Shared/HeroSection.vue';
-import {useAuthorizable} from '@/Composables/useAuthorizable';
+import AppLayout from "@/Layouts/AppLayout.vue";
+import NewsBox from "@/Shared/NewsBox.vue";
+import ShoutBox from "@/Shared/ShoutBox.vue";
+import DiscordServerBox from "@/Shared/DiscordServerBox.vue";
+import NewestUserBox from "@/Shared/NewestUserBox.vue";
+import VotingSitesBox from "@/Shared/VotingSitesBox.vue";
+import WelcomeBox from "@/Shared/WelcomeBox.vue";
+import LatestPinnedNews from "@/Shared/LatestPinnedNews.vue";
+import SocialChannelBox from "@/Shared/SocialChannelBox.vue";
+import DidYouKnowBox from "@/Shared/DidYouKnowBox.vue";
+import VersionCheck from "@/Shared/VersionCheck.vue";
+import OnlinePlayersBox from "@/Shared/OnlinePlayersBox.vue";
+import IngameChatBox from "@/Shared/IngameChatBox.vue";
+import ServerStatusBox from "@/Shared/ServerStatusBox.vue";
+import PollBox from "@/Shared/PollBox.vue";
+import DonationBox from "@/Shared/DonationBox.vue";
+import OnlineUsersBox from "@/Shared/OnlineUsersBox.vue";
+import TopPlayersListBox from "@/Shared/TopPlayersListBox.vue";
+import VerifyYourEmailBox from "@/Shared/VerifyYourEmailBox.vue";
+import HeroSection from "@/Shared/HeroSection.vue";
+import {useAuthorizable} from "@/Composables/useAuthorizable";
 
 export default {
     components: {

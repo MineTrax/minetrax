@@ -1,46 +1,46 @@
 <template>
- <AlertCard
- text-color="text-orange-800 dark:text-orange-500"
- border-color="border-orange-500"
- >
- {{ __("Your email address is not verified.") }}
- <template
- #body
- >
- <div class="text-foreground text-sm dark:text-foreground">
- <p>
- {{ __("Email verification is required to perform any action on the site. Please check your email inbox or") }}
- </p>
+  <AlertCard
+    text-color="text-orange-800 dark:text-orange-500"
+    border-color="border-orange-500"
+  >
+    {{ __("Your email address is not verified.") }}
+    <template
+      #body
+    >
+      <div class="text-foreground text-sm dark:text-foreground">
+        <p>
+          {{ __("Email verification is required to perform any action on the site. Please check your email inbox or") }}
+        </p>
 
- <InertiaLink
- :href="route('verification.send')"
- method="post"
- as="button"
- class="underline text-primary hover:text-primary"
- @click.prevent="sendEmailVerification"
- >
- {{ __("Click here to re-send the verification email") }}
- </InertiaLink>
+        <InertiaLink
+          :href="route('verification.send')"
+          method="post"
+          as="button"
+          class="underline text-primary hover:text-primary"
+          @click.prevent="sendEmailVerification"
+        >
+          {{ __("Click here to re-send the verification email") }}
+        </InertiaLink>
 
- <div
- v-show="verificationLinkSent"
- class="mt-2 font-medium text-sm text-success"
- >
- {{ __("A new verification link has been sent to your email address.") }}
- </div>
- </div>
- </template>
- </AlertCard>
+        <div
+          v-show="verificationLinkSent"
+          class="mt-2 font-medium text-sm text-success"
+        >
+          {{ __("A new verification link has been sent to your email address.") }}
+        </div>
+      </div>
+    </template>
+  </AlertCard>
 </template>
 
 <script setup>
-import { ref } from'vue';
-import AlertCard from'@/Components/AlertCard.vue';
+import { ref } from"vue";
+import AlertCard from"@/Components/AlertCard.vue";
 
 const verificationLinkSent = ref(null);
 
 const sendEmailVerification = () => {
- verificationLinkSent.value = true;
+    verificationLinkSent.value = true;
 };
 </script>
 

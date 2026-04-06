@@ -1,6 +1,6 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
-import { Card, CardContent } from '@/Components/ui/card';
+import { Link } from "@inertiajs/vue3";
+import { Card, CardContent } from "@/Components/ui/card";
 
 defineProps({
     player: {

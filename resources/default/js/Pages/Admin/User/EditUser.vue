@@ -1,17 +1,17 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import { useAuthorizable } from '@/Composables/useAuthorizable';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import XDatePicker from '@/Components/Form/XDatePicker.vue';
-import Multiselect from 'vue-multiselect';
-import { ref, onMounted } from 'vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import { useAuthorizable } from "@/Composables/useAuthorizable";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm, usePage } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import XTextarea from "@/Components/Form/XTextarea.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
+import Multiselect from "vue-multiselect";
+import { ref, onMounted } from "vue";
 
 const { __ } = useTranslations();
 const { can } = useAuthorizable();
@@ -26,20 +26,20 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Users'),
-        url: route('admin.user.index'),
+        text: __("Users"),
+        url: route("admin.user.index"),
         current: false,
     },
     {
-        text: __('Edit User'),
+        text: __("Edit User"),
         current: true,
     },
     {
-        text: '@' + props.userData.username,
+        text: "@" + props.userData.username,
         current: true,
     }
 ];
@@ -47,7 +47,7 @@ const breadcrumbItems = [
 const availableLocales = ref({});
 
 const form = useForm({
-    _method: 'PUT',
+    _method: "PUT",
     username: props.userData.username,
     name: props.userData.name,
     email: props.userData.email,
@@ -73,7 +73,7 @@ const form = useForm({
     badges: props.userData.badges,
     country: props.userData.country,
     country_id: props.userData.country_id,
-    password: '',
+    password: "",
     locale: props.userData.locale,
 });
 
@@ -81,14 +81,14 @@ function updateUserInformation() {
     const tempBadges = form.badges;
     form.badges = form.badges.map(b => b.id);
     form.country_id = form.country?.id;
-    form.post(route('admin.user.update', props.userData.id), {
+    form.post(route("admin.user.update", props.userData.id), {
         preserveScroll: true
     });
     form.badges = tempBadges;
 }
 
 function getAvailableLocales() {
-    axios.get(route('locale.list')).then(response => {
+    axios.get(route("locale.list")).then(response => {
         const locales = response.data;
         locales.forEach(locale => {
             availableLocales.value[locale.code] = locale.display;

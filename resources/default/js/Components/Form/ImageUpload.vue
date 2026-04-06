@@ -1,74 +1,140 @@
 <template>
-    <div :class="cn('space-y-2', divClass)">
-        <!-- Label -->
-        <Label v-if="label" :for="id" :class="cn('text-sm font-medium', errorToShow ? 'text-destructive' : 'text-foreground')">
-            {{ label }}
-            <span v-if="required" class="text-destructive ml-1">*</span>
-        </Label>
+  <div :class="cn('space-y-2', divClass)">
+    <!-- Label -->
+    <Label
+      v-if="label"
+      :for="id"
+      :class="cn('text-sm font-medium', errorToShow ? 'text-destructive' : 'text-foreground')"
+    >
+      {{ label }}
+      <span
+        v-if="required"
+        class="text-destructive ml-1"
+      >*</span>
+    </Label>
 
-        <!-- Preview / Dropzone -->
-        <div class="group relative" :class="cn('w-full', previewWrapperClass)">
-            <button
-                type="button"
-                class="block w-full h-full cursor-pointer focus:outline-hidden"
-                @click="openFileDialog"
-                @dragover.prevent="isDragging = true"
-                @dragleave.prevent="isDragging = false"
-                @drop.prevent="onDrop"
-                :disabled="disabled"
+    <!-- Preview / Dropzone -->
+    <div
+      class="group relative"
+      :class="cn('w-full', previewWrapperClass)"
+    >
+      <button
+        type="button"
+        class="block w-full h-full cursor-pointer focus:outline-hidden"
+        :disabled="disabled"
+        @click="openFileDialog"
+        @dragover.prevent="isDragging = true"
+        @dragleave.prevent="isDragging = false"
+        @drop.prevent="onDrop"
+      >
+        <!-- With image -->
+        <div
+          v-if="displayUrl"
+          :class="containerClasses"
+        >
+          <img
+            :src="displayUrl"
+            alt="preview"
+            :class="imageClasses"
+          >
+
+          <!-- Overlay controls (mobile: always visible) -->
+          <div
+            class="absolute inset-0 flex md:hidden items-center justify-center gap-2 bg-black/40 text-white"
+            :class="shapeClass"
+          >
+            <Button
+              size="sm"
+              variant="secondary"
+              type="button"
+              :disabled="disabled"
+              @click.stop.prevent="openFileDialog"
             >
-                <!-- With image -->
-                <div v-if="displayUrl" :class="containerClasses">
-                    <img :src="displayUrl" alt="preview" :class="imageClasses" />
+              {{ changeLabel }}
+            </Button>
+          </div>
 
-                    <!-- Overlay controls (mobile: always visible) -->
-                    <div class="absolute inset-0 flex md:hidden items-center justify-center gap-2 bg-black/40 text-white" :class="shapeClass">
-                        <Button size="sm" variant="secondary" type="button" :disabled="disabled" @click.stop.prevent="openFileDialog">{{ changeLabel }}</Button>
-                    </div>
-
-                    <!-- Overlay controls (desktop: on hover) -->
-                    <div
-                        class="absolute inset-0 hidden md:flex items-center justify-center gap-2 bg-black/40 text-white rounded-md md:opacity-0 md:pointer-events-none md:group-hover:opacity-100 md:group-hover:pointer-events-auto transition-opacity"
-                        :class="shapeClass"
-                    >
-                        <Button size="sm" variant="secondary" type="button" :disabled="disabled" @click.stop.prevent="openFileDialog">{{ changeLabel }}</Button>
-                    </div>
-                </div>
-
-                <!-- Without image -->
-                <div v-else :class="emptyClasses">
-                    <div class="text-center space-y-1">
-                        <div class="text-sm font-medium">{{ uploadLabel }}</div>
-                        <div class="text-xs text-muted-foreground">{{ hintText }}</div>
-                    </div>
-                </div>
-            </button>
-
-            <!-- All controls are inside the preview overlay for better UX -->
-
-            <!-- Remove/Clear icon placed as sibling to avoid clipping by rounded overflow -->
-            <button
-                v-if="showRemoveIcon && (hasSelection || (removable && currentUrl))"
-                type="button"
-                :disabled="disabled"
-                class="absolute z-20 inline-flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white w-6 h-6 p-1"
-                :class="iconPositionClass"
-                :aria-label="hasSelection ? clearLabel : removeLabel"
-                @click.stop.prevent="hasSelection ? clearSelection() : $emit('remove')"
+          <!-- Overlay controls (desktop: on hover) -->
+          <div
+            class="absolute inset-0 hidden md:flex items-center justify-center gap-2 bg-black/40 text-white rounded-md md:opacity-0 md:pointer-events-none md:group-hover:opacity-100 md:group-hover:pointer-events-auto transition-opacity"
+            :class="shapeClass"
+          >
+            <Button
+              size="sm"
+              variant="secondary"
+              type="button"
+              :disabled="disabled"
+              @click.stop.prevent="openFileDialog"
             >
-                <Icon :name="hasSelection ? 'close' : 'trash'" />
-            </button>
-
-            <!-- Hidden input -->
-            <input ref="fileInputRef" type="file" class="hidden" :id="id" :name="name" :accept="accept" :disabled="disabled" @change="onFileChange" />
+              {{ changeLabel }}
+            </Button>
+          </div>
         </div>
 
-        <!-- Help and Error -->
-        <div v-if="help || errorToShow" class="flex gap-1" :class="cn(help && errorToShow ? 'justify-between' : errorToShow ? 'justify-end' : 'justify-start', helpErrorFlex)">
-            <p v-if="help" class="text-xs text-muted-foreground">{{ help }}</p>
-            <p v-if="errorToShow" class="text-xs text-destructive">{{ errorToShow }}</p>
+        <!-- Without image -->
+        <div
+          v-else
+          :class="emptyClasses"
+        >
+          <div class="text-center space-y-1">
+            <div class="text-sm font-medium">
+              {{ uploadLabel }}
+            </div>
+            <div class="text-xs text-muted-foreground">
+              {{ hintText }}
+            </div>
+          </div>
         </div>
+      </button>
+
+      <!-- All controls are inside the preview overlay for better UX -->
+
+      <!-- Remove/Clear icon placed as sibling to avoid clipping by rounded overflow -->
+      <button
+        v-if="showRemoveIcon && (hasSelection || (removable && currentUrl))"
+        type="button"
+        :disabled="disabled"
+        class="absolute z-20 inline-flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white w-6 h-6 p-1"
+        :class="iconPositionClass"
+        :aria-label="hasSelection ? clearLabel : removeLabel"
+        @click.stop.prevent="hasSelection ? clearSelection() : $emit('remove')"
+      >
+        <Icon :name="hasSelection ? 'close' : 'trash'" />
+      </button>
+
+      <!-- Hidden input -->
+      <input
+        :id="id"
+        ref="fileInputRef"
+        type="file"
+        class="hidden"
+        :name="name"
+        :accept="accept"
+        :disabled="disabled"
+        @change="onFileChange"
+      >
     </div>
+
+    <!-- Help and Error -->
+    <div
+      v-if="help || errorToShow"
+      class="flex gap-1"
+      :class="cn(help && errorToShow ? 'justify-between' : errorToShow ? 'justify-end' : 'justify-start', helpErrorFlex)"
+    >
+      <p
+        v-if="help"
+        class="text-xs text-muted-foreground"
+      >
+        {{ help }}
+      </p>
+      <p
+        v-if="errorToShow"
+        class="text-xs text-destructive"
+      >
+        {{ errorToShow }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script setup>

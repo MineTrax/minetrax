@@ -1,13 +1,13 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import ImageUpload from '@/Components/Form/ImageUpload.vue';
-import Multiselect from 'vue-multiselect';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import ImageUpload from "@/Components/Form/ImageUpload.vue";
+import Multiselect from "vue-multiselect";
 
 const { __ } = useTranslations();
 
@@ -18,16 +18,16 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Roles'),
-        url: route('admin.role.index'),
+        text: __("Roles"),
+        url: route("admin.role.index"),
         current: false,
     },
     {
-        text: __('Edit Role'),
+        text: __("Edit Role"),
         current: true,
     },
     {
@@ -46,11 +46,11 @@ const form = useForm({
     permissions: props.role.permissions,
     web_message_format: props.role.web_message_format,
     photo: null,
-    '_method': 'PUT'
+    "_method": "PUT"
 });
 
 function updateRole() {
-    form.post(route('admin.role.update', props.role.id), {
+    form.post(route("admin.role.update", props.role.id), {
         preserveScroll: true
     });
 }
@@ -77,10 +77,10 @@ function updateRole() {
                 <div class="col-span-6">
                   <ImageUpload
                     id="photo"
+                    v-model="form.photo"
                     name="photo"
                     :label="__('Role Image (Optional)')"
                     :current-url="role.photo_url"
-                    v-model="form.photo"
                     :error="form.errors.photo"
                     :removable="false"
                     shape="rect"

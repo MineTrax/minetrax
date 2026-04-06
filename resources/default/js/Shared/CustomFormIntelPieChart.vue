@@ -1,7 +1,7 @@
 <script setup>
-import Chart from '@/Components/Dashboard/Chart.vue';
-import { Card, CardContent } from '@/Components/ui/card';
-import { ref } from 'vue';
+import Chart from "@/Components/Dashboard/Chart.vue";
+import { Card, CardContent } from "@/Components/ui/card";
+import { ref } from "vue";
 
 let option = ref({});
 let graphData = ref(null);
@@ -19,7 +19,7 @@ graphData.value = result;
 
 option.value = {
     tooltip: {
-        trigger: 'item'
+        trigger: "item"
     },
     toolbox: {
         feature: {
@@ -28,29 +28,29 @@ option.value = {
         }
     },
     legend: {
-        top: '2%',
-        left: 'center'
+        top: "2%",
+        left: "center"
     },
     series: [
         {
-            name: 'Count',
-            type: 'pie',
-            radius: ['40%', '70%'],
+            name: "Count",
+            type: "pie",
+            radius: ["40%", "70%"],
             avoidLabelOverlap: false,
             itemStyle: {
                 borderRadius: 7,
-                borderColor: '#fff',
+                borderColor: "#fff",
                 borderWidth: 2
             },
             label: {
                 show: false,
-                position: 'center'
+                position: "center"
             },
             emphasis: {
                 label: {
                     show: true,
                     fontSize: 40,
-                    fontWeight: 'bold'
+                    fontWeight: "bold"
                 }
             },
             labelLine: {

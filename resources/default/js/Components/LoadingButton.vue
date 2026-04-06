@@ -4,14 +4,17 @@
     :variant="variant"
     :size="size"
   >
-  <Loader2Icon v-if="loading" class="w-4 h-4 animate-spin" />
+    <Loader2Icon
+      v-if="loading"
+      class="w-4 h-4 animate-spin"
+    />
     <slot />
   </Button>
 </template>
 
 <script>
-import { Button } from '@/Components/ui/button';
-import { Loader2Icon } from 'lucide-vue-next';
+import { Button } from "@/Components/ui/button";
+import { Loader2Icon } from "lucide-vue-next";
 
 export default {
     components: { Button, Loader2Icon },
@@ -19,11 +22,11 @@ export default {
         loading: Boolean,
         variant: {
             type: String,
-            default: 'default',
+            default: "default",
         },
         size: {
             type: String,
-            default: 'default',
+            default: "default",
         },
     },
 };

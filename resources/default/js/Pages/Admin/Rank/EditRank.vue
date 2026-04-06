@@ -1,12 +1,12 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import ImageUpload from '@/Components/Form/ImageUpload.vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XTextarea from "@/Components/Form/XTextarea.vue";
+import ImageUpload from "@/Components/Form/ImageUpload.vue";
 
 const { __ } = useTranslations();
 
@@ -16,16 +16,16 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Player Ranks'),
-        url: route('admin.rank.index'),
+        text: __("Player Ranks"),
+        url: route("admin.rank.index"),
         current: false,
     },
     {
-        text: __('Edit Player Rank'),
+        text: __("Edit Player Rank"),
         current: true,
     },
     {
@@ -41,11 +41,11 @@ const form = useForm({
     total_score_needed: props.rank.total_score_needed,
     total_play_time_needed: props.rank.total_play_time_needed,
     photo: null,
-    '_method': 'PUT'
+    "_method": "PUT"
 });
 
 function updateRank() {
-    form.post(route('admin.rank.update', props.rank.id), {
+    form.post(route("admin.rank.update", props.rank.id), {
         preserveScroll: true
     });
 }
@@ -72,11 +72,11 @@ function updateRank() {
                 <div class="col-span-6">
                   <ImageUpload
                     id="photo"
+                    v-model="form.photo"
                     name="photo"
                     :label="__('Rank Image')"
                     :hint="__('A small image (Eg: 50x50) is recommended')"
                     :current-url="rank.photo_url"
-                    v-model="form.photo"
                     :error="form.errors.photo"
                     :removable="false"
                     shape="rect"

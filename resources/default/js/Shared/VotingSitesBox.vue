@@ -41,13 +41,13 @@
 
 <script setup>
 import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
+import { Button } from "@/Components/ui/button";
 
 defineProps({
-  votingsites: Array,
-  enabled: Boolean,
+    votingsites: Array,
+    enabled: Boolean,
 });
 </script>

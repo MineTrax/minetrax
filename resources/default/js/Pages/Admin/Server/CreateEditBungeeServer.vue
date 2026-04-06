@@ -1,13 +1,13 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import { computed } from 'vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import { computed } from "vue";
 
 const { __ } = useTranslations();
 
@@ -23,20 +23,20 @@ const isCreateOperation = computed(() => !props.server);
 
 const breadcrumbItems = computed(() => [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Servers'),
-        url: route('admin.server.index'),
+        text: __("Servers"),
+        url: route("admin.server.index"),
         current: false,
     },
     {
-        text: isCreateOperation.value ? __('Add Proxy Server') : __('Edit Proxy Server'),
+        text: isCreateOperation.value ? __("Add Proxy Server") : __("Edit Proxy Server"),
         current: true,
     },
     ...(!isCreateOperation.value ? [{
-        text: '#' + props.server.id,
+        text: "#" + props.server.id,
         current: true,
     }] : []),
 ]);
@@ -60,11 +60,11 @@ const form = useForm({
 
 function postForm() {
     if (isCreateOperation.value) {
-        form.post(route('admin.server-bungee.store'), {
+        form.post(route("admin.server-bungee.store"), {
             preserveScroll: true
         });
     } else {
-        form.put(route('admin.server.update.bungee', props.server.id), {
+        form.put(route("admin.server.update.bungee", props.server.id), {
             preserveScroll: true
         });
     }

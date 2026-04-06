@@ -4,11 +4,11 @@ import { ScrollAreaScrollbar, ScrollAreaThumb } from "reka-ui";
 import { cn } from "@/lib/utils";
 
 const props = defineProps({
-  orientation: { type: String, required: false, default: "vertical" },
-  forceMount: { type: Boolean, required: false },
-  asChild: { type: Boolean, required: false },
-  as: { type: null, required: false },
-  class: { type: null, required: false },
+    orientation: { type: String, required: false, default: "vertical" },
+    forceMount: { type: Boolean, required: false },
+    asChild: { type: Boolean, required: false },
+    as: { type: null, required: false },
+    class: { type: null, required: false },
 });
 
 const delegatedProps = reactiveOmit(props, "class");

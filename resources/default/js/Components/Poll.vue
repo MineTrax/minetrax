@@ -95,11 +95,11 @@
 </template>
 
 <script>
-import { useHelpers } from '@/Composables/useHelpers';
+import { useHelpers } from "@/Composables/useHelpers";
 
 
 export default{
-    name: 'Poll',
+    name: "Poll",
     props: {
         question: {
             type: String,
@@ -127,7 +127,7 @@ export default{
         },
         submitButtonText: {
             type: String,
-            default: 'Submit'
+            default: "Submit"
         },
         customId: {
             type: Number,
@@ -165,7 +165,7 @@ export default{
             return totalVotes;
         },
         totalVotesFormatted(){
-            return this.totalVotes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return this.totalVotes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
         mostVotes(){
             let max = 0;
@@ -180,16 +180,16 @@ export default{
 
             if (this.totalVotes === 0)
                 return this.answers.map(a=>{
-                    a.percent = '0%';
+                    a.percent = "0%";
                     return a;
                 });
 
             //Calculate percent
             return this.answers.filter(a=>{
                 if (!isNaN(a.votes) && a.votes > 0)
-                    a.percent = ( Math.round( (parseInt(a.votes)/this.totalVotes ) * 100) ) + '%';
+                    a.percent = ( Math.round( (parseInt(a.votes)/this.totalVotes ) * 100) ) + "%";
                 else
-                    a.percent =  '0%';
+                    a.percent =  "0%";
 
                 return a;
             });
@@ -216,7 +216,7 @@ export default{
             if (this.customId)
                 obj.customId = this.customId;
 
-            this.$emit('addvote', obj);
+            this.$emit("addvote", obj);
         },
         handleVote(a){ //Callback
             if (this.isComingSoon) return;
@@ -224,7 +224,7 @@ export default{
             if (this.multiple){
 
                 if (a.selected === undefined)
-                    console.log('Please add \'selected: false\' on the answer object');
+                    console.log("Please add 'selected: false' on the answer object");
 
                 a.selected = !a.selected;
                 return;
@@ -241,7 +241,7 @@ export default{
             if (this.customId)
                 obj.customId = this.customId;
 
-            this.$emit('addvote', obj);
+            this.$emit("addvote", obj);
         }
     }
 };

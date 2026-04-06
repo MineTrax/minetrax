@@ -1,14 +1,14 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import CustomFormIntelPieChart from '@/Shared/CustomFormIntelPieChart.vue';
-import CustomFormIntelBarChart from '@/Shared/CustomFormIntelBarChart.vue';
-import CustomFormIntelListChart from '@/Shared/CustomFormIntelListChart.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
-import { startCase } from 'lodash';
+import AppHead from "@/Components/AppHead.vue";
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import CustomFormIntelPieChart from "@/Shared/CustomFormIntelPieChart.vue";
+import CustomFormIntelBarChart from "@/Shared/CustomFormIntelBarChart.vue";
+import CustomFormIntelListChart from "@/Shared/CustomFormIntelListChart.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import { startCase } from "lodash";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -24,12 +24,12 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Custom Forms'),
-        url: route('admin.custom-form.index'),
+        text: __("Custom Forms"),
+        url: route("admin.custom-form.index"),
         current: false,
     },
     {

@@ -1,5 +1,8 @@
 <template>
-  <Card v-if="newslist.length > 0" class="overflow-hidden">
+  <Card
+    v-if="newslist.length > 0"
+    class="overflow-hidden"
+  >
     <CardContent class="p-0">
       <div class="p-3">
         <h3 class="font-extrabold text-card-foreground">
@@ -15,7 +18,7 @@
         >
           <div class="flex items-start justify-between gap-4">
             <div class="flex-1 min-w-0">
-                                          <!-- News Title -->
+              <!-- News Title -->
               <h4 class="font-semibold text-foreground mb-2 leading-tight">
                 <Link
                   :href="route('news.show', news.slug)"
@@ -35,7 +38,7 @@
                 >
                   {{ formatTimeAgoToNow(news.published_at) }}
                 </span>
-                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                <span class="w-1 h-1 bg-muted-foreground rounded-full" />
                 <span>{{ news.type.key }}</span>
               </div>
             </div>
@@ -59,12 +62,12 @@
 </template>
 
 <script>
-import { useHelpers } from '@/Composables/useHelpers';
+import { useHelpers } from "@/Composables/useHelpers";
 import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
-import { Link } from '@inertiajs/vue3';
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
+import { Link } from "@inertiajs/vue3";
 
 export default {
     components: {

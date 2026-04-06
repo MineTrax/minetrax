@@ -1,12 +1,12 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
 
 const { __ } = useTranslations();
 
@@ -16,26 +16,26 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Servers'),
-        url: route('admin.server.index'),
+        text: __("Servers"),
+        url: route("admin.server.index"),
         current: false,
     },
     {
-        text: __('Add Server'),
+        text: __("Add Server"),
         current: true,
     }
 ];
 
 const typeArray = {
-    '0': 'Paper',
-    '1': 'Spigot',
-    '2': 'Forge',
-    '3': 'Bukkit',
-    '4': 'Vanilla',
+    "0": "Paper",
+    "1": "Spigot",
+    "2": "Forge",
+    "3": "Bukkit",
+    "4": "Vanilla",
 };
 
 const form = useForm({
@@ -45,7 +45,7 @@ const form = useForm({
     query_port: null,
     webquery_port: null,
     minecraft_version: props.versionsArray[props.versionsArray.length - 1],
-    type: '0',
+    type: "0",
     hostname: null,
     ip_address: null,
     is_server_intel_enabled: true,
@@ -59,7 +59,7 @@ const form = useForm({
 });
 
 function addServer() {
-    form.post(route('admin.server.store'), {
+    form.post(route("admin.server.store"), {
         preserveScroll: false
     });
 }
@@ -183,9 +183,9 @@ function addServer() {
 
                 <div class="col-span-6 sm:col-span-3">
                   <XSelect
-                    :required="true"
                     id="type"
                     v-model="form.type"
+                    :required="true"
                     :placeholder="__('Select server type')"
                     :disable-null="true"
                     name="type"
@@ -197,9 +197,9 @@ function addServer() {
 
                 <div class="col-span-6 sm:col-span-3">
                   <XSelect
-                    :required="true"
                     id="minecraft_version"
                     v-model="form.minecraft_version"
+                    :required="true"
                     name="minecraft_version"
                     :error="form.errors.minecraft_version"
                     :label="__('Version')"

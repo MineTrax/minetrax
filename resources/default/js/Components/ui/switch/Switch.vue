@@ -4,16 +4,16 @@ import { SwitchRoot, SwitchThumb, useForwardPropsEmits } from "reka-ui";
 import { cn } from "@/lib/utils";
 
 const props = defineProps({
-  defaultValue: { type: Boolean, required: false },
-  modelValue: { type: [Boolean, null], required: false },
-  disabled: { type: Boolean, required: false },
-  id: { type: String, required: false },
-  value: { type: String, required: false },
-  asChild: { type: Boolean, required: false },
-  as: { type: null, required: false },
-  name: { type: String, required: false },
-  required: { type: Boolean, required: false },
-  class: { type: null, required: false },
+    defaultValue: { type: Boolean, required: false },
+    modelValue: { type: [Boolean, null], required: false },
+    disabled: { type: Boolean, required: false },
+    id: { type: String, required: false },
+    value: { type: String, required: false },
+    asChild: { type: Boolean, required: false },
+    as: { type: null, required: false },
+    name: { type: String, required: false },
+    required: { type: Boolean, required: false },
+    class: { type: null, required: false },
 });
 
 const emits = defineEmits(["update:modelValue"]);

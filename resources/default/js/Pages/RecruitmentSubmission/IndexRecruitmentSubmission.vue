@@ -1,14 +1,14 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import AppHead from '@/Components/AppHead.vue';
-import {useTranslations} from '@/Composables/useTranslations';
-import {useHelpers} from '@/Composables/useHelpers';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
-import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
+import AppLayout from "@/Layouts/AppLayout.vue";
+import AppHead from "@/Components/AppHead.vue";
+import {useTranslations} from "@/Composables/useTranslations";
+import {useHelpers} from "@/Composables/useHelpers";
+import DataTable from "@/Components/DataTable/DataTable.vue";
+import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
+import { EyeIcon } from "@heroicons/vue/24/outline";
+import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -24,61 +24,61 @@ defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Home'),
-        url: route('home'),
+        text: __("Home"),
+        url: route("home"),
         current: false
     },
     {
-        text: __('Applications'),
-        url: route('recruitment.index'),
+        text: __("Applications"),
+        url: route("recruitment.index"),
         current: false
     },
     {
-        text: __('My Requests'),
-        url: route('recruitment-submission.index'),
+        text: __("My Requests"),
+        url: route("recruitment-submission.index"),
         current: true
     }
 ];
 
 const headerRow = [
     {
-        key: 'id',
-        label: __('ID'),
+        key: "id",
+        label: __("ID"),
         sortable: true,
-        class: 'text-left w-[5%]',
+        class: "text-left w-[5%]",
     },
     {
-        key: 'recruitment_id',
-        label: __('Application'),
+        key: "recruitment_id",
+        label: __("Application"),
         sortable: true,
     },
     {
-        key: 'status',
-        label: __('Status'),
+        key: "status",
+        label: __("Status"),
         sortable: true,
-        class: 'text-right w-1/12 whitespace-nowrap',
+        class: "text-right w-1/12 whitespace-nowrap",
         filterable: {
-            type: 'multiselect',
-            options: ['pending', 'inprogress', 'approved', 'rejected', 'withdrawn', 'onhold'],
+            type: "multiselect",
+            options: ["pending", "inprogress", "approved", "rejected", "withdrawn", "onhold"],
         }
     },
     {
-        key: 'created_at',
-        label: __('Created At'),
-        class: 'text-right w-1/12 whitespace-nowrap',
+        key: "created_at",
+        label: __("Created At"),
+        class: "text-right w-1/12 whitespace-nowrap",
         sortable: true,
     },
     {
-        key: 'updated_at',
-        label: __('Last Updated At'),
-        class: 'text-right w-1/12 whitespace-nowrap',
+        key: "updated_at",
+        label: __("Last Updated At"),
+        class: "text-right w-1/12 whitespace-nowrap",
         sortable: true,
     },
     {
-        key: 'actions',
-        label: '',
+        key: "actions",
+        label: "",
         sortable: false,
-        class: 'w-1/12 text-right',
+        class: "w-1/12 text-right",
     },
 ];
 
@@ -88,7 +88,10 @@ const headerRow = [
   <AppLayout>
     <AppHead :title="__('My Application Requests')" />
 
-    <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
+    <AppBreadcrumb
+      class="max-w-screen-2xl mx-auto"
+      :items="breadcrumbItems"
+    />
 
     <div class="py-4 px-2 md:py-4 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">

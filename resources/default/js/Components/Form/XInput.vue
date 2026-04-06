@@ -12,7 +12,10 @@
       )"
     >
       {{ label }}
-      <span v-if="required" class="text-destructive ml-1">*</span>
+      <span
+        v-if="required"
+        class="text-destructive ml-1"
+      >*</span>
     </Label>
 
     <!-- Input -->
@@ -56,84 +59,84 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { useVModel } from '@vueuse/core'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
-import { cn } from '@/lib/utils'
+import { computed, ref } from "vue";
+import { useVModel } from "@vueuse/core";
+import { Input } from "@/Components/ui/input";
+import { Label } from "@/Components/ui/label";
+import { cn } from "@/lib/utils";
 
 const props = defineProps({
-  modelValue: {
-    type: [Number, String, Array, Object, Boolean, Date],
-    default: ''
-  },
-  name: String,
-  help: String,
-  label: String,
-  type: {
-    type: String,
-    default: 'text'
-  },
-  id: String,
-  error: String,
-  autocomplete: {
-    type: String,
-    default: 'off'
-  },
-  autofocus: {
-    type: [String, Boolean],
-    default: false
-  },
-  required: {
-    type: [String, Boolean],
-    default: false
-  },
-  disabled: {
-    type: [String, Boolean],
-    default: false
-  },
-  helpErrorFlex: {
-    type: String,
-    default: 'flex-col'
-  },
-  inputClass: {
-    type: String,
-    default: ''
-  },
-  divClass: {
-    type: String,
-    default: ''
-  },
-  placeholder: String,
-})
+    modelValue: {
+        type: [Number, String, Array, Object, Boolean, Date],
+        default: ""
+    },
+    name: String,
+    help: String,
+    label: String,
+    type: {
+        type: String,
+        default: "text"
+    },
+    id: String,
+    error: String,
+    autocomplete: {
+        type: String,
+        default: "off"
+    },
+    autofocus: {
+        type: [String, Boolean],
+        default: false
+    },
+    required: {
+        type: [String, Boolean],
+        default: false
+    },
+    disabled: {
+        type: [String, Boolean],
+        default: false
+    },
+    helpErrorFlex: {
+        type: String,
+        default: "flex-col"
+    },
+    inputClass: {
+        type: String,
+        default: ""
+    },
+    divClass: {
+        type: String,
+        default: ""
+    },
+    placeholder: String,
+});
 
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(["update:modelValue"]);
 
-const inputRef = ref(null)
+const inputRef = ref(null);
 
-const modelValue = useVModel(props, 'modelValue', emits, {
-  passive: true,
-  defaultValue: props.modelValue,
-})
+const modelValue = useVModel(props, "modelValue", emits, {
+    passive: true,
+    defaultValue: props.modelValue,
+});
 
 const inputClasses = computed(() => {
-  return cn(
+    return cn(
     // Base input styles with proper height
-    'transition-colors',
-    // Error state styling
-    props.error && 'border-destructive focus-visible:ring-destructive',
-    // Custom classes
-    props.inputClass
-  )
-})
+        "transition-colors",
+        // Error state styling
+        props.error && "border-destructive focus-visible:ring-destructive",
+        // Custom classes
+        props.inputClass
+    );
+});
 
 const focus = () => {
-  if (inputRef.value) {
-    inputRef.value.focus()
-  }
-}
+    if (inputRef.value) {
+        inputRef.value.focus();
+    }
+};
 
 defineExpose({
-  focus
-})
+    focus
+});
 </script>

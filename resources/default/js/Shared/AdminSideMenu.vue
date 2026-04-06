@@ -402,7 +402,10 @@ const navItems = [
   <div :class="['min-h-screen fixed bg-sidebar text-sidebar-foreground shadow z-10 duration-300', collapsed ? 'w-16' : 'w-64']">
     <div class="h-screen overflow-y-auto">
       <div :class="['px-4 mt-2 flex', collapsed ? 'justify-center' : 'justify-end']">
-        <button class="cursor-pointer" @click.prevent="$emit('toggleCollapse')">
+        <button
+          class="cursor-pointer"
+          @click.prevent="$emit('toggleCollapse')"
+        >
           <ChevronDoubleLeftIcon :class="['h-6 w-6 p-0.5 text-sidebar-foreground hover:text-sidebar-foreground/80', collapsed ? '-rotate-180' : '']" />
         </button>
       </div>

@@ -1,23 +1,23 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import AlertCard from '@/Components/AlertCard.vue';
-import { computed, nextTick, onMounted, reactive, ref } from 'vue';
-import Icon from '@/Components/Icon.vue';
-import { Link } from '@inertiajs/vue3';
-import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+import AppHead from "@/Components/AppHead.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import AlertCard from "@/Components/AlertCard.vue";
+import { computed, nextTick, onMounted, reactive, ref } from "vue";
+import Icon from "@/Components/Icon.vue";
+import { Link } from "@inertiajs/vue3";
+import { ExclamationTriangleIcon } from "@heroicons/vue/24/outline";
 
 const { __ } = useTranslations();
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Ask DB'),
+        text: __("Ask DB"),
         current: true,
     }
 ];
@@ -59,7 +59,7 @@ function askDb() {
     form.verboseError = null;
 
     results.push({
-        type: 'user',
+        type: "user",
         content: form.prompt,
     });
     scrollToBottom();
@@ -67,12 +67,12 @@ function askDb() {
     const prompt = form.prompt;
     form.prompt = null;
 
-    axios.post(route('admin.ask-db.query'), {
+    axios.post(route("admin.ask-db.query"), {
         prompt: prompt,
     }).then((response) => {
         results.push(response.data.data);
     }).catch((error) => {
-        form.error = error.response?.data?.message || error.message || __('Failed to Query Database! Try again after rephrasing your question.');
+        form.error = error.response?.data?.message || error.message || __("Failed to Query Database! Try again after rephrasing your question.");
         if (props.appDebug) {
             form.verboseError = error.response?.data?.verbose || null;
         }
@@ -94,19 +94,19 @@ function askWithExample(example) {
 }
 
 function handleKeydown(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
         askDb();
     }
 }
 
 const examples = [
-    'Who is the most recent user to signup?',
-    'Give 5 recent users who have linked their players.',
-    'Which player has the most player kills?',
-    'Which server has most number of players?',
-    'How many user have their email verified?',
-    'How many post is created by superadmin?',
+    "Who is the most recent user to signup?",
+    "Give 5 recent users who have linked their players.",
+    "Which player has the most player kills?",
+    "Which server has most number of players?",
+    "How many user have their email verified?",
+    "How many post is created by superadmin?",
 ];
 
 const container = ref(null);
@@ -119,7 +119,7 @@ function scrollToBottom() {
         nextTick(() => {
             container.value.scrollTo({
                 top: container.value.scrollHeight,
-                behavior: 'smooth', // Ensures the scrolling is smooth
+                behavior: "smooth", // Ensures the scrolling is smooth
             });
         });
     }
@@ -131,7 +131,11 @@ function scrollToBottom() {
     <AppHead :title="__('AskDB - AI based database query.')" />
 
     <div class="p-10 mx-auto space-y-4 max-w-5xl h-[94vh] flex flex-col">
-      <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+      <AppBreadcrumb
+        class="mt-0"
+        breadcrumb-class="max-w-none px-0 md:px-0"
+        :items="breadcrumbItems"
+      />
 
       <!-- Feature not enabled -->
       <AlertCard

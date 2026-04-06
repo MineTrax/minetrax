@@ -1,5 +1,8 @@
 <template>
-  <Card v-if="$page.props.generalSettings.enable_shoutbox" ref="box">
+  <Card
+    v-if="$page.props.generalSettings.enable_shoutbox"
+    ref="box"
+  >
     <CardContent class="p-3 space-y-4">
       <h3 class="font-extrabold text-card-foreground">
         {{ __("Shout Box") }}
@@ -230,17 +233,17 @@
 </template>
 
 <script>
-import Icon from '@/Components/Icon.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { Input } from '@/Components/ui/input';
-import {USE_WEBSOCKETS} from '@/constants';
-import { ref } from 'vue';
-import { useElementVisibility } from '@vueuse/core';
+import Icon from "@/Components/Icon.vue";
+import { useHelpers } from "@/Composables/useHelpers";
+import { Input } from "@/Components/ui/input";
+import {USE_WEBSOCKETS} from "@/constants";
+import { ref } from "vue";
+import { useElementVisibility } from "@vueuse/core";
 import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
-import { Skeleton } from '@/Components/ui/skeleton'
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
+import { Skeleton } from "@/Components/ui/skeleton";
 
 export default {
     components: {Icon, Card, CardContent, Input, Skeleton},
@@ -253,7 +256,7 @@ export default {
     data() {
         return {
             shouts: [],
-            message: '',
+            message: "",
             error: null,
             loading: true,
             sending: false,
@@ -264,14 +267,14 @@ export default {
     created() {
         if (!this.$page.props.generalSettings.enable_shoutbox) return;
 
-        axios.get(route('shout.index')).then(data => {
+        axios.get(route("shout.index")).then(data => {
             this.shouts = data.data;
         }).finally(() => {
             this.loading = false;
         });
 
         if (USE_WEBSOCKETS) {
-            Echo.channel('shouts').listen('ShoutCreated', data => {
+            Echo.channel("shouts").listen("ShoutCreated", data => {
                 this.shouts.unshift(data.data);
             });
         } else {
@@ -294,7 +297,7 @@ export default {
         sendShout() {
             this.sending = true;
             this.error = null;
-            axios.post(route('shout.store'), {
+            axios.post(route("shout.store"), {
                 message: this.message
             }).then(data => {
                 if (data.status === 200) {
@@ -306,9 +309,9 @@ export default {
                 else if (e.response.status === 403)
                     this.error = e.response.data.message;
                 else
-                    this.error = this.__('Something went wrong. Try again.');
+                    this.error = this.__("Something went wrong. Try again.");
             }).finally(() => {
-                this.message = '';
+                this.message = "";
                 this.sending = false;
                 this.$nextTick(() => {
                     this.$refs.inputbox.$el.focus();
@@ -320,7 +323,7 @@ export default {
             if (USE_WEBSOCKETS) return;
 
             const afterId = this.shouts.length > 0 ? this.shouts[0].id : 0;
-            axios.get(route('shout.index', {after: afterId})).then(data => {
+            axios.get(route("shout.index", {after: afterId})).then(data => {
                 const newShouts = data.data;
                 if (newShouts.length > 0) {
                     this.shouts = [...newShouts, ...this.shouts];

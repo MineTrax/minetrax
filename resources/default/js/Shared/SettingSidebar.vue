@@ -40,10 +40,10 @@
 </template>
 
 <script>
-import SettingLink from '@/Jetstream/SettingLink.vue';
+import SettingLink from "@/Jetstream/SettingLink.vue";
 
 export default {
-    name: 'SettingSidebar',
+    name: "SettingSidebar",
     components: {
         SettingLink
     }

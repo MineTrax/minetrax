@@ -1,21 +1,21 @@
 <script setup>
-import MainNavbarCustom from '@/Shared/MainNavbarCustom.vue';
-import MainFooter from '@/Shared/MainFooter.vue';
-import HeaderBroadcastBar from '@/Shared/HeaderBroadcastBar.vue';
-import BaseLayout from './BaseLayout.vue';
+import MainNavbarCustom from "@/Shared/MainNavbarCustom.vue";
+import MainFooter from "@/Shared/MainFooter.vue";
+import HeaderBroadcastBar from "@/Shared/HeaderBroadcastBar.vue";
+import BaseLayout from "./BaseLayout.vue";
 </script>
 
 <template>
-    <BaseLayout>
-        <!-- App NavBar -->
-        <MainNavbarCustom />
+  <BaseLayout>
+    <!-- App NavBar -->
+    <MainNavbarCustom />
 
-        <!-- App Content with Broadcast Bar -->
-        <HeaderBroadcastBar />
+    <!-- App Content with Broadcast Bar -->
+    <HeaderBroadcastBar />
 
-        <slot />
+    <slot />
 
-        <!-- App Footer -->
-        <MainFooter />
-    </BaseLayout>
+    <!-- App Footer -->
+    <MainFooter />
+  </BaseLayout>
 </template>

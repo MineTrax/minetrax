@@ -24,11 +24,11 @@
 </template>
 
 <script>
-import Poll from '@/Components/Poll.vue';
+import Poll from "@/Components/Poll.vue";
 import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
 
 export default {
     components: {
@@ -53,7 +53,7 @@ export default {
             if (this.poll.isComingSoon) {
                 return;
             }
-            this.$inertia.post(route('poll.vote', [this.poll.id, obj.value]), null, {
+            this.$inertia.post(route("poll.vote", [this.poll.id, obj.value]), null, {
                 preserveState: true,
                 preserveScroll: true,
             });

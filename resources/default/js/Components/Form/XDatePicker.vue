@@ -1,39 +1,56 @@
 <template>
-    <div :class="cn('space-y-2', divClass)">
-        <!-- Label -->
-        <Label v-if="label" :for="id" :class="cn('text-sm font-medium', error ? 'text-destructive' : 'text-foreground')">
-            {{ label }}
-            <span v-if="required" class="text-destructive ml-1">*</span>
-        </Label>
+  <div :class="cn('space-y-2', divClass)">
+    <!-- Label -->
+    <Label
+      v-if="label"
+      :for="id"
+      :class="cn('text-sm font-medium', error ? 'text-destructive' : 'text-foreground')"
+    >
+      {{ label }}
+      <span
+        v-if="required"
+        class="text-destructive ml-1"
+      >*</span>
+    </Label>
 
-        <!-- Date Picker -->
-        <div class="relative">
-            <DatePicker
-                :id="id"
-                ref="datePickerRef"
-                v-model:value="modelValue"
-                :placeholder="placeholder"
-                :disabled="disabled"
-                :required="required"
-                :name="name"
-                :type="type"
-                :format="format"
-                :value-type="valueType"
-                class="w-full"
-                :input-class="inputClasses"
-            />
-        </div>
-
-        <!-- Help and Error Messages -->
-        <div v-if="help || error" class="flex gap-1" :class="cn(help && error ? 'justify-between' : error ? 'justify-end' : 'justify-start', helpErrorFlex)">
-            <p v-if="help" class="text-xs text-muted-foreground">
-                {{ help }}
-            </p>
-            <p v-if="error" class="text-xs text-destructive">
-                {{ error }}
-            </p>
-        </div>
+    <!-- Date Picker -->
+    <div class="relative">
+      <DatePicker
+        :id="id"
+        ref="datePickerRef"
+        v-model:value="modelValue"
+        :placeholder="placeholder"
+        :disabled="disabled"
+        :required="required"
+        :name="name"
+        :type="type"
+        :format="format"
+        :value-type="valueType"
+        class="w-full"
+        :input-class="inputClasses"
+      />
     </div>
+
+    <!-- Help and Error Messages -->
+    <div
+      v-if="help || error"
+      class="flex gap-1"
+      :class="cn(help && error ? 'justify-between' : error ? 'justify-end' : 'justify-start', helpErrorFlex)"
+    >
+      <p
+        v-if="help"
+        class="text-xs text-muted-foreground"
+      >
+        {{ help }}
+      </p>
+      <p
+        v-if="error"
+        class="text-xs text-destructive"
+      >
+        {{ error }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script setup>

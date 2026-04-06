@@ -1,81 +1,81 @@
 <template>
- <app-layout>
- <app-head
- :title="__('Forgot Password')"
- />
+  <app-layout>
+    <app-head
+      :title="__('Forgot Password')"
+    />
 
- <jet-authentication-card>
- <div class="mb-4 text-sm text-foreground dark:text-foreground">
- {{ __("Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.") }}
- </div>
+    <jet-authentication-card>
+      <div class="mb-4 text-sm text-foreground dark:text-foreground">
+        {{ __("Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.") }}
+      </div>
 
- <div
- v-if="status"
- class="mb-4 font-medium text-sm text-success"
- >
- {{ status }}
- </div>
+      <div
+        v-if="status"
+        class="mb-4 font-medium text-sm text-success"
+      >
+        {{ status }}
+      </div>
 
- <!--<jet-validation-errors class="mb-4"/>-->
+      <!--<jet-validation-errors class="mb-4"/>-->
 
- <form @submit.prevent="submit">
- <div>
- <x-input
- id="email"
- v-model="form.email"
- :label="__('Email Address')"
- :error="form.errors.email"
- :autofocus="true"
- :required="true"
- type="email"
- name="email"
- />
- </div>
+      <form @submit.prevent="submit">
+        <div>
+          <x-input
+            id="email"
+            v-model="form.email"
+            :label="__('Email Address')"
+            :error="form.errors.email"
+            :autofocus="true"
+            :required="true"
+            type="email"
+            name="email"
+          />
+        </div>
 
- <div class="flex items-center justify-end mt-4">
- <loading-button
- :loading="form.processing"
- class="ml-4"
- >
- {{ __("Email Password Reset Link") }}
- </loading-button>
- </div>
- </form>
- </jet-authentication-card>
- </app-layout>
+        <div class="flex items-center justify-end mt-4">
+          <loading-button
+            :loading="form.processing"
+            class="ml-4"
+          >
+            {{ __("Email Password Reset Link") }}
+          </loading-button>
+        </div>
+      </form>
+    </jet-authentication-card>
+  </app-layout>
 </template>
 
 <script>
-import JetAuthenticationCard from'@/Jetstream/AuthenticationCard.vue';
-import LoadingButton from'@/Components/LoadingButton.vue';
-import AppLayout from'@/Layouts/AppLayout.vue';
-import XInput from'@/Components/Form/XInput.vue';
-import { useForm } from'@inertiajs/vue3';
+import JetAuthenticationCard from"@/Jetstream/AuthenticationCard.vue";
+import LoadingButton from"@/Components/LoadingButton.vue";
+import AppLayout from"@/Layouts/AppLayout.vue";
+import XInput from"@/Components/Form/XInput.vue";
+import { useForm } from"@inertiajs/vue3";
 
 export default {
- components: {
- XInput,
- AppLayout,
- LoadingButton,
- JetAuthenticationCard,
- },
+    components: {
+        XInput,
+        AppLayout,
+        LoadingButton,
+        JetAuthenticationCard,
+    },
 
- props: {
- status: String
- },
+    props: {
+        status: String
+    },
 
- data() {
- return {
- form: useForm({
- email:''
- })
- };
- },
+    data() {
+        return {
+            form: useForm({
+                email:""
+            })
+        };
+    },
 
- methods: {
- submit() {
- this.form.post(this.route('password.email'));
- }
- }
+    methods: {
+        submit() {
+            this.form.post(this.route("password.email"));
+        }
+    }
 };
 </script>

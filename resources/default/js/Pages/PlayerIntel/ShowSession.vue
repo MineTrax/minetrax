@@ -1,12 +1,12 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import PlayerSubMenu from '@/Shared/PlayerSubMenu.vue';
-import millify from 'millify';
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
+import AppHead from "@/Components/AppHead.vue";
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import PlayerSubMenu from "@/Shared/PlayerSubMenu.vue";
+import millify from "millify";
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } =
@@ -46,29 +46,29 @@ const worldLocation = parsedWorldLocation
     ? `x: ${Math.round(parsedWorldLocation.x)}, y: ${Math.round(
         parsedWorldLocation.y
     )}, z: ${Math.round(parsedWorldLocation.z)}`
-    : '—';
+    : "—";
 
 const activeTime = Math.max(props.session.play_time - props.session.afk_time, 0);
 
 const breadcrumbItems = [
     {
-        text: __('Home'),
-        url: route('home'),
+        text: __("Home"),
+        url: route("home"),
     },
     {
-        text: __('Players'),
-        url: route('player.index'),
+        text: __("Players"),
+        url: route("player.index"),
     },
     {
         text: props.player.username,
-        url: route('player.show', props.player.uuid),
+        url: route("player.show", props.player.uuid),
     },
     {
-        text: __('Sessions'),
-        url: route('player.intel.session.index', props.player.uuid),
+        text: __("Sessions"),
+        url: route("player.intel.session.index", props.player.uuid),
     },
     {
-        text: __('Session #:id', { id: props.session.id }),
+        text: __("Session #:id", { id: props.session.id }),
         current: true,
     },
 ];

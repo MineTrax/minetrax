@@ -1,20 +1,20 @@
 <script setup>
-import { FormKitSchema } from '@formkit/vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import { computed, ref, watch } from 'vue';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/Components/ui/dialog';
-import { useFormKit } from '@/Composables/useFormKit';
-import { kebabCase } from 'lodash';
-import Draggable from 'vuedraggable';
-import { ArrowsUpDownIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
+import { FormKitSchema } from "@formkit/vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import { computed, ref, watch } from "vue";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/Components/ui/dialog";
+import { useFormKit } from "@/Composables/useFormKit";
+import { kebabCase } from "lodash";
+import Draggable from "vuedraggable";
+import { ArrowsUpDownIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
 
 const { __ } = useTranslations();
 
@@ -24,16 +24,16 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Custom Forms'),
-        url: route('admin.custom-form.index'),
+        text: __("Custom Forms"),
+        url: route("admin.custom-form.index"),
         current: false,
     },
     {
-        text: __('Edit Custom Form'),
+        text: __("Edit Custom Form"),
         current: true,
     },
     {
@@ -43,16 +43,16 @@ const breadcrumbItems = [
 ];
 
 const formStatusList = {
-    draft: 'Draft - Form is under development and not visible to users',
-    active: 'Active - Form is actively accepting submissions',
-    disabled: 'Disabled - Form is disabled for new submissions',
-    archived: 'Archived - Form is archived and not visible to users',
+    draft: "Draft - Form is under development and not visible to users",
+    active: "Active - Form is actively accepting submissions",
+    disabled: "Disabled - Form is disabled for new submissions",
+    archived: "Archived - Form is archived and not visible to users",
 };
 
 const canCreateSubmissionList = {
-    anyone: 'Anyone - Anyone including Guest can submit this form',
-    auth: 'Auth Only - Only registered users can submit this form',
-    staff: 'Staff Only - Only staff members (is_staff) can submit this form',
+    anyone: "Anyone - Anyone including Guest can submit this form",
+    auth: "Auth Only - Only registered users can submit this form",
+    staff: "Staff Only - Only staff members (is_staff) can submit this form",
 };
 
 const formFieldType = {
@@ -77,11 +77,11 @@ const formFieldType = {
     month: {},
     time: {},
     date: {},
-    'datetime-local': {},
+    "datetime-local": {},
 };
 
 const form = useForm({
-    '_method': 'PUT',
+    "_method": "PUT",
     title: props.customForm.title,
     slug: props.customForm.slug,
     status: props.customForm.status.value,
@@ -96,22 +96,22 @@ const form = useForm({
 
 const submitForm = () => {
     form.fields.map(item => {
-        item.name = item.label.toLowerCase().replace(/ /g, '_');
+        item.name = item.label.toLowerCase().replace(/ /g, "_");
     });
 
-    if (form.can_create_submission === 'anyone') {
+    if (form.can_create_submission === "anyone") {
         form.max_submission_per_user = null;
     }
 
-    form.post(route('admin.custom-form.update', props.customForm.id), {});
+    form.post(route("admin.custom-form.update", props.customForm.id), {});
 };
 
 function addField() {
     form.fields.push({
-        type: 'text',
-        label: '',
-        name: '',
-        validation: 'required',
+        type: "text",
+        label: "",
+        name: "",
+        validation: "required",
     });
 }
 

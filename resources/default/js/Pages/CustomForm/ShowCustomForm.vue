@@ -1,15 +1,15 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
-import ShoutBox from '@/Shared/ShoutBox.vue';
-import { FormKitSchema } from '@formkit/vue';
-import {useFormKit} from '@/Composables/useFormKit';
-import { useForm, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import AlertCard from '@/Components/AlertCard.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { truncate } from 'lodash';
+import AppLayout from "@/Layouts/AppLayout.vue";
+import ServerStatusBox from "@/Shared/ServerStatusBox.vue";
+import ShoutBox from "@/Shared/ShoutBox.vue";
+import { FormKitSchema } from "@formkit/vue";
+import {useFormKit} from "@/Composables/useFormKit";
+import { useForm, usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
+import AlertCard from "@/Components/AlertCard.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { truncate } from "lodash";
 
 const { __ } = useTranslations();
 
@@ -28,13 +28,13 @@ const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;
 
 const breadcrumbItems = [
     {
-        text: __('Home'),
-        url: route('home'),
+        text: __("Home"),
+        url: route("home"),
         current: false
     },
     {
-        text: __('Forms'),
-        url: route('custom-form.index'),
+        text: __("Forms"),
+        url: route("custom-form.index"),
         current: false
     },
     {
@@ -52,7 +52,7 @@ const promisifyForm = (values) => {
         const form = useForm({
             ...values
         });
-        form.post(route('custom-form.submit', props.customForm.slug), {
+        form.post(route("custom-form.submit", props.customForm.slug), {
             onSuccess: visit => {
                 resolve(visit);
             },
@@ -64,7 +64,7 @@ const promisifyForm = (values) => {
 };
 
 const formDisabled = computed(() => {
-    return props.customForm.status.value !== 'active' || !props.currentUserCanSubmit;
+    return props.customForm.status.value !== "active" || !props.currentUserCanSubmit;
 });
 
 const disabledErrorMessage = computed(() => {
@@ -75,37 +75,37 @@ const disabledErrorMessage = computed(() => {
         };
     }
 
-    if (props.customForm.status.value === 'disabled') {
+    if (props.customForm.status.value === "disabled") {
         return {
-            title: __('Oh Jeez! This form is currently disabled.'),
+            title: __("Oh Jeez! This form is currently disabled."),
             body: __(
-                'It seems the form is no longer accepting submissions. Please check back later.'
+                "It seems the form is no longer accepting submissions. Please check back later."
             ),
         };
     }
 
-    if (props.customForm.status.value !== 'active') {
+    if (props.customForm.status.value !== "active") {
         return {
-            title: __('Oh Jeez! This form is not active.'),
+            title: __("Oh Jeez! This form is not active."),
             body: __(
-                'It seems the form is not active yet. Please check back later.'
+                "It seems the form is not active yet. Please check back later."
             ),
         };
     }
 
-    if (['auth', 'staff'].includes(props.customForm.can_create_submission) && !usePage().props.auth.user) {
+    if (["auth", "staff"].includes(props.customForm.can_create_submission) && !usePage().props.auth.user) {
         return {
-            title: __('Oh Jeez! You need to be logged in to submit this form.'),
+            title: __("Oh Jeez! You need to be logged in to submit this form."),
             body: __(
-                'Please login and try again.'
+                "Please login and try again."
             ),
         };
     }
 
     return {
-        title: __('Oh Jeez! You have already submitted this form.'),
+        title: __("Oh Jeez! You have already submitted this form."),
         body: __(
-            'You have already submitted this form maximum number of times allowed.'
+            "You have already submitted this form maximum number of times allowed."
         ),
     };
 });

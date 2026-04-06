@@ -65,9 +65,9 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import Icon from '@/Components/Icon.vue';
-import FeatureCard from '@/Components/FeatureCard.vue';
+import AppLayout from "@/Layouts/AppLayout.vue";
+import Icon from "@/Components/Icon.vue";
+import FeatureCard from "@/Components/FeatureCard.vue";
 
 export default {
 
@@ -82,13 +82,13 @@ export default {
 
     computed: {
         completed() {
-            return this.features.filter(f => f.status === 'completed');
+            return this.features.filter(f => f.status === "completed");
         },
         inprogress() {
-            return this.features.filter(f => f.status === 'in-progress');
+            return this.features.filter(f => f.status === "in-progress");
         },
         draft() {
-            return this.features.filter(f => f.status === 'draft');
+            return this.features.filter(f => f.status === "draft");
         }
     }
 };

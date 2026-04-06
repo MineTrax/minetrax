@@ -1,16 +1,16 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import ImageUpload from '@/Components/Form/ImageUpload.vue';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
-import Icon from '@/Components/Icon.vue';
-import Draggable from 'vuedraggable';
-import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import ImageUpload from "@/Components/Form/ImageUpload.vue";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
+import Icon from "@/Components/Icon.vue";
+import Draggable from "vuedraggable";
+import { ArrowsUpDownIcon } from "@heroicons/vue/24/outline";
 
 const { __ } = useTranslations();
 
@@ -23,15 +23,15 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Settings'),
+        text: __("Settings"),
         current: false,
     },
     {
-        text: __('General Settings'),
+        text: __("General Settings"),
         current: true,
     }
 ];
@@ -48,7 +48,7 @@ const form = useForm({
     voteforserverbox_content: props.settings.voteforserverbox_content?.map((item, index) => ({
         ...item,
         id: index,
-    })) || [{ url: '', name: '', id: 1 }],
+    })) || [{ url: "", name: "", id: 1 }],
     enable_onlineuserbox: props.settings.enable_onlineuserbox,
     enable_newuserbox: props.settings.enable_newuserbox,
     enable_didyouknowbox: props.settings.enable_didyouknowbox,
@@ -80,8 +80,8 @@ const form = useForm({
 
 function addMoreVotingSite() {
     form.voteforserverbox_content.push({
-        url: '',
-        name: '',
+        url: "",
+        name: "",
         id: form.voteforserverbox_content.length + 1,
     });
 }
@@ -91,7 +91,7 @@ function deleteVotingSite(index) {
 }
 
 function saveSetting() {
-    form.post(route('admin.setting.general.update'), {
+    form.post(route("admin.setting.general.update"), {
         preserveScroll: true,
     });
 }
@@ -122,9 +122,9 @@ function saveSetting() {
                 <div class="col-span-6 sm:col-span-3">
                   <ImageUpload
                     id="photo_light"
+                    v-model="form.photo_light"
                     name="photo_light"
                     :label="__('Site Header Logo Image Light (200x40)')"
-                    v-model="form.photo_light"
                     :current-url="settings.site_header_logo_path_light"
                     :error="form.errors.photo_light"
                     :removable="false"
@@ -142,9 +142,9 @@ function saveSetting() {
                 <div class="col-span-6 sm:col-span-3">
                   <ImageUpload
                     id="photo_dark"
+                    v-model="form.photo_dark"
                     name="photo_dark"
                     :label="__('Site Header Logo Image Dark (200x40)')"
-                    v-model="form.photo_dark"
                     :current-url="settings.site_header_logo_path_dark"
                     :error="form.errors.photo_dark"
                     :removable="false"

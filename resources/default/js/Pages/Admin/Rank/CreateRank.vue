@@ -1,42 +1,42 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import ImageUpload from '@/Components/Form/ImageUpload.vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XTextarea from "@/Components/Form/XTextarea.vue";
+import ImageUpload from "@/Components/Form/ImageUpload.vue";
 
 const { __ } = useTranslations();
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Player Ranks'),
-        url: route('admin.rank.index'),
+        text: __("Player Ranks"),
+        url: route("admin.rank.index"),
         current: false,
     },
     {
-        text: __('Create Player Rank'),
+        text: __("Create Player Rank"),
         current: true,
     }
 ];
 
 const form = useForm({
-    name: '',
-    shortname: '',
-    description: '',
-    total_score_needed: '',
-    total_play_time_needed: '',
+    name: "",
+    shortname: "",
+    description: "",
+    total_score_needed: "",
+    total_play_time_needed: "",
     photo: null,
 });
 
 function addRank() {
-    form.post(route('admin.rank.store'), {
+    form.post(route("admin.rank.store"), {
         preserveScroll: true
     });
 }
@@ -63,10 +63,10 @@ function addRank() {
                 <div class="col-span-6">
                   <ImageUpload
                     id="photo"
+                    v-model="form.photo"
                     name="photo"
                     :label="__('Rank Image')"
                     :hint="__('A small image (Eg: 50x50) is recommended')"
-                    v-model="form.photo"
                     :error="form.errors.photo"
                     :removable="false"
                     shape="rect"

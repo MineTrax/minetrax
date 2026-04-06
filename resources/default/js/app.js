@@ -29,7 +29,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const VueApp = createApp({ render: () => h(App, props) })
             .use(plugin)
-            // eslint-disable-next-line no-undef
+             
             .use(ZiggyVue)
             .use(formKitPlugin, formKitDefaultConfig(formKitConfig));
 
@@ -44,7 +44,7 @@ createInertiaApp({
         VueApp.component("InertiaLink", Link);
         VueApp.component("AppHead", AppHead);
 
-        // eslint-disable-next-line no-undef
+         
         VueApp.mixin(translations);
 
         VueApp.directive("confirm", confirmDirective);

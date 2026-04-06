@@ -1,12 +1,12 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import ServerPerformanceOverTimeMetricBox from '@/Shared/ServerPerformanceOverTimeMetricBox.vue';
-import ServerIntelPerformanceNumbersBox from '@/Shared/ServerIntelPerformanceNumbersBox.vue';
-import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
-import AlertCard from '@/Components/AlertCard.vue';
-import { useTranslations } from '@/Composables/useTranslations';
+import AppHead from "@/Components/AppHead.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import ServerPerformanceOverTimeMetricBox from "@/Shared/ServerPerformanceOverTimeMetricBox.vue";
+import ServerIntelPerformanceNumbersBox from "@/Shared/ServerIntelPerformanceNumbersBox.vue";
+import ServerIntelServerSelector from "@/Shared/ServerIntelServerSelector.vue";
+import AlertCard from "@/Components/AlertCard.vue";
+import { useTranslations } from "@/Composables/useTranslations";
 
 const { __ } = useTranslations();
 
@@ -26,19 +26,19 @@ const props = defineProps({
 let selectedServers = props.filters?.servers?.length ? props.filters?.servers[0] : null;
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Server Intel'),
+        text: __("Server Intel"),
         current: false,
     },
     {
-        text: __('Performance'),
+        text: __("Performance"),
         current: true,
     },
     {
-        text: props.serverList[selectedServers] ?? __('All Servers'),
+        text: props.serverList[selectedServers] ?? __("All Servers"),
         current: true,
     }
 ];

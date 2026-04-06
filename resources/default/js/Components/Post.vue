@@ -1,5 +1,5 @@
 <template>
-    <Card class="transition-all duration-200 hover:shadow-md">
+  <Card class="transition-all duration-200 hover:shadow-md">
     <CardHeader class="pb-3">
       <!-- Header -->
       <div class="flex justify-between">
@@ -146,26 +146,26 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import { router } from '@inertiajs/vue3';
-import { Card, CardHeader, CardContent, CardFooter } from '@/Components/ui/card';
-import Icon from '@/Components/Icon.vue';
-import Comments from '@/Components/Comments.vue';
-import UserDisplayname from '@/Components/UserDisplayname.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { cn } from '@/lib/utils';
+import { ref, computed } from "vue";
+import { usePage } from "@inertiajs/vue3";
+import { router } from "@inertiajs/vue3";
+import { Card, CardHeader, CardContent, CardFooter } from "@/Components/ui/card";
+import Icon from "@/Components/Icon.vue";
+import Comments from "@/Components/Comments.vue";
+import UserDisplayname from "@/Components/UserDisplayname.vue";
+import { useHelpers } from "@/Composables/useHelpers";
+import { cn } from "@/lib/utils";
 
 // Props
 const props = defineProps({
-  post: {
-    type: Object,
-    required: true
-  },
-  commentsSectionOpened: {
-    type: Boolean,
-    default: false
-  }
+    post: {
+        type: Object,
+        required: true
+    },
+    commentsSectionOpened: {
+        type: Boolean,
+        default: false
+    }
 });
 
 // Composables
@@ -179,42 +179,42 @@ const showComments = ref(props.commentsSectionOpened);
 
 // Methods
 const likePost = () => {
-  if (!page.props.auth.user) {
-    router.get(route('login'));
-    return;
-  }
+    if (!page.props.auth.user) {
+        router.get(route("login"));
+        return;
+    }
 
-  liked.value = true;
-  likes_count.value++;
+    liked.value = true;
+    likes_count.value++;
 
-  axios.post(route('reaction.post.like', props.post.id))
-    .then(() => {
-      // Success handled by optimistic update
-    })
-    .catch(() => {
-      // Revert on error
-      liked.value = false;
-      likes_count.value--;
-    });
+    axios.post(route("reaction.post.like", props.post.id))
+        .then(() => {
+            // Success handled by optimistic update
+        })
+        .catch(() => {
+            // Revert on error
+            liked.value = false;
+            likes_count.value--;
+        });
 };
 
 const unlikePost = () => {
-  if (!page.props.auth.user) {
-    router.get(route('login'));
-    return;
-  }
+    if (!page.props.auth.user) {
+        router.get(route("login"));
+        return;
+    }
 
-  liked.value = false;
-  likes_count.value--;
+    liked.value = false;
+    likes_count.value--;
 
-  axios.post(route('reaction.post.unlike', props.post.id))
-    .then(() => {
-      // Success handled by optimistic update
-    })
-    .catch(() => {
-      // Revert on error
-      liked.value = true;
-      likes_count.value++;
-    });
+    axios.post(route("reaction.post.unlike", props.post.id))
+        .then(() => {
+            // Success handled by optimistic update
+        })
+        .catch(() => {
+            // Revert on error
+            liked.value = true;
+            likes_count.value++;
+        });
 };
 </script>

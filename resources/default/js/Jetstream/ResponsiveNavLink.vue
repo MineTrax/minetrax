@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed } from "vue";
 
 const props = defineProps({
     active: Boolean,
@@ -13,8 +13,8 @@ const props = defineProps({
 
 const classes = computed(() => {
     return props.active
-        ? 'block pl-3 pr-4 py-2 border-l-4 border-primary text-base font-medium text-primary bg-primary/10 focus:outline-hidden focus:text-primary-foreground focus:bg-primary/20 focus:border-primary transition duration-150 ease-in-out'
-        : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground hover:text-foreground hover:bg-secondary hover:border-foreground focus:outline-hidden focus:text-foreground focus:bg-secondary focus:border-foreground transition duration-150 ease-in-out';
+        ? "block pl-3 pr-4 py-2 border-l-4 border-primary text-base font-medium text-primary bg-primary/10 focus:outline-hidden focus:text-primary-foreground focus:bg-primary/20 focus:border-primary transition duration-150 ease-in-out"
+        : "block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground hover:text-foreground hover:bg-secondary hover:border-foreground focus:outline-hidden focus:text-foreground focus:bg-secondary focus:border-foreground transition duration-150 ease-in-out";
 });
 </script>
 

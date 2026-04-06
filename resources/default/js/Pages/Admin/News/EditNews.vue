@@ -1,15 +1,15 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import ImageUpload from '@/Components/Form/ImageUpload.vue';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
-import { ref } from 'vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import ImageUpload from "@/Components/Form/ImageUpload.vue";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
+import { ref } from "vue";
 
 const { __ } = useTranslations();
 
@@ -19,20 +19,20 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('News'),
-        url: route('admin.news.index'),
+        text: __("News"),
+        url: route("admin.news.index"),
         current: false,
     },
     {
-        text: __('Edit News'),
+        text: __("Edit News"),
         current: true,
     },
     {
-        text: '#' + props.news.id,
+        text: "#" + props.news.id,
         current: true,
     }
 ];
@@ -46,13 +46,13 @@ const form = useForm({
     is_pinned: props.news.is_pinned,
     is_commentable: props.news.is_commentable,
     photo: null,
-    '_method': 'PUT'
+    "_method": "PUT"
 });
 
 
 
 function updateNews() {
-    form.post(route('admin.news.update', props.news.id), {
+    form.post(route("admin.news.update", props.news.id), {
         preserveScroll: true
     });
 }
@@ -91,10 +91,10 @@ function updateNews() {
                 <div class="col-span-6 sm:col-span-3">
                   <ImageUpload
                     id="photo"
+                    v-model="form.photo"
                     name="photo"
                     :label="__('Featured Image (Optional)')"
                     :current-url="news.photo_url"
-                    v-model="form.photo"
                     :error="form.errors.photo"
                     :removable="false"
                     shape="rect"

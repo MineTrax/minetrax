@@ -1,30 +1,30 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import ImageUpload from '@/Components/Form/ImageUpload.vue';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
-import { ref } from 'vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import ImageUpload from "@/Components/Form/ImageUpload.vue";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
+import { ref } from "vue";
 
 const { __ } = useTranslations();
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('News'),
-        url: route('admin.news.index'),
+        text: __("News"),
+        url: route("admin.news.index"),
         current: false,
     },
     {
-        text: __('Create News'),
+        text: __("Create News"),
         current: true,
     }
 ];
@@ -32,9 +32,9 @@ const breadcrumbItems = [
 
 
 const form = useForm({
-    title: '',
-    body: '',
-    type: '0',
+    title: "",
+    body: "",
+    type: "0",
     is_published: true,
     is_pinned: false,
     is_commentable: true,
@@ -44,7 +44,7 @@ const form = useForm({
 
 
 function addNews() {
-    form.post(route('admin.news.store'), {
+    form.post(route("admin.news.store"), {
         preserveScroll: true
     });
 }
@@ -83,9 +83,9 @@ function addNews() {
                 <div class="col-span-6 sm:col-span-3">
                   <ImageUpload
                     id="photo"
+                    v-model="form.photo"
                     name="photo"
                     :label="__('Featured Image (Optional)')"
-                    v-model="form.photo"
                     :error="form.errors.photo"
                     :removable="false"
                     shape="rect"

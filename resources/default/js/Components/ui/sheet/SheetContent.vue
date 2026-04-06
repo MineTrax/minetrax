@@ -2,35 +2,35 @@
 import { reactiveOmit } from "@vueuse/core";
 import { X } from "lucide-vue-next";
 import {
-  DialogClose,
-  DialogContent,
-  DialogOverlay,
-  DialogPortal,
-  useForwardPropsEmits,
+    DialogClose,
+    DialogContent,
+    DialogOverlay,
+    DialogPortal,
+    useForwardPropsEmits,
 } from "reka-ui";
 import { cn } from "@/lib/utils";
 import { sheetVariants } from ".";
 
 defineOptions({
-  inheritAttrs: false,
+    inheritAttrs: false,
 });
 
 const props = defineProps({
-  class: { type: null, required: false },
-  side: { type: null, required: false },
-  forceMount: { type: Boolean, required: false },
-  disableOutsidePointerEvents: { type: Boolean, required: false },
-  asChild: { type: Boolean, required: false },
-  as: { type: null, required: false },
+    class: { type: null, required: false },
+    side: { type: null, required: false },
+    forceMount: { type: Boolean, required: false },
+    disableOutsidePointerEvents: { type: Boolean, required: false },
+    asChild: { type: Boolean, required: false },
+    as: { type: null, required: false },
 });
 
 const emits = defineEmits([
-  "escapeKeyDown",
-  "pointerDownOutside",
-  "focusOutside",
-  "interactOutside",
-  "openAutoFocus",
-  "closeAutoFocus",
+    "escapeKeyDown",
+    "pointerDownOutside",
+    "focusOutside",
+    "interactOutside",
+    "openAutoFocus",
+    "closeAutoFocus",
 ]);
 
 const delegatedProps = reactiveOmit(props, "class", "side");

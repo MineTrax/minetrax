@@ -1,12 +1,12 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import ImageUpload from '@/Components/Form/ImageUpload.vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import ImageUpload from "@/Components/Form/ImageUpload.vue";
 
 const { __ } = useTranslations();
 
@@ -16,20 +16,20 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Badges'),
-        url: route('admin.badge.index'),
+        text: __("Badges"),
+        url: route("admin.badge.index"),
         current: false,
     },
     {
-        text: __('Edit Badge'),
+        text: __("Edit Badge"),
         current: true,
     },
     {
-        text: '#' + props.badge.id,
+        text: "#" + props.badge.id,
         current: true,
     }
 ];
@@ -40,11 +40,11 @@ const form = useForm({
     sort_order: props.badge.sort_order,
     is_sticky: props.badge.is_sticky,
     photo: null,
-    '_method': 'PUT'
+    "_method": "PUT"
 });
 
 function updateBadge() {
-    form.post(route('admin.badge.update', props.badge.id), {
+    form.post(route("admin.badge.update", props.badge.id), {
         preserveScroll: true
     });
 }
@@ -71,11 +71,11 @@ function updateBadge() {
                 <div class="col-span-6">
                   <ImageUpload
                     id="photo"
+                    v-model="form.photo"
                     name="photo"
                     :label="__('Badge Icon Image')"
                     :hint="__('A small square (Eg: 50x50) image is recommended')"
                     :current-url="badge.photo_url"
-                    v-model="form.photo"
                     :error="form.errors.photo"
                     :removable="false"
                     shape="rect"

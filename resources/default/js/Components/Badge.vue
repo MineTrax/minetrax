@@ -2,7 +2,7 @@
 defineProps({
     colorClass: {
         type: String,
-        default: 'bg-slate-100 text-foreground dark:bg-slate-900 dark:text-foreground'
+        default: "bg-slate-100 text-foreground dark:bg-slate-900 dark:text-foreground"
     }
 });
 </script>

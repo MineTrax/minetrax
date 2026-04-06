@@ -74,12 +74,17 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Card class="w-full h-full">
-        <CardHeader>
-            <CardTitle>{{ __("Top Join Addresses") }}</CardTitle>
-        </CardHeader>
-        <CardContent class="pt-0">
-            <Chart :options="option" :height="chartHeight" :loading="isLoading" :autoresize="true" />
-        </CardContent>
-    </Card>
+  <Card class="w-full h-full">
+    <CardHeader>
+      <CardTitle>{{ __("Top Join Addresses") }}</CardTitle>
+    </CardHeader>
+    <CardContent class="pt-0">
+      <Chart
+        :options="option"
+        :height="chartHeight"
+        :loading="isLoading"
+        :autoresize="true"
+      />
+    </CardContent>
+  </Card>
 </template>

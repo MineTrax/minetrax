@@ -1,12 +1,12 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
+import AppHead from "@/Components/AppHead.vue";
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import ServerIntelServerSelector from "@/Shared/ServerIntelServerSelector.vue";
+import DataTable from "@/Components/DataTable/DataTable.vue";
+import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -26,43 +26,43 @@ const props = defineProps({
 let selectedServers = props.filters?.servers?.length ? props.filters?.servers[0] : null;
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Server Intel'),
+        text: __("Server Intel"),
         current: false,
     },
     {
-        text: __('Consolelog'),
+        text: __("Consolelog"),
         current: true,
     },
     {
-        text: props.serverList[selectedServers] ?? __('All Servers'),
+        text: props.serverList[selectedServers] ?? __("All Servers"),
         current: true,
     }
 ];
 
 const headerRow = [
     {
-        key: 'id',
-        label: __('ID'),
+        key: "id",
+        label: __("ID"),
         sortable: true,
-        class: 'text-left',
+        class: "text-left",
     },
     {
-        key: 'data',
-        label: __('Data'),
+        key: "data",
+        label: __("Data"),
         sortable: false,
     },
     {
-        key: 'server_id',
-        label: __('Server'),
+        key: "server_id",
+        label: __("Server"),
         sortable: true,
     },
     {
-        key: 'created_at',
-        label: __('Created'),
+        key: "created_at",
+        label: __("Created"),
         sortable: true,
     },
 ];

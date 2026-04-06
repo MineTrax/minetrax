@@ -10,7 +10,10 @@
         v-if="loading"
         class="flex p-4 justify-center"
       >
-        <LoadingSpinner :loading="loading" class="w-5 h-5" />
+        <LoadingSpinner
+          :loading="loading"
+          class="w-5 h-5"
+        />
       </div>
 
       <!-- Error -->
@@ -28,9 +31,9 @@
 
         <copy-to-clipboard v-slot="props">
           <Button
+            v-tippy
             class="mt-3 font-extrabold"
             size="lg"
-            v-tippy
             :title="__('Click to Copy')"
             type="button"
             @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
@@ -41,7 +44,7 @@
             <span v-else>
               {{ __("Copied!") }}
             </span>
-        </Button>
+          </Button>
         </copy-to-clipboard>
       </div>
     </CardContent>
@@ -50,13 +53,13 @@
 
 <script>
 import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
-import CopyToClipboard from '@/Components/CopyToClipboard.vue';
-import ErrorMessage from '@/Components/ErrorMessage.vue';
-import Button from '@/Components/ui/button/Button.vue';
-import LoadingSpinner from '@/Components/LoadingSpinner.vue';
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
+import CopyToClipboard from "@/Components/CopyToClipboard.vue";
+import ErrorMessage from "@/Components/ErrorMessage.vue";
+import Button from "@/Components/ui/button/Button.vue";
+import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 
 export default {
     components: {ErrorMessage, CopyToClipboard, Card, CardContent, Button, LoadingSpinner},
@@ -99,7 +102,7 @@ export default {
             if (!serverToQuery) {
                 serverToQuery = this.$page.props.defaultQueryServer.server;
             }
-            axios.get(route('server.ping.get', serverToQuery.id)).then(data => {
+            axios.get(route("server.ping.get", serverToQuery.id)).then(data => {
                 this.serverInfo = data.data;
                 this.error = null;
             }).catch(err => {

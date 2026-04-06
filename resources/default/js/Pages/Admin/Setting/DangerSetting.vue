@@ -1,9 +1,9 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow } = useHelpers();
@@ -17,15 +17,15 @@ defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Settings'),
+        text: __("Settings"),
         current: false,
     },
     {
-        text: __('Dangerzone'),
+        text: __("Dangerzone"),
         current: true,
     }
 ];

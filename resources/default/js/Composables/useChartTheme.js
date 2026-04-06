@@ -47,19 +47,19 @@ export function useChartTheme() {
     const getMapColorPalette = (isDark = false) => {
         return isDark
             ? [
-                  getThemeColor("--color-muted-foreground", "#374151"), // Subtle no-data color
-                  getThemeColor("--color-chart-1", "#c7d2fe"),
-                  getThemeColor("--color-chart-2", "#818cf8"),
-                  getThemeColor("--color-chart-3", "#4f46e5"),
-                  getThemeColor("--color-chart-5", "#3730a3"),
-              ]
+                getThemeColor("--color-muted-foreground", "#374151"), // Subtle no-data color
+                getThemeColor("--color-chart-1", "#c7d2fe"),
+                getThemeColor("--color-chart-2", "#818cf8"),
+                getThemeColor("--color-chart-3", "#4f46e5"),
+                getThemeColor("--color-chart-5", "#3730a3"),
+            ]
             : [
-                  getThemeColor("--color-muted", "#f8fafc"), // Light no-data color
-                  getThemeColor("--color-chart-1", "#e0e7ff"),
-                  getThemeColor("--color-chart-2", "#a5b4fc"),
-                  getThemeColor("--color-chart-3", "#6366f1"),
-                  getThemeColor("--color-chart-5", "#4338ca"),
-              ];
+                getThemeColor("--color-muted", "#f8fafc"), // Light no-data color
+                getThemeColor("--color-chart-1", "#e0e7ff"),
+                getThemeColor("--color-chart-2", "#a5b4fc"),
+                getThemeColor("--color-chart-3", "#6366f1"),
+                getThemeColor("--color-chart-5", "#4338ca"),
+            ];
     };
 
     // Get chart color palette (for line charts, bar charts, etc.)

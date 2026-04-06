@@ -1,16 +1,16 @@
 <script setup>
-import AppHead from'@/Components/AppHead.vue';
-import { useHelpers } from'@/Composables/useHelpers';
-import { useTranslations } from'@/Composables/useTranslations';
-import { useAuthorizable } from'@/Composables/useAuthorizable';
-import AdminLayout from'@/Layouts/AdminLayout.vue';
-import ServerIntelServerSelector from'@/Shared/ServerIntelServerSelector.vue';
-import AppBreadcrumb from'@/Shared/AppBreadcrumb.vue';
-import DataTable from'@/Components/DataTable/DataTable.vue';
-import DtRowItem from'@/Components/DataTable/DtRowItem.vue';
-import { Link } from'@inertiajs/vue3';
-import millify from'millify';
-import { LockClosedIcon, PaintBrushIcon, TrashIcon } from'@heroicons/vue/24/outline';
+import AppHead from"@/Components/AppHead.vue";
+import { useHelpers } from"@/Composables/useHelpers";
+import { useTranslations } from"@/Composables/useTranslations";
+import { useAuthorizable } from"@/Composables/useAuthorizable";
+import AdminLayout from"@/Layouts/AdminLayout.vue";
+import ServerIntelServerSelector from"@/Shared/ServerIntelServerSelector.vue";
+import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
+import DataTable from"@/Components/DataTable/DataTable.vue";
+import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
+import { Link } from"@inertiajs/vue3";
+import millify from"millify";
+import { LockClosedIcon, PaintBrushIcon, TrashIcon } from"@heroicons/vue/24/outline";
 
 const { __ } = useTranslations();
 const { can } = useAuthorizable();
@@ -18,309 +18,313 @@ const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } =
  useHelpers();
 
 const props = defineProps({
- serverList: {
- type: Object,
- },
- countries: {
- type: Array,
- },
- filters: {
- type: Object,
- },
- data: {
- type: Object,
- },
- canResetAnyPlayerPassword: {
- type: Boolean,
- },
- canChangeAnyPlayerSkin: {
- type: Boolean,
- },
+    serverList: {
+        type: Object,
+    },
+    countries: {
+        type: Array,
+    },
+    filters: {
+        type: Object,
+    },
+    data: {
+        type: Object,
+    },
+    canResetAnyPlayerPassword: {
+        type: Boolean,
+    },
+    canChangeAnyPlayerSkin: {
+        type: Boolean,
+    },
 });
 
 let selectedServers = props.filters?.servers?.length ? props.filters?.servers[0] : null;
 const breadcrumbItems = [
- {
- text: __('Admin'),
- current: false,
- },
- {
- text: __('Players'),
- current: true,
- },
- {
- text: props.serverList[selectedServers] ?? __('All Servers'),
- current: true,
- }
+    {
+        text: __("Admin"),
+        current: false,
+    },
+    {
+        text: __("Players"),
+        current: true,
+    },
+    {
+        text: props.serverList[selectedServers] ?? __("All Servers"),
+        current: true,
+    }
 ];
 
 const headerRow = [
- {
- key:'country_id',
- label: __('Flag'),
- sortable: true,
- class:'text-left',
- filterable: {
- key:'country.name',
- type:'multiselect',
- options: props.countries,
- searchable: true,
- }
- },
- {
- key:'player_username',
- label: __('Username'),
- sortable: true,
- class:'text-left',
- filterable: {
- type:'text',
- }
- },
- {
- key:'server_play_count',
- label: __('Servers Played'),
- sortable: true,
- },
- {
- key:'play_time',
- label: __('Play Time'),
- sortable: true,
- },
- {
- key:'afk_time',
- label: __('Afk Time'),
- sortable: true,
- },
- {
- key:'vault_balance',
- label: __('Vault Money'),
- sortable: true,
- },
- {
- key:'last_join_address',
- label: __('Join Address'),
- sortable: true,
- filterable: {
- type:'text',
- }
- },
- {
- key:'last_minecraft_version',
- label: __('MC Version'),
- sortable: true,
- filterable: {
- type:'multiselect',
- options: [
-'1.21',
-'1.20',
-'1.19',
-'1.18',
-'1.17',
-'1.16',
-'1.15',
-'1.14',
-'1.13',
-'1.12',
-'1.11',
-'1.10',
-'1.9',
-'1.8',
- ]
- }
- },
- {
- key:'first_seen_at',
- label: __('First Seen'),
- sortable: true,
- },
- {
- key:'last_seen_at',
- label: __('Last Seen'),
- sortable: true,
- },
- {
- key:'actions',
- label: __('Actions'),
- sortable: false,
- class:'w-1/12 text-right',
- },
+    {
+        key:"country_id",
+        label: __("Flag"),
+        sortable: true,
+        class:"text-left",
+        filterable: {
+            key:"country.name",
+            type:"multiselect",
+            options: props.countries,
+            searchable: true,
+        }
+    },
+    {
+        key:"player_username",
+        label: __("Username"),
+        sortable: true,
+        class:"text-left",
+        filterable: {
+            type:"text",
+        }
+    },
+    {
+        key:"server_play_count",
+        label: __("Servers Played"),
+        sortable: true,
+    },
+    {
+        key:"play_time",
+        label: __("Play Time"),
+        sortable: true,
+    },
+    {
+        key:"afk_time",
+        label: __("Afk Time"),
+        sortable: true,
+    },
+    {
+        key:"vault_balance",
+        label: __("Vault Money"),
+        sortable: true,
+    },
+    {
+        key:"last_join_address",
+        label: __("Join Address"),
+        sortable: true,
+        filterable: {
+            type:"text",
+        }
+    },
+    {
+        key:"last_minecraft_version",
+        label: __("MC Version"),
+        sortable: true,
+        filterable: {
+            type:"multiselect",
+            options: [
+                "1.21",
+                "1.20",
+                "1.19",
+                "1.18",
+                "1.17",
+                "1.16",
+                "1.15",
+                "1.14",
+                "1.13",
+                "1.12",
+                "1.11",
+                "1.10",
+                "1.9",
+                "1.8",
+            ]
+        }
+    },
+    {
+        key:"first_seen_at",
+        label: __("First Seen"),
+        sortable: true,
+    },
+    {
+        key:"last_seen_at",
+        label: __("Last Seen"),
+        sortable: true,
+    },
+    {
+        key:"actions",
+        label: __("Actions"),
+        sortable: false,
+        class:"w-1/12 text-right",
+    },
 ];
 </script>
 
 <template>
- <AdminLayout>
- <AppHead :title="__('Players - PlayerIntel')"/>
+  <AdminLayout>
+    <AppHead :title="__('Players - PlayerIntel')" />
 
- <div class="px-10 py-8 mx-auto space-y-4">
- <div class="flex items-center justify-between">
- <AppBreadcrumb class="mt-0"breadcrumb-class="max-w-none px-0 md:px-0":items="breadcrumbItems"/>
- <ServerIntelServerSelector
- :server-list="serverList"
- :filters="filters"
- />
- </div>
+    <div class="px-10 py-8 mx-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
+        <ServerIntelServerSelector
+          :server-list="serverList"
+          :filters="filters"
+        />
+      </div>
 
- <div>
- <DataTable
- class="bg-card rounded-lg shadow"
- :header="headerRow"
- :data="data"
- :filters="filters"
- >
- <template #default="{ item }">
- <td
- class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
- >
- <div class="flex items-center">
- <div
- v-tippy
- class="shrink-0 h-10 w-10 focus:outline-hidden"
- :content="item.country.name"
- >
- <img
- class="h-10 w-10"
- :src="item.country.photo_path"
- alt=""
- >
- </div>
- </div>
- </td>
+      <div>
+        <DataTable
+          class="bg-card rounded-lg shadow"
+          :header="headerRow"
+          :data="data"
+          :filters="filters"
+        >
+          <template #default="{ item }">
+            <td
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+            >
+              <div class="flex items-center">
+                <div
+                  v-tippy
+                  class="shrink-0 h-10 w-10 focus:outline-hidden"
+                  :content="item.country.name"
+                >
+                  <img
+                    class="h-10 w-10"
+                    :src="item.country.photo_path"
+                    alt=""
+                  >
+                </div>
+              </div>
+            </td>
 
- <td
- class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
- >
- <div class="flex items-center">
- <div class="shrink-0 h-10 w-10">
- <img
- class="h-10 w-10"
- :src="item.player.avatar_url"
- alt=""
- >
- </div>
- <div class="ml-4">
- <Link
- v-tippy
- as="a"
- :href="route('player.show', item.player.uuid)"
- class="text-sm font-medium text-foreground dark:text-foreground focus:outline-hidden cursor-pointer hover:underline"
- :content="item.player.uuid"
- >
- <span
- v-if="item.player_username"
- class="font-extrabold text-foreground dark:text-foreground"
- >{{ item.player_username }}</span>
- <span
- v-else
- class="text-destructive italic"
- >{{ __("Unknown") }}</span>
- </Link>
- </div>
- </div>
- </td>
+            <td
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+            >
+              <div class="flex items-center">
+                <div class="shrink-0 h-10 w-10">
+                  <img
+                    class="h-10 w-10"
+                    :src="item.player.avatar_url"
+                    alt=""
+                  >
+                </div>
+                <div class="ml-4">
+                  <Link
+                    v-tippy
+                    as="a"
+                    :href="route('player.show', item.player.uuid)"
+                    class="text-sm font-medium text-foreground dark:text-foreground focus:outline-hidden cursor-pointer hover:underline"
+                    :content="item.player.uuid"
+                  >
+                    <span
+                      v-if="item.player_username"
+                      class="font-extrabold text-foreground dark:text-foreground"
+                    >{{ item.player_username }}</span>
+                    <span
+                      v-else
+                      class="text-destructive italic"
+                    >{{ __("Unknown") }}</span>
+                  </Link>
+                </div>
+              </div>
+            </td>
 
- <DtRowItem>
- {{ item.server_play_count }} {{ __('servers') }}
- </DtRowItem>
+            <DtRowItem>
+              {{ item.server_play_count }} {{ __('servers') }}
+            </DtRowItem>
 
- <DtRowItem>
- <span v-if="item.play_time">
- {{ secondsToHMS(item.play_time, true) }}
- </span>
- <span v-else>
- --
- </span>
- </DtRowItem>
+            <DtRowItem>
+              <span v-if="item.play_time">
+                {{ secondsToHMS(item.play_time, true) }}
+              </span>
+              <span v-else>
+                --
+              </span>
+            </DtRowItem>
 
- <DtRowItem>
- <span v-if="item.afk_time">
- {{ secondsToHMS(item.afk_time, true) }}
- </span>
- <span v-else>
- --
- </span>
- </DtRowItem>
+            <DtRowItem>
+              <span v-if="item.afk_time">
+                {{ secondsToHMS(item.afk_time, true) }}
+              </span>
+              <span v-else>
+                --
+              </span>
+            </DtRowItem>
 
- <DtRowItem>
- <span v-if="item.vault_balance">
- {{ millify(item.vault_balance, {
- precision: 2,
- }) }}
- </span>
- <span v-else>
- --
- </span>
- </DtRowItem>
+            <DtRowItem>
+              <span v-if="item.vault_balance">
+                {{ millify(item.vault_balance, {
+                  precision: 2,
+                }) }}
+              </span>
+              <span v-else>
+                --
+              </span>
+            </DtRowItem>
 
- <DtRowItem>
- {{ item.last_join_address || __('Unknown') }}
- </DtRowItem>
+            <DtRowItem>
+              {{ item.last_join_address || __('Unknown') }}
+            </DtRowItem>
 
- <DtRowItem>
- {{ item.last_minecraft_version || __('Unknown') }}
- </DtRowItem>
+            <DtRowItem>
+              {{ item.last_minecraft_version || __('Unknown') }}
+            </DtRowItem>
 
- <DtRowItem
- v-tippy
- :content="formatToDayDateString(item.first_seen_at)"
- >
- {{ formatTimeAgoToNow(item.first_seen_at) }}
- </DtRowItem>
+            <DtRowItem
+              v-tippy
+              :content="formatToDayDateString(item.first_seen_at)"
+            >
+              {{ formatTimeAgoToNow(item.first_seen_at) }}
+            </DtRowItem>
 
- <DtRowItem
- v-tippy
- :content="formatToDayDateString(item.last_seen_at)"
- >
- {{ formatTimeAgoToNow(item.last_seen_at) }}
- </DtRowItem>
+            <DtRowItem
+              v-tippy
+              :content="formatToDayDateString(item.last_seen_at)"
+            >
+              {{ formatTimeAgoToNow(item.last_seen_at) }}
+            </DtRowItem>
 
- <td
- class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
- >
- <Link
- v-if="canChangeAnyPlayerSkin"
- v-tippy
- as="a"
- :href="route('change-player-skin.show', {
- player_uuid: item.player.uuid,
- })"
- class="inline-flex items-center justify-center text-primary hover:text-primary focus:outline-hidden"
- :title="__('Change Skin of this player.')"
- >
- <PaintBrushIcon class="w-5 h-5"/>
- </Link>
+            <td
+              class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            >
+              <Link
+                v-if="canChangeAnyPlayerSkin"
+                v-tippy
+                as="a"
+                :href="route('change-player-skin.show', {
+                  player_uuid: item.player.uuid,
+                })"
+                class="inline-flex items-center justify-center text-primary hover:text-primary focus:outline-hidden"
+                :title="__('Change Skin of this player.')"
+              >
+                <PaintBrushIcon class="w-5 h-5" />
+              </Link>
 
- <Link
- v-if="canResetAnyPlayerPassword"
- v-tippy
- as="a"
- :href="route('reset-player-password.show', {
- player_uuid: item.player.uuid,
- })"
- class="inline-flex items-center justify-center text-foreground hover:text-foreground dark:text-foreground dark:hover:text-foreground focus:outline-hidden"
- :title="__('Change Password of this player.')"
- >
- <LockClosedIcon class="w-5 h-5"/>
- </Link>
+              <Link
+                v-if="canResetAnyPlayerPassword"
+                v-tippy
+                as="a"
+                :href="route('reset-player-password.show', {
+                  player_uuid: item.player.uuid,
+                })"
+                class="inline-flex items-center justify-center text-foreground hover:text-foreground dark:text-foreground dark:hover:text-foreground focus:outline-hidden"
+                :title="__('Change Password of this player.')"
+              >
+                <LockClosedIcon class="w-5 h-5" />
+              </Link>
 
- <Link
- v-if="can('delete players')"
- v-confirm="{
- message:
-'This action will delete this player stats and unlink account if linked. Are you sure?',
- }"
- v-tippy
- as="button"
- method="DELETE"
- :href="route('admin.intel.player.delete', item.player.uuid)"
- class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden"
- :title="__('Delete Player')"
- >
- <TrashIcon class="inline-block w-5 h-5"/>
- </Link>
- </td>
- </template>
- </DataTable>
- </div>
- </div>
- </AdminLayout>
+              <Link
+                v-if="can('delete players')"
+                v-confirm="{
+                  message:
+                    'This action will delete this player stats and unlink account if linked. Are you sure?',
+                }"
+                v-tippy
+                as="button"
+                method="DELETE"
+                :href="route('admin.intel.player.delete', item.player.uuid)"
+                class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden"
+                :title="__('Delete Player')"
+              >
+                <TrashIcon class="inline-block w-5 h-5" />
+              </Link>
+            </td>
+          </template>
+        </DataTable>
+      </div>
+    </div>
+  </AdminLayout>
 </template>

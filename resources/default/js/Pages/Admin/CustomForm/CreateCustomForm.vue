@@ -1,50 +1,50 @@
 <script setup>
-import { FormKitSchema } from '@formkit/vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import { computed, ref, watch } from 'vue';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/Components/ui/dialog';
-import { useFormKit } from '@/Composables/useFormKit';
-import { kebabCase } from 'lodash';
-import Draggable from 'vuedraggable';
-import { ArrowsUpDownIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
+import { FormKitSchema } from "@formkit/vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import { computed, ref, watch } from "vue";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/Components/ui/dialog";
+import { useFormKit } from "@/Composables/useFormKit";
+import { kebabCase } from "lodash";
+import Draggable from "vuedraggable";
+import { ArrowsUpDownIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
 
 const { __ } = useTranslations();
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Custom Forms'),
-        url: route('admin.custom-form.index'),
+        text: __("Custom Forms"),
+        url: route("admin.custom-form.index"),
         current: false,
     },
     {
-        text: __('Create Custom Form'),
+        text: __("Create Custom Form"),
         current: true,
     }
 ];
 
 const formStatusList = {
-    draft: 'Draft - Form is under development and not visible to users',
-    active: 'Active - Form is actively accepting submissions',
-    disabled: 'Disabled - Form is disabled for new submissions',
-    archived: 'Archived - Form is archived and not visible to users',
+    draft: "Draft - Form is under development and not visible to users",
+    active: "Active - Form is actively accepting submissions",
+    disabled: "Disabled - Form is disabled for new submissions",
+    archived: "Archived - Form is archived and not visible to users",
 };
 
 const canCreateSubmissionList = {
-    anyone: 'Anyone - Anyone including Guest can submit this form',
-    auth: 'Auth Only - Only registered users can submit this form',
-    staff: 'Staff Only - Only staff members (is_staff) can submit this form',
+    anyone: "Anyone - Anyone including Guest can submit this form",
+    auth: "Auth Only - Only registered users can submit this form",
+    staff: "Staff Only - Only staff members (is_staff) can submit this form",
 };
 
 const formFieldType = {
@@ -69,59 +69,59 @@ const formFieldType = {
     month: {},
     time: {},
     date: {},
-    'datetime-local': {},
+    "datetime-local": {},
 };
 
 const form = useForm({
-    title: '',
-    slug: '',
-    status: 'draft',
-    description: '',
-    can_create_submission: 'anyone',
+    title: "",
+    slug: "",
+    status: "draft",
+    description: "",
+    can_create_submission: "anyone",
     max_submission_per_user: null,
     min_role_weight_to_view_submission: null,
     is_notify_staff_on_submission: true,
     is_visible_in_listing: true,
     fields: [
         {
-            type: 'text',
-            label: 'Name',
-            name: 'name',
+            type: "text",
+            label: "Name",
+            name: "name",
             placeholder: null,
             help: null,
-            validation: 'required|length:3,100',
+            validation: "required|length:3,100",
             options: null,
         },
         {
-            type: 'select',
-            label: 'Type',
-            name: 'select',
+            type: "select",
+            label: "Type",
+            name: "select",
             placeholder: null,
             help: null,
-            validation: 'required',
-            options: 'Type1,Type2,Type3',
+            validation: "required",
+            options: "Type1,Type2,Type3",
         },
     ],
 });
 
 const createCustomForm = () => {
     form.fields.map(item => {
-        item.name = item.label.toLowerCase().replace(/ /g, '_');
+        item.name = item.label.toLowerCase().replace(/ /g, "_");
     });
 
-    if (form.can_create_submission === 'anyone') {
+    if (form.can_create_submission === "anyone") {
         form.max_submission_per_user = null;
     }
 
-    form.post(route('admin.custom-form.store'), {});
+    form.post(route("admin.custom-form.store"), {});
 };
 
 function addField() {
     form.fields.push({
-        type: 'text',
-        label: '',
-        name: '',
-        validation: 'required',
+        type: "text",
+        label: "",
+        name: "",
+        validation: "required",
     });
 }
 

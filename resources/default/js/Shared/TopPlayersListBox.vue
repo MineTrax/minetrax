@@ -50,9 +50,9 @@
               </td>
               <td class="p-1">
                 <img
+                  v-if="player.country"
                   v-tippy
                   :content="player.country?.name"
-                  v-if="player.country"
                   class="h-6 w-6"
                   :src="player.country?.photo_path"
                   :alt="player.country?.name"
@@ -121,24 +121,24 @@
 </template>
 
 <script setup>
-import Icon from '@/Components/Icon.vue'
-import { useHelpers } from '@/Composables/useHelpers'
-import { Card, CardContent } from '@/Components/ui/card'
+import Icon from "@/Components/Icon.vue";
+import { useHelpers } from "@/Composables/useHelpers";
+import { Card, CardContent } from "@/Components/ui/card";
 
 const props = defineProps({
-  title: {
-    type: String,
-    default: '',
-  },
-  players: {
-    type: Array,
-    default: () => [],
-  },
-  enabled: {
-    type: Boolean,
-    default: true,
-  },
-})
+    title: {
+        type: String,
+        default: "",
+    },
+    players: {
+        type: Array,
+        default: () => [],
+    },
+    enabled: {
+        type: Boolean,
+        default: true,
+    },
+});
 
-const { formatTimeAgoToNow, formatToDayDateString } = useHelpers()
+const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
 </script>

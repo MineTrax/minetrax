@@ -1,252 +1,256 @@
 <script setup>
-import AdminLayout from'@/Layouts/AdminLayout.vue';
-import { useAuthorizable } from'@/Composables/useAuthorizable';
-import { useHelpers } from'@/Composables/useHelpers';
-import { useTranslations } from'@/Composables/useTranslations';
-import DataTable from'@/Components/DataTable/DataTable.vue';
-import DtRowItem from'@/Components/DataTable/DtRowItem.vue';
-import AppBreadcrumb from'@/Shared/AppBreadcrumb.vue';
-import { Button } from'@/Components/ui/button';
-import { Link } from'@inertiajs/vue3';
-import { PencilSquareIcon, TrashIcon } from'@heroicons/vue/24/outline';
-import AlertCard from'@/Components/AlertCard.vue';
-import { useStorage } from'@vueuse/core';
+import AdminLayout from"@/Layouts/AdminLayout.vue";
+import { useAuthorizable } from"@/Composables/useAuthorizable";
+import { useHelpers } from"@/Composables/useHelpers";
+import { useTranslations } from"@/Composables/useTranslations";
+import DataTable from"@/Components/DataTable/DataTable.vue";
+import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
+import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
+import { Button } from"@/Components/ui/button";
+import { Link } from"@inertiajs/vue3";
+import { PencilSquareIcon, TrashIcon } from"@heroicons/vue/24/outline";
+import AlertCard from"@/Components/AlertCard.vue";
+import { useStorage } from"@vueuse/core";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
-const showPlayerRankSyncAlert = useStorage('show-player-rank-sync-alert', true);
+const showPlayerRankSyncAlert = useStorage("show-player-rank-sync-alert", true);
 
 defineProps({
- ranks: Object,
- filters: Object,
+    ranks: Object,
+    filters: Object,
 });
 
 const breadcrumbItems = [
- {
- text: __('Admin'),
- current: false,
- },
- {
- text: __('Player Ranks'),
- current: true,
- }
+    {
+        text: __("Admin"),
+        current: false,
+    },
+    {
+        text: __("Player Ranks"),
+        current: true,
+    }
 ];
 
 const headerRow = [
- {
- key:'id',
- label: __('ID'),
- sortable: true,
- },
- {
- key:'image',
- sortable: false,
- label: __('Image'),
- },
- {
- key:'name',
- sortable: true,
- label: __('Name'),
- class:'w-2/12',
- },
- {
- key:'total_play_time_needed',
- label: __('Play Time Needed'),
- sortable: true,
- class:'text-right',
- },
- {
- key:'total_score_needed',
- label: __('Score Needed'),
- sortable: true,
- class:'text-right',
- },
- {
- key:'players_count',
- label: __('Player Count'),
- sortable: false,
- class:'text-right',
- },
- {
- key:'created_at',
- sortable: true,
- label: __('Created'),
- },
- {
- key:'actions',
- label: __('Actions'),
- sortable: false,
- class:'w-1/12 text-right',
- },
+    {
+        key:"id",
+        label: __("ID"),
+        sortable: true,
+    },
+    {
+        key:"image",
+        sortable: false,
+        label: __("Image"),
+    },
+    {
+        key:"name",
+        sortable: true,
+        label: __("Name"),
+        class:"w-2/12",
+    },
+    {
+        key:"total_play_time_needed",
+        label: __("Play Time Needed"),
+        sortable: true,
+        class:"text-right",
+    },
+    {
+        key:"total_score_needed",
+        label: __("Score Needed"),
+        sortable: true,
+        class:"text-right",
+    },
+    {
+        key:"players_count",
+        label: __("Player Count"),
+        sortable: false,
+        class:"text-right",
+    },
+    {
+        key:"created_at",
+        sortable: true,
+        label: __("Created"),
+    },
+    {
+        key:"actions",
+        label: __("Actions"),
+        sortable: false,
+        class:"w-1/12 text-right",
+    },
 ];
 </script>
 
 <template>
- <AdminLayout>
- <app-head :title="__('Manage Player Ranks')"/>
+  <AdminLayout>
+    <app-head :title="__('Manage Player Ranks')" />
 
- <div class="px-10 py-8 mx-auto text-foreground">
- <AlertCard
- v-if="showPlayerRankSyncAlert"
- :close-button="true"
- text-color="text-primary dark:text-primary"
- border-color="border-primary"
- @close="showPlayerRankSyncAlert = false"
- >
- {{ __("Do you know! MineTrax can also sync rank from server instead of calculating using algorithm.") }}
- <template #body>
- <p class="text-foreground dark:text-foreground">
- {{
- __(
-"If you want to sync player rank from your minecraft server, follow the steps below:"
- )
- }}
- </p>
- <ul class="text-foreground list-disc list-inside dark:text-foreground">
- <li>
- {{
+    <div class="px-10 py-8 mx-auto text-foreground">
+      <AlertCard
+        v-if="showPlayerRankSyncAlert"
+        :close-button="true"
+        text-color="text-primary dark:text-primary"
+        border-color="border-primary"
+        @close="showPlayerRankSyncAlert = false"
+      >
+        {{ __("Do you know! MineTrax can also sync rank from server instead of calculating using algorithm.") }}
+        <template #body>
+          <p class="text-foreground dark:text-foreground">
+            {{
+              __(
+                "If you want to sync player rank from your minecraft server, follow the steps below:"
+              )
+            }}
+          </p>
+          <ul class="text-foreground list-disc list-inside dark:text-foreground">
+            <li>
+              {{
 
- __("Create a rank for each rank you have in your server and want to sync. Make sure Short Name matches the rank identifier in your server.")
- }}
- </li>
- <li>
- {{
+                __("Create a rank for each rank you have in your server and want to sync. Make sure Short Name matches the rank identifier in your server.")
+              }}
+            </li>
+            <li>
+              {{
 
- __("Enable the'Sync Rank'option from Admin > Settings > Plugin > Enable Player Rank Sync.")
- }}
- </li>
- <li>
- {{
+                __("Enable the'Sync Rank'option from Admin > Settings > Plugin > Enable Player Rank Sync.")
+              }}
+            </li>
+            <li>
+              {{
 
- __("Done! Wait for some time and your player ranks will be synced automatically.")
- }}
- </li>
- </ul>
+                __("Done! Wait for some time and your player ranks will be synced automatically.")
+              }}
+            </li>
+          </ul>
 
- <p class="italic text-foreground dark:text-foreground">
- {{
- __(
-"Note: This is optional feature. You can safely close this alert if you don't want to use it. You can always do it later."
- )
- }}
- </p>
- </template>
- </AlertCard>
+          <p class="italic text-foreground dark:text-foreground">
+            {{
+              __(
+                "Note: This is optional feature. You can safely close this alert if you don't want to use it. You can always do it later."
+              )
+            }}
+          </p>
+        </template>
+      </AlertCard>
 
- <div class="flex justify-between mb-4">
- <AppBreadcrumb class="mt-0"breadcrumb-class="max-w-none px-0 md:px-0":items="breadcrumbItems"/>
- <div class="flex gap-2">
- <Button
- v-if="can('update ranks')"
- variant="destructive"
- as-child
- >
- <Link
- v-confirm="{message:'Are you sure you want to Reset all Ranks? This will remove current rank of all players.'}"
- method="post"
- as="button"
- :href="route('admin.rank.reset')"
- >
- {{ __("Reset to Default Ranks") }}
- </Link>
- </Button>
- <Button
- v-if="can('create ranks')"
- as-child
- >
- <Link :href="route('admin.rank.create')">
- {{ __("Create Rank") }}
- </Link>
- </Button>
- </div>
- </div>
+      <div class="flex justify-between mb-4">
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
+        <div class="flex gap-2">
+          <Button
+            v-if="can('update ranks')"
+            variant="destructive"
+            as-child
+          >
+            <Link
+              v-confirm="{message:'Are you sure you want to Reset all Ranks? This will remove current rank of all players.'}"
+              method="post"
+              as="button"
+              :href="route('admin.rank.reset')"
+            >
+              {{ __("Reset to Default Ranks") }}
+            </Link>
+          </Button>
+          <Button
+            v-if="can('create ranks')"
+            as-child
+          >
+            <Link :href="route('admin.rank.create')">
+              {{ __("Create Rank") }}
+            </Link>
+          </Button>
+        </div>
+      </div>
 
- <DataTable
- class="bg-card rounded-lg shadow"
- :header="headerRow"
- :data="ranks"
- :filters="filters"
- >
- <template #default="{ item }">
- <td
- class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
- >
- {{ item.id }}
- </td>
- <td class="px-4">
- <div class="">
- <img
- class="max-h-12 max-w-12"
- :src="item.photo_url"
- :alt="__('Rank Image')"
- >
- </div>
- </td>
+      <DataTable
+        class="bg-card rounded-lg shadow"
+        :header="headerRow"
+        :data="ranks"
+        :filters="filters"
+      >
+        <template #default="{ item }">
+          <td
+            class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
+          >
+            {{ item.id }}
+          </td>
+          <td class="px-4">
+            <div class="">
+              <img
+                class="max-h-12 max-w-12"
+                :src="item.photo_url"
+                :alt="__('Rank Image')"
+              >
+            </div>
+          </td>
 
- <td class="px-4 whitespace-nowrap">
- <div>
- <div class="text-sm font-medium text-foreground dark:text-foreground">
- {{ item.name }}
- </div>
- <div class="text-sm text-foreground dark:text-foreground">
- {{ item.shortname }}
- </div>
- </div>
- </td>
+          <td class="px-4 whitespace-nowrap">
+            <div>
+              <div class="text-sm font-medium text-foreground dark:text-foreground">
+                {{ item.name }}
+              </div>
+              <div class="text-sm text-foreground dark:text-foreground">
+                {{ item.shortname }}
+              </div>
+            </div>
+          </td>
 
- <DtRowItem class="text-right">
- {{ item.total_play_time_needed }}
- </DtRowItem>
+          <DtRowItem class="text-right">
+            {{ item.total_play_time_needed }}
+          </DtRowItem>
 
- <DtRowItem class="text-right">
- {{ item.total_score_needed }}
- </DtRowItem>
+          <DtRowItem class="text-right">
+            {{ item.total_score_needed }}
+          </DtRowItem>
 
- <DtRowItem class="text-right">
- {{ item.players_count }}
- </DtRowItem>
+          <DtRowItem class="text-right">
+            {{ item.players_count }}
+          </DtRowItem>
 
- <DtRowItem>
- <span
- v-tippy
- :title="formatToDayDateString(item.created_at)"
- >
- {{ formatTimeAgoToNow(item.created_at) }}
- </span>
- </DtRowItem>
+          <DtRowItem>
+            <span
+              v-tippy
+              :title="formatToDayDateString(item.created_at)"
+            >
+              {{ formatTimeAgoToNow(item.created_at) }}
+            </span>
+          </DtRowItem>
 
- <td
- class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
- >
- <Link
- v-if="can('update ranks')"
- v-tippy
- as="a"
- :href="route('admin.rank.edit', item.id)"
- class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
- :title="__('Edit Rank')"
- >
- <PencilSquareIcon class="inline-block w-5 h-5"/>
- </Link>
- <Link
- v-if="can('delete ranks')"
- v-confirm="{
- message:
-'Are you sure you want to delete this Rank permanently?',
- }"
- v-tippy
- as="button"
- method="DELETE"
- :href="route('admin.rank.delete', item.id)"
- class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden"
- :title="__('Delete Rank')"
- >
- <TrashIcon class="inline-block w-5 h-5"/>
- </Link>
- </td>
- </template>
- </DataTable>
- </div>
- </AdminLayout>
+          <td
+            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+          >
+            <Link
+              v-if="can('update ranks')"
+              v-tippy
+              as="a"
+              :href="route('admin.rank.edit', item.id)"
+              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
+              :title="__('Edit Rank')"
+            >
+              <PencilSquareIcon class="inline-block w-5 h-5" />
+            </Link>
+            <Link
+              v-if="can('delete ranks')"
+              v-confirm="{
+                message:
+                  'Are you sure you want to delete this Rank permanently?',
+              }"
+              v-tippy
+              as="button"
+              method="DELETE"
+              :href="route('admin.rank.delete', item.id)"
+              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden"
+              :title="__('Delete Rank')"
+            >
+              <TrashIcon class="inline-block w-5 h-5" />
+            </Link>
+          </td>
+        </template>
+      </DataTable>
+    </div>
+  </AdminLayout>
 </template>

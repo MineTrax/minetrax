@@ -1,13 +1,13 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XTextarea from "@/Components/Form/XTextarea.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
 
 const { __ } = useTranslations();
 
@@ -17,20 +17,20 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Downloads'),
-        url: route('admin.download.index'),
+        text: __("Downloads"),
+        url: route("admin.download.index"),
         current: false,
     },
     {
-        text: __('Edit Download'),
+        text: __("Edit Download"),
         current: true,
     },
     {
-        text: '#' + props.download.id,
+        text: "#" + props.download.id,
         current: true,
     }
 ];
@@ -45,13 +45,13 @@ const form = useForm({
     is_only_auth: props.download.is_only_auth,
     min_role_weight_required: props.download.min_role_weight_required,
     is_active: props.download.is_active,
-    '_method': 'PUT',
+    "_method": "PUT",
 });
 
 
 
 function updateDownload() {
-    form.post(route('admin.download.update', props.download.id), {});
+    form.post(route("admin.download.update", props.download.id), {});
 }
 </script>
 

@@ -4,23 +4,23 @@ import { cn } from "@/lib/utils";
 import { ref } from "vue";
 
 const props = defineProps({
-  defaultValue: { type: [String, Number], required: false },
-  modelValue: { type: [String, Number], required: false },
-  class: { type: null, required: false },
+    defaultValue: { type: [String, Number], required: false },
+    modelValue: { type: [String, Number], required: false },
+    class: { type: null, required: false },
 });
 
 const emits = defineEmits(["update:modelValue"]);
 
 const modelValue = useVModel(props, "modelValue", emits, {
-  passive: true,
-  defaultValue: props.defaultValue,
+    passive: true,
+    defaultValue: props.defaultValue,
 });
 
 const inputRef = ref(null);
 const focus = () => {
-  if (inputRef.value) {
-    inputRef.value.focus();
-  }
+    if (inputRef.value) {
+        inputRef.value.focus();
+    }
 };
 
 defineExpose({ focus });
@@ -36,5 +36,5 @@ defineExpose({ focus });
         props.class,
       )
     "
-  />
+  >
 </template>

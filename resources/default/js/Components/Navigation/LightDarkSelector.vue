@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ColorThemeToggle from '@/Components/ColorThemeToggle.vue';
+import ColorThemeToggle from "@/Components/ColorThemeToggle.vue";
 
 export default {
     components: {ColorThemeToggle}

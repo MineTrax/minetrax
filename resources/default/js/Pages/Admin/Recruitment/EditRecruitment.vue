@@ -1,20 +1,20 @@
 <script setup>
-import { FormKitSchema } from '@formkit/vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import { computed, ref, watch } from 'vue';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/Components/ui/dialog';
-import { useFormKit } from '@/Composables/useFormKit';
-import { kebabCase } from 'lodash';
-import Draggable from 'vuedraggable';
-import { ArrowsUpDownIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
+import { FormKitSchema } from "@formkit/vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import { computed, ref, watch } from "vue";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/Components/ui/dialog";
+import { useFormKit } from "@/Composables/useFormKit";
+import { kebabCase } from "lodash";
+import Draggable from "vuedraggable";
+import { ArrowsUpDownIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
 
 const { __ } = useTranslations();
 
@@ -31,16 +31,16 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Application Forms'),
-        url: route('admin.recruitment.index'),
+        text: __("Application Forms"),
+        url: route("admin.recruitment.index"),
         current: false,
     },
     {
-        text: __('Edit Application Form'),
+        text: __("Edit Application Form"),
         current: true,
     },
     {
@@ -50,10 +50,10 @@ const breadcrumbItems = [
 ];
 
 const formStatusList = {
-    draft: 'Draft - Application is under development and not visible to users',
-    active: 'Active - Application is actively accepting submissions',
-    disabled: 'Disabled - Application is disabled for new submissions',
-    archived: 'Archived - Application is archived and not visible to users',
+    draft: "Draft - Application is under development and not visible to users",
+    active: "Active - Application is actively accepting submissions",
+    disabled: "Disabled - Application is disabled for new submissions",
+    archived: "Archived - Application is archived and not visible to users",
 };
 
 const formFieldType = {
@@ -78,11 +78,11 @@ const formFieldType = {
     month: {},
     time: {},
     date: {},
-    'datetime-local': {},
+    "datetime-local": {},
 };
 
 const form = useForm({
-    '_method': 'PUT',
+    "_method": "PUT",
     title: props.recruitment.title,
     slug: props.recruitment.slug,
     status: props.recruitment.status.value,
@@ -102,18 +102,18 @@ const form = useForm({
 
 const updateRecruitment = () => {
     form.fields.map(item => {
-        item.name = item.label.toLowerCase().replace(/ /g, '_');
+        item.name = item.label.toLowerCase().replace(/ /g, "_");
     });
 
-    form.post(route('admin.recruitment.update', props.recruitment.id), {});
+    form.post(route("admin.recruitment.update", props.recruitment.id), {});
 };
 
 function addField() {
     form.fields.push({
-        type: 'text',
-        label: '',
-        name: '',
-        validation: 'required',
+        type: "text",
+        label: "",
+        name: "",
+        validation: "required",
     });
 }
 

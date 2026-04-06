@@ -18,8 +18,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { ref } from "vue";
+import { usePage } from "@inertiajs/vue3";
 
 let show = ref(usePage().props?.showCookieConsent);
 

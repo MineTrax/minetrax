@@ -1,18 +1,18 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import { Tabs, TabsList, TabsTrigger } from '@/Components/ui/tabs';
-import Multiselect from 'vue-multiselect';
-import XDatePicker from '@/Components/Form/XDatePicker.vue';
-import axios from 'axios';
-import { ref } from 'vue';
-import { GlobeAltIcon, UserIcon } from '@heroicons/vue/24/outline';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import { Tabs, TabsList, TabsTrigger } from "@/Components/ui/tabs";
+import Multiselect from "vue-multiselect";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
+import axios from "axios";
+import { ref } from "vue";
+import { GlobeAltIcon, UserIcon } from "@heroicons/vue/24/outline";
 
 const { __ } = useTranslations();
 
@@ -24,25 +24,25 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Commands'),
-        url: route('admin.command-queue.index'),
+        text: __("Commands"),
+        url: route("admin.command-queue.index"),
         current: false,
     },
     {
-        text: __('Run Command'),
+        text: __("Run Command"),
         current: true,
     }
 ];
 
 const playerRunScopeList = {
-    all: 'All - for every player in the web',
-    linked: 'Linked Only - for every player who are linked to a user account',
-    unlinked: 'Unlinked Only - for every player who are not linked to a user account',
-    custom: 'Custom - select players from dropdown',
+    all: "All - for every player in the web",
+    linked: "Linked Only - for every player who are linked to a user account",
+    unlinked: "Unlinked Only - for every player who are not linked to a user account",
+    custom: "Custom - select players from dropdown",
 };
 
 const players = ref([]);
@@ -50,12 +50,12 @@ const isLoadingPlayers = ref(false);
 let searchTimeout = null;
 
 const form = useForm({
-    scope: 'global',
-    command: '',
+    scope: "global",
+    command: "",
     execute_at: null,
     servers: [],
     players: {
-        scope: 'all',
+        scope: "all",
         is_player_online_required: false,
         id: [],
     }
@@ -85,15 +85,15 @@ const searchPlayers = (query) => {
         isLoadingPlayers.value = true;
 
         try {
-            const response = await axios.get('/stats', {
+            const response = await axios.get("/stats", {
                 params: {
-                    'filter[q]': query
+                    "filter[q]": query
                 }
             });
 
             players.value = response.data.data || response.data || [];
         } catch (error) {
-            console.error('Error searching players:', error);
+            console.error("Error searching players:", error);
             players.value = [];
         } finally {
             isLoadingPlayers.value = false;
@@ -102,10 +102,10 @@ const searchPlayers = (query) => {
 };
 
 const submitRunCommandForm = () => {
-    form.post(route('admin.command-queue.store'), {
+    form.post(route("admin.command-queue.store"), {
         preserveScroll: true,
         onSuccess: () => {
-            form.reset('command', 'servers', 'players', 'execute_at');
+            form.reset("command", "servers", "players", "execute_at");
         },
     });
 };
@@ -150,7 +150,10 @@ const submitRunCommandForm = () => {
                           <GlobeAltIcon class="w-5 h-5" />
                         </div>
                         <div class="text-center">
-                          <div class="font-semibold" :class="form.scope === 'global' ? 'text-primary' : 'text-foreground'">
+                          <div
+                            class="font-semibold"
+                            :class="form.scope === 'global' ? 'text-primary' : 'text-foreground'"
+                          >
                             {{ __("Global") }}
                           </div>
                           <div class="text-xs text-muted-foreground mt-0.5 whitespace-normal">
@@ -174,7 +177,10 @@ const submitRunCommandForm = () => {
                           <UserIcon class="w-5 h-5" />
                         </div>
                         <div class="text-center">
-                          <div class="font-semibold" :class="form.scope === 'player' ? 'text-primary' : 'text-foreground'">
+                          <div
+                            class="font-semibold"
+                            :class="form.scope === 'player' ? 'text-primary' : 'text-foreground'"
+                          >
                             {{ __("Player") }}
                           </div>
                           <div class="text-xs text-muted-foreground mt-0.5 whitespace-normal">

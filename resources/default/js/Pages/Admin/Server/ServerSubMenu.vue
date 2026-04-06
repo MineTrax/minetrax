@@ -1,7 +1,7 @@
 <script setup>
-import { useAuthorizable } from '@/Composables/useAuthorizable';
-import { Link } from '@inertiajs/vue3';
-import { Card } from '@/Components/ui/card';
+import { useAuthorizable } from "@/Composables/useAuthorizable";
+import { Link } from "@inertiajs/vue3";
+import { Card } from "@/Components/ui/card";
 
 const { can } = useAuthorizable();
 

@@ -58,11 +58,11 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import { useForm } from '@inertiajs/vue3';
+import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
+import LoadingButton from "@/Components/LoadingButton.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import XInput from "@/Components/Form/XInput.vue";
+import { useForm } from "@inertiajs/vue3";
 
 export default {
     components: {
@@ -82,16 +82,16 @@ export default {
             form: useForm({
                 token: this.token,
                 email: this.email,
-                password: '',
-                password_confirmation: '',
+                password: "",
+                password_confirmation: "",
             })
         };
     },
 
     methods: {
         submit() {
-            this.form.post(this.route('password.update'), {
-                onFinish: () => this.form.reset('password', 'password_confirmation'),
+            this.form.post(this.route("password.update"), {
+                onFinish: () => this.form.reset("password", "password_confirmation"),
             });
         }
     }

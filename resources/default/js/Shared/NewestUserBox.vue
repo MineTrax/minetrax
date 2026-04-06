@@ -34,16 +34,16 @@
 </template>
 
 <script setup>
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
 import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
 
 defineProps({
-  user: Object,
-  enabled: Boolean
+    user: Object,
+    enabled: Boolean
 });
 
 const { __ } = useTranslations();

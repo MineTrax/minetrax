@@ -25,8 +25,8 @@
 
 <script>
 export default {
-    name: 'FeatureCard',
-    props: ['feature', 'index'],
+    name: "FeatureCard",
+    props: ["feature", "index"],
     data() {
         return {
             capitalize: _.capitalize
@@ -34,7 +34,7 @@ export default {
     },
     computed: {
         color() {
-            return (['red','sky','green','pink','orange','purple'])[ this.index % 6];
+            return (["red","sky","green","pink","orange","purple"])[ this.index % 6];
         }
     }
 };

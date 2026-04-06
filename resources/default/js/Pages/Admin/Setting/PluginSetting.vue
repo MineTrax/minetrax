@@ -1,15 +1,15 @@
 <script setup>
-import { useForm, router, Link } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import CopyToClipboard from '@/Components/CopyToClipboard.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import Icon from '@/Components/Icon.vue';
-import Multiselect from 'vue-multiselect';
+import { useForm, router, Link } from "@inertiajs/vue3";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import CopyToClipboard from "@/Components/CopyToClipboard.vue";
+import XInput from "@/Components/Form/XInput.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import Icon from "@/Components/Icon.vue";
+import Multiselect from "vue-multiselect";
 
 const { __ } = useTranslations();
 
@@ -24,15 +24,15 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Settings'),
+        text: __("Settings"),
         current: false,
     },
     {
-        text: __('Plugin Settings'),
+        text: __("Plugin Settings"),
         current: true,
     }
 ];
@@ -52,7 +52,7 @@ const form = useForm({
 
 function addAccountLinkCommand() {
     form.account_link_after_success_commands.push({
-        command: '',
+        command: "",
         servers: [],
         config: {
             is_player_online_required: false,
@@ -71,7 +71,7 @@ function serversWithWebqueryCustomLabel({ name, hostname }) {
 
 function addAccountUnlinkCommand() {
     form.account_unlink_after_success_commands.push({
-        command: '',
+        command: "",
         servers: [],
         config: {
             is_player_online_required: false,
@@ -86,7 +86,7 @@ function removeAccountUnlinkCommand(index) {
 
 function addPlayerPasswordResetCommand() {
     form.player_password_reset_commands.push({
-        command: '',
+        command: "",
         servers: [],
         config: {
             is_player_online_required: false,
@@ -99,10 +99,10 @@ function removePlayerPasswordResetCommand(index) {
 }
 
 function savePluginSetting() {
-    form.post(route('admin.setting.plugin.update'), {
+    form.post(route("admin.setting.plugin.update"), {
         preserveScroll: true,
         onSuccess: () => {
-            router.get(route('admin.setting.plugin.show'), {}, {
+            router.get(route("admin.setting.plugin.show"), {}, {
                 preserveState: false,
                 preserveScroll: true,
                 replace: true,

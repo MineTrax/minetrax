@@ -119,12 +119,17 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Card class="w-full h-full">
-        <CardHeader>
-            <CardTitle>{{ __("Player's Country") }}</CardTitle>
-        </CardHeader>
-        <CardContent class="pt-0">
-            <Chart :autoresize="true" :options="option" :height="mapHeight" :loading="isLoading" />
-        </CardContent>
-    </Card>
+  <Card class="w-full h-full">
+    <CardHeader>
+      <CardTitle>{{ __("Player's Country") }}</CardTitle>
+    </CardHeader>
+    <CardContent class="pt-0">
+      <Chart
+        :autoresize="true"
+        :options="option"
+        :height="mapHeight"
+        :loading="isLoading"
+      />
+    </CardContent>
+  </Card>
 </template>

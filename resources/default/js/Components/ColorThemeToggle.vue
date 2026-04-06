@@ -1,6 +1,9 @@
 <template>
   <div>
-    <button class="cursor-pointer" @click="toggleTheme">
+    <button
+      class="cursor-pointer"
+      @click="toggleTheme"
+    >
       <span
         v-if="colorMode === 'dark'"
         v-tippy
@@ -24,10 +27,10 @@
 </template>
 
 <script>
-import { MoonIcon, SunIcon } from '@heroicons/vue/24/outline';
+import { MoonIcon, SunIcon } from "@heroicons/vue/24/outline";
 
 export default {
-    name: 'ColorThemeToggle',
+    name: "ColorThemeToggle",
     components: { MoonIcon, SunIcon },
     data() {
         return {
@@ -36,18 +39,18 @@ export default {
     },
     methods: {
         toggleTheme() {
-            if (this.colorMode === 'dark') {
-                this.colorMode = 'light';
-                window.colorMode = 'light';
-                localStorage.theme = 'light';
-                document.documentElement.classList.add('light');
-                document.documentElement.classList.remove('dark');
+            if (this.colorMode === "dark") {
+                this.colorMode = "light";
+                window.colorMode = "light";
+                localStorage.theme = "light";
+                document.documentElement.classList.add("light");
+                document.documentElement.classList.remove("dark");
             } else {
-                this.colorMode = 'dark';
-                window.colorMode = 'dark';
-                localStorage.theme = 'dark';
-                document.documentElement.classList.add('dark');
-                document.documentElement.classList.remove('light');
+                this.colorMode = "dark";
+                window.colorMode = "dark";
+                localStorage.theme = "dark";
+                document.documentElement.classList.add("dark");
+                document.documentElement.classList.remove("light");
             }
             window.location.reload();
         }

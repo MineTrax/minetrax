@@ -18,106 +18,130 @@ const { can } = useAuthorizable();
 const { formatTimeAgoToNow } = useHelpers();
 
 defineProps({
- kpiTotalUsers: Number,
- kpiTotalVerifiedUsers: Number,
- kpiUserCreatedForInterval: Number,
- kpiTotalUserPercent: Number,
+    kpiTotalUsers: Number,
+    kpiTotalVerifiedUsers: Number,
+    kpiUserCreatedForInterval: Number,
+    kpiTotalUserPercent: Number,
 
- kpiTotalPlayers: Number,
- kpiTotalLinkedPlayers: Number,
- kpiPlayerCreatedForInterval: Number,
- kpiTotalPlayersPercent: Number,
+    kpiTotalPlayers: Number,
+    kpiTotalLinkedPlayers: Number,
+    kpiPlayerCreatedForInterval: Number,
+    kpiTotalPlayersPercent: Number,
 
- kpiTotalFailedJobs: Number,
- kpiFailedJobsForInterval: Number,
- kpiTotalFailedJobPercent: Number,
+    kpiTotalFailedJobs: Number,
+    kpiFailedJobsForInterval: Number,
+    kpiTotalFailedJobPercent: Number,
 
- kpiTotalPosts: Number,
- kpiPostCreatedForInterval: Number,
- kpiTotalPostsPercent: Number,
- kpiTotalComments: Number,
+    kpiTotalPosts: Number,
+    kpiPostCreatedForInterval: Number,
+    kpiTotalPostsPercent: Number,
+    kpiTotalComments: Number,
 
- queueLastProcessed: String,
+    queueLastProcessed: String,
 });
 </script>
 
 <template>
- <AdminLayout>
- <AppHead :title="__('Admin Dashboard')"/>
+  <AdminLayout>
+    <AppHead :title="__('Admin Dashboard')" />
 
- <div v-if="!can('view admin_dashboard')"class="p-4 flex">
- <div class="flex-1 bg-card p-4 rounded-lg border text-destructive text-center italic">
- {{ __("Sorry! You are not allowed to view Admin Dashboard Statistics.") }}
- </div>
- </div>
+    <div
+      v-if="!can('view admin_dashboard')"
+      class="p-4 flex"
+    >
+      <div class="flex-1 bg-card p-4 rounded-lg border text-destructive text-center italic">
+        {{ __("Sorry! You are not allowed to view Admin Dashboard Statistics.") }}
+      </div>
+    </div>
 
- <div v-else class="p-4 space-y-4">
- <div id="row1"class="flex justify-between flex-1 space-x-4">
- <KpiOverviewCardForDashboard
- class="flex-1"
- title="Registered Users"
- :value="kpiTotalUsers"
- :sub-value="kpiUserCreatedForInterval"
- :change="kpiTotalUserPercent"
- change-desc="in last 7 days"
- :icon="UserPlusIcon"
- icon-class="text-blue-500 bg-blue-100 dark:bg-blue-500 dark:text-white"
- :description="`Total Verified: ${kpiTotalVerifiedUsers} users`"
- />
+    <div
+      v-else
+      class="p-4 space-y-4"
+    >
+      <div
+        id="row1"
+        class="flex justify-between flex-1 space-x-4"
+      >
+        <KpiOverviewCardForDashboard
+          class="flex-1"
+          title="Registered Users"
+          :value="kpiTotalUsers"
+          :sub-value="kpiUserCreatedForInterval"
+          :change="kpiTotalUserPercent"
+          change-desc="in last 7 days"
+          :icon="UserPlusIcon"
+          icon-class="text-blue-500 bg-blue-100 dark:bg-blue-500 dark:text-white"
+          :description="`Total Verified: ${kpiTotalVerifiedUsers} users`"
+        />
 
- <KpiOverviewCardForDashboard
- class="flex-1"
- title="Total Players"
- :value="kpiTotalPlayers"
- :sub-value="kpiPlayerCreatedForInterval"
- :change="kpiTotalPlayersPercent"
- change-desc="in last 7 days"
- :icon="UserIcon"
- icon-class="text-success bg-success/10 dark:text-white"
- :description="`Total Linked: ${kpiTotalLinkedPlayers} players`"
- />
+        <KpiOverviewCardForDashboard
+          class="flex-1"
+          title="Total Players"
+          :value="kpiTotalPlayers"
+          :sub-value="kpiPlayerCreatedForInterval"
+          :change="kpiTotalPlayersPercent"
+          change-desc="in last 7 days"
+          :icon="UserIcon"
+          icon-class="text-success bg-success/10 dark:text-white"
+          :description="`Total Linked: ${kpiTotalLinkedPlayers} players`"
+        />
 
- <KpiOverviewCardForDashboard
- class="flex-1"
- title="Total Posts"
- :value="kpiTotalPosts"
- :sub-value="kpiPostCreatedForInterval"
- :change="kpiTotalPostsPercent"
- change-desc="in last 7 days"
- :icon="ChatBubbleBottomCenterTextIcon"
- icon-class="text-amber-500 bg-amber-100 dark:bg-amber-500 dark:text-white"
- :description="`Total comments: ${kpiTotalComments}`"
- />
+        <KpiOverviewCardForDashboard
+          class="flex-1"
+          title="Total Posts"
+          :value="kpiTotalPosts"
+          :sub-value="kpiPostCreatedForInterval"
+          :change="kpiTotalPostsPercent"
+          change-desc="in last 7 days"
+          :icon="ChatBubbleBottomCenterTextIcon"
+          icon-class="text-amber-500 bg-amber-100 dark:bg-amber-500 dark:text-white"
+          :description="`Total comments: ${kpiTotalComments}`"
+        />
 
- <KpiOverviewCard
- class="flex-1"
- title="Failed Jobs"
- :value="millify(kpiTotalFailedJobs)"
- :sub-value="`(${kpiFailedJobsForInterval > 0 ?'+':''}${millify(kpiFailedJobsForInterval)})`"
- :sub-value-class="[kpiFailedJobsForInterval > 0 ?'text-destructive':'text-success']"
- :change="`${kpiTotalFailedJobPercent > 0 ?'+':''}${millify(kpiTotalFailedJobPercent, { precision: 2 })}%`"
- :change-class="[kpiTotalFailedJobPercent > 0 ?'text-destructive':'text-success']"
- change-desc="in last 7 days"
- :icon="FireIcon"
- icon-class="text-destructive bg-destructive/10 dark:text-white"
- :description="`Last Run: ${queueLastProcessed ? formatTimeAgoToNow(queueLastProcessed) : __('not yet')}`"
- />
- </div>
+        <KpiOverviewCard
+          class="flex-1"
+          title="Failed Jobs"
+          :value="millify(kpiTotalFailedJobs)"
+          :sub-value="`(${kpiFailedJobsForInterval > 0 ?'+':''}${millify(kpiFailedJobsForInterval)})`"
+          :sub-value-class="[kpiFailedJobsForInterval > 0 ?'text-destructive':'text-success']"
+          :change="`${kpiTotalFailedJobPercent > 0 ?'+':''}${millify(kpiTotalFailedJobPercent, { precision: 2 })}%`"
+          :change-class="[kpiTotalFailedJobPercent > 0 ?'text-destructive':'text-success']"
+          change-desc="in last 7 days"
+          :icon="FireIcon"
+          icon-class="text-destructive bg-destructive/10 dark:text-white"
+          :description="`Last Run: ${queueLastProcessed ? formatTimeAgoToNow(queueLastProcessed) : __('not yet')}`"
+        />
+      </div>
 
- <div id="row2"class="flex justify-between flex-1 space-x-4">
- <PlayersOverTimeMetricBox class="basis-8/12"/>
- <PlayersPerServerMetricBox class="basis-4/12"/>
- </div>
+      <div
+        id="row2"
+        class="flex justify-between flex-1 space-x-4"
+      >
+        <PlayersOverTimeMetricBox class="basis-8/12" />
+        <PlayersPerServerMetricBox class="basis-4/12" />
+      </div>
 
- <div id="row3"class="flex justify-between flex-1 space-x-4">
- <PlayersPerCountryMetricBox class="basis-1/2"/>
- <NetworkTrendsMetricBox class="basis-1/2"/>
- </div>
+      <div
+        id="row3"
+        class="flex justify-between flex-1 space-x-4"
+      >
+        <PlayersPerCountryMetricBox class="basis-1/2" />
+        <NetworkTrendsMetricBox class="basis-1/2" />
+      </div>
 
- <div id="row4"class="flex justify-between flex-1 space-x-4">
- <PlayersJoinAddressMetricBox :top-count="10"class="basis-1/2"/>
- <PlayersMinecraftVersionMetricBox :top-count="10"class="basis-1/2"/>
- </div>
- </div>
- </AdminLayout>
+      <div
+        id="row4"
+        class="flex justify-between flex-1 space-x-4"
+      >
+        <PlayersJoinAddressMetricBox
+          :top-count="10"
+          class="basis-1/2"
+        />
+        <PlayersMinecraftVersionMetricBox
+          :top-count="10"
+          class="basis-1/2"
+        />
+      </div>
+    </div>
+  </AdminLayout>
 </template>

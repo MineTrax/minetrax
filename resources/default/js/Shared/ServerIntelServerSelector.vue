@@ -1,8 +1,8 @@
 <script setup>
-import XSelect from '@/Components/Form/XSelect.vue';
-import { computed, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { pickBy } from 'lodash';
+import XSelect from "@/Components/Form/XSelect.vue";
+import { computed, ref, watch } from "vue";
+import { router } from "@inertiajs/vue3";
+import { pickBy } from "lodash";
 
 const props = defineProps({
     title: {
@@ -29,7 +29,7 @@ const showing = computed(() => {
             .map((id) => {
                 return props.serverList[id];
             })
-            .join(', ');
+            .join(", ");
     }
     return null;
 });

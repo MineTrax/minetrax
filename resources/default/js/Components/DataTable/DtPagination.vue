@@ -92,59 +92,80 @@ function pagination(currentPage, pageCount) {
 </script>
 
 <template>
-    <nav v-if="isSimplePagination" class="isolate inline-flex space-x-2 rounded-md">
-        <InertiaLink
-            v-if="props.data.prev_page_url"
-            :href="data.prev_page_url"
-            class="relative inline-flex items-center rounded-md border border-border text-primary hover:bg-accent/50 px-4 py-2 text-sm font-medium"
-        >
-            {{ __("Previous") }}
-        </InertiaLink>
-        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border text-muted-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
-            {{ __("Previous") }}
-        </button>
-        <InertiaLink
-            v-if="props.data.next_page_url"
-            :href="data.next_page_url"
-            class="relative ml-3 inline-flex items-center rounded-md border border-border text-primary hover:bg-accent/50 px-4 py-2 text-sm font-medium"
-        >
-            {{ __("Next") }}
-        </InertiaLink>
-        <button v-else disabled class="relative inline-flex items-center rounded-md border border-border text-muted-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50">
-            {{ __("Next") }}
-        </button>
-    </nav>
+  <nav
+    v-if="isSimplePagination"
+    class="isolate inline-flex space-x-2 rounded-md"
+  >
+    <InertiaLink
+      v-if="props.data.prev_page_url"
+      :href="data.prev_page_url"
+      class="relative inline-flex items-center rounded-md border border-border text-primary hover:bg-accent/50 px-4 py-2 text-sm font-medium"
+    >
+      {{ __("Previous") }}
+    </InertiaLink>
+    <button
+      v-else
+      disabled
+      class="relative inline-flex items-center rounded-md border border-border text-muted-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50"
+    >
+      {{ __("Previous") }}
+    </button>
+    <InertiaLink
+      v-if="props.data.next_page_url"
+      :href="data.next_page_url"
+      class="relative ml-3 inline-flex items-center rounded-md border border-border text-primary hover:bg-accent/50 px-4 py-2 text-sm font-medium"
+    >
+      {{ __("Next") }}
+    </InertiaLink>
+    <button
+      v-else
+      disabled
+      class="relative inline-flex items-center rounded-md border border-border text-muted-foreground px-4 py-2 text-sm font-medium cursor-not-allowed opacity-50"
+    >
+      {{ __("Next") }}
+    </button>
+  </nav>
 
-    <nav v-else class="isolate inline-flex -space-x-px rounded-md" aria-label="Pagination">
-        <InertiaLink
-            :href="previousPage.url ?? '#'"
-            class="relative inline-flex items-center rounded-l-md px-2 py-2 text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"
-            :class="[previousPage.url == null ? 'pointer-events-none opacity-50' : 'hover:bg-accent hover:text-accent-foreground']"
-        >
-            <span class="sr-only">{{ __("Previous") }}</span>
-            <ChevronLeftIcon class="h-5 w-5" />
-        </InertiaLink>
+  <nav
+    v-else
+    class="isolate inline-flex -space-x-px rounded-md"
+    aria-label="Pagination"
+  >
+    <InertiaLink
+      :href="previousPage.url ?? '#'"
+      class="relative inline-flex items-center rounded-l-md px-2 py-2 text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"
+      :class="[previousPage.url == null ? 'pointer-events-none opacity-50' : 'hover:bg-accent hover:text-accent-foreground']"
+    >
+      <span class="sr-only">{{ __("Previous") }}</span>
+      <ChevronLeftIcon class="h-5 w-5" />
+    </InertiaLink>
 
-        <template v-for="(page, index) in pageGenArray" :key="index">
-            <span v-if="page === '...'" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-muted-foreground ring-1 ring-inset ring-border focus:outline-offset-0">...</span>
-            <InertiaLink
-                v-else
-                :href="pages[page - 1].url"
-                class="relative inline-flex items-center px-4 py-2 text-sm text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"
-                :class="[pages[page - 1].active ? 'bg-accent text-accent-foreground font-semibold' : 'hover:bg-accent/50']"
-            >
-                {{ pages[page - 1].label }}
-            </InertiaLink>
-        </template>
+    <template
+      v-for="(page, index) in pageGenArray"
+      :key="index"
+    >
+      <span
+        v-if="page === '...'"
+        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-muted-foreground ring-1 ring-inset ring-border focus:outline-offset-0"
+      >...</span>
+      <InertiaLink
+        v-else
+        :href="pages[page - 1].url"
+        class="relative inline-flex items-center px-4 py-2 text-sm text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"
+        :class="[pages[page - 1].active ? 'bg-accent text-accent-foreground font-semibold' : 'hover:bg-accent/50']"
+      >
+        {{ pages[page - 1].label }}
+      </InertiaLink>
+    </template>
 
-        <InertiaLink
-            :disabled="!nextPage.url == null"
-            :href="nextPage.url ?? '#'"
-            class="relative inline-flex items-center rounded-r-md px-2 py-2 text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"
-            :class="[nextPage.url == null ? 'pointer-events-none opacity-50' : 'hover:bg-accent hover:text-accent-foreground']"
-        >
-            <span class="sr-only">{{ __("Next") }}</span>
-            <ChevronRightIcon class="h-5 w-5" />
-        </InertiaLink>
-    </nav>
+    <InertiaLink
+      :disabled="!nextPage.url == null"
+      :href="nextPage.url ?? '#'"
+      class="relative inline-flex items-center rounded-r-md px-2 py-2 text-foreground ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0"
+      :class="[nextPage.url == null ? 'pointer-events-none opacity-50' : 'hover:bg-accent hover:text-accent-foreground']"
+    >
+      <span class="sr-only">{{ __("Next") }}</span>
+      <ChevronRightIcon class="h-5 w-5" />
+    </InertiaLink>
+  </nav>
 </template>

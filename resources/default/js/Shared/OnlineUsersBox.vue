@@ -42,9 +42,9 @@
 
 <script>
 import {
-  Card,
-  CardContent,
-} from '@/Components/ui/card'
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
 
 export default {
     components: {

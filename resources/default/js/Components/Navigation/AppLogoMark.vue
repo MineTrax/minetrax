@@ -20,8 +20,8 @@
 </template>
 
 <script setup>
-import JetApplicationMark from '@/Jetstream/ApplicationMark.vue';
-import Icon from '@/Components/Icon.vue';
+import JetApplicationMark from "@/Jetstream/ApplicationMark.vue";
+import Icon from "@/Components/Icon.vue";
 
 defineProps({
     canShowAdminSidebar: {

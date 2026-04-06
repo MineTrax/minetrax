@@ -1,10 +1,10 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Link } from '@inertiajs/vue3';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import DataTable from "@/Components/DataTable/DataTable.vue";
+import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Link } from "@inertiajs/vue3";
 
 const { __ } = useTranslations();
 
@@ -15,46 +15,46 @@ defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Online Users & Guests'),
+        text: __("Online Users & Guests"),
         current: true,
     }
 ];
 
 const headerRow = [
     {
-        key: 'country',
-        label: __('Country'),
+        key: "country",
+        label: __("Country"),
         sortable: false,
-        class: 'text-center',
+        class: "text-center",
     },
     {
-        key: 'user_id',
+        key: "user_id",
         sortable: true,
-        label: __('User'),
-        class: 'w-3/12',
+        label: __("User"),
+        class: "w-3/12",
     },
     {
-        key: 'ip_address',
+        key: "ip_address",
         sortable: true,
-        label: __('Ip Address'),
+        label: __("Ip Address"),
     },
     {
-        key: 'platform',
-        label: __('Platform'),
+        key: "platform",
+        label: __("Platform"),
         sortable: false,
     },
     {
-        key: 'browser',
+        key: "browser",
         sortable: false,
-        label: __('Browser'),
+        label: __("Browser"),
     },
     {
-        key: 'last_activity',
-        label: __('Last Activity'),
+        key: "last_activity",
+        label: __("Last Activity"),
         sortable: true,
     },
 ];
@@ -66,7 +66,11 @@ const headerRow = [
 
     <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <AppBreadcrumb class="mt-0" breadcrumb-class="max-w-none px-0 md:px-0" :items="breadcrumbItems" />
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
       </div>
 
       <DataTable

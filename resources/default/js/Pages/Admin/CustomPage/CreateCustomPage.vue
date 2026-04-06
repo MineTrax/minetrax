@@ -1,49 +1,49 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import { Codemirror } from 'vue-codemirror';
-import { basicSetup } from 'codemirror';
-import { html } from '@codemirror/lang-html';
-import { oneDark } from '@/Data/CodeMirror/darkTheme.js';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
-import { onMounted, ref, shallowRef } from 'vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import { Codemirror } from "vue-codemirror";
+import { basicSetup } from "codemirror";
+import { html } from "@codemirror/lang-html";
+import { oneDark } from "@/Data/CodeMirror/darkTheme.js";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
+import { onMounted, ref, shallowRef } from "vue";
 
 const { __ } = useTranslations();
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Custom Pages'),
-        url: route('admin.custom-page.index'),
+        text: __("Custom Pages"),
+        url: route("admin.custom-page.index"),
         current: false,
     },
     {
-        text: __('Create Custom Page'),
+        text: __("Create Custom Page"),
         current: true,
     }
 ];
 
-const pageType = ref('markdown');
-const bodyMarkdown = ref('');
+const pageType = ref("markdown");
+const bodyMarkdown = ref("");
 const pageTypeList = {
-    markdown: 'Markdown - Add your content in markdown format',
-    html: 'HTML - Add your content in code using HTML/CSS',
-    redirect: 'Redirect - This page will redirect to another URL',
+    markdown: "Markdown - Add your content in markdown format",
+    html: "HTML - Add your content in code using HTML/CSS",
+    redirect: "Redirect - This page will redirect to another URL",
 };
 
 const form = useForm({
-    title: '',
-    body: '',
-    path: '',
+    title: "",
+    body: "",
+    path: "",
     is_visible: true,
     is_in_navbar: false,
     is_redirect: false,
@@ -56,10 +56,10 @@ const form = useForm({
 // Codemirror EditorView instance ref
 const view = shallowRef();
 const extensions = [basicSetup, html()];
-if (window.colorMode === 'dark') {
+if (window.colorMode === "dark") {
     extensions.push(oneDark);
 }
-const code = ref('');
+const code = ref("");
 const handleReady = (payload) => {
     view.value = payload.view;
 };
@@ -67,14 +67,14 @@ const handleReady = (payload) => {
 
 
 const createCustomPage = () => {
-    if (pageType.value === 'markdown') {
+    if (pageType.value === "markdown") {
         form.body = bodyMarkdown.value;
-    } else if (pageType.value === 'html') {
+    } else if (pageType.value === "html") {
         form.body = view.value.state.doc.toString();
     }
-    form.is_redirect = pageType.value === 'redirect';
-    form.is_html_page = pageType.value === 'html';
-    form.post(route('admin.custom-page.store'), {});
+    form.is_redirect = pageType.value === "redirect";
+    form.is_html_page = pageType.value === "html";
+    form.post(route("admin.custom-page.store"), {});
 };
 
 

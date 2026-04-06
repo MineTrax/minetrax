@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 import { navigationMenuTriggerStyle } from ".";
 
 const props = defineProps({
-  disabled: { type: Boolean, required: false },
-  asChild: { type: Boolean, required: false },
-  as: { type: null, required: false },
-  class: { type: null, required: false },
+    disabled: { type: Boolean, required: false },
+    asChild: { type: Boolean, required: false },
+    as: { type: null, required: false },
+    class: { type: null, required: false },
 });
 
 const delegatedProps = reactiveOmit(props, "class");

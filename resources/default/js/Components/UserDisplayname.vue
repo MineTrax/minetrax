@@ -1,82 +1,82 @@
 <script setup>
-import Icon from'@/Components/Icon.vue';
+import Icon from"@/Components/Icon.vue";
 
 defineProps({
- user: {
- type: Object,
- required: true,
- },
- textClass: {
- type: String,
- default:'text-base'
- },
- iconClass: {
- type: String,
- default:'w-5 h-5'
- },
- showUsername: {
- type: Boolean,
- default: false
- },
- showBadges: {
- type: Boolean,
- default: true
- },
+    user: {
+        type: Object,
+        required: true,
+    },
+    textClass: {
+        type: String,
+        default:"text-base"
+    },
+    iconClass: {
+        type: String,
+        default:"w-5 h-5"
+    },
+    showUsername: {
+        type: Boolean,
+        default: false
+    },
+    showBadges: {
+        type: Boolean,
+        default: true
+    },
 });
 </script>
 
 <template>
- <div
- class="leading-6 text-black dark:text-foreground"
- :class="textClass"
- :style="[user.roles[0].color ? {color: user.roles[0].color} : null]"
- >
- <span class="font-semibold">
- {{ user.name }}
- </span>
- <span
- v-if="showUsername"
- class="text-foreground dark:text-foreground"
- > @{{ user.username }}</span>
+  <div
+    class="leading-6 text-black dark:text-foreground"
+    :class="textClass"
+    :style="[user.roles[0].color ? {color: user.roles[0].color} : null]"
+  >
+    <span class="font-semibold">
+      {{ user.name }}
+    </span>
+    <span
+      v-if="showUsername"
+      class="text-foreground dark:text-foreground"
+    > @{{ user.username }}</span>
 
- <Icon
- v-if="user.verified_at && showBadges"
- v-tippy
- name="verified-check-fill"
- :title="__('Verified Account')"
- class="inline mb-1 fill-current focus:outline-hidden text-primary"
- :class="iconClass"
- />
- <Icon
- v-if="user.is_staff && showBadges"
- v-tippy
- name="shield-check-fill"
- :title="__('Staff Member')"
- class="inline mb-1 text-amber-400 fill-current focus:outline-hidden"
- :class="iconClass"
- />
- <Icon
- v-if="user.muted_at && showBadges"
- v-tippy
- name="volume-off-fill"
- :title="__('Muted User')"
- class="inline mb-1 text-destructive fill-current focus:outline-hidden"
- :class="iconClass"
- />
+    <Icon
+      v-if="user.verified_at && showBadges"
+      v-tippy
+      name="verified-check-fill"
+      :title="__('Verified Account')"
+      class="inline mb-1 fill-current focus:outline-hidden text-primary"
+      :class="iconClass"
+    />
+    <Icon
+      v-if="user.is_staff && showBadges"
+      v-tippy
+      name="shield-check-fill"
+      :title="__('Staff Member')"
+      class="inline mb-1 text-amber-400 fill-current focus:outline-hidden"
+      :class="iconClass"
+    />
+    <Icon
+      v-if="user.muted_at && showBadges"
+      v-tippy
+      name="volume-off-fill"
+      :title="__('Muted User')"
+      class="inline mb-1 text-destructive fill-current focus:outline-hidden"
+      :class="iconClass"
+    />
 
- <template v-if="user.sticky_badges && user.sticky_badges.length > 0 && showBadges">
- <img
- v-for="badge in user.sticky_badges"
- :key="badge.id"
- v-tippy
- :title="badge.name"
- class="inline mb-1 ml-0.5 text-destructive fill-current focus:outline-hidden"
- :class="iconClass"
- :src="badge.photo_url"
- :alt="badge.name"
- >
- </template>
+    <template v-if="user.sticky_badges && user.sticky_badges.length > 0 && showBadges">
+      <img
+        v-for="badge in user.sticky_badges"
+        :key="badge.id"
+        v-tippy
+        :title="badge.name"
+        class="inline mb-1 ml-0.5 text-destructive fill-current focus:outline-hidden"
+        :class="iconClass"
+        :src="badge.photo_url"
+        :alt="badge.name"
+      >
+    </template>
 
- <slot />
- </div>
+    <slot />
+  </div>
 </template>

@@ -1,14 +1,14 @@
 <script setup>
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import XInput from '@/Components/Form/XInput.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import ImageUpload from '@/Components/Form/ImageUpload.vue';
-import Icon from '@/Components/Icon.vue';
-import { useTranslations } from '@/Composables/useTranslations';
+import { ref } from "vue";
+import { useForm } from "@inertiajs/vue3";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import XInput from "@/Components/Form/XInput.vue";
+import XTextarea from "@/Components/Form/XTextarea.vue";
+import ImageUpload from "@/Components/Form/ImageUpload.vue";
+import Icon from "@/Components/Icon.vue";
+import { useTranslations } from "@/Composables/useTranslations";
 
 const { __ } = useTranslations();
 
@@ -19,31 +19,31 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Settings'),
+        text: __("Settings"),
         current: false,
     },
     {
-        text: __('SEO Settings'),
+        text: __("SEO Settings"),
         current: true,
     }
 ];
 
 const form = useForm({
-    'title_home': props.settings.title_home,
-    'title_suffix': props.settings.title_suffix,
-    'meta': props.settings.meta,
-    'inject_at_head': props.settings.inject_at_head,
-    'inject_at_body_start': props.settings.inject_at_body_start,
-    'inject_at_body_end': props.settings.inject_at_body_end,
-    'favicon': null,
+    "title_home": props.settings.title_home,
+    "title_suffix": props.settings.title_suffix,
+    "meta": props.settings.meta,
+    "inject_at_head": props.settings.inject_at_head,
+    "inject_at_body_start": props.settings.inject_at_body_start,
+    "inject_at_body_end": props.settings.inject_at_body_end,
+    "favicon": null,
 });
 
 const saveSetting = () => {
-    form.post(route('admin.setting.seo.update'), {
+    form.post(route("admin.setting.seo.update"), {
         preserveScroll: true,
         onSuccess: () => {
             location.reload();
@@ -53,8 +53,8 @@ const saveSetting = () => {
 
 const addMetaField = () => {
     form.meta.push({
-        name: '',
-        content: '',
+        name: "",
+        content: "",
     });
 };
 
@@ -91,10 +91,10 @@ const removeMetaField = (index) => {
                       <!-- Favicon -->
                       <ImageUpload
                         id="favicon"
+                        v-model="form.favicon"
                         name="favicon"
                         :label="__('Favicon Image')"
                         :current-url="settings.favicon_path"
-                        v-model="form.favicon"
                         :error="form.errors.favicon"
                         :removable="false"
                         shape="rect"

@@ -6,9 +6,9 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
-} from '@/Components/ui/breadcrumb'
-import { Link } from '@inertiajs/vue3'
-import { usePage } from '@inertiajs/vue3'
+} from "@/Components/ui/breadcrumb";
+import { Link } from "@inertiajs/vue3";
+import { usePage } from "@inertiajs/vue3";
 import { cn } from "@/lib/utils";
 
 const props = defineProps({
@@ -19,7 +19,7 @@ const props = defineProps({
     },
     class: { type: null, required: false },
     breadcrumbClass: { type: null, required: false },
-})
+});
 
 const page = usePage();
 const isEnabled = true; // page.props.generalSettings.enable_breadcrumb;
@@ -35,24 +35,37 @@ const isEnabled = true; // page.props.generalSettings.enable_breadcrumb;
 </script>
 
 <template>
-    <div :class="cn('mt-6', props.class)">
-        <Breadcrumb v-if="isEnabled" :class="cn('mx-auto px-3 md:px-10 max-w-screen-2xl', props.breadcrumbClass)">
-            <BreadcrumbList>
-                <template v-for="(item, index) in items" :key="index">
-                    <BreadcrumbItem>
-                        <BreadcrumbLink v-if="!item.current && item.url" :as="Link" :href="item.url">
-                            {{ item.text }}
-                        </BreadcrumbLink>
-                        <BreadcrumbPage v-else-if="item.current">
-                            {{ item.text }}
-                        </BreadcrumbPage>
-                        <span v-else class="font-normal text-muted-foreground transition-colors hover:text-foreground">
-                             {{ item.text }}
-                        </span>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator v-if="index < items.length - 1" />
-                </template>
-            </BreadcrumbList>
-        </Breadcrumb>
-    </div>
+  <div :class="cn('mt-6', props.class)">
+    <Breadcrumb
+      v-if="isEnabled"
+      :class="cn('mx-auto px-3 md:px-10 max-w-screen-2xl', props.breadcrumbClass)"
+    >
+      <BreadcrumbList>
+        <template
+          v-for="(item, index) in items"
+          :key="index"
+        >
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              v-if="!item.current && item.url"
+              :as="Link"
+              :href="item.url"
+            >
+              {{ item.text }}
+            </BreadcrumbLink>
+            <BreadcrumbPage v-else-if="item.current">
+              {{ item.text }}
+            </BreadcrumbPage>
+            <span
+              v-else
+              class="font-normal text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {{ item.text }}
+            </span>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator v-if="index < items.length - 1" />
+        </template>
+      </BreadcrumbList>
+    </Breadcrumb>
+  </div>
 </template>

@@ -1,20 +1,20 @@
 <script setup>
-import { FormKitSchema } from '@formkit/vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XSelect from '@/Components/Form/XSelect.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import { computed, ref, watch } from 'vue';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/Components/ui/dialog';
-import { useFormKit } from '@/Composables/useFormKit';
-import { kebabCase } from 'lodash';
-import Draggable from 'vuedraggable';
-import { ArrowsUpDownIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
+import { FormKitSchema } from "@formkit/vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import { computed, ref, watch } from "vue";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/Components/ui/dialog";
+import { useFormKit } from "@/Composables/useFormKit";
+import { kebabCase } from "lodash";
+import Draggable from "vuedraggable";
+import { ArrowsUpDownIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
 
 const { __ } = useTranslations();
 
@@ -27,25 +27,25 @@ defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Application Forms'),
-        url: route('admin.recruitment.index'),
+        text: __("Application Forms"),
+        url: route("admin.recruitment.index"),
         current: false,
     },
     {
-        text: __('Create Application Form'),
+        text: __("Create Application Form"),
         current: true,
     }
 ];
 
 const formStatusList = {
-    draft: 'Draft - Application is under development and not visible to users',
-    active: 'Active - Application is actively accepting submissions',
-    disabled: 'Disabled - Application is disabled for new submissions',
-    archived: 'Archived - Application is archived and not visible to users',
+    draft: "Draft - Application is under development and not visible to users",
+    active: "Active - Application is actively accepting submissions",
+    disabled: "Disabled - Application is disabled for new submissions",
+    archived: "Archived - Application is archived and not visible to users",
 };
 
 const formFieldType = {
@@ -70,14 +70,14 @@ const formFieldType = {
     month: {},
     time: {},
     date: {},
-    'datetime-local': {},
+    "datetime-local": {},
 };
 
 const form = useForm({
-    title: '',
-    slug: '',
-    status: 'draft',
-    description: '',
+    title: "",
+    slug: "",
+    status: "draft",
+    description: "",
     max_submission_per_user: null,
     submission_cooldown_in_seconds: null,
     is_allow_only_player_linked_users: false,
@@ -90,21 +90,21 @@ const form = useForm({
     related_role_id: null,
     fields: [
         {
-            type: 'number',
-            label: 'Years of Experience',
-            name: 'experience',
+            type: "number",
+            label: "Years of Experience",
+            name: "experience",
             placeholder: null,
             help: null,
-            validation: 'required|number',
+            validation: "required|number",
             options: null,
         },
         {
-            type: 'textarea',
-            label: 'Tell us about yourself',
-            name: 'aboutme',
+            type: "textarea",
+            label: "Tell us about yourself",
+            name: "aboutme",
             placeholder: null,
-            help: 'Write about your experience, skills, and why you want to join us.',
-            validation: 'required|string',
+            help: "Write about your experience, skills, and why you want to join us.",
+            validation: "required|string",
             options: null,
         },
     ],
@@ -112,18 +112,18 @@ const form = useForm({
 
 const createRecruitment = () => {
     form.fields.map(item => {
-        item.name = item.label.toLowerCase().replace(/ /g, '_');
+        item.name = item.label.toLowerCase().replace(/ /g, "_");
     });
 
-    form.post(route('admin.recruitment.store'), {});
+    form.post(route("admin.recruitment.store"), {});
 };
 
 function addField() {
     form.fields.push({
-        type: 'text',
-        label: '',
-        name: '',
-        validation: 'required',
+        type: "text",
+        label: "",
+        name: "",
+        validation: "required",
     });
 }
 

@@ -72,41 +72,58 @@ const closeModal = () => {
 </script>
 
 <template>
-    <span>
-        <span @click="startConfirmingPassword">
-            <slot />
-        </span>
-
-        <Dialog :open="confirmingPassword" @update:open="(value) => !value && closeModal()">
-            <DialogContent class="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle class="text-foreground">
-                        {{ title }}
-                    </DialogTitle>
-                </DialogHeader>
-
-                <div class="space-y-4">
-                    <p class="text-sm text-muted-foreground">
-                        {{ content }}
-                    </p>
-
-                    <XInput ref="passwordInput" v-model="form.password" type="password" :label="__('Password')" :error="form.error" :placeholder="__('Password')" @keyup.enter="confirmPassword" />
-
-                    <p class="text-xs text-muted-foreground italic">
-                        {{ __("Continue with empty password if you have no password.") }}
-                    </p>
-                </div>
-
-                <DialogFooter class="flex-col-reverse sm:flex-row sm:justify-end gap-2">
-                    <Button variant="outline" @click="closeModal">
-                        {{ __("Cancel") }}
-                    </Button>
-
-                    <LoadingButton :loading="form.processing" @click="confirmPassword">
-                        {{ button }}
-                    </LoadingButton>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+  <span>
+    <span @click="startConfirmingPassword">
+      <slot />
     </span>
+
+    <Dialog
+      :open="confirmingPassword"
+      @update:open="(value) => !value && closeModal()"
+    >
+      <DialogContent class="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle class="text-foreground">
+            {{ title }}
+          </DialogTitle>
+        </DialogHeader>
+
+        <div class="space-y-4">
+          <p class="text-sm text-muted-foreground">
+            {{ content }}
+          </p>
+
+          <XInput
+            ref="passwordInput"
+            v-model="form.password"
+            type="password"
+            :label="__('Password')"
+            :error="form.error"
+            :placeholder="__('Password')"
+            @keyup.enter="confirmPassword"
+          />
+
+          <p class="text-xs text-muted-foreground italic">
+            {{ __("Continue with empty password if you have no password.") }}
+          </p>
+        </div>
+
+        <DialogFooter class="flex-col-reverse sm:flex-row sm:justify-end gap-2">
+          <Button
+            variant="outline"
+            @click="closeModal"
+          >
+            {{ __("Cancel") }}
+          </Button>
+
+          <LoadingButton
+            :loading="form.processing"
+            @click="confirmPassword"
+          >
+            {{ button }}
+          </LoadingButton>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  </span>
 </template>

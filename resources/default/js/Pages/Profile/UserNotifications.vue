@@ -1,70 +1,88 @@
 <template>
-    <AppLayout>
-        <AppHead :title="__('Notifications')" />
+  <AppLayout>
+    <AppHead :title="__('Notifications')" />
 
-        <AppBreadcrumb :items="breadcrumbItems" />
+    <AppBreadcrumb :items="breadcrumbItems" />
 
-        <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
-            <div class="flex space-x-4 mb-4 justify-between md:justify-normal">
-                <h1 class="font-bold text-2xl text-foreground">
-                    {{ __("Notifications") }}
-                </h1>
-                <div class="flex">
-                    <Link :href="route('notification.mark-as-read')" method="post" :preserve-state="false">
-                    <Button variant="ghost">
-                        <CheckCheck class="w-4 h-4" />
-                        {{ __("Mark all read") }}
-                    </Button>
-                    </Link>
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row md:space-x-4">
-                <div class="flex flex-col space-y-4 md:w-9/12">
-                    <Card>
-                        <CardContent class="p-0">
-                            <InfiniteScroll :load-more="loadNotifications"
-                                :can-load-more="notifications.next_page_url !== null">
-                                <TransitionGroup name="list" tag="div" class="space-y-1">
-                                    <Notification v-for="notification in notifications.data" :key="notification.id"
-                                        :notification="notification" />
-                                </TransitionGroup>
-                            </InfiniteScroll>
-                            <div v-if="notifications.data.length <= 0" :key="999999999"
-                                class="flex items-center justify-center italic text-muted-foreground p-8">
-                                {{ __("No notifications to show.") }}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                <div class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 h-screen sticky"
-                    :class="{ 'top-16': isStickyNav, 'top-5': !isStickyNav }">
-                    <ServerStatusBox />
-                    <ShoutBox />
-                </div>
-            </div>
+    <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
+      <div class="flex space-x-4 mb-4 justify-between md:justify-normal">
+        <h1 class="font-bold text-2xl text-foreground">
+          {{ __("Notifications") }}
+        </h1>
+        <div class="flex">
+          <Link
+            :href="route('notification.mark-as-read')"
+            method="post"
+            :preserve-state="false"
+          >
+            <Button variant="ghost">
+              <CheckCheck class="w-4 h-4" />
+              {{ __("Mark all read") }}
+            </Button>
+          </Link>
         </div>
-    </AppLayout>
+      </div>
+      <div class="flex flex-col md:flex-row md:space-x-4">
+        <div class="flex flex-col space-y-4 md:w-9/12">
+          <Card>
+            <CardContent class="p-0">
+              <InfiniteScroll
+                :load-more="loadNotifications"
+                :can-load-more="notifications.next_page_url !== null"
+              >
+                <TransitionGroup
+                  name="list"
+                  tag="div"
+                  class="space-y-1"
+                >
+                  <Notification
+                    v-for="notification in notifications.data"
+                    :key="notification.id"
+                    :notification="notification"
+                  />
+                </TransitionGroup>
+              </InfiniteScroll>
+              <div
+                v-if="notifications.data.length <= 0"
+                :key="999999999"
+                class="flex items-center justify-center italic text-muted-foreground p-8"
+              >
+                {{ __("No notifications to show.") }}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div
+          class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 h-screen sticky"
+          :class="{ 'top-16': isStickyNav, 'top-5': !isStickyNav }"
+        >
+          <ServerStatusBox />
+          <ShoutBox />
+        </div>
+      </div>
+    </div>
+  </AppLayout>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
-import ShoutBox from '@/Shared/ShoutBox.vue';
-import InfiniteScroll from '@/Components/InfiniteScroll.vue';
-import Notification from '@/Components/Notification.vue';
-import { Link } from '@inertiajs/vue3';
-import { usePage } from '@inertiajs/vue3';
+import { ref } from "vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import ServerStatusBox from "@/Shared/ServerStatusBox.vue";
+import ShoutBox from "@/Shared/ShoutBox.vue";
+import InfiniteScroll from "@/Components/InfiniteScroll.vue";
+import Notification from "@/Components/Notification.vue";
+import { Link } from "@inertiajs/vue3";
+import { usePage } from "@inertiajs/vue3";
 import {
     Card,
     CardContent,
-} from '@/Components/ui/card';
-import { Button } from '@/Components/ui/button';
-import AppHead from '@/Components/AppHead.vue';
-import { CheckCheck } from 'lucide-vue-next';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { useTranslations } from '@/Composables/useTranslations';
+} from "@/Components/ui/card";
+import { Button } from "@/Components/ui/button";
+import AppHead from "@/Components/AppHead.vue";
+import { CheckCheck } from "lucide-vue-next";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { useTranslations } from "@/Composables/useTranslations";
 
 const { __ } = useTranslations();
 
@@ -75,12 +93,12 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Home'),
-        url: route('home'),
+        text: __("Home"),
+        url: route("home"),
         current: false
     },
     {
-        text: __('Notifications'),
+        text: __("Notifications"),
         current: true
     }
 ];

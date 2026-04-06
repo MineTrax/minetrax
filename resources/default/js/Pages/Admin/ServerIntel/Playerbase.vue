@@ -1,15 +1,15 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import ServerIntelServerSelector from '@/Shared/ServerIntelServerSelector.vue';
-import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
-import { computed } from 'vue';
-import PlayersJoinAddressMetricBox from '@/Shared/PlayersJoinAddressMetricBox.vue';
-import PlayersMinecraftVersionMetricBox from '@/Shared/PlayersMinecraftVersionMetricBox.vue';
-import PlayersJoinAddressOverTimeMetricBox from '@/Shared/PlayersJoinAddressOverTimeMetricBox.vue';
-import PlayersMinecraftVersionOverTimeMetricBox from '@/Shared/PlayersMinecraftVersionOverTimeMetricBox.vue';
-import { useTranslations } from '@/Composables/useTranslations';
+import AppHead from "@/Components/AppHead.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import ServerIntelServerSelector from "@/Shared/ServerIntelServerSelector.vue";
+import PlayersPerCountryMetricBox from "@/Shared/PlayersPerCountryMetricBox.vue";
+import { computed } from "vue";
+import PlayersJoinAddressMetricBox from "@/Shared/PlayersJoinAddressMetricBox.vue";
+import PlayersMinecraftVersionMetricBox from "@/Shared/PlayersMinecraftVersionMetricBox.vue";
+import PlayersJoinAddressOverTimeMetricBox from "@/Shared/PlayersJoinAddressOverTimeMetricBox.vue";
+import PlayersMinecraftVersionOverTimeMetricBox from "@/Shared/PlayersMinecraftVersionOverTimeMetricBox.vue";
+import { useTranslations } from "@/Composables/useTranslations";
 
 const { __ } = useTranslations();
 
@@ -25,25 +25,25 @@ const props = defineProps({
 let selectedServers = props.filters?.servers?.length ? props.filters?.servers[0] : null;
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Server Intel'),
+        text: __("Server Intel"),
         current: false,
     },
     {
-        text: __('Playerbase'),
+        text: __("Playerbase"),
         current: true,
     },
     {
-        text: props.serverList[selectedServers] ?? __('All Servers'),
+        text: props.serverList[selectedServers] ?? __("All Servers"),
         current: true,
     }
 ];
 
 const countryMapRoute = computed(() => {
-    return route('admin.intel.server.playerbase.countries', {
+    return route("admin.intel.server.playerbase.countries", {
         servers: props.filters?.servers,
     });
 });

@@ -3,10 +3,10 @@ import {
     Disclosure,
     DisclosureButton,
     DisclosurePanel,
-} from '@headlessui/vue';
-import {ChevronDownIcon} from '@heroicons/vue/20/solid';
-import {computed} from 'vue';
-import { Link } from '@inertiajs/vue3';
+} from "@headlessui/vue";
+import {ChevronDownIcon} from "@heroicons/vue/20/solid";
+import {computed} from "vue";
+import { Link } from "@inertiajs/vue3";
 
 const props = defineProps({
     item: Object,

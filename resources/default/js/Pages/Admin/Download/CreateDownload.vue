@@ -1,29 +1,29 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useTranslations } from '@/Composables/useTranslations';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Button } from '@/Components/ui/button';
-import { Link, useForm } from '@inertiajs/vue3';
-import XInput from '@/Components/Form/XInput.vue';
-import XTextarea from '@/Components/Form/XTextarea.vue';
-import XSwitch from '@/Components/Form/XSwitch.vue';
-import TipTapEditor from '@/Components/TipTapEditor.vue';
-import { ref } from 'vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Button } from "@/Components/ui/button";
+import { Link, useForm } from "@inertiajs/vue3";
+import XInput from "@/Components/Form/XInput.vue";
+import XTextarea from "@/Components/Form/XTextarea.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
+import { ref } from "vue";
 
 const { __ } = useTranslations();
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Downloads'),
-        url: route('admin.download.index'),
+        text: __("Downloads"),
+        url: route("admin.download.index"),
         current: false,
     },
     {
-        text: __('Create Download'),
+        text: __("Create Download"),
         current: true,
     }
 ];
@@ -32,7 +32,7 @@ const fileInput = ref(null);
 
 const form = useForm({
     name: null,
-    description: '',
+    description: "",
     is_external: false,
     file_url: null,
     file_name: null,
@@ -50,7 +50,7 @@ function addDownload() {
         form.file = fileInput.value.files[0];
     }
 
-    form.post(route('admin.download.store'), {});
+    form.post(route("admin.download.store"), {});
 }
 </script>
 

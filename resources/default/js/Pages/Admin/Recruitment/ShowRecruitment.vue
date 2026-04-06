@@ -1,14 +1,14 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import CustomFormIntelPieChart from '@/Shared/CustomFormIntelPieChart.vue';
-import CustomFormIntelBarChart from '@/Shared/CustomFormIntelBarChart.vue';
-import CustomFormIntelListChart from '@/Shared/CustomFormIntelListChart.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
-import { startCase } from 'lodash';
+import AppHead from "@/Components/AppHead.vue";
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import CustomFormIntelPieChart from "@/Shared/CustomFormIntelPieChart.vue";
+import CustomFormIntelBarChart from "@/Shared/CustomFormIntelBarChart.vue";
+import CustomFormIntelListChart from "@/Shared/CustomFormIntelListChart.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import { startCase } from "lodash";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
@@ -27,12 +27,12 @@ const props = defineProps({
 
 const breadcrumbItems = [
     {
-        text: __('Admin'),
+        text: __("Admin"),
         current: false,
     },
     {
-        text: __('Application Forms'),
-        url: route('admin.recruitment.index'),
+        text: __("Application Forms"),
+        url: route("admin.recruitment.index"),
         current: false,
     },
     {
@@ -42,15 +42,15 @@ const breadcrumbItems = [
 ];
 
 const requestPieChartData = {
-    label: 'Total Requests',
+    label: "Total Requests",
     data: {
-        'Open Requests': props.recruitment.open_submissions_count,
-        'Closed Requests': props.recruitment.closed_submissions_count,
+        "Open Requests": props.recruitment.open_submissions_count,
+        "Closed Requests": props.recruitment.closed_submissions_count,
     }
 };
 
 const submissionCountByStatusData = {
-    label: 'Submission Status',
+    label: "Submission Status",
     data: props.submissionCountByStatus
 };
 
