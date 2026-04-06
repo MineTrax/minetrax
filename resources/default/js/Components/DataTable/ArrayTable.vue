@@ -1,7 +1,8 @@
 <script setup>
 import Icon from "@/Components/Icon.vue";
+import { router } from "@inertiajs/vue3";
 import axios from "axios";
-import { ref, computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import LoadingSpinner from "../LoadingSpinner.vue";
 
 const props = defineProps({
@@ -20,7 +21,27 @@ const props = defineProps({
         required: true,
         type: Array,
     },
+    rowHref: {
+        required: false,
+        type: Function,
+        default: null,
+    },
 });
+
+function onRowClick(event, item) {
+    if (!props.rowHref) return;
+    const href = props.rowHref(item);
+    if (!href) return;
+
+    const target = event.target.closest("a, button, input, select, textarea, [role='button'], [role='menuitem'], .multiselect");
+    if (target) return;
+
+    if (event.metaKey || event.ctrlKey) {
+        window.open(href, "_blank");
+    } else {
+        router.visit(href);
+    }
+}
 
 const loading = ref(true);
 const finalData = ref([]);
@@ -109,81 +130,119 @@ const sortedDir = computed(() => {
 </script>
 
 <template>
-    <!-- ArrayTable starts -->
-    <div class="flex flex-col">
-        <div id="tableSection" class="flex flex-col">
-            <div class="overflow-x-auto">
-                <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden">
-                        <table class="min-w-full divide-y divide-border">
-                            <thead class="bg-muted">
-                                <tr>
-                                    <slot name="header">
-                                        <th v-for="th in header" :key="th.key" scope="col"
-                                            class="px-4 py-3 text-xs font-semibold text-left text-card-foreground/70"
-                                            :class="[th.class ? th.class : '']">
-                                            <div class="inline-flex items-center">
-                                                <div class="inline-flex items-center uppercase cursor-pointer" @click="
-                                                    th.sortable
-                                                        ? toggleSorting(
-                                                            th.key
-                                                        )
-                                                        : null
-                                                    ">
-                                                    {{ th.label }}
-                                                    <Icon v-if="th.sortable" :name="sortedField ===
-                                                            th.key
-                                                            ? sortedDir ===
-                                                                'asc'
-                                                                ? 'sort-up'
-                                                                : 'sort-down'
-                                                            : 'sort-updown'
-                                                        " class="inline-block w-3 h-3 ml-1 text-card-foreground/70"
-                                                        :class="[
-                                                            sortedField ===
-                                                                th.key
-                                                                ? 'text-primary'
-                                                                : '',
-                                                        ]" />
-                                                </div>
-                                            </div>
-                                        </th>
-                                    </slot>
-                                </tr>
-                            </thead>
-                            <tbody v-if="!loading" class="divide-y divide-border/50">
-                                <tr v-for="item in sortedData" :key="item.id">
-                                    <slot :item="item" :data="sortedData">
-                                        <td v-for="column in header" :key="column.key"
-                                            class="px-4 py-3 text-sm font-medium text-card-foreground">
-                                            {{ item[column.key] }}
-                                        </td>
-                                    </slot>
-                                </tr>
+  <!-- ArrayTable starts -->
+  <div class="flex flex-col">
+    <div
+      id="tableSection"
+      class="flex flex-col"
+    >
+      <div class="overflow-x-auto">
+        <div class="inline-block min-w-full align-middle">
+          <div class="overflow-hidden">
+            <table class="min-w-full divide-y divide-border">
+              <thead class="bg-muted">
+                <tr>
+                  <slot name="header">
+                    <th
+                      v-for="th in header"
+                      :key="th.key"
+                      scope="col"
+                      class="px-4 py-3 text-xs font-semibold text-left text-card-foreground/70"
+                      :class="[th.class ? th.class : '']"
+                    >
+                      <div class="inline-flex items-center">
+                        <div
+                          class="inline-flex items-center uppercase cursor-pointer"
+                          @click="
+                            th.sortable
+                              ? toggleSorting(
+                                th.key
+                              )
+                              : null
+                          "
+                        >
+                          {{ th.label }}
+                          <Icon
+                            v-if="th.sortable"
+                            :name="sortedField ===
+                              th.key
+                              ? sortedDir ===
+                                'asc'
+                                ? 'sort-up'
+                                : 'sort-down'
+                              : 'sort-updown'
+                            "
+                            class="inline-block w-3 h-3 ml-1 text-card-foreground/70"
+                            :class="[
+                              sortedField ===
+                                th.key
+                                ? 'text-primary'
+                                : '',
+                            ]"
+                          />
+                        </div>
+                      </div>
+                    </th>
+                  </slot>
+                </tr>
+              </thead>
+              <tbody
+                v-if="!loading"
+                class="divide-y divide-border/50"
+              >
+                <tr
+                  v-for="item in sortedData"
+                  :key="item.id"
+                  :class="rowHref ? 'cursor-pointer transition-colors hover:bg-muted/50' : ''"
+                  @click="rowHref ? onRowClick($event, item) : null"
+                >
+                  <slot
+                    :item="item"
+                    :data="sortedData"
+                  >
+                    <td
+                      v-for="column in header"
+                      :key="column.key"
+                      class="px-4 py-3 text-sm font-medium text-card-foreground"
+                    >
+                      {{ item[column.key] }}
+                    </td>
+                  </slot>
+                </tr>
 
-                                <tr v-if="sortedData.length <= 0">
-                                    <td :colspan="header.length"
-                                        class="px-4 py-3 text-sm font-medium text-center text-card-foreground/70">
-                                        {{ __("No data found") }}
-                                    </td>
-                                </tr>
-                            </tbody>
+                <tr v-if="sortedData.length <= 0">
+                  <td
+                    :colspan="header.length"
+                    class="px-4 py-3 text-sm font-medium text-center text-card-foreground/70"
+                  >
+                    {{ __("No data found") }}
+                  </td>
+                </tr>
+              </tbody>
 
-                            <tfoot v-if="loading">
-                                <tr>
-                                    <td :colspan="header.length"
-                                        class="px-4 py-3 text-sm font-medium text-center text-card-foreground/70">
-                                        <div v-if="loading" class="flex items-center justify-center">
-                                            <LoadingSpinner class="w-6 h-6" :loading="loading" />
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+              <tfoot v-if="loading">
+                <tr>
+                  <td
+                    :colspan="header.length"
+                    class="px-4 py-3 text-sm font-medium text-center text-card-foreground/70"
+                  >
+                    <div
+                      v-if="loading"
+                      class="flex items-center justify-center"
+                    >
+                      <LoadingSpinner
+                        class="w-6 h-6"
+                        :loading="loading"
+                      />
                     </div>
-                </div>
-            </div>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
+      </div>
     </div>
-    <!-- ArrayTable ends-->
+  </div>
+  <!-- ArrayTable ends-->
 </template>

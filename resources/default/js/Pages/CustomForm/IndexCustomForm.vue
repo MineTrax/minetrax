@@ -1,18 +1,18 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import AppHead from '@/Components/AppHead.vue';
-import {Link} from '@inertiajs/vue3';
-import {useTranslations} from '@/Composables/useTranslations';
-import {useHelpers} from '@/Composables/useHelpers';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
-import {EyeIcon} from '@heroicons/vue/24/outline';
-import {UserIcon} from '@heroicons/vue/24/solid';
-import Icon from '@/Components/Icon.vue';
-import AppBreadcrumb from '@/Shared/AppBreadcrumb.vue';
-import CommonStatusBadge from '@/Shared/CommonStatusBadge.vue';
-import { startCase } from 'lodash';
-import { Button } from '@/Components/ui/button';
+import AppHead from "@/Components/AppHead.vue";
+import DataTable from "@/Components/DataTable/DataTable.vue";
+import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
+import Icon from "@/Components/Icon.vue";
+import { Button } from "@/Components/ui/button";
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
+import { EyeIcon } from "@heroicons/vue/24/outline";
+import { UserIcon } from "@heroicons/vue/24/solid";
+import { Link } from "@inertiajs/vue3";
+import { startCase } from "lodash";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -24,68 +24,68 @@ defineProps({
 
 function getStatusColor(status) {
     switch (status) {
-        case 'active':
-            return 'green';
-        case 'draft':
-            return 'pending';
-        case 'disabled':
-            return 'red';
-        case 'archived':
-            return 'deferred';
-        default:
-            return status;
+    case "active":
+        return "green";
+    case "draft":
+        return "pending";
+    case "disabled":
+        return "red";
+    case "archived":
+        return "deferred";
+    default:
+        return status;
     }
 }
 
 const breadcrumbItems = [
     {
-        text: __('Home'),
-        url: route('home'),
+        text: __("Home"),
+        url: route("home"),
         current: false
     },
     {
-        text: __('Forms'),
-        url: route('custom-form.index'),
+        text: __("Forms"),
+        url: route("custom-form.index"),
         current: true
     }
 ];
 
 const headerRow = [
     {
-        key: 'title',
-        label: __('Title'),
+        key: "title",
+        label: __("Title"),
         sortable: true,
         filterable: {
-            type: 'text',
+            type: "text",
         }
     },
     {
-        key: 'flags',
+        key: "flags",
         sortable: false,
-        label: '',
-        class: 'w-1/12 text-right',
+        label: "",
+        class: "w-1/12 text-right",
     },
     {
-        key: 'status',
-        label: __('Status'),
+        key: "status",
+        label: __("Status"),
         sortable: true,
-        class: 'w-1/12 hidden text-right md:table-cell',
+        class: "w-1/12 hidden text-right md:table-cell",
         filterable: {
-            type: 'multiselect',
-            options: ['active', 'disabled']
+            type: "multiselect",
+            options: ["active", "disabled"]
         }
     },
     {
-        key: 'created_at',
-        label: __('Added'),
+        key: "created_at",
+        label: __("Added"),
         sortable: true,
-        class: 'w-1/12 hidden text-right md:table-cell',
+        class: "w-1/12 hidden text-right md:table-cell",
     },
     {
-        key: 'actions',
-        label: __('Actions'),
+        key: "actions",
+        label: __("Actions"),
         sortable: false,
-        class: 'w-1/12 text-right',
+        class: "w-1/12 text-right",
     },
 ];
 </script>
@@ -94,7 +94,10 @@ const headerRow = [
   <AppLayout>
     <AppHead :title="__('Custom Forms')" />
 
-    <AppBreadcrumb class="max-w-screen-2xl mx-auto" :items="breadcrumbItems" />
+    <AppBreadcrumb
+      class="max-w-screen-2xl mx-auto"
+      :items="breadcrumbItems"
+    />
 
     <div class="py-4 px-2 md:py-4 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
@@ -103,6 +106,7 @@ const headerRow = [
           :header="headerRow"
           :data="forms"
           :filters="filters"
+          :row-href="(item) => route('custom-form.show', item.slug)"
         >
           <template #default="{ item }">
             <DtRowItem>
@@ -134,7 +138,10 @@ const headerRow = [
             </DtRowItem>
 
             <DtRowItem class="text-right hidden md:table-cell">
-              <CommonStatusBadge :status="getStatusColor(item.status.value)" :value="startCase(item.status.value)" />
+              <CommonStatusBadge
+                :status="getStatusColor(item.status.value)"
+                :value="startCase(item.status.value)"
+              />
             </DtRowItem>
 
             <DtRowItem class="whitespace-nowrap hidden md:table-cell text-right">
@@ -149,7 +156,7 @@ const headerRow = [
             <td
               class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
             >
-            <Button
+              <Button
                 v-tippy
                 as-child
                 variant="outline"

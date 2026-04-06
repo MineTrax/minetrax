@@ -843,6 +843,7 @@ const breadcrumbItems = [
               :url="route('player.punishment.show.history', punishment.id)"
               :header="punishmentHistoryHeaders"
               class="w-full"
+              :row-href="(item) => route('player.punishment.show', item.id)"
             >
               <template #default="{ item }">
                 <DtRowItem>
@@ -1085,6 +1086,7 @@ const breadcrumbItems = [
               :url="route('player.punishment.show.session', punishment.id)"
               :header="sessionHeaders"
               class="w-full"
+              :row-href="(item) => route('player.intel.session.show', { player: item.player_uuid, session: item.id })"
             >
               <template #default="{ item }">
                 <td class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap">

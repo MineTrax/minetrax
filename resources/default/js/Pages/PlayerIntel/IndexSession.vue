@@ -125,6 +125,7 @@ const breadcrumbItems = [
           :data="sessions"
           :filters="filters"
           :route-params="{ player: player.uuid }"
+          :row-href="(item) => route('player.intel.session.show', { player: item.player_uuid, session: item.id })"
         >
           <template #default="{ item }">
             <td

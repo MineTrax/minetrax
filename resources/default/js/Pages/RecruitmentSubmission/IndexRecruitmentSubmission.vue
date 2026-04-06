@@ -98,6 +98,7 @@ const headerRow = [
           :header="headerRow"
           :data="submissions"
           :filters="filters"
+          :row-href="(item) => route('recruitment-submission.show', { submission: item.id, recruitment: item.recruitment.slug })"
         >
           <template #default="{ item }">
             <td

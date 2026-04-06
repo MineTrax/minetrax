@@ -159,6 +159,7 @@ const breadcrumbItems = [
  :header="headerRow"
  :data="submissions"
  :filters="filters"
+ :row-href="(item) => route('admin.custom-form-submission.show', item.id)"
  >
  <template #default="{ item }">
  <td

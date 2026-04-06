@@ -73,6 +73,7 @@ const breadcrumbItems = [
           :header="headerRow"
           :data="downloads"
           :filters="filters"
+          :row-href="(item) => route('download.show', item.slug)"
         >
           <template #default="{ item }">
             <DtRowItem>

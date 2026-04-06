@@ -226,6 +226,7 @@ function getServerWebQueryStatus(serverId) {
         :header="headerRow"
         :data="servers"
         :filters="filters"
+        :row-href="(item) => route('admin.server.show', item.id)"
       >
         <template #default="{ item }">
           <td
