@@ -3,6 +3,7 @@ import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import Icon from "@/Components/Icon.vue";
 import { Button } from "@/Components/ui/button";
+import { ButtonGroup } from "@/Components/ui/button-group";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useHelpers } from "@/Composables/useHelpers";
 import { useTranslations } from "@/Composables/useTranslations";
@@ -218,49 +219,75 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <Link
-              v-if="!item.is_open_in_new_tab"
-              as="a"
-              :href="route('custom-page.show', item.path)"
-              class="inline-flex items-center justify-center text-primary hover:text-primary"
-            >
-              <EyeIcon class="inline-block w-5 h-5" />
-            </Link>
-            <a
-              v-else
-              :href="route('custom-page.show', item.path)"
-              class="inline-flex items-center justify-center text-primary hover:text-primary"
-              target="_blank"
-            >
-              <EyeIcon class="inline-block w-5 h-5" />
-            </a>
-            <Link
-              v-if="can('update custom_pages')"
-              v-tippy
-              as="a"
-              :href="route('admin.custom-page.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit Custom Page')"
-            >
-              <PencilSquareIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('delete custom_pages')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this Custom Page permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.custom-page.delete', item.id)"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-              :title="__('Delete Custom Page')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </Link>
+            <ButtonGroup>
+              <Button
+                v-if="!item.is_open_in_new_tab"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-primary hover:text-primary"
+              >
+                <Link
+                  as="a"
+                  :href="route('custom-page.show', item.path)"
+                >
+                  <EyeIcon />
+                </Link>
+              </Button>
+              <Button
+                v-else
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-primary hover:text-primary"
+              >
+                <a
+                  :href="route('custom-page.show', item.path)"
+                  target="_blank"
+                >
+                  <EyeIcon />
+                </a>
+              </Button>
+              <Button
+                v-if="can('update custom_pages')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.custom-page.edit', item.id)"
+                  :title="__('Edit Custom Page')"
+                >
+                  <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete custom_pages')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this Custom Page permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.custom-page.delete', item.id)"
+                  :title="__('Delete Custom Page')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

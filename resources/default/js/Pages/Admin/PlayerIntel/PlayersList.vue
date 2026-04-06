@@ -8,6 +8,8 @@ import ServerIntelServerSelector from"@/Shared/ServerIntelServerSelector.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
 import DataTable from"@/Components/DataTable/DataTable.vue";
 import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
+import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
 import { Link } from"@inertiajs/vue3";
 import millify from"millify";
 import { LockClosedIcon, PaintBrushIcon, TrashIcon } from"@heroicons/vue/24/outline";
@@ -278,49 +280,67 @@ const headerRow = [
             </DtRowItem>
 
             <td
-              class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+              class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
             >
-              <Link
-                v-if="canChangeAnyPlayerSkin"
-                v-tippy
-                as="a"
-                :href="route('change-player-skin.show', {
-                  player_uuid: item.player.uuid,
-                })"
-                class="inline-flex items-center justify-center text-primary hover:text-primary focus:outline-hidden"
-                :title="__('Change Skin of this player.')"
-              >
-                <PaintBrushIcon class="w-5 h-5" />
-              </Link>
-
-              <Link
-                v-if="canResetAnyPlayerPassword"
-                v-tippy
-                as="a"
-                :href="route('reset-player-password.show', {
-                  player_uuid: item.player.uuid,
-                })"
-                class="inline-flex items-center justify-center text-foreground hover:text-foreground dark:text-foreground dark:hover:text-foreground focus:outline-hidden"
-                :title="__('Change Password of this player.')"
-              >
-                <LockClosedIcon class="w-5 h-5" />
-              </Link>
-
-              <Link
-                v-if="can('delete players')"
-                v-confirm="{
-                  message:
-                    'This action will delete this player stats and unlink account if linked. Are you sure?',
-                }"
-                v-tippy
-                as="button"
-                method="DELETE"
-                :href="route('admin.intel.player.delete', item.player.uuid)"
-                class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-                :title="__('Delete Player')"
-              >
-                <TrashIcon class="inline-block w-5 h-5" />
-              </Link>
+              <ButtonGroup>
+                <Button
+                  v-if="canChangeAnyPlayerSkin"
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-primary hover:text-primary"
+                >
+                  <Link
+                    v-tippy
+                    as="a"
+                    :href="route('change-player-skin.show', {
+                      player_uuid: item.player.uuid,
+                    })"
+                    :title="__('Change Skin of this player.')"
+                  >
+                    <PaintBrushIcon />
+                  </Link>
+                </Button>
+                <Button
+                  v-if="canResetAnyPlayerPassword"
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-foreground hover:text-foreground"
+                >
+                  <Link
+                    v-tippy
+                    as="a"
+                    :href="route('reset-player-password.show', {
+                      player_uuid: item.player.uuid,
+                    })"
+                    :title="__('Change Password of this player.')"
+                  >
+                    <LockClosedIcon />
+                  </Link>
+                </Button>
+                <Button
+                  v-if="can('delete players')"
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-destructive hover:text-destructive"
+                >
+                  <Link
+                    v-confirm="{
+                      message:
+                        'This action will delete this player stats and unlink account if linked. Are you sure?',
+                    }"
+                    v-tippy
+                    as="button"
+                    method="DELETE"
+                    :href="route('admin.intel.player.delete', item.player.uuid)"
+                    :title="__('Delete Player')"
+                  >
+                    <TrashIcon />
+                  </Link>
+                </Button>
+              </ButtonGroup>
             </td>
           </template>
         </DataTable>

@@ -6,6 +6,8 @@ import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useHelpers } from "@/Composables/useHelpers";
 import { useTranslations } from "@/Composables/useTranslations";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { Button } from "@/Components/ui/button";
+import { ButtonGroup } from "@/Components/ui/button-group";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import {
     ArrowUpOnSquareStackIcon,
@@ -246,51 +248,77 @@ const headerRow = [
             >{{ __("None") }}</span>
           </td>
 
-          <td class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap">
-            <InertiaLink
-              v-tippy
-              as="a"
-              :href="route('user.public.get', item.username)"
-              class="inline-flex items-center justify-center text-primary hover:text-primary"
-              :title="__('View Profile')"
-            >
-              <EyeIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
-              v-if="can('impersonate users')"
-              v-tippy
-              as="a"
-              :href="route('admin.impersonate.take', item.id)"
-              class="inline-flex items-center justify-center text-orange-500 hover:text-orange-800"
-              :title="__('Impersonate User')"
-            >
-              <ArrowUpOnSquareStackIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
-              v-if="can('update users')"
-              v-tippy
-              as="a"
-              :href="route('admin.user.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit User')"
-            >
-              <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
-              v-if="can('delete users')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this User permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.user.delete', item.id)"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-              :title="__('Delete User')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+          <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+            <ButtonGroup>
+              <Button
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-primary hover:text-primary"
+              >
+                <InertiaLink
+                  v-tippy
+                  as="a"
+                  :href="route('user.public.get', item.username)"
+                  :title="__('View Profile')"
+                >
+                  <EyeIcon />
+                </InertiaLink>
+              </Button>
+              <Button
+                v-if="can('impersonate users')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-orange-500 hover:text-orange-700"
+              >
+                <InertiaLink
+                  v-tippy
+                  as="a"
+                  :href="route('admin.impersonate.take', item.id)"
+                  :title="__('Impersonate User')"
+                >
+                  <ArrowUpOnSquareStackIcon />
+                </InertiaLink>
+              </Button>
+              <Button
+                v-if="can('update users')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <InertiaLink
+                  v-tippy
+                  as="a"
+                  :href="route('admin.user.edit', item.id)"
+                  :title="__('Edit User')"
+                >
+                  <PencilSquareIcon />
+                </InertiaLink>
+              </Button>
+              <Button
+                v-if="can('delete users')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <InertiaLink
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this User permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.user.delete', item.id)"
+                  :title="__('Delete User')"
+                >
+                  <TrashIcon />
+                </InertiaLink>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

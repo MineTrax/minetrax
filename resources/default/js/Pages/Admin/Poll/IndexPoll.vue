@@ -7,6 +7,7 @@ import DataTable from"@/Components/DataTable/DataTable.vue";
 import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
 import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
 import { Badge } from"@/Components/ui/badge";
 import { Link } from"@inertiajs/vue3";
 import { LockClosedIcon, LockOpenIcon, TrashIcon } from"@heroicons/vue/24/outline";
@@ -200,45 +201,65 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <Link
-              v-if="can('update polls') && !item.is_closed"
-              v-tippy
-              as="button"
-              method="put"
-              :href="route('admin.poll.lock', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Lock Poll')"
-            >
-              <LockClosedIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('update polls') && item.is_closed"
-              v-tippy
-              as="button"
-              method="put"
-              :href="route('admin.poll.unlock', item.id)"
-              class="inline-flex items-center justify-center text-success hover:text-success/80 dark:hover:text-success/80"
-              :title="__('Unlock Poll')"
-            >
-              <LockOpenIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('delete polls')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this Poll permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.poll.delete', item.id)"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-              :title="__('Delete Poll')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </Link>
+            <ButtonGroup>
+              <Button
+                v-if="can('update polls') && !item.is_closed"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <Link
+                  v-tippy
+                  as="button"
+                  method="put"
+                  :href="route('admin.poll.lock', item.id)"
+                  :title="__('Lock Poll')"
+                >
+                  <LockClosedIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('update polls') && item.is_closed"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-success hover:text-success"
+              >
+                <Link
+                  v-tippy
+                  as="button"
+                  method="put"
+                  :href="route('admin.poll.unlock', item.id)"
+                  :title="__('Unlock Poll')"
+                >
+                  <LockOpenIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete polls')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this Poll permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.poll.delete', item.id)"
+                  :title="__('Delete Poll')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

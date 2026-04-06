@@ -7,6 +7,7 @@ import DataTable from"@/Components/DataTable/DataTable.vue";
 import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
 import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
 import { Link } from"@inertiajs/vue3";
 import { PencilSquareIcon, TrashIcon } from"@heroicons/vue/24/outline";
 import AlertCard from"@/Components/AlertCard.vue";
@@ -221,33 +222,47 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <Link
-              v-if="can('update ranks')"
-              v-tippy
-              as="a"
-              :href="route('admin.rank.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit Rank')"
-            >
-              <PencilSquareIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('delete ranks')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this Rank permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.rank.delete', item.id)"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-              :title="__('Delete Rank')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </Link>
+            <ButtonGroup>
+              <Button
+                v-if="can('update ranks')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.rank.edit', item.id)"
+                  :title="__('Edit Rank')"
+                >
+                  <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete ranks')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this Rank permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.rank.delete', item.id)"
+                  :title="__('Delete Rank')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

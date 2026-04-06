@@ -6,6 +6,8 @@ import AdminLayout from"@/Layouts/AdminLayout.vue";
 import DataTable from"@/Components/DataTable/DataTable.vue";
 import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
+import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
 import { useAuthorizable } from"@/Composables/useAuthorizable";
 import {
     EyeIcon,
@@ -234,62 +236,88 @@ const breadcrumbItems = [
             </DtRowItem>
 
             <td
-              class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+              class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
             >
-              <Link
-                v-tippy
-                as="a"
-                :href="route('admin.custom-form-submission.show', item.id)"
-                class="inline-flex items-center justify-center text-primary hover:text-primary"
-                :title="__('View Submission')"
-              >
-                <EyeIcon class="inline-block w-5 h-5" />
-              </Link>
-              <Link
-                v-if="can('archive custom_form_submissions') && !archived"
-                v-confirm="{
-                  message:
-                    'Archive this Custom Form Submission? It will move to archive section.',
-                }"
-                v-tippy
-                as="button"
-                method="POST"
-                :href="route('admin.custom-form-submission.archive', item.id)"
-                class="inline-flex items-center justify-center text-orange-500 hover:text-orange-900 focus:outline-hidden"
-                :title="__('Archive Submission')"
-              >
-                <ArchiveBoxArrowDownIcon class="inline-block w-5 h-5" />
-              </Link>
-              <Link
-                v-if="can('delete custom_form_submissions') && archived"
-                v-confirm="{
-                  message:
-                    'Restore this Custom Form Submission? It will move back to submissions list.',
-                }"
-                v-tippy
-                as="button"
-                method="POST"
-                :href="route('admin.custom-form-submission.restore', item.id)"
-                class="inline-flex items-center justify-center text-success hover:text-success/80 focus:outline-hidden"
-                :title="__('Restore Submission')"
-              >
-                <ArrowUturnUpIcon class="inline-block w-5 h-5" />
-              </Link>
-              <Link
-                v-if="can('delete custom_form_submissions')"
-                v-confirm="{
-                  message:
-                    'Delete this Custom Form Submission? This action cannot be undone.',
-                }"
-                v-tippy
-                as="button"
-                method="DELETE"
-                :href="route('admin.custom-form-submission.delete', item.id)"
-                class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-                :title="__('Delete Submission')"
-              >
-                <TrashIcon class="inline-block w-5 h-5" />
-              </Link>
+              <ButtonGroup>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-primary hover:text-primary"
+                >
+                  <Link
+                    v-tippy
+                    as="a"
+                    :href="route('admin.custom-form-submission.show', item.id)"
+                    :title="__('View Submission')"
+                  >
+                    <EyeIcon />
+                  </Link>
+                </Button>
+                <Button
+                  v-if="can('archive custom_form_submissions') && !archived"
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-orange-500 hover:text-orange-700"
+                >
+                  <Link
+                    v-confirm="{
+                      message:
+                        'Archive this Custom Form Submission? It will move to archive section.',
+                    }"
+                    v-tippy
+                    as="button"
+                    method="POST"
+                    :href="route('admin.custom-form-submission.archive', item.id)"
+                    :title="__('Archive Submission')"
+                  >
+                    <ArchiveBoxArrowDownIcon />
+                  </Link>
+                </Button>
+                <Button
+                  v-if="can('delete custom_form_submissions') && archived"
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-success hover:text-success"
+                >
+                  <Link
+                    v-confirm="{
+                      message:
+                        'Restore this Custom Form Submission? It will move back to submissions list.',
+                    }"
+                    v-tippy
+                    as="button"
+                    method="POST"
+                    :href="route('admin.custom-form-submission.restore', item.id)"
+                    :title="__('Restore Submission')"
+                  >
+                    <ArrowUturnUpIcon />
+                  </Link>
+                </Button>
+                <Button
+                  v-if="can('delete custom_form_submissions')"
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-destructive hover:text-destructive"
+                >
+                  <Link
+                    v-confirm="{
+                      message:
+                        'Delete this Custom Form Submission? This action cannot be undone.',
+                    }"
+                    v-tippy
+                    as="button"
+                    method="DELETE"
+                    :href="route('admin.custom-form-submission.delete', item.id)"
+                    :title="__('Delete Submission')"
+                  >
+                    <TrashIcon />
+                  </Link>
+                </Button>
+              </ButtonGroup>
             </td>
           </template>
         </DataTable>

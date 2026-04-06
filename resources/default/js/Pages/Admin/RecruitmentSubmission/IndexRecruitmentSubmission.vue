@@ -11,6 +11,8 @@ import { useTranslations } from "@/Composables/useTranslations";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
+import { Button } from "@/Components/ui/button";
+import { ButtonGroup } from "@/Components/ui/button-group";
 import { EyeIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { Link, router } from "@inertiajs/vue3";
 import { pickBy } from "lodash";
@@ -307,45 +309,59 @@ const breadcrumbItems = [
             </DtRowItem>
 
             <td
-              class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+              class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
             >
-              <Link
-                v-tippy
-                as="a"
-                :href="
-                  route(
-                    'admin.recruitment-submission.show',
-                    item.id
-                  )
-                "
-                class="inline-flex items-center justify-center text-primary hover:text-primary"
-                :title="__('View Submission')"
-              >
-                <EyeIcon class="inline-block w-5 h-5" />
-              </Link>
-              <Link
-                v-if="
-                  can('delete recruitment_submissions') &&
-                    closed
-                "
-                v-confirm="{
-                  message:
-                    'Delete this Request? This action cannot be undone.',
-                }"
-                v-tippy
-                as="button"
-                method="DELETE"
-                :href="
-                  route(
-                    'admin.recruitment-submission.delete',
-                    item.id
-                  )
-                "
-                class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-                :title="__('Delete Submission')"
-              >
-                <TrashIcon class="inline-block w-5 h-5" />
-              </Link>
+              <ButtonGroup>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-primary hover:text-primary"
+                >
+                  <Link
+                    v-tippy
+                    as="a"
+                    :href="
+                      route(
+                        'admin.recruitment-submission.show',
+                        item.id
+                      )
+                    "
+                    :title="__('View Submission')"
+                  >
+                    <EyeIcon />
+                  </Link>
+                </Button>
+                <Button
+                  v-if="
+                    can('delete recruitment_submissions') &&
+                      closed
+                  "
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-destructive hover:text-destructive"
+                >
+                  <Link
+                    v-confirm="{
+                      message:
+                        'Delete this Request? This action cannot be undone.',
+                    }"
+                    v-tippy
+                    as="button"
+                    method="DELETE"
+                    :href="
+                      route(
+                        'admin.recruitment-submission.delete',
+                        item.id
+                      )
+                    "
+                    :title="__('Delete Submission')"
+                  >
+                    <TrashIcon />
+                  </Link>
+                </Button>
+              </ButtonGroup>
             </td>
           </template>
         </DataTable>

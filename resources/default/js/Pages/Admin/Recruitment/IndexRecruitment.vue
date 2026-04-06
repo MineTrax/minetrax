@@ -3,6 +3,7 @@ import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import Icon from "@/Components/Icon.vue";
 import { Button } from "@/Components/ui/button";
+import { ButtonGroup } from "@/Components/ui/button-group";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useHelpers } from "@/Composables/useHelpers";
 import { useTranslations } from "@/Composables/useTranslations";
@@ -211,52 +212,78 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <Link
-              v-if="['active','disabled'].includes(item.status.value)"
-              v-tippy
-              as="a"
-              :href="route('recruitment.show', item.slug)"
-              class="inline-flex items-center justify-center text-primary hover:text-primary"
-              :title="__('Show Public View')"
-            >
-              <EyeIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-tippy
-              as="a"
-              :href="route('admin.recruitment.show', item.id)"
-              class="inline-flex items-center justify-center text-success hover:text-success/80"
-              :title="__('Show Intel')"
-            >
-              <ChartBarSquareIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('update recruitments')"
-              v-tippy
-              as="a"
-              :href="route('admin.recruitment.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit Application Form')"
-            >
-              <PencilSquareIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('delete recruitments')"
-              v-confirm="{
-                message:
-                  'Deleting this Application Form will also delete all its requests. Are you sure you want to delete this application form & its requests permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.recruitment.delete', item.id)"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-              :title="__('Delete Application Form')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </Link>
+            <ButtonGroup>
+              <Button
+                v-if="['active','disabled'].includes(item.status.value)"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-primary hover:text-primary"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('recruitment.show', item.slug)"
+                  :title="__('Show Public View')"
+                >
+                  <EyeIcon />
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-success hover:text-success"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.recruitment.show', item.id)"
+                  :title="__('Show Intel')"
+                >
+                  <ChartBarSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('update recruitments')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.recruitment.edit', item.id)"
+                  :title="__('Edit Application Form')"
+                >
+                  <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete recruitments')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Deleting this Application Form will also delete all its requests. Are you sure you want to delete this application form & its requests permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.recruitment.delete', item.id)"
+                  :title="__('Delete Application Form')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

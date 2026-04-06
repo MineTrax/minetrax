@@ -3,6 +3,7 @@ import AlertCard from "@/Components/AlertCard.vue";
 import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import { Button } from "@/Components/ui/button";
+import { ButtonGroup } from "@/Components/ui/button-group";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useHelpers } from "@/Composables/useHelpers";
 import { useTranslations } from "@/Composables/useTranslations";
@@ -340,7 +341,7 @@ function getServerWebQueryStatus(serverId) {
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
             <div v-if="item?.settings?.is_deleting">
               <span
@@ -349,46 +350,61 @@ function getServerWebQueryStatus(serverId) {
                 {{ __("Deleting...") }}
               </span>
             </div>
-            <div
-              v-else
-              class="space-x-2"
-            >
-              <Link
-                v-tippy
-                as="a"
-                :title="__('View Server Intel')"
-                :href="route('admin.server.show', item.id)"
-                class="inline-flex items-center justify-center text-primary hover:text-primary"
+            <ButtonGroup v-else>
+              <Button
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-primary hover:text-primary"
               >
-                <EyeIcon class="inline-block w-5 h-5" />
-              </Link>
-              <Link
+                <Link
+                  v-tippy
+                  as="a"
+                  :title="__('View Server Intel')"
+                  :href="route('admin.server.show', item.id)"
+                >
+                  <EyeIcon />
+                </Link>
+              </Button>
+              <Button
                 v-if="can('update servers')"
-                v-tippy
-                as="a"
-                :href="route('admin.server.edit', item.id)"
-                class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-                :title="__('Edit Server')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
               >
-                <PencilSquareIcon class="inline-block w-5 h-5" />
-              </Link>
-              <Link
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.server.edit', item.id)"
+                  :title="__('Edit Server')"
+                >
+                  <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
                 v-if="can('delete servers')"
-                v-confirm="{
-                  title:'Delete Server?',
-                  message:
-                    'Are you sure you want to delete this Server permanently? Deleting a Server will also delete all of its associated data including all of its Player & Server Intel data. This action cannot be undone.',
-                }"
-                v-tippy
-                as="button"
-                method="DELETE"
-                :href="route('admin.server.delete', item.id)"
-                class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-                :title="__('Delete Server')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
               >
-                <TrashIcon class="inline-block w-5 h-5" />
-              </Link>
-            </div>
+                <Link
+                  v-confirm="{
+                    title:'Delete Server?',
+                    message:
+                      'Are you sure you want to delete this Server permanently? Deleting a Server will also delete all of its associated data including all of its Player & Server Intel data. This action cannot be undone.',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.server.delete', item.id)"
+                  :title="__('Delete Server')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

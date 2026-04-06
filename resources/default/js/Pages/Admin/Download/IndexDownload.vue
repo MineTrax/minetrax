@@ -7,6 +7,7 @@ import DataTable from"@/Components/DataTable/DataTable.vue";
 import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
 import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
 import { Link } from"@inertiajs/vue3";
 import { CloudArrowDownIcon, PencilSquareIcon, TrashIcon } from"@heroicons/vue/24/outline";
 import Icon from"@/Components/Icon.vue";
@@ -216,42 +217,62 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <a
-              v-tippy
-              :href="route('download.download', item.slug)"
-              target="_blank"
-              class="inline-flex items-center justify-center text-primary hover:text-primary"
-              :title="__('Download')"
-            >
-              <CloudArrowDownIcon class="inline-block w-5 h-5" />
-            </a>
-            <Link
-              v-if="can('update downloads')"
-              v-tippy
-              as="a"
-              :href="route('admin.download.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit Download')"
-            >
-              <PencilSquareIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('delete downloads')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this Download permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.download.delete', item.id)"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-              :title="__('Delete Download')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </Link>
+            <ButtonGroup>
+              <Button
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-primary hover:text-primary"
+              >
+                <a
+                  v-tippy
+                  :href="route('download.download', item.slug)"
+                  target="_blank"
+                  :title="__('Download')"
+                >
+                  <CloudArrowDownIcon />
+                </a>
+              </Button>
+              <Button
+                v-if="can('update downloads')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.download.edit', item.id)"
+                  :title="__('Edit Download')"
+                >
+                  <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete downloads')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this Download permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.download.delete', item.id)"
+                  :title="__('Delete Download')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

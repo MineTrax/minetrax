@@ -7,6 +7,7 @@ import DataTable from"@/Components/DataTable/DataTable.vue";
 import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
 import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
 import { Link } from"@inertiajs/vue3";
 import { TrashIcon, ArrowPathIcon } from"@heroicons/vue/24/outline";
 
@@ -164,36 +165,50 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <Link
-              v-if="can('retry failed_jobs')"
-              v-tippy
-              as="button"
-              method="post"
-              :data="{ uuid: item.uuid }"
-              :href="route('admin.failed-job.retry')"
-              class="inline-flex items-center justify-center text-success hover:text-success/80 dark:hover:text-success/80"
-              :title="__('Retry Job')"
-            >
-              <ArrowPathIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('delete failed_jobs')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this Job permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :data="{ uuid: item.uuid }"
-              :href="route('admin.failed-job.clear')"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-              :title="__('Delete Job')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </Link>
+            <ButtonGroup>
+              <Button
+                v-if="can('retry failed_jobs')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-success hover:text-success"
+              >
+                <Link
+                  v-tippy
+                  as="button"
+                  method="post"
+                  :data="{ uuid: item.uuid }"
+                  :href="route('admin.failed-job.retry')"
+                  :title="__('Retry Job')"
+                >
+                  <ArrowPathIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete failed_jobs')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this Job permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :data="{ uuid: item.uuid }"
+                  :href="route('admin.failed-job.clear')"
+                  :title="__('Delete Job')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

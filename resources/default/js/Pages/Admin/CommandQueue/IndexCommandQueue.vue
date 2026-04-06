@@ -7,6 +7,7 @@ import DataTable from"@/Components/DataTable/DataTable.vue";
 import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
 import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
 import { TrashIcon, ArrowPathIcon, EyeIcon } from"@heroicons/vue/24/outline";
 import CommonStatusBadge from"@/Shared/CommonStatusBadge.vue";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from"@/Components/ui/dialog";
@@ -277,43 +278,57 @@ const showDetails = (commandQueue) => {
             </div>
           </DtRowItem>
 
-          <td class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap">
-            <button
-              v-tippy
-              class="inline-flex items-center justify-center text-primary hover:text-primary cursor-pointer"
-              :title="__('View Details')"
-              @click="showDetails(item)"
-            >
-              <EyeIcon class="inline-block w-5 h-5" />
-            </button>
-            <Link
-              v-if="can('create command_queues') && ['failed','cancelled'].includes(item.status.value)"
-              v-tippy
-              as="button"
-              method="post"
-              :data="{ id: item.id }"
-              :href="route('admin.command-queue.retry')"
-              class="inline-flex items-center justify-center text-success hover:text-success/80 dark:hover:text-success/80"
-              :title="__('Retry Command')"
-            >
-              <ArrowPathIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('delete command_queues') && ['pending','failed','cancelled','completed','deferred'].includes(item.status.value)"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this command history?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :data="{ id: item.id }"
-              :href="route('admin.command-queue.delete')"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-              :title="__('Delete Command')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </Link>
+          <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+            <ButtonGroup>
+              <Button
+                variant="outline"
+                size="icon"
+                class="text-primary hover:text-primary cursor-pointer"
+                @click="showDetails(item)"
+              >
+                <EyeIcon />
+              </Button>
+              <Button
+                v-if="can('create command_queues') && ['failed','cancelled'].includes(item.status.value)"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-success hover:text-success"
+              >
+                <Link
+                  v-tippy
+                  as="button"
+                  method="post"
+                  :data="{ id: item.id }"
+                  :href="route('admin.command-queue.retry')"
+                  :title="__('Retry Command')"
+                >
+                  <ArrowPathIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete command_queues') && ['pending','failed','cancelled','completed','deferred'].includes(item.status.value)"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this command history?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :data="{ id: item.id }"
+                  :href="route('admin.command-queue.delete')"
+                  :title="__('Delete Command')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

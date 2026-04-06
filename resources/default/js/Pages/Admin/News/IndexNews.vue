@@ -4,6 +4,7 @@ import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import Icon from "@/Components/Icon.vue";
 import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
+import { ButtonGroup } from "@/Components/ui/button-group";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useHelpers } from "@/Composables/useHelpers";
 import { useTranslations } from "@/Composables/useTranslations";
@@ -198,42 +199,62 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <Link
-              v-tippy
-              as="a"
-              :href="route('news.show', item.slug)"
-              class="inline-flex items-center justify-center text-primary hover:text-primary"
-              :title="__('View News')"
-            >
-              <EyeIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('update news')"
-              v-tippy
-              as="a"
-              :href="route('admin.news.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit News')"
-            >
-              <PencilSquareIcon class="inline-block w-5 h-5" />
-            </Link>
-            <Link
-              v-if="can('delete news')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this News permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.news.delete', item.id)"
-              class="inline-flex items-center justify-center text-destructive hover:text-destructive/80 focus:outline-hidden cursor-pointer"
-              :title="__('Delete News')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </Link>
+            <ButtonGroup>
+              <Button
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-primary hover:text-primary"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('news.show', item.slug)"
+                  :title="__('View News')"
+                >
+                  <EyeIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('update news')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.news.edit', item.id)"
+                  :title="__('Edit News')"
+                >
+                  <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete news')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this News permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.news.delete', item.id)"
+                  :title="__('Delete News')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>
