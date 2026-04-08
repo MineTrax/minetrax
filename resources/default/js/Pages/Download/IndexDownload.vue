@@ -32,7 +32,7 @@ const headerRow = [
         key: "download_count",
         label: __("Download Count"),
         sortable: true,
-        class: "text-center hidden md:table-cell"
+        class: "text-right hidden md:table-cell"
     },
     {
         key: "created_at",
@@ -85,7 +85,7 @@ const breadcrumbItems = [
               {{ item.name }}
             </DtRowItem>
 
-            <DtRowItem class="text-center hidden md:table-cell">
+            <DtRowItem class="text-right hidden md:table-cell">
               {{ item.download_count }}
             </DtRowItem>
 
