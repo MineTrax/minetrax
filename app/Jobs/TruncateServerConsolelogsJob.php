@@ -3,12 +3,12 @@
 namespace App\Jobs;
 
 use App\Models\ServerConsolelog;
+use Cache;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Cache;
 use Illuminate\Support\Facades\Log;
 
 class TruncateServerConsolelogsJob implements ShouldQueue
@@ -18,7 +18,7 @@ class TruncateServerConsolelogsJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public function __construct(public ?string $beforeDate = null)
     {
         $this->onQueue('longtask');
     }
@@ -28,10 +28,14 @@ class TruncateServerConsolelogsJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::info('[TruncateServerConsolelogsJob] Starting job...');
+        Log::info('[TruncateServerConsolelogsJob] Starting job...', ['before_date' => $this->beforeDate]);
         Cache::put('dangerzone::truncate_consolelogs', now(), 3600 * 24);
 
-        ServerConsolelog::truncate();
+        if ($this->beforeDate) {
+            ServerConsolelog::where('created_at', '<', $this->beforeDate)->delete();
+        } else {
+            ServerConsolelog::truncate();
+        }
 
         Cache::forget('dangerzone::truncate_consolelogs');
         Log::info('[TruncateServerConsolelogsJob] Job completed successfully');

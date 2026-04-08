@@ -26,6 +26,7 @@
         :type="type"
         :format="format"
         :value-type="valueType"
+        :append-to-body="appendToBody"
         class="w-full"
         :input-class="inputClasses"
       />
@@ -106,6 +107,10 @@ const props = defineProps({
         type: String,
         default: "format",
     },
+    appendToBody: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emits = defineEmits(["update:modelValue"]);
@@ -148,100 +153,8 @@ defineExpose({
     width: 100% !important;
 }
 
-/* Style the calendar popup to match the current theme */
+/* Ensure the popup is above dialog overlays when rendered inline */
 :deep(.mx-datepicker-popup) {
-    border: 1px solid var(--border) !important;
-    border-radius: 0.375rem !important;
-    background: var(--background) !important;
-    color: var(--foreground) !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-}
-
-/* Style the calendar header */
-:deep(.mx-calendar-header) {
-    background: var(--muted) !important;
-    color: var(--foreground) !important;
-    border-bottom: 1px solid var(--border) !important;
-}
-
-/* Style the calendar navigation buttons */
-:deep(.mx-btn) {
-    background: transparent !important;
-    color: var(--foreground) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 0.375rem !important;
-    transition: all 0.2s !important;
-}
-
-:deep(.mx-btn:hover) {
-    background: var(--accent) !important;
-    color: var(--accent-foreground) !important;
-}
-
-/* Style the calendar cells */
-:deep(.mx-calendar-content .cell) {
-    color: var(--foreground) !important;
-    border-radius: 0.375rem !important;
-    transition: all 0.2s !important;
-}
-
-:deep(.mx-calendar-content .cell:hover) {
-    background: var(--accent) !important;
-    color: var(--accent-foreground) !important;
-}
-
-:deep(.mx-calendar-content .cell.active) {
-    background: var(--primary) !important;
-    color: var(--primary-foreground) !important;
-}
-
-:deep(.mx-calendar-content .cell.in-range) {
-    background: var(--muted) !important;
-    color: var(--foreground) !important;
-}
-
-:deep(.mx-calendar-content .cell.disabled) {
-    color: var(--muted-foreground) !important;
-    opacity: 0.5 !important;
-}
-
-/* Style the today cell */
-:deep(.mx-calendar-content .cell.today) {
-    background: var(--secondary) !important;
-    color: var(--secondary-foreground) !important;
-    font-weight: 500 !important;
-}
-
-/* Style month/year selectors */
-:deep(.mx-calendar-header-label) {
-    color: var(--foreground) !important;
-    font-weight: 500 !important;
-}
-
-/* Ensure proper spacing in calendar grid */
-:deep(.mx-table-date) {
-    border-collapse: separate !important;
-    border-spacing: 2px !important;
-}
-
-/* Style the time picker if needed */
-:deep(.mx-time-header) {
-    background: var(--muted) !important;
-    color: var(--foreground) !important;
-    border-bottom: 1px solid var(--border) !important;
-}
-
-:deep(.mx-time-option) {
-    color: var(--foreground) !important;
-}
-
-:deep(.mx-time-option:hover) {
-    background: var(--accent) !important;
-    color: var(--accent-foreground) !important;
-}
-
-:deep(.mx-time-option.active) {
-    background: var(--primary) !important;
-    color: var(--primary-foreground) !important;
+    z-index: 100 !important;
 }
 </style>
