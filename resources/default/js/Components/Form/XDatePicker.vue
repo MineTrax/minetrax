@@ -148,13 +148,129 @@ defineExpose({
 </script>
 
 <style scoped>
-/* Ensure the date picker container takes full width */
 :deep(.mx-datepicker) {
     width: 100% !important;
 }
 
-/* Ensure the popup is above dialog overlays when rendered inline */
+/* Higher z-index for inline popups (inside dialogs) */
 :deep(.mx-datepicker-popup) {
     z-index: 100 !important;
+}
+</style>
+
+<!-- Global (unscoped) styles so they apply to body-appended popups too -->
+<style>
+.mx-datepicker-main {
+    color: var(--popover-foreground);
+    background-color: var(--popover);
+    border-color: var(--border);
+}
+
+/* Header nav buttons */
+.mx-btn {
+    color: var(--muted-foreground);
+    border-color: var(--border);
+}
+
+.mx-btn:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.mx-btn-text {
+    color: var(--popover-foreground);
+}
+
+.mx-btn-text:hover {
+    color: var(--primary);
+}
+
+/* Calendar header label (month/year) */
+.mx-calendar-header-label {
+    color: var(--popover-foreground);
+}
+
+/* Table header (day names) */
+.mx-table th {
+    color: var(--muted-foreground);
+}
+
+/* Calendar cells */
+.mx-calendar-content .cell {
+    color: var(--popover-foreground);
+    border-radius: 4px;
+}
+
+.mx-calendar-content .cell:hover {
+    color: var(--accent-foreground);
+    background-color: var(--accent);
+}
+
+.mx-calendar-content .cell.active {
+    color: var(--primary-foreground);
+    background-color: var(--primary);
+}
+
+.mx-calendar-content .cell.in-range,
+.mx-calendar-content .cell.hover-in-range {
+    color: var(--popover-foreground);
+    background-color: var(--muted);
+}
+
+.mx-calendar-content .cell.disabled {
+    color: var(--muted-foreground);
+    background-color: var(--muted);
+    opacity: 0.5;
+}
+
+.mx-table-date .today {
+    color: var(--primary);
+}
+
+.mx-table-date .cell.not-current-month {
+    color: var(--muted-foreground);
+}
+
+/* Borders between panels / sections */
+.mx-calendar + .mx-calendar,
+.mx-datepicker-header,
+.mx-datepicker-footer,
+.mx-time + .mx-time,
+.mx-time-header {
+    border-color: var(--border);
+}
+
+.mx-datepicker-sidebar + .mx-datepicker-content {
+    border-color: var(--border);
+}
+
+/* Time picker */
+.mx-time {
+    background-color: var(--popover);
+}
+
+.mx-time-column {
+    border-color: var(--border);
+}
+
+.mx-time-column .mx-time-item:hover,
+.mx-time-option:hover {
+    color: var(--accent-foreground);
+    background-color: var(--accent);
+}
+
+.mx-time-column .mx-time-item.active,
+.mx-time-option.active {
+    color: var(--primary);
+}
+
+/* Icon colors */
+.mx-icon-calendar,
+.mx-icon-clear {
+    color: var(--muted-foreground);
+}
+
+.mx-icon-clear:hover {
+    color: var(--popover-foreground);
 }
 </style>
