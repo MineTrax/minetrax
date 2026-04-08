@@ -38,7 +38,7 @@ const headerRow = [
         key: "created_at",
         label: __("Added"),
         sortable: true,
-        class: "w-1/12 hidden md:table-cell",
+        class: "w-1/12 text-right hidden md:table-cell",
     },
     {
         key: "actions",
@@ -89,7 +89,7 @@ const breadcrumbItems = [
               {{ item.download_count }}
             </DtRowItem>
 
-            <DtRowItem class="whitespace-nowrap hidden md:table-cell">
+            <DtRowItem class="whitespace-nowrap text-right hidden md:table-cell">
               <span
                 v-tippy
                 :title="formatToDayDateString(item.created_at)"
