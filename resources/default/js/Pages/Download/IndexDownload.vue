@@ -8,6 +8,8 @@ import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import {CloudArrowDownIcon, EyeIcon} from "@heroicons/vue/24/outline";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { ButtonGroup } from "@/Components/ui/button-group";
+import { Button } from "@/Components/ui/button";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } = useHelpers();
@@ -97,26 +99,40 @@ const breadcrumbItems = [
             </DtRowItem>
 
             <td
-              class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+              class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
             >
-              <a
-                v-tippy
-                :href="route('download.download', item.slug)"
-                target="_blank"
-                class="inline-flex items-center justify-center text-primary hover:text-primary"
-                :title="__('Download')"
-              >
-                <CloudArrowDownIcon class="inline-block w-5 h-5" />
-              </a>
-              <Link
-                v-tippy
-                as="a"
-                :href="route('download.show', item.slug)"
-                class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-                :title="__('Show Details')"
-              >
-                <EyeIcon class="inline-block w-5 h-5" />
-              </Link>
+              <ButtonGroup>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-primary hover:text-primary"
+                >
+                  <a
+                    v-tippy
+                    :href="route('download.download', item.slug)"
+                    target="_blank"
+                    :title="__('Download')"
+                  >
+                    <CloudArrowDownIcon />
+                  </a>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+                >
+                  <Link
+                    v-tippy
+                    as="a"
+                    :href="route('download.show', item.slug)"
+                    :title="__('Show Details')"
+                  >
+                    <EyeIcon />
+                  </Link>
+                </Button>
+              </ButtonGroup>
             </td>
           </template>
         </DataTable>
