@@ -54,16 +54,7 @@
                   <!-- Metadata section -->
                   <div class="flex items-center justify-between mb-4 pb-4 border-b border-border/30">
                     <div class="flex items-center space-x-3">
-                      <span
-                        class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full"
-                        :class="{
-                          'bg-primary/10 text-primary border border-primary/20': news.type.value === 0,
-                          'bg-orange-100 text-orange-700 border border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800': news.type.value === 1,
-                          'bg-success/10 text-success border border-success/20 dark:bg-success/20': news.type.value === 2
-                        }"
-                      >
-                        {{ news.type.key }}
-                      </span>
+                      <NewsTypeBadge :type="news.type" />
                     </div>
 
                     <!-- Author and time metadata -->
@@ -152,6 +143,7 @@
 import { ref } from"vue";
 import InfiniteScroll from"@/Components/InfiniteScroll.vue";
 import Icon from"@/Components/Icon.vue";
+import NewsTypeBadge from"@/Components/NewsTypeBadge.vue";
 import { useHelpers } from"@/Composables/useHelpers";
 import { useTranslations } from"@/Composables/useTranslations";
 import AppLayout from"@/Layouts/AppLayout.vue";

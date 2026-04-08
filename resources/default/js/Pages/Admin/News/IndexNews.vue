@@ -2,7 +2,7 @@
 import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import Icon from "@/Components/Icon.vue";
-import { Badge } from "@/Components/ui/badge";
+import NewsTypeBadge from "@/Components/NewsTypeBadge.vue";
 import { Button } from "@/Components/ui/button";
 import { ButtonGroup } from "@/Components/ui/button-group";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
@@ -112,33 +112,7 @@ const headerRow = [
             {{ item.id }}
           </td>
           <td class="px-4">
-            <Badge
-              v-if="item.type.value === 0"
-              variant="outline"
-              class="bg-primary/10 text-primary"
-            >
-              {{ item.type.key }}
-            </Badge>
-            <Badge
-              v-else-if="item.type.value === 1"
-              variant="outline"
-              class="bg-orange-500/10 text-orange-500"
-            >
-              {{ item.type.key }}
-            </Badge>
-            <Badge
-              v-else-if="item.type.value === 2"
-              variant="outline"
-              class="bg-success/10 text-success"
-            >
-              {{ item.type.key }}
-            </Badge>
-            <Badge
-              v-else
-              variant="outline"
-            >
-              {{ item.type.key }}
-            </Badge>
+            <NewsTypeBadge :type="item.type" />
           </td>
 
           <td class="px-4 whitespace-nowrap">

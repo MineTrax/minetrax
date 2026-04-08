@@ -46,16 +46,10 @@
                 {{ formatTimeAgoToNow(news.published_at) }}
               </span>
               <span class="w-0.5 h-0.5 rounded-full bg-muted-foreground/50" />
-              <span
-                class="inline-flex items-center px-1.5 py-px text-[0.65rem] font-medium rounded-full"
-                :class="{
-                  'bg-primary/10 text-primary border border-primary/20': news.type.value === 0,
-                  'bg-orange-100 text-orange-700 border border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800': news.type.value === 1,
-                  'bg-success/10 text-success border border-success/20 dark:bg-success/20': news.type.value === 2,
-                }"
-              >
-                {{ news.type.key }}
-              </span>
+              <NewsTypeBadge
+                :type="news.type"
+                size="sm"
+              />
             </div>
           </div>
 
@@ -79,6 +73,7 @@
 </template>
 
 <script setup>
+import NewsTypeBadge from "@/Components/NewsTypeBadge.vue";
 import { useHelpers } from "@/Composables/useHelpers";
 import {
     Card,
