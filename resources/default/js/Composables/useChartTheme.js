@@ -63,17 +63,19 @@ export function useChartTheme() {
     };
 
     // Get chart color palette (for line charts, bar charts, etc.)
+    // Uses --color-chart-* CSS variables defined per color scheme.
+    // Falls back to primary/success/destructive/info for 6+ series.
     const getChartColorPalette = () => {
         return [
-            getThemeColor("--color-primary", "#6366f1"),
-            getThemeColor("--color-success", "#10b981"),
-            getThemeColor("--color-yellow-500", "#f59e0b"),
-            getThemeColor("--color-destructive", "#ef4444"),
-            getThemeColor("--color-info", "#06b6d4"),
-            getThemeColor("--color-purple-600", "#4f46e5"),
-            getThemeColor("--color-emerald-600", "#059669"),
-            getThemeColor("--color-amber-600", "#d97706"),
-            getThemeColor("--color-pink-600", "#dc2626"),
+            getThemeColor("--color-chart-1", "#3b82f6"),
+            getThemeColor("--color-chart-2", "#10b981"),
+            getThemeColor("--color-chart-3", "#f59e0b"),
+            getThemeColor("--color-chart-4", "#ef4444"),
+            getThemeColor("--color-chart-5", "#8b5cf6"),
+            getThemeColor("--color-primary", "#4f46e5"),
+            getThemeColor("--color-success", "#059669"),
+            getThemeColor("--color-destructive", "#d97706"),
+            getThemeColor("--color-info", "#dc2626"),
         ];
     };
 
