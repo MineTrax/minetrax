@@ -50,7 +50,6 @@
         "spirit55555/php-minecraft": "^1.3",
         "symfony/http-client": "^7.0",
         "symfony/yaml": "^7.0",
-        "tanmuhittin/laravel-google-translate": "^2.3",
         "tightenco/ziggy": "^2.0",
         "torann/geoip": "^3.0",
         "xpaw/php-minecraft-query": "^5.0",
