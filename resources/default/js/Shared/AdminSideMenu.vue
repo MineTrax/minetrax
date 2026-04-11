@@ -399,8 +399,8 @@ const navItems = [
 </script>
 
 <template>
-  <div :class="['min-h-screen fixed bg-sidebar text-sidebar-foreground shadow z-10 duration-300', collapsed ? 'w-16' : 'w-64']">
-    <div class="h-screen overflow-y-auto">
+  <div :class="['fixed top-0 left-0 bottom-0 bg-sidebar text-sidebar-foreground shadow z-10 duration-300', collapsed ? 'w-16' : 'w-64']">
+    <div class="h-full overflow-y-auto pt-14">
       <div :class="['px-4 mt-2 flex', collapsed ? 'justify-center' : 'justify-end']">
         <button
           class="cursor-pointer"
