@@ -21,7 +21,7 @@ use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-const RESPONSE_CACHE_SECONDS = 3600; // 1 hour
+const RESPONSE_CACHE_SECONDS_FORINTEL = 3600; // 1 hour
 
 class ServerIntelController extends Controller
 {
@@ -37,14 +37,14 @@ class ServerIntelController extends Controller
             'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
         ]);
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
         if ($selectedServers) {
-            $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->pluck('id');
+            $selectedServers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $selectedServers)->pluck('id');
         } else {
-            $selectedServers = Server::where('type', '!=', ServerType::Bungee())->pluck('id');
+            $selectedServers = Server::where('type', '!=', ServerType::Bungee)->pluck('id');
         }
 
         /**
@@ -158,11 +158,11 @@ class ServerIntelController extends Controller
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
 
         $selectedServersKey = serialize($selectedServers);
-        $numbers = Cache::remember("server-overview-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS, function () use ($selectedServers) {
+        $numbers = Cache::remember("server-overview-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS_FORINTEL, function () use ($selectedServers) {
             if ($selectedServers) {
-                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->get();
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $selectedServers)->get();
             } else {
-                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->get();
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee)->get();
             }
 
             $numbersData = [];
@@ -227,26 +227,26 @@ class ServerIntelController extends Controller
             $avgSessionsPerPlayer['last_24h'] = DB::table($minecraftPlayerSessionTableName)
                 ->whereIn('server_id', $selectedServers->pluck('id'))
                 ->where('created_at', '>=', now()->subHours(24))
-                ->select('player_uuid', DB::raw('COUNT(*) as count'))
-                ->groupBy('player_uuid')
-                ->pluck('count')?->avg() ?: 0;
+                ->selectRaw('COUNT(*) / COUNT(DISTINCT player_uuid) AS avg_sessions_per_player')
+                ->value('avg_sessions_per_player')
+                ?: 0;
             $avgSessionsPerPlayer['last_7days'] = DB::table($minecraftPlayerSessionTableName)
                 ->whereIn('server_id', $selectedServers->pluck('id'))
                 ->where('created_at', '>=', now()->subWeek())
-                ->select('player_uuid', DB::raw('COUNT(*) as count'))
-                ->groupBy('player_uuid')
-                ->pluck('count')?->avg() ?: 0;
+                ->selectRaw('COUNT(*) / COUNT(DISTINCT player_uuid) AS avg_sessions_per_player')
+                ->value('avg_sessions_per_player')
+                ?: 0;
             $avgSessionsPerPlayer['last_30days'] = DB::table($minecraftPlayerSessionTableName)
                 ->whereIn('server_id', $selectedServers->pluck('id'))
                 ->where('created_at', '>=', now()->subMonth())
-                ->select('player_uuid', DB::raw('COUNT(*) as count'))
-                ->groupBy('player_uuid')
-                ->pluck('count')?->avg() ?: 0;
+                ->selectRaw('COUNT(*) / COUNT(DISTINCT player_uuid) AS avg_sessions_per_player')
+                ->value('avg_sessions_per_player')
+                ?: 0;
             $avgSessionsPerPlayer['all_time'] = DB::table($minecraftPlayerSessionTableName)
                 ->whereIn('server_id', $selectedServers->pluck('id'))
-                ->select('player_uuid', DB::raw('COUNT(*) as count'))
-                ->groupBy('player_uuid')
-                ->pluck('count')?->avg() ?: 0;
+                ->selectRaw('COUNT(*) / COUNT(DISTINCT player_uuid) AS avg_sessions_per_player')
+                ->value('avg_sessions_per_player')
+                ?: 0;
             $numbersData['avg_session_per_player'] = $avgSessionsPerPlayer;
 
             return $numbersData;
@@ -265,7 +265,7 @@ class ServerIntelController extends Controller
         ]);
 
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
@@ -299,11 +299,11 @@ class ServerIntelController extends Controller
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
 
         $selectedServersKey = serialize($selectedServers);
-        $numbers = Cache::remember("server-intel-performance-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS, function () use ($selectedServers) {
+        $numbers = Cache::remember("server-intel-performance-numbers.{$selectedServersKey}", RESPONSE_CACHE_SECONDS_FORINTEL, function () use ($selectedServers) {
             if ($selectedServers) {
-                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->whereIn('id', $selectedServers)->get();
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee)->whereIn('id', $selectedServers)->get();
             } else {
-                $selectedServers = Server::where('type', '!=', ServerType::Bungee())->get();
+                $selectedServers = Server::where('type', '!=', ServerType::Bungee)->get();
             }
 
             // NumbersData - last 24 hours, last week, last month, 3 months.
@@ -386,7 +386,7 @@ class ServerIntelController extends Controller
             'servers.*' => 'sometimes|nullable|integer|exists:servers,id',
         ]);
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         return Inertia::render('Admin/ServerIntel/Playerbase', [
@@ -443,7 +443,7 @@ class ServerIntelController extends Controller
         }
 
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids
@@ -504,7 +504,7 @@ class ServerIntelController extends Controller
         }
 
         $serverList = Server::select(['id', 'name'])
-            ->where('type', '!=', ServerType::Bungee())
+            ->where('type', '!=', ServerType::Bungee)
             ->get()->pluck('name', 'id');
 
         $selectedServers = $request->query('servers') ?? null; // list of selected server ids

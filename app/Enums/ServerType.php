@@ -2,35 +2,14 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
+use App\Enums\Concerns\HasKeyValueSerialization;
 
-/**
- * @method static static Paper()
- * @method static static Spigot()
- * @method static static Forge()
- * @method static static Bukkit()
- * @method static static Vanilla()
- * @method static static Bungee()
- */
-final class ServerType extends Enum
+enum ServerType: int implements HasKeyValueSerialization
 {
-    const Paper = 0;
-
-    const Spigot = 1;
-
-    const Forge = 2;
-
-    const Bukkit = 3;
-
-    const Vanilla = 4;
-
-    const Bungee = 5;
-
-    public function toArray(): mixed
-    {
-        return [
-            'key' => $this->key,
-            'value' => $this->value,
-        ];
-    }
+    case Paper = 0;
+    case Spigot = 1;
+    case Forge = 2;
+    case Bukkit = 3;
+    case Vanilla = 4;
+    case Bungee = 5;
 }

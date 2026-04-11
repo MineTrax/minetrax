@@ -1,13 +1,15 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
-import ShoutBox from '@/Shared/ShoutBox.vue';
-import { FormKitSchema } from '@formkit/vue';
-import {useFormKit} from '@/Composables/useFormKit';
-import { useForm, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import AlertCard from '@/Components/AlertCard.vue';
-import { useTranslations } from '@/Composables/useTranslations';
+import AppLayout from "@/Layouts/AppLayout.vue";
+import ServerStatusBox from "@/Shared/ServerStatusBox.vue";
+import ShoutBox from "@/Shared/ShoutBox.vue";
+import { FormKitSchema } from "@formkit/vue";
+import {useFormKit} from "@/Composables/useFormKit";
+import { useForm, usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
+import AlertCard from "@/Components/AlertCard.vue";
+import { useTranslations } from "@/Composables/useTranslations";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { truncate } from "lodash";
 
 const { __ } = useTranslations();
 
@@ -21,6 +23,25 @@ const props = defineProps({
 });
 
 const formSchema = useFormKit().generateSchemaFromFieldsArray(props.customForm.fields);
+const page = usePage();
+const isStickyNav = page.props.generalSettings.enable_sticky_header_menu;
+
+const breadcrumbItems = [
+    {
+        text: __("Home"),
+        url: route("home"),
+        current: false
+    },
+    {
+        text: __("Forms"),
+        url: route("custom-form.index"),
+        current: false
+    },
+    {
+        text: truncate(props.customForm.title, { length: 50 }),
+        current: true
+    }
+];
 
 const submitForm = async (values) => {
     await promisifyForm(values);
@@ -31,7 +52,7 @@ const promisifyForm = (values) => {
         const form = useForm({
             ...values
         });
-        form.post(route('custom-form.submit', props.customForm.slug), {
+        form.post(route("custom-form.submit", props.customForm.slug), {
             onSuccess: visit => {
                 resolve(visit);
             },
@@ -43,7 +64,7 @@ const promisifyForm = (values) => {
 };
 
 const formDisabled = computed(() => {
-    return props.customForm.status.value !== 'active' || !props.currentUserCanSubmit;
+    return props.customForm.status.value !== "active" || !props.currentUserCanSubmit;
 });
 
 const disabledErrorMessage = computed(() => {
@@ -54,37 +75,37 @@ const disabledErrorMessage = computed(() => {
         };
     }
 
-    if (props.customForm.status.value === 'disabled') {
+    if (props.customForm.status.value === "disabled") {
         return {
-            title: __('Oh Jeez! This form is currently disabled.'),
+            title: __("Oh Jeez! This form is currently disabled."),
             body: __(
-                'It seems the form is no longer accepting submissions. Please check back later.'
+                "It seems the form is no longer accepting submissions. Please check back later."
             ),
         };
     }
 
-    if (props.customForm.status.value !== 'active') {
+    if (props.customForm.status.value !== "active") {
         return {
-            title: __('Oh Jeez! This form is not active.'),
+            title: __("Oh Jeez! This form is not active."),
             body: __(
-                'It seems the form is not active yet. Please check back later.'
+                "It seems the form is not active yet. Please check back later."
             ),
         };
     }
 
-    if (['auth', 'staff'].includes(props.customForm.can_create_submission) && !usePage().props.auth.user) {
+    if (["auth", "staff"].includes(props.customForm.can_create_submission) && !usePage().props.auth.user) {
         return {
-            title: __('Oh Jeez! You need to be logged in to submit this form.'),
+            title: __("Oh Jeez! You need to be logged in to submit this form."),
             body: __(
-                'Please login and try again.'
+                "Please login and try again."
             ),
         };
     }
 
     return {
-        title: __('Oh Jeez! You have already submitted this form.'),
+        title: __("Oh Jeez! You have already submitted this form."),
         body: __(
-            'You have already submitted this form maximum number of times allowed.'
+            "You have already submitted this form maximum number of times allowed."
         ),
     };
 });
@@ -93,27 +114,14 @@ const disabledErrorMessage = computed(() => {
 
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <app-layout>
-    <app-head :title="customForm.title" />
+  <AppLayout>
+    <AppHead :title="customForm.title" />
 
-    <div class="py-4 px-2 md:py-12 md:px-10 max-w-7xl mx-auto">
-      <div class="flex justify-between md:mb-4">
-        <h1 class="text-center font-bold text-2xl text-gray-900 dark:text-gray-200 mb-5">
-          {{ customForm.title }}
-        </h1>
-        <div class="">
-          <inertia-link
-            :href="route('home')"
-            class="inline-flex items-center px-4 py-2 bg-gray-400 dark:bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-500 focus:shadow-outline-gray transition ease-in-out duration-150"
-          >
-            <span>{{ __("Homepage") }}</span>
-          </inertia-link>
-        </div>
-      </div>
+    <AppBreadcrumb :items="breadcrumbItems" />
+
+    <div class="py-4 px-2 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
-        <div
-          class="overflow-x-auto md:w-9/12"
-        >
+        <div class="md:w-9/12 flex-1">
           <AlertCard
             v-if="formDisabled"
             text-color="text-orange-800 dark:text-orange-500"
@@ -121,16 +129,18 @@ const disabledErrorMessage = computed(() => {
           >
             {{ disabledErrorMessage.title }}
             <template #body>
-              {{
-                disabledErrorMessage.body
-              }}
+              {{ disabledErrorMessage.body }}
             </template>
           </AlertCard>
           <div class="min-w-full">
-            <div class="shadow max-w-none bg-white dark:bg-cool-gray-800 px-3 py-2 md:px-10 md:py-5 overflow-hidden rounded">
+            <div class="bg-card text-card-foreground border rounded-lg shadow p-4 md:p-6">
+              <h1 class="font-bold text-4xl text-foreground mb-5">
+                {{ customForm.title }}
+              </h1>
+
               <div
                 v-if="customForm.description"
-                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b dark:border-gray-700"
+                class="prose dark:prose-invert max-w-none mb-6 pb-6 border-b border-border"
                 v-html="customForm.description_html"
               />
 
@@ -144,7 +154,7 @@ const disabledErrorMessage = computed(() => {
 
               <p
                 v-if="!formDisabled && customForm.max_submission_per_user"
-                class="text-xs text-gray-500 dark:text-gray-400 text-right"
+                class="text-xs text-muted-foreground text-right"
               >
                 {{ __("You can submit this form only :count times.", {
                   count: customForm.max_submission_per_user
@@ -155,12 +165,13 @@ const disabledErrorMessage = computed(() => {
         </div>
 
         <div
-          class="md:w-3/12 flex-1 space-y-4 mt-4 md:mt-0"
+          class="hidden md:flex flex-col md:w-3/12 flex-none space-y-4 sticky"
+          :class="{ 'top-16': isStickyNav, 'top-5': !isStickyNav }"
         >
-          <server-status-box />
-          <shout-box />
+          <ServerStatusBox />
+          <ShoutBox />
         </div>
       </div>
     </div>
-  </app-layout>
+  </AppLayout>
 </template>

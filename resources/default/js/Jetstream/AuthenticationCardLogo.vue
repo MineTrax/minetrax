@@ -33,5 +33,5 @@
         fill="#39B9F1"
       />
     </svg>
-</InertiaLink>
+  </InertiaLink>
 </template>

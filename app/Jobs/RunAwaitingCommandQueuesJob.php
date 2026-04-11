@@ -39,9 +39,11 @@ class RunAwaitingCommandQueuesJob implements ShouldQueue
             ->limit(50)
             ->get();
 
-        Log::info('[RunAwaitingCommandQueuesJob] Running Failed commands: '.$failedCommands->count());
-        foreach ($failedCommands as $command) {
-            RunCommandQueueJob::dispatch($command);
+        if ($failedCommands->count() > 0) {
+            Log::info('[RunAwaitingCommandQueuesJob] Running Failed commands: ' . $failedCommands->count());
+            foreach ($failedCommands as $command) {
+                RunCommandQueueJob::dispatch($command);
+            }
         }
 
         // DELAYED
@@ -51,9 +53,11 @@ class RunAwaitingCommandQueuesJob implements ShouldQueue
             ->limit(50)
             ->get();
 
-        Log::info('[RunAwaitingCommandQueuesJob] Running Delayed commands: '.$awaitingCommands->count());
-        foreach ($awaitingCommands as $command) {
-            RunCommandQueueJob::dispatch($command);
+        if ($awaitingCommands->count() > 0) {
+            Log::info('[RunAwaitingCommandQueuesJob] Running Delayed commands: ' . $awaitingCommands->count());
+            foreach ($awaitingCommands as $command) {
+                RunCommandQueueJob::dispatch($command);
+            }
         }
     }
 }

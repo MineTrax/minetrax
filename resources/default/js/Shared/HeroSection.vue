@@ -49,23 +49,26 @@
           class="flex justify-center cursor-pointer basis-1/4 hover:rainbow mb-4 md:mb-0 hover:scale-110 transition ease-in-out duration-500"
           @click="isSupported && copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
         >
-          <img
-            src="/images/header-creeper.png"
-            alt="Discord"
-            class="w-16 h-16"
+          <svg
+            class="w-12 h-12 text-primary shrink-0 mr-3"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
           >
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+          </svg>
           <div class="flex flex-col">
             <p
-              class="mt-2 font-bold text-left"
+              class="font-bold text-left"
             >
               <span
                 v-if="!loading && !error"
-                class="uppercase text-light-blue-400"
+                class="uppercase text-primary"
               >{{ serverInfo?.players?.online }} {{ __("Players Online") }}
               </span>
               <span
                 v-if="loading"
-                class="text-gray-400 uppercase"
+                class="text-foreground uppercase"
               >
                 {{ __("Loading..") }}
               </span>
@@ -76,7 +79,7 @@
                 {{ error }}
               </span>
             </p>
-            <p class="font-semibold text-sm mt-1.5 uppercase text-white">
+            <p class="font-semibold text-sm mt-1 uppercase text-white">
               {{ copied ? __('Copied to Clipboard') : (server ? server.hostname :
                 $page.props.defaultQueryServer?.server?.hostname) }}
             </p>
@@ -104,20 +107,23 @@
           class="justify-center hidden basis-1/4 hover:rainbow md:flex hover:scale-110 transition ease-in-out duration-500"
         >
           <div class="flex flex-col">
-            <p class="mt-2 font-bold text-right uppercase text-light-blue-400">
+            <p class="font-bold text-right uppercase text-primary">
               {{ discordUsersCount }} {{ __("Online") }}
             </p>
             <span
-              class="font-semibold text-sm mt-1.5 uppercase text-white"
+              class="font-semibold text-sm mt-1 uppercase text-white"
             >
               {{ __("Click to Join") }}
             </span>
           </div>
-          <img
-            src="/images/header-discord.png"
-            alt="Discord"
-            class="w-16 h-16"
+          <svg
+            class="w-11 h-11 text-primary shrink-0 ml-3"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
           >
+            <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" />
+          </svg>
         </a>
       </div>
     </div>
@@ -125,10 +131,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-import axios from 'axios';
-import { usePage } from '@inertiajs/vue3';
-import { useClipboard } from '@vueuse/core';
+import { usePage } from "@inertiajs/vue3";
+import { useClipboard } from "@vueuse/core";
+import axios from "axios";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 const { copy, copied, isSupported } = useClipboard({ legacy: true });
 
 const props = defineProps({
@@ -142,15 +148,15 @@ const error = ref(null);
 const particleOptions = ref({});
 const interval = ref(null);
 
-const bgImageUrl = window.colorMode === 'dark'
+const bgImageUrl = window.colorMode === "dark"
     ? props.settings.home_hero_bg_image_path_dark
     : props.settings.home_hero_bg_image_path_light;
 
-const fgImageUrl = window.colorMode === 'dark'
+const fgImageUrl = window.colorMode === "dark"
     ? props.settings.home_hero_fg_image_path_dark
     : props.settings.home_hero_fg_image_path_light;
 
-const isBgImageVideo = bgImageUrl.includes('.webm');
+const isBgImageVideo = bgImageUrl.includes(".webm");
 
 const joinBoxEnabled = computed(() => {
     if (!props.settings.show_join_box_in_home_hero) return false;
@@ -168,7 +174,7 @@ const getServerPing = () => {
     if (!serverToPing) {
         serverToPing = usePage().props.defaultQueryServer.server;
     }
-    axios.get(route('server.ping.get', serverToPing.id)).then((data) => {
+    axios.get(route("server.ping.get", serverToPing.id)).then((data) => {
         serverInfo.value = data.data;
         error.value = null;
     }).catch((err) => {
@@ -185,7 +191,7 @@ const discordBoxEnabled = computed(() => {
         && usePage().props.generalSettings.discord_invite_url;
 });
 
-const discordUsersCount = ref('');
+const discordUsersCount = ref("");
 const getDiscordOnlinePlayers = () => {
     const serverId = usePage().props.generalSettings.discord_server_id;
     if (!serverId) return;
@@ -194,9 +200,9 @@ const getDiscordOnlinePlayers = () => {
     fetch(`https://discord.com/api/guilds/${serverId}/widget.json`).then(data => {
         return data.json();
     }).then(data => {
-        discordUsersCount.value = data.presence_count ?? '';
+        discordUsersCount.value = data.presence_count ?? "";
     }).catch(err => {
-        console.warn('Failed to get discord users count', err);
+        console.warn("Failed to get discord users count", err);
     });
 };
 
@@ -220,11 +226,11 @@ onMounted(() => {
         particleOptions.value = JSON.parse(props.settings.home_hero_bg_particles);
         particleOptions.value = {
             ...particleOptions.value,
-            'fullScreen': {
-                'enable': false,
-                'zIndex': 1
+            "fullScreen": {
+                "enable": false,
+                "zIndex": 1
             },
-            'background': {},
+            "background": {},
         };
     }
 });

@@ -1,24 +1,28 @@
 <template>
   <app-layout>
-    <app-head
-      :title="__('Polls')"
-    />
+    <AppHead :title="__('Polls')" />
 
-    <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto">
+    <AppBreadcrumb :items="breadcrumbItems" />
+
+    <div class="px-2 py-4 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col md:flex-row md:space-x-4">
         <div class="hidden md:flex flex-col space-y-4 flex-none w-1/4 h-screen sticky top-5">
-          <did-you-know-box :enabled="$page.props.generalSettings.enable_didyouknowbox" />
-          <discord-server-box
+          <DidYouKnowBox :enabled="$page.props.generalSettings.enable_didyouknowbox" />
+          <DiscordServerBox
             :enabled="$page.props.generalSettings.enable_discordbox"
             :server="$page.props.generalSettings.discord_server_id"
+            :invite="$page.props.generalSettings.discord_invite_url"
           />
         </div>
 
-        <div class="flex-grow">
+        <div class="grow">
           <div class="-my-2 overflow-x-auto md:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block min-w-full md:px-6 lg:px-8">
               <div class="">
-                <infinite-scroll :load-more="loadMorePolls">
+                <InfiniteScroll
+                  :load-more="loadMorePolls"
+                  :can-load-more="pollList.next_page_url !== null"
+                >
                   <transition-group
                     name="list"
                     tag="div"
@@ -31,71 +35,74 @@
                       :poll="poll.json_for_vue"
                     />
                   </transition-group>
-                </infinite-scroll>
+                </InfiniteScroll>
 
-                <div
+                <Card
                   v-if="pollList.data <= 0"
-                  class="p-3 md:px-5 bg-white dark:bg-cool-gray-800 rounded shadow italic text-gray-500 dark:text-gray-400 text-center text-sm font-semibold"
+                  class="p-3 italic text-center text-sm text-muted-foreground font-semibold"
                 >
                   {{ __("No Polls Found") }}
-                </div>
+                </Card>
               </div>
             </div>
           </div>
         </div>
 
         <div class="hidden md:flex flex-col space-y-4 flex-none w-1/4 h-screen sticky top-5">
-          <server-status-box />
-          <shout-box />
+          <ServerStatusBox />
+          <ShoutBox />
         </div>
       </div>
     </div>
   </app-layout>
 </template>
 
-<script>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import ShoutBox from '@/Shared/ShoutBox.vue';
-import InfiniteScroll from '@/Components/InfiniteScroll.vue';
-import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
-import PollBox from '@/Shared/PollBox.vue';
-import DidYouKnowBox from '@/Shared/DidYouKnowBox.vue';
-import DiscordServerBox from '@/Shared/DiscordServerBox.vue';
+<script setup>
+import { ref } from "vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import ShoutBox from "@/Shared/ShoutBox.vue";
+import InfiniteScroll from "@/Components/InfiniteScroll.vue";
+import ServerStatusBox from "@/Shared/ServerStatusBox.vue";
+import PollBox from "@/Shared/PollBox.vue";
+import DidYouKnowBox from "@/Shared/DidYouKnowBox.vue";
+import DiscordServerBox from "@/Shared/DiscordServerBox.vue";
+import Card from "@/Components/ui/card/Card.vue";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import { useTranslations } from "@/Composables/useTranslations";
 
-export default {
+const { __ } = useTranslations();
 
-    components: {
-        DiscordServerBox,
-        DidYouKnowBox,
-        ServerStatusBox,
-        AppLayout,
-        ShoutBox,
-        InfiniteScroll,
-        PollBox
+// Props
+const props = defineProps({
+    polls: Object,
+});
+
+const breadcrumbItems = [
+    {
+        text: __("Home"),
+        url: route("home"),
+        current: false
     },
-    props: {
-        polls: Object,
-    },
+    {
+        text: __("Polls"),
+        current: true
+    }
+];
 
-    data() {
-        return {
-            pollList: this.polls
+// Reactive data
+const pollList = ref(props.polls);
+
+// Methods
+const loadMorePolls = () => {
+    if (!pollList.value.next_page_url) {
+        return Promise.resolve();
+    }
+
+    return axios(pollList.value.next_page_url).then(response => {
+        pollList.value = {
+            ...response.data,
+            data: [...pollList.value.data, ...response.data.data]
         };
-    },
-
-    methods: {
-        loadMorePolls() {
-            if (!this.pollList.next_page_url) {
-                return Promise.resolve();
-            }
-
-            return axios(this.pollList.next_page_url).then(response => {
-                this.pollList = {
-                    ...response.data,
-                    data: [...this.pollList.data, ...response.data.data]
-                };
-            });
-        }
-    },
+    });
 };
 </script>

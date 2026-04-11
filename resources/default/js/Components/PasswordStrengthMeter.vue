@@ -9,7 +9,7 @@
       >
         <div
           class="h-2 rounded-xl transition-colors"
-          :class="i<score?(score<=2?'bg-red-400':(score<=4?'bg-yellow-400':'bg-green-500')):'bg-gray-200 dark:bg-gray-900'"
+          :class="i<score?(score<=2?'bg-destructive/60':(score<=4?'bg-yellow-400':'bg-success')):'bg-background'"
         />
       </div>
     </template>
@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import zxcvbn from 'zxcvbn';
+import zxcvbn from"zxcvbn";
 
 export default {
-    name: 'PasswordStrengthMeter',
+    name:"PasswordStrengthMeter",
     props: {
         value: {
             type: String,

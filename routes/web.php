@@ -82,7 +82,6 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('player/punishments/{playerPunishment:id}', [\App\Http\Controllers\BanWardenController::class, 'show'])->name('player.punishment.show');
     Route::get('player/punishments/{playerPunishment:id}/history', [\App\Http\Controllers\BanWardenController::class, 'indexLastPunishments'])->name('player.punishment.show.history');
     Route::get('player/punishments/{playerPunishment:id}/sessions', [\App\Http\Controllers\BanWardenController::class, 'indexLastSessions'])->name('player.punishment.show.session');
-    Route::get('player/punishments/{playerPunishment:id}/alts', [\App\Http\Controllers\BanWardenController::class, 'indexAlts'])->name('player.punishment.show.alt');
     Route::get('player/punishments/{playerPunishment:id}/evidence/{evidence}', [\App\Http\Controllers\BanWardenController::class, 'showMediaEvidence'])->name('player.punishment.evidence.show');
 });
 
@@ -225,7 +224,6 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('news', [\App\Http\Controllers\Admin\NewsController::class, 'index'])->name('news.index');
     Route::get('news/create', [\App\Http\Controllers\Admin\NewsController::class, 'create'])->name('news.create');
     Route::post('news', [\App\Http\Controllers\Admin\NewsController::class, 'store'])->name('news.store');
-    Route::get('news/{news}', [\App\Http\Controllers\Admin\NewsController::class, 'show'])->name('news.show');
     Route::get('news/{news}/edit', [\App\Http\Controllers\Admin\NewsController::class, 'edit'])->name('news.edit');
     Route::put('news/{news}', [\App\Http\Controllers\Admin\NewsController::class, 'update'])->name('news.update');
     Route::delete('news/{news}', [\App\Http\Controllers\Admin\NewsController::class, 'destroy'])->name('news.delete');
@@ -259,6 +257,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::delete('setting/danger/truncate-serverintel', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncatePlayerIntelData'])->name('setting.danger.truncate.playerintel');
     Route::delete('setting/danger/truncate-playerintel', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncateServerIntelData'])->name('setting.danger.truncate.serverintel');
     Route::delete('setting/danger/truncate-playerpunishments', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'truncatePlayerPunishments'])->name('setting.danger.truncate.playerpunishments');
+    Route::delete('setting/danger/reset-playerintelstats', [\App\Http\Controllers\Admin\Settings\DangerSettingController::class, 'resetPlayerIntelStats'])->name('setting.danger.reset.playerintelstats');
 
     Route::get('poll', [\App\Http\Controllers\Admin\PollController::class, 'index'])->name('poll.index');
     Route::get('poll/create', [\App\Http\Controllers\Admin\PollController::class, 'create'])->name('poll.create');

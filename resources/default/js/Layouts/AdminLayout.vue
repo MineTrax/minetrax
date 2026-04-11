@@ -1,16 +1,20 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import AdminSideMenu from '@/Shared/AdminSideMenu.vue';
-import { useStorage } from '@vueuse/core';
+import AdminSideMenu from "@/Shared/AdminSideMenu.vue";
+import MainNavbarCustom from "@/Shared/MainNavbarCustom.vue";
+import { useStorage } from "@vueuse/core";
+import BaseLayout from "./BaseLayout.vue";
 
-let isMenuCollapsed = useStorage('is-admin-sidebar-menu-collapsed', false);
+let isMenuCollapsed = useStorage("is-admin-sidebar-menu-collapsed", false);
 function toggleMenuCollapse() {
     isMenuCollapsed.value = !isMenuCollapsed.value;
 }
 </script>
 
 <template>
-  <AppLayout :hide-footer="true">
+  <BaseLayout>
+    <!-- Admin NavBar -->
+    <MainNavbarCustom />
+
     <AdminSideMenu
       :collapsed="isMenuCollapsed"
       @toggle-collapse="toggleMenuCollapse"
@@ -23,5 +27,5 @@ function toggleMenuCollapse() {
     >
       <slot />
     </main>
-  </AppLayout>
+  </BaseLayout>
 </template>

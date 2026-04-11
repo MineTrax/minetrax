@@ -1,7 +1,7 @@
 <template>
   <div class="vue-poll">
     <h3
-      class="qst dark:text-gray-300"
+      class="qst"
       v-html="question"
     />
     <div class="ans-cnt">
@@ -13,7 +13,6 @@
         <template v-if="!finalResults">
           <div
             v-if="!visibleResults"
-            class="hover:bg-light-blue-100 dark:hover:bg-cool-gray-900"
             :class="{ 'ans-no-vote noselect': true, active: a.selected }"
             @click.prevent="handleVote(a)"
           >
@@ -21,10 +20,29 @@
               class="txt"
               v-html="a.text"
             />
+            <svg
+              class="vote-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+            >
+              <path
+                v-if="!a.selected"
+                fill-rule="evenodd"
+                d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z"
+                clip-rule="evenodd"
+              />
+              <path
+                v-else
+                fill-rule="evenodd"
+                d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z"
+                clip-rule="evenodd"
+              />
+            </svg>
           </div>
           <div
             v-else
-            :class="{ 'ans-voted dark:text-gray-200': true, selected: a.selected }"
+            :class="{ 'ans-voted': true, selected: a.selected }"
           >
             <span
               v-if="a.percent"
@@ -38,12 +56,12 @@
           </div>
 
           <span
-            class="bg bg-cool-gray-200 dark:bg-cool-gray-700"
+            class="bg bg-background"
             :style="{ width: visibleResults ? a.percent : '0%' }"
           />
         </template>
         <template v-else>
-          <div :class="{ 'ans-voted final dark:text-gray-200': true, selected: a.selected }">
+          <div :class="{ 'ans-voted final': true, selected: a.selected }">
             <span
               v-if="a.percent"
               class="percent"
@@ -55,7 +73,7 @@
             />
           </div>
           <span
-            :class="{ 'bg bg-cool-gray-200 dark:bg-cool-gray-700': true, 'bg-light-blue-300 dark:bg-light-blue-500': mostVotes == a.votes }"
+            :class="{ 'bg': true, 'bg-primary': mostVotes == a.votes, 'bg-background': mostVotes != a.votes }"
             :style="{ width: a.percent }"
           />
         </template>
@@ -64,7 +82,7 @@
 
     <div
       v-if="isComingSoon"
-      class="text-gray-400 text-xs italic"
+      class="text-foreground text-xs italic"
     >
       {{ __("Poll starting") }}&nbsp;{{ formatTimeAgoToNow(started_at) }}
     </div>
@@ -77,7 +95,7 @@
       />
       <div
         v-if="!isComingSoon && closed_at && !finalResults"
-        class="text-gray-400 text-xs italic"
+        class="text-foreground text-xs italic"
       >
         {{ __("Poll closing") }}&nbsp;{{ formatTimeAgoToNow(closed_at) }}
       </div>
@@ -95,11 +113,11 @@
 </template>
 
 <script>
-import { useHelpers } from '@/Composables/useHelpers';
+import { useHelpers } from "@/Composables/useHelpers";
 
 
 export default{
-    name: 'Poll',
+    name: "Poll",
     props: {
         question: {
             type: String,
@@ -127,7 +145,7 @@ export default{
         },
         submitButtonText: {
             type: String,
-            default: 'Submit'
+            default: "Submit"
         },
         customId: {
             type: Number,
@@ -165,7 +183,7 @@ export default{
             return totalVotes;
         },
         totalVotesFormatted(){
-            return this.totalVotes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return this.totalVotes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
         mostVotes(){
             let max = 0;
@@ -180,16 +198,16 @@ export default{
 
             if (this.totalVotes === 0)
                 return this.answers.map(a=>{
-                    a.percent = '0%';
+                    a.percent = "0%";
                     return a;
                 });
 
             //Calculate percent
             return this.answers.filter(a=>{
                 if (!isNaN(a.votes) && a.votes > 0)
-                    a.percent = ( Math.round( (parseInt(a.votes)/this.totalVotes ) * 100) ) + '%';
+                    a.percent = ( Math.round( (parseInt(a.votes)/this.totalVotes ) * 100) ) + "%";
                 else
-                    a.percent =  '0%';
+                    a.percent =  "0%";
 
                 return a;
             });
@@ -216,7 +234,7 @@ export default{
             if (this.customId)
                 obj.customId = this.customId;
 
-            this.$emit('addvote', obj);
+            this.$emit("addvote", obj);
         },
         handleVote(a){ //Callback
             if (this.isComingSoon) return;
@@ -224,7 +242,7 @@ export default{
             if (this.multiple){
 
                 if (a.selected === undefined)
-                    console.log('Please add \'selected: false\' on the answer object');
+                    console.log("Please add 'selected: false' on the answer object");
 
                 a.selected = !a.selected;
                 return;
@@ -241,7 +259,7 @@ export default{
             if (this.customId)
                 obj.customId = this.customId;
 
-            this.$emit('addvote', obj);
+            this.$emit("addvote", obj);
         }
     }
 };
@@ -249,117 +267,166 @@ export default{
 </script>
 
 <style>
-.vue-poll{
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+.vue-poll {
+    font-family: inherit;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
+    color: var(--foreground);
 }
 
 .vue-poll .noselect {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
 }
 
-.vue-poll .qst{
-    font-weight: normal;
+.vue-poll .qst {
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
-.vue-poll .ans-cnt{
-    margin: 20px 0;
+
+.vue-poll .ans-cnt {
+    margin: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
-.vue-poll .ans-cnt .ans{
+
+.vue-poll .ans-cnt .ans {
     position: relative;
-    margin-top: 10px;
-}
-.vue-poll .ans-cnt .ans:first-child{
-    margin-top: 0;
 }
 
-.vue-poll .ans-cnt .ans-no-vote{
-    text-align: center;
-    border: 1px solid #77C7F7;
+.vue-poll .ans-cnt .ans-no-vote {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid var(--border);
     box-sizing: border-box;
-    border-radius: 9999px;
-    cursor:pointer;
-    padding: 5px 0;
-    transition: background .2s ease-in-out;
-    -webkit-transition: background .2s ease-in-out;
-    -moz-transition: background .2s ease-in-out;
+    border-radius: var(--radius);
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: all 0.2s ease-in-out;
 }
 
-.vue-poll .ans-cnt .ans-no-vote .txt{
-    color: #77C7F7;
-    transition: color .2s ease-in-out;
-    -webkit-transition: color .2s ease-in-out;
-    -moz-transition: color .2s ease-in-out;
+.vue-poll .ans-cnt .ans-no-vote .vote-icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease-in-out;
+    color: var(--primary);
 }
 
-.vue-poll .ans-cnt .ans-no-vote.active{
-    background: #77C7F7;
+.vue-poll .ans-cnt .ans-no-vote:hover .vote-icon {
+    opacity: 0.7;
 }
 
-.vue-poll .ans-cnt .ans-no-vote.active .txt{
-    color: #fff;
+.vue-poll .ans-cnt .ans-no-vote.active .vote-icon {
+    opacity: 1;
+    color: var(--primary-foreground);
 }
 
-.vue-poll .ans-cnt .ans-voted{
-    padding: 5px 0;
+.vue-poll .ans-cnt .ans-no-vote:hover {
+    border-color: var(--primary);
+    background: hsl(var(--primary) / 0.05);
+}
+
+.vue-poll .ans-cnt .ans-no-vote .txt {
+    color: var(--card-foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+
+.vue-poll .ans-cnt .ans-no-vote.active {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.vue-poll .ans-cnt .ans-no-vote.active .txt {
+    color: var(--primary-foreground);
+}
+
+.vue-poll .ans-cnt .ans-voted {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
 }
 
 .vue-poll .ans-cnt .ans-voted .percent,
-.vue-poll .ans-cnt .ans-voted .txt{
+.vue-poll .ans-cnt .ans-voted .txt {
     position: relative;
     z-index: 1;
 }
-.vue-poll .ans-cnt .ans-voted .percent{
-    font-weight: bold;
-    min-width: 51px;
+
+.vue-poll .ans-cnt .ans-voted .percent {
+    font-weight: 700;
+    font-size: 0.8rem;
+    min-width: 44px;
     display: inline-block;
-    margin:0 10px;
+    margin-right: 8px;
+    font-variant-numeric: tabular-nums;
 }
 
-.vue-poll .ans-cnt .ans-voted.selected .txt:after{
-    content:'✔';
-    margin-left: 10px;
+.vue-poll .ans-cnt .ans-voted .txt {
+    font-size: 0.875rem;
+    font-weight: 500;
 }
 
-.vue-poll .ans-cnt .ans .bg{
+.vue-poll .ans-cnt .ans-voted.selected .txt:after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.vue-poll .ans-cnt .ans .bg {
     position: absolute;
     width: 0%;
     top: 0;
     left: 0;
     bottom: 0;
     z-index: 0;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    transition: all .3s cubic-bezier(0.5,1.2,.5,1.2);
-    -webkit-transition: all .3s cubic-bezier(0.5,1.2,.5,1.2);
-    -moz-transition: all .3s cubic-bezier(0.5,1.2,.5,1.2);
+    border-radius: var(--radius);
+    opacity: 0.7;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.vue-poll .ans-cnt .ans .bg.selected{
-    background-color: #77C7F7;
+.vue-poll .ans-cnt .ans .bg.bg-primary {
+    opacity: 0.85;
 }
 
-.vue-poll .votes{
-    font-size: 14px;
-    color:#8899A6
+.vue-poll .ans-cnt .ans .bg.selected {
+    background-color: var(--primary);
 }
 
-.vue-poll .submit{
-    display: block;
+.vue-poll .votes {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    font-variant-numeric: tabular-nums;
+}
+
+.vue-poll .submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    margin: 0 auto;
-    max-width: 80px;
+    margin: 8px auto 0;
     text-decoration: none;
-    background-color: #41b882;
-    color:#fff;
-    padding: 10px 25px;
-    border-radius: 5px;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    padding: 8px 20px;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+}
 
+.vue-poll .submit:hover {
+    opacity: 0.9;
 }
 </style>

@@ -70,7 +70,7 @@ class RecruitmentPolicy
 
     public function viewPublic(?User $user, Recruitment $recruitment)
     {
-        $invalidStatus = in_array($recruitment->status->value, [RecruitmentFormStatus::ARCHIVED, RecruitmentFormStatus::DRAFT]);
+        $invalidStatus = in_array($recruitment->status, [RecruitmentFormStatus::ARCHIVED, RecruitmentFormStatus::DRAFT]);
         if ($invalidStatus) {
             return false;
         }
@@ -81,7 +81,7 @@ class RecruitmentPolicy
     public function submit(User $user, Recruitment $recruitment)
     {
         // Bail if form is not active
-        $isActive = $recruitment->status->value === RecruitmentFormStatus::ACTIVE;
+        $isActive = $recruitment->status === RecruitmentFormStatus::ACTIVE;
         if (! $isActive) {
             return false;
         }

@@ -47,7 +47,7 @@
         <div class="flex items-center justify-end mt-4">
           <loading-button
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+            class="ml-4"
           >
             {{ __("Reset Password") }}
           </loading-button>
@@ -58,11 +58,11 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import { useForm } from '@inertiajs/vue3';
+import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
+import LoadingButton from "@/Components/LoadingButton.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import XInput from "@/Components/Form/XInput.vue";
+import { useForm } from "@inertiajs/vue3";
 
 export default {
     components: {
@@ -82,16 +82,16 @@ export default {
             form: useForm({
                 token: this.token,
                 email: this.email,
-                password: '',
-                password_confirmation: '',
+                password: "",
+                password_confirmation: "",
             })
         };
     },
 
     methods: {
         submit() {
-            this.form.post(this.route('password.update'), {
-                onFinish: () => this.form.reset('password', 'password_confirmation'),
+            this.form.post(this.route("password.update"), {
+                onFinish: () => this.form.reset("password", "password_confirmation"),
             });
         }
     }

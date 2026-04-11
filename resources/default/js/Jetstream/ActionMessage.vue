@@ -13,7 +13,7 @@ defineProps({
     >
       <div
         v-show="on"
-        class="text-sm text-gray-600"
+        class="text-sm text-foreground"
       >
         <slot />
       </div>

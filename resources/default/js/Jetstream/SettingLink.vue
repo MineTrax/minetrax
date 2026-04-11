@@ -14,13 +14,13 @@
 
 <script>
 export default {
-    props: ['href', 'active'],
+    props: ["href","active"],
 
     computed: {
         classes() {
             return this.active
-                ? 'cursor-pointer h-10 mb-1 p-2 text-gray-600 bg-cool-gray-300 dark:bg-cool-gray-800 dark:text-gray-300 rounded transition duration-150 ease-in-out'
-                : 'cursor-pointer h-10 mb-1 p-2 text-gray-600 rounded hover:bg-cool-gray-300 dark:hover:bg-cool-gray-800 dark:hover:text-gray-300 transition duration-150 ease-in-out';
+                ?"cursor-pointer h-10 mb-1 p-2 text-foreground bg-muted dark:bg-card dark:text-foreground rounded transition duration-150 ease-in-out"
+                :"cursor-pointer h-10 mb-1 p-2 text-foreground rounded hover:bg-accent dark:hover:bg-accent dark:hover:text-foreground transition duration-150 ease-in-out";
         }
     }
 };

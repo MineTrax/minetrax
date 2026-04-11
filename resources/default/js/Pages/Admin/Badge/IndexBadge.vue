@@ -1,12 +1,16 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useAuthorizable } from '@/Composables/useAuthorizable';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import Icon from '@/Components/Icon.vue';
+import AdminLayout from"@/Layouts/AdminLayout.vue";
+import { useAuthorizable } from"@/Composables/useAuthorizable";
+import { useHelpers } from"@/Composables/useHelpers";
+import { useTranslations } from"@/Composables/useTranslations";
+import DataTable from"@/Components/DataTable/DataTable.vue";
+import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
+import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
+import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
+import { Link } from"@inertiajs/vue3";
+import { PencilSquareIcon, TrashIcon } from"@heroicons/vue/24/outline";
+import Icon from"@/Components/Icon.vue";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
@@ -17,49 +21,60 @@ defineProps({
     filters: Object,
 });
 
+const breadcrumbItems = [
+    {
+        text: __("Admin"),
+        current: false,
+    },
+    {
+        text: __("User Badges"),
+        current: true,
+    }
+];
+
 const headerRow = [
     {
-        key: 'id',
-        label: __('ID'),
+        key:"id",
+        label: __("ID"),
         sortable: true,
-        class: 'text-center',
+        class:"text-center",
     },
     {
-        key: 'image',
+        key:"image",
         sortable: false,
-        label: __('Image'),
+        label: __("Image"),
     },
     {
-        key: 'name',
+        key:"name",
         sortable: true,
-        label: __('Name'),
-        class: 'w-3/12',
+        label: __("Name"),
+        class:"w-3/12",
     },
     {
-        key: 'users_count',
-        label: __('Users'),
+        key:"users_count",
+        label: __("Users"),
     },
     {
-        key: 'is_sticky',
-        label: __('Sticky'),
+        key:"is_sticky",
+        label: __("Sticky"),
         sortable: true,
     },
     {
-        key: 'sort_order',
+        key:"sort_order",
         sortable: true,
-        label: __('Sort Order'),
+        label: __("Sort Order"),
     },
     {
-        key: 'created_at',
-        label: __('Created'),
+        key:"created_at",
+        label: __("Created"),
         sortable: true,
-        class: 'w-1/12',
+        class:"w-1/12",
     },
     {
-        key: 'actions',
-        label: __('Actions'),
+        key:"actions",
+        label: __("Actions"),
         sortable: false,
-        class: 'w-1/12 text-right',
+        class:"w-1/12 text-right",
     },
 ];
 </script>
@@ -68,37 +83,39 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Badges Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
-          {{ __("User Badges") }}
-        </h1>
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create badges')"
-            :href="route('admin.badge.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create New") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Badge") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.badge.create')">
+              {{ __("Create Badge") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="badges"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
           <td class="px-4">
-            <div class="flex-shrink-0">
+            <div class="shrink-0">
               <img
                 class="w-10 h-10"
                 :src="item.photo_url"
@@ -109,11 +126,11 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div
-              class="text-sm font-medium text-gray-900 dark:text-gray-300"
+              class="text-sm font-medium text-foreground dark:text-foreground"
             >
               {{ item.name }}
             </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">
+            <div class="text-sm text-foreground dark:text-foreground">
               {{ item.shortname }}
             </div>
           </td>
@@ -125,12 +142,12 @@ const headerRow = [
           <td class="px-4">
             <Icon
               v-if="item.is_sticky"
-              class="text-green-500"
+              class="text-success"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-destructive"
               name="cross-circle"
             />
           </td>
@@ -149,33 +166,47 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
-              v-if="can('update badges')"
-              v-tippy
-              as="a"
-              :href="route('admin.badge.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit Badge')"
-            >
-              <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
-              v-if="can('delete badges')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this Badge permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.badge.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
-              :title="__('Delete Badge')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            <ButtonGroup>
+              <Button
+                v-if="can('update badges')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.badge.edit', item.id)"
+                  :title="__('Edit Badge')"
+                >
+                  <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete badges')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this Badge permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.badge.delete', item.id)"
+                  :title="__('Delete Badge')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

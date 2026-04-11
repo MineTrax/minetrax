@@ -77,6 +77,11 @@ class CalculatePlayersScoreJob implements ShouldQueue
             $score = max(($player['play_time'] / 1200 / 3) + ($player['total_mob_kills'] + $player['total_player_kills'] + ($player['pvp_damage_given'] / 10)) + ($player['total_mined'] / 9 / 64) - $player['total_deaths'], 0);
         }
 
+        // Max value of score can be MySQL INT_MAX (2147483647). Remove this if score is changed to bigint.
+        if ($score && $score > 2147483647) {
+            $score = 2147483647;
+        }
+
         return $score ?? 0;
     }
 }

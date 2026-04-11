@@ -1,4 +1,4 @@
-<template />
+<template><div /></template>
 
 <script>
 
@@ -17,7 +17,7 @@ export default {
     watch: {
         toast: {
             deep: true,
-            handler(o, n) {
+            handler() {
                 this.fireToast();
             }
         }
@@ -29,12 +29,12 @@ export default {
 
     methods: {
         fireToast() {
-            if (!this.toast || sessionStorage.getItem('toast-' + this.popstate)) {
+            if (!this.toast || sessionStorage.getItem("toast-" + this.popstate)) {
                 return;
             }
 
             this.milliseconds = this.toast.milliseconds ?? 3000;
-            const icon = this.toast.type === 'danger' ? 'error' : this.toast.type;
+            const icon = this.toast.type === "danger" ? "error" : this.toast.type;
             Toast.fire({
                 icon: icon,
                 title: this.toast.title,
@@ -42,7 +42,7 @@ export default {
                 timer: this.milliseconds,
             });
 
-            sessionStorage.setItem('toast-' + this.popstate, '1');
+            sessionStorage.setItem("toast-" + this.popstate, "1");
         }
     }
 };

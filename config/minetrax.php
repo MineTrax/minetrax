@@ -255,6 +255,14 @@ return [
             'key' => 'route-punishments',
             'authenticated' => false,
         ],
+        [
+            'type' => 'route',
+            'name' => 'Posts',
+            'title' => 'Posts',
+            'route' => 'post.index',
+            'key' => 'route-posts',
+            'authenticated' => false,
+        ],
     ],
 
     /*

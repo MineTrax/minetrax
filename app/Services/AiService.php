@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use EchoLabs\Prism\Prism;
-use EchoLabs\Prism\Enums\Provider;
-use EchoLabs\Prism\Text\Generator;
-use EchoLabs\Prism\Text\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Prism\Prism\Enums\Provider;
+use Prism\Prism\Prism;
+use Prism\Prism\Text\Response;
 
 class AiService
 {

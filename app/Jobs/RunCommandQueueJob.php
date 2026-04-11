@@ -29,7 +29,7 @@ class RunCommandQueueJob implements ShouldQueue
      */
     public function handle(): void
     {
-        if (! in_array($this->commandQueue->status->value, [
+        if (! in_array($this->commandQueue->status, [
             CommandQueueStatus::PENDING,
             CommandQueueStatus::FAILED,
             CommandQueueStatus::DEFERRED,

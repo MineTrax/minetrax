@@ -27,7 +27,8 @@ class UpdateStatsOnMinecraftPlayerEvent implements ShouldQueue
         $minecraftPlayerEvent = $event->minecraftPlayerEvent;
         $serverId = $event->serverId;
         $rawRequest = $event->rawRequest;
-        $sessionEndedAt = array_key_exists('session_ended_at', $rawRequest) && $rawRequest['session_ended_at'] ? Carbon::createFromTimestampMs($rawRequest['session_ended_at']) : null;
+        $timezone = config('app.timezone');
+        $sessionEndedAt = array_key_exists('session_ended_at', $rawRequest) && $rawRequest['session_ended_at'] ? Carbon::createFromTimestampMs($rawRequest['session_ended_at'], $timezone) : null;
         $banCountIncrement = array_key_exists('is_banned', $rawRequest) && $rawRequest['is_banned'] ? 1 : 0;
         $kickCountIncrement = array_key_exists('is_kicked', $rawRequest) && $rawRequest['is_kicked'] ? 1 : 0;
 

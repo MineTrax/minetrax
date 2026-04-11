@@ -1,4 +1,4 @@
-import {usePage} from '@inertiajs/vue3';
+import {usePage} from "@inertiajs/vue3";
 
 export function useAuthorizable() {
     const page = usePage();

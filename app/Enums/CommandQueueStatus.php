@@ -2,27 +2,14 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
+use App\Enums\Concerns\HasKeyValueSerialization;
 
-final class CommandQueueStatus extends Enum
+enum CommandQueueStatus: string implements HasKeyValueSerialization
 {
-    const PENDING = 'pending';
-
-    const RUNNING = 'running';
-
-    const FAILED = 'failed';
-
-    const CANCELLED = 'cancelled';
-
-    const DEFERRED = 'deferred';
-
-    const COMPLETED = 'completed';
-
-    public function toArray(): mixed
-    {
-        return [
-            'key' => $this->key,
-            'value' => $this->value,
-        ];
-    }
+    case PENDING = 'pending';
+    case RUNNING = 'running';
+    case FAILED = 'failed';
+    case CANCELLED = 'cancelled';
+    case DEFERRED = 'deferred';
+    case COMPLETED = 'completed';
 }

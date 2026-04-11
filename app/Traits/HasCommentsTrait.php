@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Contracts\Commentator;
-use App\Enums\CommentType;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,12 +13,12 @@ trait HasCommentsTrait
         return $this->morphMany(Comment::class, 'commentable');
     }
 
-    public function comment(string $comment, $type = CommentType::DEFAULT)
+    public function comment(string $comment, $type = null)
     {
         return $this->commentAsUser(auth()->user(), $comment, $type);
     }
 
-    public function commentAsUser(?Model $user, string $comment, $type = CommentType::DEFAULT)
+    public function commentAsUser(?Model $user, string $comment, $type = null)
     {
         $commentClass = Comment::class;
 

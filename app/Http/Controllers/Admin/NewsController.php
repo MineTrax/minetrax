@@ -7,13 +7,15 @@ use App\Http\Requests\CreateNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
 use App\Queries\Filters\FilterMultipleFields;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
+use Inertia\Response;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class NewsController extends Controller
 {
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
         $this->authorize('viewAny', News::class);
 
@@ -55,14 +57,14 @@ class NewsController extends Controller
         ]);
     }
 
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
         $this->authorize('create', News::class);
 
         return Inertia::render('Admin/News/CreateNews');
     }
 
-    public function store(CreateNewsRequest $request): \Illuminate\Http\RedirectResponse
+    public function store(CreateNewsRequest $request): RedirectResponse
     {
         $news = News::create([
             'title' => $request->title,
@@ -80,20 +82,11 @@ class NewsController extends Controller
             $news->addMediaFromRequest('photo')->toMediaCollection('news');
         }
 
-        return redirect()->route('admin.news.show', $news->id)
+        return redirect()->route('news.show', $news->slug)
             ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('News is created successfully')]]);
     }
 
-    public function show(News $news): \Inertia\Response
-    {
-        $this->authorize('view', $news);
-
-        return Inertia::render('Admin/News/ShowNews', [
-            'news' => $news->append(['body_html', 'time_to_read'])->load('creator:id,name,username,profile_photo_path'),
-        ]);
-    }
-
-    public function edit(News $news): \Inertia\Response
+    public function edit(News $news): Response
     {
         $this->authorize('update', $news);
 
@@ -102,7 +95,7 @@ class NewsController extends Controller
         ]);
     }
 
-    public function update(UpdateNewsRequest $request, News $news): \Illuminate\Http\RedirectResponse
+    public function update(UpdateNewsRequest $request, News $news): RedirectResponse
     {
         $this->authorize('update', $news);
 
@@ -126,12 +119,11 @@ class NewsController extends Controller
             $news->addMediaFromRequest('photo')->toMediaCollection('news');
         }
 
-        // Redirect to listing page
-        return redirect()->route('admin.news.show', $news->id)
+        return redirect()->route('admin.news.edit', $news->id)
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('News updated successfully')]]);
     }
 
-    public function destroy(News $news): \Illuminate\Http\RedirectResponse
+    public function destroy(News $news): RedirectResponse
     {
         $this->authorize('delete', $news);
 

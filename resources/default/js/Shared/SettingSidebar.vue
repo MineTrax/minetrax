@@ -1,7 +1,7 @@
 <template>
-  <div class="w-64 flex-shrink-0 pr-10">
+  <div class="w-64 shrink-0 pr-10">
     <div class="flex flex-col">
-      <div class="uppercase mb-2 text-xs tracking-wide text-gray-600 dark:text-gray-400 font-bold">
+      <div class="uppercase mb-2 text-xs tracking-wide text-foreground dark:text-foreground font-bold">
         {{ __("SETTINGS") }}
       </div>
 
@@ -40,10 +40,10 @@
 </template>
 
 <script>
-import SettingLink from '@/Jetstream/SettingLink.vue';
+import SettingLink from "@/Jetstream/SettingLink.vue";
 
 export default {
-    name: 'SettingSidebar',
+    name: "SettingSidebar",
     components: {
         SettingLink
     }

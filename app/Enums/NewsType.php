@@ -2,26 +2,11 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
+use App\Enums\Concerns\HasKeyValueSerialization;
 
-/**
- * @method static static General()
- * @method static static Announcement()
- * @method static static Event()
- */
-final class NewsType extends Enum
+enum NewsType: int implements HasKeyValueSerialization
 {
-    const General = 0;
-
-    const Announcement = 1;
-
-    const Event = 2;
-
-    public function toArray(): mixed
-    {
-        return [
-            'key' => $this->key,
-            'value' => $this->value,
-        ];
-    }
+    case General = 0;
+    case Announcement = 1;
+    case Event = 2;
 }

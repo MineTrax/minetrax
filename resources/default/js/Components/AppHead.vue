@@ -7,9 +7,9 @@
 </template>
 
 <script setup>
-import { Head, usePage } from '@inertiajs/vue3';
-import {useTranslations} from '@/Composables/useTranslations';
-import { computed } from 'vue';
+import { Head, usePage } from "@inertiajs/vue3";
+import {useTranslations} from "@/Composables/useTranslations";
+import { computed } from "vue";
 const { __ } = useTranslations();
 
 const props = defineProps({
@@ -21,11 +21,11 @@ const generatedTitle = computed(() => {
         return props.title;
     }
 
-    return window._seo?.titleHome ?? __('Minecraft Servers & Players Tracking');
+    return window._seo?.titleHome ?? __("Minecraft Servers & Players Tracking");
 });
 
 const generatedTitleSuffix = computed(() => {
-    return window._seo?.titleSuffix ?? ' - ' + usePage().props.appName;
+    return window._seo?.titleSuffix ?? " - " + usePage().props.appName;
 });
 
 </script>

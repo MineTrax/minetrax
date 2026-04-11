@@ -1,26 +1,29 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
-import { useAuthorizable } from '@/Composables/useAuthorizable';
+import AppHead from"@/Components/AppHead.vue";
+import { useHelpers } from"@/Composables/useHelpers";
+import { useTranslations } from"@/Composables/useTranslations";
+import AdminLayout from"@/Layouts/AdminLayout.vue";
+import DataTable from"@/Components/DataTable/DataTable.vue";
+import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
+import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
+import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
+import { useAuthorizable } from"@/Composables/useAuthorizable";
 import {
     EyeIcon,
     TrashIcon,
     ArchiveBoxArrowDownIcon,
     ArrowUturnUpIcon,
-} from '@heroicons/vue/24/outline';
-import XSelect from '@/Components/Form/XSelect.vue';
-import { computed, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { pickBy } from 'lodash';
+} from"@heroicons/vue/24/outline";
+import XSelect from"@/Components/Form/XSelect.vue";
+import { ref, watch } from"vue";
+import { router, Link } from"@inertiajs/vue3";
+import { pickBy } from"lodash";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString } =
-    useHelpers();
+ useHelpers();
 
 const props = defineProps({
     forms: {
@@ -40,55 +43,55 @@ const props = defineProps({
 
 const headerRow = [
     {
-        key: 'id',
-        label: __('ID'),
+        key:"id",
+        label: __("ID"),
         sortable: true,
-        class: 'text-left w-[5%]',
+        class:"text-left w-[5%]",
         filterable: {
-            key: 'id',
-            type: 'text',
+            key:"id",
+            type:"text",
         }
     },
     {
-        key: 'country_id',
-        label: __('Country'),
+        key:"country_id",
+        label: __("Country"),
         sortable: true,
-        class: 'text-left w-1/12',
+        class:"text-left w-1/12",
     },
     {
-        key: 'user_id',
+        key:"user_id",
         sortable: true,
-        label: __('User'),
-        class: 'w-3/12',
+        label: __("User"),
+        class:"w-3/12",
         filterable: {
-            key: 'user.name',
-            type: 'text',
+            key:"user.name",
+            type:"text",
         },
     },
     {
-        key: 'custom_form_id',
-        label: __('Custom Form'),
+        key:"custom_form_id",
+        label: __("Custom Form"),
         sortable: true,
     },
     {
-        key: 'created_at',
-        label: __('Created At'),
-        class: 'text-right w-1/12 whitespace-nowrap',
+        key:"created_at",
+        label: __("Created At"),
+        class:"text-right w-1/12 whitespace-nowrap",
         sortable: true,
     },
     {
-        key: 'actions',
-        label: __('Actions'),
+        key:"actions",
+        label: __("Actions"),
         sortable: false,
-        class: 'w-1/12 text-right',
+        class:"w-1/12 text-right",
     },
 ];
 
 if (props.archived) {
     headerRow.splice(5, 0, {
-        key: 'deleted_at',
-        label: __('Archived At'),
-        class: 'text-right w-1/12 whitespace-nowrap',
+        key:"deleted_at",
+        label: __("Archived At"),
+        class:"text-right w-1/12 whitespace-nowrap",
         sortable: true,
     });
 }
@@ -98,17 +101,6 @@ let selectedForms = ref(
     props.filters?.forms?.length ? props.filters?.forms[0] : null
 );
 
-const showing = computed(() => {
-    if (props.filters.forms && props.filters.forms.length > 0) {
-        return props.filters.forms
-            .map((id) => {
-                return props.forms[id];
-            })
-            .join(', ');
-    }
-    return null;
-});
-
 watch(selectedForms, (newSelectedForms) => {
     const query = {
         forms: newSelectedForms ? [newSelectedForms] : null,
@@ -116,18 +108,35 @@ watch(selectedForms, (newSelectedForms) => {
 
     router.get(route(route().current()), pickBy(query));
 });
+
+const breadcrumbItems = [
+    {
+        text: __("Admin"),
+        current: false,
+    },
+    {
+        text: __("Custom Forms"),
+        url: route("admin.custom-form.index"),
+        current: false,
+    },
+    {
+        text: props.archived ? __("Archived Submissions") : __("Submissions"),
+        current: true,
+    }
+];
 </script>
 
 <template>
   <AdminLayout>
     <AppHead :title="archived ? __('Archived Custom Form Submissions') : __('Custom Form Submissions')" />
 
-    <div class="p-4 mx-auto space-y-4 px-10">
+    <div class="px-10 py-8 mx-auto space-y-4">
       <div class="flex items-center justify-between">
-        <h3 class="text-xl font-extrabold text-gray-800 dark:text-gray-200">
-          {{ archived ? __("Archived Form Submissions:") : __("Form Submissions:") }}
-          {{ showing ?? __("All Forms") }}
-        </h3>
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
 
         <x-select
           id="selectForms"
@@ -135,31 +144,32 @@ watch(selectedForms, (newSelectedForms) => {
           name="selectForms"
           :select-list="forms"
           :placeholder="__('All Forms')"
-          class="w-48 max-w-48 dark:border dark:rounded dark:border-gray-700"
+          class="w-48 max-w-48 border rounded bg-card"
         />
       </div>
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-card rounded-lg shadow"
           :header="headerRow"
           :data="submissions"
           :filters="filters"
+          :row-href="(item) => route('admin.custom-form-submission.show', item.id)"
         >
           <template #default="{ item }">
             <td
-              class="text-sm px-4 font-medium text-left text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="text-sm px-4 font-medium text-left text-foreground whitespace-nowrap dark:text-foreground"
             >
               {{ item.id }}
             </td>
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
             >
               <div class="flex items-center">
                 <div
                   v-if="item.country"
                   v-tippy
-                  class="flex-shrink-0 h-10 w-10 focus:outline-none"
+                  class="shrink-0 h-10 w-10 focus:outline-hidden"
                   :content="item.country.name"
                 >
                   <img
@@ -172,12 +182,12 @@ watch(selectedForms, (newSelectedForms) => {
             </td>
 
             <td class="px-4">
-              <InertiaLink
+              <Link
                 v-if="item.user"
                 :href="route('user.public.get', item.user.username)"
                 class="flex items-center"
               >
-                <div class="flex-shrink-0 h-10 w-10 mr-2">
+                <div class="shrink-0 h-10 w-10 mr-2">
                   <img
                     class="h-10 w-10 rounded-full"
                     :src="item.user.profile_photo_url"
@@ -186,19 +196,19 @@ watch(selectedForms, (newSelectedForms) => {
                 </div>
                 <div class="flex-col">
                   <div
-                    class="text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap truncate"
+                    class="text-sm font-semibold text-foreground dark:text-foreground whitespace-nowrap truncate"
                     :style="[item.user.roles[0].color ? {color: item.user.roles[0].color} : null]"
                   >
                     {{ item.user.name }}
                   </div>
-                  <div class="text-sm text-gray-500">
+                  <div class="text-sm text-foreground">
                     @{{ item.user.username }}
                   </div>
                 </div>
-              </InertiaLink>
+              </Link>
               <div
                 v-else
-                class="flex items-center italic text-sm text-gray-500 dark:text-gray-400"
+                class="flex items-center italic text-sm text-foreground dark:text-foreground"
               >
                 {{ __("Anonymous") }}
               </div>
@@ -226,60 +236,88 @@ watch(selectedForms, (newSelectedForms) => {
             </DtRowItem>
 
             <td
-              class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+              class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
             >
-              <InertiaLink
-                as="a"
-                :href="route('admin.custom-form-submission.show', item.id)"
-                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
-              >
-                <EyeIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
-                v-if="can('archive custom_form_submissions') && !archived"
-                v-confirm="{
-                  message:
-                    'Archive this Custom Form Submission? It will move to archive section.',
-                }"
-                v-tippy
-                as="button"
-                method="POST"
-                :href="route('admin.custom-form-submission.archive', item.id)"
-                class="inline-flex items-center justify-center text-orange-500 hover:text-orange-900 focus:outline-none"
-                :title="__('Archive Submission')"
-              >
-                <ArchiveBoxArrowDownIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
-                v-if="can('delete custom_form_submissions') && archived"
-                v-confirm="{
-                  message:
-                    'Restore this Custom Form Submission? It will move back to submissions list.',
-                }"
-                v-tippy
-                as="button"
-                method="POST"
-                :href="route('admin.custom-form-submission.restore', item.id)"
-                class="inline-flex items-center justify-center text-green-500 hover:text-green-900 focus:outline-none"
-                :title="__('Restore Submission')"
-              >
-                <ArrowUturnUpIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
-              <InertiaLink
-                v-if="can('delete custom_form_submissions')"
-                v-confirm="{
-                  message:
-                    'Delete this Custom Form Submission? This action cannot be undone.',
-                }"
-                v-tippy
-                as="button"
-                method="DELETE"
-                :href="route('admin.custom-form-submission.delete', item.id)"
-                class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
-                :title="__('Delete Submission')"
-              >
-                <TrashIcon class="inline-block w-5 h-5" />
-              </InertiaLink>
+              <ButtonGroup>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-primary hover:text-primary"
+                >
+                  <Link
+                    v-tippy
+                    as="a"
+                    :href="route('admin.custom-form-submission.show', item.id)"
+                    :title="__('View Submission')"
+                  >
+                    <EyeIcon />
+                  </Link>
+                </Button>
+                <Button
+                  v-if="can('archive custom_form_submissions') && !archived"
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-orange-500 hover:text-orange-700"
+                >
+                  <Link
+                    v-confirm="{
+                      message:
+                        'Archive this Custom Form Submission? It will move to archive section.',
+                    }"
+                    v-tippy
+                    as="button"
+                    method="POST"
+                    :href="route('admin.custom-form-submission.archive', item.id)"
+                    :title="__('Archive Submission')"
+                  >
+                    <ArchiveBoxArrowDownIcon />
+                  </Link>
+                </Button>
+                <Button
+                  v-if="can('delete custom_form_submissions') && archived"
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-success hover:text-success"
+                >
+                  <Link
+                    v-confirm="{
+                      message:
+                        'Restore this Custom Form Submission? It will move back to submissions list.',
+                    }"
+                    v-tippy
+                    as="button"
+                    method="POST"
+                    :href="route('admin.custom-form-submission.restore', item.id)"
+                    :title="__('Restore Submission')"
+                  >
+                    <ArrowUturnUpIcon />
+                  </Link>
+                </Button>
+                <Button
+                  v-if="can('delete custom_form_submissions')"
+                  variant="outline"
+                  size="icon"
+                  as-child
+                  class="text-destructive hover:text-destructive"
+                >
+                  <Link
+                    v-confirm="{
+                      message:
+                        'Delete this Custom Form Submission? This action cannot be undone.',
+                    }"
+                    v-tippy
+                    as="button"
+                    method="DELETE"
+                    :href="route('admin.custom-form-submission.delete', item.id)"
+                    :title="__('Delete Submission')"
+                  >
+                    <TrashIcon />
+                  </Link>
+                </Button>
+              </ButtonGroup>
             </td>
           </template>
         </DataTable>

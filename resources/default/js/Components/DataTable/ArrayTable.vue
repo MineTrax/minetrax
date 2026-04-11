@@ -1,8 +1,9 @@
 <script setup>
-import Icon from '@/Components/Icon.vue';
-import axios from 'axios';
-import { ref, computed, onMounted } from 'vue';
-import LoadingSpinner from '../LoadingSpinner.vue';
+import Icon from "@/Components/Icon.vue";
+import { router } from "@inertiajs/vue3";
+import axios from "axios";
+import { computed, onMounted, ref } from "vue";
+import LoadingSpinner from "../LoadingSpinner.vue";
 
 const props = defineProps({
     data: {
@@ -19,8 +20,28 @@ const props = defineProps({
     header: {
         required: true,
         type: Array,
-    }
+    },
+    rowHref: {
+        required: false,
+        type: Function,
+        default: null,
+    },
 });
+
+function onRowClick(event, item) {
+    if (!props.rowHref) return;
+    const href = props.rowHref(item);
+    if (!href) return;
+
+    const target = event.target.closest("a, button, input, select, textarea, [role='button'], [role='menuitem'], .multiselect");
+    if (target) return;
+
+    if (event.metaKey || event.ctrlKey) {
+        window.open(href, "_blank");
+    } else {
+        router.visit(href);
+    }
+}
 
 const loading = ref(true);
 const finalData = ref([]);
@@ -29,13 +50,15 @@ const finalData = ref([]);
 onMounted(() => {
     if (props.url) {
         loading.value = true;
-        axios.get(props.url)
-            .then(response => {
+        axios
+            .get(props.url)
+            .then((response) => {
                 finalData.value = response.data.data;
             })
-            .catch(error => {
-                console.error('Error fetching data', error);
-            }).finally(() => {
+            .catch((error) => {
+                console.error("Error fetching data", error);
+            })
+            .finally(() => {
                 loading.value = false;
             });
     } else {
@@ -44,8 +67,8 @@ onMounted(() => {
 });
 
 // Local state to handle sorting
-const sortKey = ref('');
-const sortDirection = ref('');
+const sortKey = ref("");
+const sortDirection = ref("");
 
 const sortedData = computed(() => {
     let sorted = [...finalData.value];
@@ -62,14 +85,14 @@ const sortedData = computed(() => {
             if (bValue === undefined) return -1;
 
             let result = 0;
-            if (typeof aValue === 'string') {
+            if (typeof aValue === "string") {
                 result = aValue.localeCompare(bValue);
             } else {
                 if (aValue < bValue) result = -1;
                 if (aValue > bValue) result = 1;
             }
 
-            return sortDirection.value === 'desc' ? -result : result;
+            return sortDirection.value === "desc" ? -result : result;
         });
     }
 
@@ -78,36 +101,36 @@ const sortedData = computed(() => {
 
 // Helper function to get nested object values
 function getNestedValue(obj, key) {
-    return key.split('.').reduce((o, k) => (o || {})[k], obj);
+    return key.split(".").reduce((o, k) => (o || {})[k], obj);
 }
 
 // Sorting logic
 function toggleSorting(key) {
     if (sortKey.value === key) {
-        if (sortDirection.value === 'asc') {
-            sortDirection.value = 'desc';
+        if (sortDirection.value === "asc") {
+            sortDirection.value = "desc";
         } else {
-            sortKey.value = '';
-            sortDirection.value = '';
+            sortKey.value = "";
+            sortDirection.value = "";
         }
     } else {
         sortKey.value = key;
-        sortDirection.value = 'asc';
+        sortDirection.value = "asc";
     }
 }
 
 // Computed properties for sorting icons and states
 const sortedField = computed(() => {
-    return sortKey.value ? sortKey.value.replace('-', '') : '';
+    return sortKey.value ? sortKey.value.replace("-", "") : "";
 });
 
 const sortedDir = computed(() => {
-    return sortDirection.value === 'desc' ? 'desc' : 'asc';
+    return sortDirection.value === "desc" ? "desc" : "asc";
 });
 </script>
 
 <template>
-  <!-- DataTable starts -->
+  <!-- ArrayTable starts -->
   <div class="flex flex-col">
     <div
       id="tableSection"
@@ -116,28 +139,46 @@ const sortedDir = computed(() => {
       <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
           <div class="overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead class="bg-gray-100 dark:bg-gray-700">
+            <table class="min-w-full divide-y divide-border">
+              <thead class="bg-muted">
                 <tr>
                   <slot name="header">
                     <th
                       v-for="th in header"
                       :key="th.key"
                       scope="col"
-                      class="px-4 py-3 text-xs font-semibold text-left text-gray-400 dark:text-gray-300"
-                      :class="[ th.class ? th.class : '' ]"
+                      class="px-4 py-3 text-xs font-semibold text-left text-card-foreground/70"
+                      :class="[th.class ? th.class : '']"
                     >
                       <div class="inline-flex items-center">
                         <div
                           class="inline-flex items-center uppercase cursor-pointer"
-                          @click="th.sortable ? toggleSorting(th.key) : null"
+                          @click="
+                            th.sortable
+                              ? toggleSorting(
+                                th.key
+                              )
+                              : null
+                          "
                         >
                           {{ th.label }}
                           <Icon
                             v-if="th.sortable"
-                            :name="sortedField === th.key ? (sortedDir === 'asc' ? 'sort-up' : 'sort-down') : 'sort-updown'"
-                            class="inline-block w-3 h-3 ml-1 text-gray-400 dark:text-gray-300"
-                            :class="[ sortedField === th.key ? 'text-light-blue-500 dark:text-light-blue-400' : '' ]"
+                            :name="sortedField ===
+                              th.key
+                              ? sortedDir ===
+                                'asc'
+                                ? 'sort-up'
+                                : 'sort-down'
+                              : 'sort-updown'
+                            "
+                            class="inline-block w-3 h-3 ml-1 text-card-foreground/70"
+                            :class="[
+                              sortedField ===
+                                th.key
+                                ? 'text-primary'
+                                : '',
+                            ]"
                           />
                         </div>
                       </div>
@@ -147,11 +188,13 @@ const sortedDir = computed(() => {
               </thead>
               <tbody
                 v-if="!loading"
-                class="divide-y divide-gray-200 dark:divide-gray-700"
+                class="divide-y divide-border/50"
               >
                 <tr
                   v-for="item in sortedData"
                   :key="item.id"
+                  :class="rowHref ? 'cursor-pointer transition-colors hover:bg-muted/50' : ''"
+                  @click="rowHref ? onRowClick($event, item) : null"
                 >
                   <slot
                     :item="item"
@@ -160,7 +203,7 @@ const sortedDir = computed(() => {
                     <td
                       v-for="column in header"
                       :key="column.key"
-                      class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+                      class="px-4 py-3 text-sm font-medium text-card-foreground"
                     >
                       {{ item[column.key] }}
                     </td>
@@ -170,20 +213,18 @@ const sortedDir = computed(() => {
                 <tr v-if="sortedData.length <= 0">
                   <td
                     :colspan="header.length"
-                    class="px-4 py-3 text-sm font-medium text-center text-gray-500 dark:text-gray-300"
+                    class="px-4 py-3 text-sm font-medium text-center text-card-foreground/70"
                   >
                     {{ __("No data found") }}
                   </td>
                 </tr>
               </tbody>
 
-              <tfoot
-                v-if="loading"
-              >
+              <tfoot v-if="loading">
                 <tr>
                   <td
                     :colspan="header.length"
-                    class="px-4 py-3 text-sm font-medium text-center text-gray-500 dark:text-gray-300"
+                    class="px-4 py-3 text-sm font-medium text-center text-card-foreground/70"
                   >
                     <div
                       v-if="loading"
@@ -203,5 +244,5 @@ const sortedDir = computed(() => {
       </div>
     </div>
   </div>
-  <!-- DataTable ends-->
+  <!-- ArrayTable ends-->
 </template>

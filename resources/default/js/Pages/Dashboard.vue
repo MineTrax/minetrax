@@ -2,7 +2,7 @@
   <app-layout>
     <app-head />
 
-    <hero-section
+    <HeroSection
       v-if="themeSettings.enable_home_hero_section"
       :settings="themeSettings"
     />
@@ -17,41 +17,42 @@
             generalSettings.enable_discordbox ||
             generalSettings.enable_donation_box
         "
-        class="w-full order-1 md:order-none md:w-1/4 space-y-4 flex-shrink-0"
+        class="w-full order-2 md:order-none md:w-1/4 space-y-4 shrink-0"
       >
-        <online-players-box v-if="generalSettings.enable_mcserver_onlineplayersbox" />
-        <voting-sites-box
+        <OnlinePlayersBox v-if="generalSettings.enable_mcserver_onlineplayersbox" />
+        <VotingSitesBox
           :votingsites="generalSettings.voteforserverbox_content"
           :enabled="generalSettings.enable_voteforserverbox"
         />
-        <poll-box :poll="latestPoll" />
-        <did-you-know-box :enabled="generalSettings.enable_didyouknowbox" />
-        <discord-server-box
+        <PollBox :poll="latestPoll" />
+        <DidYouKnowBox :enabled="generalSettings.enable_didyouknowbox" />
+        <DiscordServerBox
           :enabled="generalSettings.enable_discordbox"
           :server="generalSettings.discord_server_id"
+          :invite="generalSettings.discord_invite_url"
         />
-        <donation-box />
+        <DonationBox />
       </div>
 
       <!-- Middle Column -->
-      <div class="w-full order-3 md:order-none md:w-2/4 space-y-4 flex-shrink-0 flex-grow">
+      <div class="w-full order-1 md:order-none md:w-2/4 space-y-4 shrink-0 grow">
         <VerifyYourEmailBox v-if="$page.props.jetstream.hasEmailVerification && $page.props.auth.user && $page.props.auth.user.email_verified_at === null" />
-        <version-check v-if="$page.props.auth.user && isStaff($page.props.auth.user)" />
-        <welcome-box
+        <VersionCheck v-if="$page.props.auth.user && isStaff($page.props.auth.user)" />
+        <WelcomeBox
           v-if="generalSettings.enable_welcomebox"
           :html-data="welcomeBoxContentHtml"
         />
-        <ingame-chat-box
+
+        <LatestPinnedNews :newslist="pinnedNewsList" />
+        <IngameChatBox
           :default-server-id="chatDefaultServerId"
           :server-list="chatServerList"
         />
-        <top-players-list-box
+        <TopPlayersListBox
           :enabled="generalSettings.enable_topplayersbox"
           :players="top10Players"
           :title="__('Top 10 Players')"
         />
-        <latest-pinned-news :newslist="pinnedNewsList" />
-        <post-list-box v-if="generalSettings.enable_status_feed" />
       </div>
 
       <!-- Right Column -->
@@ -64,20 +65,20 @@
             generalSettings.enable_newuserbox ||
             generalSettings.enable_socialbox
         "
-        class="w-full order-2 md:order-none md:w-1/4 space-y-4 flex-shrink-0"
+        class="w-full order-3 md:order-none md:w-1/4 space-y-4 shrink-0"
       >
-        <server-status-box />
-        <shout-box />
-        <news-box :newslist="newslist" />
-        <online-users-box
+        <ServerStatusBox />
+        <ShoutBox />
+        <NewsBox :newslist="newslist" />
+        <OnlineUsersBox
           :users="onlineUsers"
           :enabled="generalSettings.enable_onlineuserbox"
         />
-        <newest-user-box
+        <NewestUserBox
           :user="newestUser"
           :enabled="generalSettings.enable_newuserbox"
         />
-        <social-channel-box
+        <SocialChannelBox
           :enabled="generalSettings.enable_socialbox"
           :show-title="true"
           :twitter="generalSettings.twitter_url"
@@ -101,28 +102,27 @@
 
 <script>
 // Script section remains unchanged
-import AppLayout from '@/Layouts/AppLayout.vue';
-import NewsBox from '@/Shared/NewsBox.vue';
-import ShoutBox from '@/Shared/ShoutBox.vue';
-import DiscordServerBox from '@/Shared/DiscordServerBox.vue';
-import NewestUserBox from '@/Shared/NewestUserBox.vue';
-import VotingSitesBox from '@/Shared/VotingSitesBox.vue';
-import WelcomeBox from '@/Shared/WelcomeBox.vue';
-import PostListBox from '@/Shared/PostListBox.vue';
-import LatestPinnedNews from '@/Shared/LatestPinnedNews.vue';
-import SocialChannelBox from '@/Shared/SocialChannelBox.vue';
-import DidYouKnowBox from '@/Shared/DidYouKnowBox.vue';
-import VersionCheck from '@/Shared/VersionCheck.vue';
-import OnlinePlayersBox from '@/Shared/OnlinePlayersBox.vue';
-import IngameChatBox from '@/Shared/IngameChatBox.vue';
-import ServerStatusBox from '@/Shared/ServerStatusBox.vue';
-import PollBox from '@/Shared/PollBox.vue';
-import DonationBox from '@/Shared/DonationBox.vue';
-import OnlineUsersBox from '@/Shared/OnlineUsersBox.vue';
-import TopPlayersListBox from '@/Shared/TopPlayersListBox.vue';
-import VerifyYourEmailBox from '@/Shared/VerifyYourEmailBox.vue';
-import HeroSection from '@/Shared/HeroSection.vue';
-import {useAuthorizable} from '@/Composables/useAuthorizable';
+import AppLayout from "@/Layouts/AppLayout.vue";
+import NewsBox from "@/Shared/NewsBox.vue";
+import ShoutBox from "@/Shared/ShoutBox.vue";
+import DiscordServerBox from "@/Shared/DiscordServerBox.vue";
+import NewestUserBox from "@/Shared/NewestUserBox.vue";
+import VotingSitesBox from "@/Shared/VotingSitesBox.vue";
+import WelcomeBox from "@/Shared/WelcomeBox.vue";
+import LatestPinnedNews from "@/Shared/LatestPinnedNews.vue";
+import SocialChannelBox from "@/Shared/SocialChannelBox.vue";
+import DidYouKnowBox from "@/Shared/DidYouKnowBox.vue";
+import VersionCheck from "@/Shared/VersionCheck.vue";
+import OnlinePlayersBox from "@/Shared/OnlinePlayersBox.vue";
+import IngameChatBox from "@/Shared/IngameChatBox.vue";
+import ServerStatusBox from "@/Shared/ServerStatusBox.vue";
+import PollBox from "@/Shared/PollBox.vue";
+import DonationBox from "@/Shared/DonationBox.vue";
+import OnlineUsersBox from "@/Shared/OnlineUsersBox.vue";
+import TopPlayersListBox from "@/Shared/TopPlayersListBox.vue";
+import VerifyYourEmailBox from "@/Shared/VerifyYourEmailBox.vue";
+import HeroSection from "@/Shared/HeroSection.vue";
+import {useAuthorizable} from "@/Composables/useAuthorizable";
 
 export default {
     components: {
@@ -138,7 +138,6 @@ export default {
         DidYouKnowBox,
         VersionCheck,
         SocialChannelBox,
-        PostListBox,
         WelcomeBox,
         NewsBox,
         AppLayout,

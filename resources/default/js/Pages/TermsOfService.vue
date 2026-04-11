@@ -1,6 +1,6 @@
 <template>
-  <div class="font-sans text-gray-900 antialiased">
-    <div class="pt-4 bg-gray-100">
+  <div class="font-sans text-foreground antialiased">
+    <div class="pt-4 bg-muted">
       <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0">
         <div>
           <jet-authentication-card-logo />
@@ -16,13 +16,13 @@
 </template>
 
 <script>
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue';
+import JetAuthenticationCardLogo from"@/Jetstream/AuthenticationCardLogo.vue";
 
 export default {
 
     components: {
         JetAuthenticationCardLogo,
     },
-    props: ['terms'],
+    props: ["terms"],
 };
 </script>

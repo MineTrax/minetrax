@@ -1,7 +1,7 @@
 <script setup>
-import Modal from './Modal.vue';
+import Modal from"./Modal.vue";
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(["close"]);
 
 defineProps({
     show: {
@@ -10,7 +10,7 @@ defineProps({
     },
     maxWidth: {
         type: String,
-        default: '2xl',
+        default:"2xl",
     },
     closeable: {
         type: Boolean,
@@ -19,7 +19,7 @@ defineProps({
 });
 
 const close = () => {
-    emit('close');
+    emit("close");
 };
 </script>
 
@@ -30,7 +30,7 @@ const close = () => {
     :closeable="closeable"
     @close="close"
   >
-    <div class="px-6 py-4 dark:bg-gray-800 dark:text-gray-300">
+    <div class="px-6 py-4 dark:bg-card dark:text-foreground">
       <div class="text-lg">
         <slot name="title" />
       </div>
@@ -40,7 +40,7 @@ const close = () => {
       </div>
     </div>
 
-    <div class="flex flex-row justify-end px-6 py-4 bg-gray-100 dark:bg-gray-800 text-right">
+    <div class="flex flex-row justify-end px-6 py-4 bg-muted dark:bg-card text-right">
       <slot name="footer" />
     </div>
   </Modal>

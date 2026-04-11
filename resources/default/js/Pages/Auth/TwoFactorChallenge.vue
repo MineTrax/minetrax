@@ -4,7 +4,7 @@
       :title="__('2FA Challenge confirmation')"
     />
     <jet-authentication-card>
-      <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+      <div class="mb-4 text-sm text-foreground dark:text-foreground">
         <template v-if="! recovery">
           {{ __("Please confirm access to your account by entering the authentication code provided by your authenticator application.") }}
         </template>
@@ -28,7 +28,7 @@
             v-model="form.code"
             type="text"
             inputmode="numeric"
-            class="mt-1 block w-full dark:text-gray-200"
+            class="mt-1 block w-full dark:text-foreground"
             autofocus
             autocomplete="one-time-code"
           />
@@ -44,7 +44,7 @@
             ref="recovery_code"
             v-model="form.recovery_code"
             type="text"
-            class="mt-1 block w-full dark:text-gray-200"
+            class="mt-1 block w-full dark:text-foreground"
             autocomplete="one-time-code"
           />
         </div>
@@ -52,7 +52,7 @@
         <div class="flex items-center justify-end mt-4">
           <button
             type="button"
-            class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer dark:text-gray-400 dark:hover:text-gray-200"
+            class="text-sm text-foreground hover:text-foreground underline cursor-pointer dark:text-foreground dark:hover:text-foreground"
             @click.prevent="toggleRecovery"
           >
             <template v-if="! recovery">
@@ -66,7 +66,7 @@
 
           <loading-button
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+            class="ml-4"
           >
             {{ __("Login") }}
           </loading-button>
@@ -77,13 +77,13 @@
 </template>
 
 <script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
-import JetInput from '@/Jetstream/Input.vue';
-import JetLabel from '@/Jetstream/Label.vue';
-import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { useForm } from '@inertiajs/vue3';
+import JetAuthenticationCard from"@/Jetstream/AuthenticationCard.vue";
+import JetInput from"@/Jetstream/Input.vue";
+import JetLabel from"@/Jetstream/Label.vue";
+import JetValidationErrors from"@/Jetstream/ValidationErrors.vue";
+import LoadingButton from"@/Components/LoadingButton.vue";
+import AppLayout from"@/Layouts/AppLayout.vue";
+import { useForm } from"@inertiajs/vue3";
 
 export default {
     components: {
@@ -99,8 +99,8 @@ export default {
         return {
             recovery: false,
             form: useForm({
-                code: '',
-                recovery_code: '',
+                code:"",
+                recovery_code:"",
             })
         };
     },
@@ -112,16 +112,16 @@ export default {
             this.$nextTick(() => {
                 if (this.recovery) {
                     this.$refs.recovery_code.focus();
-                    this.form.code = '';
+                    this.form.code ="";
                 } else {
                     this.$refs.code.focus();
-                    this.form.recovery_code = '';
+                    this.form.recovery_code ="";
                 }
             });
         },
 
         submit() {
-            this.form.post(this.route('two-factor.login'));
+            this.form.post(this.route("two-factor.login"));
         }
     }
 };

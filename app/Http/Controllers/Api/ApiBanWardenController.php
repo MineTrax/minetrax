@@ -61,9 +61,10 @@ class ApiBanWardenController extends ApiController
                 // Find player id
                 $player = $playerUuid ? Player::where('uuid', $punishment['uuid'])->first() : null;
 
-                $startAtDate = Carbon::createFromTimestampMs($punishment['start_at']);
-                $endAtDate = $punishment['end_at'] ? Carbon::createFromTimestampMs($punishment['end_at']) : null;
-                $removedAtDate = $punishment['removed_at'] ? Carbon::createFromTimestampMs($punishment['removed_at']) : null;
+                $timezone = config('app.timezone');
+                $startAtDate = Carbon::createFromTimestampMs($punishment['start_at'], $timezone);
+                $endAtDate = $punishment['end_at'] ? Carbon::createFromTimestampMs($punishment['end_at'], $timezone) : null;
+                $removedAtDate = $punishment['removed_at'] ? Carbon::createFromTimestampMs($punishment['removed_at'], $timezone) : null;
 
                 // Server ID for scope and origin
                 $serverScope = $punishment['server_scope'];
@@ -172,9 +173,10 @@ class ApiBanWardenController extends ApiController
             // Find player id
             $player = $playerUuid ? Player::where('uuid', $playerUuid)->first() : null;
 
-            $startAtDate = Carbon::createFromTimestampMs($punishment['start_at']);
-            $endAtDate = $punishment['end_at'] ? Carbon::createFromTimestampMs($punishment['end_at']) : null;
-            $removedAtDate = $punishment['removed_at'] ? Carbon::createFromTimestampMs($punishment['removed_at']) : null;
+            $timezone = config('app.timezone');
+            $startAtDate = Carbon::createFromTimestampMs($punishment['start_at'], $timezone);
+            $endAtDate = $punishment['end_at'] ? Carbon::createFromTimestampMs($punishment['end_at'], $timezone) : null;
+            $removedAtDate = $punishment['removed_at'] ? Carbon::createFromTimestampMs($punishment['removed_at'], $timezone) : null;
 
             // Server ID for scope and origin
             $serverScope = $punishment['server_scope'];

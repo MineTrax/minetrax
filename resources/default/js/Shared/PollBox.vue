@@ -1,34 +1,34 @@
 <template>
-  <div v-if="poll">
-    <div class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow">
-      <h3
-        v-if="!isListing"
-        class="font-extrabold text-gray-800 dark:text-gray-200"
-      >
-        {{ __("Latest Poll") }}
-      </h3>
-      <h3
-        v-if="isListing"
-        class="font-extrabold text-gray-800 dark:text-gray-200"
-      >
-        {{ __("Poll") }} {{ poll.id }}
-      </h3>
-      <div class="mt-3 text-gray-500 dark:text-gray-300">
+  <Card v-if="poll">
+    <CardContent class="p-4 sm:px-5 space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="font-extrabold text-card-foreground">
+          {{ isListing ? __("Poll") + ' #' + poll.id : __("Latest Poll") }}
+        </h3>
+      </div>
+
+      <div class="text-card-foreground">
         <poll
           v-bind="options"
           @addvote="addVote"
         />
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script>
-import Poll from '@/Components/Poll.vue';
+import Poll from "@/Components/Poll.vue";
+import {
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
 
 export default {
     components: {
-        Poll
+        Poll,
+        Card,
+        CardContent,
     },
     props: {
         poll: Object,
@@ -47,7 +47,7 @@ export default {
             if (this.poll.isComingSoon) {
                 return;
             }
-            this.$inertia.post(route('poll.vote', [this.poll.id, obj.value]), null, {
+            this.$inertia.post(route("poll.vote", [this.poll.id, obj.value]), null, {
                 preserveState: true,
                 preserveScroll: true,
             });

@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\AskDbService;
-use EchoLabs\Prism\ValueObjects\Messages\AssistantMessage;
-use EchoLabs\Prism\ValueObjects\Messages\UserMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
+use Prism\Prism\ValueObjects\Messages\AssistantMessage;
+use Prism\Prism\ValueObjects\Messages\UserMessage;
 
 class AskDbController extends Controller
 {

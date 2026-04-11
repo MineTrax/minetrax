@@ -1,0 +1,10 @@
+{
+    "agents": [
+        "cursor",
+        "claude_code"
+    ],
+    "guidelines": true,
+    "packages": [
+        "spatie/laravel-medialibrary"
+    ]
+}

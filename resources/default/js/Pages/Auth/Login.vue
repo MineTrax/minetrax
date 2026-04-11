@@ -1,13 +1,11 @@
 <template>
-  <app-layout>
-    <app-head
-      :title="__('Login')"
-    />
+  <AppLayout>
+    <AppHead :title="__('Login')" />
 
-    <jet-authentication-card>
+    <JetAuthenticationCard>
       <div
         v-if="status"
-        class="mb-4 font-medium text-sm text-green-600"
+        class="mb-4 font-medium text-sm text-success"
       >
         {{ status }}
       </div>
@@ -18,7 +16,7 @@
         @submit.prevent="submit"
       >
         <div>
-          <x-input
+          <XInput
             id="email"
             v-model="form.email"
             :label="__('Email or Username')"
@@ -31,7 +29,7 @@
         </div>
 
         <div class="mt-4">
-          <x-input
+          <XInput
             id="password"
             v-model="form.password"
             :label="__('Password')"
@@ -45,7 +43,7 @@
         </div>
 
         <div class="mt-4 block">
-          <x-checkbox
+          <XSwitch
             id="remember"
             v-model="form.remember"
             :label="__('Remember me')"
@@ -54,73 +52,53 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-          <inertia-link
+          <InertiaLink
             v-if="canResetPassword"
             :href="route('password.request')"
-            class="underline text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+            class="underline text-sm text-foreground hover:text-foreground dark:text-foreground dark:hover:text-foreground"
           >
             {{ __("Forgot your password?") }}
-          </inertia-link>
+          </InertiaLink>
 
-
-          <loading-button
+          <LoadingButton
             :loading="form.processing"
-            class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-light-blue-500 hover:bg-light-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-blue-500 disabled:opacity-50"
+            class="ml-4"
           >
             {{ __("Login") }}
-          </loading-button>
+          </LoadingButton>
         </div>
       </form>
-      <social-auth-buttons />
-    </jet-authentication-card>
-  </app-layout>
+      <SocialAuthButtons />
+    </JetAuthenticationCard>
+  </AppLayout>
 </template>
 
-<script>
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
-import LoadingButton from '@/Components/LoadingButton.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import SocialAuthButtons from '@/Components/SocialAuthButtons.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import XCheckbox from '@/Components/Form/XCheckbox.vue';
-import { useForm } from '@inertiajs/vue3';
+<script setup>
+import JetAuthenticationCard from"@/Jetstream/AuthenticationCard.vue";
+import LoadingButton from"@/Components/LoadingButton.vue";
+import AppLayout from"@/Layouts/AppLayout.vue";
+import SocialAuthButtons from"@/Components/SocialAuthButtons.vue";
+import XInput from"@/Components/Form/XInput.vue";
+import XSwitch from"@/Components/Form/XSwitch.vue";
+import { useForm } from"@inertiajs/vue3";
 
-export default {
-    components: {
-        XCheckbox,
-        XInput,
-        SocialAuthButtons,
-        LoadingButton,
-        JetAuthenticationCard,
-        AppLayout
-    },
+defineProps({
+    canResetPassword: Boolean,
+    status: String,
+});
 
-    props: {
-        canResetPassword: Boolean,
-        status: String
-    },
+const form = useForm({
+    email:"",
+    password:"",
+    remember: false,
+});
 
-    data() {
-        return {
-            form: useForm({
-                email: '',
-                password: '',
-                remember: false
-            })
-        };
-    },
-
-    methods: {
-        submit() {
-            this.form
-                .transform(data => ({
-                    ...data,
-                    remember: this.form.remember ? 'on' : ''
-                }))
-                .post(this.route('login'), {
-                    onFinish: () => this.form.reset('password'),
-                });
-        }
-    }
+const submit = () => {
+    form.transform((data) => ({
+        ...data,
+        remember: form.remember ?"on":"",
+    })).post(route("login"), {
+        onFinish: () => form.reset("password"),
+    });
 };
 </script>

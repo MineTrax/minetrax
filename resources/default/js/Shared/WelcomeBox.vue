@@ -1,17 +1,24 @@
+<script setup>
+import {
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
+
+defineProps({
+    htmlData: {
+        type: [String, null],
+        default: null,
+    },
+});
+</script>
+
 <template>
-  <div v-if="htmlData">
-    <div class="bg-white dark:bg-cool-gray-800 rounded px-4 py-3 shadow">
+  <Card v-if="htmlData">
+    <CardContent class="px-4 py-3">
       <div
         class="prose dark:prose-invert max-w-none text-center"
         v-html="htmlData"
       />
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
-
-<script>
-
-export default {
-    props: ['htmlData']
-};
-</script>

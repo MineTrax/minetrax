@@ -89,11 +89,10 @@ class CommandQueueController extends Controller
         $this->authorize('create', CommandQueue::class);
 
         $servers = Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->get();
-        $players = Player::select(['id', 'uuid', 'username'])->get();
+        // $players = Player::select(['id', 'uuid', 'username'])->get();
 
         return Inertia::render('Admin/CommandQueue/CreateCommandQueue', [
             'servers' => $servers,
-            'players' => $players,
         ]);
     }
 

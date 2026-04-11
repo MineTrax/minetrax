@@ -1,11 +1,11 @@
 <template>
-  <div v-if="enabled">
-    <div class="p-3 sm:px-5 bg-white dark:bg-gray-800 rounded shadow">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
+  <Card v-if="enabled">
+    <CardContent class="p-3 sm:px-5">
+      <h3 class="font-extrabold text-foreground dark:text-foreground">
         {{ __("Online Players") }}
         <span
           v-if="!loading && !error"
-          class="float-right text-green-500 font-semibold"
+          class="float-right text-primary font-semibold"
         >
           <span v-if="serverInfo['MaxPlayers']">
             {{ serverInfo["Players"] }} /
@@ -22,26 +22,10 @@
         v-if="loading"
         class="flex p-4 justify-center"
       >
-        <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-light-blue-600"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          />
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          />
-        </svg>
+        <LoadingSpinner
+          :loading="loading"
+          class="w-5 h-5"
+        />
       </div>
 
       <error-message v-if="error">
@@ -50,12 +34,12 @@
 
       <div
         v-if="!loading && !error"
-        class="mt-3 text-gray-500 flex flex-wrap justify-center"
+        class="mt-3 text-foreground flex flex-wrap justify-center"
       >
         <div
           v-for="pl of playersList"
           :key="pl.uuid"
-          class="flex-shrink-0 mr-1 mb-1"
+          class="shrink-0 mr-1 mb-1"
           :class="sizeClass"
         >
           <img
@@ -69,7 +53,7 @@
             })
             "
             :alt="pl.username"
-            class="focus:outline-none"
+            class="focus:outline-hidden"
             :class="sizeClass"
           >
         </div>
@@ -80,18 +64,23 @@
           !loading &&
           (!playersList || playersList.length <= 0)
         "
-        class="italic p-1 rounded text-center text-gray-400"
+        class="italic p-1 rounded text-center text-foreground"
       >
         {{ __("No players online.") }}
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
 <script setup>
-import ErrorMessage from '@/Components/ErrorMessage.vue';
-import { usePage } from '@inertiajs/vue3';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import ErrorMessage from "@/Components/ErrorMessage.vue";
+import LoadingSpinner from "@/Components/LoadingSpinner.vue";
+import {
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
+import { usePage } from "@inertiajs/vue3";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
 const props = defineProps({
     server: {
@@ -103,7 +92,7 @@ let serverInfo = ref({});
 let playersList = ref([]);
 let loading = ref(true);
 let error = ref(null);
-let sizeClass = ref('w-5 h-5');
+let sizeClass = ref("w-5 h-5");
 let interval = null;
 
 function getServerQuery() {
@@ -124,7 +113,7 @@ function getServerQuery() {
 
 function tryFetchUsingQuery(serverToQuery) {
     axios
-        .get(route('server.query.get', serverToQuery.id))
+        .get(route("server.query.get", serverToQuery.id))
         .then((data) => {
             serverInfo.value = data.data.server_info;
             playersList.value = [];
@@ -133,7 +122,7 @@ function tryFetchUsingQuery(serverToQuery) {
                     username: pl,
                     uuid:
                         data.data.players_list[pl] ||
-                        '00000000-0000-0000-0000-000000000000',
+                        "00000000-0000-0000-0000-000000000000",
                     skin_texture_id: null,
                 };
                 playersList.value.push(player);
@@ -143,7 +132,7 @@ function tryFetchUsingQuery(serverToQuery) {
 
             // Change avatar size according to number of people
             if (playersList.value.length <= 5) {
-                sizeClass.value = 'w-8 h-8';
+                sizeClass.value = "w-8 h-8";
             }
         })
         .catch((err) => {
@@ -158,7 +147,7 @@ function tryFetchUsingQuery(serverToQuery) {
 
 function tryFetchUsingWebQuery(serverToQuery) {
     axios
-        .get(route('server.webquery.status', serverToQuery.id))
+        .get(route("server.webquery.status", serverToQuery.id))
         .then((data) => {
             if (data.data.players.length > 0) {
                 playersList.value = data.data.players.map((player) => {
@@ -181,7 +170,7 @@ function tryFetchUsingWebQuery(serverToQuery) {
 
             // Change avatar size according to number of people
             if (playersList.value.length <= 5) {
-                sizeClass.value = 'w-8 h-8';
+                sizeClass.value = "w-8 h-8";
             }
         })
         .catch((err) => {

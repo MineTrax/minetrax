@@ -1,26 +1,21 @@
 <script setup>
-import KpiOverviewCard from '@/Components/Dashboard/KpiOverviewCard.vue';
-import AppHead from '@/Components/AppHead.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import millify from 'millify';
-import {
-    UserPlusIcon,
-    UserIcon,
-    FireIcon,
-    ChatBubbleBottomCenterTextIcon,
-} from '@heroicons/vue/24/solid';
-import KpiOverviewCardForDashboard from '@/Components/Dashboard/KpiOverviewCardForDashboard.vue';
-import PlayersOverTimeMetricBox from '@/Shared/PlayersOverTimeMetricBox.vue';
-import PlayersPerServerMetricBox from '@/Shared/PlayersPerServerMetricBox.vue';
-import PlayersPerCountryMetricBox from '@/Shared/PlayersPerCountryMetricBox.vue';
-import NetworkTrendsMetricBox from '@/Shared/NetworkTrendsMetricBox.vue';
-import { useAuthorizable } from '@/Composables/useAuthorizable';
-import { useHelpers } from '@/Composables/useHelpers';
-import PlayersJoinAddressMetricBox from '@/Shared/PlayersJoinAddressMetricBox.vue';
-import PlayersMinecraftVersionMetricBox from '@/Shared/PlayersMinecraftVersionMetricBox.vue';
+import KpiOverviewCard from"@/Components/Dashboard/KpiOverviewCard.vue";
+import AppHead from"@/Components/AppHead.vue";
+import AdminLayout from"@/Layouts/AdminLayout.vue";
+import millify from"millify";
+import { UserPlusIcon, UserIcon, FireIcon, ChatBubbleBottomCenterTextIcon } from"@heroicons/vue/24/solid";
+import KpiOverviewCardForDashboard from"@/Components/Dashboard/KpiOverviewCardForDashboard.vue";
+import PlayersOverTimeMetricBox from"@/Shared/PlayersOverTimeMetricBox.vue";
+import PlayersPerServerMetricBox from"@/Shared/PlayersPerServerMetricBox.vue";
+import PlayersPerCountryMetricBox from"@/Shared/PlayersPerCountryMetricBox.vue";
+import NetworkTrendsMetricBox from"@/Shared/NetworkTrendsMetricBox.vue";
+import { useAuthorizable } from"@/Composables/useAuthorizable";
+import { useHelpers } from"@/Composables/useHelpers";
+import PlayersJoinAddressMetricBox from"@/Shared/PlayersJoinAddressMetricBox.vue";
+import PlayersMinecraftVersionMetricBox from"@/Shared/PlayersMinecraftVersionMetricBox.vue";
 
-const {can} = useAuthorizable();
-const {formatTimeAgoToNow} = useHelpers();
+const { can } = useAuthorizable();
+const { formatTimeAgoToNow } = useHelpers();
 
 defineProps({
     kpiTotalUsers: Number,
@@ -54,7 +49,7 @@ defineProps({
       v-if="!can('view admin_dashboard')"
       class="p-4 flex"
     >
-      <div class="flex-1 bg-white dark:bg-gray-800 p-4 rounded text-red-400 text-center italic">
+      <div class="flex-1 bg-card p-4 rounded-lg border text-destructive text-center italic">
         {{ __("Sorry! You are not allowed to view Admin Dashboard Statistics.") }}
       </div>
     </div>
@@ -75,7 +70,7 @@ defineProps({
           :change="kpiTotalUserPercent"
           change-desc="in last 7 days"
           :icon="UserPlusIcon"
-          icon-class="text-light-blue-500 bg-light-blue-100 dark:bg-light-blue-500 dark:text-white"
+          icon-class="text-blue-500 bg-blue-100 dark:bg-blue-500 dark:text-white"
           :description="`Total Verified: ${kpiTotalVerifiedUsers} users`"
         />
 
@@ -87,7 +82,7 @@ defineProps({
           :change="kpiTotalPlayersPercent"
           change-desc="in last 7 days"
           :icon="UserIcon"
-          icon-class="text-green-500 bg-green-100 dark:bg-green-500 dark:text-white"
+          icon-class="text-success bg-success/10 dark:text-white"
           :description="`Total Linked: ${kpiTotalLinkedPlayers} players`"
         />
 
@@ -107,25 +102,13 @@ defineProps({
           class="flex-1"
           title="Failed Jobs"
           :value="millify(kpiTotalFailedJobs)"
-          :sub-value="`(${
-            kpiFailedJobsForInterval > 0 ? '+' : ''
-          }${millify(kpiFailedJobsForInterval)})`"
-          :sub-value-class="[
-            kpiFailedJobsForInterval > 0
-              ? 'text-red-500'
-              : 'text-green-500',
-          ]"
-          :change="`${
-            kpiTotalFailedJobPercent > 0 ? '+' : ''
-          }${millify(kpiTotalFailedJobPercent, { precision: 2 })}%`"
-          :change-class="[
-            kpiTotalFailedJobPercent > 0
-              ? 'text-red-500 bg-red-100'
-              : 'text-green-500 bg-green-100',
-          ]"
+          :sub-value="`(${kpiFailedJobsForInterval > 0 ?'+':''}${millify(kpiFailedJobsForInterval)})`"
+          :sub-value-class="[kpiFailedJobsForInterval > 0 ?'text-destructive':'text-success']"
+          :change="`${kpiTotalFailedJobPercent > 0 ?'+':''}${millify(kpiTotalFailedJobPercent, { precision: 2 })}%`"
+          :change-class="[kpiTotalFailedJobPercent > 0 ?'text-destructive':'text-success']"
           change-desc="in last 7 days"
           :icon="FireIcon"
-          icon-class="text-red-500 bg-red-100 dark:bg-red-500 dark:text-white"
+          icon-class="text-destructive bg-destructive/10 dark:text-white"
           :description="`Last Run: ${queueLastProcessed ? formatTimeAgoToNow(queueLastProcessed) : __('not yet')}`"
         />
       </div>

@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
-use EchoLabs\Prism\Facades\Tool;
-use EchoLabs\Prism\ValueObjects\Messages\SystemMessage;
-use EchoLabs\Prism\ValueObjects\Messages\UserMessage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Prism\Prism\Facades\Tool;
+use Prism\Prism\ValueObjects\Messages\SystemMessage;
+use Prism\Prism\ValueObjects\Messages\UserMessage;
+
 
 const STRICT_MODE = true;
 const IGNORE_TABLES = [
@@ -43,7 +44,7 @@ class AskDbService
 
         if (count($messagesHistory) > 0) {
             // Pick last 20 messages from history to avoid using too many tokens when chat is long.
-            $messagesHistory = array_slice($messagesHistory, -20);
+            $messagesHistory = array_slice($messagesHistory, -100);
             $messages = [
                 ...$messagesHistory,
                 new UserMessage($prompt),
@@ -65,11 +66,11 @@ class AskDbService
             $tools,
             null,
             null,
-            7,
+            50,
         );
 
-        $oneDayInSeconds = 60 * 60 * 24;
-        Cache::put("askdb::user_chat_session::{$user->id}", $response->steps->last()->messages, $oneDayInSeconds);
+        $oneWeekInSeconds = 60 * 60 * 24 * 7;
+        Cache::put("askdb::user_chat_session::{$user->id}", $response->steps->last()->messages, $oneWeekInSeconds);
 
         return $response;
     }

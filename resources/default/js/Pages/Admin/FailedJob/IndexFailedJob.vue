@@ -1,11 +1,15 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useAuthorizable } from '@/Composables/useAuthorizable';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
-import { TrashIcon, ArrowPathIcon } from '@heroicons/vue/24/outline';
+import AdminLayout from"@/Layouts/AdminLayout.vue";
+import { useAuthorizable } from"@/Composables/useAuthorizable";
+import { useHelpers } from"@/Composables/useHelpers";
+import { useTranslations } from"@/Composables/useTranslations";
+import DataTable from"@/Components/DataTable/DataTable.vue";
+import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
+import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
+import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
+import { Link } from"@inertiajs/vue3";
+import { TrashIcon, ArrowPathIcon } from"@heroicons/vue/24/outline";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
@@ -16,42 +20,53 @@ defineProps({
     filters: Object,
 });
 
+const breadcrumbItems = [
+    {
+        text: __("Admin"),
+        current: false,
+    },
+    {
+        text: __("Failed Jobs"),
+        current: true,
+    }
+];
+
 const headerRow = [
     {
-        key: 'id',
-        label: __('ID'),
+        key:"id",
+        label: __("ID"),
         sortable: true,
     },
     {
-        key: 'uuid',
-        label: __('UUID'),
+        key:"uuid",
+        label: __("UUID"),
         sortable: true,
     },
     {
-        key: 'job',
+        key:"job",
         sortable: false,
-        label: __('Job'),
+        label: __("Job"),
     },
     {
-        key: 'connection',
+        key:"connection",
         sortable: true,
-        label: __('Connection/Queue'),
+        label: __("Connection/Queue"),
     },
     {
-        key: 'exception',
-        label: __('Exception'),
+        key:"exception",
+        label: __("Exception"),
         sortable: true,
     },
     {
-        key: 'failed_at',
+        key:"failed_at",
         sortable: true,
-        label: __('Failed At'),
+        label: __("Failed At"),
     },
     {
-        key: 'actions',
-        label: __('Actions'),
+        key:"actions",
+        label: __("Actions"),
         sortable: false,
-        class: 'w-1/12 text-right',
+        class:"w-1/12 text-right",
     },
 ];
 </script>
@@ -60,42 +75,52 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Failed Jobs')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
-          {{ __("Failed Jobs") }}
-        </h1>
-        <div class="flex">
-          <InertiaLink
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
+        <div class="flex gap-2">
+          <Button
             v-if="can('retry failed_jobs')"
-            :href="route('admin.failed-job.retry')"
-            method="post"
-            class="mr-2 inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-500 border border-transparent rounded-md hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:shadow-outline-gray"
+            variant="default"
+            as-child
           >
-            {{ __("Retry All Jobs") }}
-          </InertiaLink>
-          <InertiaLink
+            <Link
+              :href="route('admin.failed-job.retry')"
+              method="post"
+            >
+              {{ __("Retry All Jobs") }}
+            </Link>
+          </Button>
+          <Button
             v-if="can('delete failed_jobs')"
-            v-confirm="{message: 'Are you sure you want to delete all failed jobs?'}"
-            method="delete"
-            as="button"
-            :href="route('admin.failed-job.clear')"
-            class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:shadow-outline-red transition ease-in-out duration-150"
+            variant="destructive"
+            as-child
           >
-            {{ __("Clear All Jobs") }}
-          </InertiaLink>
+            <Link
+              v-confirm="{message:'Are you sure you want to delete all failed jobs?'}"
+              method="delete"
+              as="button"
+              :href="route('admin.failed-job.clear')"
+            >
+              {{ __("Clear All Jobs") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="jobs"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -106,10 +131,10 @@ const headerRow = [
 
           <td class="px-4 whitespace-nowrap">
             <div>
-              <div class="text-sm font-medium text-gray-900 dark:text-gray-300">
+              <div class="text-sm font-medium text-foreground dark:text-foreground">
                 {{ item.payload.displayName }}
               </div>
-              <div class="text-sm text-gray-500 dark:text-gray-400">
+              <div class="text-sm text-foreground dark:text-foreground">
                 {{ __("Attempts: :attempts", {
                   attempts: item.payload.attempts,
                 }) }}
@@ -118,7 +143,7 @@ const headerRow = [
           </td>
 
           <DtRowItem class="text-left">
-            {{ item.connection + '/' + item.queue }}
+            {{ item.connection +'/'+ item.queue }}
           </DtRowItem>
 
           <DtRowItem class="text-left">
@@ -126,7 +151,7 @@ const headerRow = [
               class="truncate"
               :title="item.exception"
             >
-              {{ item.exception.substring(0, 30) + '...' }}
+              {{ item.exception.substring(0, 30) +'...' }}
             </span>
           </DtRowItem>
 
@@ -140,36 +165,50 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <InertiaLink
-              v-if="can('retry failed_jobs')"
-              v-tippy
-              as="button"
-              method="post"
-              :data="{ uuid: item.uuid }"
-              :href="route('admin.failed-job.retry')"
-              class="inline-flex items-center justify-center text-green-600 dark:text-green-500 hover:text-green-800 dark:hover:text-green-800"
-              :title="__('Retry Job')"
-            >
-              <ArrowPathIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
-              v-if="can('delete failed_jobs')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this Job permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :data="{ uuid: item.uuid }"
-              :href="route('admin.failed-job.clear')"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
-              :title="__('Delete Job')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            <ButtonGroup>
+              <Button
+                v-if="can('retry failed_jobs')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-success hover:text-success"
+              >
+                <Link
+                  v-tippy
+                  as="button"
+                  method="post"
+                  :data="{ uuid: item.uuid }"
+                  :href="route('admin.failed-job.retry')"
+                  :title="__('Retry Job')"
+                >
+                  <ArrowPathIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete failed_jobs')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this Job permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :data="{ uuid: item.uuid }"
+                  :href="route('admin.failed-job.clear')"
+                  :title="__('Delete Job')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

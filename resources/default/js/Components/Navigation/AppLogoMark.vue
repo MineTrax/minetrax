@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center flex-shrink-0">
+  <div class="flex items-center shrink-0">
     <InertiaLink :href="route('home')">
       <JetApplicationMark class="block w-auto h-9" />
     </InertiaLink>
@@ -8,20 +8,20 @@
       v-tippy
       :title="__('Administration Section')"
       aria-label="Open Menu"
-      class="ml-2 focus:outline-none"
+      class="ml-2 focus:outline-hidden"
       :href="route('admin.dashboard')"
     >
       <Icon
         name="cog"
-        class="w-6 h-6 text-gray-400 dark:text-gray-500 hover:animate-spin"
+        class="w-6 h-6 text-foreground dark:text-foreground hover:animate-spin"
       />
     </InertiaLink>
   </div>
 </template>
 
 <script setup>
-import JetApplicationMark from '@/Jetstream/ApplicationMark.vue';
-import Icon from '@/Components/Icon.vue';
+import JetApplicationMark from "@/Jetstream/ApplicationMark.vue";
+import Icon from "@/Components/Icon.vue";
 
 defineProps({
     canShowAdminSidebar: {

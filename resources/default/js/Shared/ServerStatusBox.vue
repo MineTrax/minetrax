@@ -1,35 +1,38 @@
 <template>
-  <div v-if="enabled">
-    <div class="p-3 sm:px-5 bg-white dark:bg-cool-gray-800 rounded shadow break-words">
-      <h3 class="font-extrabold text-gray-800 dark:text-gray-200">
-        {{ __("Server Status") }}
-      </h3>
+  <Card v-if="enabled">
+    <CardContent class="p-4 sm:px-5 warp-break-words">
+      <div class="flex items-center justify-between">
+        <h3 class="font-extrabold text-card-foreground">
+          {{ __("Server Status") }}
+        </h3>
+        <span
+          v-if="!loading && !error"
+          class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-500"
+        >
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+          {{ __("Online") }}
+        </span>
+        <span
+          v-if="!loading && error"
+          class="inline-flex items-center gap-1.5 rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-semibold text-destructive"
+        >
+          <span class="h-2 w-2 rounded-full bg-destructive" />
+          {{ __("Offline") }}
+        </span>
+      </div>
 
       <!-- Loading Spinner -->
       <div
         v-if="loading"
-        class="flex p-4 justify-center"
+        class="flex p-6 justify-center"
       >
-        <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-light-blue-600 dark:text-light-blue-400"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          />
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          />
-        </svg>
+        <LoadingSpinner
+          :loading="loading"
+          class="w-5 h-5"
+        />
       </div>
 
       <!-- Error -->
@@ -39,89 +42,126 @@
 
       <div
         v-if="!loading && !error"
-        class="flex flex-col"
+        class="mt-4 flex flex-col gap-4"
       >
-        <div class="mt-3 text-gray-700 dark:text-gray-300 text-center font-semibold">
-          {{ __("Join") }} <span class="font-bold text-light-blue-500 dark:text-light-blue-400">{{ serverInfo.players.online }}</span> {{ __("Online Players") }}!
+        <!-- Player count -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-2xl font-extrabold text-primary tabular-nums">
+              {{ serverInfo.players.online }}
+            </span>
+            <span class="text-sm text-muted-foreground">
+              {{ __("players online — join them!") }}
+            </span>
+          </div>
         </div>
 
-        <copy-to-clipboard v-slot="props">
-          <button
+        <!-- Copy server address -->
+        <copy-to-clipboard v-slot="slotProps">
+          <Button
             v-tippy
+            class="w-full font-bold gap-2"
+            size="lg"
             :title="__('Click to Copy')"
             type="button"
-            class="text-center font-extrabold mt-3 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded p-2 hover:text-light-blue-500 dark:hover:text-light-blue-400 hover:bg-light-blue-50 dark:hover:bg-cool-gray-900 hover:border-light-blue-500 dark:hover:border-cool-gray-800 focus:ring focus:ring-light-blue-200 focus:ring-opacity-50 transition duration-150 ease-in-out focus:outline-none"
-            @click="props.copy(server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname)"
+            @click="slotProps.copy(hostname)"
           >
-            <span v-if="props.status !== 'copied'">
-              {{ server ? server.hostname : $page.props.defaultQueryServer?.server?.hostname }}
-            </span>
-            <span v-else>
+            <template v-if="slotProps.status !== 'copied'">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="h-4 w-4 shrink-0 opacity-70"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M13.887 3.182c.396.037.79.08 1.183.128C16.194 3.45 17 4.414 17 5.517V16.75A2.25 2.25 0 0 1 14.75 19h-9.5A2.25 2.25 0 0 1 3 16.75V5.517c0-1.103.806-2.068 1.93-2.207.393-.048.787-.09 1.183-.128A3.001 3.001 0 0 1 9 1h2c1.373 0 2.531.923 2.887 2.182ZM7.5 4A1.5 1.5 0 0 1 9 2.5h2A1.5 1.5 0 0 1 12.5 4v.5h-5V4Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              {{ hostname }}
+            </template>
+            <template v-else>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="h-4 w-4 shrink-0"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
               {{ __("Copied!") }}
-            </span>
-          </button>
+            </template>
+          </Button>
         </copy-to-clipboard>
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </template>
 
-<script>
+<script setup>
+import CopyToClipboard from "@/Components/CopyToClipboard.vue";
+import ErrorMessage from "@/Components/ErrorMessage.vue";
+import LoadingSpinner from "@/Components/LoadingSpinner.vue";
+import Button from "@/Components/ui/button/Button.vue";
+import {
+    Card,
+    CardContent,
+} from "@/Components/ui/card";
+import { usePage } from "@inertiajs/vue3";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
-import CopyToClipboard from '@/Components/CopyToClipboard.vue';
-import ErrorMessage from '@/Components/ErrorMessage.vue';
-
-export default {
-    components: {ErrorMessage, CopyToClipboard},
-
-    props: {
-        server: Object,
+const props = defineProps({
+    server: {
+        type: Object,
     },
+});
 
-    data() {
-        return {
-            serverInfo: Object,
-            loading: true,
-            error: null,
-            interval: null
-        };
-    },
+const serverInfo = ref(null);
+const loading = ref(true);
+const error = ref(null);
+let interval = null;
 
-    computed: {
-        enabled() {
-            if (!this.$page.props.generalSettings.enable_mcserver_statuspingbox) return false;
-
-            return !!(this.server || this.$page.props.defaultQueryServer.server);
-        }
-    },
-
-    created() {
-        if (!this.enabled) return;
-
-        this.getServerQuery();
-        this.interval = setInterval(() => this.getServerQuery(), 10000);
-    },
-
-    unmounted() {
-        clearInterval(this.interval);
-    },
-
-    methods: {
-        getServerQuery() {
-            let serverToQuery = this.server;
-            if (!serverToQuery) {
-                serverToQuery = this.$page.props.defaultQueryServer.server;
-            }
-            axios.get(route('server.ping.get', serverToQuery.id)).then(data => {
-                this.serverInfo = data.data;
-                this.error = null;
-            }).catch(err => {
-                this.error = err.response.data.message || err.message;
-                this.serverInfo = null;
-            }).finally(() => {
-                this.loading = false;
-            });
-        }
+const enabled = computed(() => {
+    if (!usePage().props.generalSettings.enable_mcserver_statuspingbox) {
+        return false;
     }
-};
+    return !!(props.server || usePage().props.defaultQueryServer.server);
+});
+
+const hostname = computed(() => {
+    return props.server ? props.server.hostname : usePage().props.defaultQueryServer?.server?.hostname;
+});
+
+function getServerQuery() {
+    let serverToQuery = props.server;
+    if (!serverToQuery) {
+        serverToQuery = usePage().props.defaultQueryServer.server;
+    }
+    axios.get(route("server.ping.get", serverToQuery.id)).then(data => {
+        serverInfo.value = data.data;
+        error.value = null;
+    }).catch(err => {
+        error.value = err.response?.data?.message || err.message;
+        serverInfo.value = null;
+    }).finally(() => {
+        loading.value = false;
+    });
+}
+
+onMounted(() => {
+    if (!enabled.value) {
+        return;
+    }
+    getServerQuery();
+    interval = setInterval(() => getServerQuery(), 10000);
+});
+
+onUnmounted(() => {
+    clearInterval(interval);
+});
 </script>

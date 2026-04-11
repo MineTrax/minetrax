@@ -40,7 +40,7 @@ class PlayerSkinController extends Controller
         // Special. Let Admin to change any player's skin.
         $playerInLinked = $linkedPlayers->firstWhere('uuid', $selectedPlayerUuid);
         if (!$playerInLinked && $selectedPlayerUuid && $request->user()->can('change any_player_skin')) {
-            $linkedPlayers = Player::select('uuid', 'id', 'username')->get();
+            $linkedPlayers = Player::where('uuid', $selectedPlayerUuid)->select('uuid', 'id', 'username')->get();
         }
 
         return Inertia::render('Player/ChangeSkin', [

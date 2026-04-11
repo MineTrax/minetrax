@@ -97,7 +97,7 @@ class CustomFormPolicy
 
     public function viewPublic(?User $user, CustomForm $customForm)
     {
-        $invalidStatus = in_array($customForm->status->value, [CustomFormStatus::ARCHIVED, CustomFormStatus::DRAFT]);
+        $invalidStatus = in_array($customForm->status, [CustomFormStatus::ARCHIVED, CustomFormStatus::DRAFT]);
         if ($invalidStatus) {
             return false;
         }
@@ -117,7 +117,7 @@ class CustomFormPolicy
     public function submit(?User $user, CustomForm $customForm)
     {
         // Bail if form is not active
-        $isActive = $customForm->status->value === CustomFormStatus::ACTIVE;
+        $isActive = $customForm->status === CustomFormStatus::ACTIVE;
         if (! $isActive) {
             return false;
         }

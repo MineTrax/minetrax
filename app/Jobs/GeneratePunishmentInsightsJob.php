@@ -164,7 +164,7 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         $possibleAltsJsonString
         QUESTION;
 
-        $response = $aiService->simplePrompt($systemPrompt, $question, 0.3, 1000, [
+        $response = $aiService->simplePrompt($systemPrompt, $question, null, 1000, [
             'response_format' => [
                 'type' => 'json_object',
             ]

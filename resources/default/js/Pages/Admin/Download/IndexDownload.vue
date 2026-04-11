@@ -1,13 +1,17 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useAuthorizable } from '@/Composables/useAuthorizable';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
-import { CloudArrowDownIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import Icon from '@/Components/Icon.vue';
-import millify from 'millify';
+import AdminLayout from"@/Layouts/AdminLayout.vue";
+import { useAuthorizable } from"@/Composables/useAuthorizable";
+import { useHelpers } from"@/Composables/useHelpers";
+import { useTranslations } from"@/Composables/useTranslations";
+import DataTable from"@/Components/DataTable/DataTable.vue";
+import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
+import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";
+import { Button } from"@/Components/ui/button";
+import { ButtonGroup } from"@/Components/ui/button-group";
+import { Link } from"@inertiajs/vue3";
+import { CloudArrowDownIcon, PencilSquareIcon, TrashIcon } from"@heroicons/vue/24/outline";
+import Icon from"@/Components/Icon.vue";
+import millify from"millify";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
@@ -18,63 +22,74 @@ defineProps({
     filters: Object,
 });
 
-const headerRow = [
+const breadcrumbItems = [
     {
-        key: 'id',
-        label: __('ID'),
-        sortable: true,
-        class: 'text-center',
+        text: __("Admin"),
+        current: false,
     },
     {
-        key: 'name',
+        text: __("Downloads"),
+        current: true,
+    }
+];
+
+const headerRow = [
+    {
+        key:"id",
+        label: __("ID"),
         sortable: true,
-        label: __('Name'),
+        class:"text-center",
+    },
+    {
+        key:"name",
+        sortable: true,
+        label: __("Name"),
         filterable: {
-            type: 'text',
+            type:"text",
         },
     },
     {
-        key: 'is_active',
-        label: __('Active'),
+        key:"is_active",
+        label: __("Active"),
         sortable: true,
     },
     {
-        key: 'is_external',
-        label: __('External'),
+        key:"is_external",
+        label: __("External"),
         sortable: true,
     },
     {
-        key: 'is_only_auth',
-        label: __('Auth Only'),
+        key:"is_only_auth",
+        label: __("Auth Only"),
         sortable: true,
     },
     {
-        key: 'file_name',
+        key:"file_name",
         sortable: true,
-        label: __('File Name'),
+        label: __("File Name"),
     },
     {
-        key: 'file_size',
+        key:"file_size",
         sortable: false,
-        label: __('File Size'),
+        label: __("File Size"),
     },
     {
-        key: 'download_count',
+        key:"download_count",
         sortable: true,
-        class: 'text-center',
-        label: __('Downloads'),
+        class:"text-center",
+        label: __("Downloads"),
     },
     {
-        key: 'created_at',
-        label: __('Created'),
+        key:"created_at",
+        label: __("Created"),
         sortable: true,
-        class: 'w-1/12',
+        class:"w-1/12",
     },
     {
-        key: 'actions',
-        label: __('Actions'),
+        key:"actions",
+        label: __("Actions"),
         sortable: false,
-        class: 'w-1/12 text-right',
+        class:"w-1/12 text-right",
     },
 ];
 </script>
@@ -83,32 +98,34 @@ const headerRow = [
   <AdminLayout>
     <app-head :title="__('Downloads Administration')" />
 
-    <div class="px-10 py-8 mx-auto text-gray-400">
+    <div class="px-10 py-8 mx-auto text-foreground">
       <div class="flex justify-between mb-4">
-        <h1 class="text-3xl font-bold text-gray-500 dark:text-gray-300">
-          {{ __("Downloads") }}
-        </h1>
+        <AppBreadcrumb
+          class="mt-0"
+          breadcrumb-class="max-w-none px-0 md:px-0"
+          :items="breadcrumbItems"
+        />
         <div class="flex">
-          <InertiaLink
+          <Button
             v-if="can('create downloads')"
-            :href="route('admin.download.create')"
-            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray"
+            as-child
           >
-            <span>{{ __("Create") }}</span>
-            <span class="hidden md:inline">&nbsp;{{ __("Download") }}</span>
-          </InertiaLink>
+            <Link :href="route('admin.download.create')">
+              {{ __("Create Download") }}
+            </Link>
+          </Button>
         </div>
       </div>
 
       <DataTable
-        class="bg-white rounded shadow dark:bg-gray-800"
+        class="bg-card rounded-lg shadow"
         :header="headerRow"
         :data="downloads"
         :filters="filters"
       >
         <template #default="{ item }">
           <td
-            class="px-4 py-4 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-gray-200"
+            class="px-4 py-4 text-sm font-medium text-center text-foreground whitespace-nowrap dark:text-foreground"
           >
             {{ item.id }}
           </td>
@@ -120,12 +137,12 @@ const headerRow = [
           <td class="px-4">
             <Icon
               v-if="item.is_active"
-              class="text-green-500"
+              class="text-success"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-destructive"
               name="cross-circle"
             />
           </td>
@@ -133,12 +150,12 @@ const headerRow = [
           <td class="px-4">
             <Icon
               v-if="item.is_external"
-              class="text-green-500 inline"
+              class="text-success inline"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-destructive"
               name="cross-circle"
             />
             <Icon
@@ -153,12 +170,12 @@ const headerRow = [
           <td class="px-4">
             <Icon
               v-if="item.is_only_auth"
-              class="text-green-500 inline"
+              class="text-success inline"
               name="check-circle"
             />
             <Icon
               v-else
-              class="text-red-500"
+              class="text-destructive"
               name="cross-circle"
             />
             <span
@@ -176,11 +193,11 @@ const headerRow = [
           <DtRowItem>
             <span
               v-if="item.is_external"
-              class="italic text-gray-400"
+              class="italic text-foreground"
             >{{ __("Unknown") }}</span>
             <span v-else>
               {{ millify(item.file.size, {
-                units: ["B", "KB", "MB", "GB", "TB"],
+                units: ["B","KB","MB","GB","TB"],
                 space: true })
               }}
             </span>
@@ -200,42 +217,62 @@ const headerRow = [
           </DtRowItem>
 
           <td
-            class="px-6 py-4 space-x-2 text-sm font-medium text-right whitespace-nowrap"
+            class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap"
           >
-            <a
-              v-tippy
-              :href="route('download.download', item.slug)"
-              target="_blank"
-              class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
-              :title="__('Download')"
-            >
-              <CloudArrowDownIcon class="inline-block w-5 h-5" />
-            </a>
-            <InertiaLink
-              v-if="can('update downloads')"
-              v-tippy
-              as="a"
-              :href="route('admin.download.edit', item.id)"
-              class="inline-flex items-center justify-center text-yellow-600 dark:text-yellow-500 hover:text-yellow-800 dark:hover:text-yellow-800"
-              :title="__('Edit Download')"
-            >
-              <PencilSquareIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
-            <InertiaLink
-              v-if="can('delete downloads')"
-              v-confirm="{
-                message:
-                  'Are you sure you want to delete this Download permanently?',
-              }"
-              v-tippy
-              as="button"
-              method="DELETE"
-              :href="route('admin.download.delete', item.id)"
-              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 focus:outline-none"
-              :title="__('Delete Download')"
-            >
-              <TrashIcon class="inline-block w-5 h-5" />
-            </InertiaLink>
+            <ButtonGroup>
+              <Button
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-primary hover:text-primary"
+              >
+                <a
+                  v-tippy
+                  :href="route('download.download', item.slug)"
+                  target="_blank"
+                  :title="__('Download')"
+                >
+                  <CloudArrowDownIcon />
+                </a>
+              </Button>
+              <Button
+                v-if="can('update downloads')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.download.edit', item.id)"
+                  :title="__('Edit Download')"
+                >
+                  <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('delete downloads')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message:
+                      'Are you sure you want to delete this Download permanently?',
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.download.delete', item.id)"
+                  :title="__('Delete Download')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
           </td>
         </template>
       </DataTable>

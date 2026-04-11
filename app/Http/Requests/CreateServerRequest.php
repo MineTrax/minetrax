@@ -5,10 +5,10 @@ namespace App\Http\Requests;
 use App\Enums\ServerVersion;
 use App\Models\Server;
 use App\Rules\IpOrFqdn;
-use BenSampo\Enum\Rules\EnumValue;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class CreateServerRequest extends FormRequest
 {
@@ -45,7 +45,7 @@ class CreateServerRequest extends FormRequest
                 'different:join_port',
             ],
             'name' => 'required',
-            'minecraft_version' => ['required', new EnumValue(ServerVersion::class)],
+            'minecraft_version' => ['required', new Enum(ServerVersion::class)],
             'type' => 'required',
             'settings' => 'sometimes',
             'is_server_intel_enabled' => 'required|boolean',

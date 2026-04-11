@@ -1,19 +1,11 @@
 <template>
-  <jet-form-section @submitted="updatePassword">
-    <template #title>
-      {{ __("Update Password") }}
-    </template>
-
-    <template #description>
-      {{ __("Ensure your account is using a long, random password to stay secure.") }}
-    </template>
-
-    <template #form>
+  <form @submit.prevent="updatePassword">
+    <div class="grid grid-cols-6 gap-6">
       <div
         v-if="showCurrentPasswordConfirm"
         class="col-span-6 sm:col-span-4"
       >
-        <x-input
+        <XInput
           id="current_password"
           ref="current_password"
           v-model="form.current_password"
@@ -27,7 +19,7 @@
       </div>
 
       <div class="col-span-6 sm:col-span-4">
-        <x-input
+        <XInput
           id="password"
           ref="password"
           v-model="form.password"
@@ -41,7 +33,7 @@
       </div>
 
       <div class="col-span-6 sm:col-span-4">
-        <x-input
+        <XInput
           id="password_confirmation"
           v-model="form.password_confirmation"
           :label="__('Confirm Password')"
@@ -54,83 +46,74 @@
       </div>
 
       <div class="col-span-6 sm:col-span-4">
-        <password-strength-meter
-          :value="form.password"
-        />
+        <PasswordStrengthMeter :value="form.password" />
       </div>
-    </template>
+    </div>
 
-    <template #actions>
-      <jet-action-message
+    <div class="flex items-center justify-end pt-6 gap-4">
+      <JetActionMessage
         :on="form.recentlySuccessful"
         class="mr-3"
       >
         {{ __("Saved.") }}
-      </jet-action-message>
+      </JetActionMessage>
 
-      <jet-button
+      <LoadingButton
         :class="{ 'opacity-25': form.processing }"
         :disabled="form.processing"
         :loading="form.processing"
       >
-        {{ __("Save") }}
-      </jet-button>
-    </template>
-  </jet-form-section>
+        {{ __("Change Password") }}
+      </LoadingButton>
+    </div>
+  </form>
 </template>
 
-<script>
-import JetActionMessage from '@/Jetstream/ActionMessage.vue';
-import JetButton from '@/Jetstream/Button.vue';
-import JetFormSection from '@/Jetstream/FormSection.vue';
-import XInput from '@/Components/Form/XInput.vue';
-import PasswordStrengthMeter from '@/Components/PasswordStrengthMeter.vue';
-import { useForm } from '@inertiajs/vue3';
+<script setup>
+import { ref, computed } from "vue";
+import { usePage } from "@inertiajs/vue3";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import LoadingButton from "@/Components/LoadingButton.vue";
+import XInput from "@/Components/Form/XInput.vue";
+import PasswordStrengthMeter from "@/Components/PasswordStrengthMeter.vue";
+import { useForm } from "@inertiajs/vue3";
 
-export default {
-    components: {
-        PasswordStrengthMeter,
-        XInput,
-        JetActionMessage,
-        JetButton,
-        JetFormSection,
-    },
+// Template refs
+const password = ref(null);
+const current_password = ref(null);
 
-    data() {
-        return {
-            form: useForm({
-                current_password: '',
-                password: '',
-                password_confirmation: '',
-            }),
-        };
-    },
+// Form state
+const form = useForm({
+    current_password: "",
+    password: "",
+    password_confirmation: "",
+});
 
-    computed: {
-        showCurrentPasswordConfirm() {
-            return this.$page.props.authHasPassword ?? true;
+// Page props
+const page = usePage();
+
+// Computed properties
+const showCurrentPasswordConfirm = computed(() => {
+    return page.props.authHasPassword ?? true;
+});
+
+// Methods
+const updatePassword = () => {
+    form.put(route("user-password.update"), {
+        errorBag: "updatePassword",
+        preserveScroll: true,
+        onSuccess: () => form.reset(),
+        onError: () => {
+            if (form.errors.password) {
+                form.reset("password", "password_confirmation");
+                password.value.focus();
+            }
+
+            if (form.errors.current_password) {
+                form.reset("current_password");
+                current_password.value.focus();
+            }
         },
-    },
-
-    methods: {
-        updatePassword() {
-            this.form.put(route('user-password.update'), {
-                errorBag: 'updatePassword',
-                preserveScroll: true,
-                onSuccess: () => this.form.reset(),
-                onError: () => {
-                    if (this.form.errors.password) {
-                        this.form.reset('password', 'password_confirmation');
-                        this.$refs.password.focus();
-                    }
-
-                    if (this.form.errors.current_password) {
-                        this.form.reset('current_password');
-                        this.$refs.current_password.focus();
-                    }
-                }
-            });
-        },
-    },
+    });
 };
 </script>

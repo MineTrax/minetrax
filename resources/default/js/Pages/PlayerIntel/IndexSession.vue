@@ -1,17 +1,18 @@
 <script setup>
-import AppHead from '@/Components/AppHead.vue';
-import { useHelpers } from '@/Composables/useHelpers';
-import { useTranslations } from '@/Composables/useTranslations';
-import DataTable from '@/Components/DataTable/DataTable.vue';
-import DtRowItem from '@/Components/DataTable/DtRowItem.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import PlayerSubMenu from '@/Shared/PlayerSubMenu.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
+import AppHead from "@/Components/AppHead.vue";
+import { useHelpers } from "@/Composables/useHelpers";
+import { useTranslations } from "@/Composables/useTranslations";
+import DataTable from "@/Components/DataTable/DataTable.vue";
+import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import PlayerSubMenu from "@/Shared/PlayerSubMenu.vue";
+import { EyeIcon } from "@heroicons/vue/24/outline";
+import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 
 const { __ } = useTranslations();
 const { formatTimeAgoToNow, formatToDayDateString, secondsToHMS } = useHelpers();
 
-defineProps({
+const props = defineProps({
     player: {
         type: Object,
         required: true,
@@ -30,54 +31,73 @@ defineProps({
 
 const headerRow = [
     {
-        key: 'id',
-        label: __('ID'),
+        key: "id",
+        label: __("ID"),
         sortable: true,
-        class: 'text-left',
+        class: "text-left w-12",
     },
     {
-        key: 'country_id',
-        label: __('Flag'),
+        key: "country_id",
+        label: __("Flag"),
         sortable: true,
-        class: 'text-left',
+        class: "text-left w-12",
     },
     {
-        key: 'player_displayname',
-        label: __('Display name'),
-        sortable: true,
-    },
-    {
-        key: 'session_started_at',
-        label: __('Started'),
+        key: "player_displayname",
+        label: __("Display name"),
         sortable: true,
     },
     {
-        key: 'session_ended_at',
-        label: __('Ended'),
+        key: "session_started_at",
+        label: __("Started"),
         sortable: true,
     },
     {
-        key: 'server_id',
-        label: __('Server'),
+        key: "session_ended_at",
+        label: __("Ended"),
         sortable: true,
     },
     {
-        key: 'play_time',
-        label: __('Play Time'),
+        key: "server_id",
+        label: __("Server"),
         sortable: true,
-        class: 'text-right',
     },
     {
-        key: 'afk_time',
-        label: __('Afk Time'),
+        key: "play_time",
+        label: __("Play Time"),
         sortable: true,
-        class: 'text-right',
+        class: "text-right",
     },
     {
-        key: 'actions',
-        label: __('Actions'),
+        key: "afk_time",
+        label: __("Afk Time"),
+        sortable: true,
+        class: "text-right",
+    },
+    {
+        key: "actions",
+        label: __("Actions"),
         sortable: false,
-        class: 'text-right',
+        class: "w-1 text-right",
+    },
+];
+
+const breadcrumbItems = [
+    {
+        text: __("Home"),
+        url: route("home"),
+    },
+    {
+        text: __("Players"),
+        url: route("player.index"),
+    },
+    {
+        text: props.player.username,
+        url: route("player.show", props.player.uuid),
+    },
+    {
+        text: __("Sessions"),
+        current: true,
     },
 ];
 </script>
@@ -90,7 +110,9 @@ const headerRow = [
       })"
     />
 
-    <div class="px-2 py-4 md:py-12 md:px-10 max-w-7xl mx-auto space-y-4">
+    <AppBreadcrumb :items="breadcrumbItems" />
+
+    <div class="px-2 py-4 md:px-10 max-w-screen-2xl mx-auto space-y-4">
       <PlayerSubMenu
         :player="player"
         :can-show-player-intel="canShowPlayerIntel"
@@ -98,26 +120,27 @@ const headerRow = [
 
       <div>
         <DataTable
-          class="bg-white rounded shadow dark:bg-gray-800"
+          class="bg-card border rounded-lg shadow w-full"
           :header="headerRow"
           :data="sessions"
           :filters="filters"
           :route-params="{ player: player.uuid }"
+          :row-href="(item) => route('player.intel.session.show', { player: item.player_uuid, session: item.id })"
         >
           <template #default="{ item }">
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
             >
               {{ item.id }}
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
             >
               <div class="flex items-center">
                 <div
                   v-tippy
-                  class="flex-shrink-0 h-10 w-10 focus:outline-none"
+                  class="shrink-0 h-10 w-10 focus:outline-hidden"
                   :content="item.country.name"
                 >
                   <img
@@ -130,10 +153,10 @@ const headerRow = [
             </td>
 
             <td
-              class="px-4 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-gray-200"
+              class="px-4 py-4 text-sm font-medium text-foreground whitespace-nowrap"
             >
               <div class="flex items-center">
-                <div class="flex-shrink-0 h-10 w-10">
+                <div class="shrink-0 h-10 w-10">
                   <img
                     class="h-10 w-10"
                     :src="player?.avatar_url"
@@ -141,18 +164,9 @@ const headerRow = [
                   >
                 </div>
                 <div class="ml-4">
-                  <InertiaLink
-                    as="a"
-                    :href="route('player.intel.session.show', {
-                      player: item.player_uuid,
-                      session: item.id,
-                    })"
-                    class="text-sm font-medium text-gray-900 dark:text-gray-200 focus:outline-none cursor-pointer hover:underline"
-                  >
-                    <span class="font-extrabold text-gray-700 dark:text-gray-300">
-                      {{ item.player_displayname }} ({{ item.player_username }})
-                    </span>
-                  </InertiaLink>
+                  <span class="text-sm font-extrabold text-foreground">
+                    {{ item.player_displayname }} ({{ item.player_username }})
+                  </span>
                 </div>
               </div>
             </td>
@@ -178,7 +192,7 @@ const headerRow = [
               </span>
               <span
                 v-else
-                class="text-gray-400"
+                class="text-foreground"
               >—</span>
             </DtRowItem>
 
@@ -199,7 +213,7 @@ const headerRow = [
               {{ secondsToHMS(item.afk_time, true) }}
             </DtRowItem>
 
-            <td class="px-4 py-3 text-sm font-medium text-center whitespace-nowrap">
+            <td class="px-4 py-3 text-sm font-medium text-right whitespace-nowrap">
               <InertiaLink
                 v-tippy
                 as="a"
@@ -207,7 +221,7 @@ const headerRow = [
                   player: item.player_uuid,
                   session: item.id,
                 })"
-                class="inline-flex items-center justify-center text-blue-500 hover:text-blue-800"
+                class="inline-flex items-center justify-center text-primary hover:text-primary/75"
                 :title="__('View Session Details')"
               >
                 <EyeIcon class="inline-block w-5 h-5" />

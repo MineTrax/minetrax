@@ -1,13 +1,16 @@
 <template>
   <div>
-    <button @click="toggleTheme">
+    <button
+      class="cursor-pointer"
+      @click="toggleTheme"
+    >
       <span
         v-if="colorMode === 'dark'"
         v-tippy
         :title="__('Use Light Theme')"
       >
         <MoonIcon
-          class="w-5 h-5 text-gray-400 focus:outline-none stroke-2"
+          class="w-5 h-5 text-foreground focus:outline-hidden stroke-2"
         />
       </span>
       <span
@@ -16,7 +19,7 @@
         :title="__('Use Dark Theme')"
       >
         <SunIcon
-          class="w-6 h-6 text-gray-400 focus:outline-none stroke-2"
+          class="w-6 h-6 text-foreground focus:outline-hidden stroke-2"
         />
       </span>
     </button>
@@ -24,10 +27,10 @@
 </template>
 
 <script>
-import { MoonIcon, SunIcon } from '@heroicons/vue/24/outline';
+import { MoonIcon, SunIcon } from "@heroicons/vue/24/outline";
 
 export default {
-    name: 'ColorThemeToggle',
+    name: "ColorThemeToggle",
     components: { MoonIcon, SunIcon },
     data() {
         return {
@@ -36,18 +39,18 @@ export default {
     },
     methods: {
         toggleTheme() {
-            if (this.colorMode === 'dark') {
-                this.colorMode = 'light';
-                window.colorMode = 'light';
-                localStorage.theme = 'light';
-                document.documentElement.classList.add('light');
-                document.documentElement.classList.remove('dark');
+            if (this.colorMode === "dark") {
+                this.colorMode = "light";
+                window.colorMode = "light";
+                localStorage.theme = "light";
+                document.documentElement.classList.add("light");
+                document.documentElement.classList.remove("dark");
             } else {
-                this.colorMode = 'dark';
-                window.colorMode = 'dark';
-                localStorage.theme = 'dark';
-                document.documentElement.classList.add('dark');
-                document.documentElement.classList.remove('light');
+                this.colorMode = "dark";
+                window.colorMode = "dark";
+                localStorage.theme = "dark";
+                document.documentElement.classList.add("dark");
+                document.documentElement.classList.remove("light");
             }
             window.location.reload();
         }

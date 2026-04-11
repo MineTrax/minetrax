@@ -1,25 +1,25 @@
-import {EditorView} from '@codemirror/view';
-import {HighlightStyle, syntaxHighlighting} from '@codemirror/language';
-import {tags as t} from '@lezer/highlight';
+import {EditorView} from "@codemirror/view";
+import {HighlightStyle, syntaxHighlighting} from "@codemirror/language";
+import {tags as t} from "@lezer/highlight";
 
 // Using https://github.com/one-dark/vscode-one-dark-theme/ as reference for the colors
 
-const chalky = '#e5c07b',
-    coral = '#e06c75',
-    cyan = '#56b6c2',
-    invalid = '#ffffff',
-    ivory = '#abb2bf',
-    stone = '#7d8799', // Brightened compared to original to increase contrast
-    malibu = '#61afef',
-    sage = '#98c379',
-    whiskey = '#d19a66',
-    violet = '#c678dd',
-    darkBackground = '#21252b',
-    highlightBackground = '#2c313a',
-    background = '#111827',
-    tooltipBackground = '#353a42',
-    selection = '#3E4451',
-    cursor = '#528bff';
+const chalky = "#e5c07b",
+    coral = "#e06c75",
+    cyan = "#56b6c2",
+    invalid = "#ffffff",
+    ivory = "#abb2bf",
+    stone = "#7d8799", // Brightened compared to original to increase contrast
+    malibu = "#61afef",
+    sage = "#98c379",
+    whiskey = "#d19a66",
+    violet = "#c678dd",
+    darkBackground = "#21252b",
+    highlightBackground = "#2c313a",
+    background = "#111827",
+    tooltipBackground = "#353a42",
+    selection = "#3E4451",
+    cursor = "#528bff";
 
 /// The colors used in the theme, as CSS color strings.
 export const color = {
@@ -43,69 +43,69 @@ export const color = {
 
 /// The editor theme styles for One Dark.
 export const oneDarkTheme = EditorView.theme({
-    '&': {
+    "&": {
         color: ivory,
         backgroundColor: background,
-        borderRadius: '5px',
-        padding: '5px',
+        borderRadius: "5px",
+        padding: "5px",
     },
 
-    '.cm-content': {
+    ".cm-content": {
         caretColor: cursor
     },
 
-    '.cm-cursor, .cm-dropCursor': {borderLeftColor: cursor},
-    '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': {backgroundColor: selection},
+    ".cm-cursor, .cm-dropCursor": {borderLeftColor: cursor},
+    "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": {backgroundColor: selection},
 
-    '.cm-panels': {backgroundColor: darkBackground, color: ivory},
-    '.cm-panels.cm-panels-top': {borderBottom: '2px solid black'},
-    '.cm-panels.cm-panels-bottom': {borderTop: '2px solid black'},
+    ".cm-panels": {backgroundColor: darkBackground, color: ivory},
+    ".cm-panels.cm-panels-top": {borderBottom: "2px solid black"},
+    ".cm-panels.cm-panels-bottom": {borderTop: "2px solid black"},
 
-    '.cm-searchMatch': {
-        backgroundColor: '#72a1ff59',
-        outline: '1px solid #457dff'
+    ".cm-searchMatch": {
+        backgroundColor: "#72a1ff59",
+        outline: "1px solid #457dff"
     },
-    '.cm-searchMatch.cm-searchMatch-selected': {
-        backgroundColor: '#6199ff2f'
-    },
-
-    '.cm-activeLine': {backgroundColor: '#6699ff0b'},
-    '.cm-selectionMatch': {backgroundColor: '#aafe661a'},
-
-    '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
-        backgroundColor: '#bad0f847'
+    ".cm-searchMatch.cm-searchMatch-selected": {
+        backgroundColor: "#6199ff2f"
     },
 
-    '.cm-gutters': {
+    ".cm-activeLine": {backgroundColor: "#6699ff0b"},
+    ".cm-selectionMatch": {backgroundColor: "#aafe661a"},
+
+    "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
+        backgroundColor: "#bad0f847"
+    },
+
+    ".cm-gutters": {
         backgroundColor: background,
         color: stone,
-        border: 'none'
+        border: "none"
     },
 
-    '.cm-activeLineGutter': {
+    ".cm-activeLineGutter": {
         backgroundColor: highlightBackground
     },
 
-    '.cm-foldPlaceholder': {
-        backgroundColor: 'transparent',
-        border: 'none',
-        color: '#ddd'
+    ".cm-foldPlaceholder": {
+        backgroundColor: "transparent",
+        border: "none",
+        color: "#ddd"
     },
 
-    '.cm-tooltip': {
-        border: 'none',
+    ".cm-tooltip": {
+        border: "none",
         backgroundColor: tooltipBackground
     },
-    '.cm-tooltip .cm-tooltip-arrow:before': {
-        borderTopColor: 'transparent',
-        borderBottomColor: 'transparent'
+    ".cm-tooltip .cm-tooltip-arrow:before": {
+        borderTopColor: "transparent",
+        borderBottomColor: "transparent"
     },
-    '.cm-tooltip .cm-tooltip-arrow:after': {
+    ".cm-tooltip .cm-tooltip-arrow:after": {
         borderTopColor: tooltipBackground,
         borderBottomColor: tooltipBackground
     },
-    '.cm-tooltip-autocomplete': {
-        '& > ul > li[aria-selected]': {
+    ".cm-tooltip-autocomplete": {
+        "& > ul > li[aria-selected]": {
             backgroundColor: highlightBackground,
             color: ivory
         }
@@ -131,16 +131,16 @@ export const oneDarkHighlightStyle = HighlightStyle.define([
     {tag: [t.meta, t.comment],
         color: stone},
     {tag: t.strong,
-        fontWeight: 'bold'},
+        fontWeight: "bold"},
     {tag: t.emphasis,
-        fontStyle: 'italic'},
+        fontStyle: "italic"},
     {tag: t.strikethrough,
-        textDecoration: 'line-through'},
+        textDecoration: "line-through"},
     {tag: t.link,
         color: stone,
-        textDecoration: 'underline'},
+        textDecoration: "underline"},
     {tag: t.heading,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         color: coral},
     {tag: [t.atom, t.bool, t.special(t.variableName)],
         color: whiskey },

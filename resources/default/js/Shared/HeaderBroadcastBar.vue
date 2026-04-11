@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="enabled"
-    class="z-50 flex items-center h-12 font-semibold text-white shadow-sm bg-light-blue-500"
+    class="z-50 flex items-center h-12 font-semibold text-primary-foreground shadow-sm bg-primary"
   >
     <a
       class="w-full mt-2 cursor-pointer"
@@ -19,8 +19,8 @@
 </template>
 
 <script setup>
-import { usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
 
 
 // get general settings from Inertia getProps
