@@ -62,7 +62,7 @@ onMounted(async () => {
                     y: index + 1,
                 },
                 emphasis: {
-                    focus: "series",
+                    focus: "none",
                 },
             };
         }),

@@ -108,7 +108,7 @@ async function fetchData() {
                     y: index + 1,
                 },
                 emphasis: {
-                    focus: "series",
+                    focus: "none",
                 },
             };
         }),
