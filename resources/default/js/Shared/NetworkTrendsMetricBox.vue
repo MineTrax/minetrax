@@ -3,7 +3,7 @@ import LoadingSpinner from"@/Components/LoadingSpinner.vue";
 import { Card, CardHeader, CardTitle, CardContent } from"@/Components/ui/card";
 import { FaceSmileIcon, UserGroupIcon, UserPlusIcon, FaceFrownIcon, ChartBarIcon, ArrowTrendingUpIcon } from"@heroicons/vue/24/outline";
 import { useAxios } from"@vueuse/integrations/useAxios";
-import millify from"millify";
+import { millify } from"millify";
 import { useHelpers } from"@/Composables/useHelpers";
 const { secondsToHMS } = useHelpers();
 

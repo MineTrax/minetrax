@@ -54,7 +54,7 @@ class BanWardenController extends Controller
             'creatorPlayer:id,uuid,username,skin_texture_id',
         ])
             ->select($fields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 'country.name',
                 'victimPlayer.username',
@@ -74,7 +74,7 @@ class BanWardenController extends Controller
                     'victimPlayer.username',
                 ])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-start_at')
             ->simplePaginate(perPage: $perPage)
             ->through(fn ($punishment) => $punishment->makeVisibleIf($canViewCritical, [

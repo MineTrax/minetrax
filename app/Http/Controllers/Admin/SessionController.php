@@ -29,15 +29,15 @@ class SessionController extends Controller
             ->select(['id', 'user_id', 'ip_address', 'user_agent', 'last_activity'])
             ->where('last_activity', '>=', $timestamp5MinutesBefore)
             ->with('user:id,name,username,profile_photo_path,verified_at,settings')
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'user_id',
                 'ip_address',
                 'user_agent',
                 'last_activity',
                 AllowedFilter::custom('q', new FilterMultipleFields(['user_id', 'ip_address', 'user_agent', 'last_activity'])),
-            ])
-            ->allowedSorts(['id', 'user_id', 'ip_address', 'user_agent', 'last_activity'])
+            )
+            ->allowedSorts('id', 'user_id', 'ip_address', 'user_agent', 'last_activity')
             ->defaultSort('-last_activity')
             ->paginate($perPage)
             ->withQueryString();
@@ -72,10 +72,10 @@ class SessionController extends Controller
      * Create a new agent instance from the given session.
      *
      * @param  mixed  $session
-     * @return \Laravel\Jetstream\Agent
+     * @return Agent
      */
     protected function createAgent($session)
     {
-        return tap(new Agent(), fn ($agent) => $agent->setUserAgent($session->user_agent));
+        return tap(new Agent, fn ($agent) => $agent->setUserAgent($session->user_agent));
     }
 }

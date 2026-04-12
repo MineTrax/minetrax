@@ -35,11 +35,11 @@ class RecruitmentController extends Controller
         $recruitments = QueryBuilder::for(Recruitment::class)
             ->whereIn('status', [RecruitmentFormStatus::ACTIVE, RecruitmentFormStatus::DISABLED])
             ->select($fields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 AllowedFilter::custom('q', new FilterMultipleFields(['title', 'description'])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-updated_at')
             ->paginate($perPage)
             ->withQueryString();

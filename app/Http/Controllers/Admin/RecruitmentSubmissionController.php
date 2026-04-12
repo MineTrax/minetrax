@@ -68,7 +68,7 @@ class RecruitmentSubmissionController extends Controller
             ->whereIn('recruitment_id', $recruitments->keys())
             ->with(['user:id,name,username,profile_photo_path,verified_at,muted_at', 'recruitment', 'lastActor:id,username,name,profile_photo_path,verified_at,settings', 'lastCommentor:id,username,name,profile_photo_path,verified_at,settings'])
             ->select($fields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 'user.name',
                 'lastActor.name',
@@ -85,7 +85,7 @@ class RecruitmentSubmissionController extends Controller
                     'lastCommentor.username',
                 ])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-updated_at')
             ->paginate($perPage)
             ->withQueryString();
@@ -147,7 +147,7 @@ class RecruitmentSubmissionController extends Controller
             ->whereIn('recruitment_id', $recruitments->keys())
             ->with(['user:id,name,username,profile_photo_path,verified_at,muted_at', 'recruitment', 'lastActor:id,name,username,profile_photo_path,verified_at,muted_at', 'lastCommentor:id,name,username,profile_photo_path,verified_at,muted_at'])
             ->select($fields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 'user.name',
                 'lastActor.name',
@@ -164,7 +164,7 @@ class RecruitmentSubmissionController extends Controller
                     'lastCommentor.username',
                 ])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-updated_at')
             ->paginate($perPage)
             ->withQueryString();

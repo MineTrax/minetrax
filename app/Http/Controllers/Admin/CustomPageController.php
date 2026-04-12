@@ -23,7 +23,7 @@ class CustomPageController extends Controller
         }
 
         $customPages = QueryBuilder::for(CustomPage::class)
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'title',
                 'path',
@@ -39,8 +39,8 @@ class CustomPageController extends Controller
                 'is_open_in_new_tab',
                 'is_html_page',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'path', 'redirect_url'])),
-            ])
-            ->allowedSorts(['id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_redirect', 'redirect_url', 'created_by', 'updated_by', 'created_at', 'updated_at', 'is_sidebar_visible', 'is_html_page', 'is_open_in_new_tab'])
+            )
+            ->allowedSorts('id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_redirect', 'redirect_url', 'created_by', 'updated_by', 'created_at', 'updated_at', 'is_sidebar_visible', 'is_html_page', 'is_open_in_new_tab')
             ->defaultSort('-created_at')
             ->paginate($perPage)
             ->withQueryString();

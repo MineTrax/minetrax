@@ -35,7 +35,7 @@ class NewsController extends Controller
                 'type',
                 'created_at',
             ])
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'title',
                 'slug',
@@ -45,8 +45,8 @@ class NewsController extends Controller
                 'type',
                 'created_at',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug'])),
-            ])
-            ->allowedSorts(['id', 'title', 'created_at', 'published_at', 'is_pinned', 'is_commentable', 'type', 'slug'])
+            )
+            ->allowedSorts('id', 'title', 'created_at', 'published_at', 'is_pinned', 'is_commentable', 'type', 'slug')
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();

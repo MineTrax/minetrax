@@ -9,6 +9,7 @@ use App\Models\Recruitment;
 use App\Models\Role;
 use App\Queries\Filters\FilterMultipleFields;
 use Arr;
+use Carbon\Carbon;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -26,7 +27,7 @@ class RecruitmentController extends Controller
         }
 
         $recruitments = QueryBuilder::for(Recruitment::class)
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'title',
                 'slug',
@@ -37,8 +38,8 @@ class RecruitmentController extends Controller
                 'created_at',
                 'created_by',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug', 'description'])),
-            ])
-            ->allowedSorts([
+            )
+            ->allowedSorts(
                 'id',
                 'title',
                 'slug',
@@ -49,7 +50,7 @@ class RecruitmentController extends Controller
                 'created_at',
                 'open_submissions_count',
                 'closed_submissions_count',
-            ])
+            )
             ->withCount([
                 'openSubmissions',
                 'closedSubmissions',
@@ -151,7 +152,7 @@ class RecruitmentController extends Controller
                         });
 
                         if ($found) {
-                            $date = \Carbon\Carbon::parse($found['data']);
+                            $date = Carbon::parse($found['data']);
                             $key = $date->format('Y-m');
                             $carry[$key] = isset($carry[$key]) ? $carry[$key] + 1 : 1;
                         }
@@ -167,7 +168,7 @@ class RecruitmentController extends Controller
                         });
 
                         if ($found) {
-                            $date = \Carbon\Carbon::parse($found['data']);
+                            $date = Carbon::parse($found['data']);
                             $key = $date->format('H');
                             $carry[$key] = isset($carry[$key]) ? $carry[$key] + 1 : 1;
                         }
@@ -183,7 +184,7 @@ class RecruitmentController extends Controller
                         });
 
                         if ($found) {
-                            $date = \Carbon\Carbon::parse($found['data']);
+                            $date = Carbon::parse($found['data']);
                             $key = $date->format('F');
                             $carry[$key] = isset($carry[$key]) ? $carry[$key] + 1 : 1;
                         }
@@ -199,7 +200,7 @@ class RecruitmentController extends Controller
                         });
 
                         if ($found) {
-                            $date = \Carbon\Carbon::parse($found['data']);
+                            $date = Carbon::parse($found['data']);
                             $key = $date->format('W-Y');
                             $carry[$key] = isset($carry[$key]) ? $carry[$key] + 1 : 1;
                         }

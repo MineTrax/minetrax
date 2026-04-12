@@ -53,12 +53,12 @@ class CustomFormSubmissionController extends Controller
             ->whereIn('custom_form_id', $customForms->keys())
             ->with(['user:id,name,username', 'country:id,iso_code,flag,name', 'customForm'])
             ->select($fields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 'user.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data'])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-created_at')
             ->paginate($perPage)
             ->withQueryString();
@@ -112,12 +112,12 @@ class CustomFormSubmissionController extends Controller
             ->whereIn('custom_form_id', $customForms->keys())
             ->with(['user:id,name,username', 'country:id,iso_code,flag,name', 'customForm'])
             ->select($fields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 'user.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data'])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-created_at')
             ->paginate($perPage)
             ->withQueryString();

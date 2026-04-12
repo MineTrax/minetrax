@@ -4,7 +4,7 @@ import { Terminal } from"xterm";
 import { FitAddon } from"xterm-addon-fit";
 import { WebLinksAddon } from"xterm-addon-web-links";
 import { debounce } from"lodash";
-import millify from"millify";
+import { millify } from"millify";
 import AppHead from"@/Components/AppHead.vue";
 import AdminLayout from"@/Layouts/AdminLayout.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";

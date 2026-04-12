@@ -56,7 +56,7 @@ class PlayerIntelController extends Controller
             ->selectRaw('MAX(last_join_address) as last_join_address')
             ->selectRaw('SUM(vault_balance) as vault_balance')
             ->selectRaw('MAX(player_username) as player_username')
-            ->allowedFilters([
+            ->allowedFilters(
                 'player_uuid',
                 'player_username',
                 'country_id',
@@ -66,10 +66,10 @@ class PlayerIntelController extends Controller
                 'last_minecraft_version',
                 'country.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['player_uuid', 'player_username'])),
-            ])
+            )
             ->groupBy(['player_id'])
             ->with(['player:id,uuid,username,skin_texture_id', 'country:id,iso_code,flag,name'])
-            ->allowedSorts([
+            ->allowedSorts(
                 'id',
                 'player_username',
                 'country_id',
@@ -84,7 +84,7 @@ class PlayerIntelController extends Controller
                 'last_minecraft_version',
                 'last_join_address',
                 'vault_balance',
-            ])
+            )
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();

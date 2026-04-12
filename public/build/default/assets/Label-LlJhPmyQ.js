@@ -1,0 +1,1 @@
+import{H as e,S as t,Wt as n,z as r}from"./vue.runtime.esm-bundler-BdVAZHbZ.js";var i={class:`block font-medium text-sm text-foreground dark:text-foreground`},a={key:0},o={key:1},s={__name:`Label`,props:{value:String},setup(s){return(c,l)=>(r(),t(`label`,i,[s.value?(r(),t(`span`,a,n(s.value),1)):(r(),t(`span`,o,[e(c.$slots,`default`)]))]))}};export{s as t};

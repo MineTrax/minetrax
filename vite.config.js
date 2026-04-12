@@ -37,6 +37,7 @@ export default defineConfig(({ mode }) => {
         resolve: {
             alias: {
                 '@': '/resources/' + theme + '/js',
+                'ziggy-js': '/vendor/tightenco/ziggy',
             },
         },
     };

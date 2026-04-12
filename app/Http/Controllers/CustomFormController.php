@@ -40,11 +40,11 @@ class CustomFormController extends Controller
             ->whereIn('status', [CustomFormStatus::ACTIVE, CustomFormStatus::DISABLED])
             ->whereIn('can_create_submission', $canSubmit)
             ->select($fields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 AllowedFilter::custom('q', new FilterMultipleFields(['title', 'description'])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-created_at')
             ->paginate($perPage)
             ->withQueryString();
