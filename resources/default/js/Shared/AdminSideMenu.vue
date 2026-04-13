@@ -424,6 +424,8 @@ const navItems = [
         class="mt-10 text-xs text-center text-muted-foreground"
       >
         {{ __("Web Version:") }}&nbsp;{{ $page.props.webVersion || "unknown" }}
+        <br>
+        {{ __("Theme:") }}&nbsp;{{ $page.props.appTheme || "default" }}
       </div>
     </div>
   </div>

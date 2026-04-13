@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
+import themeInheritance from './vite-plugin-theme-fallback.js';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
@@ -11,6 +12,7 @@ export default defineConfig(({ mode }) => {
     const buildDirectory = 'build/' + theme;
     return {
         plugins: [
+            themeInheritance({ theme, root: process.cwd() }),
             tailwindcss(),
             laravel({
                 input:  `/resources/${theme}/js/app.js`,
@@ -36,7 +38,11 @@ export default defineConfig(({ mode }) => {
         },
         resolve: {
             alias: {
-                '@': '/resources/' + theme + '/js',
+                // Always point @ to default — the theme-inheritance plugin (enforce: 'pre')
+                // resolves @/ imports to the active theme first, falling back to default.
+                // This alias serves as a safety net for Vite's dep-scan and other passes
+                // that may not invoke plugin resolveId hooks.
+                '@': '/resources/default/js',
                 'ziggy-js': '/vendor/tightenco/ziggy',
             },
         },
