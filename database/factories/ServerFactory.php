@@ -29,7 +29,7 @@ class ServerFactory extends Factory
             'minecraft_version' => $this->faker->randomElement(['1.16', '1.15', '1.14']),
             'name' => $this->faker->company,
             'description' => $this->faker->paragraph,
-            'country_id' => $this->faker->randomNumber(2),
+            'country_id' => null,
             'level_name' => 'world',
         ];
     }
