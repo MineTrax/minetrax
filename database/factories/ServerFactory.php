@@ -29,9 +29,8 @@ class ServerFactory extends Factory
             'minecraft_version' => $this->faker->randomElement(['1.16', '1.15', '1.14']),
             'name' => $this->faker->company,
             'description' => $this->faker->paragraph,
-            'storage_login' => 'eyJpdiI6Ikx1M3VFSkhVNTFIM3VKbkFGTjhJTGc9PSIsInZhbHVlIjoiUFhBVklqdjlaWWZkNXRYOS9DbndmVU5uejJPR3NYbWpqajRmOWVxKzN4cnhKSDJrN2Q2UHBvOEordmMySnArZ3ZjbGxNemtwOTJlUTJ2ZzZlTDZaRUFOZzhseXRFcnVlTXdCTkNWOWpqK2U5azJsamFWaTVWQ0FNSXN3MzRDZFhYMEplenZHSFdwMWplZnhYVDFCZitvZGsydmp2dU1ZbVNaSTIxT2tyL2R3PSIsIm1hYyI6IjNmMzdiMGQwZDQ4NjE1NzMwZmI5NTA4MjMyOWUyNTJhZWQ0MTY4MGNkMTExMGNiOWRiYzRjZWJmNTE0MGVlNGEifQ',
             'country_id' => $this->faker->randomNumber(2),
-            'level_name' => 'world'
+            'level_name' => 'world',
         ];
     }
 }
