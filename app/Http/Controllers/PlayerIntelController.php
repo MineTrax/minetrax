@@ -50,11 +50,11 @@ class PlayerIntelController extends Controller
             ->where('player_uuid', $player->uuid)
             ->with(['country:id,name,iso_code', 'server:id,name'])
             ->select($selectFields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$selectFields,
                 AllowedFilter::custom('q', new FilterMultipleFields(['player_username', 'player_displayname'])),
             ])
-            ->allowedSorts($selectFields)
+            ->allowedSorts(...$selectFields)
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();
@@ -106,8 +106,7 @@ class PlayerIntelController extends Controller
 
         $showCriticalInfo = false;
         $criticalInfo = null;
-        if($request->user() && $request->user()->can('view player_intel_critical'))
-        {
+        if ($request->user() && $request->user()->can('view player_intel_critical')) {
             $showCriticalInfo = true;
             $latestEvent = DB::table('minecraft_player_events')
                 ->where('session_id', $session->id)

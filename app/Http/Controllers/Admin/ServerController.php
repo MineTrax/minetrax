@@ -54,7 +54,7 @@ class ServerController extends Controller
                 'created_at',
             ])
             ->with('country')
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'name',
                 'hostname',
@@ -69,8 +69,8 @@ class ServerController extends Controller
                 'last_scanned_at',
                 'created_at',
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'minecraft_version'])),
-            ])
-            ->allowedSorts(['id', 'name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'type', 'minecraft_version', 'order', 'country_id', 'last_scanned_at', 'created_at'])
+            )
+            ->allowedSorts('id', 'name', 'hostname', 'ip_address', 'join_port', 'query_port', 'webquery_port', 'type', 'minecraft_version', 'order', 'country_id', 'last_scanned_at', 'created_at')
             ->defaultSort('-order')
             ->paginate($perPage)
             ->through(fn ($server) => $server->append('masked_ip_address')->makeHidden('ip_address'))

@@ -1,0 +1,1 @@
+function e(){function e(e,t={}){let n=window._translations[e]||e;return Object.keys(t).forEach(e=>{n=n.replace(`:${e}`,t[e])}),n}return{__:e}}export{e as t};

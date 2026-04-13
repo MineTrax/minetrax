@@ -1,0 +1,1 @@
+import{S as e,vt as t,z as n,zt as r}from"./vue.runtime.esm-bundler-BdVAZHbZ.js";import{t as i}from"./utils-DwIyEoU_.js";var a={__name:`Skeleton`,props:{class:{type:null,required:!1}},setup(a){let o=a;return(a,s)=>(n(),e(`div`,{class:r(t(i)(`animate-pulse rounded-md bg-primary/10`,o.class))},null,2))}};export{a as t};

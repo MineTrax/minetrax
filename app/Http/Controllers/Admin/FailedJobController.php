@@ -25,7 +25,7 @@ class FailedJobController extends Controller
         }
 
         $failedJobs = QueryBuilder::for(FailedJob::class)
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'uuid',
                 'connection',
@@ -40,8 +40,8 @@ class FailedJobController extends Controller
                     'payload',
                     'exception',
                 ])),
-            ])
-            ->allowedSorts(['id', 'uuid', 'connection', 'queue', 'exception', 'failed_at'])
+            )
+            ->allowedSorts('id', 'uuid', 'connection', 'queue', 'exception', 'failed_at')
             ->defaultSort('-failed_at')
             ->paginate($perPage)
             ->withQueryString();

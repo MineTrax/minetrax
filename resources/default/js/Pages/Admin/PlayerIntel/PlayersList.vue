@@ -11,7 +11,7 @@ import DtRowItem from"@/Components/DataTable/DtRowItem.vue";
 import { Button } from"@/Components/ui/button";
 import { ButtonGroup } from"@/Components/ui/button-group";
 import { Link } from"@inertiajs/vue3";
-import millify from"millify";
+import { millify } from"millify";
 import { LockClosedIcon, PaintBrushIcon, TrashIcon } from"@heroicons/vue/24/outline";
 
 const { __ } = useTranslations();

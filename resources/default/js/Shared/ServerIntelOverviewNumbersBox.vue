@@ -6,7 +6,7 @@ import {useHelpers} from"@/Composables/useHelpers";
 import { ClockIcon, FireIcon, QrCodeIcon, UserGroupIcon, UsersIcon } from"@heroicons/vue/24/outline";
 import { Card, CardContent } from"@/Components/ui/card";
 const { secondsToHMS } = useHelpers();
-import millify from"millify";
+import { millify } from"millify";
 
 const props = defineProps({
     servers: {

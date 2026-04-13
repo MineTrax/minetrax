@@ -1651,6 +1651,7 @@
     "WebQuery port is a new port which MineTrax plugin will open for secure connection between server and web. Enter a port value which is available and can be open. Eg: 25569": "WebQuery port is a new port which MineTrax plugin will open for secure connection between server and web. Enter a port value which is available and can be open. Eg: 25569",
     "Website": "Website",
     "Website URL": "Website URL",
+    "Theme:": "Theme:",
     "Web Version:": "Web Version:",
     "Weight": "Weight",
     "Welcome Box": "Welcome Box",

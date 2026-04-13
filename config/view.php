@@ -13,9 +13,10 @@ return [
     |
     */
 
-    'paths' => [
-        resource_path(config('app.theme') . '/views'),
-    ],
+    'paths' => array_unique(array_filter([
+        resource_path(config('app.theme').'/views'),
+        resource_path('default/views'),
+    ])),
 
     /*
     |--------------------------------------------------------------------------

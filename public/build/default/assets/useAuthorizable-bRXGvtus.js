@@ -1,0 +1,1 @@
+import{o as e}from"./dist-B6FUfOuV.js";function t(){let t=e();function n(e){return t.props.permissions.includes(e)}function r(e){return t.props.permissions.some(t=>t.includes(e))}function i(e){return e?e.roles.some(e=>e.is_staff):!1}function a(e,n=null){return n||=t.props.auth.user,n?n?.roles.some(t=>t.name===e):!1}return{can:n,canWild:r,isStaff:i,hasRole:a}}export{t};

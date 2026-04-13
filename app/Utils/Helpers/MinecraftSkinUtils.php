@@ -3,9 +3,9 @@
 namespace App\Utils\Helpers;
 
 use App\Services\MinecraftApiService;
-use Intervention\Image\Laravel\Facades\Image;
-use Http;
 use Cache;
+use Http;
+use Intervention\Image\Laravel\Facades\Image;
 
 class MinecraftSkinUtils
 {
@@ -24,7 +24,7 @@ class MinecraftSkinUtils
             default:
                 throw new \Exception('Invalid type');
         }
-        $image = Image::read($imagePath);
+        $image = Image::decode($imagePath);
         if ($size) {
             $image->resize($size, $size);
         }
@@ -51,7 +51,8 @@ class MinecraftSkinUtils
         }
 
         $data = self::httpGetWithCache($url);
-        return Image::read($data);
+
+        return Image::decode($data);
     }
 
     public static function getSkinImageFromCrafatar($type, $identifier, $size = null)
@@ -65,7 +66,7 @@ class MinecraftSkinUtils
                 } else {
                     $uuid = $identifier;
                 }
-                $url = 'https://crafatar.com/avatars/' . $uuid . '?size=' . $size;
+                $url = 'https://crafatar.com/avatars/'.$uuid.'?size='.$size;
                 break;
             case 'skin':
                 if ($useUsernameForSkins) {
@@ -73,7 +74,7 @@ class MinecraftSkinUtils
                 } else {
                     $uuid = $identifier;
                 }
-                $url = 'https://crafatar.com/skins/' . $uuid;
+                $url = 'https://crafatar.com/skins/'.$uuid;
                 break;
             case 'render':
                 if ($useUsernameForSkins) {
@@ -81,13 +82,14 @@ class MinecraftSkinUtils
                 } else {
                     $uuid = $identifier;
                 }
-                $url = 'https://crafatar.com/renders/body/' . $uuid . '?scale=' . $size;
+                $url = 'https://crafatar.com/renders/body/'.$uuid.'?scale='.$size;
             default:
                 throw new \Exception('Invalid type');
         }
 
         $data = self::httpGetWithCache($url);
-        return Image::read($data);
+
+        return Image::decode($data);
     }
 
     public static function getSkinImageFromMcHeads($type, $identifier, $size = null)
@@ -114,7 +116,8 @@ class MinecraftSkinUtils
         }
 
         $data = self::httpGetWithCache($url);
-        return Image::read($data);
+
+        return Image::decode($data);
     }
 
     public static function uploadSkinToMineSkin($file, $skinType): array
@@ -135,6 +138,7 @@ class MinecraftSkinUtils
     private static function httpGetWithCache($url)
     {
         $key = "imagecache::{$url}";
+
         return Cache::store('file')->remember($key, 60, function () use ($url) {
             return Http::get($url)->body();
         });

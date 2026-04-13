@@ -11,7 +11,7 @@ import { ButtonGroup } from"@/Components/ui/button-group";
 import { Link } from"@inertiajs/vue3";
 import { CloudArrowDownIcon, PencilSquareIcon, TrashIcon } from"@heroicons/vue/24/outline";
 import Icon from"@/Components/Icon.vue";
-import millify from"millify";
+import { millify } from"millify";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();

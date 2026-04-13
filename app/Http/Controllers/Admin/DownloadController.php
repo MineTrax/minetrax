@@ -8,12 +8,13 @@ use App\Http\Requests\UpdateDownloadRequest;
 use App\Models\Download;
 use App\Queries\Filters\FilterMultipleFields;
 use Inertia\Inertia;
+use Inertia\Response;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class DownloadController extends Controller
 {
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
         $this->authorize('viewAny', Download::class);
 
@@ -42,11 +43,11 @@ class DownloadController extends Controller
         $downloads = QueryBuilder::for(Download::class)
             ->select($fields)
             ->with('media')
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'name', 'description', 'file_name'])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-id')
             ->paginate($perPage)
             ->through(function ($download) {
@@ -60,7 +61,7 @@ class DownloadController extends Controller
         ]);
     }
 
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
         $this->authorize('create', Download::class);
 
@@ -97,7 +98,7 @@ class DownloadController extends Controller
             ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Download has been created successfully')]]);
     }
 
-    public function edit(Download $download): \Inertia\Response
+    public function edit(Download $download): Response
     {
         $this->authorize('update', Download::class);
 

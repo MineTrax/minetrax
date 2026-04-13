@@ -1,6 +1,6 @@
 <script setup>
-import millify from"millify";
-import KpiOverviewCard from"@/Components/Dashboard/KpiOverviewCard.vue";
+import { millify } from "millify";
+import KpiOverviewCard from "@/Components/Dashboard/KpiOverviewCard.vue";
 
 defineProps({
     icon: {

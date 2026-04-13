@@ -3,18 +3,16 @@
 namespace App\Queries\Filters;
 
 use App\Utils\Helpers\Helper;
-use Illuminate\Support\Str;
-use Spatie\QueryBuilder\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Str;
+use Spatie\QueryBuilder\Filters\Filter;
 
 class FilterMultipleFields implements Filter
 {
-    public function __construct(public $fields)
-    {
-    }
+    public function __construct(public $fields) {}
 
-    public function __invoke(Builder $query, $value, string $property): Builder
+    public function __invoke(Builder $query, mixed $value, string $property): void
     {
         $fields = $this->fields;
 
@@ -24,29 +22,27 @@ class FilterMultipleFields implements Filter
                 // Handle Relation Field
                 if ($this->isRelationProperty($query, $field)) {
                     $query->orWhereHas(Str::before($field, '.'), function ($query) use ($field, $val) {
-                        $query->where(Str::after($field, '.'), 'LIKE', "%" . $val . "%");
+                        $query->where(Str::after($field, '.'), 'LIKE', '%'.$val.'%');
                     });
+
                     continue;
                 } else {
                     // Handle No Relation Field
-                    $query->orWhere($field, 'LIKE', "%" . $val . "%");
+                    $query->orWhere($field, 'LIKE', '%'.$val.'%');
                 }
             }
         });
-
-        return $query;
     }
-
 
     private function isRelationProperty(Builder $query, string $property): bool
     {
-        if (!Str::contains($property, '.')) {
+        if (! Str::contains($property, '.')) {
             return false;
         }
 
         $firstRelationship = explode('.', $property)[0];
 
-        if (!method_exists($query->getModel(), $firstRelationship)) {
+        if (! method_exists($query->getModel(), $firstRelationship)) {
             return false;
         }
 

@@ -9,11 +9,12 @@ import {
 import formKitConfig from "/formkit.config.js";
 import { createInertiaApp, Head, Link } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
-import { ZiggyVue } from "../../../vendor/tightenco/ziggy";
+import { ZiggyVue } from "ziggy-js";
+import themePages from "virtual:theme-pages";
 
 import VueTippy from "vue-tippy";
 import translations from "@/Mixins/translations.js";
-import confirmDirective from "./Directives/confirm.js";
+import confirmDirective from "@/Directives/confirm.js";
 import Swal from "sweetalert2";
 import Particles from "@tsparticles/vue3";
 import AppHead from "@/Components/AppHead.vue";
@@ -24,7 +25,7 @@ createInertiaApp({
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,
-            import.meta.glob("./Pages/**/*.vue") // Note: use import.meta.globEager to disable chunking behavior
+            themePages
         ),
     setup({ el, App, props, plugin }) {
         const VueApp = createApp({ render: () => h(App, props) })

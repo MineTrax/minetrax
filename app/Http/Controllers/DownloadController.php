@@ -6,12 +6,13 @@ use App\Models\Download;
 use App\Queries\Filters\FilterMultipleFields;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class DownloadController extends Controller
 {
-    public function index(Request $request): \Inertia\Response
+    public function index(Request $request): Response
     {
         $isAuthenticated = (bool) $request->user();
 
@@ -41,11 +42,11 @@ class DownloadController extends Controller
                 });
             })
             ->select($fields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'description'])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-created_at')
             ->paginate($perPage)
             ->withQueryString();
