@@ -7,10 +7,11 @@ use App\Http\Requests\CreateCustomFormRequest;
 use App\Http\Requests\UpdateCustomFormRequest;
 use App\Models\CustomForm;
 use App\Queries\Filters\FilterMultipleFields;
+use Arr;
+use Carbon\Carbon;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
-use Arr;
 use Str;
 
 class CustomFormController extends Controller
@@ -25,7 +26,7 @@ class CustomFormController extends Controller
         }
 
         $customForms = QueryBuilder::for(CustomForm::class)
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'title',
                 'slug',
@@ -38,8 +39,8 @@ class CustomFormController extends Controller
                 'created_at',
                 'created_by',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'title', 'slug', 'description', 'min_role_weight_to_view_submission'])),
-            ])
-            ->allowedSorts(['id', 'title', 'slug', 'status', 'max_submission_per_user', 'can_create_submission', 'min_role_weight_to_view_submission', 'is_notify_staff_on_submission', 'is_visible_in_listing', 'created_at', 'submissions_count'])
+            )
+            ->allowedSorts('id', 'title', 'slug', 'status', 'max_submission_per_user', 'can_create_submission', 'min_role_weight_to_view_submission', 'is_notify_staff_on_submission', 'is_visible_in_listing', 'created_at', 'submissions_count')
             ->withCount('submissions')
             ->defaultSort('-id')
             ->paginate($perPage)
@@ -125,14 +126,14 @@ class CustomFormController extends Controller
         $submissions = $customForm->submissions()->latest()->get();
 
         $data = [];
-        foreach($customForm->fields as $field) {
+        foreach ($customForm->fields as $field) {
             $data[$field['name']] = [
                 'label' => $field['label'],
                 'type' => $field['type'],
                 'data' => [],
             ];
 
-            switch($field['type']) {
+            switch ($field['type']) {
                 case 'text':
                 case 'textarea':
                 case 'email':
@@ -140,106 +141,113 @@ class CustomFormController extends Controller
                 case 'password':
                 case 'tel':
                 case 'url':
-                    $data[$field['name']]['data'] = $submissions->reduce(function($carry, $submission) use ($field) {
-                        $found = Arr::first($submission->data, function($value) use ($field) {
+                    $data[$field['name']]['data'] = $submissions->reduce(function ($carry, $submission) use ($field) {
+                        $found = Arr::first($submission->data, function ($value) use ($field) {
                             return $value['name'] === $field['name'];
                         });
 
                         $carry[] = $found ? Str::limit($found['data'], 100) : null;
+
                         return $carry;
                     }, []);
                     break;
                 case 'select':
                 case 'radio':
                 case 'multiselect':
-                    $data[$field['name']]['data'] = $submissions->reduce(function($carry, $submission) use ($field) {
-                        $found = Arr::first($submission->data, function($value) use ($field) {
+                    $data[$field['name']]['data'] = $submissions->reduce(function ($carry, $submission) use ($field) {
+                        $found = Arr::first($submission->data, function ($value) use ($field) {
                             return $value['name'] === $field['name'];
                         });
 
                         if ($found) {
                             if ($field['type'] === 'multiselect') {
-                                foreach($found['data'] as $value) {
+                                foreach ($found['data'] as $value) {
                                     $carry[$value] = isset($carry[$value]) ? $carry[$value] + 1 : 1;
                                 }
                             } else {
                                 $carry[$found['data']] = isset($carry[$found['data']]) ? $carry[$found['data']] + 1 : 1;
                             }
                         }
+
                         return $carry;
                     }, []);
                     break;
                 case 'checkbox':
-                    $data[$field['name']]['data'] = $submissions->reduce(function($carry, $submission) use ($field) {
-                        $found = Arr::first($submission->data, function($value) use ($field) {
+                    $data[$field['name']]['data'] = $submissions->reduce(function ($carry, $submission) use ($field) {
+                        $found = Arr::first($submission->data, function ($value) use ($field) {
                             return $value['name'] === $field['name'];
                         });
 
                         if ($found) {
-                            $checked = $found['data'] == 1 ? __("Yes") : __("No");
+                            $checked = $found['data'] == 1 ? __('Yes') : __('No');
                             $carry[$checked] = isset($carry[$checked]) ? $carry[$checked] + 1 : 1;
                         }
+
                         return $carry;
                     }, []);
                     break;
                 case 'datetime-local':
                 case 'date':
                     // group submissions count by month year
-                    $data[$field['name']]['data'] = $submissions->reduce(function($carry, $submission) use ($field) {
-                        $found = Arr::first($submission->data, function($value) use ($field) {
+                    $data[$field['name']]['data'] = $submissions->reduce(function ($carry, $submission) use ($field) {
+                        $found = Arr::first($submission->data, function ($value) use ($field) {
                             return $value['name'] === $field['name'];
                         });
 
                         if ($found) {
-                            $date = \Carbon\Carbon::parse($found['data']);
+                            $date = Carbon::parse($found['data']);
                             $key = $date->format('Y-m');
                             $carry[$key] = isset($carry[$key]) ? $carry[$key] + 1 : 1;
                         }
+
                         return $carry;
                     }, []);
                     break;
                 case 'time':
                     // group submissions count by hour
-                    $data[$field['name']]['data'] = $submissions->reduce(function($carry, $submission) use ($field) {
-                        $found = Arr::first($submission->data, function($value) use ($field) {
+                    $data[$field['name']]['data'] = $submissions->reduce(function ($carry, $submission) use ($field) {
+                        $found = Arr::first($submission->data, function ($value) use ($field) {
                             return $value['name'] === $field['name'];
                         });
 
                         if ($found) {
-                            $date = \Carbon\Carbon::parse($found['data']);
+                            $date = Carbon::parse($found['data']);
                             $key = $date->format('H');
                             $carry[$key] = isset($carry[$key]) ? $carry[$key] + 1 : 1;
                         }
+
                         return $carry;
                     }, []);
                     break;
                 case 'month':
                     // group submissions count by month
-                    $data[$field['name']]['data'] = $submissions->reduce(function($carry, $submission) use ($field) {
-                        $found = Arr::first($submission->data, function($value) use ($field) {
+                    $data[$field['name']]['data'] = $submissions->reduce(function ($carry, $submission) use ($field) {
+                        $found = Arr::first($submission->data, function ($value) use ($field) {
                             return $value['name'] === $field['name'];
                         });
 
                         if ($found) {
-                            $date = \Carbon\Carbon::parse($found['data']);
+                            $date = Carbon::parse($found['data']);
                             $key = $date->format('F');
                             $carry[$key] = isset($carry[$key]) ? $carry[$key] + 1 : 1;
                         }
+
                         return $carry;
                     }, []);
                     break;
                 case 'week':
                     // group submissions count by week-year
-                    $data[$field['name']]['data'] = $submissions->reduce(function($carry, $submission) use ($field) {
-                        $found = Arr::first($submission->data, function($value) use ($field) {
+                    $data[$field['name']]['data'] = $submissions->reduce(function ($carry, $submission) use ($field) {
+                        $found = Arr::first($submission->data, function ($value) use ($field) {
                             return $value['name'] === $field['name'];
                         });
 
                         if ($found) {
-                            $date = \Carbon\Carbon::parse($found['data']);
+                            $date = Carbon::parse($found['data']);
                             $key = $date->format('W-Y');
                             $carry[$key] = isset($carry[$key]) ? $carry[$key] + 1 : 1;
                         }
+
                         return $carry;
                     }, []);
             }

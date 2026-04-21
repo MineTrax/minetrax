@@ -325,7 +325,7 @@ import AppLayout from"@/Layouts/AppLayout.vue";
 import Icon from"@/Components/Icon.vue";
 import * as skinview3d from"skinview3d";
 import { useHelpers } from"@/Composables/useHelpers";
-import millify from"millify";
+import { millify } from"millify";
 import PlayerSubMenu from"@/Shared/PlayerSubMenu.vue";
 import { LockOpenIcon, ClockIcon, CubeIcon, UserIcon, ChartBarIcon, FireIcon } from"@heroicons/vue/24/outline";
 import { useTranslations } from"@/Composables/useTranslations";

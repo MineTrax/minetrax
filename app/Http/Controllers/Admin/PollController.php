@@ -24,7 +24,7 @@ class PollController extends Controller
 
         $polls = QueryBuilder::for(Poll::class)
             ->with(['options', 'creator:id,name,username,profile_photo_path'])
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'question',
                 'is_closed',
@@ -34,8 +34,8 @@ class PollController extends Controller
                 'created_by',
                 'updated_by',
                 AllowedFilter::custom('q', new FilterMultipleFields(['question', 'id'])),
-            ])
-            ->allowedSorts(['id', 'question', 'is_closed', 'started_at', 'closed_at', 'created_at', 'created_by', 'updated_by'])
+            )
+            ->allowedSorts('id', 'question', 'is_closed', 'started_at', 'closed_at', 'created_at', 'created_by', 'updated_by')
             ->defaultSort('-id')
             ->paginate($perPage)
             ->withQueryString();

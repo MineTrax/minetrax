@@ -65,5 +65,14 @@ Command for running queue in dev.
 php artisan queue:work --queue=longtask,default redis-longtask --timeout=0 --sleep=3 --tries=3
 ```
 
+## Custom Themes
+MineTrax supports custom themes with a theme inheritance system. Create a theme that only overrides the files you want to change — everything else falls back to the default theme automatically.
+
+```bash
+php artisan theme:create my-theme
+```
+
+Set `APP_THEME=my-theme` in your `.env` and start developing. See the [theme development guide](https://minetrax.github.io/docs/development/develop-custom-themes) for details.
+
 ## License
 MIT License

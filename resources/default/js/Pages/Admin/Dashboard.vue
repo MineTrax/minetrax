@@ -1,18 +1,18 @@
 <script setup>
-import KpiOverviewCard from"@/Components/Dashboard/KpiOverviewCard.vue";
-import AppHead from"@/Components/AppHead.vue";
-import AdminLayout from"@/Layouts/AdminLayout.vue";
-import millify from"millify";
-import { UserPlusIcon, UserIcon, FireIcon, ChatBubbleBottomCenterTextIcon } from"@heroicons/vue/24/solid";
-import KpiOverviewCardForDashboard from"@/Components/Dashboard/KpiOverviewCardForDashboard.vue";
-import PlayersOverTimeMetricBox from"@/Shared/PlayersOverTimeMetricBox.vue";
-import PlayersPerServerMetricBox from"@/Shared/PlayersPerServerMetricBox.vue";
-import PlayersPerCountryMetricBox from"@/Shared/PlayersPerCountryMetricBox.vue";
-import NetworkTrendsMetricBox from"@/Shared/NetworkTrendsMetricBox.vue";
-import { useAuthorizable } from"@/Composables/useAuthorizable";
-import { useHelpers } from"@/Composables/useHelpers";
-import PlayersJoinAddressMetricBox from"@/Shared/PlayersJoinAddressMetricBox.vue";
-import PlayersMinecraftVersionMetricBox from"@/Shared/PlayersMinecraftVersionMetricBox.vue";
+import AppHead from "@/Components/AppHead.vue";
+import KpiOverviewCard from "@/Components/Dashboard/KpiOverviewCard.vue";
+import KpiOverviewCardForDashboard from "@/Components/Dashboard/KpiOverviewCardForDashboard.vue";
+import { useAuthorizable } from "@/Composables/useAuthorizable";
+import { useHelpers } from "@/Composables/useHelpers";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import NetworkTrendsMetricBox from "@/Shared/NetworkTrendsMetricBox.vue";
+import PlayersJoinAddressMetricBox from "@/Shared/PlayersJoinAddressMetricBox.vue";
+import PlayersMinecraftVersionMetricBox from "@/Shared/PlayersMinecraftVersionMetricBox.vue";
+import PlayersOverTimeMetricBox from "@/Shared/PlayersOverTimeMetricBox.vue";
+import PlayersPerCountryMetricBox from "@/Shared/PlayersPerCountryMetricBox.vue";
+import PlayersPerServerMetricBox from "@/Shared/PlayersPerServerMetricBox.vue";
+import { ChatBubbleBottomCenterTextIcon, FireIcon, UserIcon, UserPlusIcon } from "@heroicons/vue/24/solid";
+import { millify } from "millify";
 
 const { can } = useAuthorizable();
 const { formatTimeAgoToNow } = useHelpers();

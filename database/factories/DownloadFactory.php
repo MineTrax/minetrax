@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Download;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Download>
+ * @extends Factory<Download>
  */
 class DownloadFactory extends Factory
 {
@@ -16,19 +17,21 @@ class DownloadFactory extends Factory
      */
     public function definition(): array
     {
+        $name = $this->faker->unique()->words(3, true);
+
         return [
-            //
-            'name' => $this->faker->name,
+            'name' => $name,
+            'slug' => \Str::slug($name),
             'description' => $this->faker->text,
-            'is_external' => $this->faker->boolean,
-            'is_exposed_external_url' => $this->faker->boolean,
-            'is_only_auth' => $this->faker->boolean,
-            'is_active' => $this->faker->boolean,
-            'file_name' => $this->faker->userName(),
-            'file_size' => $this->faker->randomNumber(),
-            'file_path' => $this->faker->filePath(),
-            'min_role_weight_required' => $this->faker->randomNumber(),
-            'download_count' => $this->faker->randomNumber(),
+            'is_external' => false,
+            'is_external_url_hidden' => false,
+            'is_only_auth' => false,
+            'is_active' => true,
+            'file_name' => $this->faker->userName().'.zip',
+            'file_url' => null,
+            'min_role_weight_required' => null,
+            'download_count' => 0,
+            'created_by' => 1,
         ];
     }
 }

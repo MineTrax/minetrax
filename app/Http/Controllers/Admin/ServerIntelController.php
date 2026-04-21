@@ -461,7 +461,7 @@ class ServerIntelController extends Controller
                 'type',
                 'created_at',
             ])
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'server_id',
                 'data',
@@ -471,9 +471,9 @@ class ServerIntelController extends Controller
                 'type',
                 'created_at',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data', 'causer_username', 'causer_uuid', 'type'])),
-            ])
+            )
             ->with(['server:id,name'])
-            ->allowedSorts(['id', 'server_id', 'causer_uuid', 'causer_username', 'type', 'channel', 'created_at'])
+            ->allowedSorts('id', 'server_id', 'causer_uuid', 'causer_username', 'type', 'channel', 'created_at')
             ->defaultSort('-id')
             ->simplePaginate($perPage)
             ->withQueryString();
@@ -518,15 +518,15 @@ class ServerIntelController extends Controller
                 'data',
                 'created_at',
             ])
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'server_id',
                 'data',
                 'created_at',
                 AllowedFilter::custom('q', new FilterMultipleFields(['data'])),
-            ])
+            )
             ->with(['server:id,name'])
-            ->allowedSorts(['id', 'server_id', 'created_at'])
+            ->allowedSorts('id', 'server_id', 'created_at')
             ->defaultSort('-id')
             ->simplePaginate($perPage)
             ->withQueryString();

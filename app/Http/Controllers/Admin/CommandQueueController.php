@@ -49,7 +49,7 @@ class CommandQueueController extends Controller
 
         $commandQueues = QueryBuilder::for(CommandQueue::class)
             ->with(['server:id,name,hostname', 'player:id,uuid,username,skin_texture_id', 'user:id,name,username,profile_photo_path'])
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 'server.name',
                 'player.username',
@@ -65,7 +65,7 @@ class CommandQueueController extends Controller
                     'user.name',
                 ])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-created_at')
             ->simplePaginate($perPage)
             ->through(function ($commandQueue) {
@@ -74,6 +74,7 @@ class CommandQueueController extends Controller
                         ? $commandQueue->config['viewable_parsed_command']
                         : $commandQueue->parsed_command;
                 }
+
                 return $commandQueue;
             })
             ->withQueryString();

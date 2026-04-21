@@ -23,7 +23,7 @@ class BadgeController extends Controller
         }
 
         $badges = QueryBuilder::for(Badge::class)->withCount('users')
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'name',
                 'shortname',
@@ -32,8 +32,8 @@ class BadgeController extends Controller
                 'created_at',
                 'updated_at',
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'shortname', 'id'])),
-            ])
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at', 'shortname', 'is_sticky', 'sort_order'])
+            )
+            ->allowedSorts('id', 'name', 'created_at', 'updated_at', 'shortname', 'is_sticky', 'sort_order')
             ->defaultSort('sort_order')
             ->paginate($perPage)
             ->withQueryString();

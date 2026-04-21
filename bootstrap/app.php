@@ -1,55 +1,88 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Create The Application
-|--------------------------------------------------------------------------
-|
-| The first thing we will do is create a new Laravel application instance
-| which serves as the "glue" for all the components of Laravel, and is
-| the IoC container for the system binding all of the various parts.
-|
-*/
+use App\Console\Commands\ResetUserPasswordCommand;
+use App\Http\Middleware\AuthenticateApiKey;
+use App\Http\Middleware\EnsureEmailIsVerifiedWhenFeatureEnabled;
+use App\Http\Middleware\ForbidBannedUser;
+use App\Http\Middleware\ForbidMutedUser;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\ImpersonateSanctum;
+use App\Http\Middleware\RedirectUncompletedUser;
+use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\StaffMember;
+use App\Jobs\CalculatePlayersJob;
+use App\Jobs\RunAwaitingCommandQueuesJob;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withCommands([
+        ResetUserPasswordCommand::class,
+    ])
+    ->withSchedule(function (Schedule $schedule) {
+        $playerFetcherInterval = config('minetrax.players_fetcher_cron_interval') ?? 'hourly';
+        $schedule->job(new CalculatePlayersJob)->{$playerFetcherInterval}();
+        $schedule->job(new RunAwaitingCommandQueuesJob)->everyMinute();
 
-/*
-|--------------------------------------------------------------------------
-| Bind Important Interfaces
-|--------------------------------------------------------------------------
-|
-| Next, we need to bind some important interfaces into the container so
-| we will be able to resolve them when needed. The kernels serve the
-| incoming requests to this application from both the web and CLI.
-|
-*/
+        $schedule->command('telescope:prune')->daily();
+        $schedule->command('queue:prune-batches --hours=48 --unfinished=72')->daily();
+        $schedule->command('model:prune')->daily();
+        $schedule->command('cache:prune-stale-tags')->hourly();
 
-$app->singleton(
-    Illuminate\Contracts\Http\Kernel::class,
-    App\Http\Kernel::class
-);
+        $backupEnabled = config('backup.enabled');
+        if ($backupEnabled) {
+            $schedule->command('backup:clean')->daily()->at('01:00');
+            $schedule->command('backup:run')->daily()->at('01:30');
+        }
+    })
+    ->withMiddleware(function (Middleware $middleware) {
+        // Trust all proxies
+        $middleware->trustProxies(at: '*');
 
-$app->singleton(
-    Illuminate\Contracts\Console\Kernel::class,
-    App\Console\Kernel::class
-);
+        // Web middleware group
+        $middleware->web(append: [
+            HandleInertiaRequests::class,
+            SetLocale::class,
+        ]);
 
-$app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class,
-    App\Exceptions\Handler::class
-);
+        // API middleware group
+        $middleware->api(prepend: [
+            EnsureFrontendRequestsAreStateful::class,
+            ImpersonateSanctum::class,
+        ]);
 
-/*
-|--------------------------------------------------------------------------
-| Return The Application
-|--------------------------------------------------------------------------
-|
-| This script returns the application instance. The instance is given to
-| the calling script so we can separate the building of the instances
-| from the actual running of the application and sending responses.
-|
-*/
+        // Middleware aliases
+        $middleware->alias([
+            'forbid-banned-user' => ForbidBannedUser::class,
+            'forbid-muted-user' => ForbidMutedUser::class,
+            'redirect-uncompleted-user' => RedirectUncompletedUser::class,
+            'verified-if-enabled' => EnsureEmailIsVerifiedWhenFeatureEnabled::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'staff-member' => StaffMember::class,
+            'auth.api-key' => AuthenticateApiKey::class,
+        ]);
 
-return $app;
+        // Throttle with Redis
+        $middleware->throttleWithRedis();
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->dontFlash([
+            'password',
+            'password_confirmation',
+        ]);
+    })
+    ->create();

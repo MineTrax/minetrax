@@ -46,6 +46,17 @@ php artisan queue:restart
 chmod -R 775 storage/* bootstrap/cache
 chown -R $USER:www-data .
 
+# Build frontend assets if using a custom theme
+APP_THEME=$(grep -oP '^APP_THEME=\K.*' .env 2>/dev/null || echo "default")
+
+if [ "$APP_THEME" != "default" ]; then
+    echo "${Cyan}Custom theme detected ($APP_THEME). Building frontend assets..."
+    npm ci
+    npm run prod
+else
+    echo "${Green}Using default theme (pre-built assets)."
+fi
+
 php artisan up
 php artisan optimize
 

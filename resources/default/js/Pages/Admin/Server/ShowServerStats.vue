@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from"vue";
 import _ from"lodash";
-import millify from"millify";
+import { millify } from"millify";
 import AppHead from"@/Components/AppHead.vue";
 import AdminLayout from"@/Layouts/AdminLayout.vue";
 import AppBreadcrumb from"@/Shared/AppBreadcrumb.vue";

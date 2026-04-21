@@ -13,16 +13,18 @@ use DB;
 use Exception;
 use Gate;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
+use Inertia\Response;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PlayerController extends Controller
 {
-    public function index(Request $request, PlayerSettings $playerSettings): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function index(Request $request, PlayerSettings $playerSettings): JsonResponse|Response
     {
         $perPage = $request->input('perPage', 15);
         if ($perPage > 100) {
@@ -41,10 +43,11 @@ class PlayerController extends Controller
             'first_seen_at',
             'rank_id',
             'country_id',
-            'skin_texture_id'
+            'skin_texture_id',
         ];
 
-        $positionSortWithoutNullsFirst = AllowedSort::callback('position', new class {
+        $positionSortWithoutNullsFirst = AllowedSort::callback('position', new class
+        {
             public function __invoke(Builder $query)
             {
                 return $query->orderBy(DB::raw('-`position`'), 'desc');
@@ -53,14 +56,14 @@ class PlayerController extends Controller
         $players = QueryBuilder::for(Player::class)
             ->select($fields)
             ->with(['country:id,iso_code,flag,name', 'rank:id,shortname,name'])
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 'country.name',
                 'rank.name',
                 'rank.shortname',
                 AllowedFilter::custom('q', new FilterMultipleFields(['username', 'uuid'])),
             ])
-            ->allowedSorts([
+            ->allowedSorts(
                 'id',
                 'username',
                 'rating',
@@ -68,8 +71,8 @@ class PlayerController extends Controller
                 'play_time',
                 'last_seen_at',
                 'first_seen_at',
-                $positionSortWithoutNullsFirst
-            ])
+                $positionSortWithoutNullsFirst,
+            )
             ->defaultSort($positionSortWithoutNullsFirst)
             ->simplePaginate($perPage)
             ->withQueryString();
@@ -79,7 +82,7 @@ class PlayerController extends Controller
         }
 
         $cacheFor = 10 * 60; // 10 minutes
-        $stats = fn() => Cache::remember('player.index::stats', $cacheFor, function () use ($playerSettings) {
+        $stats = fn () => Cache::remember('player.index::stats', $cacheFor, function () use ($playerSettings) {
             $playerActiveLastDay = $playerSettings->last_seen_day_for_active == -1 ? now()->subYears(100) : now()->subDays($playerSettings->last_seen_day_for_active);
             $totalPlayersCount = Player::fastCount();
             $activePlayersCount = Player::where('last_seen_at', '>=', $playerActiveLastDay)->count();
@@ -199,7 +202,7 @@ class PlayerController extends Controller
         $size = $request->size ?? 100;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = MinecraftSkinUtils::getDefaultSkinImage('avatar', $size);
 
             return $this->streamImage($img);
@@ -230,7 +233,7 @@ class PlayerController extends Controller
         $param = $useUsernameForSkins ? $username : $uuid;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = MinecraftSkinUtils::getDefaultSkinImage('skin');
 
             return $this->streamImage($img, 'png');
@@ -262,7 +265,7 @@ class PlayerController extends Controller
         $scale = $request->scale;
 
         // If we got invalid uuid, and we are not using username for skins, return alex
-        if (!$useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
+        if (! $useUsernameForSkins && $uuid === '00000000-0000-0000-0000-000000000000') {
             $img = MinecraftSkinUtils::getDefaultSkinImage('render');
 
             return $this->streamImage($img, 'png');
@@ -285,12 +288,9 @@ class PlayerController extends Controller
     private function streamImage($img, $imageType = 'jpeg')
     {
         $contentType = "image/{$imageType}";
+
         return response()->stream(function () use ($img, $imageType) {
-            if ($imageType == 'png') {
-                echo $img->toPng();
-            } else {
-                echo $img->toJpeg();
-            }
+            echo $img->encodeUsingMediaType("image/{$imageType}");
         }, 200, ['Content-Type' => $contentType]);
     }
 }

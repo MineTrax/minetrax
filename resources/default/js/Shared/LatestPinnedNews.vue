@@ -96,6 +96,7 @@ import {
 export default {
     components: {
         Icon,
+        NewsTypeBadge,
         Card,
         CardContent,
         Link,

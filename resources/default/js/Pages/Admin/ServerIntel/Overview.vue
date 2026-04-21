@@ -10,7 +10,7 @@ import { useHelpers } from"@/Composables/useHelpers";
 import { useTranslations } from"@/Composables/useTranslations";
 const { secondsToHMS } = useHelpers();
 const { __ } = useTranslations();
-import millify from"millify";
+import { millify } from"millify";
 import ServerIntelOverviewNumbersBox from"@/Shared/ServerIntelOverviewNumbersBox.vue";
 import AlertCard from"@/Components/AlertCard.vue";
 import { Card, CardContent } from"@/Components/ui/card";

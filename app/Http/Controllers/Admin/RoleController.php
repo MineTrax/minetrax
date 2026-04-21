@@ -7,14 +7,15 @@ use App\Http\Requests\CreateRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Permission;
 use App\Models\Role;
-use Inertia\Inertia;
-use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\AllowedFilter;
 use App\Queries\Filters\FilterMultipleFields;
+use Inertia\Inertia;
+use Inertia\Response;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class RoleController extends Controller
 {
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
         $this->authorize('viewAny', Role::class);
 
@@ -24,7 +25,7 @@ class RoleController extends Controller
         }
 
         $roles = QueryBuilder::for(Role::class)->with('permissions:id,name')->withCount('users')
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'name',
                 'created_at',
@@ -34,8 +35,8 @@ class RoleController extends Controller
                 'is_hidden_from_staff_list',
                 'display_name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'display_name', 'id']))
-            ])
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at', 'weight', 'is_staff', 'is_hidden_from_staff_list', 'display_name'])
+            )
+            ->allowedSorts('id', 'name', 'created_at', 'updated_at', 'weight', 'is_staff', 'is_hidden_from_staff_list', 'display_name')
             ->defaultSort('-weight')
             ->paginate($perPage)
             ->withQueryString();
@@ -46,14 +47,14 @@ class RoleController extends Controller
         ]);
     }
 
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
         $this->authorize('create', Role::class);
 
         $permissions = Permission::pluck('name');
 
         return Inertia::render('Admin/Role/CreateRole', [
-            'permissions' => $permissions
+            'permissions' => $permissions,
         ]);
     }
 
@@ -66,7 +67,7 @@ class RoleController extends Controller
             'is_staff' => $request->is_staff,
             'is_hidden_from_staff_list' => $request->is_hidden_from_staff_list,
             'web_message_format' => $request->web_message_format,
-            'weight' => $request->weight
+            'weight' => $request->weight,
         ]);
 
         $role->givePermissionTo($request->permissions);
@@ -93,7 +94,7 @@ class RoleController extends Controller
 
         return Inertia::render('Admin/Role/EditRole', [
             'permissions' => $permissions,
-            'role' => $role
+            'role' => $role,
         ]);
     }
 
@@ -134,6 +135,7 @@ class RoleController extends Controller
         }
 
         $role->delete();
+
         return redirect()->route('admin.role.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Role has been deleted!')]]);
     }

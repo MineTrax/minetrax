@@ -4,7 +4,7 @@ import { useHelpers } from "@/Composables/useHelpers";
 import { useTranslations } from "@/Composables/useTranslations";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PlayerSubMenu from "@/Shared/PlayerSubMenu.vue";
-import millify from "millify";
+import { millify } from "millify";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 

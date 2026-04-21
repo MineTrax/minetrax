@@ -44,11 +44,11 @@ class RecruitmentSubmissionController extends Controller
             })
             ->with(['recruitment:id,title,status,slug'])
             ->select($fields)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 ...$fields,
                 AllowedFilter::custom('q', new FilterMultipleFields(['data', 'status'])),
             ])
-            ->allowedSorts($fields)
+            ->allowedSorts(...$fields)
             ->defaultSort('-created_at')
             ->paginate($perPage)
             ->withQueryString();

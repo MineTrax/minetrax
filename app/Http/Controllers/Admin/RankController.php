@@ -7,7 +7,10 @@ use App\Http\Requests\CreateRankRequest;
 use App\Http\Requests\UpdateRankRequest;
 use App\Models\Rank;
 use App\Queries\Filters\FilterMultipleFields;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -16,7 +19,7 @@ class RankController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Inertia\Response
+     * @return Response
      */
     public function index()
     {
@@ -38,14 +41,13 @@ class RankController extends Controller
                 'created_at',
             ])
             ->withCount('players')
-            ->allowedFilters([
+            ->allowedFilters(
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'shortname', 'id', 'weight', 'total_score_needed', 'total_play_time_needed']))
-            ])
-            ->allowedSorts(['id', 'name', 'weight', 'shortname', 'total_score_needed', 'total_play_time_needed', 'created_at'])
+            )
+            ->allowedSorts('id', 'name', 'weight', 'shortname', 'total_score_needed', 'total_play_time_needed', 'created_at')
             ->defaultSort('-weight', '-id')
             ->paginate($perPage)
             ->withQueryString();
-
 
         return Inertia::render('Admin/Rank/IndexRank', [
             'ranks' => $ranks,
@@ -56,7 +58,7 @@ class RankController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Inertia\Response
+     * @return Response
      */
     public function create()
     {
@@ -68,8 +70,8 @@ class RankController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  Request  $request
+     * @return RedirectResponse
      */
     public function store(CreateRankRequest $request)
     {
@@ -83,7 +85,7 @@ class RankController extends Controller
             'description' => $request->descripion ?? null,
             'total_score_needed' => $request->total_score_needed ?? null,
             'total_play_time_needed' => $request->total_play_time_needed ?? null,
-            'created_by' => $request->user()->id
+            'created_by' => $request->user()->id,
         ]);
 
         // Upload the Photo
@@ -96,39 +98,36 @@ class RankController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Rank  $rank
-     * @return \Inertia\Response
+     * @return Response
      */
     public function show(Rank $rank)
     {
         $this->authorize('view', $rank);
 
         return Inertia::render('Admin/Rank/ShowRank', [
-            'rank' => $rank
+            'rank' => $rank,
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Rank  $rank
-     * @return \Inertia\Response
+     * @return Response
      */
     public function edit(Rank $rank)
     {
         $this->authorize('update', $rank);
 
         return Inertia::render('Admin/Rank/EditRank', [
-            'rank' => $rank
+            'rank' => $rank,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Rank  $rank
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  Request  $request
+     * @return RedirectResponse
      */
     public function update(UpdateRankRequest $request, Rank $rank)
     {
@@ -157,14 +156,14 @@ class RankController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Rank  $rank
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function destroy(Rank $rank)
     {
         $this->authorize('delete', $rank);
 
         $rank->delete();
+
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Rank has been deleted permanently')]]);
     }
@@ -174,7 +173,7 @@ class RankController extends Controller
         $this->authorize('create', Rank::class);
 
         Rank::all()->each->delete();
-        $data = json_decode(file_get_contents(storage_path('seed') . "/ranks.json"), true);
+        $data = json_decode(file_get_contents(storage_path('seed').'/ranks.json'), true);
         \DB::table('ranks')->insert($data);
 
         return redirect()->back()

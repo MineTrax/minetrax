@@ -31,7 +31,7 @@ class UserController extends Controller
         }
 
         $users = QueryBuilder::for(User::class)->with('country:id,name,iso_code')
-            ->allowedFilters([
+            ->allowedFilters(
                 'id',
                 'name',
                 'email',
@@ -45,8 +45,8 @@ class UserController extends Controller
                 AllowedFilter::exact('roles.display_name'),
                 AllowedFilter::custom('q', new FilterMultipleFields(['name', 'email', 'username', 'discord_user_id'])),
                 AllowedFilter::scope('is_verified'),
-            ])
-            ->allowedSorts(['id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at'])
+            )
+            ->allowedSorts('id', 'name', 'email', 'username', 'created_at', 'updated_at', 'country_id', 'last_login_at')
             ->defaultSort('id')
             ->paginate($perPage)
             ->withQueryString();
@@ -183,7 +183,7 @@ class UserController extends Controller
             'badges' => ['sometimes', 'nullable', 'array', 'exists:badges,id'],
             'country_id' => ['required', 'exists:countries,id'],
             'password' => ['sometimes', 'nullable', 'string', Password::min(8)->uncompromised()],
-            'locale' => ['nullable', 'string', 'in:' . implode(',', $localeList)],
+            'locale' => ['nullable', 'string', 'in:'.implode(',', $localeList)],
         ]);
 
         $social_links = [
@@ -218,9 +218,9 @@ class UserController extends Controller
         $user->locale = $request->locale;
 
         // if verified_at was null and now verified is true then mark it as verified & vice versa
-        if ($request->verified && !$user->verified_at) {
+        if ($request->verified && ! $user->verified_at) {
             $user->verified_at = now();
-        } elseif (!$request->verified && $user->verified_at) {
+        } elseif (! $request->verified && $user->verified_at) {
             $user->verified_at = null;
         }
 

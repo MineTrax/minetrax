@@ -40,11 +40,12 @@ return [
 
         'ensure_pages_exist' => true,
 
-        'page_paths' => [
+        'page_paths' => array_unique([
 
             resource_path(config('app.theme').'/js/Pages'),
+            resource_path('default/js/Pages'),
 
-        ],
+        ]),
 
         'page_extensions' => [
 
@@ -58,7 +59,6 @@ return [
         ],
 
     ],
-
 
     /*
     |--------------------------------------------------------------------------
