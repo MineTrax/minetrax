@@ -1,0 +1,1 @@
+var e=new Map,t=class{addShapeGenerator(t,n){this.getShapeGenerator(t)||e.set(t,n)}getShapeGenerator(t){return e.get(t)}getSupportedShapeGenerators(){return e.keys()}};export{t as ShapeManager};
