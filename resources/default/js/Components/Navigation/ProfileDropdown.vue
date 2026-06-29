@@ -95,14 +95,13 @@
         <div class="border-t border-border my-2" />
 
         <!-- Authentication -->
-        <form @submit.prevent="emit('logout')">
-          <jet-dropdown-link
-            as="button"
-            btn-class="font-semibold"
-          >
-            {{ __("Logout") }}
-          </jet-dropdown-link>
-        </form>
+        <jet-dropdown-link
+          as="button"
+          btn-class="font-semibold"
+          @click="emit('logout')"
+        >
+          {{ __("Logout") }}
+        </jet-dropdown-link>
       </ul>
     </NavigationMenuLink>
   </NavigationMenuContent>
