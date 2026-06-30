@@ -1,1 +1,0 @@
-import{A as e,B as t,S as n,U as r,kt as i,qt as a}from"./vue.runtime.esm-bundler-BCOl4Vce.js";i(),e();var o={class:`block font-medium text-sm text-foreground dark:text-foreground`},s={key:0},c={key:1},l={__name:`Label`,props:{value:String},setup(e){return(i,l)=>(t(),n(`label`,o,[e.value?(t(),n(`span`,s,a(e.value),1)):(t(),n(`span`,c,[r(i.$slots,`default`)]))]))}};export{l as t};

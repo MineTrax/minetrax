@@ -1,1 +1,0 @@
-import{A as e,B as t,S as n,d as r,et as i,kt as a,o,qt as s,y as c}from"./vue.runtime.esm-bundler-BCOl4Vce.js";a(),e(),o();var l={class:`text-xs text-destructive`},u={__name:`InputError`,props:{message:String},setup(e){return(a,o)=>i((t(),n(`div`,null,[c(`p`,l,s(e.message),1)],512)),[[r,e.message]])}};export{u as t};
