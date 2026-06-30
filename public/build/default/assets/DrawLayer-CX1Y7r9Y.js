@@ -1,0 +1,1 @@
+var e;(function(e){e[e.BackgroundElement=0]=`BackgroundElement`,e[e.BackgroundDraw=1]=`BackgroundDraw`,e[e.BackgroundMask=2]=`BackgroundMask`,e[e.CanvasSetup=3]=`CanvasSetup`,e[e.PluginContent=4]=`PluginContent`,e[e.Particles=5]=`Particles`,e[e.CanvasCleanup=6]=`CanvasCleanup`,e[e.Foreground=7]=`Foreground`})(e||={});export{e as t};

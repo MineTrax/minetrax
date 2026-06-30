@@ -1,0 +1,1 @@
+import{A as e,B as t,S as n,U as r}from"./vue.runtime.esm-bundler-BCOl4Vce.js";import{t as i}from"./_plugin-vue_export-helper-BDNMzG2s.js";e();var a={},o={class:`px-4 py-3 text-sm text-foreground dark:text-foreground`};function s(e,i){return t(),n(`td`,o,[r(e.$slots,`default`)])}var c=i(a,[[`render`,s]]);export{c as t};
