@@ -51,6 +51,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Trust all proxies
         $middleware->trustProxies(at: '*');
 
+        // All cookies that is/shouldn't be encrypted, like the cookie consent cookie
+        $middleware->encryptCookies(except: [
+            'laravel_cookie_consent',
+        ]);
+
         // Web middleware group
         $middleware->web(append: [
             HandleInertiaRequests::class,
