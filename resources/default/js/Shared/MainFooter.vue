@@ -9,6 +9,8 @@ const isAdminRoute = route().current("admin.*");
 const canShowCustomFooter = !isAdminRoute && customFooterEnabled;
 
 const generalSettings = usePage().props.generalSettings;
+const displayCopyrightName = generalSettings.copyright_name || generalSettings.site_name;
+const copyrightUrl = generalSettings.copyright_url;
 const discordUrl = generalSettings?.discord_invite_url;
 const youtubeUrl = generalSettings?.youtube_url;
 const facebookUrl = generalSettings?.facebook_url;
@@ -497,7 +499,16 @@ if(customFooterData?.style =="variant_1") {
       class="flex flex-col items-center justify-center p-5"
     >
       <div class="text-sm text-foreground dark:text-foreground">
-        &copy; {{ $page.props.generalSettings.site_name }} {{ new Date().getFullYear() }}
+        &copy;
+        <a
+          v-if="copyrightUrl"
+          :href="copyrightUrl"
+          class="hover:underline hover:text-primary"
+        >
+          {{ displayCopyrightName }}
+        </a>
+        <template v-else>{{ displayCopyrightName }}</template>
+        {{ new Date().getFullYear() }}
       </div>
       <div
         v-if="$page.props.showPoweredBy"

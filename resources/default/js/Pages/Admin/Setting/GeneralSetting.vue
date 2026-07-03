@@ -38,6 +38,8 @@ const breadcrumbItems = [
 
 const form = useForm({
     site_name: props.settings.site_name,
+    copyright_name: props.settings.copyright_name,
+    copyright_url: props.settings.copyright_url,
     enable_mcserver_onlineplayersbox: props.settings.enable_mcserver_onlineplayersbox,
     enable_mcserver_statuspingbox: props.settings.enable_mcserver_statuspingbox,
     enable_ingamechat: props.settings.enable_ingamechat,
@@ -167,6 +169,34 @@ function saveSetting() {
                     :error="form.errors.site_name"
                     type="text"
                     name="site_name"
+                  />
+                </div>
+
+                <!-- Copyright Name -->
+                <div class="col-span-6 sm:col-span-3">
+                  <XInput
+                    id="copyright_name"
+                    v-model="form.copyright_name"
+                    :label="__('Copyright Name')"
+                    :error="form.errors.copyright_name"
+                    type="text"
+                    name="copyright_name"
+                    :help="__('Displayed in the footer. Falls back to Site Name if empty.')"
+                    help-error-flex="flex-col"
+                  />
+                </div>
+
+                <!-- Copyright URL -->
+                <div class="col-span-6 sm:col-span-3">
+                  <XInput
+                    id="copyright_url"
+                    v-model="form.copyright_url"
+                    :label="__('Copyright URL')"
+                    :error="form.errors.copyright_url"
+                    type="text"
+                    name="copyright_url"
+                    :help="__('Optional. If set, the copyright name becomes a link.')"
+                    help-error-flex="flex-col"
                   />
                 </div>
 
