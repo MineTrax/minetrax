@@ -7,6 +7,8 @@ use Spatie\LaravelSettings\Settings;
 class GeneralSettings extends Settings
 {
     public ?string $site_name;
+    public ?string $copyright_name;
+    public ?string $copyright_url;
     public ?string $site_header_logo_path_light;
     public ?string $site_header_logo_path_dark;
 
