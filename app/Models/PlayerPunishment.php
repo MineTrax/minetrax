@@ -51,7 +51,7 @@ class PlayerPunishment extends BaseModel implements HasMedia
 
         return collect($mediaFiles)->map(fn($mediaFile) => [
             'type' => 'media',
-            'data' => $mediaFile,
+            'data' => $mediaFile->toArray(),
         ])->concat(
                 collect($urls)->map(fn($url) => [
                     'type' => 'url',

@@ -145,3 +145,27 @@ test('inertia shares empty permissions for guests', function () {
             ->where('permissions', [])
         );
 });
+
+// ── Cookie consent ──────────────────────────────────────────────────
+
+test('cookie consent is shown when no consent cookie is present', function () {
+    config(['minetrax.cookie_consent_enabled' => true]);
+
+    $this->get(route('home'))
+        ->assertInertia(fn ($page) => $page->where('showCookieConsent', true));
+});
+
+test('cookie consent is hidden when the plaintext consent cookie is present', function () {
+    config(['minetrax.cookie_consent_enabled' => true]);
+
+    $this->withUnencryptedCookie('laravel_cookie_consent', '1')
+        ->get(route('home'))
+        ->assertInertia(fn ($page) => $page->where('showCookieConsent', false));
+});
+
+test('cookie consent is hidden when the feature is disabled', function () {
+    config(['minetrax.cookie_consent_enabled' => false]);
+
+    $this->get(route('home'))
+        ->assertInertia(fn ($page) => $page->where('showCookieConsent', false));
+});
