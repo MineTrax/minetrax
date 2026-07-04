@@ -26,6 +26,8 @@ class GeneralSettingController extends Controller
     {
         $request->validate([
             'site_name' => 'required|string|max:50',
+            'copyright_name' => 'nullable|string|max:50',
+            'copyright_url' => 'nullable|url|max:255',
             'enable_mcserver_onlineplayersbox' => 'required|boolean',
             'enable_mcserver_statuspingbox' => 'required|boolean',
             'enable_ingamechat' => 'required|boolean',
@@ -64,6 +66,8 @@ class GeneralSettingController extends Controller
             'enable_topplayersbox' => 'required|boolean',
         ]);
         $settings->site_name = $request->input('site_name');
+        $settings->copyright_name = $request->input('copyright_name') ?? null;
+        $settings->copyright_url = $request->input('copyright_url') ?? null;
         $settings->enable_mcserver_onlineplayersbox = $request->input('enable_mcserver_onlineplayersbox');
         $settings->enable_mcserver_statuspingbox = $request->input('enable_mcserver_statuspingbox');
         $settings->enable_ingamechat = $request->input('enable_ingamechat');
