@@ -36,7 +36,7 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         }
 
         // return if ai insights is disabled
-        if (! config('minetrax.banwarden.ai_insights_enabled')) {
+        if (!config('minetrax.banwarden.ai_insights_enabled')) {
             return;
         }
 
@@ -127,14 +127,14 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         $lastSessionsJsonString = json_encode($pastSessions);
 
         // Possible Alts
-        if (! $this->punishment->ip_address) {
+        if (!$this->punishment->ip_address) {
             $altPlayers = collect();
         } else {
-            $firstTwoOctets = explode('.', $this->punishment->ip_address);
-            $firstTwoOctets = $firstTwoOctets[0].'.'.$firstTwoOctets[1].'.%';
+            $firstThreeOctets = explode('.', $this->punishment->ip_address);
+            $firstThreeOctets = $firstThreeOctets[0] . '.' . $firstThreeOctets[1] . '.' . $firstThreeOctets[2] . '.%';
             $altUuids = MinecraftPlayerSession::distinct()->select('player_uuid')
                 ->where('player_uuid', '!=', $this->punishment->uuid)
-                ->where('player_ip_address', 'LIKE', $firstTwoOctets)
+                ->where('player_ip_address', 'LIKE', $firstThreeOctets)
                 ->pluck('player_uuid');
             $altPlayers = Player::select(['id', 'uuid', 'username', 'first_seen_at', 'last_seen_at', 'country_id', 'ip_address', 'play_time'])
                 ->whereIn('uuid', $altUuids)
