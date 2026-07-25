@@ -6,11 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Services\AskDbChatService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Laravel\Ai\Responses\Data\ToolResult;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 class AskDbController extends Controller
 {
+    /**
+     * Tool results are truncated to this length in the response payload, they are only for display.
+     */
+    protected const TOOL_RESULT_DISPLAY_MAX_CHARACTERS = 5000;
+
     public function __construct()
     {
         $this->middleware('can:use ask_db');
@@ -72,6 +79,11 @@ class AskDbController extends Controller
                         'promptTokens' => $response->usage->promptTokens,
                         'completionTokens' => $response->usage->completionTokens,
                     ],
+                    'toolCalls' => $response->toolResults->map(fn (ToolResult $toolResult) => [
+                        'name' => $toolResult->name,
+                        'arguments' => $toolResult->arguments,
+                        'result' => Str::limit((string) $toolResult->result, self::TOOL_RESULT_DISPLAY_MAX_CHARACTERS),
+                    ])->values()->all(),
                 ],
             ]);
         } catch (\Exception $e) {

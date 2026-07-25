@@ -4,6 +4,7 @@ use App\Ai\Agents\AskDbAgent;
 use App\Models\User;
 use Laravel\Ai\Models\Conversation;
 use Laravel\Ai\Models\ConversationMessage;
+use Laravel\Ai\Responses\Data\ToolCall;
 
 beforeEach(function () {
     $this->superAdmin = User::whereId(1)->first();
@@ -48,7 +49,8 @@ test('askdb query returns ai response as html with usage', function () {
         ->assertSuccessful()
         ->assertJsonPath('data.type', 'assistant')
         ->assertJsonPath('data.usage.promptTokens', 0)
-        ->assertJsonPath('data.usage.completionTokens', 0);
+        ->assertJsonPath('data.usage.completionTokens', 0)
+        ->assertJsonPath('data.toolCalls', []);
 
     expect($response->json('data.content'))->toContain('<strong>there</strong>');
 
@@ -58,6 +60,21 @@ test('askdb query returns ai response as html with usage', function () {
         ->and(ConversationMessage::where('role', 'user')->count())->toBe(1)
         ->and(ConversationMessage::where('role', 'assistant')->count())->toBe(1)
         ->and(Conversation::first()->user_id)->toBe($this->superAdmin->id);
+});
+
+test('askdb query returns tools used by the agent', function () {
+    AskDbAgent::fake([
+        new ToolCall('tool_1', 'query_database', ['query' => 'select 1 as one']),
+        'There is **one** row',
+    ])->preventStrayPrompts();
+
+    $this->actingAs($this->superAdmin)
+        ->postJson(route('admin.ask-db.query'), ['prompt' => 'How many rows?'])
+        ->assertSuccessful()
+        ->assertJsonCount(1, 'data.toolCalls')
+        ->assertJsonPath('data.toolCalls.0.name', 'query_database')
+        ->assertJsonPath('data.toolCalls.0.arguments.query', 'select 1 as one')
+        ->assertJsonPath('data.toolCalls.0.result', '[{"one":1}]');
 });
 
 test('consecutive askdb queries continue the same conversation', function () {
