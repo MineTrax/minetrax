@@ -23,7 +23,6 @@ class PlayerPunishmentFactory extends Factory
             'plugin_name' => $this->faker->randomElement(['litebans', 'advancedban', 'libertybans']),
             'plugin_punishment_id' => $this->faker->uuid,
             'uuid' => $this->faker->uuid,
-            'username' => $this->faker->userName,
             'ip_address' => $this->faker->ipv4,
             'player_id' => null,
 

@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\AskDbService;
+use App\Services\AskDbChatService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
-use Prism\Prism\ValueObjects\Messages\AssistantMessage;
-use Prism\Prism\ValueObjects\Messages\UserMessage;
 
 class AskDbController extends Controller
 {
@@ -19,28 +16,22 @@ class AskDbController extends Controller
         $this->middleware('can:use ask_db');
     }
 
-    public function index(Request $request)
+    public function index(Request $request, AskDbChatService $askDbChatService)
     {
         $featureEnabled = config('minetrax.askdb_enabled');
 
-        $userId = $request->user()->id;
-        $userChatSessionHistory = Cache::get("askdb::user_chat_session::{$userId}", []);
-
-        $markdownConverter = new GithubFlavoredMarkdownConverter();
+        $markdownConverter = new GithubFlavoredMarkdownConverter([
+            'html_input' => 'escape',
+            'allow_unsafe_links' => false,
+        ]);
         $chatHistory = [];
-        foreach ($userChatSessionHistory as $message) {
-            if ($message instanceof AssistantMessage && $message->content) {
-                $message = $markdownConverter->convertToHtml($message->content)->getContent();
-                $chatHistory[] = [
-                    'type' => 'assistant',
-                    'content' => $message,
-                ];
-            } else if ($message instanceof UserMessage) {
-                $chatHistory[] = [
-                    'type' => 'user',
-                    'content' => $message->text(),
-                ];
-            }
+        foreach ($askDbChatService->history($request->user()) as $message) {
+            $chatHistory[] = [
+                'type' => $message['type'],
+                'content' => $message['type'] === 'assistant'
+                    ? $markdownConverter->convert($message['content'])->getContent()
+                    : $message['content'],
+            ];
         }
 
         return Inertia::render('Admin/AskDb/IndexAskDb', [
@@ -50,11 +41,11 @@ class AskDbController extends Controller
         ]);
     }
 
-    public function query(Request $request, AskDbService $askDbService)
+    public function query(Request $request, AskDbChatService $askDbChatService)
     {
         $featureEnabled = config('minetrax.askdb_enabled');
         $appDebug = config('app.debug');
-        if (!$featureEnabled) {
+        if (! $featureEnabled) {
             return response()->json([
                 'message' => __('This feature is not enabled!'),
             ], 403);
@@ -65,20 +56,27 @@ class AskDbController extends Controller
         ]);
 
         try {
-            $response = $askDbService->chatWithAskDbForUser($request->prompt, $request->user());
+            $response = $askDbChatService->chat($request->prompt, $request->user());
 
-            $converter = new GithubFlavoredMarkdownConverter();
-            $responseText = $converter->convertToHtml($response->text);
+            $converter = new GithubFlavoredMarkdownConverter([
+                'html_input' => 'escape',
+                'allow_unsafe_links' => false,
+            ]);
+            $responseText = $converter->convert($response->text);
 
             return response()->json([
                 'data' => [
                     'type' => 'assistant',
                     'content' => $responseText->getContent(),
-                    'usage' => $response->usage,
-                ]
+                    'usage' => [
+                        'promptTokens' => $response->usage->promptTokens,
+                        'completionTokens' => $response->usage->completionTokens,
+                    ],
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error($e);
+
             return response()->json([
                 'message' => 'Failed processing your request! Try again after rephrasing your question.',
                 'verbose' => $appDebug ? $e->getMessage() : null,
@@ -86,10 +84,9 @@ class AskDbController extends Controller
         }
     }
 
-    public function reset(Request $request)
+    public function reset(Request $request, AskDbChatService $askDbChatService)
     {
-        $userId = $request->user()->id;
-        Cache::forget("askdb::user_chat_session::{$userId}");
+        $askDbChatService->reset($request->user());
 
         return redirect()->back();
     }

@@ -62,6 +62,13 @@ function askDb() {
         type: "user",
         content: form.prompt,
     });
+    // Show a loading agent bubble immediately so the user knows a reply is coming.
+    const placeholder = reactive({
+        type: "assistant",
+        content: null,
+        loading: true,
+    });
+    results.push(placeholder);
     scrollToBottom();
 
     const prompt = form.prompt;
@@ -70,13 +77,24 @@ function askDb() {
     axios.post(route("admin.ask-db.query"), {
         prompt: prompt,
     }).then((response) => {
-        results.push(response.data.data);
+        // Replace the loading bubble with the real response.
+        const index = results.indexOf(placeholder);
+        if (index !== -1) {
+            results.splice(index, 1, response.data.data);
+        } else {
+            results.push(response.data.data);
+        }
     }).catch((error) => {
         form.error = error.response?.data?.message || error.message || __("Failed to Query Database! Try again after rephrasing your question.");
         if (props.appDebug) {
             form.verboseError = error.response?.data?.verbose || null;
         }
         form.prompt = prompt;
+        // Remove the loading bubble and the user echo.
+        const index = results.indexOf(placeholder);
+        if (index !== -1) {
+            results.splice(index, 1);
+        }
         results.pop();
     }).finally(() => {
         form.loading = false;
@@ -203,17 +221,18 @@ function scrollToBottom() {
           class="space-y-8 text-foreground"
         >
           <div
-            v-for="result in results"
-            :key="result.id"
+            v-for="(result, index) in results"
+            :key="index"
           >
             <div
               v-if="result.type == 'user'"
               class="flex justify-end w-full"
             >
               <div
-                class="px-4 py-2.5 bg-primary text-primary-foreground rounded-2xl"
-                v-html="result.content"
-              />
+                class="px-4 py-2.5 bg-primary text-primary-foreground rounded-2xl whitespace-pre-wrap break-words"
+              >
+                {{ result.content }}
+              </div>
             </div>
             <div
               v-else
@@ -227,6 +246,25 @@ function scrollToBottom() {
               </div>
               <div class="flex-1 min-w-0">
                 <div
+                  v-if="result.loading"
+                  class="flex items-center gap-1.5 py-2.5"
+                  aria-label="Loading"
+                >
+                  <span
+                    class="w-2 h-2 rounded-full bg-muted-foreground/60 animate-bounce"
+                    style="animation-delay: 0ms"
+                  />
+                  <span
+                    class="w-2 h-2 rounded-full bg-muted-foreground/60 animate-bounce"
+                    style="animation-delay: 150ms"
+                  />
+                  <span
+                    class="w-2 h-2 rounded-full bg-muted-foreground/60 animate-bounce"
+                    style="animation-delay: 300ms"
+                  />
+                </div>
+                <div
+                  v-else
                   class="prose max-w-none lg:max-w-[45vw] dark:prose-invert"
                   v-html="result.content"
                 />

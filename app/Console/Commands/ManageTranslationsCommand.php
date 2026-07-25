@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Services\AiService;
+use App\Ai\Agents\TranslationAgent;
+use App\Ai\AiConfig;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
@@ -60,7 +61,7 @@ class ManageTranslationsCommand extends Command
     {
         $action = $this->argument('action');
 
-        if (!in_array($action, ['unused', 'missing', 'sync', 'translate'])) {
+        if (! in_array($action, ['unused', 'missing', 'sync', 'translate'])) {
             $this->error('Invalid action. Use: unused, missing, sync, or translate');
 
             return self::FAILURE;
@@ -99,7 +100,7 @@ class ManageTranslationsCommand extends Command
 
         foreach ($this->scanPaths as $scanPath) {
             $fullPath = base_path($scanPath);
-            if (!is_dir($fullPath)) {
+            if (! is_dir($fullPath)) {
                 continue;
             }
 
@@ -120,7 +121,7 @@ class ManageTranslationsCommand extends Command
      */
     protected function getFilesWithExtensions(string $directory): array
     {
-        $pattern = '/\.(' . implode('|', $this->fileExtensions) . ')$/i';
+        $pattern = '/\.('.implode('|', $this->fileExtensions).')$/i';
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
         );
@@ -156,7 +157,7 @@ class ManageTranslationsCommand extends Command
                     : 1;
                 foreach ($matches[$captureGroup] as $key) {
                     $key = trim($key);
-                    if ($key !== '' && !$this->isPhpVariable($key)) {
+                    if ($key !== '' && ! $this->isPhpVariable($key)) {
                         $keys[] = $key;
                     }
                 }
@@ -182,7 +183,7 @@ class ManageTranslationsCommand extends Command
     protected function getJsonTranslationKeys(): Collection
     {
         $path = lang_path('en.json');
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             $this->error('en.json not found!');
 
             return collect();
@@ -241,7 +242,7 @@ class ManageTranslationsCommand extends Command
             }
 
             $after = count($translations);
-            File::put($file, json_encode($translations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n");
+            File::put($file, json_encode($translations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n");
 
             $locale = basename($file);
             $removed = $before - $after;
@@ -298,7 +299,7 @@ class ManageTranslationsCommand extends Command
 
         ksort($translations, SORT_NATURAL | SORT_FLAG_CASE);
 
-        File::put($path, json_encode($translations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n");
+        File::put($path, json_encode($translations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n");
 
         $this->info("Added {$missingKeys->count()} missing keys to en.json.");
     }
@@ -309,7 +310,7 @@ class ManageTranslationsCommand extends Command
     protected function handleTranslate(): int
     {
         $enPath = lang_path('en.json');
-        if (!File::exists($enPath)) {
+        if (! File::exists($enPath)) {
             $this->error('en.json not found!');
 
             return self::FAILURE;
@@ -324,12 +325,12 @@ class ManageTranslationsCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info('Source: <comment>en.json</comment> (' . count($enTranslations) . ' keys)');
-        $this->info('Targets: <comment>' . implode(', ', $targetLocales) . '</comment>');
+        $this->info('Source: <comment>en.json</comment> ('.count($enTranslations).' keys)');
+        $this->info('Targets: <comment>'.implode(', ', $targetLocales).'</comment>');
         $this->newLine();
 
         try {
-            $aiService = app(AiService::class);
+            AiConfig::ensureConfigured();
         } catch (\Exception $e) {
             $this->error($e->getMessage());
 
@@ -339,7 +340,7 @@ class ManageTranslationsCommand extends Command
         $chunkSize = config('translations.chunk_size', 50);
 
         foreach ($targetLocales as $locale) {
-            $this->translateLocale($aiService, $enTranslations, $locale, $chunkSize);
+            $this->translateLocale($enTranslations, $locale, $chunkSize);
         }
 
         return self::SUCCESS;
@@ -354,7 +355,7 @@ class ManageTranslationsCommand extends Command
     {
         $locales = $this->option('locale');
 
-        if (!empty($locales)) {
+        if (! empty($locales)) {
             return $locales;
         }
 
@@ -362,8 +363,8 @@ class ManageTranslationsCommand extends Command
         $files = glob(lang_path('*.json'));
 
         return collect($files)
-            ->map(fn($file) => basename($file, '.json'))
-            ->reject(fn($locale) => $locale === 'en')
+            ->map(fn ($file) => basename($file, '.json'))
+            ->reject(fn ($locale) => $locale === 'en')
             ->values()
             ->all();
     }
@@ -373,7 +374,7 @@ class ManageTranslationsCommand extends Command
      *
      * @param  array<string, string>  $enTranslations
      */
-    protected function translateLocale(AiService $aiService, array $enTranslations, string $locale, int $chunkSize): void
+    protected function translateLocale(array $enTranslations, string $locale, int $chunkSize): void
     {
         $localePath = lang_path("{$locale}.json");
         $localeTranslations = File::exists($localePath)
@@ -397,11 +398,11 @@ class ManageTranslationsCommand extends Command
         $maxRetries = config('translations.retries', 5);
 
         foreach ($chunks as $index => $chunk) {
-            $this->output->write('  Chunk ' . ($index + 1) . '/' . count($chunks) . '... ');
+            $this->output->write('  Chunk '.($index + 1).'/'.count($chunks).'... ');
 
             $result = null;
             for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
-                $result = $this->translateChunk($aiService, $chunk, $locale);
+                $result = $this->translateChunk($chunk, $locale);
                 if ($result !== null) {
                     break;
                 }
@@ -423,11 +424,11 @@ class ManageTranslationsCommand extends Command
             }
 
             $translated += count($result);
-            $this->info('<comment>' . count($result) . '</comment> keys translated.');
+            $this->info('<comment>'.count($result).'</comment> keys translated.');
 
             // Save after each chunk so progress is visible in the file
             ksort($localeTranslations, SORT_NATURAL | SORT_FLAG_CASE);
-            File::put($localePath, json_encode($localeTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n");
+            File::put($localePath, json_encode($localeTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n");
         }
 
         $this->info("  <comment>{$locale}</comment>: {$translated} keys translated and saved.");
@@ -440,52 +441,48 @@ class ManageTranslationsCommand extends Command
      * @param  array<string, string>  $chunk
      * @return array<string, string>|null
      */
-    protected function translateChunk(AiService $aiService, array $chunk, string $locale): ?array
+    protected function translateChunk(array $chunk, string $locale): ?array
     {
         $localeName = $this->getLocaleName($locale);
         $rules = $this->getTranslationRules($locale);
 
-        $systemPrompt = <<<PROMPT
-        You are a professional translator. Translate the given JSON key-value pairs from English to {$localeName}.
-
-        Rules:
-        - Return ONLY a valid JSON object with the same keys and translated values.
-        - NEVER modify the JSON keys in any way. Keys must be returned character-for-character identical to the input, including all punctuation, colons, spaces, and special characters. Only translate the values.
-        - Preserve all placeholders like :name, :count, :attribute exactly as they are.
-        - Preserve any HTML tags exactly as they are.
-        - Do not translate proper nouns unless they have well-known translations.
-        - Do not add any explanation, markdown, or wrapping around the JSON.
-        {$rules}
-        PROMPT;
-
         $userPrompt = json_encode($chunk, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         try {
-            $response = $aiService->simplePrompt(
-                systemPrompt: $systemPrompt,
-                userPrompt: $userPrompt,
-                temperature: 0.3,
-                maxTokens: 40960,
-            );
+            $response = (new TranslationAgent($localeName, $rules))->prompt($userPrompt);
 
-            // Clean response - strip markdown code fences if present
-            $response = preg_replace('/^```(?:json)?\s*/i', '', trim($response));
-            $response = preg_replace('/\s*```$/', '', $response);
-
-            $decoded = json_decode($response, true);
-            if (!is_array($decoded)) {
+            $result = $this->parseTranslationResponse($response->text, $chunk);
+            if ($result === null) {
                 $this->error('failed (invalid JSON response from AI, skipping chunk)');
-
-                return null;
             }
 
-            // Only return keys that were in the original chunk
-            return array_intersect_key($decoded, $chunk);
+            return $result;
         } catch (\Exception $e) {
             $this->error("failed ({$e->getMessage()})");
 
             return null;
         }
+    }
+
+    /**
+     * Parse the AI translation response into a key-value array limited to the requested chunk keys.
+     *
+     * @param  array<string, string>  $chunk
+     * @return array<string, string>|null
+     */
+    protected function parseTranslationResponse(string $response, array $chunk): ?array
+    {
+        // Clean response - strip markdown code fences if present
+        $response = preg_replace('/^```(?:json)?\s*/i', '', trim($response));
+        $response = preg_replace('/\s*```$/', '', $response);
+
+        $decoded = json_decode($response, true);
+        if (! is_array($decoded)) {
+            return null;
+        }
+
+        // Only return keys that were in the original chunk
+        return array_intersect_key($decoded, $chunk);
     }
 
     /**
@@ -514,7 +511,7 @@ class ManageTranslationsCommand extends Command
             return '';
         }
 
-        return collect($rules)->map(fn($rule) => "- {$rule}")->implode("\n");
+        return collect($rules)->map(fn ($rule) => "- {$rule}")->implode("\n");
     }
 
     /**

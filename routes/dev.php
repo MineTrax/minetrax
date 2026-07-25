@@ -1,25 +1,39 @@
 <?php
 
+use App\Ai\AiConfig;
 use App\Jobs\AccountLinkAfterSuccessCommandJob;
 use App\Jobs\AccountUnlinkAfterSuccessCommandJob;
+use App\Jobs\CalculatePlayersJob;
+use App\Jobs\CalculatePlayersRatingJob;
+use App\Jobs\CalculatePlayersScoreJob;
 use App\Jobs\GeneratePunishmentInsightsJob;
 use App\Jobs\RunAwaitingCommandQueuesJob;
 use App\Models\Player;
+use App\Models\PlayerPunishment;
 use App\Models\Server;
-use App\Services\AiService;
-use App\Services\AskDbService;
+use App\Models\User;
+use App\Services\AskDbChatService;
 use App\Services\MinecraftApiService;
 use App\Settings\GeneralSettings;
+use App\Utils\MinecraftQuery\MinecraftQuery;
+use App\Utils\MinecraftQuery\MinecraftQueryException;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use League\CommonMark\GithubFlavoredMarkdownConverter;
-use GuzzleHttp\Client;
+use xPaw\MinecraftPing;
+use xPaw\MinecraftPingException;
+
+use function Laravel\Ai\agent;
 
 Route::get('time', function () {
     $timestamp = 1644663318245;
-    dd(\Carbon\Carbon::createFromTimestampMs($timestamp));
+    dd(Carbon::createFromTimestampMs($timestamp));
 });
 
 // Route::middleware('auth:sanctum')->get('token', function () {
@@ -27,19 +41,19 @@ Route::get('time', function () {
 // });
 
 Route::get('cal', function () {
-    \App\Jobs\CalculatePlayersJob::dispatch();
+    CalculatePlayersJob::dispatch();
 
     return 'Fetching MC Players';
 });
 
 Route::get('cals', function () {
-    \App\Jobs\CalculatePlayersScoreJob::dispatch();
+    CalculatePlayersScoreJob::dispatch();
 
     return 'Calculating Players Score';
 });
 
 Route::get('calr', function () {
-    \App\Jobs\CalculatePlayersRatingJob::dispatch();
+    CalculatePlayersRatingJob::dispatch();
 
     return 'Calculating Players Rating';
 });
@@ -48,10 +62,10 @@ Route::get('/status', function () {
 
     $Query = null;
     try {
-        $Query = new xPaw\MinecraftPing('144.76.224.57', 25565);
+        $Query = new MinecraftPing('144.76.224.57', 25565);
 
         dd($Query->Query());
-    } catch (xPaw\MinecraftPingException $e) {
+    } catch (MinecraftPingException $e) {
         echo $e->getMessage();
     } finally {
         if ($Query) {
@@ -61,14 +75,14 @@ Route::get('/status', function () {
 });
 
 Route::get('query', function () {
-    $Query = new App\Utils\MinecraftQuery\MinecraftQuery();
+    $Query = new MinecraftQuery;
 
     try {
         $Query->Connect('', 25565);
 
         dump($Query->GetInfo());
         dump($Query->GetPlayers());
-    } catch (App\Utils\MinecraftQuery\MinecraftQueryException $e) {
+    } catch (MinecraftQueryException $e) {
         echo $e->getMessage();
     }
 });
@@ -84,7 +98,7 @@ Route::get('crypt', function () {
 
     $theOtherKey = 'tMeoi56X4GkRwFBGcg2n6mrn5D0lKPfT';
 
-    $newEncrypter = new \Illuminate\Encryption\Encrypter(($theOtherKey), 'AES-256-CBC');
+    $newEncrypter = new Encrypter(($theOtherKey), 'AES-256-CBC');
     $es2 = $newEncrypter->encrypt($string);
     $decrypted = $newEncrypter->decrypt($es2);
     dump($es2);
@@ -105,7 +119,7 @@ Route::get('crypt', function () {
 });
 
 Route::get('/encryptstring', function () {
-    $query = new \App\Utils\MinecraftQuery\MinecraftWebQuery('127.0.0.1', 1123);
+    $query = new MinecraftWebQuery('127.0.0.1', 1123);
     $string = $query->makeEncryptedString('console_cmd', 'Xinecraft');
 
     dump($string);
@@ -126,18 +140,18 @@ Route::get('username-to-uuid', function () {
     return MinecraftApiService::playerUsernameToUuid('xinecraft');
 });
 
-//Route::get('db-schema', function() {
+// Route::get('db-schema', function() {
 //    $tables = \DB::getDoctrineSchemaManager()->listTables();
 //
 //    foreach ($tables as $table) {
 //        echo $table->getName() . " has columns: " . collect($table->getColumns())->map(fn($column) => $column->getName() . ' ('.$column->getType()->getName().')')->implode(', ') . "<br><br>";
 //    }
-//});
+// });
 
-Route::get('test-player-skin', function (Illuminate\Http\Request $request) {
+Route::get('test-player-skin', function (Request $request) {
 
-    $server = \App\Models\Server::whereId(12)->first();
-    $player = \App\Models\Player::where('uuid', 'e77bfabe-5a39-32e5-b9c1-dd9b4bbda490')->first();
+    $server = Server::whereId(12)->first();
+    $player = Player::where('uuid', 'e77bfabe-5a39-32e5-b9c1-dd9b4bbda490')->first();
 
     $webQuery = new MinecraftWebQuery($server->ip_address, $server->webquery_port);
     // URL or name
@@ -190,27 +204,29 @@ Route::get('test-json-query', function () {
 
 Route::get('ban-insights', function () {
 
-    $punishment = \App\Models\PlayerPunishment::find(1912);
+    $punishment = PlayerPunishment::find(1912);
 
     GeneratePunishmentInsightsJob::dispatchSync($punishment);
 
     return 'done';
 });
 
-Route::get('ai-service', function (AiService $aiService) {
-    $response = $aiService->simplePrompt(
-        'You are a Steve, web developer with 10 year of experience. When anyone ask you who you are tell them you are Steve.',
-        'Write 5 line an poem for virus.',
-    );
+Route::get('ai-service', function () {
+    AiConfig::ensureConfigured();
 
-    return $response;
+    $response = agent(
+        instructions: 'You are a Steve, web developer with 10 year of experience. When anyone ask you who you are tell them you are Steve.',
+    )->prompt('Write 5 line an poem for virus.', provider: AiConfig::provider(), model: AiConfig::model());
+
+    return $response->text;
 });
 
-Route::get('askdb-service', function (AskDbService $askDbService) {
+Route::get('askdb-service', function (AskDbChatService $askDbChatService) {
     $query = request()->query('q');
-    $response = $askDbService->chatWithAskDbForUser($query, request()->user());
+    $response = $askDbChatService->chat($query, request()->user());
 
     dd($response);
+
     return [
         'data' => $response,
     ];
@@ -219,7 +235,6 @@ Route::get('askdb-service', function (AskDbService $askDbService) {
 Route::get('ui-test', function () {
     return Inertia::render('Extra/Dev');
 });
-
 
 // private function forceJoinDiscordServer($socialUser)
 // {
@@ -251,27 +266,27 @@ Route::get('ui-test', function () {
 //     }
 // }
 
-Route::get('refresh-discord-token', function (Illuminate\Http\Request $request) {
+Route::get('refresh-discord-token', function (Request $request) {
     // Get user_id from query param, default to 1
     $userId = $request->query('user_id', 1);
-    $user = \App\Models\User::find($userId);
+    $user = User::find($userId);
 
-    if (!$user) {
+    if (! $user) {
         return response()->json(['error' => 'User not found'], 404);
     }
 
     $socialAccount = $user->socialAccounts()->where('provider', 'discord')->first();
 
-    if (!$socialAccount) {
+    if (! $socialAccount) {
         return response()->json(['error' => 'Discord social account not found for this user'], 404);
     }
 
-    if (!$socialAccount->refresh_token) {
+    if (! $socialAccount->refresh_token) {
         return response()->json(['error' => 'No refresh token available for this user'], 400);
     }
 
     try {
-        $client = new Client();
+        $client = new Client;
         $response = $client->post('https://discord.com/api/oauth2/token', [
             'form_params' => [
                 'client_id' => config('services.discord.client_id'),
@@ -303,15 +318,17 @@ Route::get('refresh-discord-token', function (Illuminate\Http\Request $request) 
             'expires_in' => $data['expires_in'],
             'token_type' => $data['token_type'],
         ]);
-    } catch (\GuzzleHttp\Exception\ClientException $e) {
+    } catch (ClientException $e) {
         $errorBody = json_decode($e->getResponse()->getBody()->getContents(), true);
-        Log::error("Failed to refresh Discord token: " . json_encode($errorBody));
+        Log::error('Failed to refresh Discord token: '.json_encode($errorBody));
+
         return response()->json([
             'error' => 'Failed to refresh Discord token',
             'details' => $errorBody,
         ], $e->getResponse()->getStatusCode());
-    } catch (\Exception $e) {
-        Log::error("Failed to refresh Discord token: " . $e->getMessage());
+    } catch (Exception $e) {
+        Log::error('Failed to refresh Discord token: '.$e->getMessage());
+
         return response()->json([
             'error' => 'Failed to refresh Discord token',
             'message' => $e->getMessage(),
@@ -319,59 +336,60 @@ Route::get('refresh-discord-token', function (Illuminate\Http\Request $request) 
     }
 });
 
-Route::get('test-force-join-discord-server', function (Illuminate\Http\Request $request) {
+Route::get('test-force-join-discord-server', function (Request $request) {
     // Get user_id from query param, default to 1
     $userId = $request->query('user_id', 1);
-    $user = \App\Models\User::find($userId);
+    $user = User::find($userId);
 
-    if (!$user) {
+    if (! $user) {
         return response()->json(['error' => 'User not found'], 404);
     }
 
     $socialAccount = $user->socialAccounts()->where('provider', 'discord')->first();
 
-    if (!$socialAccount) {
+    if (! $socialAccount) {
         return response()->json(['error' => 'Discord social account not found for this user'], 404);
     }
 
-    $serverID = "508594544598712330"; // app(GeneralSettings::class)->discord_server_id;
+    $serverID = '508594544598712330'; // app(GeneralSettings::class)->discord_server_id;
     $botToken = config('services.discord.token');
 
-    if (!$serverID) {
+    if (! $serverID) {
         return response()->json(['error' => 'Discord server ID not configured in settings'], 400);
     }
 
-    if (!$botToken) {
+    if (! $botToken) {
         return response()->json(['error' => 'Discord bot token not configured'], 400);
     }
 
     $discordUserId = $socialAccount->provider_id;
     $userToken = $socialAccount->token;
 
-    if (!$userToken) {
+    if (! $userToken) {
         return response()->json(['error' => 'No Discord access token available for this user'], 400);
     }
 
     try {
-        $client = new Client();
+        $client = new Client;
         $url = "https://discord.com/api/v10/guilds/{$serverID}/members/{$discordUserId}";
         $response = $client->put($url, [
             'headers' => [
-                'Authorization' => 'Bot ' . $botToken,
+                'Authorization' => 'Bot '.$botToken,
                 'Content-Type' => 'application/json',
                 'User-Agent' => 'DiscordBot (https://crazymc.net, v0.1)',
             ],
             'json' => [
                 'access_token' => $userToken,
-            ]
+            ],
         ]);
 
         $statusCode = $response->getStatusCode();
         if ($statusCode === 201) {
             Log::info("User {$discordUserId} joined Discord server {$serverID}");
+
             return response()->json([
                 'success' => true,
-                'message' => "User successfully added to Discord server",
+                'message' => 'User successfully added to Discord server',
                 'discord_user_id' => $discordUserId,
                 'server_id' => $serverID,
             ]);
@@ -379,7 +397,7 @@ Route::get('test-force-join-discord-server', function (Illuminate\Http\Request $
             // User is already a member
             return response()->json([
                 'success' => true,
-                'message' => "User is already a member of the Discord server",
+                'message' => 'User is already a member of the Discord server',
                 'discord_user_id' => $discordUserId,
                 'server_id' => $serverID,
             ]);
@@ -387,18 +405,20 @@ Route::get('test-force-join-discord-server', function (Illuminate\Http\Request $
 
         return response()->json([
             'success' => true,
-            'message' => "Request completed",
+            'message' => 'Request completed',
             'status_code' => $statusCode,
         ]);
-    } catch (\GuzzleHttp\Exception\ClientException $e) {
+    } catch (ClientException $e) {
         $errorBody = json_decode($e->getResponse()->getBody()->getContents(), true);
-        Log::error("Failed to add user to Discord server: " . json_encode($errorBody));
+        Log::error('Failed to add user to Discord server: '.json_encode($errorBody));
+
         return response()->json([
             'error' => 'Failed to add user to Discord server',
             'details' => $errorBody,
         ], $e->getResponse()->getStatusCode());
-    } catch (\Exception $e) {
-        Log::error("Failed to add user to Discord server: " . $e->getMessage());
+    } catch (Exception $e) {
+        Log::error('Failed to add user to Discord server: '.$e->getMessage());
+
         return response()->json([
             'error' => 'Failed to add user to Discord server',
             'message' => $e->getMessage(),

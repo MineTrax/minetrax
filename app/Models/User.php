@@ -11,11 +11,15 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Ai\Concerns\HasConversations;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -23,11 +27,13 @@ use Laravel\Sanctum\HasApiTokens;
 use NotificationChannels\Discord\DiscordChannel;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
 class User extends Authenticatable implements Commentator, MustVerifyEmail, ReacterableInterface, Searchable
 {
     use CanCommentTrait;
     use HasApiTokens;
+    use HasConversations;
     use HasFactory;
     use HasProfilePhoto;
     use HasRoles;
@@ -112,7 +118,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     public function sendEmailVerificationNotification()
     {
         // Only send verification email if Feature is enabled.
-        if (Features::enabled(Features::emailVerification()) && !$this->hasVerifiedEmail()) {
+        if (Features::enabled(Features::emailVerification()) && ! $this->hasVerifiedEmail()) {
             $this->notify(new VerifyEmail);
         }
     }
@@ -122,11 +128,11 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         return session()->has('impersonated_by') == $this->id;
     }
 
-    public function getSearchResult(): \Spatie\Searchable\SearchResult
+    public function getSearchResult(): SearchResult
     {
         $url = route('user.public.get', $this->id);
 
-        return new \Spatie\Searchable\SearchResult(
+        return new SearchResult(
             $this,
             $this->name,
             $url
@@ -141,7 +147,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     protected function defaultProfilePhotoUrl()
     {
         if (config('auth.random_user_avatars')) {
-            return 'https://api.dicebear.com/7.x/pixel-art/svg?seed=' . urlencode($this->username);
+            return 'https://api.dicebear.com/7.x/pixel-art/svg?seed='.urlencode($this->username);
         }
 
         return url('/images/default_profile_pic.png');
@@ -155,7 +161,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         return Attribute::get(function () {
             $settings = $this->settings;
             // If settings is not loaded then try loading it.
-            if (!$settings) {
+            if (! $settings) {
                 $settings = $this->refresh()->getOriginal('settings');
             }
 
@@ -164,15 +170,15 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
                     case 'gravatar':
                         $email = $this->email;
                         // Note: This fix is because we don't load email in public places like shoutbox etc
-                        if (!$email) {
+                        if (! $email) {
                             $email = $this->refresh()->getOriginal('email');
                         }
                         $hashedEmail = md5($email);
 
                         return "https://www.gravatar.com/avatar/{$hashedEmail}?size=150&d=mp";
-                    // minecraft head using his first linked player username
+                        // minecraft head using his first linked player username
                     case 'linked_player':
-                        if (!$this?->players()?->first()) {
+                        if (! $this?->players()?->first()) {
                             break;
                         }
                         $player = $this->players()->first();
@@ -231,7 +237,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
 
         $uploadedFile = new UploadedFile(
             $tempFile,
-            'avatar.' . $extension,
+            'avatar.'.$extension,
             $contentType,
             null,
             true
@@ -255,22 +261,22 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         ])->save();
     }
 
-    public function posts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
     }
 
-    public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }
 
-    public function sessions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function sessions(): HasMany
     {
         return $this->hasMany(Session::class);
     }
 
-    public function players(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function players(): BelongsToMany
     {
         return $this->belongsToMany(Player::class, 'player_user')->withTimestamps();
     }
@@ -313,7 +319,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
 
     public function isStaffMember(): bool
     {
-        return $this->roles->contains(fn($value) => $value->is_staff == true);
+        return $this->roles->contains(fn ($value) => $value->is_staff == true);
     }
 
     public function getIsStaffAttribute()
@@ -334,7 +340,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     /**
      * The options he has vote to
      */
-    public function pollOptions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function pollOptions(): BelongsToMany
     {
         return $this->belongsToMany(PollOption::class, 'poll_votes')->withTimestamps();
     }
@@ -347,7 +353,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     public function voteForPollOption($option)
     {
         // Check if poll is votable
-        if (!$option->poll->isVotable()) {
+        if (! $option->poll->isVotable()) {
             throw new \Exception('Poll is not votable');
         }
 
@@ -365,7 +371,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
     {
         $data = [];
 
-        if (!$this?->settings || !array_key_exists('notifications', $this->settings)) {
+        if (! $this?->settings || ! array_key_exists('notifications', $this->settings)) {
             return $data;
         }
 
@@ -385,7 +391,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         $channels = [];
 
         // empty = default, we will keep default as enabled.
-        if (!$preferenceArray) {
+        if (! $preferenceArray) {
             $channels = [
                 'database',
                 'mail',
@@ -396,7 +402,7 @@ class User extends Authenticatable implements Commentator, MustVerifyEmail, Reac
         }
 
         $canSendToDiscord = (bool) config('services.discord.token') && $this->discord_private_channel_id;
-        if (!$canSendToDiscord) {
+        if (! $canSendToDiscord) {
             $channels = array_diff($channels, ['discord']);
         }
 
