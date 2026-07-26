@@ -9,6 +9,7 @@ use App\Events\NewsCommentCreated;
 use App\Events\RecruitmentSubmissionCommentCreated;
 use App\Events\RecruitmentSubmissionCreated;
 use App\Events\RecruitmentSubmissionStatusChanged;
+use App\Listeners\MergeGuestStoreCartOnLogin;
 use App\Listeners\NotifyStaffOnCustomFormSubmission;
 use App\Listeners\NotifyStaffOnNewsComment;
 use App\Listeners\NotifyStaffOnRecruitmentSubmission;
@@ -16,6 +17,7 @@ use App\Listeners\NotifyUsersOnRecruitmentSubmissionCommentCreated;
 use App\Listeners\NotifyUsersOnRecruitmentSubmissionStatusChanged;
 use App\Listeners\UpdateStatsOnMinecraftPlayerEvent;
 use App\Listeners\UpsertPlayerOnSessionStart;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -32,6 +34,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        Login::class => [
+            MergeGuestStoreCartOnLogin::class,
         ],
         SocialiteWasCalled::class => [
             DiscordExtendSocialite::class,

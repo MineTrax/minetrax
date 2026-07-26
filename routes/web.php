@@ -43,6 +43,7 @@ use App\Http\Controllers\ServerChatlogController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ShoutController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\Store\StoreCartController;
 use App\Http\Controllers\Store\StoreController;
 use App\Http\Controllers\Store\StoreCurrencyController;
 use App\Http\Controllers\UserController;
@@ -136,6 +137,12 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('store/category/{storeCategory:slug}', [StoreController::class, 'showCategory'])->name('store.category');
     Route::get('store/package/{storePackage:slug}', [StoreController::class, 'showPackage'])->name('store.package');
     Route::post('store/currency', [StoreCurrencyController::class, 'switch'])->name('store.currency.switch');
+
+    Route::get('store/cart', [StoreCartController::class, 'show'])->name('store.cart.show');
+    Route::post('store/cart', [StoreCartController::class, 'store'])->name('store.cart.store');
+    Route::patch('store/cart/{cartItem}', [StoreCartController::class, 'update'])->name('store.cart.update');
+    Route::delete('store/cart/{cartItem}', [StoreCartController::class, 'destroy'])->name('store.cart.delete');
+    Route::post('store/cart/code', [StoreCartController::class, 'applyCode'])->name('store.cart.code')->middleware('throttle:store-code');
 });
 
 /**

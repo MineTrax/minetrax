@@ -72,6 +72,21 @@ class RouteServiceProvider extends ServiceProvider
                 ? Limit::none()
                 : Limit::perMinute(30)->by(optional($request->user())->id ?: $request->ip());
         });
+
+        RateLimiter::for('store-checkout', function (Request $request) {
+            return Limit::perMinute(config('store.ratelimit.checkout', 10))
+                ->by(optional($request->user())->id ?: $request->ip());
+        });
+
+        // Coupon and gift card codes are guessable, so attempts are limited per identity.
+        RateLimiter::for('store-code', function (Request $request) {
+            return Limit::perMinute(config('store.ratelimit.code', 20))
+                ->by(optional($request->user())->id ?: $request->ip());
+        });
+
+        RateLimiter::for('store-webhook', function (Request $request) {
+            return Limit::perMinute(config('store.ratelimit.webhook', 300))->by($request->ip());
+        });
     }
 
     protected function mapDevRoutes()
