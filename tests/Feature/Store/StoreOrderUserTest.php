@@ -132,9 +132,17 @@ class StoreOrderUserTest extends TestCase
         $response = $this->actingAs($user)->get(route('store.my-order.show', $order->uuid));
 
         $response->assertOk();
-        $response->assertSee('Gold');
         $response->assertDontSee('internal_gold_node');
-        $response->assertDontSee('TIER');
+
+        // Asserted on the payload rather than the rendered HTML: the shared translation bundle
+        // legitimately contains the word TIER as a validation example, so a text search would
+        // false-positive. What matters is that the option object carries no value or placeholder.
+        $response->assertInertia(function ($page) {
+            $option = $page->toArray()['props']['order']['items'][0]['options'][0];
+
+            $this->assertEquals(['name', 'label'], array_keys($option));
+            $this->assertEquals('Gold', $option['label']);
+        });
     }
 
     public function test_the_history_is_hidden_when_the_store_is_disabled()
