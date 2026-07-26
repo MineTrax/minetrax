@@ -18,12 +18,17 @@ class StoreGatewayEventData
 
     public const KIND_CHARGEBACK = 'chargeback';
 
+    /** The hosted checkout timed out before the buyer paid; the order can be released. */
+    public const KIND_EXPIRED = 'expired';
+
     /** An event this driver recognises but the store does not act on. */
     public const KIND_IGNORED = 'ignored';
 
     public function __construct(
         public readonly string $eventId,
         public readonly string $kind,
+        /** The vendor's own name for the event, kept for the audit trail only. */
+        public readonly ?string $eventType = null,
         public readonly ?string $sessionId = null,
         public readonly ?string $transactionId = null,
         public readonly ?int $amountMinor = null,
@@ -31,6 +36,8 @@ class StoreGatewayEventData
         public readonly ?int $feeMinor = null,
         public readonly ?string $orderUuid = null,
         public readonly ?string $failureReason = null,
+        /** The gateway's own id for a refund or dispute, used as its idempotency key. */
+        public readonly ?string $refundId = null,
         public readonly array $raw = [],
     ) {}
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Utils\Payments\ManualPaymentGateway;
+use App\Utils\Payments\StripePaymentGateway;
 
 return [
 
@@ -35,6 +36,7 @@ return [
     */
     'gateways' => [
         'manual' => ManualPaymentGateway::class,
+        'stripe' => StripePaymentGateway::class,
     ],
 
     /*

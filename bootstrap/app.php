@@ -31,6 +31,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withCommands([
         ResetUserPasswordCommand::class,
     ])
+    // Listeners are wired explicitly in App\Providers\EventServiceProvider::$listen. Laravel's
+    // automatic discovery of app/Listeners defaults to on, which registered every one of them a
+    // second time as "Listener@handle" and made each fire twice per event.
+    ->withEvents(discover: false)
     ->withSchedule(function (Schedule $schedule) {
         $playerFetcherInterval = config('minetrax.players_fetcher_cron_interval') ?? 'hourly';
         $schedule->job(new CalculatePlayersJob)->{$playerFetcherInterval}();

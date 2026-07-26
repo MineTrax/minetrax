@@ -27,7 +27,9 @@ enum StoreOrderStatus: string implements HasKeyValueSerialization
             self::PENDING => [self::PAID, self::CANCELLED],
             self::PAID => [self::COMPLETED, self::CANCELLED, self::REFUNDED],
             self::COMPLETED => [self::REFUNDED, self::PARTIALLY_REFUNDED, self::CHARGEBACK],
-            self::PARTIALLY_REFUNDED => [self::REFUNDED, self::CHARGEBACK],
+            // Stays on itself: several partial refunds against one order are legitimate, and only
+            // the one that finally covers the full amount moves it to REFUNDED.
+            self::PARTIALLY_REFUNDED => [self::PARTIALLY_REFUNDED, self::REFUNDED, self::CHARGEBACK],
             self::CANCELLED, self::REFUNDED, self::CHARGEBACK => [],
         };
     }

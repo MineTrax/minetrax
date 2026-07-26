@@ -6,6 +6,7 @@ use App\Enums\StoreDeliveryStatus;
 use App\Enums\StoreGiftCardTransactionType;
 use App\Enums\StoreOrderStatus;
 use App\Enums\StorePackageGrantStatus;
+use App\Enums\StorePaymentRefundType;
 use App\Enums\StorePaymentStatus;
 use App\Events\StoreOrderCancelled;
 use App\Events\StoreOrderCompleted;
@@ -14,6 +15,7 @@ use App\Events\StoreOrderRefunded;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePayment;
+use App\Models\StorePaymentRefund;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -166,6 +168,80 @@ class StoreOrderService
 
             return true;
         });
+    }
+
+    /**
+     * Record a refund against a specific payment, then transition the order.
+     *
+     * Separate from refund() because the transition is about the order while the ledger is about
+     * the charge: an admin-issued refund, a gateway webhook and a dispute all produce the same
+     * order transition but different paperwork.
+     *
+     * Idempotent on the gateway's own refund id, so a redelivered refund webhook records nothing
+     * a second time. The amount is clamped to what is actually left unrefunded on the payment,
+     * which also protects against a gateway that reports a cumulative figure instead of a delta.
+     */
+    public function recordRefund(
+        StorePayment $payment,
+        int $amountMinor,
+        bool $isChargeback = false,
+        ?string $gatewayRefundId = null,
+        ?string $reason = null,
+        ?int $createdBy = null,
+        array $payload = [],
+    ): bool {
+        if ($gatewayRefundId && StorePaymentRefund::where('gateway_refund_id', $gatewayRefundId)->exists()) {
+            return false;
+        }
+
+        $remaining = (int) $payment->amount - (int) $payment->refunded_amount;
+        $amountMinor = max(0, min($amountMinor, $remaining));
+
+        if ($amountMinor <= 0 && ! $isChargeback) {
+            return false;
+        }
+
+        $order = $payment->order;
+
+        // Transition first: refund() derives full-vs-partial from the refunded totals as they
+        // stand now, so incrementing before it ran would make every refund look like a full one.
+        if (! $this->refund($order, $amountMinor, $isChargeback)) {
+            return false;
+        }
+
+        DB::transaction(function () use ($payment, $amountMinor, $isChargeback, $gatewayRefundId, $reason, $createdBy, $payload) {
+            $payment->refunds()->create([
+                'type' => $isChargeback ? StorePaymentRefundType::CHARGEBACK : StorePaymentRefundType::REFUND,
+                'gateway_refund_id' => $gatewayRefundId,
+                'amount' => $amountMinor,
+                'currency' => $payment->currency,
+                'reason' => $reason,
+                'payload' => $payload ?: null,
+                'created_by' => $createdBy,
+            ]);
+
+            $refunded = (int) $payment->refunded_amount + $amountMinor;
+
+            $payment->update([
+                'refunded_amount' => $refunded,
+                'status' => match (true) {
+                    $isChargeback => StorePaymentStatus::CHARGEBACK,
+                    $refunded >= (int) $payment->amount => StorePaymentStatus::REFUNDED,
+                    default => StorePaymentStatus::PARTIALLY_REFUNDED,
+                },
+            ]);
+        });
+
+        return true;
+    }
+
+    /**
+     * Mark a charge attempt failed without touching the order, which stays PENDING so the buyer
+     * can retry with another method.
+     */
+    public function failPaymentAttempt(StorePayment $payment, string $reason): void
+    {
+        $this->failPayment($payment, $reason);
     }
 
     /**
