@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Contracts;
+
+use App\Enums\StorePaymentGateway;
+use App\Models\StoreOrder;
+use App\Models\StorePayment;
+use App\Utils\Payments\Data\StoreGatewayEventData;
+use App\Utils\Payments\Data\StorePaymentSessionData;
+use Illuminate\Http\Request;
+
+/**
+ * A payment gateway driver.
+ *
+ * Adding a gateway is one new class implementing this contract plus one line in
+ * config/store.php -> gateways. Nothing else: credentials render themselves from
+ * settingsSchema(), and the webhook route is a single dynamic {gateway} endpoint.
+ */
+interface StorePaymentGatewayContract
+{
+    /** Identity. The enum value is stored on orders and appears in the webhook URL. */
+    public function gateway(): StorePaymentGateway;
+
+    /** Shown on the checkout gateway picker. */
+    public function label(): string;
+
+    public function description(): ?string;
+
+    /**
+     * Self-describing credential fields, so the admin settings form needs no per-gateway markup.
+     *
+     * @return array<int, array{key: string, label: string, type: string, required?: bool, secret?: bool, help?: string}>
+     */
+    public function settingsSchema(): array;
+
+    /** Whether every required credential is present and the admin has switched this driver on. */
+    public function isEnabled(): bool;
+
+    /**
+     * Currencies this driver can charge, or null for "any". Checkout hides a gateway that cannot
+     * charge the selected currency rather than failing at the gateway's own page.
+     *
+     * @return array<int, string>|null
+     */
+    public function supportedCurrencies(): ?array;
+
+    /** Begin a hosted checkout and return where to send the buyer. */
+    public function createPaymentSession(StoreOrder $order, StorePayment $payment): StorePaymentSessionData;
+
+    /** Cryptographically verify an inbound webhook against the raw request body. */
+    public function verifyWebhook(Request $request): bool;
+
+    /** Normalise a vendor webhook into the shared event shape. */
+    public function parseWebhook(Request $request): StoreGatewayEventData;
+
+    /**
+     * Server-side confirmation when the buyer lands back on the return URL, for gateways that
+     * capture on return rather than purely by webhook. Null when there is nothing to confirm.
+     */
+    public function confirmOnReturn(StorePayment $payment): ?StoreGatewayEventData;
+
+    /** Issue a full or partial refund; returns the gateway's refund id. */
+    public function refund(StorePayment $payment, int $amountMinor, ?string $reason = null): string;
+}

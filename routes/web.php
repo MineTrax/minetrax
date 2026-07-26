@@ -44,6 +44,7 @@ use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ShoutController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\Store\StoreCartController;
+use App\Http\Controllers\Store\StoreCheckoutController;
 use App\Http\Controllers\Store\StoreController;
 use App\Http\Controllers\Store\StoreCurrencyController;
 use App\Http\Controllers\UserController;
@@ -143,6 +144,12 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::patch('store/cart/{cartItem}', [StoreCartController::class, 'update'])->name('store.cart.update');
     Route::delete('store/cart/{cartItem}', [StoreCartController::class, 'destroy'])->name('store.cart.delete');
     Route::post('store/cart/code', [StoreCartController::class, 'applyCode'])->name('store.cart.code')->middleware('throttle:store-code');
+
+    Route::get('store/checkout', [StoreCheckoutController::class, 'create'])->name('store.checkout.create');
+    Route::post('store/checkout', [StoreCheckoutController::class, 'store'])->name('store.checkout.store')->middleware('throttle:store-checkout');
+    Route::get('store/order/{order:uuid}', [StoreCheckoutController::class, 'result'])->name('store.order.result');
+    Route::get('store/order/{order:uuid}/status', [StoreCheckoutController::class, 'status'])->name('store.order.status');
+    Route::post('store/order/{order:uuid}/cancel', [StoreCheckoutController::class, 'cancel'])->name('store.order.cancel');
 });
 
 /**

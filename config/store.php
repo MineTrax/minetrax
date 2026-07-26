@@ -1,5 +1,7 @@
 <?php
 
+use App\Utils\Payments\ManualPaymentGateway;
+
 return [
 
     /*
@@ -31,7 +33,9 @@ return [
     | so it must be url-safe and must never change once orders exist.
     |--------------------------------------------------------------------------
     */
-    'gateways' => [],
+    'gateways' => [
+        'manual' => ManualPaymentGateway::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
