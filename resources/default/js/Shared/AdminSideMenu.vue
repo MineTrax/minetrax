@@ -16,6 +16,7 @@ import {
     NewspaperIcon,
     PresentationChartLineIcon,
     ServerStackIcon,
+    ShoppingBagIcon,
     TrophyIcon,
     UsersIcon,
 } from "@heroicons/vue/24/outline";
@@ -190,6 +191,31 @@ const navItems = [
         children: [],
         icon: CloudArrowDownIcon,
         visible: canWild("downloads"),
+    },
+    {
+        label: "Store",
+        href: "#",
+        active: route().current("admin.store-category.*") || route().current("admin.store-package.*"),
+        children: [
+            {
+                label: "Categories",
+                href: route("admin.store-category.index"),
+                active: route().current("admin.store-category.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_categories"),
+            },
+            {
+                label: "Packages",
+                href: route("admin.store-package.index"),
+                active: route().current("admin.store-package.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_packages"),
+            },
+        ],
+        icon: ShoppingBagIcon,
+        visible: usePage().props?.store?.enabled && canWild("store_"),
     },
     {
         label: "Custom Pages",
