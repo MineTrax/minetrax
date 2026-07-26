@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import AppHead from "@/Components/AppHead.vue";
-import { usePage } from "@inertiajs/vue3";
+import { usePage, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { useHelpers } from "@/Composables/useHelpers";
 import { computed, ref } from "vue";
@@ -70,8 +70,14 @@ const finalBreadcrumbs = computed(() => {
 const isOutOfStock = computed(() => props.storePackage.is_out_of_stock);
 
 const handleAddToCart = () => {
-    // TODO: wire to cart in slice 6
-    // This will be implemented when cart backend is ready
+    const choices = Object.values(selectedOptions.value).filter(Boolean);
+    router.post(route("store.cart.store"), {
+        package_id: props.storePackage.id,
+        quantity: quantity.value,
+        choices: choices,
+    }, {
+        preserveScroll: true,
+    });
 };
 
 const handleQuantityChange = (e) => {
@@ -280,14 +286,9 @@ const handleQuantityChange = (e) => {
               {{ __("Login Required") }}
             </span>
             <span v-else>
-              {{ __("Coming Soon") }}
+              {{ __("Add to Cart") }}
             </span>
           </button>
-
-          <!-- Note about cart -->
-          <p class="text-xs text-muted-foreground text-center mt-4">
-            {{ __("Cart feature is coming soon.") }}
-          </p>
         </div>
       </div>
     </div>
