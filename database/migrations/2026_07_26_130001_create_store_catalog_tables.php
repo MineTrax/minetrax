@@ -39,10 +39,10 @@ return new class extends Migration
             $table->boolean('is_enabled')->default(true);
             $table->boolean('requires_login')->default(false);
 
-            // Delivery behaviour
+            // Delivery behaviour. Whether a player must be online, and whether a command repeats
+            // per unit bought, are decided per command rather than here: a package-wide default
+            // meant you could not tell what a command would do without looking somewhere else.
             $table->boolean('is_run_on_all_servers')->default(false);
-            $table->boolean('is_player_online_required')->default(false); // default inherited by commands
-            $table->boolean('is_command_repeated_per_quantity')->default(false); // else {QUANTITY} is substituted
 
             // Purchase constraints
             $table->unsignedSmallInteger('min_quantity')->default(1);
@@ -101,10 +101,10 @@ return new class extends Migration
             $table->foreignId('store_package_id')->constrained()->cascadeOnDelete();
             $table->string('trigger'); // purchase, expiry, refund, chargeback
             $table->text('command');   // raw, with {PLACEHOLDER}s
-            $table->boolean('is_player_online_required')->nullable(); // null = inherit from package
-            $table->unsignedInteger('delay_seconds')->default(0);     // becomes command_queues.execute_at
-            $table->string('target')->default('package_servers');     // package_servers, all_servers
-            $table->boolean('is_repeat_per_quantity')->nullable();    // null = inherit from package
+            $table->boolean('is_player_online_required')->default(false);
+            $table->unsignedInteger('delay_seconds')->default(0);  // becomes command_queues.execute_at
+            $table->string('target')->default('package_servers');  // package_servers, all_servers
+            $table->boolean('is_repeat_per_quantity')->default(false); // else {QUANTITY} is substituted
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 

@@ -28,6 +28,11 @@ return new class extends Migration
             $table->boolean('is_base')->default(false); // exactly one row, enforced in the request
             $table->boolean('is_enabled')->default(true);
 
+            // Country ISO codes whose visitors default to this currency. An explicit list rather
+            // than one derived from `countries.currency`, which stores only a name and a symbol
+            // with no ISO-4217 code to match on.
+            $table->json('country_codes')->nullable();
+
             // Applied to converted prices only; explicit per-package overrides bypass rounding.
             $table->string('price_rounding')->default('none'); // none, nearest_whole, nearest_half, charm_99
 
