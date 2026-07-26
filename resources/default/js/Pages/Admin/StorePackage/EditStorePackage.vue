@@ -455,7 +455,7 @@ function updatePackage() {
           </div>
 
           <!-- Delivery Section -->
-          <div class="shadow overflow-hidden rounded-lg mb-6">
+          <div class="shadow rounded-lg card-clip-safe mb-6">
             <div class="px-4 py-5 bg-card sm:p-6 border-b border-border">
               <h3 class="text-lg font-medium text-foreground mb-4">
                 {{ __("Delivery") }}

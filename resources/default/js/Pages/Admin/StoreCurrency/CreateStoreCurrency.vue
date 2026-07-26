@@ -80,7 +80,7 @@ function createCurrency() {
 
       <div class="mt-6">
         <form @submit.prevent="createCurrency">
-          <div class="shadow overflow-hidden rounded-lg">
+          <div class="shadow rounded-lg card-clip-safe">
             <div class="px-4 py-5 bg-card sm:p-6">
               <div class="grid grid-cols-6 gap-6">
                 <div class="col-span-6 sm:col-span-2">

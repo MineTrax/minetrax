@@ -317,6 +317,24 @@
   .multiselect__option--highlight::after {
     @apply bg-primary;
   }
+
+  /*
+   * A card that contains a Multiselect cannot use `overflow-hidden` to clip its corners: the
+   * dropdown is absolutely positioned and gets cut off at the card edge, so only the first row or
+   * two are ever visible. No z-index fixes that — an overflow-hidden ancestor always clips.
+   *
+   * This rounds the first and last children instead, which gives the same corners with nothing
+   * clipped. Works whether the card is one section or a body plus a footer.
+   */
+  .card-clip-safe > :first-child {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+  }
+
+  .card-clip-safe > :last-child {
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+  }
 }
 
 
