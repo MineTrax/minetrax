@@ -15,8 +15,10 @@ use App\Listeners\MergeGuestStoreCartOnLogin;
 use App\Listeners\NotifyStaffOnCustomFormSubmission;
 use App\Listeners\NotifyStaffOnNewsComment;
 use App\Listeners\NotifyStaffOnRecruitmentSubmission;
+use App\Listeners\NotifyStaffOnStoreOrderPaid;
 use App\Listeners\NotifyUsersOnRecruitmentSubmissionCommentCreated;
 use App\Listeners\NotifyUsersOnRecruitmentSubmissionStatusChanged;
+use App\Listeners\SendStoreOrderReceipt;
 use App\Listeners\UpdateStatsOnMinecraftPlayerEvent;
 use App\Listeners\UpsertPlayerOnSessionStart;
 use Illuminate\Auth\Events\Login;
@@ -42,6 +44,8 @@ class EventServiceProvider extends ServiceProvider
         ],
         StoreOrderPaid::class => [
             DispatchStoreOrderDeliveryOnPaid::class,
+            SendStoreOrderReceipt::class,
+            NotifyStaffOnStoreOrderPaid::class,
         ],
         SocialiteWasCalled::class => [
             DiscordExtendSocialite::class,

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class UserProfileController extends Controller
 {
-    public function postRegistrationSetup(Request $request): \Illuminate\Http\RedirectResponse
+    public function postRegistrationSetup(Request $request): RedirectResponse
     {
         $request->validate([
             'username' => ['required', 'string', 'max:30', 'alpha_dash',
@@ -23,7 +24,7 @@ class UserProfileController extends Controller
         return redirect()->route('home');
     }
 
-    public function deleteCoverImage(Request $request): \Illuminate\Http\RedirectResponse
+    public function deleteCoverImage(Request $request): RedirectResponse
     {
         $request->user()->deleteCoverImage();
 
@@ -52,6 +53,10 @@ class UserProfileController extends Controller
             'news_commented_by_user.*' => Rule::in($validNotificationType),
             'recruitment_submission_created' => 'required|array',
             'recruitment_submission_created.*' => Rule::in($validNotificationType),
+            'store_order_paid' => 'required|array',
+            'store_order_paid.*' => Rule::in($validNotificationType),
+            'store_order_placed' => 'required|array',
+            'store_order_placed.*' => Rule::in($validNotificationType),
         ])->validateWithBag('updateNotificationPreference');
 
         $likeOnPost = $request->like_on_post ?: $validNotificationType;
@@ -63,6 +68,8 @@ class UserProfileController extends Controller
         $customFormSubmissionCreated = $request->custom_form_submission_created ?: $validNotificationType;
         $newsCommentedByUser = $request->news_commented_by_user ?: $validNotificationType;
         $recruitmentSubmissionCreated = $request->recruitment_submission_created ?: $validNotificationType;
+        $storeOrderPaid = $request->store_order_paid ?: $validNotificationType;
+        $storeOrderPlaced = $request->store_order_placed ?: $validNotificationType;
 
         $notificationSettings = [
             'notifications' => [
@@ -75,6 +82,8 @@ class UserProfileController extends Controller
                 'custom_form_submission_created' => $customFormSubmissionCreated,
                 'news_commented_by_user' => $newsCommentedByUser,
                 'recruitment_submission_created' => $recruitmentSubmissionCreated,
+                'store_order_paid' => $storeOrderPaid,
+                'store_order_placed' => $storeOrderPlaced,
             ],
         ];
 

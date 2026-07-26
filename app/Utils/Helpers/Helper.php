@@ -11,10 +11,10 @@ class Helper
      * Returns an estimated reading time in a string
      * idea from @link http://briancray.com/posts/estimated-reading-time-web-design/
      *
-     * @param  string  $content the content to be read
+     * @param  string  $content  the content to be read
      * @param  int  $wpm
      * @param  bool  $showSeconds
-     * @return string          estimated read time eg. 1 minute, 30 seconds
+     * @return string estimated read time eg. 1 minute, 30 seconds
      */
     #[Pure]
     public static function getEstimateReadingTime(string $content, $wpm = 200, $showSeconds = false): string
@@ -101,6 +101,28 @@ class Helper
         }
 
         return $content;
+    }
+
+    /**
+     * Serialise a backed enum the way BaseModel does.
+     *
+     * Models emit `{key, value}` through BaseModel::attributesToArray(), but a hand-built
+     * response array does not go through that, and Laravel would encode the enum as a bare
+     * string instead. Two shapes for the same enum means the frontend has to guess, so
+     * hand-built payloads run their enums through this.
+     *
+     * @return array{key: string, value: string|int}|null
+     */
+    public static function enumKeyValue(?\BackedEnum $enum): ?array
+    {
+        if ($enum === null) {
+            return null;
+        }
+
+        return [
+            'key' => $enum->name,
+            'value' => $enum->value,
+        ];
     }
 
     public static function compareVersions($version1, $version2)

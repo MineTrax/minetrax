@@ -219,6 +219,40 @@
                   />
                 </div>
               </div>
+              <!-- Store order confirmed -->
+              <div class="p-3 sm:p-4 hover:bg-muted/5 transition-colors">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1 min-w-0">
+                    <h5 class="font-medium text-foreground mb-1">
+                      {{ __("Store order confirmed") }}
+                    </h5>
+                    <p class="text-sm text-muted-foreground hidden sm:block">
+                      {{ __("Receive a receipt when a purchase of yours is paid for") }}
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
+                    <div class="flex items-center gap-2">
+                      <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_order_paid', 'mail')"
+                        name="store_order_paid_mail"
+                        @update:model-value="toggleNotification('store_order_paid', 'mail')"
+                      />
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <Icon
+                        name="discord"
+                        class="w-5 h-5 fill-current text-muted-foreground"
+                      />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_order_paid', 'discord')"
+                        name="store_order_paid_discord"
+                        @update:model-value="toggleNotification('store_order_paid', 'discord')"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -267,6 +301,40 @@
                         :model-value="isNotificationEnabled('recruitment_submission_created', 'discord')"
                         name="recruitment_submission_created_discord"
                         @update:model-value="toggleNotification('recruitment_submission_created', 'discord')"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- New store order -->
+              <div class="p-3 sm:p-4 hover:bg-muted/5 transition-colors">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1 min-w-0">
+                    <h5 class="font-medium text-foreground mb-1">
+                      {{ __("New store order") }}
+                    </h5>
+                    <p class="text-sm text-muted-foreground hidden sm:block">
+                      {{ __("Get notified when a purchase is paid for on the store") }}
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
+                    <div class="flex items-center gap-2">
+                      <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_order_placed', 'mail')"
+                        name="store_order_placed_mail"
+                        @update:model-value="toggleNotification('store_order_placed', 'mail')"
+                      />
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <Icon
+                        name="discord"
+                        class="w-5 h-5 fill-current text-muted-foreground"
+                      />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_order_placed', 'discord')"
+                        name="store_order_placed_discord"
+                        @update:model-value="toggleNotification('store_order_placed', 'discord')"
                       />
                     </div>
                   </div>
@@ -400,6 +468,8 @@ const form = useForm({
     custom_form_submission_created: notificationValueOrDefault("custom_form_submission_created"),
     news_commented_by_user: notificationValueOrDefault("news_commented_by_user"),
     recruitment_submission_created: notificationValueOrDefault("recruitment_submission_created"),
+    store_order_paid: notificationValueOrDefault("store_order_paid"),
+    store_order_placed: notificationValueOrDefault("store_order_placed"),
 });
 
 // Helper methods to handle switch state

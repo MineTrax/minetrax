@@ -158,6 +158,11 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
  * USER SECTION/LOGGED IN
  */
 Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-user', 'verified-if-enabled'])->group(function () {
+    // A buyer's own purchase history. Guest orders are reached through the result page instead,
+    // where the order uuid itself is the credential.
+    Route::get('store/my-orders', [App\Http\Controllers\Store\StoreOrderController::class, 'index'])->name('store.my-order.index');
+    Route::get('store/my-orders/{order:uuid}', [App\Http\Controllers\Store\StoreOrderController::class, 'show'])->name('store.my-order.show');
+
     // Shouts
     Route::get('shout', [ShoutController::class, 'index'])->name('shout.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);
     Route::post('shout', [ShoutController::class, 'store'])->name('shout.store')->middleware('forbid-muted-user');

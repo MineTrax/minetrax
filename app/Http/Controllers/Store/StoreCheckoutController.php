@@ -13,6 +13,7 @@ use App\Services\StoreCurrencyService;
 use App\Services\StoreOrderService;
 use App\Services\StorePlayerResolver;
 use App\Settings\StoreSettings;
+use App\Utils\Helpers\Helper;
 use App\Utils\Payments\Data\StoreGatewayEventData;
 use App\Utils\Payments\StorePaymentGatewayManager;
 use Illuminate\Http\Request;
@@ -195,8 +196,10 @@ class StoreCheckoutController extends Controller
     {
         return [
             'uuid' => $order->uuid,
-            'status' => $order->status,
-            'delivery_status' => $order->delivery_status,
+            // Hand-built arrays skip BaseModel::attributesToArray(), so enums are run through
+            // the same {key, value} shape the rest of the frontend expects.
+            'status' => Helper::enumKeyValue($order->status),
+            'delivery_status' => Helper::enumKeyValue($order->delivery_status),
             'player_username' => $order->player_username,
             'currency' => $order->currency,
             'total_formatted' => $this->currencies->format((int) $order->total, $order->currency),
