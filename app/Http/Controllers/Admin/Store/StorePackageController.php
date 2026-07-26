@@ -79,6 +79,7 @@ class StorePackageController extends Controller
             $package->servers()->sync($request->input('servers', []));
             $this->syncCommands($package, $request->input('commands', []));
             $this->syncOptions($package, $request->input('options', []));
+            $this->syncPrices($package, $request->input('prices', []));
 
             return $package;
         });
@@ -116,6 +117,7 @@ class StorePackageController extends Controller
             $storePackage->servers()->sync($request->input('servers', []));
             $this->syncCommands($storePackage, $request->input('commands', []));
             $this->syncOptions($storePackage, $request->input('options', []));
+            $this->syncPrices($storePackage, $request->input('prices', []));
         });
 
         if ($request->hasFile('photo')) {
@@ -177,6 +179,29 @@ class StorePackageController extends Controller
             'purchase_limit_period_days' => $request->purchase_limit_period_days,
             'expiry_duration_days' => $request->expiry_duration_days,
         ];
+    }
+
+    /**
+     * Replace the per-currency price overrides. Keyed on currency code rather than row id, so a
+     * currency the form no longer lists simply reverts to the converted base price.
+     *
+     * @param  array<int, array{currency_code: string, price: int}>  $prices
+     */
+    private function syncPrices(StorePackage $package, array $prices): void
+    {
+        $keptCodes = [];
+
+        foreach ($prices as $price) {
+            $code = strtoupper($price['currency_code']);
+            $keptCodes[] = $code;
+
+            $package->prices()->updateOrCreate(
+                ['currency_code' => $code],
+                ['price' => $price['price']]
+            );
+        }
+
+        $package->prices()->whereNotIn('currency_code', $keptCodes)->delete();
     }
 
     /**

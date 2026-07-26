@@ -20,6 +20,18 @@ class StorePackagePolicy
     }
 
     /**
+     * Browse the public storefront.
+     *
+     * Open to everyone including guests — a store nobody can look at is pointless. The only gate
+     * is before(), so disabling the module still closes the shopfront. Distinct from viewAny,
+     * which guards the admin listing and its unpublished rows.
+     */
+    public function browse(?User $user): bool
+    {
+        return true;
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(?User $user): bool

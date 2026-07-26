@@ -16,6 +16,7 @@ class StoreCurrency extends BaseModel
         'rate_updated_at' => 'datetime',
         'is_base' => 'boolean',
         'is_enabled' => 'boolean',
+        'country_codes' => 'array',
         'price_rounding' => StorePriceRounding::class,
         'sort_order' => 'integer',
     ];

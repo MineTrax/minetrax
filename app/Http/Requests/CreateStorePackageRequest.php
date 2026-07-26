@@ -68,6 +68,12 @@ class CreateStorePackageRequest extends FormRequest
             'servers' => 'nullable|array',
             'servers.*' => 'integer|exists:servers,id',
 
+            // Optional per-currency price overrides, in that currency's minor units. Absent
+            // currencies fall back to the converted-and-rounded base price.
+            'prices' => 'nullable|array',
+            'prices.*.currency_code' => 'required|string|size:3|exists:store_currencies,code',
+            'prices.*.price' => 'required|integer|min:0',
+
             'commands' => 'nullable|array',
             'commands.*.id' => 'nullable|integer|exists:store_package_commands,id',
             'commands.*.trigger' => ['required', Rule::enum(StorePackageCommandTrigger::class)],

@@ -43,6 +43,8 @@ use App\Http\Controllers\ServerChatlogController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ShoutController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\Store\StoreController;
+use App\Http\Controllers\Store\StoreCurrencyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
@@ -128,6 +130,12 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('player/punishments/{playerPunishment:id}/history', [BanWardenController::class, 'indexLastPunishments'])->name('player.punishment.show.history');
     Route::get('player/punishments/{playerPunishment:id}/sessions', [BanWardenController::class, 'indexLastSessions'])->name('player.punishment.show.session');
     Route::get('player/punishments/{playerPunishment:id}/evidence/{evidence}', [BanWardenController::class, 'showMediaEvidence'])->name('player.punishment.evidence.show');
+
+    // Store (public)
+    Route::get('store', [StoreController::class, 'index'])->name('store.index');
+    Route::get('store/category/{storeCategory:slug}', [StoreController::class, 'showCategory'])->name('store.category');
+    Route::get('store/package/{storePackage:slug}', [StoreController::class, 'showPackage'])->name('store.package');
+    Route::post('store/currency', [StoreCurrencyController::class, 'switch'])->name('store.currency.switch');
 });
 
 /**
@@ -352,6 +360,14 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('store-package/{storePackage}/edit', [StorePackageController::class, 'edit'])->name('store-package.edit');
     Route::put('store-package/{storePackage}', [StorePackageController::class, 'update'])->name('store-package.update');
     Route::delete('store-package/{storePackage}', [StorePackageController::class, 'destroy'])->name('store-package.delete');
+
+    Route::get('store-currency', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'index'])->name('store-currency.index');
+    Route::get('store-currency/create', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'create'])->name('store-currency.create');
+    Route::post('store-currency', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'store'])->name('store-currency.store');
+    Route::get('store-currency/{storeCurrency}/edit', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'edit'])->name('store-currency.edit');
+    Route::put('store-currency/{storeCurrency}', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'update'])->name('store-currency.update');
+    Route::delete('store-currency/{storeCurrency}', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'destroy'])->name('store-currency.delete');
+    Route::post('store-currency/{storeCurrency}/make-base', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'makeBase'])->name('store-currency.make-base');
 
     Route::get('custom-form', [App\Http\Controllers\Admin\CustomFormController::class, 'index'])->name('custom-form.index');
     Route::get('custom-form/create', [App\Http\Controllers\Admin\CustomFormController::class, 'create'])->name('custom-form.create');
