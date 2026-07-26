@@ -7,7 +7,6 @@ import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
-import XCheckbox from "@/Components/Form/XCheckbox.vue";
 import XTextarea from "@/Components/Form/XTextarea.vue";
 import TipTapEditor from "@/Components/TipTapEditor.vue";
 import ImageUpload from "@/Components/Form/ImageUpload.vue";
@@ -33,7 +32,7 @@ const breadcrumbItems = [
     },
     {
         text: __("Store Packages"),
-        url: route("admin.store-package.index"),
+        url: route("admin.store.package.index"),
         current: false,
     },
     {
@@ -205,7 +204,7 @@ function createPackage() {
         })),
     };
 
-    form.transform(() => payload).post(route("admin.store-package.store"), {});
+    form.transform(() => payload).post(route("admin.store.package.store"), {});
 }
 </script>
 
@@ -483,7 +482,7 @@ function createPackage() {
                       :key="server.id"
                       class="flex items-center"
                     >
-                      <XCheckbox
+                      <XSwitch
                         :id="`server_${server.id}`"
                         v-model="form.servers"
                         :model-value="form.servers"
@@ -701,7 +700,7 @@ function createPackage() {
 
                         <div class="col-span-6 sm:col-span-2">
                           <div class="flex items-start pt-6">
-                            <XCheckbox
+                            <XSwitch
                               :id="`option_required_${optionIndex}`"
                               v-model="option.is_required"
                               :label="__('Required')"
@@ -790,7 +789,7 @@ function createPackage() {
                               </div>
 
                               <div class="col-span-5 lg:col-span-2 flex items-start pt-6">
-                                <XCheckbox
+                                <XSwitch
                                   :id="`choice_enabled_${optionIndex}_${choiceIndex}`"
                                   v-model="choice.is_enabled"
                                   :label="__('Enabled')"
@@ -837,7 +836,7 @@ function createPackage() {
               variant="outline"
               as-child
             >
-              <Link :href="route('admin.store-package.index')">
+              <Link :href="route('admin.store.package.index')">
                 {{ __("Cancel") }}
               </Link>
             </Button>

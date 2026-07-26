@@ -120,7 +120,7 @@ class StoreCurrencySeederTest extends TestCase
     public function test_the_first_currency_created_by_hand_becomes_the_base()
     {
         $this->actingAs(User::whereId(1)->first())
-            ->post(route('admin.store-currency.store'), [
+            ->post(route('admin.store.currency.store'), [
                 'code' => 'GBP',
                 'name' => 'Pound Sterling',
                 'symbol' => '£',
@@ -145,7 +145,7 @@ class StoreCurrencySeederTest extends TestCase
         $this->seedCurrencies();
 
         $this->actingAs(User::whereId(1)->first())
-            ->post(route('admin.store-currency.store'), [
+            ->post(route('admin.store.currency.store'), [
                 'code' => 'EUR',
                 'name' => 'Euro',
                 'symbol' => '€',

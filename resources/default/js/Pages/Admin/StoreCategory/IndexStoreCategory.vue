@@ -101,7 +101,7 @@ const headerRow = [
             v-if="can('create store_categories')"
             as-child
           >
-            <Link :href="route('admin.store-category.create')">
+            <Link :href="route('admin.store.category.create')">
               {{ __("Create Category") }}
             </Link>
           </Button>
@@ -188,7 +188,7 @@ const headerRow = [
                 <Link
                   v-tippy
                   as="a"
-                  :href="route('admin.store-category.edit', item.id)"
+                  :href="route('admin.store.category.edit', item.id)"
                   :title="__('Edit Category')"
                 >
                   <PencilSquareIcon />
@@ -209,7 +209,7 @@ const headerRow = [
                   v-tippy
                   as="button"
                   method="DELETE"
-                  :href="route('admin.store-category.delete', item.id)"
+                  :href="route('admin.store.category.delete', item.id)"
                   :title="__('Delete Category')"
                 >
                   <TrashIcon />

@@ -96,7 +96,7 @@ const headerRow = [
             v-if="can('create store_packages')"
             as-child
           >
-            <Link :href="route('admin.store-package.create')">
+            <Link :href="route('admin.store.package.create')">
               {{ __("Create Package") }}
             </Link>
           </Button>
@@ -177,7 +177,7 @@ const headerRow = [
                 <Link
                   v-tippy
                   as="a"
-                  :href="route('admin.store-package.edit', item.id)"
+                  :href="route('admin.store.package.edit', item.id)"
                   :title="__('Edit Package')"
                 >
                   <PencilSquareIcon />
@@ -197,7 +197,7 @@ const headerRow = [
                   v-tippy
                   as="button"
                   method="DELETE"
-                  :href="route('admin.store-package.delete', item.id)"
+                  :href="route('admin.store.package.delete', item.id)"
                   :title="__('Delete Package')"
                 >
                   <TrashIcon />

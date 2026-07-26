@@ -92,7 +92,7 @@ const headerRow = [
           <DtRowItem>
             <Link
               class="font-mono text-xs font-medium text-primary hover:underline"
-              :href="route('admin.store-order.show', item.uuid)"
+              :href="route('admin.store.order.show', item.uuid)"
             >
               {{ item.uuid.substring(0, 8).toUpperCase() }}
             </Link>
@@ -139,7 +139,7 @@ const headerRow = [
               <Link
                 v-tippy
                 as="a"
-                :href="route('admin.store-order.show', item.uuid)"
+                :href="route('admin.store.order.show', item.uuid)"
                 :title="__('View Order')"
               >
                 <EyeIcon />

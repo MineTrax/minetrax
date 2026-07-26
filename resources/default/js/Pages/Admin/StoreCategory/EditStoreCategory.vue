@@ -23,7 +23,7 @@ const breadcrumbItems = [
     },
     {
         text: __("Store Categories"),
-        url: route("admin.store-category.index"),
+        url: route("admin.store.category.index"),
         current: false,
     },
     {
@@ -52,7 +52,7 @@ const form = useForm({
 });
 
 function updateCategory() {
-    form.post(route("admin.store-category.update", props.category.id), {});
+    form.post(route("admin.store.category.update", props.category.id), {});
 }
 </script>
 
@@ -159,7 +159,7 @@ function updateCategory() {
                 variant="outline"
                 as-child
               >
-                <Link :href="route('admin.store-category.index')">
+                <Link :href="route('admin.store.category.index')">
                   {{ __("Cancel") }}
                 </Link>
               </Button>

@@ -87,20 +87,20 @@ class StoreOrderAdminTest extends TestCase
 
     public function test_a_guest_is_redirected_to_login()
     {
-        $this->get(route('admin.store-order.index'))->assertRedirect(route('login'));
+        $this->get(route('admin.store.order.index'))->assertRedirect(route('login'));
     }
 
     public function test_a_non_staff_user_cannot_reach_the_listing()
     {
         $this->actingAs(User::factory()->create())
-            ->get(route('admin.store-order.index'))
+            ->get(route('admin.store.order.index'))
             ->assertStatus(302);
     }
 
     public function test_staff_without_read_permission_are_forbidden()
     {
         $this->actingAs($this->staffWith(['read store_packages']))
-            ->get(route('admin.store-order.index'))
+            ->get(route('admin.store.order.index'))
             ->assertForbidden();
     }
 
@@ -109,7 +109,7 @@ class StoreOrderAdminTest extends TestCase
         config(['store.enabled' => false]);
 
         $this->actingAs($this->staffWith(['read store_orders']))
-            ->get(route('admin.store-order.index'))
+            ->get(route('admin.store.order.index'))
             ->assertForbidden();
     }
 
@@ -120,7 +120,7 @@ class StoreOrderAdminTest extends TestCase
         StoreOrder::factory()->count(3)->create();
 
         $this->actingAs($this->superadmin)
-            ->get(route('admin.store-order.index'))
+            ->get(route('admin.store.order.index'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('Admin/StoreOrder/IndexStoreOrder')
@@ -137,7 +137,7 @@ class StoreOrderAdminTest extends TestCase
         StoreOrder::factory()->create(['currency' => 'JPY', 'total' => 1000]);
 
         $this->actingAs($this->superadmin)
-            ->get(route('admin.store-order.index'))
+            ->get(route('admin.store.order.index'))
             ->assertInertia(function ($page) {
                 $totals = collect($page->toArray()['props']['orders']['data'])->pluck('total_formatted');
 
@@ -153,7 +153,7 @@ class StoreOrderAdminTest extends TestCase
         StoreOrder::factory()->create(['player_username' => 'Herobrine']);
 
         $this->actingAs($this->superadmin)
-            ->get(route('admin.store-order.index', ['filter' => ['q' => 'Notch']]))
+            ->get(route('admin.store.order.index', ['filter' => ['q' => 'Notch']]))
             ->assertInertia(fn ($page) => $page->has('orders.data', 1));
     }
 
@@ -164,7 +164,7 @@ class StoreOrderAdminTest extends TestCase
         [$order] = $this->paidOrder();
 
         $this->actingAs($this->superadmin)
-            ->get(route('admin.store-order.show', $order->uuid))
+            ->get(route('admin.store.order.show', $order->uuid))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('Admin/StoreOrder/ShowStoreOrder')
@@ -206,7 +206,7 @@ class StoreOrderAdminTest extends TestCase
         $delivery->forceFill(['created_at' => now()->subDays(5)])->save();
 
         $this->actingAs($this->superadmin)
-            ->get(route('admin.store-order.show', $order->uuid))
+            ->get(route('admin.store.order.show', $order->uuid))
             ->assertInertia(fn ($page) => $page->has('stuckDeliveries', 1));
     }
 
@@ -217,7 +217,7 @@ class StoreOrderAdminTest extends TestCase
         $order = StoreOrder::factory()->create(['total' => 500, 'amount_due' => 500, 'currency' => 'USD']);
 
         $this->actingAs($this->superadmin)
-            ->post(route('admin.store-order.mark-paid', $order->uuid))
+            ->post(route('admin.store.order.mark-paid', $order->uuid))
             ->assertRedirect();
 
         $this->assertEquals(StoreOrderStatus::PAID, $order->fresh()->status);
@@ -228,7 +228,7 @@ class StoreOrderAdminTest extends TestCase
     {
         $order = StoreOrder::factory()->create(['total' => 500, 'amount_due' => 500, 'currency' => 'USD']);
 
-        $this->actingAs($this->superadmin)->post(route('admin.store-order.mark-paid', $order->uuid));
+        $this->actingAs($this->superadmin)->post(route('admin.store.order.mark-paid', $order->uuid));
 
         $payment = $order->payments()->first();
         $this->assertNotNull($payment);
@@ -240,7 +240,7 @@ class StoreOrderAdminTest extends TestCase
     {
         [$order] = $this->paidOrder();
 
-        $this->actingAs($this->superadmin)->post(route('admin.store-order.mark-paid', $order->uuid));
+        $this->actingAs($this->superadmin)->post(route('admin.store.order.mark-paid', $order->uuid));
 
         $this->assertEquals(StoreOrderStatus::COMPLETED, $order->fresh()->status);
         Queue::assertNotPushed(ProcessStoreOrderPurchaseJob::class);
@@ -251,7 +251,7 @@ class StoreOrderAdminTest extends TestCase
         $order = StoreOrder::factory()->create();
 
         $this->actingAs($this->staffWith(['read store_orders']))
-            ->post(route('admin.store-order.mark-paid', $order->uuid))
+            ->post(route('admin.store.order.mark-paid', $order->uuid))
             ->assertForbidden();
 
         $this->assertEquals(StoreOrderStatus::PENDING, $order->fresh()->status);
@@ -274,7 +274,7 @@ class StoreOrderAdminTest extends TestCase
         ]);
 
         $this->actingAs($this->superadmin)
-            ->post(route('admin.store-order.cancel', $order->uuid), ['reason' => 'Buyer changed their mind'])
+            ->post(route('admin.store.order.cancel', $order->uuid), ['reason' => 'Buyer changed their mind'])
             ->assertRedirect();
 
         $this->assertEquals(StoreOrderStatus::CANCELLED, $order->fresh()->status);
@@ -287,7 +287,7 @@ class StoreOrderAdminTest extends TestCase
         $order = StoreOrder::factory()->create();
 
         $this->actingAs($this->staffWith(['read store_orders']))
-            ->post(route('admin.store-order.cancel', $order->uuid))
+            ->post(route('admin.store.order.cancel', $order->uuid))
             ->assertForbidden();
     }
 
@@ -298,7 +298,7 @@ class StoreOrderAdminTest extends TestCase
         [$order, $payment] = $this->paidOrder(2000);
 
         $this->actingAs($this->superadmin)
-            ->post(route('admin.store-order.refund', $order->uuid), [
+            ->post(route('admin.store.order.refund', $order->uuid), [
                 'amount' => 2000, 'reason' => 'Duplicate order', 'at_gateway' => false,
             ])
             ->assertRedirect();
@@ -316,7 +316,7 @@ class StoreOrderAdminTest extends TestCase
     {
         [$order, $payment] = $this->paidOrder(2000);
 
-        $this->actingAs($this->superadmin)->post(route('admin.store-order.refund', $order->uuid), [
+        $this->actingAs($this->superadmin)->post(route('admin.store.order.refund', $order->uuid), [
             'amount' => 500, 'at_gateway' => false,
         ]);
 
@@ -329,7 +329,7 @@ class StoreOrderAdminTest extends TestCase
         [$order] = $this->paidOrder(2000);
 
         $this->actingAs($this->superadmin)
-            ->post(route('admin.store-order.refund', $order->uuid), ['amount' => 2001, 'at_gateway' => false])
+            ->post(route('admin.store.order.refund', $order->uuid), ['amount' => 2001, 'at_gateway' => false])
             ->assertSessionHasErrors('amount');
 
         $this->assertEquals(StoreOrderStatus::COMPLETED, $order->fresh()->status);
@@ -339,12 +339,12 @@ class StoreOrderAdminTest extends TestCase
     {
         [$order] = $this->paidOrder(2000);
 
-        $this->actingAs($this->superadmin)->post(route('admin.store-order.refund', $order->uuid), [
+        $this->actingAs($this->superadmin)->post(route('admin.store.order.refund', $order->uuid), [
             'amount' => 1500, 'at_gateway' => false,
         ]);
 
         $this->actingAs($this->superadmin)
-            ->post(route('admin.store-order.refund', $order->uuid), ['amount' => 1000, 'at_gateway' => false])
+            ->post(route('admin.store.order.refund', $order->uuid), ['amount' => 1000, 'at_gateway' => false])
             ->assertSessionHasErrors('amount');
     }
 
@@ -353,7 +353,7 @@ class StoreOrderAdminTest extends TestCase
         $order = StoreOrder::factory()->completed()->create();
 
         $this->actingAs($this->superadmin)
-            ->post(route('admin.store-order.refund', $order->uuid), ['amount' => 100, 'at_gateway' => false])
+            ->post(route('admin.store.order.refund', $order->uuid), ['amount' => 100, 'at_gateway' => false])
             ->assertSessionHasErrors('amount');
     }
 
@@ -364,7 +364,7 @@ class StoreOrderAdminTest extends TestCase
         $payment->update(['gateway' => StorePaymentGateway::MANUAL]);
 
         $this->actingAs($this->superadmin)
-            ->post(route('admin.store-order.refund', $order->uuid), ['amount' => 2000, 'at_gateway' => true])
+            ->post(route('admin.store.order.refund', $order->uuid), ['amount' => 2000, 'at_gateway' => true])
             ->assertSessionHasErrors('amount');
 
         $this->assertEquals(StoreOrderStatus::COMPLETED, $order->fresh()->status);
@@ -384,7 +384,7 @@ class StoreOrderAdminTest extends TestCase
             'status' => StorePackageGrantStatus::ACTIVE, 'granted_at' => now(),
         ]);
 
-        $this->actingAs($this->superadmin)->post(route('admin.store-order.refund', $order->uuid), [
+        $this->actingAs($this->superadmin)->post(route('admin.store.order.refund', $order->uuid), [
             'amount' => 2000, 'at_gateway' => false,
         ]);
 
@@ -396,7 +396,7 @@ class StoreOrderAdminTest extends TestCase
         [$order] = $this->paidOrder();
 
         $this->actingAs($this->staffWith(['read store_orders', 'update store_orders']))
-            ->post(route('admin.store-order.refund', $order->uuid), ['amount' => 100, 'at_gateway' => false])
+            ->post(route('admin.store.order.refund', $order->uuid), ['amount' => 100, 'at_gateway' => false])
             ->assertForbidden();
     }
 
@@ -439,7 +439,7 @@ class StoreOrderAdminTest extends TestCase
         $originalQueueId = $delivery->command_queue_id;
 
         $this->actingAs($this->superadmin)
-            ->post(route('admin.store-order.resend', $order->uuid))
+            ->post(route('admin.store.order.resend', $order->uuid))
             ->assertRedirect();
 
         $delivery->refresh();
@@ -458,7 +458,7 @@ class StoreOrderAdminTest extends TestCase
         $delivery = $this->deliveryFor($order, CommandQueueStatus::COMPLETED);
         $originalQueueId = $delivery->command_queue_id;
 
-        $this->actingAs($this->superadmin)->post(route('admin.store-order.resend', $order->uuid));
+        $this->actingAs($this->superadmin)->post(route('admin.store.order.resend', $order->uuid));
 
         $this->assertEquals($originalQueueId, $delivery->fresh()->command_queue_id);
         $this->assertEquals(0, $delivery->fresh()->redispatch_count);
@@ -471,10 +471,10 @@ class StoreOrderAdminTest extends TestCase
         $delivery = $this->deliveryFor($order, CommandQueueStatus::DEFERRED);
         $originalQueueId = $delivery->command_queue_id;
 
-        $this->actingAs($this->superadmin)->post(route('admin.store-order.resend', $order->uuid));
+        $this->actingAs($this->superadmin)->post(route('admin.store.order.resend', $order->uuid));
         $this->assertEquals($originalQueueId, $delivery->fresh()->command_queue_id);
 
-        $this->actingAs($this->superadmin)->post(route('admin.store-order.resend', $order->uuid), [
+        $this->actingAs($this->superadmin)->post(route('admin.store.order.resend', $order->uuid), [
             'include_unfinished' => true,
         ]);
         $this->assertNotEquals($originalQueueId, $delivery->fresh()->command_queue_id);
@@ -485,7 +485,7 @@ class StoreOrderAdminTest extends TestCase
         $order = StoreOrder::factory()->create();
         $this->deliveryFor($order, CommandQueueStatus::FAILED);
 
-        $this->actingAs($this->superadmin)->post(route('admin.store-order.resend', $order->uuid));
+        $this->actingAs($this->superadmin)->post(route('admin.store.order.resend', $order->uuid));
 
         Queue::assertNotPushed(RunCommandQueueJob::class);
     }
@@ -495,7 +495,7 @@ class StoreOrderAdminTest extends TestCase
         [$order] = $this->paidOrder();
 
         $this->actingAs($this->staffWith(['read store_orders', 'update store_orders']))
-            ->post(route('admin.store-order.resend', $order->uuid))
+            ->post(route('admin.store.order.resend', $order->uuid))
             ->assertForbidden();
     }
 
@@ -565,7 +565,7 @@ class StoreOrderAdminTest extends TestCase
         $this->deliveryFor($order, CommandQueueStatus::FAILED);
 
         $this->actingAs($this->superadmin)
-            ->get(route('admin.store-order.show', $order->uuid))
+            ->get(route('admin.store.order.show', $order->uuid))
             ->assertInertia(function ($page) {
                 $delivery = $page->toArray()['props']['order']['deliveries'][0];
 

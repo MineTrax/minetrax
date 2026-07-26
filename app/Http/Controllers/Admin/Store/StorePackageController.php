@@ -98,7 +98,7 @@ class StorePackageController extends Controller
             $package->addMediaFromRequest('photo')->toMediaCollection('store-package');
         }
 
-        return redirect()->route('admin.store-package.index')
+        return redirect()->route('admin.store.package.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Store package has been created successfully')]]);
     }
 
@@ -134,7 +134,7 @@ class StorePackageController extends Controller
             $storePackage->addMediaFromRequest('photo')->toMediaCollection('store-package');
         }
 
-        return redirect()->route('admin.store-package.index')
+        return redirect()->route('admin.store.package.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Store package has been updated successfully')]]);
     }
 
@@ -146,7 +146,7 @@ class StorePackageController extends Controller
         // readable, and expiry commands can still resolve for grants already issued.
         $storePackage->delete();
 
-        return redirect()->route('admin.store-package.index')
+        return redirect()->route('admin.store.package.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Store package has been deleted')]]);
     }
 

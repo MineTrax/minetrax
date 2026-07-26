@@ -2,6 +2,8 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useTranslations } from "@/Composables/useTranslations";
+import DataTable from "@/Components/DataTable/DataTable.vue";
+import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { ButtonGroup } from "@/Components/ui/button-group";
@@ -15,26 +17,63 @@ const { can } = useAuthorizable();
 const { __ } = useTranslations();
 
 defineProps({
-    currencies: Array,
+    currencies: Object,
+    filters: Object,
     baseCurrency: String,
     baseIsLocked: Boolean,
 });
 
 const breadcrumbItems = [
-    {
-        text: __("Admin"),
-        current: false,
-    },
-    {
-        text: __("Store Currencies"),
-        current: true,
-    }
+    { text: __("Admin"), current: false },
+    { text: __("Store"), current: false },
+    { text: __("Currencies"), current: true },
 ];
 
-function makeBaseCurrency(currencyCode) {
-    router.post(route("admin.store-currency.make-base"), {
-        code: currencyCode,
-    });
+const headerRow = [
+    {
+        key: "code",
+        sortable: true,
+        label: __("Code"),
+        filterable: { type: "text" },
+    },
+    {
+        key: "name",
+        sortable: true,
+        label: __("Name"),
+        filterable: { type: "text" },
+    },
+    {
+        key: "symbol",
+        sortable: true,
+        label: __("Symbol"),
+    },
+    {
+        key: "exponent",
+        sortable: true,
+        class: "text-center",
+        label: __("Decimals"),
+    },
+    {
+        key: "rate_to_base",
+        sortable: true,
+        label: __("Rate to Base"),
+    },
+    {
+        key: "is_enabled",
+        sortable: true,
+        class: "text-center",
+        label: __("Enabled"),
+    },
+    {
+        key: "actions",
+        label: __("Actions"),
+        sortable: false,
+        class: "w-1/12 text-right",
+    },
+];
+
+function makeBaseCurrency(currency) {
+    router.post(route("admin.store.currency.make-base", currency.id), {}, { preserveScroll: true });
 }
 </script>
 
@@ -54,165 +93,132 @@ function makeBaseCurrency(currencyCode) {
             v-if="can('create store_currencies')"
             as-child
           >
-            <Link :href="route('admin.store-currency.create')">
+            <Link :href="route('admin.store.currency.create')">
               {{ __("Add Currency") }}
             </Link>
           </Button>
         </div>
       </div>
 
-      <div
+      <AlertCard
         v-if="baseIsLocked"
+        variant="info"
         class="mb-6"
       >
-        <AlertCard variant="info">
-          {{ __("The base currency is locked because orders already exist. You cannot change the base currency.") }}
-        </AlertCard>
-      </div>
+        {{ __("The base currency is locked because orders already exist. Their revenue was recorded against :code.", { code: baseCurrency }) }}
+      </AlertCard>
 
-      <div class="bg-card rounded-lg shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-border">
-          <thead class="bg-muted">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                {{ __("Code") }}
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                {{ __("Name") }}
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                {{ __("Symbol") }}
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                {{ __("Exponent") }}
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                {{ __("Rate to Base") }}
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                {{ __("Countries") }}
-              </th>
-              <th class="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                {{ __("Enabled") }}
-              </th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                {{ __("Actions") }}
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-card divide-y divide-border">
-            <tr
-              v-for="row in currencies"
-              :key="row.id"
-              class="hover:bg-muted transition-colors"
+      <DataTable
+        class="bg-card rounded-lg shadow"
+        :header="headerRow"
+        :data="currencies"
+        :filters="filters"
+      >
+        <template #default="{ item }">
+          <DtRowItem>
+            <div class="flex items-center gap-2">
+              <span class="font-medium text-foreground">{{ item.code }}</span>
+              <Badge
+                v-if="item.is_base"
+                variant="default"
+              >
+                {{ __("Base") }}
+              </Badge>
+            </div>
+          </DtRowItem>
+
+          <DtRowItem>
+            {{ item.name }}
+            <div
+              v-if="item.country_codes && item.country_codes.length"
+              class="text-xs text-muted-foreground"
             >
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium">{{ row.code }}</span>
-                  <Badge
-                    v-if="row.is_base"
-                    variant="default"
-                  >
-                    {{ __("Base") }}
-                  </Badge>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                {{ row.name }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                {{ row.symbol }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                {{ row.exponent }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                {{ row.rate_to_base }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div
-                  v-if="row.country_codes && row.country_codes.length > 0"
-                  class="flex gap-1 flex-wrap"
+              {{ item.country_codes.join(", ") }}
+            </div>
+          </DtRowItem>
+
+          <DtRowItem>
+            {{ item.symbol }}
+            <span class="text-xs text-muted-foreground">({{ item.symbol_position }})</span>
+          </DtRowItem>
+
+          <DtRowItem class="text-center">
+            {{ item.exponent }}
+          </DtRowItem>
+
+          <DtRowItem>
+            <span
+              v-if="item.is_base"
+              class="text-muted-foreground"
+            >—</span>
+            <span v-else>{{ item.rate_to_base }}</span>
+          </DtRowItem>
+
+          <td class="px-4 text-center">
+            <Icon
+              v-if="item.is_enabled"
+              class="text-success"
+              name="check-circle"
+            />
+            <Icon
+              v-else
+              class="text-destructive"
+              name="cross-circle"
+            />
+          </td>
+
+          <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+            <ButtonGroup>
+              <Button
+                v-if="can('update store_currencies')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+              >
+                <Link
+                  v-tippy
+                  as="a"
+                  :href="route('admin.store.currency.edit', item.id)"
+                  :title="__('Edit Currency')"
                 >
-                  <span
-                    v-for="code in row.country_codes"
-                    :key="code"
-                    class="inline-flex px-2 py-1 text-xs font-medium text-foreground bg-muted rounded-full"
-                  >
-                    {{ code }}
-                  </span>
-                </div>
-                <span
-                  v-else
-                  class="text-muted-foreground"
-                >—</span>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <Icon
-                  v-if="row.is_enabled"
-                  class="text-success"
-                  name="check-circle"
-                />
-                <Icon
-                  v-else
-                  class="text-destructive"
-                  name="cross-circle"
-                />
-              </td>
-              <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                <ButtonGroup>
-                  <Button
-                    v-if="can('update store_currencies')"
-                    variant="outline"
-                    size="icon"
-                    as-child
-                    class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
-                  >
-                    <Link
-                      v-tippy
-                      as="a"
-                      :href="route('admin.store-currency.edit', row.id)"
-                      :title="__('Edit Currency')"
-                    >
-                      <PencilSquareIcon />
-                    </Link>
-                  </Button>
-                  <Button
-                    v-if="!row.is_base && !baseIsLocked && can('update store_currencies')"
-                    v-tippy
-                    variant="outline"
-                    size="icon"
-                    :title="__('Make Base Currency')"
-                    @click="makeBaseCurrency(row.code)"
-                  >
-                    <ArrowsRightLeftIcon />
-                  </Button>
-                  <Button
-                    v-if="!row.is_base && can('delete store_currencies')"
-                    variant="outline"
-                    size="icon"
-                    as-child
-                    class="text-destructive hover:text-destructive"
-                  >
-                    <Link
-                      v-confirm="{
-                        message: __('Are you sure you want to delete this currency permanently?'),
-                      }"
-                      v-tippy
-                      as="button"
-                      method="DELETE"
-                      :href="route('admin.store-currency.delete', row.id)"
-                      :title="__('Delete Currency')"
-                    >
-                      <TrashIcon />
-                    </Link>
-                  </Button>
-                </ButtonGroup>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                  <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="!item.is_base && !baseIsLocked && can('update store_currencies')"
+                v-tippy
+                variant="outline"
+                size="icon"
+                :title="__('Make Base Currency')"
+                @click="makeBaseCurrency(item)"
+              >
+                <ArrowsRightLeftIcon />
+              </Button>
+              <Button
+                v-if="!item.is_base && can('delete store_currencies')"
+                variant="outline"
+                size="icon"
+                as-child
+                class="text-destructive hover:text-destructive"
+              >
+                <Link
+                  v-confirm="{
+                    message: __('Are you sure you want to delete this currency permanently?'),
+                  }"
+                  v-tippy
+                  as="button"
+                  method="DELETE"
+                  :href="route('admin.store.currency.delete', item.id)"
+                  :title="__('Delete Currency')"
+                >
+                  <TrashIcon />
+                </Link>
+              </Button>
+            </ButtonGroup>
+          </td>
+        </template>
+      </DataTable>
     </div>
   </AdminLayout>
 </template>

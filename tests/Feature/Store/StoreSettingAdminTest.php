@@ -9,6 +9,10 @@ use App\Settings\StoreSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * Storefront, currency, tax and checkout settings. Payment gateways have their own screen and
+ * their own test — see StorePaymentGatewayAdminTest.
+ */
 class StoreSettingAdminTest extends TestCase
 {
     use RefreshDatabase;
@@ -42,8 +46,6 @@ class StoreSettingAdminTest extends TestCase
             'require_email_on_guest_checkout' => true,
             'mojang_username_verification' => true,
             'terms_text' => null,
-            'enabled_gateways' => ['manual'],
-            'gateway_credentials' => [],
             'show_recent_purchases' => true,
             'hide_buyer_identity' => false,
             'notify_staff_on_purchase' => true,
@@ -73,128 +75,49 @@ class StoreSettingAdminTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->component('Admin/Setting/StoreSetting')
                 ->has('settings')
-                ->has('gateways')
                 ->has('currencies')
             );
     }
 
-    // --- Secrets never round-trip ---------------------------------------------------------------
-
-    public function test_the_raw_credential_bag_is_never_sent_to_the_browser()
+    /**
+     * Credentials belong to the payment gateway screen. Nothing about them should be within reach
+     * of a form whose job is toggling guest checkout.
+     */
+    public function test_the_settings_page_carries_no_gateway_data_at_all()
     {
         $settings = app(StoreSettings::class);
         $settings->enabled_gateways = ['manual', 'stripe'];
-        $settings->gateway_credentials = ['stripe' => ['secret_key' => 'sk_test_supersecret', 'webhook_secret' => 'whsec_supersecret']];
+        $settings->gateway_credentials = ['stripe' => ['secret_key' => 'sk_test_supersecret']];
         $settings->save();
 
         $response = $this->actingAs($this->superadmin)->get(route('admin.setting.store.show'));
 
         $response->assertOk();
         $response->assertDontSee('sk_test_supersecret');
-        $response->assertDontSee('whsec_supersecret');
 
-        $response->assertInertia(function ($page) {
-            $page->missing('settings.gateway_credentials');
-
-            $stripe = collect($page->toArray()['props']['gateways'])->firstWhere('key', 'stripe');
-            $this->assertEquals('********', $stripe['credentials']['secret_key']);
-            $this->assertEquals('********', $stripe['credentials']['webhook_secret']);
-        });
+        $response->assertInertia(fn ($page) => $page
+            ->missing('settings.gateway_credentials')
+            ->missing('settings.enabled_gateways')
+            ->missing('gateways')
+        );
     }
 
-    public function test_an_unset_secret_is_sent_as_null_rather_than_a_mask()
-    {
-        // A masked empty field would read as "already configured" and be impossible to fill in.
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.setting.store.show'))
-            ->assertInertia(function ($page) {
-                $stripe = collect($page->toArray()['props']['gateways'])->firstWhere('key', 'stripe');
-                $this->assertNull($stripe['credentials']['secret_key']);
-            });
-    }
-
-    public function test_a_secret_submitted_unchanged_as_the_mask_is_kept()
+    public function test_saving_the_settings_leaves_the_gateway_configuration_untouched()
     {
         $settings = app(StoreSettings::class);
-        $settings->gateway_credentials = ['stripe' => ['secret_key' => 'sk_test_original', 'webhook_secret' => 'whsec_original']];
+        $settings->enabled_gateways = ['manual', 'stripe'];
+        $settings->gateway_credentials = ['stripe' => ['secret_key' => 'sk_test_keepme']];
         $settings->save();
 
-        $this->actingAs($this->superadmin)->post(route('admin.setting.store.update'), $this->payload([
-            'enabled_gateways' => ['manual', 'stripe'],
-            'gateway_credentials' => [
-                'stripe' => ['secret_key' => '********', 'webhook_secret' => 'whsec_rotated'],
-            ],
-        ]))->assertRedirect();
-
-        $stored = app(StoreSettings::class)->refresh()->gateway_credentials;
-
-        $this->assertEquals('sk_test_original', $stored['stripe']['secret_key'], 'An untouched secret must survive the round trip.');
-        $this->assertEquals('whsec_rotated', $stored['stripe']['webhook_secret'], 'A changed secret must be written.');
-    }
-
-    public function test_only_fields_a_driver_declares_are_stored()
-    {
-        $this->actingAs($this->superadmin)->post(route('admin.setting.store.update'), $this->payload([
-            'enabled_gateways' => ['stripe'],
-            'gateway_credentials' => [
-                'stripe' => ['secret_key' => 'sk_test_1', 'webhook_secret' => 'whsec_1', 'evil' => 'payload'],
-            ],
-        ]))->assertRedirect();
-
-        $stored = app(StoreSettings::class)->refresh()->gateway_credentials;
-
-        $this->assertArrayNotHasKey('evil', $stored['stripe']);
-        $this->assertEquals('sk_test_1', $stored['stripe']['secret_key']);
-    }
-
-    public function test_a_credential_for_an_unregistered_gateway_is_discarded()
-    {
-        $this->actingAs($this->superadmin)->post(route('admin.setting.store.update'), $this->payload([
-            'gateway_credentials' => ['notagateway' => ['token' => 'x']],
-        ]))->assertRedirect();
-
-        $this->assertArrayNotHasKey('notagateway', app(StoreSettings::class)->refresh()->gateway_credentials);
-    }
-
-    // --- Enabling gateways ------------------------------------------------------------------------
-
-    public function test_enabling_stripe_with_both_credentials_makes_the_driver_ready()
-    {
-        $this->actingAs($this->superadmin)->post(route('admin.setting.store.update'), $this->payload([
-            'enabled_gateways' => ['manual', 'stripe'],
-            'gateway_credentials' => [
-                'stripe' => ['secret_key' => 'sk_test_1', 'webhook_secret' => 'whsec_1'],
-            ],
-        ]))->assertRedirect();
-
         $this->actingAs($this->superadmin)
-            ->get(route('admin.setting.store.show'))
-            ->assertInertia(function ($page) {
-                $stripe = collect($page->toArray()['props']['gateways'])->firstWhere('key', 'stripe');
-                $this->assertTrue($stripe['is_configured']);
-            });
-    }
+            ->post(route('admin.setting.store.update'), $this->payload(['store_name' => 'Renamed']))
+            ->assertSessionHasNoErrors();
 
-    public function test_a_gateway_switched_on_without_credentials_is_not_reported_ready()
-    {
-        $this->actingAs($this->superadmin)->post(route('admin.setting.store.update'), $this->payload([
-            'enabled_gateways' => ['stripe'],
-            'gateway_credentials' => ['stripe' => ['secret_key' => 'sk_test_1']],
-        ]))->assertRedirect();
+        $fresh = app(StoreSettings::class)->refresh();
 
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.setting.store.show'))
-            ->assertInertia(function ($page) {
-                $stripe = collect($page->toArray()['props']['gateways'])->firstWhere('key', 'stripe');
-                $this->assertFalse($stripe['is_configured'], 'A half-configured gateway must never be offered.');
-            });
-    }
-
-    public function test_an_unknown_gateway_key_is_rejected()
-    {
-        $this->actingAs($this->superadmin)
-            ->post(route('admin.setting.store.update'), $this->payload(['enabled_gateways' => ['notagateway']]))
-            ->assertSessionHasErrors('enabled_gateways.0');
+        $this->assertEquals('Renamed', $fresh->store_name);
+        $this->assertEquals(['manual', 'stripe'], $fresh->enabled_gateways);
+        $this->assertEquals('sk_test_keepme', $fresh->gateway_credentials['stripe']['secret_key']);
     }
 
     // --- Ordinary settings ---------------------------------------------------------------------
@@ -257,15 +180,5 @@ class StoreSettingAdminTest extends TestCase
             ->assertSessionHasNoErrors();
 
         $this->assertEquals('EUR', app(StoreSettings::class)->refresh()->base_currency);
-    }
-
-    public function test_the_page_exposes_the_webhook_url_for_each_gateway()
-    {
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.setting.store.show'))
-            ->assertInertia(fn ($page) => $page->where(
-                'webhookUrlTemplate',
-                route('api.store.webhook', ['gateway' => '__GATEWAY__'])
-            ));
     }
 }

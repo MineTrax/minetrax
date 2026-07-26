@@ -37,7 +37,7 @@ class StoreOrderPlacedStaffNotification extends Notification implements ShouldQu
                 'count' => $this->order->items->count(),
                 'amount' => $this->formattedTotal(),
             ]))
-            ->action(__('View Order'), route('admin.store-order.show', $this->order->uuid));
+            ->action(__('View Order'), route('admin.store.order.show', $this->order->uuid));
     }
 
     /**
@@ -64,7 +64,7 @@ class StoreOrderPlacedStaffNotification extends Notification implements ShouldQu
                 'amount' => $this->formattedTotal(),
             ]),
             'type' => 'rich',
-            'url' => route('admin.store-order.show', $this->order->uuid),
+            'url' => route('admin.store.order.show', $this->order->uuid),
             'timestamp' => now()->toIso8601String(),
         ]);
     }

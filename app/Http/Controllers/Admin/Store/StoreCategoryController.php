@@ -81,7 +81,7 @@ class StoreCategoryController extends Controller
             $category->addMediaFromRequest('photo')->toMediaCollection('store-category');
         }
 
-        return redirect()->route('admin.store-category.index')
+        return redirect()->route('admin.store.category.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Store category has been created successfully')]]);
     }
 
@@ -115,7 +115,7 @@ class StoreCategoryController extends Controller
             $storeCategory->addMediaFromRequest('photo')->toMediaCollection('store-category');
         }
 
-        return redirect()->route('admin.store-category.index')
+        return redirect()->route('admin.store.category.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Store category has been updated successfully')]]);
     }
 
@@ -127,7 +127,7 @@ class StoreCategoryController extends Controller
         // nullOnDelete, so nothing is silently destroyed along with the category.
         $storeCategory->delete();
 
-        return redirect()->route('admin.store-category.index')
+        return redirect()->route('admin.store.category.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Store category has been deleted permanently')]]);
     }
 }

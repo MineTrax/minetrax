@@ -22,8 +22,10 @@ use App\Http\Controllers\Admin\Settings\SeoSettingController;
 use App\Http\Controllers\Admin\Settings\StoreSettingController;
 use App\Http\Controllers\Admin\Settings\ThemeSettingController;
 use App\Http\Controllers\Admin\Store\StoreCategoryController;
+use App\Http\Controllers\Admin\Store\StoreCurrencyController as AdminStoreCurrencyController;
 use App\Http\Controllers\Admin\Store\StoreOrderController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
+use App\Http\Controllers\Admin\Store\StorePaymentGatewayController;
 use App\Http\Controllers\BanWardenController;
 use App\Http\Controllers\CustomFormController;
 use App\Http\Controllers\CustomPageController;
@@ -373,34 +375,41 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::delete('download/{download}', [App\Http\Controllers\Admin\DownloadController::class, 'destroy'])->name('download.delete');
 
     // Store: catalog
-    Route::get('store-category', [StoreCategoryController::class, 'index'])->name('store-category.index');
-    Route::get('store-category/create', [StoreCategoryController::class, 'create'])->name('store-category.create');
-    Route::post('store-category', [StoreCategoryController::class, 'store'])->name('store-category.store');
-    Route::get('store-category/{storeCategory}/edit', [StoreCategoryController::class, 'edit'])->name('store-category.edit');
-    Route::put('store-category/{storeCategory}', [StoreCategoryController::class, 'update'])->name('store-category.update');
-    Route::delete('store-category/{storeCategory}', [StoreCategoryController::class, 'destroy'])->name('store-category.delete');
+    // Store admin lives under a single /admin/store prefix rather than a flat store-* namespace,
+    // so the module reads as one section in URLs the way it does in the sidebar.
+    Route::prefix('store')->name('store.')->group(function () {
+        Route::get('category', [StoreCategoryController::class, 'index'])->name('category.index');
+        Route::get('category/create', [StoreCategoryController::class, 'create'])->name('category.create');
+        Route::post('category', [StoreCategoryController::class, 'store'])->name('category.store');
+        Route::get('category/{storeCategory}/edit', [StoreCategoryController::class, 'edit'])->name('category.edit');
+        Route::put('category/{storeCategory}', [StoreCategoryController::class, 'update'])->name('category.update');
+        Route::delete('category/{storeCategory}', [StoreCategoryController::class, 'destroy'])->name('category.delete');
 
-    Route::get('store-package', [StorePackageController::class, 'index'])->name('store-package.index');
-    Route::get('store-package/create', [StorePackageController::class, 'create'])->name('store-package.create');
-    Route::post('store-package', [StorePackageController::class, 'store'])->name('store-package.store');
-    Route::get('store-package/{storePackage}/edit', [StorePackageController::class, 'edit'])->name('store-package.edit');
-    Route::put('store-package/{storePackage}', [StorePackageController::class, 'update'])->name('store-package.update');
-    Route::delete('store-package/{storePackage}', [StorePackageController::class, 'destroy'])->name('store-package.delete');
+        Route::get('package', [StorePackageController::class, 'index'])->name('package.index');
+        Route::get('package/create', [StorePackageController::class, 'create'])->name('package.create');
+        Route::post('package', [StorePackageController::class, 'store'])->name('package.store');
+        Route::get('package/{storePackage}/edit', [StorePackageController::class, 'edit'])->name('package.edit');
+        Route::put('package/{storePackage}', [StorePackageController::class, 'update'])->name('package.update');
+        Route::delete('package/{storePackage}', [StorePackageController::class, 'destroy'])->name('package.delete');
 
-    Route::get('store-order', [StoreOrderController::class, 'index'])->name('store-order.index');
-    Route::get('store-order/{order:uuid}', [StoreOrderController::class, 'show'])->name('store-order.show');
-    Route::post('store-order/{order:uuid}/mark-paid', [StoreOrderController::class, 'markPaid'])->name('store-order.mark-paid');
-    Route::post('store-order/{order:uuid}/cancel', [StoreOrderController::class, 'cancel'])->name('store-order.cancel');
-    Route::post('store-order/{order:uuid}/refund', [StoreOrderController::class, 'refund'])->name('store-order.refund');
-    Route::post('store-order/{order:uuid}/resend', [StoreOrderController::class, 'resend'])->name('store-order.resend');
+        Route::get('order', [StoreOrderController::class, 'index'])->name('order.index');
+        Route::get('order/{order:uuid}', [StoreOrderController::class, 'show'])->name('order.show');
+        Route::post('order/{order:uuid}/mark-paid', [StoreOrderController::class, 'markPaid'])->name('order.mark-paid');
+        Route::post('order/{order:uuid}/cancel', [StoreOrderController::class, 'cancel'])->name('order.cancel');
+        Route::post('order/{order:uuid}/refund', [StoreOrderController::class, 'refund'])->name('order.refund');
+        Route::post('order/{order:uuid}/resend', [StoreOrderController::class, 'resend'])->name('order.resend');
 
-    Route::get('store-currency', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'index'])->name('store-currency.index');
-    Route::get('store-currency/create', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'create'])->name('store-currency.create');
-    Route::post('store-currency', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'store'])->name('store-currency.store');
-    Route::get('store-currency/{storeCurrency}/edit', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'edit'])->name('store-currency.edit');
-    Route::put('store-currency/{storeCurrency}', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'update'])->name('store-currency.update');
-    Route::delete('store-currency/{storeCurrency}', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'destroy'])->name('store-currency.delete');
-    Route::post('store-currency/{storeCurrency}/make-base', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'makeBase'])->name('store-currency.make-base');
+        Route::get('currency', [AdminStoreCurrencyController::class, 'index'])->name('currency.index');
+        Route::get('currency/create', [AdminStoreCurrencyController::class, 'create'])->name('currency.create');
+        Route::post('currency', [AdminStoreCurrencyController::class, 'store'])->name('currency.store');
+        Route::get('currency/{storeCurrency}/edit', [AdminStoreCurrencyController::class, 'edit'])->name('currency.edit');
+        Route::put('currency/{storeCurrency}', [AdminStoreCurrencyController::class, 'update'])->name('currency.update');
+        Route::delete('currency/{storeCurrency}', [AdminStoreCurrencyController::class, 'destroy'])->name('currency.delete');
+        Route::post('currency/{storeCurrency}/make-base', [AdminStoreCurrencyController::class, 'makeBase'])->name('currency.make-base');
+
+        Route::get('payment-gateway', [StorePaymentGatewayController::class, 'index'])->name('payment-gateway.index');
+        Route::post('payment-gateway', [StorePaymentGatewayController::class, 'update'])->name('payment-gateway.update');
+    });
 
     Route::get('custom-form', [App\Http\Controllers\Admin\CustomFormController::class, 'index'])->name('custom-form.index');
     Route::get('custom-form/create', [App\Http\Controllers\Admin\CustomFormController::class, 'create'])->name('custom-form.create');

@@ -6,7 +6,7 @@ import { Link, useForm } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { Button } from "@/Components/ui/button";
 import XInput from "@/Components/Form/XInput.vue";
-import XCheckbox from "@/Components/Form/XCheckbox.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
 
 const { __ } = useTranslations();
 
@@ -155,7 +155,7 @@ const submit = () => form.post(route("store.checkout.store"));
 
           <!-- Terms -->
           <section class="bg-card rounded-lg shadow p-6">
-            <XCheckbox
+            <XSwitch
               id="accept_terms"
               v-model="form.accept_terms"
               :label="__('I accept the terms of service')"

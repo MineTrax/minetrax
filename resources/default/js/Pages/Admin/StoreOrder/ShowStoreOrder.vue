@@ -7,7 +7,7 @@ import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 import AlertCard from "@/Components/AlertCard.vue";
 import { Button } from "@/Components/ui/button";
 import XInput from "@/Components/Form/XInput.vue";
-import XCheckbox from "@/Components/Form/XCheckbox.vue";
+import XSwitch from "@/Components/Form/XSwitch.vue";
 import { Link, useForm, router } from "@inertiajs/vue3";
 
 const { __ } = useTranslations();
@@ -22,7 +22,7 @@ const props = defineProps({
 
 const breadcrumbItems = [
     { text: __("Admin"), current: false },
-    { text: __("Store Orders"), href: route("admin.store-order.index"), current: false },
+    { text: __("Store Orders"), href: route("admin.store.order.index"), current: false },
     { text: props.order.uuid.substring(0, 8).toUpperCase(), current: true },
 ];
 
@@ -56,7 +56,7 @@ const openRefund = () => {
 };
 
 const submitRefund = () => {
-    refundForm.post(route("admin.store-order.refund", props.order.uuid), {
+    refundForm.post(route("admin.store.order.refund", props.order.uuid), {
         preserveScroll: true,
         onSuccess: () => {
             showRefund.value = false;
@@ -65,14 +65,14 @@ const submitRefund = () => {
 };
 
 const markPaid = () =>
-    router.post(route("admin.store-order.mark-paid", props.order.uuid), {}, { preserveScroll: true });
+    router.post(route("admin.store.order.mark-paid", props.order.uuid), {}, { preserveScroll: true });
 
 const cancelOrder = () =>
-    router.post(route("admin.store-order.cancel", props.order.uuid), {}, { preserveScroll: true });
+    router.post(route("admin.store.order.cancel", props.order.uuid), {}, { preserveScroll: true });
 
 const resend = (includeUnfinished = false) =>
     router.post(
-        route("admin.store-order.resend", props.order.uuid),
+        route("admin.store.order.resend", props.order.uuid),
         { include_unfinished: includeUnfinished },
         { preserveScroll: true },
     );
@@ -186,7 +186,7 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
             />
           </div>
 
-          <XCheckbox
+          <XSwitch
             id="at_gateway"
             v-model="refundForm.at_gateway"
             :label="__('Also refund the money at the payment gateway')"

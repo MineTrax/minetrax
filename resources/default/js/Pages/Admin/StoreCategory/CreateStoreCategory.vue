@@ -23,7 +23,7 @@ const breadcrumbItems = [
     },
     {
         text: __("Store Categories"),
-        url: route("admin.store-category.index"),
+        url: route("admin.store.category.index"),
         current: false,
     },
     {
@@ -54,7 +54,7 @@ function addCategory() {
         form.photo = photoInput.value.files[0];
     }
 
-    form.post(route("admin.store-category.store"), {});
+    form.post(route("admin.store.category.store"), {});
 }
 </script>
 
@@ -171,7 +171,7 @@ function addCategory() {
                 variant="outline"
                 as-child
               >
-                <Link :href="route('admin.store-category.index')">
+                <Link :href="route('admin.store.category.index')">
                   {{ __("Cancel") }}
                 </Link>
               </Button>

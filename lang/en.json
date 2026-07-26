@@ -2117,5 +2117,11 @@
     "rate": "rate",
     "re-sent :count": "re-sent :count",
     "until": "until",
-    "{days} days": "{days} days"
+    "{days} days": "{days} days",
+    "Add one first": "Add one first",
+    "Currencies": "Currencies",
+    "Decimals": "Decimals",
+    "No currencies exist yet, so there is nothing to choose here.": "No currencies exist yet, so there is nothing to choose here.",
+    "Payment Gateways Updated": "Payment Gateways Updated",
+    "The base currency is locked because orders already exist. Their revenue was recorded against :code.": "The base currency is locked because orders already exist. Their revenue was recorded against :code."
 }

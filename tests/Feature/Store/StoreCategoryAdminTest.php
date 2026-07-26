@@ -32,15 +32,15 @@ class StoreCategoryAdminTest extends TestCase
 
     public function test_guest_cannot_access_admin_store_categories()
     {
-        $this->get(route('admin.store-category.index'))->assertStatus(302);
+        $this->get(route('admin.store.category.index'))->assertStatus(302);
     }
 
     public function test_non_staff_user_cannot_access_admin_store_categories()
     {
         $this->actingAs(User::factory()->create());
 
-        $this->get(route('admin.store-category.index'))->assertStatus(302);
-        $this->get(route('admin.store-category.create'))->assertStatus(302);
+        $this->get(route('admin.store.category.index'))->assertStatus(302);
+        $this->get(route('admin.store.category.create'))->assertStatus(302);
     }
 
     public function test_admin_can_view_the_category_listing()
@@ -48,7 +48,7 @@ class StoreCategoryAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         StoreCategory::factory()->count(3)->create();
 
-        $this->get(route('admin.store-category.index'))
+        $this->get(route('admin.store.category.index'))
             ->assertStatus(200)
             ->assertInertia(fn ($page) => $page->component('Admin/StoreCategory/IndexStoreCategory', false));
     }
@@ -57,8 +57,8 @@ class StoreCategoryAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-category.store'), $this->validPayload())
-            ->assertRedirect(route('admin.store-category.index'));
+        $this->post(route('admin.store.category.store'), $this->validPayload())
+            ->assertRedirect(route('admin.store.category.index'));
 
         $this->assertDatabaseHas('store_categories', [
             'name' => 'Ranks',
@@ -71,7 +71,7 @@ class StoreCategoryAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-category.store'), $this->validPayload(['name' => 'VIP  Ranks & Perks']));
+        $this->post(route('admin.store.category.store'), $this->validPayload(['name' => 'VIP  Ranks & Perks']));
 
         $this->assertDatabaseHas('store_categories', ['slug' => 'vip-ranks-perks']);
     }
@@ -81,7 +81,7 @@ class StoreCategoryAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         StoreCategory::factory()->create(['name' => 'Ranks', 'slug' => 'ranks']);
 
-        $this->post(route('admin.store-category.store'), $this->validPayload())
+        $this->post(route('admin.store.category.store'), $this->validPayload())
             ->assertSessionHasErrors(['slug']);
     }
 
@@ -89,7 +89,7 @@ class StoreCategoryAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-category.store'), $this->validPayload(['name' => '']))
+        $this->post(route('admin.store.category.store'), $this->validPayload(['name' => '']))
             ->assertSessionHasErrors(['name']);
     }
 
@@ -98,10 +98,10 @@ class StoreCategoryAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $category = StoreCategory::factory()->create();
 
-        $this->put(route('admin.store-category.update', $category->id), $this->validPayload([
+        $this->put(route('admin.store.category.update', $category->id), $this->validPayload([
             'name' => 'Updated Name',
             'is_enabled' => false,
-        ]))->assertRedirect(route('admin.store-category.index'));
+        ]))->assertRedirect(route('admin.store.category.index'));
 
         $category->refresh();
         $this->assertEquals('Updated Name', $category->name);
@@ -114,7 +114,7 @@ class StoreCategoryAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $category = StoreCategory::factory()->create(['name' => 'Ranks', 'slug' => 'ranks']);
 
-        $this->put(route('admin.store-category.update', $category->id), $this->validPayload([
+        $this->put(route('admin.store.category.update', $category->id), $this->validPayload([
             'name' => 'Ranks',
         ]))->assertSessionHasNoErrors();
     }
@@ -124,7 +124,7 @@ class StoreCategoryAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $category = StoreCategory::factory()->create();
 
-        $this->put(route('admin.store-category.update', $category->id), $this->validPayload([
+        $this->put(route('admin.store.category.update', $category->id), $this->validPayload([
             'parent_id' => $category->id,
         ]))->assertSessionHasErrors(['parent_id']);
     }
@@ -135,7 +135,7 @@ class StoreCategoryAdminTest extends TestCase
         $category = StoreCategory::factory()->create();
         $package = StorePackage::factory()->create(['store_category_id' => $category->id]);
 
-        $this->delete(route('admin.store-category.delete', $category->id));
+        $this->delete(route('admin.store.category.delete', $category->id));
 
         $this->assertDatabaseMissing('store_categories', ['id' => $category->id]);
         $this->assertDatabaseHas('store_packages', ['id' => $package->id, 'store_category_id' => null]);
@@ -149,7 +149,7 @@ class StoreCategoryAdminTest extends TestCase
         $staff->assignRole('admin');
 
         $this->actingAs($staff)
-            ->get(route('admin.store-category.index'))
+            ->get(route('admin.store.category.index'))
             ->assertStatus(403);
     }
 }

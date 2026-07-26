@@ -38,18 +38,18 @@ class StoreCurrencyAdminTest extends TestCase
 
     public function test_guest_and_non_staff_are_denied()
     {
-        $this->get(route('admin.store-currency.index'))->assertStatus(302);
+        $this->get(route('admin.store.currency.index'))->assertStatus(302);
 
         $this->actingAs(User::factory()->create())
-            ->get(route('admin.store-currency.index'))->assertStatus(302);
+            ->get(route('admin.store.currency.index'))->assertStatus(302);
     }
 
     public function test_admin_can_create_a_currency()
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-currency.store'), $this->validPayload())
-            ->assertRedirect(route('admin.store-currency.index'));
+        $this->post(route('admin.store.currency.store'), $this->validPayload())
+            ->assertRedirect(route('admin.store.currency.index'));
 
         $this->assertDatabaseHas('store_currencies', ['code' => 'EUR', 'exponent' => 2, 'is_base' => false]);
         $this->assertEquals(['DE', 'FR'], StoreCurrency::where('code', 'EUR')->first()->country_codes);
@@ -59,10 +59,10 @@ class StoreCurrencyAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-currency.store'), $this->validPayload(['code' => 'eur']));
+        $this->post(route('admin.store.currency.store'), $this->validPayload(['code' => 'eur']));
         $this->assertDatabaseHas('store_currencies', ['code' => 'EUR']);
 
-        $this->post(route('admin.store-currency.store'), $this->validPayload(['code' => 'EURO']))
+        $this->post(route('admin.store.currency.store'), $this->validPayload(['code' => 'EURO']))
             ->assertSessionHasErrors(['code']);
     }
 
@@ -71,7 +71,7 @@ class StoreCurrencyAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         StoreCurrency::factory()->create(['code' => 'EUR']);
 
-        $this->post(route('admin.store-currency.store'), $this->validPayload())
+        $this->post(route('admin.store.currency.store'), $this->validPayload())
             ->assertSessionHasErrors(['code']);
     }
 
@@ -79,7 +79,7 @@ class StoreCurrencyAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-currency.store'), $this->validPayload(['exponent' => 9]))
+        $this->post(route('admin.store.currency.store'), $this->validPayload(['exponent' => 9]))
             ->assertSessionHasErrors(['exponent']);
     }
 
@@ -87,7 +87,7 @@ class StoreCurrencyAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-currency.store'), $this->validPayload(['rate_to_base' => 0]))
+        $this->post(route('admin.store.currency.store'), $this->validPayload(['rate_to_base' => 0]))
             ->assertSessionHasErrors(['rate_to_base']);
     }
 
@@ -96,12 +96,12 @@ class StoreCurrencyAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $base = $this->baseCurrency();
 
-        $this->put(route('admin.store-currency.update', $base->id), $this->validPayload([
+        $this->put(route('admin.store.currency.update', $base->id), $this->validPayload([
             'code' => $base->code,
             'is_enabled' => false,
         ]))->assertSessionHasErrors(['is_enabled']);
 
-        $this->put(route('admin.store-currency.update', $base->id), $this->validPayload([
+        $this->put(route('admin.store.currency.update', $base->id), $this->validPayload([
             'code' => $base->code,
             'rate_to_base' => 2,
         ]))->assertSessionHasErrors(['rate_to_base']);
@@ -112,7 +112,7 @@ class StoreCurrencyAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $base = $this->baseCurrency();
 
-        $this->delete(route('admin.store-currency.delete', $base->id));
+        $this->delete(route('admin.store.currency.delete', $base->id));
 
         $this->assertDatabaseHas('store_currencies', ['id' => $base->id]);
     }
@@ -123,7 +123,7 @@ class StoreCurrencyAdminTest extends TestCase
         $currency = StoreCurrency::factory()->create(['code' => 'EUR']);
         StoreOrder::factory()->create(['currency' => 'EUR']);
 
-        $this->delete(route('admin.store-currency.delete', $currency->id));
+        $this->delete(route('admin.store.currency.delete', $currency->id));
 
         $this->assertDatabaseHas('store_currencies', ['id' => $currency->id]);
     }
@@ -133,7 +133,7 @@ class StoreCurrencyAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $currency = StoreCurrency::factory()->create(['code' => 'EUR']);
 
-        $this->delete(route('admin.store-currency.delete', $currency->id));
+        $this->delete(route('admin.store.currency.delete', $currency->id));
 
         $this->assertDatabaseMissing('store_currencies', ['id' => $currency->id]);
     }
@@ -144,7 +144,7 @@ class StoreCurrencyAdminTest extends TestCase
         $base = $this->baseCurrency();
         $euro = StoreCurrency::factory()->create(['code' => 'EUR', 'rate_to_base' => 0.92]);
 
-        $this->post(route('admin.store-currency.make-base', $euro->id));
+        $this->post(route('admin.store.currency.make-base', $euro->id));
 
         $this->assertTrue($euro->fresh()->is_base);
         $this->assertFalse($base->fresh()->is_base);
@@ -160,7 +160,7 @@ class StoreCurrencyAdminTest extends TestCase
         $euro = StoreCurrency::factory()->create(['code' => 'EUR']);
         StoreOrder::factory()->create();
 
-        $this->post(route('admin.store-currency.make-base', $euro->id));
+        $this->post(route('admin.store.currency.make-base', $euro->id));
 
         $this->assertFalse($euro->fresh()->is_base);
         $this->assertTrue($base->fresh()->is_base);
@@ -173,7 +173,7 @@ class StoreCurrencyAdminTest extends TestCase
         StoreCurrency::factory()->zeroDecimal()->create();
         $package = StorePackage::factory()->create(['price' => 1000]);
 
-        $this->put(route('admin.store-package.update', $package->id), [
+        $this->put(route('admin.store.package.update', $package->id), [
             'name' => $package->name,
             'store_category_id' => null,
             'price' => 1000,
@@ -200,7 +200,7 @@ class StoreCurrencyAdminTest extends TestCase
         $package = StorePackage::factory()->create(['price' => 1000]);
         $package->prices()->create(['currency_code' => 'JPY', 'price' => 1200]);
 
-        $this->put(route('admin.store-package.update', $package->id), [
+        $this->put(route('admin.store.package.update', $package->id), [
             'name' => $package->name,
             'store_category_id' => null,
             'price' => 1000,

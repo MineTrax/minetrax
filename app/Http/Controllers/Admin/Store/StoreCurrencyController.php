@@ -9,11 +9,14 @@ use App\Http\Requests\UpdateStoreCurrencyRequest;
 use App\Models\Country;
 use App\Models\StoreCurrency;
 use App\Models\StoreOrder;
+use App\Queries\Filters\FilterMultipleFields;
 use App\Services\StoreCurrencyService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class StoreCurrencyController extends Controller
 {
@@ -21,8 +24,41 @@ class StoreCurrencyController extends Controller
     {
         $this->authorize('viewAny', StoreCurrency::class);
 
+        $perPage = request()->input('perPage', 10);
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        $fields = [
+            'id',
+            'code',
+            'name',
+            'symbol',
+            'symbol_position',
+            'exponent',
+            'rate_to_base',
+            'is_base',
+            'is_enabled',
+            'price_rounding',
+            'country_codes',
+            'sort_order',
+            'rate_updated_at',
+        ];
+
+        $rows = QueryBuilder::for(StoreCurrency::class)
+            ->select($fields)
+            ->allowedFilters(...[
+                ...$fields,
+                AllowedFilter::custom('q', new FilterMultipleFields(['id', 'code', 'name', 'symbol'])),
+            ])
+            ->allowedSorts(...$fields)
+            ->defaultSort('sort_order', 'code')
+            ->paginate($perPage)
+            ->withQueryString();
+
         return Inertia::render('Admin/StoreCurrency/IndexStoreCurrency', [
-            'currencies' => StoreCurrency::orderBy('sort_order')->orderBy('code')->get(),
+            'currencies' => $rows,
+            'filters' => request()->all(['perPage', 'sort', 'filter']),
             'baseCurrency' => $currencies->base()->code,
             // Once an order exists its base_total was computed against the current base, so the
             // base can no longer be moved without a backfill.
@@ -57,7 +93,7 @@ class StoreCurrencyController extends Controller
 
         StoreCurrency::create($attributes);
 
-        return redirect()->route('admin.store-currency.index')
+        return redirect()->route('admin.store.currency.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Currency has been created successfully')]]);
     }
 
@@ -76,7 +112,7 @@ class StoreCurrencyController extends Controller
             'code' => $request->code,
         ]);
 
-        return redirect()->route('admin.store-currency.index')
+        return redirect()->route('admin.store.currency.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Currency has been updated successfully')]]);
     }
 
@@ -96,7 +132,7 @@ class StoreCurrencyController extends Controller
 
         $storeCurrency->delete();
 
-        return redirect()->route('admin.store-currency.index')
+        return redirect()->route('admin.store.currency.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Currency has been deleted')]]);
     }
 
@@ -117,7 +153,7 @@ class StoreCurrencyController extends Controller
             $storeCurrency->update(['is_base' => true, 'rate_to_base' => 1, 'is_enabled' => true]);
         });
 
-        return redirect()->route('admin.store-currency.index')
+        return redirect()->route('admin.store.currency.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Base Currency Updated'), 'body' => __('Base currency is now :code', ['code' => $storeCurrency->code])]]);
     }
 

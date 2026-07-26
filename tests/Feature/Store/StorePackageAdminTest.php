@@ -81,10 +81,10 @@ class StorePackageAdminTest extends TestCase
 
     public function test_guest_and_non_staff_are_denied()
     {
-        $this->get(route('admin.store-package.index'))->assertStatus(302);
+        $this->get(route('admin.store.package.index'))->assertStatus(302);
 
         $this->actingAs(User::factory()->create())
-            ->get(route('admin.store-package.index'))->assertStatus(302);
+            ->get(route('admin.store.package.index'))->assertStatus(302);
     }
 
     public function test_admin_can_view_the_package_listing()
@@ -92,7 +92,7 @@ class StorePackageAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         StorePackage::factory()->count(2)->create();
 
-        $this->get(route('admin.store-package.index'))
+        $this->get(route('admin.store.package.index'))
             ->assertStatus(200)
             ->assertInertia(fn ($page) => $page->component('Admin/StorePackage/IndexStorePackage', false));
     }
@@ -103,7 +103,7 @@ class StorePackageAdminTest extends TestCase
         $reachable = Server::factory()->create();
         Server::factory()->create(['webquery_port' => null]);
 
-        $this->get(route('admin.store-package.create'))
+        $this->get(route('admin.store.package.create'))
             ->assertStatus(200)
             ->assertInertia(fn ($page) => $page
                 ->component('Admin/StorePackage/CreateStorePackage', false)
@@ -117,9 +117,9 @@ class StorePackageAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $category = StoreCategory::factory()->create();
 
-        $this->post(route('admin.store-package.store'), $this->validPayload([
+        $this->post(route('admin.store.package.store'), $this->validPayload([
             'store_category_id' => $category->id,
-        ]))->assertRedirect(route('admin.store-package.index'));
+        ]))->assertRedirect(route('admin.store.package.index'));
 
         $this->assertDatabaseHas('store_packages', [
             'name' => 'VIP Rank',
@@ -133,7 +133,7 @@ class StorePackageAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-package.store'), $this->validPayload(['price' => 1999]));
+        $this->post(route('admin.store.package.store'), $this->validPayload(['price' => 1999]));
 
         $this->assertSame(1999, StorePackage::first()->price);
     }
@@ -142,7 +142,7 @@ class StorePackageAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-package.store'), $this->validPayload(['price' => '9.99']))
+        $this->post(route('admin.store.package.store'), $this->validPayload(['price' => '9.99']))
             ->assertSessionHasErrors(['price']);
     }
 
@@ -150,7 +150,7 @@ class StorePackageAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-package.store'), $this->validPayload([
+        $this->post(route('admin.store.package.store'), $this->validPayload([
             'min_quantity' => 5,
             'max_quantity' => 2,
         ]))->assertSessionHasErrors(['max_quantity']);
@@ -161,7 +161,7 @@ class StorePackageAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $servers = Server::factory()->count(2)->create();
 
-        $this->post(route('admin.store-package.store'), $this->validPayload([
+        $this->post(route('admin.store.package.store'), $this->validPayload([
             'servers' => $servers->pluck('id')->all(),
         ]));
 
@@ -172,7 +172,7 @@ class StorePackageAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-package.store'), $this->validPayload([
+        $this->post(route('admin.store.package.store'), $this->validPayload([
             'commands' => [
                 $this->commandPayload(),
                 $this->commandPayload([
@@ -192,7 +192,7 @@ class StorePackageAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-package.store'), $this->validPayload([
+        $this->post(route('admin.store.package.store'), $this->validPayload([
             'commands' => [$this->commandPayload(['command' => ''])],
         ]))->assertSessionHasErrors(['commands.0.command']);
     }
@@ -201,7 +201,7 @@ class StorePackageAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-package.store'), $this->validPayload([
+        $this->post(route('admin.store.package.store'), $this->validPayload([
             'commands' => [$this->commandPayload(['trigger' => 'explode'])],
         ]))->assertSessionHasErrors(['commands.0.trigger']);
     }
@@ -210,7 +210,7 @@ class StorePackageAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-package.store'), $this->validPayload([
+        $this->post(route('admin.store.package.store'), $this->validPayload([
             'options' => [$this->optionPayload()],
         ]))->assertSessionHasNoErrors();
 
@@ -224,7 +224,7 @@ class StorePackageAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-package.store'), $this->validPayload([
+        $this->post(route('admin.store.package.store'), $this->validPayload([
             'options' => [$this->optionPayload(['placeholder' => 'my tier'])],
         ]))->assertSessionHasErrors(['options.0.placeholder']);
     }
@@ -233,7 +233,7 @@ class StorePackageAdminTest extends TestCase
     {
         $this->actingAs(User::whereId(1)->first());
 
-        $this->post(route('admin.store-package.store'), $this->validPayload([
+        $this->post(route('admin.store.package.store'), $this->validPayload([
             'options' => [$this->optionPayload(['choices' => []])],
         ]))->assertSessionHasErrors(['options.0.choices']);
     }
@@ -244,7 +244,7 @@ class StorePackageAdminTest extends TestCase
         $package = StorePackage::factory()->create();
         $command = StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
 
-        $this->put(route('admin.store-package.update', $package->id), $this->validPayload([
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
             'name' => $package->name,
             'commands' => [$this->commandPayload([
                 'id' => $command->id,
@@ -264,7 +264,7 @@ class StorePackageAdminTest extends TestCase
         $keep = StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
         $drop = StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
 
-        $this->put(route('admin.store-package.update', $package->id), $this->validPayload([
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
             'name' => $package->name,
             'commands' => [$this->commandPayload(['id' => $keep->id])],
         ]))->assertSessionHasNoErrors();
@@ -279,7 +279,7 @@ class StorePackageAdminTest extends TestCase
         $package = StorePackage::factory()->create();
         StorePackageCommand::factory()->count(3)->create(['store_package_id' => $package->id]);
 
-        $this->put(route('admin.store-package.update', $package->id), $this->validPayload([
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
             'name' => $package->name,
             'commands' => [],
         ]))->assertSessionHasNoErrors();
@@ -292,7 +292,7 @@ class StorePackageAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $package = StorePackage::factory()->create();
 
-        $this->put(route('admin.store-package.update', $package->id), $this->validPayload([
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
             'name' => $package->name,
             'options' => [$this->optionPayload()],
         ]));
@@ -301,7 +301,7 @@ class StorePackageAdminTest extends TestCase
         $goldId = $option->choices->firstWhere('value', 'gold')->id;
         $diamondId = $option->choices->firstWhere('value', 'diamond')->id;
 
-        $this->put(route('admin.store-package.update', $package->id), $this->validPayload([
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
             'name' => $package->name,
             'options' => [$this->optionPayload([
                 'id' => $option->id,
@@ -324,7 +324,7 @@ class StorePackageAdminTest extends TestCase
 
         // A command belonging to a different package must not be adoptable, and the surrounding
         // transaction must leave the original command set untouched.
-        $this->put(route('admin.store-package.update', $package->id), $this->validPayload([
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
             'name' => $package->name,
             'commands' => [$this->commandPayload(['id' => 999999])],
         ]))->assertSessionHasErrors(['commands.0.id']);
@@ -337,7 +337,7 @@ class StorePackageAdminTest extends TestCase
         $this->actingAs(User::whereId(1)->first());
         $package = StorePackage::factory()->create();
 
-        $this->delete(route('admin.store-package.delete', $package->id));
+        $this->delete(route('admin.store.package.delete', $package->id));
 
         $this->assertSoftDeleted('store_packages', ['id' => $package->id]);
     }

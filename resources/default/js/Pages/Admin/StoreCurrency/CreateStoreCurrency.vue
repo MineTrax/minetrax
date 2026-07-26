@@ -23,7 +23,7 @@ const breadcrumbItems = [
     },
     {
         text: __("Store Currencies"),
-        url: route("admin.store-currency.index"),
+        url: route("admin.store.currency.index"),
         current: false,
     },
     {
@@ -61,7 +61,7 @@ const form = useForm({
 });
 
 function createCurrency() {
-    form.post(route("admin.store-currency.store"), {});
+    form.post(route("admin.store.currency.store"), {});
 }
 </script>
 
@@ -231,7 +231,7 @@ function createCurrency() {
                 variant="outline"
                 as-child
               >
-                <Link :href="route('admin.store-currency.index')">
+                <Link :href="route('admin.store.currency.index')">
                   {{ __("Cancel") }}
                 </Link>
               </Button>
