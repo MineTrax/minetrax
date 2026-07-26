@@ -2123,5 +2123,6 @@
     "Decimals": "Decimals",
     "No currencies exist yet, so there is nothing to choose here.": "No currencies exist yet, so there is nothing to choose here.",
     "Payment Gateways Updated": "Payment Gateways Updated",
-    "The base currency is locked because orders already exist. Their revenue was recorded against :code.": "The base currency is locked because orders already exist. Their revenue was recorded against :code."
+    "The base currency is locked because orders already exist. Their revenue was recorded against :code.": "The base currency is locked because orders already exist. Their revenue was recorded against :code.",
+    "Pick the servers these commands run on": "Pick the servers these commands run on"
 }

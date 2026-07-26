@@ -178,8 +178,7 @@ class StoreCurrencyAdminTest extends TestCase
             'store_category_id' => null,
             'price' => 1000,
             'is_visible' => true, 'is_enabled' => true, 'requires_login' => false,
-            'is_run_on_all_servers' => false, 'is_player_online_required' => false,
-            'is_command_repeated_per_quantity' => false, 'min_quantity' => 1,
+            'is_run_on_all_servers' => false, 'min_quantity' => 1,
             'prices' => [
                 ['currency_code' => 'JPY', 'price' => 1200],
             ],
@@ -205,8 +204,7 @@ class StoreCurrencyAdminTest extends TestCase
             'store_category_id' => null,
             'price' => 1000,
             'is_visible' => true, 'is_enabled' => true, 'requires_login' => false,
-            'is_run_on_all_servers' => false, 'is_player_online_required' => false,
-            'is_command_repeated_per_quantity' => false, 'min_quantity' => 1,
+            'is_run_on_all_servers' => false, 'min_quantity' => 1,
             'prices' => [],
         ])->assertSessionHasNoErrors();
 

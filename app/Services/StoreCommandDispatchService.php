@@ -83,7 +83,7 @@ class StoreCommandDispatchService
                 continue;
             }
 
-            $repeat = $command->is_repeat_per_quantity ?? $package->is_command_repeated_per_quantity;
+            $repeat = (bool) $command->is_repeat_per_quantity;
             $runs = $repeat ? max(1, (int) $item->quantity) : 1;
 
             foreach ($servers as $server) {
@@ -188,7 +188,7 @@ class StoreCommandDispatchService
         $delaySeconds = (int) $command->delay_seconds;
         $executeAt = $delaySeconds > 0 ? now()->addSeconds($delaySeconds) : null;
 
-        $isPlayerOnlineRequired = $command->is_player_online_required ?? $item->package->is_player_online_required;
+        $isPlayerOnlineRequired = (bool) $command->is_player_online_required;
 
         try {
             $queue = CommandQueue::create([

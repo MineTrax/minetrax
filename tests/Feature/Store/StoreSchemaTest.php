@@ -73,7 +73,6 @@ class StoreSchemaTest extends TestCase
 
     public function test_package_states_apply()
     {
-        $this->assertTrue(StorePackage::factory()->requiresOnline()->create()->is_player_online_required);
         $this->assertEquals(30, StorePackage::factory()->expiring()->create()->expiry_duration_days);
         $this->assertFalse(StorePackage::factory()->disabled()->create()->is_enabled);
         $this->assertFalse(StorePackage::factory()->hidden()->create()->is_visible);

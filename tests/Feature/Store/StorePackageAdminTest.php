@@ -36,8 +36,6 @@ class StorePackageAdminTest extends TestCase
             'is_enabled' => true,
             'requires_login' => false,
             'is_run_on_all_servers' => false,
-            'is_player_online_required' => false,
-            'is_command_repeated_per_quantity' => false,
             'min_quantity' => 1,
             'max_quantity' => null,
             'stock_limit' => null,
@@ -55,10 +53,10 @@ class StorePackageAdminTest extends TestCase
         return array_merge([
             'trigger' => StorePackageCommandTrigger::PURCHASE->value,
             'command' => 'lp user {PLAYER_USERNAME} parent add vip',
-            'is_player_online_required' => null,
+            'is_player_online_required' => false,
             'delay_seconds' => 0,
             'target' => StoreCommandTarget::PACKAGE_SERVERS->value,
-            'is_repeat_per_quantity' => null,
+            'is_repeat_per_quantity' => false,
             'sort_order' => 0,
         ], $overrides);
     }

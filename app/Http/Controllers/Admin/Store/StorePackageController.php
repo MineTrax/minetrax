@@ -190,8 +190,6 @@ class StorePackageController extends Controller
             'is_enabled' => $request->is_enabled,
             'requires_login' => $request->requires_login,
             'is_run_on_all_servers' => $request->is_run_on_all_servers,
-            'is_player_online_required' => $request->is_player_online_required,
-            'is_command_repeated_per_quantity' => $request->is_command_repeated_per_quantity,
             'min_quantity' => $request->min_quantity,
             'max_quantity' => $request->max_quantity,
             'stock_limit' => $request->stock_limit,
@@ -238,10 +236,10 @@ class StorePackageController extends Controller
             $attributes = [
                 'trigger' => $command['trigger'],
                 'command' => $command['command'],
-                'is_player_online_required' => $command['is_player_online_required'] ?? null,
+                'is_player_online_required' => (bool) ($command['is_player_online_required'] ?? false),
                 'delay_seconds' => $command['delay_seconds'] ?? 0,
                 'target' => $command['target'],
-                'is_repeat_per_quantity' => $command['is_repeat_per_quantity'] ?? null,
+                'is_repeat_per_quantity' => (bool) ($command['is_repeat_per_quantity'] ?? false),
                 'sort_order' => $command['sort_order'] ?? $index,
             ];
 

@@ -31,10 +31,10 @@ class StorePackageCommandFactory extends Factory
             'store_package_id' => StorePackage::factory(),
             'trigger' => StorePackageCommandTrigger::PURCHASE,
             'command' => 'give {PLAYER_USERNAME} diamond 1',
-            'is_player_online_required' => null,
+            'is_player_online_required' => false,
             'delay_seconds' => 0,
             'target' => StoreCommandTarget::PACKAGE_SERVERS,
-            'is_repeat_per_quantity' => null,
+            'is_repeat_per_quantity' => false,
             'sort_order' => 0,
         ];
     }

@@ -38,22 +38,10 @@ class StorePackageFactory extends Factory
             'is_enabled' => true,
             'requires_login' => false,
             'is_run_on_all_servers' => false,
-            'is_player_online_required' => false,
-            'is_command_repeated_per_quantity' => false,
             'min_quantity' => 1,
             'max_quantity' => null,
             'sold_count' => 0,
         ];
-    }
-
-    /**
-     * Mark the package as requiring the player to be online.
-     */
-    public function requiresOnline(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_player_online_required' => true,
-        ]);
     }
 
     /**

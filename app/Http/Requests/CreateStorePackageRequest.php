@@ -53,8 +53,6 @@ class CreateStorePackageRequest extends FormRequest
             'requires_login' => 'required|boolean',
 
             'is_run_on_all_servers' => 'required|boolean',
-            'is_player_online_required' => 'required|boolean',
-            'is_command_repeated_per_quantity' => 'required|boolean',
 
             'min_quantity' => 'required|integer|min:1|max:9999',
             'max_quantity' => 'nullable|integer|min:1|max:9999|gte:min_quantity',
@@ -78,10 +76,10 @@ class CreateStorePackageRequest extends FormRequest
             'commands.*.id' => 'nullable|integer|exists:store_package_commands,id',
             'commands.*.trigger' => ['required', Rule::enum(StorePackageCommandTrigger::class)],
             'commands.*.command' => 'required|string|max:2000',
-            'commands.*.is_player_online_required' => 'nullable|boolean',
+            'commands.*.is_player_online_required' => 'required|boolean',
             'commands.*.delay_seconds' => 'nullable|integer|min:0|max:2592000',
             'commands.*.target' => ['required', Rule::enum(StoreCommandTarget::class)],
-            'commands.*.is_repeat_per_quantity' => 'nullable|boolean',
+            'commands.*.is_repeat_per_quantity' => 'required|boolean',
             'commands.*.sort_order' => 'nullable|integer|min:0',
 
             'options' => 'nullable|array',

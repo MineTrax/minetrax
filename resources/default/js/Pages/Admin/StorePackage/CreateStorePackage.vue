@@ -7,6 +7,7 @@ import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
+import Multiselect from "vue-multiselect";
 import XTextarea from "@/Components/Form/XTextarea.vue";
 import TipTapEditor from "@/Components/TipTapEditor.vue";
 import ImageUpload from "@/Components/Form/ImageUpload.vue";
@@ -53,11 +54,7 @@ const targetOptions = {
     all_servers: __("All Servers"),
 };
 
-const triStateOptions = {
-    "null": __("Inherit"),
-    "true": __("Yes"),
-    "false": __("No"),
-};
+const serverLabel = (server) => `${server.name} (${server.hostname})`;
 
 const categoriesOptions = props.categories.reduce((acc, cat) => {
     return { ...acc, [cat.id]: cat.name };
@@ -74,8 +71,6 @@ const form = useForm({
     is_enabled: true,
     requires_login: false,
     is_run_on_all_servers: false,
-    is_player_online_required: false,
-    is_command_repeated_per_quantity: false,
     min_quantity: 1,
     max_quantity: null,
     stock_limit: null,
@@ -90,8 +85,8 @@ const form = useForm({
             command: "",
             target: "package_servers",
             delay_seconds: 0,
-            is_player_online_required: null,
-            is_repeat_per_quantity: null,
+            is_player_online_required: false,
+            is_repeat_per_quantity: false,
             sort_order: 0,
         }
     ],
@@ -129,8 +124,8 @@ function addCommand() {
         command: "",
         target: "package_servers",
         delay_seconds: 0,
-        is_player_online_required: null,
-        is_repeat_per_quantity: null,
+        is_player_online_required: false,
+        is_repeat_per_quantity: false,
         sort_order: form.commands.length,
     });
 }
@@ -196,12 +191,8 @@ function createPackage() {
                 price_delta: convertPriceToMinorUnits(choice.price_delta),
             })),
         })),
-        // Convert tri-state string values to proper boolean/null
-        commands: form.commands.map(cmd => ({
-            ...cmd,
-            is_player_online_required: cmd.is_player_online_required === "null" ? null : cmd.is_player_online_required === "true",
-            is_repeat_per_quantity: cmd.is_repeat_per_quantity === "null" ? null : cmd.is_repeat_per_quantity === "true",
-        })),
+        // Multiselect hands back whole server objects; the API takes ids.
+        servers: form.servers.map(server => server.id),
     };
 
     form.transform(() => payload).post(route("admin.store.package.store"), {});
@@ -473,54 +464,29 @@ function createPackage() {
                   v-if="!form.is_run_on_all_servers"
                   class="col-span-6"
                 >
-                  <legend class="text-sm font-medium text-foreground mb-2">
-                    {{ __("Select Servers") }}
-                  </legend>
-                  <div class="space-y-2">
-                    <div
-                      v-for="server in servers"
-                      :key="server.id"
-                      class="flex items-center"
-                    >
-                      <XSwitch
-                        :id="`server_${server.id}`"
-                        v-model="form.servers"
-                        :model-value="form.servers"
-                        :name="`servers[${server.id}]`"
-                        type="checkbox"
-                        :value="server.id"
-                        :label="`${server.name} (${server.hostname})`"
-                      />
-                    </div>
-                  </div>
+                  <label
+                    for="servers"
+                    class="block text-sm font-medium text-foreground mb-2"
+                  >{{ __("Select Servers") }}</label>
+                  <Multiselect
+                    id="servers"
+                    v-model="form.servers"
+                    class="block w-full border-input rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                    :options="servers"
+                    :custom-label="serverLabel"
+                    track-by="id"
+                    :multiple="true"
+                    :close-on-select="false"
+                    :clear-on-select="false"
+                    :searchable="true"
+                    :placeholder="__('Pick the servers these commands run on')+'...'"
+                  />
                   <p
                     v-if="form.errors.servers"
                     class="text-xs text-destructive mt-2"
                   >
                     {{ form.errors.servers }}
                   </p>
-                </div>
-
-                <div class="col-span-6 sm:col-span-3">
-                  <XSwitch
-                    id="is_player_online_required"
-                    v-model="form.is_player_online_required"
-                    :label="__('Player Must Be Online')"
-                    :help="__('Player must be online for commands to execute')"
-                    name="is_player_online_required"
-                    :error="form.errors.is_player_online_required"
-                  />
-                </div>
-
-                <div class="col-span-6 sm:col-span-3">
-                  <XSwitch
-                    id="is_command_repeated_per_quantity"
-                    v-model="form.is_command_repeated_per_quantity"
-                    :label="__('Repeat Commands Per Quantity')"
-                    :help="__('Commands execute once for each quantity purchased')"
-                    name="is_command_repeated_per_quantity"
-                    :error="form.errors.is_command_repeated_per_quantity"
-                  />
                 </div>
               </div>
             </div>
@@ -609,23 +575,27 @@ function createPackage() {
                       </div>
 
                       <div class="col-span-6 lg:col-span-2">
-                        <XSelect
-                          v-model="command.is_player_online_required"
-                          :label="__('Player Online')"
-                          :placeholder="__('Inherit')"
-                          :select-list="triStateOptions"
-                          :error="form.errors[`commands.${index}.is_player_online_required`]"
-                        />
+                        <div class="pt-6">
+                          <XSwitch
+                            :id="`command_online_${index}`"
+                            v-model="command.is_player_online_required"
+                            :label="__('Player Online')"
+                            :error="form.errors[`commands.${index}.is_player_online_required`]"
+                            :name="`command_online_${index}`"
+                          />
+                        </div>
                       </div>
 
                       <div class="col-span-6 lg:col-span-2">
-                        <XSelect
-                          v-model="command.is_repeat_per_quantity"
-                          :label="__('Repeat Per Qty')"
-                          :placeholder="__('Inherit')"
-                          :select-list="triStateOptions"
-                          :error="form.errors[`commands.${index}.is_repeat_per_quantity`]"
-                        />
+                        <div class="pt-6">
+                          <XSwitch
+                            :id="`command_repeat_${index}`"
+                            v-model="command.is_repeat_per_quantity"
+                            :label="__('Repeat Per Qty')"
+                            :error="form.errors[`commands.${index}.is_repeat_per_quantity`]"
+                            :name="`command_repeat_${index}`"
+                          />
+                        </div>
                       </div>
                     </div>
                   </template>

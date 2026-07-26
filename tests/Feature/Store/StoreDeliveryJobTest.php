@@ -97,8 +97,8 @@ class StoreDeliveryJobTest extends TestCase
     {
         // RunCommandQueueJob reads config[is_player_online_required] directly; a row without it
         // used to throw.
-        [$order, $package] = $this->paidOrder(['is_player_online_required' => true]);
-        $this->purchaseCommand($package);
+        [$order, $package] = $this->paidOrder();
+        $this->purchaseCommand($package, ['is_player_online_required' => true]);
 
         $this->runJob($order);
 
@@ -118,24 +118,21 @@ class StoreDeliveryJobTest extends TestCase
         $this->assertGreaterThan(1, CommandQueue::where('tag', 'store')->first()->max_attempts);
     }
 
-    public function test_a_command_can_override_the_packages_online_requirement()
+    /**
+     * Each command decides for itself, so two commands on the same package can disagree.
+     */
+    public function test_each_command_carries_its_own_online_requirement()
     {
-        [$order, $package] = $this->paidOrder(['is_player_online_required' => false]);
-        $this->purchaseCommand($package, ['is_player_online_required' => true]);
+        [$order, $package] = $this->paidOrder();
+        $this->purchaseCommand($package, ['command' => 'needs online', 'is_player_online_required' => true]);
+        $this->purchaseCommand($package, ['command' => 'runs anyway', 'is_player_online_required' => false]);
 
         $this->runJob($order);
 
-        $this->assertTrue(CommandQueue::where('tag', 'store')->first()->config['is_player_online_required']);
-    }
+        $byCommand = CommandQueue::where('tag', 'store')->get()->keyBy('parsed_command');
 
-    public function test_a_null_command_flag_inherits_from_the_package()
-    {
-        [$order, $package] = $this->paidOrder(['is_player_online_required' => true]);
-        $this->purchaseCommand($package, ['is_player_online_required' => null]);
-
-        $this->runJob($order);
-
-        $this->assertTrue(CommandQueue::where('tag', 'store')->first()->config['is_player_online_required']);
+        $this->assertTrue($byCommand['needs online']->config['is_player_online_required']);
+        $this->assertFalse($byCommand['runs anyway']->config['is_player_online_required']);
     }
 
     public function test_all_the_documented_placeholders_are_substituted()
@@ -171,8 +168,11 @@ class StoreDeliveryJobTest extends TestCase
 
     public function test_quantity_substitution_by_default()
     {
-        [$order, $package] = $this->paidOrder(['is_command_repeated_per_quantity' => false], 5);
-        $this->purchaseCommand($package, ['command' => 'give {PLAYER_USERNAME} diamond {QUANTITY}']);
+        [$order, $package] = $this->paidOrder([], 5);
+        $this->purchaseCommand($package, [
+            'command' => 'give {PLAYER_USERNAME} diamond {QUANTITY}',
+            'is_repeat_per_quantity' => false,
+        ]);
 
         $this->runJob($order);
 
@@ -183,8 +183,11 @@ class StoreDeliveryJobTest extends TestCase
     public function test_repeat_per_quantity_creates_one_row_per_unit()
     {
         // Crate keys and similar: the command has to run N times rather than take a count.
-        [$order, $package] = $this->paidOrder(['is_command_repeated_per_quantity' => true], 3);
-        $this->purchaseCommand($package, ['command' => 'crate give {PLAYER_USERNAME} vote {QUANTITY}']);
+        [$order, $package] = $this->paidOrder([], 3);
+        $this->purchaseCommand($package, [
+            'command' => 'crate give {PLAYER_USERNAME} vote {QUANTITY}',
+            'is_repeat_per_quantity' => true,
+        ]);
 
         $this->runJob($order);
 
