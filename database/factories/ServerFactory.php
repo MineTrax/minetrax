@@ -25,6 +25,7 @@ class ServerFactory extends Factory
             'ip_address' => $this->faker->ipv4,
             'join_port' => $this->faker->numberBetween(0, 25565),
             'query_port' => $this->faker->numberBetween(0, 25565),
+            'webquery_port' => 25575, // required for a server to receive commands
             'hostname' => $this->faker->domainName,
             'minecraft_version' => $this->faker->randomElement(['1.16', '1.15', '1.14']),
             'name' => $this->faker->company,
