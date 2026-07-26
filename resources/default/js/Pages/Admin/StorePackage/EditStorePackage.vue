@@ -21,6 +21,7 @@ const props = defineProps({
     categories: Array,
     servers: Array,
     selectedServers: Array,
+    baseCurrency: Object,
 });
 
 const breadcrumbItems = [
@@ -65,20 +66,22 @@ const categoriesOptions = props.categories.reduce((acc, cat) => {
     return { ...acc, [cat.id]: cat.name };
 }, {});
 
+// The factor is 10^exponent, never a literal 100: JPY has no minor unit and KWD has three
+// digits, so a fixed 100 would silently misprice both.
+const minorUnitFactor = 10 ** (props.baseCurrency?.exponent ?? 2);
+
 function convertPriceFromMinorUnits(minorUnits) {
     if (minorUnits === null || minorUnits === undefined) {
         return null;
     }
-    // Convert integer minor units (e.g., 999) to decimal (e.g., 9.99)
-    return (minorUnits / 100).toFixed(2);
+    return (minorUnits / minorUnitFactor).toFixed(props.baseCurrency?.exponent ?? 2);
 }
 
 function convertPriceToMinorUnits(decimalPrice) {
     if (decimalPrice === null || decimalPrice === undefined || decimalPrice === "") {
         return null;
     }
-    // Convert decimal (e.g., 9.99) to integer minor units (e.g., 999)
-    return Math.round(parseFloat(decimalPrice) * 100);
+    return Math.round(parseFloat(decimalPrice) * minorUnitFactor);
 }
 
 function convertTriStateToString(value) {

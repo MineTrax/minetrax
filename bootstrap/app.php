@@ -12,6 +12,7 @@ use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\StaffMember;
 use App\Jobs\CalculatePlayersJob;
 use App\Jobs\RunAwaitingCommandQueuesJob;
+use App\Jobs\Store\ExpireStalePendingStoreOrdersJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -39,6 +40,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $playerFetcherInterval = config('minetrax.players_fetcher_cron_interval') ?? 'hourly';
         $schedule->job(new CalculatePlayersJob)->{$playerFetcherInterval}();
         $schedule->job(new RunAwaitingCommandQueuesJob)->everyMinute();
+
+        // Releases the coupon use and gift card balance a walked-away checkout is holding.
+        $schedule->job(new ExpireStalePendingStoreOrdersJob)->hourly();
 
         $schedule->command('telescope:prune')->daily();
         $schedule->command('queue:prune-batches --hours=48 --unfinished=72')->daily();

@@ -195,7 +195,7 @@ const navItems = [
     {
         label: "Store",
         href: "#",
-        active: route().current("admin.store-category.*") || route().current("admin.store-package.*") || route().current("admin.store-currency.*"),
+        active: route().current("admin.store-category.*") || route().current("admin.store-package.*") || route().current("admin.store-currency.*") || route().current("admin.store-order.*"),
         children: [
             {
                 label: "Categories",
@@ -212,6 +212,14 @@ const navItems = [
                 children: [],
                 icon: null,
                 visible: canWild("store_packages"),
+            },
+            {
+                label: "Orders",
+                href: route("admin.store-order.index"),
+                active: route().current("admin.store-order.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_orders"),
             },
             {
                 label: "Currencies",

@@ -98,7 +98,7 @@ const headerRow = [
         />
         <div class="flex">
           <Button
-            v-if="can('create store-categories')"
+            v-if="can('create store_categories')"
             as-child
           >
             <Link :href="route('admin.store-category.create')">
@@ -179,7 +179,7 @@ const headerRow = [
           >
             <ButtonGroup>
               <Button
-                v-if="can('update store-categories')"
+                v-if="can('update store_categories')"
                 variant="outline"
                 size="icon"
                 as-child
@@ -195,7 +195,7 @@ const headerRow = [
                 </Link>
               </Button>
               <Button
-                v-if="can('delete store-categories')"
+                v-if="can('delete store_categories')"
                 variant="outline"
                 size="icon"
                 as-child

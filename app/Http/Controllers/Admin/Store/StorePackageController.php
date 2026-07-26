@@ -9,6 +9,7 @@ use App\Models\Server;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
 use App\Queries\Filters\FilterMultipleFields;
+use App\Services\StoreCurrencyService;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -54,6 +55,15 @@ class StorePackageController extends Controller
             ->defaultSort('sort_order')
             ->paginate($perPage)
             ->withQueryString();
+
+        // Formatted here rather than in Vue: package prices are minor units of the base currency,
+        // and dividing by 100 in the template would be wrong for JPY (0 decimals) and KWD (3).
+        $base = app(StoreCurrencyService::class)->base();
+        $packages->getCollection()->transform(function (StorePackage $package) use ($base) {
+            $package->price_formatted = app(StoreCurrencyService::class)->format((int) $package->price, $base);
+
+            return $package;
+        });
 
         return Inertia::render('Admin/StorePackage/IndexStorePackage', [
             'packages' => $packages,
@@ -147,10 +157,20 @@ class StorePackageController extends Controller
      */
     private function formData(): array
     {
+        $base = app(StoreCurrencyService::class)->base();
+
         return [
             'categories' => StoreCategory::select(['id', 'name'])->orderBy('name')->get(),
             // Only servers that can actually receive a command are offerable as targets.
             'servers' => Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->get(),
+            // Prices are entered as decimals and stored as minor units. How many digits that
+            // conversion involves is a property of the currency, not a constant: JPY has none
+            // and KWD has three, so a hardcoded 100 would charge a Japanese buyer 100x.
+            'baseCurrency' => [
+                'code' => $base->code,
+                'symbol' => $base->symbol,
+                'exponent' => (int) $base->exponent,
+            ],
         ];
     }
 

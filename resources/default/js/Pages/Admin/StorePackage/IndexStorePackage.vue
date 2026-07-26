@@ -126,7 +126,7 @@ const headerRow = [
           </DtRowItem>
 
           <DtRowItem>
-            ${{ (item.price / 100).toFixed(2) }}
+            {{ item.price_formatted }}
           </DtRowItem>
 
           <DtRowItem class="text-center">

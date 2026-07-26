@@ -19,7 +19,12 @@ const { __ } = useTranslations();
 const props = defineProps({
     categories: Array,
     servers: Array,
+    baseCurrency: Object,
 });
+
+// The factor is 10^exponent, never a literal 100: JPY has no minor unit and KWD has three
+// digits, so a fixed 100 would silently misprice both.
+const minorUnitFactor = 10 ** (props.baseCurrency?.exponent ?? 2);
 
 const breadcrumbItems = [
     {
@@ -116,8 +121,7 @@ function convertPriceToMinorUnits(decimalPrice) {
     if (decimalPrice === null || decimalPrice === undefined || decimalPrice === "") {
         return null;
     }
-    // Convert decimal (e.g., 9.99) to integer minor units (e.g., 999)
-    return Math.round(parseFloat(decimalPrice) * 100);
+    return Math.round(parseFloat(decimalPrice) * minorUnitFactor);
 }
 
 function addCommand() {

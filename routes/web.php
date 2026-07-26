@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\Settings\SeoSettingController;
 use App\Http\Controllers\Admin\Settings\StoreSettingController;
 use App\Http\Controllers\Admin\Settings\ThemeSettingController;
 use App\Http\Controllers\Admin\Store\StoreCategoryController;
+use App\Http\Controllers\Admin\Store\StoreOrderController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
 use App\Http\Controllers\BanWardenController;
 use App\Http\Controllers\CustomFormController;
@@ -377,6 +378,13 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::get('store-package/{storePackage}/edit', [StorePackageController::class, 'edit'])->name('store-package.edit');
     Route::put('store-package/{storePackage}', [StorePackageController::class, 'update'])->name('store-package.update');
     Route::delete('store-package/{storePackage}', [StorePackageController::class, 'destroy'])->name('store-package.delete');
+
+    Route::get('store-order', [StoreOrderController::class, 'index'])->name('store-order.index');
+    Route::get('store-order/{order:uuid}', [StoreOrderController::class, 'show'])->name('store-order.show');
+    Route::post('store-order/{order:uuid}/mark-paid', [StoreOrderController::class, 'markPaid'])->name('store-order.mark-paid');
+    Route::post('store-order/{order:uuid}/cancel', [StoreOrderController::class, 'cancel'])->name('store-order.cancel');
+    Route::post('store-order/{order:uuid}/refund', [StoreOrderController::class, 'refund'])->name('store-order.refund');
+    Route::post('store-order/{order:uuid}/resend', [StoreOrderController::class, 'resend'])->name('store-order.resend');
 
     Route::get('store-currency', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'index'])->name('store-currency.index');
     Route::get('store-currency/create', [App\Http\Controllers\Admin\Store\StoreCurrencyController::class, 'create'])->name('store-currency.create');

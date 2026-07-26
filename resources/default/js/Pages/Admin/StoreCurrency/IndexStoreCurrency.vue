@@ -8,7 +8,7 @@ import { ButtonGroup } from "@/Components/ui/button-group";
 import { Badge } from "@/Components/ui/badge";
 import AlertCard from "@/Components/AlertCard.vue";
 import { Link, router } from "@inertiajs/vue3";
-import { PencilSquareIcon, TrashIcon, SwapIcon } from "@heroicons/vue/24/outline";
+import { PencilSquareIcon, TrashIcon, ArrowsRightLeftIcon } from "@heroicons/vue/24/outline";
 import Icon from "@/Components/Icon.vue";
 
 const { can } = useAuthorizable();
@@ -51,7 +51,7 @@ function makeBaseCurrency(currencyCode) {
         />
         <div class="flex">
           <Button
-            v-if="can('create store-currencies')"
+            v-if="can('create store_currencies')"
             as-child
           >
             <Link :href="route('admin.store-currency.create')">
@@ -142,7 +142,10 @@ function makeBaseCurrency(currencyCode) {
                     {{ code }}
                   </span>
                 </div>
-                <span v-else class="text-muted-foreground">—</span>
+                <span
+                  v-else
+                  class="text-muted-foreground"
+                >—</span>
               </td>
               <td class="px-6 py-4 text-center">
                 <Icon
@@ -159,7 +162,7 @@ function makeBaseCurrency(currencyCode) {
               <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                 <ButtonGroup>
                   <Button
-                    v-if="can('update store-currencies')"
+                    v-if="can('update store_currencies')"
                     variant="outline"
                     size="icon"
                     as-child
@@ -175,17 +178,17 @@ function makeBaseCurrency(currencyCode) {
                     </Link>
                   </Button>
                   <Button
-                    v-if="!row.is_base && !baseIsLocked && can('update store-currencies')"
+                    v-if="!row.is_base && !baseIsLocked && can('update store_currencies')"
                     v-tippy
                     variant="outline"
                     size="icon"
                     :title="__('Make Base Currency')"
                     @click="makeBaseCurrency(row.code)"
                   >
-                    <SwapIcon />
+                    <ArrowsRightLeftIcon />
                   </Button>
                   <Button
-                    v-if="!row.is_base && can('delete store-currencies')"
+                    v-if="!row.is_base && can('delete store_currencies')"
                     variant="outline"
                     size="icon"
                     as-child

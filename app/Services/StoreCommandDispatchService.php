@@ -99,6 +99,63 @@ class StoreCommandDispatchService
     }
 
     /**
+     * Re-run deliveries for an order that did not land.
+     *
+     * A plain re-dispatch would do nothing: the unique index on store_order_deliveries exists
+     * precisely so a repeated call cannot double-deliver. So this reuses the existing delivery
+     * rows and gives each one a fresh CommandQueue, which keeps one audit record per
+     * (item, command, server) however many times an admin retries it.
+     *
+     * Only deliveries that actually failed are retried by default. One still sitting DEFERRED is
+     * waiting on the player to come online and is working as intended.
+     *
+     * @return int how many deliveries were re-queued
+     */
+    public function redispatchForOrder(StoreOrder $order, bool $includeUnfinished = false): int
+    {
+        $order->loadMissing('deliveries.commandQueue', 'deliveries.server');
+
+        $retryable = [CommandQueueStatus::FAILED, CommandQueueStatus::CANCELLED];
+        $count = 0;
+
+        foreach ($order->deliveries as $delivery) {
+            $status = $delivery->commandQueue?->status;
+
+            $shouldRetry = $status === null
+                || in_array($status, $retryable, true)
+                || ($includeUnfinished && $status !== CommandQueueStatus::COMPLETED);
+
+            if (! $shouldRetry || ! $delivery->server_id) {
+                continue;
+            }
+
+            $queue = CommandQueue::create([
+                'command_id' => null,
+                'server_id' => $delivery->server_id,
+                'parsed_command' => $delivery->parsed_command,
+                'config' => ['is_player_online_required' => (bool) data_get($delivery->commandQueue?->config, 'is_player_online_required', false)],
+                'params' => $delivery->commandQueue?->params,
+                'status' => CommandQueueStatus::PENDING,
+                'max_attempts' => (int) config('store.command_max_attempts', 3),
+                'tag' => 'store',
+                'player_uuid' => $order->player_uuid,
+                'player_id' => $order->player_id,
+                'user_id' => $order->user_id,
+            ]);
+
+            $delivery->update([
+                'command_queue_id' => $queue->id,
+                'redispatch_count' => (int) $delivery->redispatch_count + 1,
+            ]);
+
+            RunCommandQueueJob::dispatch($queue);
+            $count++;
+        }
+
+        return $count;
+    }
+
+    /**
      * Create one queue row plus its audit record, or return null when this exact dispatch has
      * already happened.
      */
