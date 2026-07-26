@@ -21,7 +21,41 @@ use App\Models\Role;
 use App\Models\Server;
 use App\Models\Session;
 use App\Models\Shout;
+use App\Models\StoreBan;
+use App\Models\StoreCategory;
+use App\Models\StoreCoupon;
+use App\Models\StoreCurrency;
+use App\Models\StoreOrder;
+use App\Models\StorePackage;
+use App\Models\StoreSale;
 use App\Models\User;
+use App\Policies\BadgePolicy;
+use App\Policies\CommandQueuePolicy;
+use App\Policies\CommentPolicy;
+use App\Policies\CustomFormPolicy;
+use App\Policies\CustomFormSubmissionPolicy;
+use App\Policies\CustomPagePolicy;
+use App\Policies\DownloadPolicy;
+use App\Policies\FailedJobPolicy;
+use App\Policies\NewsPolicy;
+use App\Policies\PlayerPunishmentPolicy;
+use App\Policies\PollPolicy;
+use App\Policies\PostPolicy;
+use App\Policies\RankPolicy;
+use App\Policies\RecruitmentPolicy;
+use App\Policies\RecruitmentSubmissionPolicy;
+use App\Policies\RolePolicy;
+use App\Policies\ServerPolicy;
+use App\Policies\SessionPolicy;
+use App\Policies\ShoutPolicy;
+use App\Policies\StoreBanPolicy;
+use App\Policies\StoreCategoryPolicy;
+use App\Policies\StoreCouponPolicy;
+use App\Policies\StoreCurrencyPolicy;
+use App\Policies\StoreOrderPolicy;
+use App\Policies\StorePackagePolicy;
+use App\Policies\StoreSalePolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -33,26 +67,33 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        User::class => \App\Policies\UserPolicy::class,
-        Post::class => \App\Policies\PostPolicy::class,
-        Shout::class => \App\Policies\ShoutPolicy::class,
-        Comment::class => \App\Policies\CommentPolicy::class,
-        Server::class => \App\Policies\ServerPolicy::class,
-        Role::class => \App\Policies\RolePolicy::class,
-        Rank::class => \App\Policies\RankPolicy::class,
-        News::class => \App\Policies\NewsPolicy::class,
-        Poll::class => \App\Policies\PollPolicy::class,
-        CustomPage::class => \App\Policies\CustomPagePolicy::class,
-        Session::class => \App\Policies\SessionPolicy::class,
-        Badge::class => \App\Policies\BadgePolicy::class,
-        Download::class => \App\Policies\DownloadPolicy::class,
-        CustomForm::class => \App\Policies\CustomFormPolicy::class,
-        CustomFormSubmission::class => \App\Policies\CustomFormSubmissionPolicy::class,
-        Recruitment::class => \App\Policies\RecruitmentPolicy::class,
-        RecruitmentSubmission::class => \App\Policies\RecruitmentSubmissionPolicy::class,
-        FailedJob::class => \App\Policies\FailedJobPolicy::class,
-        CommandQueue::class => \App\Policies\CommandQueuePolicy::class,
-        PlayerPunishment::class => \App\Policies\PlayerPunishmentPolicy::class,
+        User::class => UserPolicy::class,
+        Post::class => PostPolicy::class,
+        Shout::class => ShoutPolicy::class,
+        Comment::class => CommentPolicy::class,
+        Server::class => ServerPolicy::class,
+        Role::class => RolePolicy::class,
+        Rank::class => RankPolicy::class,
+        News::class => NewsPolicy::class,
+        Poll::class => PollPolicy::class,
+        CustomPage::class => CustomPagePolicy::class,
+        Session::class => SessionPolicy::class,
+        Badge::class => BadgePolicy::class,
+        Download::class => DownloadPolicy::class,
+        CustomForm::class => CustomFormPolicy::class,
+        CustomFormSubmission::class => CustomFormSubmissionPolicy::class,
+        Recruitment::class => RecruitmentPolicy::class,
+        RecruitmentSubmission::class => RecruitmentSubmissionPolicy::class,
+        FailedJob::class => FailedJobPolicy::class,
+        CommandQueue::class => CommandQueuePolicy::class,
+        PlayerPunishment::class => PlayerPunishmentPolicy::class,
+        StoreCategory::class => StoreCategoryPolicy::class,
+        StorePackage::class => StorePackagePolicy::class,
+        StoreCurrency::class => StoreCurrencyPolicy::class,
+        StoreOrder::class => StoreOrderPolicy::class,
+        StoreCoupon::class => StoreCouponPolicy::class,
+        StoreSale::class => StoreSalePolicy::class,
+        StoreBan::class => StoreBanPolicy::class,
     ];
 
     /**

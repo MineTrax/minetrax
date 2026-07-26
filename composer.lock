@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9720b4bd5ce591a5fbf7893bac8cb627",
+    "content-hash": "3a94fc12cb6ea60472abbac35f76823f",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -270,6 +270,63 @@
                 }
             ],
             "time": "2026-06-14T18:21:03+00:00"
+        },
+        {
+            "name": "brick/money",
+            "version": "0.14.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brick/money.git",
+                "reference": "55ee503b846f17aa616eb3ffd1ed34785e37e1a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brick/money/zipball/55ee503b846f17aa616eb3ffd1ed34785e37e1a8",
+                "reference": "55ee503b846f17aa616eb3ffd1ed34785e37e1a8",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "~0.15.0 || ~0.16.0 || ~0.17.0 || ~0.18.0",
+                "php": "^8.2",
+                "psr/simple-cache": "^2.0 || ^3.0"
+            },
+            "require-dev": {
+                "brick/varexporter": "0.7.0",
+                "ext-dom": "*",
+                "ext-pdo": "*",
+                "phpstan/phpstan": "2.1.40",
+                "phpunit/phpunit": "^11.0"
+            },
+            "suggest": {
+                "ext-intl": "Required to format Money objects"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Money\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Money and currency library",
+            "keywords": [
+                "brick",
+                "currency",
+                "money"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/money/issues",
+                "source": "https://github.com/brick/money/tree/0.14.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/BenMorel",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-07-14T10:40:54+00:00"
         },
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -5408,6 +5465,71 @@
             "time": "2020-06-27T09:03:43+00:00"
         },
         {
+            "name": "phpdocumentor/reflection-docblock",
+            "version": "6.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
+                "reference": "7bae67520aa9f5ecc506d646810bd40d9da54582"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/7bae67520aa9f5ecc506d646810bd40d9da54582",
+                "reference": "7bae67520aa9f5ecc506d646810bd40d9da54582",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/deprecations": "^1.1",
+                "ext-filter": "*",
+                "php": "^7.4 || ^8.0",
+                "phpdocumentor/reflection-common": "^2.2",
+                "phpdocumentor/type-resolver": "^2.0",
+                "phpstan/phpdoc-parser": "^2.0",
+                "webmozart/assert": "^1.9.1 || ^2"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.3.5 || ~1.6.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan": "^1.8",
+                "phpstan/phpstan-mockery": "^1.1",
+                "phpstan/phpstan-webmozart-assert": "^1.2",
+                "phpunit/phpunit": "^9.5",
+                "psalm/phar": "^5.26",
+                "shipmonk/dead-code-detector": "^0.5.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "phpDocumentor\\Reflection\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mike van Riel",
+                    "email": "me@mikevanriel.com"
+                },
+                {
+                    "name": "Jaap van Otterdijk",
+                    "email": "opensource@ijaap.nl"
+                }
+            ],
+            "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
+            "support": {
+                "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
+                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/6.0.3"
+            },
+            "time": "2026-03-18T20:49:53+00:00"
+        },
+        {
             "name": "phpdocumentor/type-resolver",
             "version": "2.0.0",
             "source": {
@@ -7044,6 +7166,90 @@
             "time": "2026-06-10T08:25:59+00:00"
         },
         {
+            "name": "spatie/laravel-data",
+            "version": "4.23.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-data.git",
+                "reference": "230543769c996e407fec2873930626aed7dd0d3b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-data/zipball/230543769c996e407fec2873930626aed7dd0d3b",
+                "reference": "230543769c996e407fec2873930626aed7dd0d3b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
+                "php": "^8.1",
+                "phpdocumentor/reflection-common": "^2.2",
+                "phpdocumentor/reflection-docblock": "^5.3 || ^6.0",
+                "phpdocumentor/type-resolver": "^1.7 || ^2.0",
+                "spatie/laravel-package-tools": "^1.9.0",
+                "spatie/php-structure-discoverer": "^2.0"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.14",
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "inertiajs/inertia-laravel": "^2.0|^3.0",
+                "livewire/livewire": "^3.0|^4.0",
+                "mockery/mockery": "^1.6",
+                "nesbot/carbon": "^2.63|^3.0",
+                "orchestra/testbench": "^8.37.0|^9.16|^10.9|^11.0",
+                "pestphp/pest": "^2.36|^3.8|^4.3",
+                "pestphp/pest-plugin-laravel": "^2.4|^3.0|^4.0",
+                "pestphp/pest-plugin-livewire": "^2.1|^3.0|^4.0",
+                "phpbench/phpbench": "^1.2",
+                "phpstan/extension-installer": "^1.1",
+                "spatie/invade": "^1.0",
+                "spatie/laravel-typescript-transformer": "^2.5",
+                "spatie/pest-plugin-snapshots": "^2.1",
+                "spatie/test-time": "^1.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\LaravelData\\LaravelDataServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\LaravelData\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ruben Van Assche",
+                    "email": "ruben@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Create unified resources and data transfer objects",
+            "homepage": "https://github.com/spatie/laravel-data",
+            "keywords": [
+                "laravel",
+                "laravel-data",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-data/issues",
+                "source": "https://github.com/spatie/laravel-data/tree/4.23.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-05-08T14:41:13+00:00"
+        },
+        {
             "name": "spatie/laravel-medialibrary",
             "version": "11.23.1",
             "source": {
@@ -7742,6 +7948,85 @@
             "time": "2026-01-30T17:13:34+00:00"
         },
         {
+            "name": "spatie/php-structure-discoverer",
+            "version": "2.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/php-structure-discoverer.git",
+                "reference": "fa2b7dae8e8a22c0306154c4b052420e054f7e2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/php-structure-discoverer/zipball/fa2b7dae8e8a22c0306154c4b052420e054f7e2b",
+                "reference": "fa2b7dae8e8a22c0306154c4b052420e054f7e2b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/collections": "^11.0|^12.0|^13.0",
+                "php": "^8.3",
+                "spatie/laravel-package-tools": "^1.92.7",
+                "symfony/finder": "^6.0|^7.3.5|^8.0"
+            },
+            "require-dev": {
+                "amphp/parallel": "^2.3.2",
+                "illuminate/console": "^11.0|^12.0|^13.0",
+                "nunomaduro/collision": "^7.0|^8.8.3",
+                "orchestra/testbench": "^9.5|^10.8|^11.0",
+                "pestphp/pest": "^3.8|^4.0",
+                "pestphp/pest-plugin-laravel": "^3.2|^4.0",
+                "phpstan/extension-installer": "^1.4.3",
+                "phpstan/phpstan-deprecation-rules": "^1.2.1",
+                "phpstan/phpstan-phpunit": "^1.4.2",
+                "spatie/laravel-ray": "^1.43.1"
+            },
+            "suggest": {
+                "amphp/parallel": "When you want to use the Parallel discover worker"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\StructureDiscoverer\\StructureDiscovererServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\StructureDiscoverer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ruben Van Assche",
+                    "email": "ruben@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Automatically discover structures within your PHP application",
+            "homepage": "https://github.com/spatie/php-structure-discoverer",
+            "keywords": [
+                "discover",
+                "laravel",
+                "php",
+                "php-structure-discoverer"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/php-structure-discoverer/issues",
+                "source": "https://github.com/spatie/php-structure-discoverer/tree/2.4.4"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/LaravelAutoDiscoverer",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-06-15T07:14:32+00:00"
+        },
+        {
             "name": "spatie/ray",
             "version": "1.48.0",
             "source": {
@@ -7931,6 +8216,68 @@
                 "source": "https://github.com/Spirit55555/PHP-Minecraft"
             },
             "time": "2025-08-03T15:14:12+00:00"
+        },
+        {
+            "name": "stripe/stripe-php",
+            "version": "v21.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stripe/stripe-php.git",
+                "reference": "0498d20d0c33490c38df956dd7cef49b3a2ad6f0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/0498d20d0c33490c38df956dd7cef49b3a2ad6f0",
+                "reference": "0498d20d0c33490c38df956dd7cef49b3a2ad6f0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=7.2.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "3.94.0",
+                "phpstan/phpstan": "^1.2",
+                "phpunit/phpunit": "^8.0 || ^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "lib/version_check.php"
+                ],
+                "psr-4": {
+                    "Stripe\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stripe and contributors",
+                    "homepage": "https://github.com/stripe/stripe-php/contributors"
+                }
+            ],
+            "description": "Stripe PHP Library",
+            "homepage": "https://stripe.com/",
+            "keywords": [
+                "api",
+                "payment processing",
+                "stripe"
+            ],
+            "support": {
+                "issues": "https://github.com/stripe/stripe-php/issues",
+                "source": "https://github.com/stripe/stripe-php/tree/v21.0.0"
+            },
+            "time": "2026-07-16T00:34:23+00:00"
         },
         {
             "name": "symfony/clock",
@@ -11413,6 +11760,72 @@
             "time": "2026-04-26T05:33:54+00:00"
         },
         {
+            "name": "webmozart/assert",
+            "version": "2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webmozarts/assert.git",
+                "reference": "2ccb7c2e821038c03a3e6e1700c570c158c55f70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/2ccb7c2e821038c03a3e6e1700c570c158c55f70",
+                "reference": "2ccb7c2e821038c03a3e6e1700c570c158c55f70",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-date": "*",
+                "ext-filter": "*",
+                "php": "^8.2"
+            },
+            "suggest": {
+                "ext-intl": "",
+                "ext-simplexml": "",
+                "ext-spl": ""
+            },
+            "type": "library",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Webmozart\\Assert\\PsalmPlugin"
+                },
+                "branch-alias": {
+                    "dev-master": "2.0-dev",
+                    "dev-feature/2-0": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webmozart\\Assert\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                },
+                {
+                    "name": "Woody Gilk",
+                    "email": "woody.gilk@gmail.com"
+                }
+            ],
+            "description": "Assertions to validate method input/output with nice error messages.",
+            "keywords": [
+                "assert",
+                "check",
+                "validate"
+            ],
+            "support": {
+                "issues": "https://github.com/webmozarts/assert/issues",
+                "source": "https://github.com/webmozarts/assert/tree/2.4.1"
+            },
+            "time": "2026-06-15T15:31:57+00:00"
+        },
+        {
             "name": "xpaw/php-minecraft-query",
             "version": "5.0.0",
             "source": {
@@ -14599,71 +15012,6 @@
             "time": "2024-03-27T12:14:49+00:00"
         },
         {
-            "name": "phpdocumentor/reflection-docblock",
-            "version": "6.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "7bae67520aa9f5ecc506d646810bd40d9da54582"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/7bae67520aa9f5ecc506d646810bd40d9da54582",
-                "reference": "7bae67520aa9f5ecc506d646810bd40d9da54582",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/deprecations": "^1.1",
-                "ext-filter": "*",
-                "php": "^7.4 || ^8.0",
-                "phpdocumentor/reflection-common": "^2.2",
-                "phpdocumentor/type-resolver": "^2.0",
-                "phpstan/phpdoc-parser": "^2.0",
-                "webmozart/assert": "^1.9.1 || ^2"
-            },
-            "require-dev": {
-                "mockery/mockery": "~1.3.5 || ~1.6.0",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "^1.8",
-                "phpstan/phpstan-mockery": "^1.1",
-                "phpstan/phpstan-webmozart-assert": "^1.2",
-                "phpunit/phpunit": "^9.5",
-                "psalm/phar": "^5.26",
-                "shipmonk/dead-code-detector": "^0.5.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "phpDocumentor\\Reflection\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Mike van Riel",
-                    "email": "me@mikevanriel.com"
-                },
-                {
-                    "name": "Jaap van Otterdijk",
-                    "email": "opensource@ijaap.nl"
-                }
-            ],
-            "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "support": {
-                "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
-                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/6.0.3"
-            },
-            "time": "2026-03-18T20:49:53+00:00"
-        },
-        {
             "name": "phpstan/phpstan",
             "version": "2.2.2",
             "dist": {
@@ -17747,72 +18095,6 @@
                 }
             ],
             "time": "2025-12-08T11:19:18+00:00"
-        },
-        {
-            "name": "webmozart/assert",
-            "version": "2.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webmozarts/assert.git",
-                "reference": "2ccb7c2e821038c03a3e6e1700c570c158c55f70"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webmozarts/assert/zipball/2ccb7c2e821038c03a3e6e1700c570c158c55f70",
-                "reference": "2ccb7c2e821038c03a3e6e1700c570c158c55f70",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ctype": "*",
-                "ext-date": "*",
-                "ext-filter": "*",
-                "php": "^8.2"
-            },
-            "suggest": {
-                "ext-intl": "",
-                "ext-simplexml": "",
-                "ext-spl": ""
-            },
-            "type": "library",
-            "extra": {
-                "psalm": {
-                    "pluginClass": "Webmozart\\Assert\\PsalmPlugin"
-                },
-                "branch-alias": {
-                    "dev-master": "2.0-dev",
-                    "dev-feature/2-0": "2.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Webmozart\\Assert\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Bernhard Schussek",
-                    "email": "bschussek@gmail.com"
-                },
-                {
-                    "name": "Woody Gilk",
-                    "email": "woody.gilk@gmail.com"
-                }
-            ],
-            "description": "Assertions to validate method input/output with nice error messages.",
-            "keywords": [
-                "assert",
-                "check",
-                "validate"
-            ],
-            "support": {
-                "issues": "https://github.com/webmozarts/assert/issues",
-                "source": "https://github.com/webmozarts/assert/tree/2.4.1"
-            },
-            "time": "2026-06-15T15:31:57+00:00"
         }
     ],
     "aliases": [],
