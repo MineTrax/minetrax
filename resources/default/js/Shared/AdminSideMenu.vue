@@ -195,7 +195,7 @@ const navItems = [
     {
         label: "Store",
         href: "#",
-        active: route().current("admin.store-category.*") || route().current("admin.store-package.*"),
+        active: route().current("admin.store-category.*") || route().current("admin.store-package.*") || route().current("admin.store-currency.*"),
         children: [
             {
                 label: "Categories",
@@ -212,6 +212,14 @@ const navItems = [
                 children: [],
                 icon: null,
                 visible: canWild("store_packages"),
+            },
+            {
+                label: "Currencies",
+                href: route("admin.store-currency.index"),
+                active: route().current("admin.store-currency.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_currencies"),
             },
         ],
         icon: ShoppingBagIcon,
@@ -373,6 +381,14 @@ const navItems = [
                 children: [],
                 icon: null,
                 visible: true,
+            },
+            {
+                label: "Store",
+                href: route("admin.setting.store.show"),
+                active: route().current("admin.setting.store.show"),
+                children: [],
+                icon: null,
+                visible: usePage().props?.store?.enabled,
             },
             {
                 label: "Dangerzone",

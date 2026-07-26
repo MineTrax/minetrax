@@ -26,6 +26,46 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Pages
+    |--------------------------------------------------------------------------
+    |
+    | Where page components live on disk. Inertia v3 reads this block; the
+    | `testing` block below is the v1/v2 shape and is no longer consulted by
+    | the view finder, so without this the finder looks in Laravel's default
+    | resources/js/pages and never resolves a single page in this app.
+    |
+    | `ensure_pages_exist` stays false at runtime — a path quirk should not
+    | turn a working page into a 500 — but the testing assertion below uses
+    | the same finder, so component() assertions now work.
+    |
+    */
+
+    'pages' => [
+
+        'ensure_pages_exist' => false,
+
+        'paths' => array_unique([
+
+            resource_path(config('app.theme').'/js/Pages'),
+            resource_path('default/js/Pages'),
+
+        ]),
+
+        'extensions' => [
+
+            'js',
+            'jsx',
+            'svelte',
+            'ts',
+            'tsx',
+            'vue',
+
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Testing
     |--------------------------------------------------------------------------
     |

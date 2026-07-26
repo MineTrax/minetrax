@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\Settings\NavigationSettingController;
 use App\Http\Controllers\Admin\Settings\PlayerSettingController;
 use App\Http\Controllers\Admin\Settings\PluginSettingController;
 use App\Http\Controllers\Admin\Settings\SeoSettingController;
+use App\Http\Controllers\Admin\Settings\StoreSettingController;
 use App\Http\Controllers\Admin\Settings\ThemeSettingController;
 use App\Http\Controllers\Admin\Store\StoreCategoryController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
@@ -317,6 +318,8 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
     Route::post('setting/navigation', [NavigationSettingController::class, 'update'])->name('setting.navigation.update');
     Route::get('setting/seo', [SeoSettingController::class, 'show'])->name('setting.seo.show');
     Route::post('setting/seo', [SeoSettingController::class, 'update'])->name('setting.seo.update');
+    Route::get('setting/store', [StoreSettingController::class, 'show'])->name('setting.store.show');
+    Route::post('setting/store', [StoreSettingController::class, 'update'])->name('setting.store.update');
     Route::get('setting/danger', [DangerSettingController::class, 'show'])->name('setting.danger.show');
     Route::delete('setting/danger/truncate-shouts', [DangerSettingController::class, 'truncateShouts'])->name('setting.danger.truncate.shouts');
     Route::delete('setting/danger/truncate-consolelogs', [DangerSettingController::class, 'truncateConsolelogs'])->name('setting.danger.truncate.consolelogs');
