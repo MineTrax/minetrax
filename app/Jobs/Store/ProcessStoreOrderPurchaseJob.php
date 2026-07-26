@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Jobs\Store;
+
+use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StorePackageGrantStatus;
+use App\Models\StoreOrder;
+use App\Services\StoreCommandDispatchService;
+use App\Services\StoreOrderService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+
+/**
+ * Fulfils a paid order: issue the grants, queue the purchase commands, complete the order.
+ *
+ * Runs on the longtask queue because a large order can fan out to many servers, and a slow
+ * webquery socket must never hold up the request that triggered it.
+ */
+class ProcessStoreOrderPurchaseJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public function __construct(private StoreOrder $order)
+    {
+        $this->onQueue('longtask');
+    }
+
+    public function handle(StoreCommandDispatchService $dispatcher, StoreOrderService $orders): void
+    {
+        $order = $this->order->fresh(['items.package.commands']);
+
+        if (! $order || ! $order->status->isPaidState()) {
+            // Refunded or cancelled between payment and this job running.
+            return;
+        }
+
+        $this->issueGrants($order);
+
+        $deliveryStatus = $dispatcher->dispatchForOrder($order, StorePackageCommandTrigger::PURCHASE);
+
+        $orders->markCompleted($order, $deliveryStatus);
+    }
+
+    /**
+     * One grant per order item. Grants are what the expiry sweep and the purchase-limit check
+     * read, so a permanent package still gets one, just without an expiry.
+     *
+     * sold_count is incremented here rather than in its own pass, tied to the grant actually
+     * being created. That is what keeps stock consumption correct when this job is retried:
+     * a bare increment would inflate it every attempt.
+     */
+    private function issueGrants(StoreOrder $order): void
+    {
+        foreach ($order->items as $item) {
+            if ($item->grant()->exists()) {
+                continue; // already fulfilled; this job was retried
+            }
+
+            $item->grant()->create([
+                'store_package_id' => $item->store_package_id,
+                'player_uuid' => $order->player_uuid,
+                'status' => StorePackageGrantStatus::ACTIVE,
+                'granted_at' => now(),
+                'expires_at' => $item->expiry_duration_days
+                    ? now()->addDays((int) $item->expiry_duration_days)
+                    : null,
+            ]);
+
+            // Stock is only consumed once the order is genuinely paid, so an abandoned checkout
+            // never holds inventory.
+            $item->package?->increment('sold_count', (int) $item->quantity);
+        }
+    }
+}

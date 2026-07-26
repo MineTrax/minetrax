@@ -8,6 +8,7 @@ use App\Enums\StoreOrderStatus;
 use App\Enums\StorePackageGrantStatus;
 use App\Enums\StorePaymentStatus;
 use App\Events\StoreOrderPaid;
+use App\Jobs\Store\ProcessStoreOrderPurchaseJob;
 use App\Models\StoreCurrency;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
@@ -18,6 +19,7 @@ use App\Settings\StoreSettings;
 use App\Utils\Payments\StorePaymentGatewayManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class StoreOrderStateMachineTest extends TestCase
@@ -31,6 +33,12 @@ class StoreOrderStateMachineTest extends TestCase
         parent::setUp();
         config(['store.enabled' => true]);
         StoreCurrency::factory()->base()->create();
+
+        // Isolate transitions from fulfilment. markPaid fires StoreOrderPaid, whose listener runs
+        // ProcessStoreOrderPurchaseJob synchronously on the sync queue and would advance the order
+        // straight to COMPLETED. Delivery has its own test file.
+        Queue::fake([ProcessStoreOrderPurchaseJob::class]);
+
         $this->orders = app(StoreOrderService::class);
     }
 

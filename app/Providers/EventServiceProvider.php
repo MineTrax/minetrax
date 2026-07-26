@@ -9,6 +9,8 @@ use App\Events\NewsCommentCreated;
 use App\Events\RecruitmentSubmissionCommentCreated;
 use App\Events\RecruitmentSubmissionCreated;
 use App\Events\RecruitmentSubmissionStatusChanged;
+use App\Events\StoreOrderPaid;
+use App\Listeners\DispatchStoreOrderDeliveryOnPaid;
 use App\Listeners\MergeGuestStoreCartOnLogin;
 use App\Listeners\NotifyStaffOnCustomFormSubmission;
 use App\Listeners\NotifyStaffOnNewsComment;
@@ -37,6 +39,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Login::class => [
             MergeGuestStoreCartOnLogin::class,
+        ],
+        StoreOrderPaid::class => [
+            DispatchStoreOrderDeliveryOnPaid::class,
         ],
         SocialiteWasCalled::class => [
             DiscordExtendSocialite::class,

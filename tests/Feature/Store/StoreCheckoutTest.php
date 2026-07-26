@@ -306,8 +306,10 @@ class StoreCheckoutTest extends TestCase
 
         $order = StoreOrder::first();
         $this->assertEquals(0, $order->amount_due);
-        // Nothing to charge, so it is already paid rather than sitting at a zero-value gateway.
-        $this->assertEquals(StoreOrderStatus::PAID, $order->status);
+        // Nothing to charge, so it never sits at a zero-value gateway: it is paid immediately and
+        // fulfilment carries it through to COMPLETED.
+        $this->assertTrue($order->status->isPaidState());
+        $this->assertEquals(StoreOrderStatus::COMPLETED, $order->status);
     }
 
     public function test_paying_with_a_gift_card_debits_it_and_writes_a_ledger_row()
