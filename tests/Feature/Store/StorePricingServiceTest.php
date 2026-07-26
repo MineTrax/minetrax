@@ -26,7 +26,7 @@ class StorePricingServiceTest extends TestCase
     {
         parent::setUp();
         config(['store.enabled' => true]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         $this->pricing = app(StorePricingService::class);
     }
 

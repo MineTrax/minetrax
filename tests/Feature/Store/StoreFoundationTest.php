@@ -20,7 +20,9 @@ class StoreFoundationTest extends TestCase
     public function test_store_config_file_is_registered_with_expected_defaults()
     {
         $this->assertIsArray(config('store'));
-        $this->assertFalse(config('store.enabled'), 'The store must ship disabled by default.');
+        // STORE_ENABLED is pinned false in phpunit.xml, so this asserts the module stays off
+        // unless something opts in — not that the developer's own .env happens to have it off.
+        $this->assertFalse(config('store.enabled'), 'The store must be off unless explicitly enabled.');
         $this->assertIsArray(config('store.gateways'));
         $this->assertEquals(3, config('store.command_max_attempts'));
         $this->assertEquals(3, config('store.deferred_attention_days'));

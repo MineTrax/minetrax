@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { Link, useForm } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
@@ -142,6 +142,19 @@ const saveSetting = () => {
               <legend class="text-sm font-medium text-foreground mb-4">
                 {{ __("Currency") }}
               </legend>
+
+              <p
+                v-if="!currencies.length"
+                class="text-sm text-orange-500 mb-4"
+              >
+                {{ __("No currencies exist yet, so there is nothing to choose here.") }}
+                <Link
+                  class="underline hover:text-foreground"
+                  :href="route('admin.store-currency.index')"
+                >
+                  {{ __("Add one first") }}
+                </Link>.
+              </p>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <XSelect

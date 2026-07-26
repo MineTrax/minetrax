@@ -9,7 +9,6 @@ use App\Enums\StorePackageGrantStatus;
 use App\Enums\StorePaymentStatus;
 use App\Events\StoreOrderPaid;
 use App\Jobs\Store\ProcessStoreOrderPurchaseJob;
-use App\Models\StoreCurrency;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
@@ -32,7 +31,7 @@ class StoreOrderStateMachineTest extends TestCase
     {
         parent::setUp();
         config(['store.enabled' => true]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
 
         // Isolate transitions from fulfilment. markPaid fires StoreOrderPaid, whose listener runs
         // ProcessStoreOrderPurchaseJob synchronously on the sync queue and would advance the order

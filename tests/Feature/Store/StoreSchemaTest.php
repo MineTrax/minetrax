@@ -192,7 +192,7 @@ class StoreSchemaTest extends TestCase
 
     public function test_currency_factory_covers_non_two_decimal_currencies()
     {
-        $base = StoreCurrency::factory()->base()->create();
+        $base = $this->baseCurrency();
         $yen = StoreCurrency::factory()->zeroDecimal()->create();
         $dinar = StoreCurrency::factory()->threeDecimal()->create();
 

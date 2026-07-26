@@ -43,7 +43,7 @@ class StoreWebhookStripeTest extends TestCase
         parent::setUp();
 
         config(['store.enabled' => true]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
 
         // Fulfilment has its own test file; here the concern is the transition the webhook causes.
         Queue::fake([ProcessStoreOrderPurchaseJob::class]);

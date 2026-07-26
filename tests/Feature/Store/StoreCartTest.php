@@ -5,7 +5,6 @@ namespace Tests\Feature\Store;
 use App\Enums\StoreDiscountType;
 use App\Models\StoreCart;
 use App\Models\StoreCoupon;
-use App\Models\StoreCurrency;
 use App\Models\StoreGiftCard;
 use App\Models\StorePackage;
 use App\Models\User;
@@ -21,7 +20,7 @@ class StoreCartTest extends TestCase
     {
         parent::setUp();
         config(['store.enabled' => true]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
 
         // A real browser returns the cart cookie on every request; the test client does not carry
         // queued cookies forward, so it is pinned here for the whole test. withCookie (not

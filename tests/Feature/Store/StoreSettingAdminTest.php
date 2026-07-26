@@ -20,7 +20,7 @@ class StoreSettingAdminTest extends TestCase
         parent::setUp();
 
         config(['store.enabled' => true]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
 
         $this->superadmin = User::whereId(1)->first();
     }

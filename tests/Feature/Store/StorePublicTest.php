@@ -80,7 +80,7 @@ class StorePublicTest extends TestCase
 
     public function test_prices_are_shipped_both_raw_and_formatted()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StorePackage::factory()->create(['price' => 999]);
 
         $this->get(route('store.index'))
@@ -93,7 +93,7 @@ class StorePublicTest extends TestCase
 
     public function test_prices_are_shown_in_the_selected_currency()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create(); // JPY at 150
         StorePackage::factory()->create(['price' => 1000]); // $10.00
 

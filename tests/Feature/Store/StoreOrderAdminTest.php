@@ -40,7 +40,7 @@ class StoreOrderAdminTest extends TestCase
         parent::setUp();
 
         config(['store.enabled' => true]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
 
         Queue::fake([ProcessStoreOrderPurchaseJob::class, RunCommandQueueJob::class]);
 

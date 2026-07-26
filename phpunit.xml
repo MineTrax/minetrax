@@ -20,6 +20,10 @@
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="SESSION_DRIVER" value="array"/>
     <env name="TELESCOPE_ENABLED" value="false"/>
+    <!-- Pinned to the shipped default so the suite does not change behaviour depending on whether
+         the developer happens to have the store switched on in their own .env. Tests that need it
+         on set config('store.enabled') themselves. -->
+    <env name="STORE_ENABLED" value="(false)"/>
   </php>
   <source>
     <include>

@@ -8,7 +8,6 @@ use App\Enums\StorePaymentStatus;
 use App\Models\Player;
 use App\Models\StoreBan;
 use App\Models\StoreCoupon;
-use App\Models\StoreCurrency;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
@@ -30,7 +29,7 @@ class StoreCheckoutTest extends TestCase
     {
         parent::setUp();
         config(['store.enabled' => true]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
 
         $settings = app(StoreSettings::class);
         $settings->enabled_gateways = ['manual'];

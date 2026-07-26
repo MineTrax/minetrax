@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Store;
 
-use App\Models\StoreCurrency;
 use App\Models\User;
 use App\Settings\GeneralSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,7 +16,7 @@ class StoreHomepageTest extends TestCase
         parent::setUp();
 
         config(['store.enabled' => true]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
     }
 
     private function setHomepage(string $route): void

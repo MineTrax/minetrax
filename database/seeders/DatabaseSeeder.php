@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             RankSeeder::class,
-            CustomPageSeeder::class
+            CustomPageSeeder::class,
+            StoreCurrencySeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
     }

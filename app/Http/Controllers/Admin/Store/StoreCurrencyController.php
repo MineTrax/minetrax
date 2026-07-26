@@ -39,10 +39,23 @@ class StoreCurrencyController extends Controller
 
     public function store(CreateStoreCurrencyRequest $request): RedirectResponse
     {
-        StoreCurrency::create($this->attributesFrom($request) + [
+        // The first currency becomes the base. Exactly one row must be the base; zero is not a
+        // valid state, and leaving the very first one non-base strands the admin with a store
+        // that has no reporting currency and no obvious way to give it one.
+        $isFirst = ! StoreCurrency::exists();
+
+        $attributes = array_merge($this->attributesFrom($request), [
             'code' => $request->code,
-            'is_base' => false,
+            'is_base' => $isFirst,
         ]);
+
+        if ($isFirst) {
+            // The base currency is its own unit and has to be usable, whatever the form said.
+            $attributes['rate_to_base'] = 1;
+            $attributes['is_enabled'] = true;
+        }
+
+        StoreCurrency::create($attributes);
 
         return redirect()->route('admin.store-currency.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Created Successfully'), 'body' => __('Currency has been created successfully')]]);

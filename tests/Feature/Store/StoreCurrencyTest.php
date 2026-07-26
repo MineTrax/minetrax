@@ -44,7 +44,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_minor_units_convert_to_decimal_respecting_the_exponent()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         $yen = StoreCurrency::factory()->zeroDecimal()->create();
         $dinar = StoreCurrency::factory()->threeDecimal()->create();
 
@@ -56,7 +56,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_decimal_converts_to_minor_units_respecting_the_exponent()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         $yen = StoreCurrency::factory()->zeroDecimal()->create();
         $dinar = StoreCurrency::factory()->threeDecimal()->create();
 
@@ -68,7 +68,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_conversion_from_base_uses_the_rate()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         $yen = StoreCurrency::factory()->zeroDecimal()->create(); // rate 150
 
         // $10.00 at 150 JPY per USD is ¥1500 — 1500 minor units, because JPY has no minor unit.
@@ -77,7 +77,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_conversion_back_to_base_round_trips()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         $yen = StoreCurrency::factory()->zeroDecimal()->create();
 
         $this->assertSame(1000, $this->service->toBase($this->service->fromBase(1000, $yen), $yen));
@@ -85,14 +85,14 @@ class StoreCurrencyTest extends TestCase
 
     public function test_converting_a_currency_to_itself_is_a_no_op()
     {
-        $base = StoreCurrency::factory()->base()->create();
+        $base = $this->baseCurrency();
 
         $this->assertSame(1999, $this->service->convert(1999, $base, $base));
     }
 
     public function test_formatting_respects_symbol_and_position()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         $euro = StoreCurrency::factory()->create([
             'code' => 'EUR', 'symbol' => '€', 'symbol_position' => 'suffix', 'exponent' => 2, 'rate_to_base' => 1,
         ]);
@@ -130,7 +130,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_package_price_in_base_currency_is_the_stored_price()
     {
-        $base = StoreCurrency::factory()->base()->create();
+        $base = $this->baseCurrency();
         $package = StorePackage::factory()->create(['price' => 999]);
 
         $this->assertSame(999, $this->service->priceForPackage($package, $base));
@@ -138,7 +138,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_package_price_converts_when_no_override_exists()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         $yen = StoreCurrency::factory()->zeroDecimal()->create();
         $package = StorePackage::factory()->create(['price' => 1000]); // $10.00
 
@@ -147,7 +147,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_an_explicit_override_beats_conversion_and_bypasses_rounding()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         $yen = StoreCurrency::factory()->zeroDecimal()->create(['price_rounding' => StorePriceRounding::NEAREST_WHOLE]);
         $package = StorePackage::factory()->create(['price' => 1000]);
 
@@ -162,7 +162,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_resolution_prefers_the_session_switcher()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create();
 
         session(['store_currency' => 'JPY']);
@@ -172,7 +172,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_resolution_ignores_a_disabled_currency()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create(['is_enabled' => false]);
 
         session(['store_currency' => 'JPY']);
@@ -182,7 +182,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_resolution_falls_back_to_the_user_preference()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create();
 
         $user = User::factory()->create(['settings' => ['store_currency' => 'JPY']]);
@@ -193,7 +193,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_resolution_falls_back_to_the_country_mapping()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create(['country_codes' => ['JP']]);
 
         $japan = Country::where('iso_code', 'JP')->first();
@@ -204,7 +204,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_resolution_falls_back_to_base_when_nothing_matches()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create();
 
         $this->assertEquals('USD', app(StoreCurrencyService::class)->resolve()->code);
@@ -212,7 +212,7 @@ class StoreCurrencyTest extends TestCase
 
     public function test_present_returns_both_raw_and_formatted_so_vue_never_does_money_math()
     {
-        $base = StoreCurrency::factory()->base()->create();
+        $base = $this->baseCurrency();
 
         $this->assertEquals([
             'amount' => 999,

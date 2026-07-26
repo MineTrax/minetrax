@@ -94,7 +94,7 @@ class StoreCurrencyAdminTest extends TestCase
     public function test_the_base_currency_cannot_be_disabled_or_re_rated()
     {
         $this->actingAs(User::whereId(1)->first());
-        $base = StoreCurrency::factory()->base()->create();
+        $base = $this->baseCurrency();
 
         $this->put(route('admin.store-currency.update', $base->id), $this->validPayload([
             'code' => $base->code,
@@ -110,7 +110,7 @@ class StoreCurrencyAdminTest extends TestCase
     public function test_the_base_currency_cannot_be_deleted()
     {
         $this->actingAs(User::whereId(1)->first());
-        $base = StoreCurrency::factory()->base()->create();
+        $base = $this->baseCurrency();
 
         $this->delete(route('admin.store-currency.delete', $base->id));
 
@@ -141,7 +141,7 @@ class StoreCurrencyAdminTest extends TestCase
     public function test_base_currency_can_be_changed_while_no_orders_exist()
     {
         $this->actingAs(User::whereId(1)->first());
-        $base = StoreCurrency::factory()->base()->create();
+        $base = $this->baseCurrency();
         $euro = StoreCurrency::factory()->create(['code' => 'EUR', 'rate_to_base' => 0.92]);
 
         $this->post(route('admin.store-currency.make-base', $euro->id));
@@ -156,7 +156,7 @@ class StoreCurrencyAdminTest extends TestCase
         // Historical base_total values were computed against the current base, so moving it
         // would silently rewrite past revenue.
         $this->actingAs(User::whereId(1)->first());
-        $base = StoreCurrency::factory()->base()->create();
+        $base = $this->baseCurrency();
         $euro = StoreCurrency::factory()->create(['code' => 'EUR']);
         StoreOrder::factory()->create();
 
@@ -169,7 +169,7 @@ class StoreCurrencyAdminTest extends TestCase
     public function test_admin_can_set_per_package_price_overrides()
     {
         $this->actingAs(User::whereId(1)->first());
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create();
         $package = StorePackage::factory()->create(['price' => 1000]);
 
@@ -195,7 +195,7 @@ class StoreCurrencyAdminTest extends TestCase
     public function test_removing_a_price_override_reverts_to_the_converted_price()
     {
         $this->actingAs(User::whereId(1)->first());
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create();
         $package = StorePackage::factory()->create(['price' => 1000]);
         $package->prices()->create(['currency_code' => 'JPY', 'price' => 1200]);
@@ -215,7 +215,7 @@ class StoreCurrencyAdminTest extends TestCase
 
     public function test_a_visitor_can_switch_currency_and_it_persists_for_a_logged_in_user()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create();
 
         $user = User::factory()->create();
@@ -231,7 +231,7 @@ class StoreCurrencyAdminTest extends TestCase
 
     public function test_switching_to_a_disabled_currency_is_ignored_rather_than_erroring()
     {
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         StoreCurrency::factory()->zeroDecimal()->create(['is_enabled' => false]);
 
         $this->from(route('home'))
@@ -244,7 +244,7 @@ class StoreCurrencyAdminTest extends TestCase
     public function test_switching_currency_is_unavailable_when_the_module_is_disabled()
     {
         config(['store.enabled' => false]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
 
         $this->post(route('store.currency.switch'), ['code' => 'USD'])->assertStatus(404);
     }

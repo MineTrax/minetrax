@@ -282,7 +282,20 @@ class StoreCurrencyService
         return is_string($currency) ? strtoupper($currency) : $currency->code;
     }
 
-    private function defaultSymbolFor(string $code): string
+    /**
+     * The currency's own name from the ISO-4217 table, falling back to the code itself for a
+     * custom code brick/money does not know.
+     */
+    public function nameFor(string $code): string
+    {
+        try {
+            return Currency::of(strtoupper($code))->getName();
+        } catch (\Throwable) {
+            return strtoupper($code);
+        }
+    }
+
+    public function defaultSymbolFor(string $code): string
     {
         return match (strtoupper($code)) {
             'USD' => '$',

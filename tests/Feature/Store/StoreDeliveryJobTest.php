@@ -12,7 +12,6 @@ use App\Jobs\RunCommandQueueJob;
 use App\Jobs\Store\ProcessStoreOrderPurchaseJob;
 use App\Models\CommandQueue;
 use App\Models\Server;
-use App\Models\StoreCurrency;
 use App\Models\StoreOrder;
 use App\Models\StoreOrderDelivery;
 use App\Models\StorePackage;
@@ -32,7 +31,7 @@ class StoreDeliveryJobTest extends TestCase
     {
         parent::setUp();
         config(['store.enabled' => true]);
-        StoreCurrency::factory()->base()->create();
+        $this->baseCurrency();
         Queue::fake([RunCommandQueueJob::class]);
     }
 
