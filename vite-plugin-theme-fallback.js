@@ -162,29 +162,35 @@ export default function themeInheritance(options = {}) {
         },
 
         configureServer(server) {
-            // Only set up HMR watchers for non-default themes
-            if (isDefault) {
-                return;
+            // The default theme's Pages directory is always part of the virtual page map — load()
+            // scans it whatever the active theme is — so it always has to be watched. Skipping it
+            // when the active theme *is* default meant a newly added page was invisible to the
+            // running dev server until someone restarted it, with a bare "Page not found" as the
+            // only clue.
+            const watchedJsDirs = [defaultJsDir];
+            const watchedPagesDirs = [
+                normalizePath(path.resolve(root, 'resources', defaultTheme, 'js', 'Pages')),
+            ];
+
+            if (!isDefault) {
+                watchedJsDirs.push(themeJsDir);
+                watchedPagesDirs.push(
+                    normalizePath(path.resolve(root, 'resources', theme, 'js', 'Pages'))
+                );
             }
 
-            const themePagesDir = normalizePath(
-                path.resolve(root, 'resources', theme, 'js', 'Pages')
-            );
-
-            const themeJsDirWatch = normalizePath(
-                path.resolve(root, 'resources', theme, 'js')
-            );
+            const startsWithAny = (value, prefixes) => prefixes.some((prefix) => value.startsWith(prefix));
 
             const invalidateOnChange = (file) => {
                 const normalized = normalizePath(file);
 
-                // Clear resolve cache when any file in the theme JS dir changes
-                if (normalized.startsWith(themeJsDirWatch)) {
+                // Clear resolve cache when any watched JS file changes
+                if (startsWithAny(normalized, watchedJsDirs)) {
                     resolveCache.clear();
                 }
 
                 // Invalidate the virtual page map when pages are added/removed
-                if (normalized.startsWith(themePagesDir) && normalized.endsWith('.vue')) {
+                if (normalized.endsWith('.vue') && startsWithAny(normalized, watchedPagesDirs)) {
                     const mod = server.moduleGraph.getModuleById(RESOLVED_VIRTUAL_ID);
                     if (mod) {
                         server.moduleGraph.invalidateModule(mod);
