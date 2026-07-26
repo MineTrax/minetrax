@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ServerType;
+use App\Http\Controllers\Store\StoreController;
 use App\Models\News;
 use App\Models\Player;
 use App\Models\Poll;
@@ -14,6 +15,7 @@ use App\Settings\ThemeSettings;
 use App\Utils\Helpers\Helper;
 use Cache;
 use Http;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -21,7 +23,26 @@ use Storage;
 
 class HomeController extends Controller
 {
+    /**
+     * `/` resolves the homepage flag first.
+     *
+     * The `&&` matters: turning the store module off must never leave the site's front page
+     * pointing at something that now denies every visitor.
+     */
     public function home(Request $request, GeneralSettings $generalSettings, ThemeSettings $themeSettings)
+    {
+        if ($generalSettings->homepage_route === 'store' && config('store.enabled')) {
+            return app(StoreController::class)->storefront();
+        }
+
+        return $this->dashboard($request, $generalSettings, $themeSettings);
+    }
+
+    /**
+     * The community homepage. Always reachable at /dashboard, so news, the shoutbox and the
+     * widgets do not disappear when the store takes over `/`.
+     */
+    public function dashboard(Request $request, GeneralSettings $generalSettings, ThemeSettings $themeSettings)
     {
         // Latest news-list
         $newslist = News::orderBy('published_at', 'desc')
@@ -42,7 +63,7 @@ class HomeController extends Controller
 
         // Make stripped body_html of the pinned news
         foreach ($latestPinnedNews as $news) {
-            $converter = new GithubFlavoredMarkdownConverter();
+            $converter = new GithubFlavoredMarkdownConverter;
             $strippedBody = \Str::words($news->body, 50);
             $news->body_md = $converter->convertToHtml($strippedBody)->getContent();
         }
@@ -64,10 +85,10 @@ class HomeController extends Controller
             ->get()
             // Filter out duplicate user sessions but don't filter guest session with null user_id
             ->filter(function ($user) use ($onlineUsers) {
-                if (!$user->user) {
+                if (! $user->user) {
                     $onlineUsers->push($user);
                 } else {
-                    if (!$onlineUsers->firstWhere('user_id', $user->user_id)) {
+                    if (! $onlineUsers->firstWhere('user_id', $user->user_id)) {
                         $onlineUsers->push($user);
                     }
                 }
@@ -76,7 +97,7 @@ class HomeController extends Controller
         // Welcome box content is in markdown so need to converted before displaying.
         $welcomeBoxContentHtml = null;
         if ($generalSettings->enable_welcomebox && $generalSettings->welcomebox_content) {
-            $converter = new GithubFlavoredMarkdownConverter();
+            $converter = new GithubFlavoredMarkdownConverter;
             $welcomeBoxContentHtml = $converter->convertToHtml($generalSettings->welcomebox_content)->getContent();
         }
 
@@ -126,7 +147,7 @@ class HomeController extends Controller
         ]);
     }
 
-    public function didYouKnow(): \Illuminate\Http\JsonResponse
+    public function didYouKnow(): JsonResponse
     {
         $didYouKnowArray = json_decode(Storage::disk('local')->get('misc/did-you-know.json'), true);
 
@@ -142,7 +163,7 @@ class HomeController extends Controller
         $oneHour = 3600;
         $featureList = Cache::remember('feature:list', $oneHour, function () {
             $features = Http::withoutVerifying()->timeout(5)->get('https://q0rmzst113.execute-api.eu-central-1.amazonaws.com/v1/features')->json();
-            if (!$features['body']) {
+            if (! $features['body']) {
                 throw new \Exception('Failed to get data');
             }
 
@@ -185,7 +206,7 @@ class HomeController extends Controller
     public function visitVotingSite(Request $request, GeneralSettings $generalSettings)
     {
         $voteSitesArray = $generalSettings->voteforserverbox_content;
-        if (!$voteSitesArray) {
+        if (! $voteSitesArray) {
             return abort(404);
         }
 

@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
 use App\Services\StoreCurrencyService;
+use App\Settings\GeneralSettings;
 use App\Settings\StoreSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,9 +19,36 @@ class StoreController extends Controller
     public function __construct(
         private StoreCurrencyService $currencies,
         private StoreSettings $settings,
+        private GeneralSettings $general,
     ) {}
 
-    public function index(): Response
+    /**
+     * The `&&` matters: turning the store module off must never leave `/` pointing at a page that
+     * now 403s.
+     */
+    private function isStoreTheHomepage(): bool
+    {
+        return $this->general->homepage_route === 'store' && config('store.enabled');
+    }
+
+    /**
+     * When the store owns `/`, this route redirects there so the storefront has one canonical
+     * URL. Every existing route('store.index') link keeps working.
+     */
+    public function index(): Response|RedirectResponse
+    {
+        if ($this->isStoreTheHomepage()) {
+            return redirect()->route('home', status: 301);
+        }
+
+        return $this->storefront();
+    }
+
+    /**
+     * Builds the storefront page. Split out from index() so HomeController can render it at `/`
+     * without bouncing through the redirect above.
+     */
+    public function storefront(): Response
     {
         $this->authorize('browse', StorePackage::class);
 

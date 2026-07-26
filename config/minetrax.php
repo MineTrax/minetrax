@@ -263,6 +263,32 @@ return [
             'key' => 'route-posts',
             'authenticated' => false,
         ],
+        [
+            'type' => 'route',
+            'name' => 'Store',
+            'title' => 'Store',
+            'route' => 'store.index',
+            'key' => 'route-store',
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'route',
+            'name' => 'My Purchases',
+            'title' => 'My Purchases',
+            'route' => 'store.my-order.index',
+            'key' => 'route-store-my-orders',
+            'authenticated' => true,
+        ],
+        [
+            // Worth having alongside Home: when the store owns `/`, this is the only way back to
+            // the community page.
+            'type' => 'route',
+            'name' => 'Dashboard',
+            'title' => 'Dashboard',
+            'route' => 'home.dashboard',
+            'key' => 'route-dashboard',
+            'authenticated' => false,
+        ],
     ],
 
     /*
@@ -378,7 +404,6 @@ return [
     */
     'disable_player_unlinking' => env('DISABLE_PLAYER_UNLINKING', false),
 
-
     /*
     |--------------------------------------------------------------------------
     | Hide Next Rank of Player.
@@ -388,7 +413,6 @@ return [
     |
     */
     'hide_player_next_rank' => env('HIDE_PLAYER_NEXT_RANK', false),
-
 
     /*
     |--------------------------------------------------------------------------

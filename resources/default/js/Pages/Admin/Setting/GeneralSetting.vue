@@ -6,6 +6,7 @@ import { Button } from "@/Components/ui/button";
 import { useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
 import ImageUpload from "@/Components/Form/ImageUpload.vue";
 import TipTapEditor from "@/Components/TipTapEditor.vue";
 import Icon from "@/Components/Icon.vue";
@@ -18,6 +19,10 @@ const props = defineProps({
     settings: {
         type: Object,
         default: null
+    },
+    homepageOptions: {
+        type: Object,
+        default: () => ({ dashboard: "Community Dashboard" })
     }
 });
 
@@ -38,6 +43,7 @@ const breadcrumbItems = [
 
 const form = useForm({
     site_name: props.settings.site_name,
+    homepage_route: props.settings.homepage_route,
     copyright_name: props.settings.copyright_name,
     copyright_url: props.settings.copyright_url,
     enable_mcserver_onlineplayersbox: props.settings.enable_mcserver_onlineplayersbox,
@@ -169,6 +175,19 @@ function saveSetting() {
                     :error="form.errors.site_name"
                     type="text"
                     name="site_name"
+                  />
+                </div>
+
+                <!-- Homepage -->
+                <div class="col-span-6 sm:col-span-3">
+                  <XSelect
+                    id="homepage_route"
+                    v-model="form.homepage_route"
+                    :label="__('Homepage')"
+                    :select-list="homepageOptions"
+                    :error="form.errors.homepage_route"
+                    :help="__('What visitors see at the root of your site. The community dashboard stays reachable at /dashboard either way.')"
+                    name="homepage_route"
                   />
                 </div>
 

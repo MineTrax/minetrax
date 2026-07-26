@@ -124,6 +124,9 @@ class HandleInertiaRequests extends Middleware
                     'enabled' => true,
                     'name' => $storeSettings->store_name,
                     'baseCurrency' => $storeSettings->base_currency,
+                    // Lets the navbar send its Store link to `/` instead of `/store`, which
+                    // would only redirect there anyway.
+                    'isHomepage' => app(GeneralSettings::class)->homepage_route === 'store',
                 ];
             },
         ]);

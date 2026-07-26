@@ -70,6 +70,9 @@ use Illuminate\Support\Facades\Route;
  */
 Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(function () {
     Route::get('/', [HomeController::class, 'home'])->name('home');
+    // The community homepage keeps its own URL, so news, the shoutbox and the widgets stay
+    // reachable when the store owns `/`.
+    Route::get('dashboard', [HomeController::class, 'dashboard'])->name('home.dashboard');
     Route::get('news', [NewsController::class, 'index'])->name('news.index');
     Route::get('news/{news:slug}', [NewsController::class, 'show'])->name('news.show');
     Route::get('news/{news}/comment', [NewsController::class, 'indexComment'])->name('news.comment.index');

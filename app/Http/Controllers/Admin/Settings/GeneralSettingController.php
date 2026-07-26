@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Settings\GeneralSettings;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 use Storage;
 
 class GeneralSettingController extends Controller
@@ -15,17 +17,24 @@ class GeneralSettingController extends Controller
         $this->middleware(['can:update settings']);
     }
 
-    public function show(GeneralSettings $settings): \Inertia\Response
+    public function show(GeneralSettings $settings): Response
     {
         return Inertia::render('Admin/Setting/GeneralSetting', [
             'settings' => $settings->toArray(),
+            // The Store option is only offered when the module is switched on; pointing `/` at a
+            // disabled module would be a footgun.
+            'homepageOptions' => array_filter([
+                'dashboard' => __('Community Dashboard'),
+                'store' => config('store.enabled') ? __('Store') : null,
+            ]),
         ]);
     }
 
-    public function update(Request $request, GeneralSettings $settings): \Illuminate\Http\RedirectResponse
+    public function update(Request $request, GeneralSettings $settings): RedirectResponse
     {
         $request->validate([
             'site_name' => 'required|string|max:50',
+            'homepage_route' => 'nullable|string|in:dashboard,store',
             'copyright_name' => 'nullable|string|max:50',
             'copyright_url' => 'nullable|url|max:255',
             'enable_mcserver_onlineplayersbox' => 'required|boolean',
@@ -66,6 +75,13 @@ class GeneralSettingController extends Controller
             'enable_topplayersbox' => 'required|boolean',
         ]);
         $settings->site_name = $request->input('site_name');
+        // Optional, and re-checked rather than trusted: an older client may not send the field at
+        // all, and the store could have been switched off between the form rendering and this
+        // submit. Either way `/` must never end up pointing at a disabled module.
+        $requestedHomepage = $request->input('homepage_route', $settings->homepage_route);
+        $settings->homepage_route = $requestedHomepage === 'store' && config('store.enabled')
+            ? 'store'
+            : 'dashboard';
         $settings->copyright_name = $request->input('copyright_name') ?? null;
         $settings->copyright_url = $request->input('copyright_url') ?? null;
         $settings->enable_mcserver_onlineplayersbox = $request->input('enable_mcserver_onlineplayersbox');
