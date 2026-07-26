@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Server;
 use App\Settings\GeneralSettings;
 use App\Settings\PluginSettings;
+use App\Settings\StoreSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Middleware;
@@ -108,6 +109,21 @@ class HandleInertiaRequests extends Middleware
             'pluginSettings' => function (PluginSettings $pluginSettings) {
                 return [
                     'playerPasswordResetEnabled' => $pluginSettings->enable_player_password_reset,
+                ];
+            },
+            'store' => function () {
+                // Resolved inside the closure rather than injected, so a disabled store never
+                // pays for a settings load on every request.
+                if (! config('store.enabled')) {
+                    return ['enabled' => false];
+                }
+
+                $storeSettings = app(StoreSettings::class);
+
+                return [
+                    'enabled' => true,
+                    'name' => $storeSettings->store_name,
+                    'baseCurrency' => $storeSettings->base_currency,
                 ];
             },
         ]);

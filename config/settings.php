@@ -1,5 +1,17 @@
 <?php
 
+use App\Settings\GeneralSettings;
+use App\Settings\NavigationSettings;
+use App\Settings\PlayerSettings;
+use App\Settings\PluginSettings;
+use App\Settings\SeoSettings;
+use App\Settings\StoreSettings;
+use App\Settings\ThemeSettings;
+use Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast;
+use Spatie\LaravelSettings\SettingsCasts\DateTimeZoneCast;
+use Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository;
+use Spatie\LaravelSettings\SettingsRepositories\RedisSettingsRepository;
+
 return [
 
     /*
@@ -7,12 +19,13 @@ return [
      * put them (manually) here.
      */
     'settings' => [
-        \App\Settings\GeneralSettings::class,
-        \App\Settings\PluginSettings::class,
-        \App\Settings\ThemeSettings::class,
-        \App\Settings\PlayerSettings::class,
-        \App\Settings\NavigationSettings::class,
-        \App\Settings\SeoSettings::class,
+        GeneralSettings::class,
+        PluginSettings::class,
+        ThemeSettings::class,
+        PlayerSettings::class,
+        NavigationSettings::class,
+        SeoSettings::class,
+        StoreSettings::class,
     ],
 
     /*
@@ -32,12 +45,12 @@ return [
      */
     'repositories' => [
         'database' => [
-            'type' => Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository::class,
+            'type' => DatabaseSettingsRepository::class,
             'model' => null,
             'connection' => null,
         ],
         'redis' => [
-            'type' => Spatie\LaravelSettings\SettingsRepositories\RedisSettingsRepository::class,
+            'type' => RedisSettingsRepository::class,
             'connection' => null,
             'prefix' => null,
         ],
@@ -59,9 +72,9 @@ return [
      * your settings class isn't a default PHP type.
      */
     'global_casts' => [
-        DateTimeInterface::class => Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast::class,
-        DateTimeZone::class => Spatie\LaravelSettings\SettingsCasts\DateTimeZoneCast::class,
-//        Spatie\DataTransferObject\DataTransferObject::class => Spatie\LaravelSettings\SettingsCasts\DtoCast::class,
+        DateTimeInterface::class => DateTimeInterfaceCast::class,
+        DateTimeZone::class => DateTimeZoneCast::class,
+        //        Spatie\DataTransferObject\DataTransferObject::class => Spatie\LaravelSettings\SettingsCasts\DtoCast::class,
     ],
 
     /*

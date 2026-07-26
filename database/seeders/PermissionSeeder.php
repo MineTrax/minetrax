@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Permission;
-use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
 {
@@ -17,7 +16,7 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         // Reset cached roles and permissions
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         Permission::findOrCreate('create servers');
         Permission::findOrCreate('read servers');
@@ -139,5 +138,50 @@ class PermissionSeeder extends Seeder
 
         Permission::findOrCreate('reset any_player_password');     // Ability to change any player password
         Permission::findOrCreate('cannot player_password_reset');  // User with this permission can't change his own password from web. Good for staff members.
+
+        Permission::findOrCreate('create store_categories');
+        Permission::findOrCreate('read store_categories');
+        Permission::findOrCreate('update store_categories');
+        Permission::findOrCreate('delete store_categories');
+
+        Permission::findOrCreate('create store_packages');
+        Permission::findOrCreate('read store_packages');
+        Permission::findOrCreate('update store_packages');
+        Permission::findOrCreate('delete store_packages');
+
+        Permission::findOrCreate('create store_currencies');
+        Permission::findOrCreate('read store_currencies');
+        Permission::findOrCreate('update store_currencies');
+        Permission::findOrCreate('delete store_currencies');
+
+        Permission::findOrCreate('read store_orders');
+        Permission::findOrCreate('update store_orders');       // mark paid, cancel, edit notes
+        Permission::findOrCreate('delete store_orders');
+        Permission::findOrCreate('refund store_orders');       // issue a refund at the gateway
+        Permission::findOrCreate('resend store_orders');       // re-run delivery commands
+
+        Permission::findOrCreate('read store_payments');
+
+        Permission::findOrCreate('create store_coupons');
+        Permission::findOrCreate('read store_coupons');
+        Permission::findOrCreate('update store_coupons');
+        Permission::findOrCreate('delete store_coupons');
+
+        Permission::findOrCreate('create store_sales');
+        Permission::findOrCreate('read store_sales');
+        Permission::findOrCreate('update store_sales');
+        Permission::findOrCreate('delete store_sales');
+
+        Permission::findOrCreate('create store_gift_cards');
+        Permission::findOrCreate('read store_gift_cards');
+        Permission::findOrCreate('update store_gift_cards');
+        Permission::findOrCreate('delete store_gift_cards');
+
+        Permission::findOrCreate('create store_bans');
+        Permission::findOrCreate('read store_bans');
+        Permission::findOrCreate('update store_bans');
+        Permission::findOrCreate('delete store_bans');
+
+        Permission::findOrCreate('view store_statistics');
     }
 }
