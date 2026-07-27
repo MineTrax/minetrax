@@ -39,10 +39,9 @@ return new class extends Migration
             $table->boolean('is_enabled')->default(true);
             $table->boolean('requires_login')->default(false);
 
-            // Delivery behaviour. Whether a player must be online, and whether a command repeats
-            // per unit bought, are decided per command rather than here: a package-wide default
-            // meant you could not tell what a command would do without looking somewhere else.
-            $table->boolean('is_run_on_all_servers')->default(false);
+            // Delivery is decided entirely per command — which servers, whether the player must be
+            // online, whether it repeats per unit. A package-wide default meant you could not tell
+            // what a command would do without looking somewhere else.
 
             // Purchase constraints
             $table->unsignedSmallInteger('min_quantity')->default(1);
@@ -60,15 +59,6 @@ return new class extends Migration
             $table->softDeletes(); // order items snapshot everything, so deleted packages stay safe
 
             $table->index(['is_enabled', 'is_visible']);
-        });
-
-        Schema::create('store_package_server', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('store_package_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('server_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-
-            $table->unique(['store_package_id', 'server_id']);
         });
 
         Schema::create('store_package_options', function (Blueprint $table) {
@@ -102,13 +92,26 @@ return new class extends Migration
             $table->string('trigger'); // purchase, expiry, refund, chargeback
             $table->text('command');   // raw, with {PLACEHOLDER}s
             $table->boolean('is_player_online_required')->default(false);
-            $table->unsignedInteger('delay_seconds')->default(0);  // becomes command_queues.execute_at
-            $table->string('target')->default('package_servers');  // package_servers, all_servers
+            $table->unsignedInteger('delay_seconds')->default(0); // becomes command_queues.execute_at
             $table->boolean('is_repeat_per_quantity')->default(false); // else {QUANTITY} is substituted
+
+            // Mirrors the account-link command convention: picking no servers means all of them,
+            // and this flag records that choice so a server added later is included automatically.
+            $table->boolean('is_run_on_all_servers')->default(true);
+
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
             $table->index(['store_package_id', 'trigger']);
+        });
+
+        Schema::create('store_package_command_server', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('store_package_command_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('server_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
+
+            $table->unique(['store_package_command_id', 'server_id'], 'store_package_command_server_unique');
         });
     }
 
@@ -117,10 +120,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('store_package_command_server');
         Schema::dropIfExists('store_package_commands');
         Schema::dropIfExists('store_package_option_choices');
         Schema::dropIfExists('store_package_options');
-        Schema::dropIfExists('store_package_server');
         Schema::dropIfExists('store_packages');
         Schema::dropIfExists('store_categories');
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\StoreCommandTarget;
 use App\Enums\StorePackageCommandTrigger;
 use App\Enums\StorePackageOptionType;
 use App\Models\StorePackage;
@@ -52,8 +51,6 @@ class CreateStorePackageRequest extends FormRequest
             'is_enabled' => 'required|boolean',
             'requires_login' => 'required|boolean',
 
-            'is_run_on_all_servers' => 'required|boolean',
-
             'min_quantity' => 'required|integer|min:1|max:9999',
             'max_quantity' => 'nullable|integer|min:1|max:9999|gte:min_quantity',
             'stock_limit' => 'nullable|integer|min:1',
@@ -62,9 +59,6 @@ class CreateStorePackageRequest extends FormRequest
             'expiry_duration_days' => 'nullable|integer|min:1',
 
             'photo' => 'nullable|image|max:5120',
-
-            'servers' => 'nullable|array',
-            'servers.*' => 'integer|exists:servers,id',
 
             // Optional per-currency price overrides, in that currency's minor units. Absent
             // currencies fall back to the converted-and-rounded base price.
@@ -78,7 +72,9 @@ class CreateStorePackageRequest extends FormRequest
             'commands.*.command' => 'required|string|max:2000',
             'commands.*.is_player_online_required' => 'required|boolean',
             'commands.*.delay_seconds' => 'nullable|integer|min:0|max:2592000',
-            'commands.*.target' => ['required', Rule::enum(StoreCommandTarget::class)],
+            // Empty means every server, which is what is_run_on_all_servers records.
+            'commands.*.servers' => 'nullable|array',
+            'commands.*.servers.*.id' => 'required|integer|exists:servers,id',
             'commands.*.is_repeat_per_quantity' => 'required|boolean',
             'commands.*.sort_order' => 'nullable|integer|min:0',
 

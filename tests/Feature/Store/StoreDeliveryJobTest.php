@@ -3,7 +3,6 @@
 namespace Tests\Feature\Store;
 
 use App\Enums\CommandQueueStatus;
-use App\Enums\StoreCommandTarget;
 use App\Enums\StoreDeliveryStatus;
 use App\Enums\StoreOrderStatus;
 use App\Enums\StorePackageCommandTrigger;
@@ -42,7 +41,6 @@ class StoreDeliveryJobTest extends TestCase
     {
         $server = Server::factory()->create();
         $package = StorePackage::factory()->create(array_merge(['price' => 1000], $packageAttributes));
-        $package->servers()->attach($server);
 
         $order = StoreOrder::factory()->paid()->create([
             'player_username' => 'Steve',
@@ -61,14 +59,26 @@ class StoreDeliveryJobTest extends TestCase
         return [$order->fresh(), $package, $server];
     }
 
-    private function purchaseCommand(StorePackage $package, array $attributes = []): StorePackageCommand
+    /**
+     * A purchase command pinned to specific servers. Passing none leaves it on "all servers",
+     * which is the default an admin gets by leaving the picker empty.
+     *
+     * @param  array<int, Server>|null  $servers
+     */
+    private function purchaseCommand(StorePackage $package, array $attributes = [], ?array $servers = null): StorePackageCommand
     {
-        return StorePackageCommand::factory()->create(array_merge([
+        $command = StorePackageCommand::factory()->create(array_merge([
             'store_package_id' => $package->id,
             'trigger' => StorePackageCommandTrigger::PURCHASE,
             'command' => 'lp user {PLAYER_USERNAME} parent add vip',
-            'target' => StoreCommandTarget::PACKAGE_SERVERS,
+            'is_run_on_all_servers' => $servers === null,
         ], $attributes));
+
+        if ($servers !== null) {
+            $command->servers()->sync(collect($servers)->pluck('id')->all());
+        }
+
+        return $command->fresh('servers');
     }
 
     private function runJob(StoreOrder $order): void
@@ -210,21 +220,56 @@ class StoreDeliveryJobTest extends TestCase
         Queue::assertNotPushed(RunCommandQueueJob::class);
     }
 
-    public function test_a_command_runs_on_every_server_when_targeted_at_all()
+    public function test_a_command_with_no_servers_picked_runs_on_every_server()
     {
+        // Leaving the picker empty means all servers, so one added later is included too.
         [$order, $package] = $this->paidOrder();
         Server::factory()->count(2)->create();
-        $this->purchaseCommand($package, ['target' => StoreCommandTarget::ALL_SERVERS]);
+        $this->purchaseCommand($package);
 
         $this->runJob($order);
 
         $this->assertEquals(3, CommandQueue::where('tag', 'store')->count());
     }
 
+    public function test_a_command_runs_only_on_the_servers_it_names()
+    {
+        [$order, $package, $server] = $this->paidOrder();
+        $other = Server::factory()->create();
+        $this->purchaseCommand($package, [], [$server]);
+
+        $this->runJob($order);
+
+        $queues = CommandQueue::where('tag', 'store')->get();
+        $this->assertCount(1, $queues);
+        $this->assertEquals($server->id, $queues->first()->server_id);
+        $this->assertNotEquals($other->id, $queues->first()->server_id);
+    }
+
+    /**
+     * Two commands on one package can target different servers — the whole point of moving the
+     * picker off the package.
+     */
+    public function test_two_commands_on_one_package_can_target_different_servers()
+    {
+        [$order, $package, $server] = $this->paidOrder();
+        $other = Server::factory()->create();
+
+        $this->purchaseCommand($package, ['command' => 'first'], [$server]);
+        $this->purchaseCommand($package, ['command' => 'second'], [$other]);
+
+        $this->runJob($order);
+
+        $byCommand = CommandQueue::where('tag', 'store')->get()->keyBy('parsed_command');
+
+        $this->assertEquals($server->id, $byCommand['first']->server_id);
+        $this->assertEquals($other->id, $byCommand['second']->server_id);
+    }
+
     public function test_servers_without_a_webquery_port_are_excluded()
     {
         [$order, $package] = $this->paidOrder();
-        $package->servers()->attach(Server::factory()->create(['webquery_port' => null]));
+        Server::factory()->create(['webquery_port' => null]);
         $this->purchaseCommand($package);
 
         $this->runJob($order);
@@ -337,7 +382,7 @@ class StoreDeliveryJobTest extends TestCase
     public function test_delivery_is_marked_failed_when_no_server_can_receive_it()
     {
         $package = StorePackage::factory()->create();
-        $package->servers()->attach(Server::factory()->create(['webquery_port' => null]));
+        Server::factory()->create(['webquery_port' => null]);
         $order = StoreOrder::factory()->paid()->create();
         $order->items()->create([
             'store_package_id' => $package->id, 'package_name' => $package->name, 'quantity' => 1,

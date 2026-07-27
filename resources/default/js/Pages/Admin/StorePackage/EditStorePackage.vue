@@ -20,7 +20,6 @@ const props = defineProps({
     storePackage: Object,
     categories: Array,
     servers: Array,
-    selectedServers: Array,
     baseCurrency: Object,
 });
 
@@ -49,11 +48,6 @@ const triggerOptions = {
     expiry: __("Expiry"),
     refund: __("Refund"),
     chargeback: __("Chargeback"),
-};
-
-const targetOptions = {
-    package_servers: __("Package Servers"),
-    all_servers: __("All Servers"),
 };
 
 const serverLabel = (server) => `${server.name} (${server.hostname})`;
@@ -90,7 +84,6 @@ const form = useForm({
     is_visible: props.storePackage.is_visible,
     is_enabled: props.storePackage.is_enabled,
     requires_login: props.storePackage.requires_login,
-    is_run_on_all_servers: props.storePackage.is_run_on_all_servers,
     min_quantity: props.storePackage.min_quantity,
     max_quantity: props.storePackage.max_quantity,
     stock_limit: props.storePackage.stock_limit,
@@ -98,12 +91,11 @@ const form = useForm({
     purchase_limit_period_days: props.storePackage.purchase_limit_period_days,
     expiry_duration_days: props.storePackage.expiry_duration_days,
     photo: null,
-    servers: (props.servers || []).filter(server => (props.selectedServers || []).includes(server.id)),
     commands: (props.storePackage.commands || []).map(cmd => ({
         id: cmd.id,
         trigger: cmd.trigger,
         command: cmd.command,
-        target: cmd.target,
+        servers: cmd.servers || [],
         delay_seconds: cmd.delay_seconds,
         is_player_online_required: !! cmd.is_player_online_required,
         is_repeat_per_quantity: !! cmd.is_repeat_per_quantity,
@@ -133,7 +125,7 @@ function addCommand() {
     form.commands.push({
         trigger: "purchase",
         command: "",
-        target: "package_servers",
+        servers: [],
         delay_seconds: 0,
         is_player_online_required: "null",
         is_repeat_per_quantity: "null",
@@ -203,7 +195,10 @@ function updatePackage() {
             })),
         })),
         // Multiselect hands back whole server objects; the API takes ids.
-        servers: form.servers.map(server => server.id),
+        commands: form.commands.map(cmd => ({
+            ...cmd,
+            servers: (cmd.servers ?? []).map(server => ({ id: server.id })),
+        })),
     };
 
     form.transform(() => payload).post(route("admin.store.package.update", props.storePackage.id), {});
@@ -454,56 +449,6 @@ function updatePackage() {
             </div>
           </div>
 
-          <!-- Delivery Section -->
-          <div class="shadow rounded-lg card-clip-safe mb-6">
-            <div class="px-4 py-5 bg-card sm:p-6 border-b border-border">
-              <h3 class="text-lg font-medium text-foreground mb-4">
-                {{ __("Delivery") }}
-              </h3>
-              <div class="grid grid-cols-6 gap-6">
-                <div class="col-span-6 sm:col-span-3">
-                  <XSwitch
-                    id="is_run_on_all_servers"
-                    v-model="form.is_run_on_all_servers"
-                    :label="__('Run on All Servers')"
-                    :help="__('When enabled, commands run on all servers')"
-                    name="is_run_on_all_servers"
-                    :error="form.errors.is_run_on_all_servers"
-                  />
-                </div>
-
-                <div
-                  v-if="!form.is_run_on_all_servers"
-                  class="col-span-6"
-                >
-                  <label
-                    for="servers"
-                    class="block text-sm font-medium text-foreground mb-2"
-                  >{{ __("Select Servers") }}</label>
-                  <Multiselect
-                    id="servers"
-                    v-model="form.servers"
-                    class="block w-full border-input rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
-                    :options="servers"
-                    :custom-label="serverLabel"
-                    track-by="id"
-                    :multiple="true"
-                    :close-on-select="false"
-                    :clear-on-select="false"
-                    :searchable="true"
-                    :placeholder="__('Pick the servers these commands run on')+'...'"
-                  />
-                  <p
-                    v-if="form.errors.servers"
-                    class="text-xs text-destructive mt-2"
-                  >
-                    {{ form.errors.servers }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- Commands Section -->
           <div class="shadow overflow-hidden rounded-lg mb-6">
             <div class="px-4 py-5 bg-card sm:p-6 border-b border-border">
@@ -531,83 +476,93 @@ function updatePackage() {
                   handle=".drag-handle"
                 >
                   <template #item="{ element: command, index }">
-                    <div class="grid grid-cols-12 gap-3 p-3 bg-muted/50 rounded-lg">
-                      <div class="col-span-12 lg:col-span-1 flex gap-2 lg:mt-0 lg:flex-col">
-                        <div class="drag-handle cursor-move">
-                          <ArrowsUpDownIcon class="w-5 h-5 text-muted-foreground hover:text-foreground" />
+                    <div class="p-4 bg-muted/50 rounded-lg space-y-4">
+                      <div class="grid grid-cols-12 gap-3">
+                        <div class="col-span-12 lg:col-span-1 flex gap-2 lg:mt-6 lg:flex-col">
+                          <div class="drag-handle cursor-move">
+                            <ArrowsUpDownIcon class="w-5 h-5 text-muted-foreground hover:text-foreground" />
+                          </div>
+                          <button
+                            type="button"
+                            class="focus:outline-hidden group cursor-pointer"
+                            @click="removeCommand(index)"
+                          >
+                            <TrashIcon class="w-5 h-5 text-muted-foreground group-hover:text-destructive" />
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          class="focus:outline-hidden group cursor-pointer"
-                          @click="removeCommand(index)"
-                        >
-                          <TrashIcon class="w-5 h-5 text-muted-foreground group-hover:text-destructive" />
-                        </button>
-                      </div>
 
-                      <div class="col-span-6 lg:col-span-2">
-                        <XSelect
-                          v-model="command.trigger"
-                          :label="__('Trigger')"
-                          :select-list="triggerOptions"
-                          :error="form.errors[`commands.${index}.trigger`]"
-                          :disable-null="true"
-                        />
-                      </div>
-
-                      <div class="col-span-6 lg:col-span-4">
-                        <XInput
-                          v-model="command.command"
-                          :label="__('Command')"
-                          :error="form.errors[`commands.${index}.command`]"
-                          type="text"
-                          name="command"
-                        />
-                      </div>
-
-                      <div class="col-span-6 lg:col-span-2">
-                        <XSelect
-                          v-model="command.target"
-                          :label="__('Target')"
-                          :select-list="targetOptions"
-                          :error="form.errors[`commands.${index}.target`]"
-                          :disable-null="true"
-                        />
-                      </div>
-
-                      <div class="col-span-6 lg:col-span-1">
-                        <XInput
-                          v-model.number="command.delay_seconds"
-                          :label="__('Delay')"
-                          :error="form.errors[`commands.${index}.delay_seconds`]"
-                          type="number"
-                          name="delay_seconds"
-                          min="0"
-                        />
-                      </div>
-
-                      <div class="col-span-6 lg:col-span-2">
-                        <div class="pt-6">
-                          <XSwitch
-                            :id="`command_online_${index}`"
-                            v-model="command.is_player_online_required"
-                            :label="__('Player Online')"
-                            :error="form.errors[`commands.${index}.is_player_online_required`]"
-                            :name="`command_online_${index}`"
+                        <div class="col-span-12 sm:col-span-4 lg:col-span-2">
+                          <XSelect
+                            v-model="command.trigger"
+                            :label="__('Trigger')"
+                            :select-list="triggerOptions"
+                            :error="form.errors[`commands.${index}.trigger`]"
+                            :disable-null="true"
                           />
                         </div>
-                      </div>
 
-                      <div class="col-span-6 lg:col-span-2">
-                        <div class="pt-6">
-                          <XSwitch
-                            :id="`command_repeat_${index}`"
-                            v-model="command.is_repeat_per_quantity"
-                            :label="__('Repeat Per Qty')"
-                            :error="form.errors[`commands.${index}.is_repeat_per_quantity`]"
-                            :name="`command_repeat_${index}`"
+                        <div class="col-span-12 sm:col-span-6 lg:col-span-4">
+                          <XInput
+                            v-model="command.command"
+                            :label="__('Command')"
+                            :error="form.errors[`commands.${index}.command`]"
+                            type="text"
+                            name="command"
                           />
                         </div>
+
+                        <div class="col-span-12 sm:col-span-2 lg:col-span-1">
+                          <XInput
+                            v-model.number="command.delay_seconds"
+                            :label="__('Delay (s)')"
+                            :error="form.errors[`commands.${index}.delay_seconds`]"
+                            type="number"
+                            name="delay_seconds"
+                            min="0"
+                          />
+                        </div>
+
+                        <div class="col-span-12 lg:col-span-4">
+                          <label class="block text-sm font-medium text-foreground mb-2">{{ __("Run on servers") }}</label>
+                          <Multiselect
+                            v-model="command.servers"
+                            class="block w-full border-input rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                            :options="servers"
+                            :custom-label="serverLabel"
+                            track-by="id"
+                            :multiple="true"
+                            :close-on-select="false"
+                            :clear-on-select="false"
+                            :searchable="true"
+                            :placeholder="__('Leave empty to run on all servers')+'...'"
+                          />
+                          <p
+                            v-if="form.errors[`commands.${index}.servers`]"
+                            class="text-xs text-destructive mt-1"
+                          >
+                            {{ form.errors[`commands.${index}.servers`] }}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 border-t border-border pt-4">
+                        <XSwitch
+                          :id="`command_online_${index}`"
+                          v-model="command.is_player_online_required"
+                          :label="__('Require player to be online')"
+                          :help="__('This command only runs while the player is online on the target server. If they are offline it is queued and runs the moment they join.')"
+                          :error="form.errors[`commands.${index}.is_player_online_required`]"
+                          :name="`command_online_${index}`"
+                        />
+
+                        <XSwitch
+                          :id="`command_repeat_${index}`"
+                          v-model="command.is_repeat_per_quantity"
+                          :label="__('Repeat once per quantity')"
+                          :help="__('Buying 3 runs this command 3 times. Leave off to run it once with {QUANTITY} substituted instead — right for a rank, wrong for crate keys.')"
+                          :error="form.errors[`commands.${index}.is_repeat_per_quantity`]"
+                          :name="`command_repeat_${index}`"
+                        />
                       </div>
                     </div>
                   </template>

@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Enums\StoreCommandTarget;
 use App\Enums\StorePackageCommandTrigger;
 use App\Models\StorePackage;
 use App\Models\StorePackageCommand;
@@ -33,7 +32,7 @@ class StorePackageCommandFactory extends Factory
             'command' => 'give {PLAYER_USERNAME} diamond 1',
             'is_player_online_required' => false,
             'delay_seconds' => 0,
-            'target' => StoreCommandTarget::PACKAGE_SERVERS,
+            'is_run_on_all_servers' => true,
             'is_repeat_per_quantity' => false,
             'sort_order' => 0,
         ];
@@ -75,7 +74,7 @@ class StorePackageCommandFactory extends Factory
     public function allServers(): static
     {
         return $this->state(fn (array $attributes) => [
-            'target' => StoreCommandTarget::ALL_SERVERS,
+            'is_run_on_all_servers' => true,
         ]);
     }
 }

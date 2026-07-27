@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Store;
 
-use App\Enums\StoreCommandTarget;
 use App\Enums\StorePackageCommandTrigger;
 use App\Enums\StorePackageOptionType;
 use App\Models\Server;
@@ -55,7 +54,7 @@ class StorePackageAdminTest extends TestCase
             'command' => 'lp user {PLAYER_USERNAME} parent add vip',
             'is_player_online_required' => false,
             'delay_seconds' => 0,
-            'target' => StoreCommandTarget::PACKAGE_SERVERS->value,
+            'servers' => [],
             'is_repeat_per_quantity' => false,
             'sort_order' => 0,
         ], $overrides);
@@ -154,16 +153,64 @@ class StorePackageAdminTest extends TestCase
         ]))->assertSessionHasErrors(['max_quantity']);
     }
 
-    public function test_admin_can_attach_servers_to_a_package()
+    public function test_admin_can_pin_a_command_to_specific_servers()
     {
         $this->actingAs(User::whereId(1)->first());
         $servers = Server::factory()->count(2)->create();
 
         $this->post(route('admin.store.package.store'), $this->validPayload([
-            'servers' => $servers->pluck('id')->all(),
+            'commands' => [$this->commandPayload([
+                'servers' => $servers->map(fn ($server) => ['id' => $server->id])->all(),
+            ])],
+        ]))->assertSessionHasNoErrors();
+
+        $command = StorePackage::first()->commands->first();
+
+        $this->assertCount(2, $command->servers);
+        $this->assertFalse($command->is_run_on_all_servers, 'Naming servers is the opposite of running everywhere.');
+    }
+
+    /**
+     * The account-link convention: an empty picker means every server, so one added to the network
+     * later is included without anyone re-editing the package.
+     */
+    public function test_a_command_with_no_servers_is_recorded_as_running_everywhere()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        Server::factory()->count(2)->create();
+
+        $this->post(route('admin.store.package.store'), $this->validPayload([
+            'commands' => [$this->commandPayload(['servers' => []])],
+        ]))->assertSessionHasNoErrors();
+
+        $command = StorePackage::first()->commands->first();
+
+        $this->assertCount(0, $command->servers);
+        $this->assertTrue($command->is_run_on_all_servers);
+    }
+
+    public function test_editing_a_command_replaces_its_server_list()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $servers = Server::factory()->count(3)->create();
+
+        $this->post(route('admin.store.package.store'), $this->validPayload([
+            'commands' => [$this->commandPayload([
+                'servers' => [['id' => $servers[0]->id], ['id' => $servers[1]->id]],
+            ])],
         ]));
 
-        $this->assertCount(2, StorePackage::first()->servers);
+        $package = StorePackage::first();
+        $command = $package->commands->first();
+
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
+            'commands' => [$this->commandPayload([
+                'id' => $command->id,
+                'servers' => [['id' => $servers[2]->id]],
+            ])],
+        ]))->assertSessionHasNoErrors();
+
+        $this->assertEquals([$servers[2]->id], $command->fresh()->servers->pluck('id')->all());
     }
 
     public function test_admin_can_create_a_package_with_commands()

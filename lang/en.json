@@ -2124,5 +2124,8 @@
     "No currencies exist yet, so there is nothing to choose here.": "No currencies exist yet, so there is nothing to choose here.",
     "Payment Gateways Updated": "Payment Gateways Updated",
     "The base currency is locked because orders already exist. Their revenue was recorded against :code.": "The base currency is locked because orders already exist. Their revenue was recorded against :code.",
-    "Pick the servers these commands run on": "Pick the servers these commands run on"
+    "Pick the servers these commands run on": "Pick the servers these commands run on",
+    "Buying 3 runs this command 3 times. Leave off to run it once with {QUANTITY} substituted instead — right for a rank, wrong for crate keys.": "Buying 3 runs this command 3 times. Leave off to run it once with {QUANTITY} substituted instead — right for a rank, wrong for crate keys.",
+    "Repeat once per quantity": "Repeat once per quantity",
+    "This command only runs while the player is online on the target server. If they are offline it is queued and runs the moment they join.": "This command only runs while the player is online on the target server. If they are offline it is queued and runs the moment they join."
 }

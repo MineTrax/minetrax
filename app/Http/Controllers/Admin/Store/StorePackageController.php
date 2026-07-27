@@ -10,6 +10,7 @@ use App\Models\StoreCategory;
 use App\Models\StorePackage;
 use App\Queries\Filters\FilterMultipleFields;
 use App\Services\StoreCurrencyService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -86,7 +87,6 @@ class StorePackageController extends Controller
                 'created_by' => $request->user()->id,
             ]);
 
-            $package->servers()->sync($request->input('servers', []));
             $this->syncCommands($package, $request->input('commands', []));
             $this->syncOptions($package, $request->input('options', []));
             $this->syncPrices($package, $request->input('prices', []));
@@ -106,13 +106,12 @@ class StorePackageController extends Controller
     {
         $this->authorize('update', $storePackage);
 
-        $storePackage->load(['commands', 'options.choices', 'servers:id']);
+        $storePackage->load(['commands.servers:id,name,hostname', 'options.choices']);
 
         return Inertia::render('Admin/StorePackage/EditStorePackage', array_merge($this->formData(), [
             // Named storePackage, not package: `package` is a reserved word in the strict-mode
             // JavaScript that Vue templates compile to, so a bare {{ package.id }} fails to parse.
             'storePackage' => $storePackage,
-            'selectedServers' => $storePackage->servers->pluck('id'),
         ]));
     }
 
@@ -124,7 +123,6 @@ class StorePackageController extends Controller
                 'updated_by' => $request->user()->id,
             ]);
 
-            $storePackage->servers()->sync($request->input('servers', []));
             $this->syncCommands($storePackage, $request->input('commands', []));
             $this->syncOptions($storePackage, $request->input('options', []));
             $this->syncPrices($storePackage, $request->input('prices', []));
@@ -189,7 +187,6 @@ class StorePackageController extends Controller
             'is_visible' => $request->is_visible,
             'is_enabled' => $request->is_enabled,
             'requires_login' => $request->requires_login,
-            'is_run_on_all_servers' => $request->is_run_on_all_servers,
             'min_quantity' => $request->min_quantity,
             'max_quantity' => $request->max_quantity,
             'stock_limit' => $request->stock_limit,
@@ -238,22 +235,29 @@ class StorePackageController extends Controller
                 'command' => $command['command'],
                 'is_player_online_required' => (bool) ($command['is_player_online_required'] ?? false),
                 'delay_seconds' => $command['delay_seconds'] ?? 0,
-                'target' => $command['target'],
                 'is_repeat_per_quantity' => (bool) ($command['is_repeat_per_quantity'] ?? false),
                 'sort_order' => $command['sort_order'] ?? $index,
+                // No servers picked means all of them, the same convention the account-link
+                // commands use. Recording it means a server added later is included too.
+                'is_run_on_all_servers' => count($command['servers'] ?? []) === 0,
             ];
+
+            $serverIds = Arr::pluck($command['servers'] ?? [], 'id');
 
             if (! empty($command['id'])) {
                 $existing = $package->commands()->whereKey($command['id'])->first();
                 if ($existing) {
                     $existing->update($attributes);
+                    $existing->servers()->sync($serverIds);
                     $keptIds[] = $existing->id;
 
                     continue;
                 }
             }
 
-            $keptIds[] = $package->commands()->create($attributes)->id;
+            $created = $package->commands()->create($attributes);
+            $created->servers()->sync($serverIds);
+            $keptIds[] = $created->id;
         }
 
         $package->commands()->whereKeyNot($keptIds)->delete();

@@ -37,7 +37,6 @@ class StorePackageFactory extends Factory
             'is_visible' => true,
             'is_enabled' => true,
             'requires_login' => false,
-            'is_run_on_all_servers' => false,
             'min_quantity' => 1,
             'max_quantity' => null,
             'sold_count' => 0,

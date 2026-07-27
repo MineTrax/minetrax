@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enums\CommandQueueStatus;
-use App\Enums\StoreCommandTarget;
 use App\Enums\StoreDeliveryStatus;
 use App\Enums\StorePackageCommandTrigger;
 use App\Jobs\RunCommandQueueJob;
@@ -33,7 +32,7 @@ class StoreCommandDispatchService
      */
     public function dispatchForOrder(StoreOrder $order, StorePackageCommandTrigger $trigger): StoreDeliveryStatus
     {
-        $order->loadMissing('items.package.commands');
+        $order->loadMissing('items.package.commands.servers');
 
         $created = 0;
         $skipped = 0;
@@ -74,7 +73,7 @@ class StoreCommandDispatchService
         $skipped = 0;
 
         foreach ($commands as $command) {
-            $servers = $this->targetServers($package, $command);
+            $servers = $this->targetServers($command);
 
             if ($servers->isEmpty()) {
                 // Every candidate server lacks a webquery port, so it could never receive this.
@@ -233,19 +232,20 @@ class StoreCommandDispatchService
     }
 
     /**
-     * Servers this command should run on, filtered to those that can actually receive one.
+     * Servers this command runs on, filtered to those that can actually receive one.
+     *
+     * Each command owns its own list. An empty list means every server, so a server added to the
+     * network later starts receiving the command without anyone editing the package.
      *
      * @return Collection<int, Server>
      */
-    private function targetServers($package, StorePackageCommand $command): Collection
+    private function targetServers(StorePackageCommand $command): Collection
     {
-        $runOnAll = $command->target === StoreCommandTarget::ALL_SERVERS || $package->is_run_on_all_servers;
-
-        if ($runOnAll) {
+        if ($command->is_run_on_all_servers || $command->servers->isEmpty()) {
             return Server::whereNotNull('webquery_port')->get();
         }
 
-        return $package->servers()->whereNotNull('webquery_port')->get();
+        return $command->servers->filter(fn (Server $server) => $server->webquery_port !== null)->values();
     }
 
     /**
