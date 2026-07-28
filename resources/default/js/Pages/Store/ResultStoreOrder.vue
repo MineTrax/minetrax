@@ -165,6 +165,14 @@ onUnmounted(stopPolling);
             <span>
               <span class="block font-medium">{{ item.package_name }}</span>
               <span class="block text-xs text-muted-foreground">&times;{{ item.quantity }}</span>
+              <span
+                v-if="item.gift_card"
+                class="block mt-2 text-xs text-muted-foreground"
+              >
+                {{ __("Gift card code") }}:
+                <code class="px-1 py-0.5 rounded bg-muted text-foreground font-mono select-all">{{ item.gift_card.code }}</code>
+                <span class="ml-1">({{ item.gift_card.balance_formatted }})</span>
+              </span>
             </span>
             <span class="whitespace-nowrap">{{ item.total_formatted }}</span>
           </li>

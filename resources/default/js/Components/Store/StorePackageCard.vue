@@ -1,14 +1,21 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
+import { computed } from "vue";
 
 const { __ } = useTranslations();
 
-defineProps({
+const props = defineProps({
     storePackage: {
         type: Object,
         required: true,
     },
+});
+
+// Basis points back to a percentage for display: 1250 reads as 12.5%.
+const discountPercent = computed(() => {
+    const bp = props.storePackage.discount_bp ?? 0;
+    return bp > 0 ? Math.round(bp / 10) / 10 : null;
 });
 </script>
 
@@ -64,6 +71,22 @@ defineProps({
 
         <!-- Badges -->
         <div class="flex flex-wrap gap-2">
+          <!-- Featured Badge -->
+          <span
+            v-if="storePackage.is_featured"
+            class="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded"
+          >
+            {{ __("Featured") }}
+          </span>
+
+          <!-- Discount Badge -->
+          <span
+            v-if="discountPercent"
+            class="inline-block px-2 py-1 text-xs font-medium bg-success/10 text-success rounded"
+          >
+            {{ __("{percent}% off", { percent: discountPercent }) }}
+          </span>
+
           <!-- Out of Stock Badge -->
           <span
             v-if="storePackage.is_out_of_stock"
@@ -82,9 +105,21 @@ defineProps({
         </div>
 
         <!-- Price -->
-        <div class="mt-auto pt-3 border-t border-border">
+        <div class="mt-auto pt-3 border-t border-border flex items-baseline gap-2">
+          <span
+            v-if="storePackage.is_pay_what_you_want"
+            class="text-xs text-muted-foreground"
+          >
+            {{ __("from") }}
+          </span>
           <span class="font-bold text-lg text-foreground">
             {{ storePackage.price_formatted }}
+          </span>
+          <span
+            v-if="discountPercent"
+            class="text-sm text-muted-foreground line-through"
+          >
+            {{ storePackage.price_original_formatted }}
           </span>
         </div>
       </div>

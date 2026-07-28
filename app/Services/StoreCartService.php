@@ -48,17 +48,33 @@ class StoreCartService
 
     /**
      * Add a line, bumping the quantity when the package is already in the cart.
+     *
+     * $customPrice is the buyer's chosen amount for a pay-what-you-want package, in the minor
+     * units of $customPriceCurrency. Re-adding such a package replaces the amount rather than
+     * summing it, because two different chosen amounts have no meaningful sum.
      */
-    public function add(StoreCart $cart, StorePackage $package, int $quantity): StoreCartItem
-    {
+    public function add(
+        StoreCart $cart,
+        StorePackage $package,
+        int $quantity,
+        ?int $customPrice = null,
+        ?string $customPriceCurrency = null,
+    ): StoreCartItem {
         $item = $cart->items()
             ->where('store_package_id', $package->id)
             ->first();
 
         $quantity = $this->clampQuantity($package, ($item->quantity ?? 0) + $quantity);
 
+        $attributes = ['quantity' => $quantity];
+
+        if ($package->is_pay_what_you_want) {
+            $attributes['custom_price'] = $customPrice;
+            $attributes['custom_price_currency'] = $customPrice === null ? null : strtoupper((string) $customPriceCurrency);
+        }
+
         if ($item) {
-            $item->update(['quantity' => $quantity]);
+            $item->update($attributes);
 
             return $item;
         }
@@ -67,10 +83,7 @@ class StoreCartService
             abort(422, __('Your cart is full.'));
         }
 
-        return $cart->items()->create([
-            'store_package_id' => $package->id,
-            'quantity' => $quantity,
-        ]);
+        return $cart->items()->create($attributes + ['store_package_id' => $package->id]);
     }
 
     public function updateQuantity(StoreCartItem $item, int $quantity): void
@@ -115,12 +128,18 @@ class StoreCartService
                 if ($existing) {
                     $existing->update([
                         'quantity' => $this->clampQuantity($existing->package, $existing->quantity + $guestItem->quantity),
+                        // The guest's chosen pay-what-you-want amount wins: it is the more recent
+                        // decision, and the two amounts cannot be summed sensibly.
+                        'custom_price' => $guestItem->custom_price ?? $existing->custom_price,
+                        'custom_price_currency' => $guestItem->custom_price_currency ?? $existing->custom_price_currency,
                     ]);
 
                     continue;
                 }
 
-                $userCart->items()->create($guestItem->only(['store_package_id', 'quantity']));
+                $userCart->items()->create($guestItem->only([
+                    'store_package_id', 'quantity', 'custom_price', 'custom_price_currency',
+                ]));
             }
 
             $guestCart->delete();
@@ -138,11 +157,13 @@ class StoreCartService
         $cart->loadMissing('items.package.prices');
 
         $lines = $cart->items
-            ->filter(fn (StoreCartItem $item) => $item->package && $item->package->is_enabled)
+            ->filter(fn (StoreCartItem $item) => $item->package && $item->package->is_available)
             ->map(fn (StoreCartItem $item) => [
                 'cart_item_id' => $item->id,
                 'package' => $item->package,
                 'quantity' => $item->quantity,
+                'custom_price' => $item->custom_price,
+                'custom_price_currency' => $item->custom_price_currency,
             ])
             ->values();
 
@@ -181,6 +202,11 @@ class StoreCartService
 
     private function clampQuantity(StorePackage $package, int $quantity): int
     {
+        // One line, one chosen amount: a quantity would make "pay what you want" ambiguous.
+        if ($package->is_pay_what_you_want) {
+            return 1;
+        }
+
         $quantity = max($package->min_quantity ?? 1, $quantity);
 
         if ($package->max_quantity) {

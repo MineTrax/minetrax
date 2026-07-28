@@ -4,11 +4,15 @@ namespace App\Services;
 
 use App\Enums\StoreDeliveryStatus;
 use App\Enums\StoreOrderStatus;
+use App\Enums\StorePackageGrantStatus;
+use App\Enums\StorePackageRequirementMode;
 use App\Enums\StorePaymentStatus;
 use App\Models\StoreCart;
 use App\Models\StoreCoupon;
 use App\Models\StoreOrder;
+use App\Models\StoreOrderItem;
 use App\Models\StorePackage;
+use App\Models\StorePackageGrant;
 use App\Models\User;
 use App\Settings\StoreSettings;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +42,7 @@ class StoreCheckoutService
      */
     public function placeOrder(StoreCart $cart, array $input, ?User $user, array $resolvedPlayer): StoreOrder
     {
-        $cart->loadMissing('items.package.prices');
+        $cart->loadMissing(['items.package.prices', 'items.package.requiredPackages']);
 
         if ($cart->items->isEmpty()) {
             throw ValidationException::withMessages(['cart' => __('Your cart is empty.')]);
@@ -59,7 +63,7 @@ class StoreCheckoutService
             foreach ($cart->items as $item) {
                 $package = $item->package;
 
-                if (! $package || ! $package->is_enabled) {
+                if (! $package || ! $package->is_available) {
                     throw ValidationException::withMessages([
                         'cart' => __('":name" is no longer available.', ['name' => $item->package->name ?? __('An item')]),
                     ]);
@@ -70,8 +74,13 @@ class StoreCheckoutService
                 $lines[] = [
                     'package' => $package,
                     'quantity' => $item->quantity,
+                    'custom_price' => $item->custom_price,
+                    'custom_price_currency' => $item->custom_price_currency,
                 ];
             }
+
+            $this->assertRequirementsMet($lines, $resolvedPlayer['uuid']);
+            $this->assertDeliveryTargetAllowed($lines, $user, $resolvedPlayer['uuid']);
 
             // Re-quoted here, inside the transaction, from live prices.
             $quote = $this->pricing->quote($lines, $currency, $cart->coupon, $cart->giftCard, $user);
@@ -144,36 +153,157 @@ class StoreCheckoutService
     }
 
     /**
-     * Stock and per-player purchase limits. Counted from paid-state orders only, so an abandoned
-     * order neither holds stock nor burns a buyer's allowance.
+     * The two purchase limits: how much this one player may buy, and how much everyone may buy in
+     * total. Each is a quantity cap over a rolling window, and a null window never resets — which
+     * is how a fixed stock is expressed.
+     *
+     * Counted from paid-state orders only, so an abandoned order neither holds stock nor burns a
+     * buyer's allowance, and a cancellation restocks automatically.
      *
      * @throws ValidationException
      */
     private function assertPurchasable(StorePackage $package, int $quantity, string $playerUuid): void
     {
-        if ($package->stock_limit !== null && ($package->sold_count + $quantity) > $package->stock_limit) {
-            throw ValidationException::withMessages([
-                'cart' => __('":name" is out of stock.', ['name' => $package->name]),
-            ]);
+        if ($package->global_purchase_limit !== null) {
+            $sold = $this->soldQuantity($package, $package->global_purchase_limit_period_days);
+
+            if ($sold + $quantity > $package->global_purchase_limit) {
+                throw ValidationException::withMessages([
+                    'cart' => $package->global_purchase_limit_period_days
+                        ? __('":name" has sold out for now. Please try again later.', ['name' => $package->name])
+                        : __('":name" is out of stock.', ['name' => $package->name]),
+                ]);
+            }
         }
 
-        if ($package->player_purchase_limit === null) {
+        if ($package->player_purchase_limit !== null) {
+            $sold = $this->soldQuantity($package, $package->player_purchase_limit_period_days, $playerUuid);
+
+            if ($sold + $quantity > $package->player_purchase_limit) {
+                throw ValidationException::withMessages([
+                    'cart' => __('You have reached the purchase limit for ":name".', ['name' => $package->name]),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Quantity of a package sold in paid-state orders, optionally within a rolling window and
+     * optionally for one player.
+     *
+     * Quantity rather than order count: a limit of one has to stop a single order for five.
+     */
+    private function soldQuantity(StorePackage $package, ?int $periodDays, ?string $playerUuid = null): int
+    {
+        return (int) StoreOrderItem::query()
+            ->where('store_package_id', $package->id)
+            ->whereHas('order', function ($query) use ($periodDays, $playerUuid) {
+                $query->whereIn('status', $this->paidStatuses());
+
+                if ($playerUuid) {
+                    $query->where('player_uuid', $playerUuid);
+                }
+
+                if ($periodDays) {
+                    $query->where('created_at', '>=', now()->subDays($periodDays));
+                }
+            })
+            ->sum('quantity');
+    }
+
+    /**
+     * Packages that gate other packages.
+     *
+     * A requirement is satisfied by an active grant for this player, or by the required package
+     * being in the same basket — buying a rank and its prerequisite together should work, and both
+     * are delivered by the same fulfilment job.
+     *
+     * @param  array<int, array{package: StorePackage, quantity: int}>  $lines
+     *
+     * @throws ValidationException
+     */
+    private function assertRequirementsMet(array $lines, string $playerUuid): void
+    {
+        $basketPackageIds = array_map(fn (array $line) => $line['package']->id, $lines);
+
+        foreach ($lines as $line) {
+            /** @var StorePackage $package */
+            $package = $line['package'];
+            $required = $package->requiredPackages;
+
+            if ($required->isEmpty()) {
+                continue;
+            }
+
+            $ownedIds = StorePackageGrant::query()
+                ->where('player_uuid', $playerUuid)
+                ->where('status', StorePackageGrantStatus::ACTIVE)
+                ->whereIn('store_package_id', $required->modelKeys())
+                ->pluck('store_package_id')
+                ->all();
+
+            $satisfied = $required->filter(
+                fn (StorePackage $requirement) => in_array($requirement->id, $ownedIds, true)
+                    || in_array($requirement->id, $basketPackageIds, true)
+            );
+
+            $isMet = $package->required_packages_mode === StorePackageRequirementMode::ANY
+                ? $satisfied->isNotEmpty()
+                : $satisfied->count() === $required->count();
+
+            if ($isMet) {
+                continue;
+            }
+
+            $missing = $required->reject(fn (StorePackage $requirement) => $satisfied->contains($requirement));
+
+            throw ValidationException::withMessages([
+                'cart' => $package->required_packages_mode === StorePackageRequirementMode::ANY
+                    ? __('":name" requires one of: :packages.', [
+                        'name' => $package->name,
+                        'packages' => $required->pluck('name')->join(', ', ' or '),
+                    ])
+                    : __('":name" requires you to own :packages first.', [
+                        'name' => $package->name,
+                        'packages' => $missing->pluck('name')->join(', ', ' and '),
+                    ]),
+            ]);
+        }
+    }
+
+    /**
+     * The gifting rule.
+     *
+     * Every checkout names the player to deliver to, so buying for someone else is inherent. What
+     * is_giftable controls is whether that is allowed: a buyer with linked players may only send a
+     * non-giftable package to one of their own. A guest, and a member who has linked no player at
+     * all, has no identity to compare against — there is nothing to enforce against them here.
+     *
+     * @param  array<int, array{package: StorePackage, quantity: int}>  $lines
+     *
+     * @throws ValidationException
+     */
+    private function assertDeliveryTargetAllowed(array $lines, ?User $user, string $playerUuid): void
+    {
+        if (! $user) {
             return;
         }
 
-        $query = StoreOrder::query()
-            ->where('player_uuid', $playerUuid)
-            ->whereIn('status', $this->paidStatuses())
-            ->whereHas('items', fn ($q) => $q->where('store_package_id', $package->id));
+        $ownUuids = $user->players->pluck('uuid');
 
-        if ($package->purchase_limit_period_days) {
-            $query->where('created_at', '>=', now()->subDays($package->purchase_limit_period_days));
+        if ($ownUuids->isEmpty() || $ownUuids->contains($playerUuid)) {
+            return;
         }
 
-        if ($query->count() >= $package->player_purchase_limit) {
-            throw ValidationException::withMessages([
-                'cart' => __('You have reached the purchase limit for ":name".', ['name' => $package->name]),
-            ]);
+        foreach ($lines as $line) {
+            /** @var StorePackage $package */
+            $package = $line['package'];
+
+            if (! $package->is_giftable) {
+                throw ValidationException::withMessages([
+                    'player_username' => __('":name" cannot be sent to another player.', ['name' => $package->name]),
+                ]);
+            }
         }
     }
 

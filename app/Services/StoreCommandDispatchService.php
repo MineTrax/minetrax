@@ -63,6 +63,12 @@ class StoreCommandDispatchService
             return ['created' => 0, 'skipped' => 0];
         }
 
+        if (! $package->type->deliversCommands()) {
+            // A gift-card-only package has nothing to run in game, whatever command set an admin
+            // left on it before switching the type.
+            return ['created' => 0, 'skipped' => 0];
+        }
+
         $commands = $package->commands->where('trigger', $trigger);
 
         if ($commands->isEmpty()) {

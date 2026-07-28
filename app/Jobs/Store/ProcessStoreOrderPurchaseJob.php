@@ -6,6 +6,7 @@ use App\Enums\StorePackageCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Models\StoreOrder;
 use App\Services\StoreCommandDispatchService;
+use App\Services\StoreGiftCardService;
 use App\Services\StoreOrderService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,8 +29,11 @@ class ProcessStoreOrderPurchaseJob implements ShouldQueue
         $this->onQueue('longtask');
     }
 
-    public function handle(StoreCommandDispatchService $dispatcher, StoreOrderService $orders): void
-    {
+    public function handle(
+        StoreCommandDispatchService $dispatcher,
+        StoreOrderService $orders,
+        StoreGiftCardService $giftCards,
+    ): void {
         $order = $this->order->fresh(['items.package.commands']);
 
         if (! $order || ! $order->status->isPaidState()) {
@@ -38,6 +42,7 @@ class ProcessStoreOrderPurchaseJob implements ShouldQueue
         }
 
         $this->issueGrants($order);
+        $this->issueGiftCards($order, $giftCards);
 
         $deliveryStatus = $dispatcher->dispatchForOrder($order, StorePackageCommandTrigger::PURCHASE);
 
@@ -72,6 +77,19 @@ class ProcessStoreOrderPurchaseJob implements ShouldQueue
             // Stock is only consumed once the order is genuinely paid, so an abandoned checkout
             // never holds inventory.
             $item->package?->increment('sold_count', (int) $item->quantity);
+        }
+    }
+
+    /**
+     * Mint store credit for any item whose package sells a gift card.
+     *
+     * Idempotent through store_order_items.store_gift_card_id, so a retry of this job hands the
+     * buyer the same code rather than a second one.
+     */
+    private function issueGiftCards(StoreOrder $order, StoreGiftCardService $giftCards): void
+    {
+        foreach ($order->items as $item) {
+            $giftCards->issueForOrderItem($order, $item);
         }
     }
 }

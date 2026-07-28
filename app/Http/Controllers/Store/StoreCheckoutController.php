@@ -133,7 +133,7 @@ class StoreCheckoutController extends Controller
     {
         $this->authorizeOrderView($request, $order);
 
-        $order->load('items');
+        $order->load('items.giftCard');
 
         // Gateways that capture on return (rather than purely by webhook) get their chance here.
         $payment = $order->payments()->latest('id')->first();
@@ -209,7 +209,14 @@ class StoreCheckoutController extends Controller
                 'package_name' => $item->package_name,
                 'quantity' => $item->quantity,
                 'total_formatted' => $this->currencies->format((int) $item->total, $order->currency),
-                'options' => $item->options,
+                // Present only for a package that sells store credit.
+                'gift_card' => $item->giftCard ? [
+                    'code' => $item->giftCard->code,
+                    'balance_formatted' => $this->currencies->format(
+                        (int) $item->giftCard->balance,
+                        $item->giftCard->currency_code
+                    ),
+                ] : null,
             ]),
         ];
     }

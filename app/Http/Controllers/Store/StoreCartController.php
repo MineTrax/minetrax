@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\Http\Controllers\Controller;
 use App\Models\StoreCartItem;
 use App\Models\StoreCoupon;
+use App\Models\StoreCurrency;
 use App\Models\StoreGiftCard;
 use App\Models\StorePackage;
 use App\Services\StoreCartService;
@@ -12,6 +13,7 @@ use App\Services\StoreCurrencyService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -54,22 +56,30 @@ class StoreCartController extends Controller
         $validated = $request->validate([
             'package_id' => 'required|integer|exists:store_packages,id',
             'quantity' => 'required|integer|min:1|max:9999',
+            // A decimal amount for a pay-what-you-want package, in the currency on screen. The
+            // conversion to minor units happens here, never in the browser.
+            'custom_price' => 'nullable|numeric|min:0',
         ]);
 
-        $package = StorePackage::where('is_enabled', true)->findOrFail($validated['package_id']);
+        $package = StorePackage::available()->findOrFail($validated['package_id']);
 
         if ($package->requires_login && ! $request->user()) {
             return redirect()->route('login')
                 ->with(['toast' => ['type' => 'error', 'title' => __('Sign in required'), 'body' => __('This package can only be purchased by members.')]]);
         }
 
-        if ($package->stock_limit !== null && $package->sold_count >= $package->stock_limit) {
+        if ($this->isOutOfStock($package)) {
             return redirect()->back()
                 ->with(['toast' => ['type' => 'error', 'title' => __('Out of stock'), 'body' => __('This package is no longer available.')]]);
         }
 
+        $currency = $this->currencies->resolve();
+        $customPrice = $package->is_pay_what_you_want
+            ? $this->resolveCustomPrice($package, $validated['custom_price'] ?? null, $currency)
+            : null;
+
         $cart = $this->carts->current($request);
-        $this->carts->add($cart, $package, $validated['quantity']);
+        $this->carts->add($cart, $package, $validated['quantity'], $customPrice, $currency->code);
         $this->rememberCart($cart->session_token);
 
         return redirect()->route('store.cart.show')
@@ -130,6 +140,57 @@ class StoreCartController extends Controller
 
         return redirect()->route('store.cart.show')
             ->with(['toast' => ['type' => 'error', 'title' => __('Invalid code'), 'body' => __('That code was not recognised.')]]);
+    }
+
+    /**
+     * Turn the buyer's typed amount into minor units of the currency they are shopping in.
+     *
+     * The configured price is the floor, and being told so beats being silently charged more than
+     * you typed.
+     *
+     * @throws ValidationException
+     */
+    private function resolveCustomPrice(StorePackage $package, int|float|string|null $amount, StoreCurrency $currency): int
+    {
+        $minimum = $this->currencies->priceForPackage($package, $currency);
+
+        if ($amount === null || $amount === '') {
+            return $minimum;
+        }
+
+        $minor = $this->currencies->toMinor($amount, $currency);
+
+        if ($minor < $minimum) {
+            throw ValidationException::withMessages([
+                'custom_price' => __('Please enter at least :amount.', [
+                    'amount' => $this->currencies->format($minimum, $currency),
+                ]),
+            ]);
+        }
+
+        if ($package->pay_what_you_want_max) {
+            $cap = max($minimum, $this->currencies->fromBase((int) $package->pay_what_you_want_max, $currency));
+
+            if ($minor > $cap) {
+                throw ValidationException::withMessages([
+                    'custom_price' => __('Please enter no more than :amount.', [
+                        'amount' => $this->currencies->format($cap, $currency),
+                    ]),
+                ]);
+            }
+        }
+
+        return $minor;
+    }
+
+    /**
+     * Mirrors StoreController: only a lifetime global limit reads as out of stock.
+     */
+    private function isOutOfStock(StorePackage $package): bool
+    {
+        return $package->global_purchase_limit !== null
+            && $package->global_purchase_limit_period_days === null
+            && $package->sold_count >= $package->global_purchase_limit;
     }
 
     /**

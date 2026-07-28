@@ -34,6 +34,14 @@ class StoreOrderItem extends BaseModel
         return $this->hasOne(StorePackageGrant::class, 'store_order_item_id');
     }
 
+    /**
+     * The gift card this item minted, for a package that sells store credit.
+     */
+    public function giftCard(): BelongsTo
+    {
+        return $this->belongsTo(StoreGiftCard::class, 'store_gift_card_id');
+    }
+
     public function deliveries(): HasMany
     {
         return $this->hasMany(StoreOrderDelivery::class, 'store_order_item_id');

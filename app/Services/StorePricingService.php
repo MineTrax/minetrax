@@ -33,7 +33,7 @@ class StorePricingService
     /**
      * Price a basket.
      *
-     * @param  array<int, array{package: StorePackage, quantity: int}>  $lines
+     * @param  array<int, array{package: StorePackage, quantity: int, custom_price?: int|null, custom_price_currency?: string|null}>  $lines
      * @return array<string, mixed>
      */
     public function quote(
@@ -102,9 +102,9 @@ class StorePricingService
     }
 
     /**
-     * Price one basket line: the package price, then the best sale.
+     * Price one basket line: the list price, then the package's own discount, then the best sale.
      *
-     * @param  array{package: StorePackage, quantity: int}  $line
+     * @param  array{package: StorePackage, quantity: int, custom_price?: int|null, custom_price_currency?: string|null}  $line
      * @return array<string, mixed>
      */
     private function priceLine(array $line, StoreCurrency $currency, Collection $sales): array
@@ -113,12 +113,21 @@ class StorePricingService
         $package = $line['package'];
         $quantity = max(1, (int) $line['quantity']);
 
-        $unit = max(0, $this->currencies->priceForPackage($package, $currency));
-        $original = $unit;
+        $list = max(0, $this->currencies->priceForPackage($package, $currency));
+        $sale = null;
 
-        $sale = $this->bestSaleFor($package, $unit, $sales);
-        if ($sale) {
-            $unit = max(0, $unit - $sale['saving']);
+        if ($package->is_pay_what_you_want) {
+            // The buyer set this price, so there is no list price to discount and no sale to
+            // apply. The configured price is the floor.
+            $unit = $original = $this->payWhatYouWantUnit($line, $package, $currency, $list);
+        } else {
+            $original = $list;
+            $unit = max(0, $list - $package->discountFor($list));
+
+            $sale = $this->bestSaleFor($package, $unit, $sales);
+            if ($sale) {
+                $unit = max(0, $unit - $sale['saving']);
+            }
         }
 
         return [
@@ -129,12 +138,53 @@ class StorePricingService
             'unit_price' => $unit,
             'total' => $unit * $quantity,
             'sale_name' => $sale['name'] ?? null,
+            'discount_bp' => $package->is_pay_what_you_want ? 0 : (int) $package->discount_bp,
+            'is_pay_what_you_want' => (bool) $package->is_pay_what_you_want,
             'formatted' => [
                 'unit_price_original' => $this->currencies->format($original, $currency),
                 'unit_price' => $this->currencies->format($unit, $currency),
                 'total' => $this->currencies->format($unit * $quantity, $currency),
             ],
         ];
+    }
+
+    /**
+     * The amount a buyer chose for a pay-what-you-want package, in the currency being quoted.
+     *
+     * The chosen figure is stored in whatever currency it was typed in, so quoting in another
+     * currency converts it. It is always clamped up to the configured minimum and down to the
+     * configured maximum, because the stored figure is user input.
+     *
+     * @param  array{custom_price?: int|null, custom_price_currency?: string|null}  $line
+     */
+    private function payWhatYouWantUnit(array $line, StorePackage $package, StoreCurrency $currency, int $minimum): int
+    {
+        $chosen = (int) ($line['custom_price'] ?? 0);
+        $code = $line['custom_price_currency'] ?? null;
+
+        if ($chosen <= 0 || ! $code) {
+            return $minimum;
+        }
+
+        if (strtoupper($code) === $currency->code) {
+            $amount = $chosen;
+        } elseif ($from = $this->currencies->find($code)) {
+            $amount = $this->currencies->convert($chosen, $from, $currency);
+        } else {
+            // The currency it was entered in is no longer enabled, so there is no rate to value it
+            // with. Falling back to the minimum is the only safe reading of an amount we cannot
+            // convert.
+            return $minimum;
+        }
+
+        $amount = max($minimum, $amount);
+
+        if ($package->pay_what_you_want_max) {
+            $cap = max($minimum, $this->currencies->fromBase((int) $package->pay_what_you_want_max, $currency));
+            $amount = min($cap, $amount);
+        }
+
+        return $amount;
     }
 
     /**

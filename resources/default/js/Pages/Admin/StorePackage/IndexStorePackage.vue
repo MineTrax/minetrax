@@ -30,6 +30,27 @@ const breadcrumbItems = [
     }
 ];
 
+const typeLabels = {
+    minecraft_package: __("Minecraft Package"),
+    giftcard: __("Giftcard"),
+    both: __("Package & Giftcard"),
+};
+
+// The publish window is evaluated on read rather than flipped by a job, so this is where an admin
+// sees that a package is withdrawn even though it is still enabled.
+function scheduleStatus(item) {
+    if (! item.is_enabled) {
+        return { label: __("Disabled"), class: "bg-muted text-muted-foreground" };
+    }
+    if (item.available_from && new Date(item.available_from) > new Date()) {
+        return { label: __("Scheduled"), class: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400" };
+    }
+    if (item.available_until && new Date(item.available_until) < new Date()) {
+        return { label: __("Expired"), class: "bg-destructive/10 text-destructive" };
+    }
+    return { label: __("Live"), class: "bg-success/10 text-success" };
+}
+
 const headerRow = [
     {
         key: "name",
@@ -60,6 +81,11 @@ const headerRow = [
         sortable: true,
         class: "text-center",
         label: __("Commands"),
+    },
+    {
+        key: "status",
+        label: __("Status"),
+        sortable: false,
     },
     {
         key: "is_enabled",
@@ -112,11 +138,17 @@ const headerRow = [
         <template #default="{ item }">
           <DtRowItem>
             <div>
-              <div class="font-medium text-foreground">
+              <div class="font-medium text-foreground flex items-center gap-2">
                 {{ item.name }}
+                <span
+                  v-if="item.is_featured"
+                  class="px-1.5 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded"
+                >
+                  {{ __("Featured") }}
+                </span>
               </div>
               <div class="text-xs text-muted-foreground">
-                {{ item.category?.name || "—" }}
+                {{ item.category?.name || "—" }} &middot; {{ item.type?.value ? typeLabels[item.type.value] : "—" }}
               </div>
             </div>
           </DtRowItem>
@@ -135,6 +167,15 @@ const headerRow = [
 
           <DtRowItem class="text-center">
             {{ item.commands_count }}
+          </DtRowItem>
+
+          <DtRowItem>
+            <span
+              class="px-2 py-1 text-xs font-medium rounded"
+              :class="scheduleStatus(item).class"
+            >
+              {{ scheduleStatus(item).label }}
+            </span>
           </DtRowItem>
 
           <td class="px-4">

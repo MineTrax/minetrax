@@ -20,10 +20,16 @@ class UpdateStorePackageRequest extends CreateStorePackageRequest
 
     public function rules(): array
     {
+        $id = $this->route('storePackage')->id;
+
         return array_merge($this->baseRules(), [
             'slug' => [
                 'required', 'string', 'max:255',
-                Rule::unique('store_packages', 'slug')->ignore($this->route('storePackage')->id),
+                Rule::unique('store_packages', 'slug')->ignore($id),
+            ],
+            // A package that requires itself could never be bought.
+            'required_packages.*' => [
+                'required', 'integer', 'distinct', 'exists:store_packages,id', Rule::notIn([$id]),
             ],
         ]);
     }

@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import AppHead from "@/Components/AppHead.vue";
-import { usePage, router } from "@inertiajs/vue3";
+import { Link, usePage, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { useHelpers } from "@/Composables/useHelpers";
 import { computed, ref } from "vue";
@@ -27,8 +27,23 @@ const props = defineProps({
 const page = usePage();
 const quantity = ref(props.storePackage.min_quantity || 1);
 
+// Prefilled with the minimum, which is also what the server falls back to if it is cleared.
+const customPrice = ref(
+    props.storePackage.is_pay_what_you_want
+        ? (props.storePackage.price / (10 ** props.currency.exponent)).toFixed(props.currency.exponent)
+        : null
+);
+
 const currentUser = computed(() => page.props.auth?.user || null);
 const isGuest = computed(() => !currentUser.value);
+
+// Basis points back to a percentage for display: 1250 reads as 12.5%.
+const discountPercent = computed(() => {
+    const bp = props.storePackage.discount_bp ?? 0;
+    return bp > 0 ? Math.round(bp / 10) / 10 : null;
+});
+
+const sellsGiftCard = computed(() => ["giftcard", "both"].includes(props.storePackage.type?.value));
 
 const breadcrumbItems = [
     {
@@ -72,6 +87,7 @@ const handleAddToCart = () => {
     router.post(route("store.cart.store"), {
         package_id: props.storePackage.id,
         quantity: quantity.value,
+        custom_price: props.storePackage.is_pay_what_you_want ? customPrice.value : null,
     }, {
         preserveScroll: true,
     });
@@ -132,8 +148,45 @@ const handleQuantityChange = (e) => {
             </div>
           </div>
 
+          <!-- Pay What You Want -->
+          <div
+            v-if="storePackage.is_pay_what_you_want"
+            class="bg-card text-card-foreground border border-border rounded-lg shadow p-4 md:p-6 space-y-2"
+          >
+            <label
+              for="custom_price"
+              class="block text-sm font-medium text-foreground"
+            >
+              {{ __("Name your price") }}
+            </label>
+            <div class="flex items-center gap-2">
+              <span class="text-muted-foreground">{{ currency.symbol }}</span>
+              <input
+                id="custom_price"
+                v-model="customPrice"
+                type="number"
+                step="0.01"
+                :min="storePackage.price / (10 ** currency.exponent)"
+                class="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                :disabled="isOutOfStock"
+              >
+            </div>
+            <p class="text-xs text-muted-foreground">
+              {{ __("Minimum:") }} {{ storePackage.price_formatted }}
+            </p>
+            <p
+              v-if="$page.props.errors?.custom_price"
+              class="text-xs text-destructive"
+            >
+              {{ $page.props.errors.custom_price }}
+            </p>
+          </div>
+
           <!-- Quantity -->
-          <div class="bg-card text-card-foreground border border-border rounded-lg shadow p-4 md:p-6 space-y-2">
+          <div
+            v-else
+            class="bg-card text-card-foreground border border-border rounded-lg shadow p-4 md:p-6 space-y-2"
+          >
             <label class="block text-sm font-medium text-foreground">
               {{ __("Quantity") }}
             </label>
@@ -156,6 +209,34 @@ const handleQuantityChange = (e) => {
               </span>
             </p>
           </div>
+
+          <!-- Requirements -->
+          <div
+            v-if="storePackage.required_packages?.length"
+            class="bg-card text-card-foreground border border-border rounded-lg shadow p-4 md:p-6 mt-6"
+          >
+            <h3 class="text-sm font-semibold text-foreground mb-2">
+              {{ storePackage.required_packages_mode?.value === "any"
+                ? __("Requires one of these packages")
+                : __("Requires all of these packages") }}
+            </h3>
+            <ul class="space-y-1">
+              <li
+                v-for="requirement in storePackage.required_packages"
+                :key="requirement.id"
+              >
+                <Link
+                  :href="route('store.package', requirement.slug)"
+                  class="text-sm text-primary hover:underline"
+                >
+                  {{ requirement.name }}
+                </Link>
+              </li>
+            </ul>
+            <p class="text-xs text-muted-foreground mt-2">
+              {{ __("Checked at checkout against the player you are buying for.") }}
+            </p>
+          </div>
         </div>
 
         <!-- Right Column: Details -->
@@ -167,13 +248,46 @@ const handleQuantityChange = (e) => {
             </h1>
 
             <div class="flex items-baseline gap-2 mb-4">
+              <span
+                v-if="storePackage.is_pay_what_you_want"
+                class="text-sm text-muted-foreground"
+              >
+                {{ __("from") }}
+              </span>
               <span class="text-4xl font-bold text-foreground">
                 {{ storePackage.price_formatted }}
+              </span>
+              <span
+                v-if="discountPercent"
+                class="text-xl text-muted-foreground line-through"
+              >
+                {{ storePackage.price_original_formatted }}
               </span>
             </div>
 
             <!-- Status Badges -->
             <div class="flex flex-wrap gap-2 mb-6">
+              <span
+                v-if="storePackage.is_featured"
+                class="inline-block px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-lg"
+              >
+                {{ __("Featured") }}
+              </span>
+
+              <span
+                v-if="discountPercent"
+                class="inline-block px-3 py-1 text-sm font-medium bg-success/10 text-success rounded-lg"
+              >
+                {{ __("{percent}% off", { percent: discountPercent }) }}
+              </span>
+
+              <span
+                v-if="sellsGiftCard"
+                class="inline-block px-3 py-1 text-sm font-medium bg-muted text-muted-foreground rounded-lg"
+              >
+                {{ __("Includes store credit") }}
+              </span>
+
               <span
                 v-if="isOutOfStock"
                 class="inline-block px-3 py-1 text-sm font-medium bg-destructive/10 text-destructive rounded-lg"

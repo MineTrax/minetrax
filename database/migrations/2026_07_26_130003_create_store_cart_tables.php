@@ -38,8 +38,15 @@ return new class extends Migration
             $table->foreignId('store_package_id')->constrained()->cascadeOnDelete();
             $table->unsignedSmallInteger('quantity')->default(1);
 
-            // Deliberately no price columns: carts are always priced live, which is what stops a
-            // stale or tampered price reaching checkout.
+            // Deliberately no cached package price: carts are always priced live, which is what
+            // stops a stale or tampered price reaching checkout.
+            //
+            // A pay-what-you-want amount is the exception, because it is buyer input rather than a
+            // copy of anything: it is kept in the currency it was typed in so switching currency
+            // converts what the buyer chose instead of silently re-rounding it.
+            $table->unsignedBigInteger('custom_price')->nullable();
+            $table->char('custom_price_currency', 3)->nullable();
+
             $table->timestamps();
 
             // One line per package, so adding the same package again bumps the quantity.

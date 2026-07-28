@@ -221,15 +221,58 @@ class StoreCheckoutTest extends TestCase
         $this->assertDatabaseCount('store_orders', 0);
     }
 
-    public function test_stock_is_enforced_at_checkout()
+    public function test_a_lifetime_limit_for_everyone_is_enforced_at_checkout()
     {
         Player::factory()->create(['username' => 'Steve']);
-        $package = StorePackage::factory()->create(['price' => 1000, 'stock_limit' => 1, 'sold_count' => 0]);
+        $package = StorePackage::factory()->create(['price' => 1000, 'global_purchase_limit' => 1]);
+
+        // Someone else bought the only one first.
+        $sold = StoreOrder::factory()->paid()->create();
+        $sold->items()->create([
+            'store_package_id' => $package->id, 'package_name' => $package->name, 'quantity' => 1,
+            'unit_price_original' => 1000, 'unit_price' => 1000, 'total' => 1000,
+        ]);
+
         $this->fillCart($package, 1);
-        $package->update(['sold_count' => 1]); // someone else bought the last one first
 
         $this->post(route('store.checkout.store'), $this->checkoutPayload())
             ->assertSessionHasErrors(['cart']);
+    }
+
+    /**
+     * A limit of one has to stop one order for five, not just the fifth order.
+     */
+    public function test_a_purchase_limit_counts_quantity_rather_than_orders()
+    {
+        Player::factory()->create(['username' => 'Steve']);
+        $package = StorePackage::factory()->create(['price' => 1000, 'global_purchase_limit' => 2, 'max_quantity' => 5]);
+
+        $this->fillCart($package, 3);
+
+        $this->post(route('store.checkout.store'), $this->checkoutPayload())
+            ->assertSessionHasErrors(['cart']);
+    }
+
+    public function test_a_limit_with_a_reset_period_ignores_purchases_outside_the_window()
+    {
+        $player = Player::factory()->create(['username' => 'Steve']);
+        $package = StorePackage::factory()->create([
+            'price' => 1000, 'player_purchase_limit' => 1, 'player_purchase_limit_period_days' => 7,
+        ]);
+
+        $old = StoreOrder::factory()->paid()->create([
+            'player_uuid' => $player->uuid,
+            'created_at' => now()->subDays(30),
+        ]);
+        $old->items()->create([
+            'store_package_id' => $package->id, 'package_name' => $package->name, 'quantity' => 1,
+            'unit_price_original' => 1000, 'unit_price' => 1000, 'total' => 1000,
+        ]);
+
+        $this->fillCart($package);
+
+        $this->post(route('store.checkout.store'), $this->checkoutPayload())
+            ->assertSessionHasNoErrors();
     }
 
     public function test_a_per_player_purchase_limit_counts_only_paid_orders()

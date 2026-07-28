@@ -79,6 +79,10 @@ return new class extends Migration
             $table->string('sale_name')->nullable();
             $table->unsignedInteger('expiry_duration_days')->nullable();
 
+            // Set when the package issues a gift card. Also what makes issuance idempotent: the
+            // fulfilment job can be retried without minting a second code.
+            $table->foreignId('store_gift_card_id')->nullable()->constrained()->nullOnDelete();
+
             $table->timestamps();
         });
 

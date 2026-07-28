@@ -8,6 +8,7 @@ use App\Models\StorePackage;
 use App\Services\StoreCurrencyService;
 use App\Settings\GeneralSettings;
 use App\Settings\StoreSettings;
+use App\Utils\Helpers\Helper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -90,10 +91,10 @@ class StoreController extends Controller
         $this->authorize('browse', StorePackage::class);
 
         // A hidden package stays reachable by direct link, which is how "secret" packages work;
-        // a disabled one is gone entirely.
-        abort_unless($storePackage->is_enabled, 404);
+        // a disabled or out-of-window one is gone entirely.
+        abort_unless($storePackage->is_available, 404);
 
-        $storePackage->load(['category:id,name,slug', 'prices']);
+        $storePackage->load(['category:id,name,slug', 'prices', 'requiredPackages:id,name,slug']);
 
         $currency = $this->currencies->resolve();
 
@@ -101,6 +102,9 @@ class StoreController extends Controller
             'storePackage' => $this->presentPackage($storePackage, $currency) + [
                 'description' => $storePackage->description,
                 'category' => $storePackage->category?->only(['id', 'name', 'slug']),
+                'required_packages_mode' => Helper::enumKeyValue($storePackage->required_packages_mode),
+                'required_packages' => $storePackage->requiredPackages
+                    ->map->only(['id', 'name', 'slug'])->values(),
             ],
             'currency' => $this->currencyPayload($currency),
         ]);
@@ -108,13 +112,17 @@ class StoreController extends Controller
 
     /**
      * Packages a visitor is allowed to see in a listing.
+     *
+     * Featured packages come first, which is what "featured" means in a category that is otherwise
+     * ordered by the admin's own sort order.
      */
     private function visiblePackages(): Builder
     {
         return StorePackage::query()
             ->with('prices')
-            ->where('is_enabled', true)
+            ->available()
             ->where('is_visible', true)
+            ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->orderBy('id');
     }
@@ -127,7 +135,7 @@ class StoreController extends Controller
         return StoreCategory::query()
             ->where('is_enabled', true)
             ->where('is_visible', true)
-            ->withCount(['packages' => fn ($q) => $q->where('is_enabled', true)->where('is_visible', true)])
+            ->withCount(['packages' => fn ($q) => $q->available()->where('is_visible', true)])
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get()
@@ -158,7 +166,8 @@ class StoreController extends Controller
      */
     private function presentPackage(StorePackage $package, $currency): array
     {
-        $price = $this->currencies->priceForPackage($package, $currency);
+        $listPrice = $this->currencies->priceForPackage($package, $currency);
+        $price = max(0, $listPrice - $package->discountFor($listPrice));
 
         return [
             'id' => $package->id,
@@ -166,14 +175,39 @@ class StoreController extends Controller
             'slug' => $package->slug,
             'short_description' => $package->short_description,
             'photo_url' => $package->photo_url,
+            'type' => Helper::enumKeyValue($package->type),
             'requires_login' => $package->requires_login,
+            'is_featured' => $package->is_featured,
+            'is_giftable' => $package->is_giftable,
             'min_quantity' => $package->min_quantity,
             'max_quantity' => $package->max_quantity,
             'expiry_duration_days' => $package->expiry_duration_days,
-            'is_out_of_stock' => $package->stock_limit !== null && $package->sold_count >= $package->stock_limit,
+            'available_until' => $package->available_until,
+            'is_out_of_stock' => $this->isOutOfStock($package),
+            'discount_bp' => (int) $package->discount_bp,
+            'is_pay_what_you_want' => $package->is_pay_what_you_want,
+            // For a pay-what-you-want package the price is the floor, not the amount charged.
             'price' => $price,
             'price_formatted' => $this->currencies->format($price, $currency),
+            'price_original' => $listPrice,
+            'price_original_formatted' => $this->currencies->format($listPrice, $currency),
+            'pay_what_you_want_max' => $package->pay_what_you_want_max
+                ? $this->currencies->fromBase((int) $package->pay_what_you_want_max, $currency)
+                : null,
         ];
+    }
+
+    /**
+     * Only a lifetime global limit reads as "out of stock".
+     *
+     * A limit with a reset period is a rate limit rather than an inventory, and answering it here
+     * would mean a count query per package in every listing. Checkout still enforces it.
+     */
+    private function isOutOfStock(StorePackage $package): bool
+    {
+        return $package->global_purchase_limit !== null
+            && $package->global_purchase_limit_period_days === null
+            && $package->sold_count >= $package->global_purchase_limit;
     }
 
     /**

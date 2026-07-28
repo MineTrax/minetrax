@@ -17,6 +17,7 @@ use App\Models\StorePackage;
 use App\Models\StorePackageCommand;
 use App\Models\StorePayment;
 use App\Services\StoreCommandDispatchService;
+use App\Services\StoreGiftCardService;
 use App\Services\StoreOrderService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -86,6 +87,7 @@ class StoreDeliveryJobTest extends TestCase
         (new ProcessStoreOrderPurchaseJob($order))->handle(
             app(StoreCommandDispatchService::class),
             app(StoreOrderService::class),
+            app(StoreGiftCardService::class),
         );
     }
 

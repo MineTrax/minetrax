@@ -51,7 +51,7 @@ class StoreOrderController extends Controller
 
         abort_unless($order->user_id === $request->user()->id, 404);
 
-        $order->load(['items.grant', 'payments:id,store_order_id,gateway,status,paid_at']);
+        $order->load(['items.grant', 'items.giftCard', 'payments:id,store_order_id,gateway,status,paid_at']);
 
         return Inertia::render('Store/ShowMyStoreOrder', [
             'order' => [
@@ -71,6 +71,15 @@ class StoreOrderController extends Controller
                     'grant' => $item->grant ? [
                         'status' => Helper::enumKeyValue($item->grant->status),
                         'expires_at' => $item->grant->expires_at,
+                    ] : null,
+                    // The buyer's own gift card code. Shown here because the receipt email links
+                    // to this page rather than carrying the code itself.
+                    'gift_card' => $item->giftCard ? [
+                        'code' => $item->giftCard->code,
+                        'balance_formatted' => $this->currencies->format(
+                            (int) $item->giftCard->balance,
+                            $item->giftCard->currency_code
+                        ),
                     ] : null,
                 ]),
                 'money' => [

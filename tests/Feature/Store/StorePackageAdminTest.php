@@ -3,6 +3,8 @@
 namespace Tests\Feature\Store;
 
 use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StorePackageRequirementMode;
+use App\Enums\StorePackageType;
 use App\Models\Server;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
@@ -28,17 +30,30 @@ class StorePackageAdminTest extends TestCase
             'store_category_id' => null,
             'short_description' => 'Access to VIP perks.',
             'description' => 'A longer description.',
+            'type' => StorePackageType::MINECRAFT_PACKAGE->value,
             'price' => 999, // minor units
+            'discount_bp' => 0,
+            'is_pay_what_you_want' => false,
+            'pay_what_you_want_max' => null,
+            'gift_card_amount' => null,
+            'is_gift_card_amount_same_as_price' => false,
             'sort_order' => 0,
             'is_visible' => true,
             'is_enabled' => true,
             'requires_login' => false,
+            'is_featured' => false,
+            'is_giftable' => false,
             'min_quantity' => 1,
             'max_quantity' => null,
-            'stock_limit' => null,
             'player_purchase_limit' => null,
-            'purchase_limit_period_days' => null,
+            'player_purchase_limit_period_days' => null,
+            'global_purchase_limit' => null,
+            'global_purchase_limit_period_days' => null,
             'expiry_duration_days' => null,
+            'available_from' => null,
+            'available_until' => null,
+            'required_packages' => [],
+            'required_packages_mode' => StorePackageRequirementMode::ALL->value,
             'commands' => [],
         ], $overrides);
     }

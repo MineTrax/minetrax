@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StorePackageRequirementMode;
+use App\Enums\StorePackageType;
 use App\Models\StorePackage;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
@@ -40,22 +42,50 @@ class CreateStorePackageRequest extends FormRequest
             'store_category_id' => 'nullable|integer|exists:store_categories,id',
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:20000',
+            'type' => ['required', Rule::enum(StorePackageType::class)],
 
             // Minor units. The client never sends a formatted or decimal amount; the admin form
             // converts using the base currency exponent before submitting.
             'price' => 'required|integer|min:0',
 
+            // Basis points, like coupons and sales: 2000 is 20% off. 10000 makes the package free.
+            'discount_bp' => 'nullable|integer|min:0|max:10000',
+
+            // With pay-what-you-want on, `price` becomes the minimum the buyer may enter.
+            'is_pay_what_you_want' => 'required|boolean',
+            'pay_what_you_want_max' => 'nullable|integer|min:0|gte:price',
+
+            // Only meaningful for a package whose type issues a gift card.
+            'gift_card_amount' => [
+                'nullable', 'integer', 'min:1',
+                Rule::requiredIf(fn () => $this->issuesGiftCard() && ! $this->boolean('is_gift_card_amount_same_as_price')),
+            ],
+            'is_gift_card_amount_same_as_price' => 'required|boolean',
+
             'sort_order' => 'nullable|integer|min:0',
             'is_visible' => 'required|boolean',
             'is_enabled' => 'required|boolean',
             'requires_login' => 'required|boolean',
+            'is_featured' => 'required|boolean',
+            'is_giftable' => 'required|boolean',
 
             'min_quantity' => 'required|integer|min:1|max:9999',
             'max_quantity' => 'nullable|integer|min:1|max:9999|gte:min_quantity',
-            'stock_limit' => 'nullable|integer|min:1',
             'player_purchase_limit' => 'nullable|integer|min:1',
-            'purchase_limit_period_days' => 'nullable|integer|min:1',
+            'player_purchase_limit_period_days' => 'nullable|integer|min:1',
+            'global_purchase_limit' => 'nullable|integer|min:1',
+            'global_purchase_limit_period_days' => 'nullable|integer|min:1',
             'expiry_duration_days' => 'nullable|integer|min:1',
+
+            // Outside this window the package is neither listed nor purchasable.
+            'available_from' => 'nullable|date',
+            'available_until' => 'nullable|date|after:available_from',
+
+            // Packages the buyer must own first. required_packages_mode decides whether all of
+            // them are needed or any single one.
+            'required_packages' => 'nullable|array',
+            'required_packages.*' => 'required|integer|distinct|exists:store_packages,id',
+            'required_packages_mode' => ['required', Rule::enum(StorePackageRequirementMode::class)],
 
             'photo' => 'nullable|image|max:5120',
 
@@ -80,9 +110,20 @@ class CreateStorePackageRequest extends FormRequest
         ];
     }
 
+    /**
+     * Whether the submitted type sells a gift card, which is what makes the amount required.
+     */
+    protected function issuesGiftCard(): bool
+    {
+        return StorePackageType::tryFrom((string) $this->input('type'))?->issuesGiftCard() ?? false;
+    }
+
     public function messages(): array
     {
         return [
+            'gift_card_amount.required' => __('Enter the gift card amount, or tick "same as package price".'),
+            'pay_what_you_want_max.gte' => __('The maximum cannot be below the minimum price.'),
+            'available_until.after' => __('The removal date must be after the publish date.'),
         ];
     }
 }

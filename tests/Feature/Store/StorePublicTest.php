@@ -109,7 +109,7 @@ class StorePublicTest extends TestCase
 
     public function test_out_of_stock_is_flagged()
     {
-        StorePackage::factory()->create(['stock_limit' => 5, 'sold_count' => 5]);
+        StorePackage::factory()->create(['global_purchase_limit' => 5, 'sold_count' => 5]);
 
         $this->get(route('store.index'))
             ->assertInertia(fn ($page) => $page->where('packages.0.is_out_of_stock', true));

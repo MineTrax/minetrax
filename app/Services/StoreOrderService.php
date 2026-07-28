@@ -335,12 +335,19 @@ class StoreOrderService
     private function revokeGrants(StoreOrder $order): void
     {
         foreach ($order->items as $item) {
-            $item->grant()
+            $revoked = $item->grant()
                 ->where('status', StorePackageGrantStatus::ACTIVE)
                 ->update([
                     'status' => StorePackageGrantStatus::REVOKED,
                     'revoked_at' => now(),
                 ]);
+
+            // Give the stock back. The purchase limits are counted from paid-state orders, so a
+            // refunded one no longer consumes an allowance; sold_count has to follow or the
+            // storefront would keep showing a package as sold out that checkout would happily sell.
+            if ($revoked) {
+                $item->package?->decrement('sold_count', min((int) $item->quantity, (int) $item->package->sold_count));
+            }
         }
     }
 

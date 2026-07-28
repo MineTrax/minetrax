@@ -177,8 +177,11 @@ class StoreCurrencyAdminTest extends TestCase
             'name' => $package->name,
             'store_category_id' => null,
             'price' => 1000,
+            'type' => 'minecraft_package',
+            'is_pay_what_you_want' => false, 'is_gift_card_amount_same_as_price' => false,
             'is_visible' => true, 'is_enabled' => true, 'requires_login' => false,
-            'is_run_on_all_servers' => false, 'min_quantity' => 1,
+            'is_featured' => false, 'is_giftable' => false,
+            'required_packages_mode' => 'all', 'min_quantity' => 1,
             'prices' => [
                 ['currency_code' => 'JPY', 'price' => 1200],
             ],
@@ -203,8 +206,11 @@ class StoreCurrencyAdminTest extends TestCase
             'name' => $package->name,
             'store_category_id' => null,
             'price' => 1000,
+            'type' => 'minecraft_package',
+            'is_pay_what_you_want' => false, 'is_gift_card_amount_same_as_price' => false,
             'is_visible' => true, 'is_enabled' => true, 'requires_login' => false,
-            'is_run_on_all_servers' => false, 'min_quantity' => 1,
+            'is_featured' => false, 'is_giftable' => false,
+            'required_packages_mode' => 'all', 'min_quantity' => 1,
             'prices' => [],
         ])->assertSessionHasNoErrors();
 

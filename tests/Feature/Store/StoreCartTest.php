@@ -92,7 +92,7 @@ class StoreCartTest extends TestCase
 
     public function test_an_out_of_stock_package_cannot_be_added()
     {
-        $package = StorePackage::factory()->create(['stock_limit' => 1, 'sold_count' => 1]);
+        $package = StorePackage::factory()->create(['global_purchase_limit' => 1, 'sold_count' => 1]);
 
         $this->from(route('store.index'))
             ->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);

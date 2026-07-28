@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Store;
 
+use App\Enums\StorePackageRequirementMode;
+use App\Enums\StorePackageType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateStorePackageRequest;
 use App\Http\Requests\UpdateStorePackageRequest;
@@ -34,12 +36,17 @@ class StorePackageController extends Controller
             'name',
             'slug',
             'short_description',
+            'type',
             'price',
+            'discount_bp',
             'sort_order',
             'is_visible',
             'is_enabled',
+            'is_featured',
             'sold_count',
             'expiry_duration_days',
+            'available_from',
+            'available_until',
             'created_at',
             'updated_at',
         ];
@@ -89,6 +96,7 @@ class StorePackageController extends Controller
 
             $this->syncCommands($package, $request->input('commands', []));
             $this->syncPrices($package, $request->input('prices', []));
+            $this->syncRequirements($package, $request->input('required_packages', []));
 
             return $package;
         });
@@ -105,7 +113,7 @@ class StorePackageController extends Controller
     {
         $this->authorize('update', $storePackage);
 
-        $storePackage->load(['commands.servers:id,name,hostname']);
+        $storePackage->load(['commands.servers:id,name,hostname', 'requiredPackages:id,name']);
 
         return Inertia::render('Admin/StorePackage/EditStorePackage', array_merge($this->formData(), [
             // Named storePackage, not package: `package` is a reserved word in the strict-mode
@@ -124,6 +132,7 @@ class StorePackageController extends Controller
 
             $this->syncCommands($storePackage, $request->input('commands', []));
             $this->syncPrices($storePackage, $request->input('prices', []));
+            $this->syncRequirements($storePackage, $request->input('required_packages', []));
         });
 
         if ($request->hasFile('photo')) {
@@ -159,6 +168,9 @@ class StorePackageController extends Controller
             'categories' => StoreCategory::select(['id', 'name'])->orderBy('name')->get(),
             // Only servers that can actually receive a command are offerable as targets.
             'servers' => Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->get(),
+            // Candidates for the "requires" picker. A package can gate on a disabled one, which is
+            // how a prerequisite is retired without breaking the packages that reference it.
+            'packages' => StorePackage::select(['id', 'name'])->orderBy('name')->get(),
             // Prices are entered as decimals and stored as minor units. How many digits that
             // conversion involves is a property of the currency, not a constant: JPY has none
             // and KWD has three, so a hardcoded 100 would charge a Japanese buyer 100x.
@@ -175,23 +187,55 @@ class StorePackageController extends Controller
      */
     private function attributesFrom(CreateStorePackageRequest $request): array
     {
+        $type = StorePackageType::from($request->string('type')->value());
+
         return [
             'name' => $request->name,
             'store_category_id' => $request->store_category_id,
             'short_description' => $request->short_description,
             'description' => $request->description,
+            'type' => $type,
             'price' => $request->price,
+            'discount_bp' => $request->integer('discount_bp'),
+            'is_pay_what_you_want' => $request->boolean('is_pay_what_you_want'),
+            'pay_what_you_want_max' => $request->boolean('is_pay_what_you_want') ? $request->pay_what_you_want_max : null,
+            // Cleared for a package that no longer sells credit, so switching the type back does
+            // not silently reinstate an old amount.
+            'gift_card_amount' => $type->issuesGiftCard() ? $request->gift_card_amount : null,
+            'is_gift_card_amount_same_as_price' => $type->issuesGiftCard()
+                && $request->boolean('is_gift_card_amount_same_as_price'),
             'sort_order' => $request->sort_order ?? 0,
             'is_visible' => $request->is_visible,
             'is_enabled' => $request->is_enabled,
             'requires_login' => $request->requires_login,
+            'is_featured' => $request->is_featured,
+            'is_giftable' => $request->is_giftable,
             'min_quantity' => $request->min_quantity,
             'max_quantity' => $request->max_quantity,
-            'stock_limit' => $request->stock_limit,
             'player_purchase_limit' => $request->player_purchase_limit,
-            'purchase_limit_period_days' => $request->purchase_limit_period_days,
+            'player_purchase_limit_period_days' => $request->player_purchase_limit_period_days,
+            'global_purchase_limit' => $request->global_purchase_limit,
+            'global_purchase_limit_period_days' => $request->global_purchase_limit_period_days,
             'expiry_duration_days' => $request->expiry_duration_days,
+            'available_from' => $request->available_from,
+            'available_until' => $request->available_until,
+            'required_packages_mode' => StorePackageRequirementMode::from(
+                $request->string('required_packages_mode')->value()
+            ),
         ];
+    }
+
+    /**
+     * Replace the prerequisite list. The pivot carries nothing but the pair, so a plain sync is
+     * the whole operation.
+     *
+     * @param  array<int, int|string>  $packageIds
+     */
+    private function syncRequirements(StorePackage $package, array $packageIds): void
+    {
+        $package->requiredPackages()->sync(
+            collect($packageIds)->map(fn ($id) => (int) $id)->reject(fn (int $id) => $id === $package->id)->unique()->all()
+        );
     }
 
     /**

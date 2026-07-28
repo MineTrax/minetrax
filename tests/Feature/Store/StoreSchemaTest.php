@@ -214,11 +214,15 @@ class StoreSchemaTest extends TestCase
         $this->assertTrue(Schema::hasColumn('store_order_deliveries', 'command_queue_id'));
     }
 
-    public function test_cart_items_store_no_price_columns()
+    public function test_cart_items_cache_no_package_price()
     {
-        // Carts are always priced live; a stored price is a tampering and staleness vector.
+        // Carts are always priced live; a copied package price is a tampering and staleness
+        // vector. custom_price is the one exception and is not a copy of anything: it is what the
+        // buyer typed for a pay-what-you-want package, so it has nowhere else to live.
         $this->assertFalse(Schema::hasColumn('store_cart_items', 'price'));
         $this->assertFalse(Schema::hasColumn('store_cart_items', 'unit_price'));
+        $this->assertTrue(Schema::hasColumn('store_cart_items', 'custom_price'));
+        $this->assertTrue(Schema::hasColumn('store_cart_items', 'custom_price_currency'));
     }
 
     public function test_ban_factory_and_active_scope()
