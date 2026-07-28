@@ -87,6 +87,11 @@ class CreateStorePackageRequest extends FormRequest
             'required_packages.*' => 'required|integer|distinct|exists:store_packages,id',
             'required_packages_mode' => ['required', Rule::enum(StorePackageRequirementMode::class)],
 
+            // Inputs the buyer fills in for this package. Order matters, so it is a list rather
+            // than a set: the position becomes the pivot's sort_order.
+            'variables' => 'nullable|array',
+            'variables.*' => 'required|integer|distinct|exists:store_variables,id',
+
             'photo' => 'nullable|image|max:5120',
 
             // Optional per-currency price overrides, in that currency's minor units. Absent

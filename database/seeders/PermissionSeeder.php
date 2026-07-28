@@ -149,6 +149,11 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('update store_packages');
         Permission::findOrCreate('delete store_packages');
 
+        Permission::findOrCreate('create store_variables');
+        Permission::findOrCreate('read store_variables');
+        Permission::findOrCreate('update store_variables');
+        Permission::findOrCreate('delete store_variables');
+
         Permission::findOrCreate('create store_currencies');
         Permission::findOrCreate('read store_currencies');
         Permission::findOrCreate('update store_currencies');

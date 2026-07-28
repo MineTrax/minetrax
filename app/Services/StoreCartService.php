@@ -14,7 +14,10 @@ class StoreCartService
 {
     public const COOKIE = 'store_cart_token';
 
-    public function __construct(private StorePricingService $pricing) {}
+    public function __construct(
+        private StorePricingService $pricing,
+        private StoreVariableService $variables,
+    ) {}
 
     /**
      * The current visitor's cart, creating one on demand.
@@ -51,7 +54,10 @@ class StoreCartService
      *
      * $customPrice is the buyer's chosen amount for a pay-what-you-want package, in the minor
      * units of $customPriceCurrency. Re-adding such a package replaces the amount rather than
-     * summing it, because two different chosen amounts have no meaningful sum.
+     * summing it, because two different chosen amounts have no meaningful sum. The same goes for
+     * variable values: one configuration per package per cart.
+     *
+     * @param  array<string, mixed>|null  $variableValues
      */
     public function add(
         StoreCart $cart,
@@ -59,6 +65,7 @@ class StoreCartService
         int $quantity,
         ?int $customPrice = null,
         ?string $customPriceCurrency = null,
+        ?array $variableValues = null,
     ): StoreCartItem {
         $item = $cart->items()
             ->where('store_package_id', $package->id)
@@ -66,7 +73,10 @@ class StoreCartService
 
         $quantity = $this->clampQuantity($package, ($item->quantity ?? 0) + $quantity);
 
-        $attributes = ['quantity' => $quantity];
+        $attributes = [
+            'quantity' => $quantity,
+            'variable_values' => $variableValues,
+        ];
 
         if ($package->is_pay_what_you_want) {
             $attributes['custom_price'] = $customPrice;
@@ -132,13 +142,14 @@ class StoreCartService
                         // decision, and the two amounts cannot be summed sensibly.
                         'custom_price' => $guestItem->custom_price ?? $existing->custom_price,
                         'custom_price_currency' => $guestItem->custom_price_currency ?? $existing->custom_price_currency,
+                        'variable_values' => $guestItem->variable_values ?? $existing->variable_values,
                     ]);
 
                     continue;
                 }
 
                 $userCart->items()->create($guestItem->only([
-                    'store_package_id', 'quantity', 'custom_price', 'custom_price_currency',
+                    'store_package_id', 'quantity', 'custom_price', 'custom_price_currency', 'variable_values',
                 ]));
             }
 
@@ -154,7 +165,7 @@ class StoreCartService
      */
     public function quote(StoreCart $cart, ?Request $request = null): array
     {
-        $cart->loadMissing('items.package.prices');
+        $cart->loadMissing(['items.package.prices', 'items.package.variables']);
 
         $lines = $cart->items
             ->filter(fn (StoreCartItem $item) => $item->package && $item->package->is_available)
@@ -164,6 +175,7 @@ class StoreCartService
                 'quantity' => $item->quantity,
                 'custom_price' => $item->custom_price,
                 'custom_price_currency' => $item->custom_price_currency,
+                'variable_values' => $item->variable_values,
             ])
             ->values();
 
@@ -177,9 +189,15 @@ class StoreCartService
 
         // Re-attach the cart item id so the UI can address each row.
         foreach ($quote['items'] as $index => $item) {
+            $package = $lines[$index]['package'] ?? null;
+
             $quote['items'][$index]['cart_item_id'] = $lines[$index]['cart_item_id'] ?? null;
-            $quote['items'][$index]['photo_url'] = $lines[$index]['package']->photo_url ?? null;
-            $quote['items'][$index]['slug'] = $lines[$index]['package']->slug ?? null;
+            $quote['items'][$index]['photo_url'] = $package->photo_url ?? null;
+            $quote['items'][$index]['slug'] = $package->slug ?? null;
+            // Named rather than keyed by identifier: this is for a buyer to read.
+            $quote['items'][$index]['variables'] = $package
+                ? $this->variables->snapshotFor($package, $lines[$index]['variable_values'] ?? null)
+                : null;
         }
 
         return $quote;

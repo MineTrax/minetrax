@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\Store\StoreCurrencyController as AdminStoreCurren
 use App\Http\Controllers\Admin\Store\StoreOrderController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
 use App\Http\Controllers\Admin\Store\StorePaymentGatewayController;
+use App\Http\Controllers\Admin\Store\StoreVariableController;
 use App\Http\Controllers\BanWardenController;
 use App\Http\Controllers\CustomFormController;
 use App\Http\Controllers\CustomPageController;
@@ -391,6 +392,13 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
         Route::get('package/{storePackage}/edit', [StorePackageController::class, 'edit'])->name('package.edit');
         Route::put('package/{storePackage}', [StorePackageController::class, 'update'])->name('package.update');
         Route::delete('package/{storePackage}', [StorePackageController::class, 'destroy'])->name('package.delete');
+
+        Route::get('variable', [StoreVariableController::class, 'index'])->name('variable.index');
+        Route::get('variable/create', [StoreVariableController::class, 'create'])->name('variable.create');
+        Route::post('variable', [StoreVariableController::class, 'store'])->name('variable.store');
+        Route::get('variable/{storeVariable}/edit', [StoreVariableController::class, 'edit'])->name('variable.edit');
+        Route::put('variable/{storeVariable}', [StoreVariableController::class, 'update'])->name('variable.update');
+        Route::delete('variable/{storeVariable}', [StoreVariableController::class, 'destroy'])->name('variable.delete');
 
         Route::get('order', [StoreOrderController::class, 'index'])->name('order.index');
         Route::get('order/{order:uuid}', [StoreOrderController::class, 'show'])->name('order.show');

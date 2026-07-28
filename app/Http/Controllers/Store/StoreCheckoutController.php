@@ -209,6 +209,7 @@ class StoreCheckoutController extends Controller
                 'package_name' => $item->package_name,
                 'quantity' => $item->quantity,
                 'total_formatted' => $this->currencies->format((int) $item->total, $order->currency),
+                'variables' => $item->variable_values,
                 // Present only for a package that sells store credit.
                 'gift_card' => $item->giftCard ? [
                     'code' => $item->giftCard->code,

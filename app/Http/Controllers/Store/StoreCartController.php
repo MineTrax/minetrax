@@ -10,6 +10,7 @@ use App\Models\StoreGiftCard;
 use App\Models\StorePackage;
 use App\Services\StoreCartService;
 use App\Services\StoreCurrencyService;
+use App\Services\StoreVariableService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -22,6 +23,7 @@ class StoreCartController extends Controller
     public function __construct(
         private StoreCartService $carts,
         private StoreCurrencyService $currencies,
+        private StoreVariableService $variables,
     ) {}
 
     public function show(Request $request): Response
@@ -59,9 +61,12 @@ class StoreCartController extends Controller
             // A decimal amount for a pay-what-you-want package, in the currency on screen. The
             // conversion to minor units happens here, never in the browser.
             'custom_price' => 'nullable|numeric|min:0',
+            // Values for the package's variables, keyed by identifier. Validated against the
+            // variable definitions below — the rules the browser enforced do not count.
+            'variables' => 'nullable|array',
         ]);
 
-        $package = StorePackage::available()->findOrFail($validated['package_id']);
+        $package = StorePackage::available()->with('variables')->findOrFail($validated['package_id']);
 
         if ($package->requires_login && ! $request->user()) {
             return redirect()->route('login')
@@ -78,8 +83,10 @@ class StoreCartController extends Controller
             ? $this->resolveCustomPrice($package, $validated['custom_price'] ?? null, $currency)
             : null;
 
+        $variableValues = $this->variables->validate($package, $validated['variables'] ?? []);
+
         $cart = $this->carts->current($request);
-        $this->carts->add($cart, $package, $validated['quantity'], $customPrice, $currency->code);
+        $this->carts->add($cart, $package, $validated['quantity'], $customPrice, $currency->code, $variableValues);
         $this->rememberCart($cart->session_token);
 
         return redirect()->route('store.cart.show')

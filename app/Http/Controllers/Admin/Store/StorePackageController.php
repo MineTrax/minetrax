@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateStorePackageRequest;
 use App\Models\Server;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
+use App\Models\StoreVariable;
 use App\Queries\Filters\FilterMultipleFields;
 use App\Services\StoreCurrencyService;
 use Illuminate\Support\Arr;
@@ -97,6 +98,7 @@ class StorePackageController extends Controller
             $this->syncCommands($package, $request->input('commands', []));
             $this->syncPrices($package, $request->input('prices', []));
             $this->syncRequirements($package, $request->input('required_packages', []));
+            $this->syncVariables($package, $request->input('variables', []));
 
             return $package;
         });
@@ -113,7 +115,11 @@ class StorePackageController extends Controller
     {
         $this->authorize('update', $storePackage);
 
-        $storePackage->load(['commands.servers:id,name,hostname', 'requiredPackages:id,name']);
+        $storePackage->load([
+            'commands.servers:id,name,hostname',
+            'requiredPackages:id,name',
+            'variables:id,name,identifier',
+        ]);
 
         return Inertia::render('Admin/StorePackage/EditStorePackage', array_merge($this->formData(), [
             // Named storePackage, not package: `package` is a reserved word in the strict-mode
@@ -133,6 +139,7 @@ class StorePackageController extends Controller
             $this->syncCommands($storePackage, $request->input('commands', []));
             $this->syncPrices($storePackage, $request->input('prices', []));
             $this->syncRequirements($storePackage, $request->input('required_packages', []));
+            $this->syncVariables($storePackage, $request->input('variables', []));
         });
 
         if ($request->hasFile('photo')) {
@@ -171,6 +178,12 @@ class StorePackageController extends Controller
             // Candidates for the "requires" picker. A package can gate on a disabled one, which is
             // how a prerequisite is retired without breaking the packages that reference it.
             'packages' => StorePackage::select(['id', 'name'])->orderBy('name')->get(),
+            // Variables that can be attached, each carrying the placeholder to paste into a command.
+            'variables' => StoreVariable::enabled()
+                ->select(['id', 'name', 'identifier'])
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get(),
             // Prices are entered as decimals and stored as minor units. How many digits that
             // conversion involves is a property of the currency, not a constant: JPY has none
             // and KWD has three, so a hardcoded 100 would charge a Japanese buyer 100x.
@@ -235,6 +248,24 @@ class StorePackageController extends Controller
     {
         $package->requiredPackages()->sync(
             collect($packageIds)->map(fn ($id) => (int) $id)->reject(fn (int $id) => $id === $package->id)->unique()->all()
+        );
+    }
+
+    /**
+     * Replace the attached variables, keeping the order they were arranged in — that order is what
+     * the buyer sees the inputs in.
+     *
+     * @param  array<int, int|string>  $variableIds
+     */
+    private function syncVariables(StorePackage $package, array $variableIds): void
+    {
+        $package->variables()->sync(
+            collect($variableIds)
+                ->map(fn ($id) => (int) $id)
+                ->unique()
+                ->values()
+                ->mapWithKeys(fn (int $id, int $index) => [$id => ['sort_order' => $index]])
+                ->all()
         );
     }
 

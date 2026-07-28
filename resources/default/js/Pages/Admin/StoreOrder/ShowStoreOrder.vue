@@ -239,6 +239,13 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
                       {{ item.sale_name }}
                     </div>
                     <div
+                      v-for="variable in item.variable_values || []"
+                      :key="variable.identifier"
+                      class="text-xs text-muted-foreground"
+                    >
+                      {{ variable.name }}: <span class="text-foreground">{{ variable.value }}</span>
+                    </div>
+                    <div
                       v-if="item.grant"
                       class="text-xs text-muted-foreground mt-1"
                     >

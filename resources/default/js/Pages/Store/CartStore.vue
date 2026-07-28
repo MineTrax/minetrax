@@ -167,6 +167,25 @@ const handleClearCode = () => {
                       {{ item.package_name }}
                     </Link>
 
+                    <!-- Variables the buyer filled in -->
+                    <dl
+                      v-if="item.variables?.length"
+                      class="mt-2 space-y-0.5"
+                    >
+                      <div
+                        v-for="variable in item.variables"
+                        :key="variable.identifier"
+                        class="text-xs text-muted-foreground"
+                      >
+                        <dt class="inline font-medium">
+                          {{ variable.name }}:
+                        </dt>
+                        <dd class="inline ml-1">
+                          {{ variable.value }}
+                        </dd>
+                      </div>
+                    </dl>
+
                     <!-- Sale Badge -->
                     <div v-if="item.sale_name" class="mt-2">
                       <span class="inline-block px-2 py-1 bg-success/10 text-success text-xs font-semibold rounded">

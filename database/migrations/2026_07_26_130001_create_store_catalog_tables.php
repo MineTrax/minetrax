@@ -86,6 +86,41 @@ return new class extends Migration
             $table->index(['available_from', 'available_until']);
         });
 
+        // A reusable input the buyer fills in while ordering — a name prefix, a colour. Defined
+        // once here and attached to any number of packages, which is the difference between this
+        // and a field owned by a single package.
+        Schema::create('store_variables', function (Blueprint $table) {
+            $table->id();
+            $table->string('name'); // shown as the input's label
+
+            // Becomes the command placeholder {VARIABLE_<IDENTIFIER>}. Namespaced on substitution
+            // so a variable can never shadow a built-in like {PLAYER_USERNAME}.
+            $table->string('identifier')->unique();
+
+            $table->text('description')->nullable(); // rich text, shown under the input
+            $table->string('type'); // text, textarea, number, select, radio, checkbox
+            $table->text('options')->nullable(); // comma separated; select and radio only
+            $table->string('placeholder')->nullable();
+            $table->boolean('is_required')->default(true);
+            $table->unsignedInteger('max_length')->nullable(); // free text only
+            $table->boolean('is_enabled')->default(true);
+            $table->integer('sort_order')->default(0);
+
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamps();
+        });
+
+        Schema::create('store_package_variable', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('store_package_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('store_variable_id')->constrained()->cascadeOnDelete();
+            $table->integer('sort_order')->default(0); // order the inputs appear in
+            $table->timestamps();
+
+            $table->unique(['store_package_id', 'store_variable_id'], 'store_package_variable_unique');
+        });
+
         // Packages the buyer must already own before this one can be bought. Read together with
         // store_packages.required_packages_mode.
         Schema::create('store_package_requirement', function (Blueprint $table) {
@@ -134,6 +169,8 @@ return new class extends Migration
         Schema::dropIfExists('store_package_command_server');
         Schema::dropIfExists('store_package_commands');
         Schema::dropIfExists('store_package_requirement');
+        Schema::dropIfExists('store_package_variable');
+        Schema::dropIfExists('store_variables');
         Schema::dropIfExists('store_packages');
         Schema::dropIfExists('store_categories');
     }

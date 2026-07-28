@@ -166,6 +166,13 @@ onUnmounted(stopPolling);
               <span class="block font-medium">{{ item.package_name }}</span>
               <span class="block text-xs text-muted-foreground">&times;{{ item.quantity }}</span>
               <span
+                v-for="variable in item.variables || []"
+                :key="variable.identifier"
+                class="block text-xs text-muted-foreground"
+              >
+                {{ variable.name }}: <span class="text-foreground">{{ variable.value }}</span>
+              </span>
+              <span
                 v-if="item.gift_card"
                 class="block mt-2 text-xs text-muted-foreground"
               >

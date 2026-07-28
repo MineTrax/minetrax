@@ -79,6 +79,10 @@ return new class extends Migration
             $table->string('sale_name')->nullable();
             $table->unsignedInteger('expiry_duration_days')->nullable();
 
+            // Snapshot of the variables the buyer filled in: [{identifier, name, value}]. Carries
+            // the name too, so the order stays readable after a variable is renamed or deleted.
+            $table->json('variable_values')->nullable();
+
             // Set when the package issues a gift card. Also what makes issuance idempotent: the
             // fulfilment job can be retried without minting a second code.
             $table->foreignId('store_gift_card_id')->nullable()->constrained()->nullOnDelete();

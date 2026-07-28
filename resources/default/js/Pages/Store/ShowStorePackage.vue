@@ -4,6 +4,8 @@ import AppHead from "@/Components/AppHead.vue";
 import { Link, usePage, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { useHelpers } from "@/Composables/useHelpers";
+import { useFormKit } from "@/Composables/useFormKit";
+import { FormKitSchema } from "@formkit/vue";
 import { computed, ref } from "vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { truncate } from "lodash";
@@ -17,6 +19,10 @@ const props = defineProps({
     storePackage: {
         type: Object,
         required: true,
+    },
+    variableSchema: {
+        type: Array,
+        default: () => [],
     },
     currency: {
         type: Object,
@@ -44,6 +50,18 @@ const discountPercent = computed(() => {
 });
 
 const sellsGiftCard = computed(() => ["giftcard", "both"].includes(props.storePackage.type?.value));
+
+// The package's variables, rendered from a server-built FormKit schema. v-model keeps the values
+// available to the Add to Cart button, which lives outside the form.
+const variableValues = ref({});
+const formSchema = computed(() => useFormKit().generateSchemaFromFieldsArray(props.variableSchema));
+
+// The server validates every value again, so these are the errors that actually matter.
+const variableErrors = computed(() =>
+    Object.entries(page.props.errors ?? {})
+        .filter(([key]) => key.startsWith("variables."))
+        .map(([, message]) => message)
+);
 
 const breadcrumbItems = [
     {
@@ -88,6 +106,7 @@ const handleAddToCart = () => {
         package_id: props.storePackage.id,
         quantity: quantity.value,
         custom_price: props.storePackage.is_pay_what_you_want ? customPrice.value : null,
+        variables: variableValues.value,
     }, {
         preserveScroll: true,
     });
@@ -208,6 +227,35 @@ const handleQuantityChange = (e) => {
                 {{ __("Maximum:") }} {{ storePackage.max_quantity }}
               </span>
             </p>
+          </div>
+
+          <!-- Variables the buyer fills in -->
+          <div
+            v-if="variableSchema.length"
+            class="bg-card text-card-foreground border border-border rounded-lg shadow p-4 md:p-6 mt-6"
+          >
+            <h3 class="text-sm font-semibold text-foreground mb-3">
+              {{ __("Your details") }}
+            </h3>
+            <FormKit
+              v-model="variableValues"
+              type="form"
+              :actions="false"
+            >
+              <FormKitSchema :schema="formSchema" />
+            </FormKit>
+            <ul
+              v-if="variableErrors.length"
+              class="mt-2 space-y-1"
+            >
+              <li
+                v-for="(error, index) in variableErrors"
+                :key="index"
+                class="text-xs text-destructive"
+              >
+                {{ error }}
+              </li>
+            </ul>
           </div>
 
           <!-- Requirements -->

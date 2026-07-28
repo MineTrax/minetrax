@@ -17,6 +17,7 @@ class StoreOrderItem extends BaseModel
         'unit_price' => 'integer',
         'total' => 'integer',
         'expiry_duration_days' => 'integer',
+        'variable_values' => 'array',
     ];
 
     public function order(): BelongsTo

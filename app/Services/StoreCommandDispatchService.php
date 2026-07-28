@@ -25,6 +25,8 @@ use Illuminate\Support\Collection;
  */
 class StoreCommandDispatchService
 {
+    public function __construct(private StoreVariableService $variables) {}
+
     /**
      * Dispatch every command for a trigger across the whole order.
      *
@@ -276,6 +278,8 @@ class StoreCommandDispatchService
             'currency' => $order->currency,
         ];
 
-        return $params;
+        // The buyer's own answers, from the order item's snapshot. Added last but keyed
+        // `variable_*`, so a variable can never overwrite one of the built-ins above.
+        return $params + $this->variables->parametersFrom($item->variable_values);
     }
 }

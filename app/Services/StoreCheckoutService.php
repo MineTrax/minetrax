@@ -32,6 +32,7 @@ class StoreCheckoutService
         private StoreCurrencyService $currencies,
         private StoreCartService $carts,
         private StoreBanService $bans,
+        private StoreVariableService $variables,
         private StoreSettings $settings,
     ) {}
 
@@ -42,7 +43,11 @@ class StoreCheckoutService
      */
     public function placeOrder(StoreCart $cart, array $input, ?User $user, array $resolvedPlayer): StoreOrder
     {
-        $cart->loadMissing(['items.package.prices', 'items.package.requiredPackages']);
+        $cart->loadMissing([
+            'items.package.prices',
+            'items.package.requiredPackages',
+            'items.package.variables',
+        ]);
 
         if ($cart->items->isEmpty()) {
             throw ValidationException::withMessages(['cart' => __('Your cart is empty.')]);
@@ -76,6 +81,9 @@ class StoreCheckoutService
                     'quantity' => $item->quantity,
                     'custom_price' => $item->custom_price,
                     'custom_price_currency' => $item->custom_price_currency,
+                    // Revalidated here, not trusted from the cart row: a variable may have been
+                    // added, made required or had its choices changed since the item was carted.
+                    'variable_values' => $this->variables->validate($package, $item->variable_values ?? []),
                 ];
             }
 
@@ -129,6 +137,9 @@ class StoreCheckoutService
                     'total' => $item['total'],
                     'sale_name' => $item['sale_name'],
                     'expiry_duration_days' => $package->expiry_duration_days,
+                    // Snapshotted with names, so the order still reads correctly after a variable
+                    // is renamed or deleted.
+                    'variable_values' => $this->variables->snapshotFor($package, $lines[$index]['variable_values']),
                 ]);
             }
 

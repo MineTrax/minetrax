@@ -20,6 +20,7 @@ const props = defineProps({
     categories: Array,
     servers: Array,
     packages: Array,
+    variables: Array,
     baseCurrency: Object,
 });
 
@@ -97,6 +98,7 @@ const form = useForm({
     available_until: null,
     required_packages: [],
     required_packages_mode: "all",
+    variables: [],
     photo: null,
     commands: [
         {
@@ -128,6 +130,16 @@ function convertPercentToBasisPoints(percent) {
     return Math.round(parseFloat(percent) * 100);
 }
 
+// The placeholder is namespaced, so it is not guessable from the variable's name alone. Listing it
+// next to the command builder is the difference between copying it and mistyping it.
+const attachedVariablePlaceholders = computed(() =>
+    (form.variables ?? []).map(variable => ({
+        id: variable.id,
+        name: variable.name,
+        placeholder: `{VARIABLE_${(variable.identifier || "").toUpperCase()}}`,
+    }))
+);
+
 function packagePayload(form) {
     return {
         ...form.data(),
@@ -137,6 +149,7 @@ function packagePayload(form) {
         gift_card_amount: convertPriceToMinorUnits(form.gift_card_amount),
         // Multiselect hands back whole objects; the API takes ids.
         required_packages: (form.required_packages ?? []).map(item => item.id),
+        variables: (form.variables ?? []).map(item => item.id),
         commands: form.commands.map(cmd => ({
             ...cmd,
             servers: (cmd.servers ?? []).map(server => ({ id: server.id })),
@@ -610,6 +623,62 @@ function createPackage() {
             </div>
           </div>
 
+          <!-- Variables Section -->
+          <div class="shadow rounded-lg mb-6 card-clip-safe">
+            <div class="px-4 py-5 bg-card sm:p-6 border-b border-border rounded-lg">
+              <h3 class="text-lg font-medium text-foreground mb-1">
+                {{ __("Variables") }}
+              </h3>
+              <p class="text-sm text-muted-foreground mb-4">
+                {{ __("Fields the customer fills in while ordering, such as a name prefix or colour. Their values are substituted into this package's commands.") }}
+              </p>
+              <div class="grid grid-cols-6 gap-6">
+                <div class="col-span-6">
+                  <label class="block text-sm font-medium text-foreground mb-2">
+                    {{ __("Attached Variables") }}
+                  </label>
+                  <Multiselect
+                    v-model="form.variables"
+                    class="block w-full border-input rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                    :options="variables"
+                    label="name"
+                    track-by="id"
+                    :multiple="true"
+                    :close-on-select="false"
+                    :clear-on-select="false"
+                    :searchable="true"
+                    :placeholder="__('Leave empty to ask the customer for nothing')+'...'"
+                  />
+                  <p
+                    v-if="form.errors.variables"
+                    class="text-xs text-destructive mt-1"
+                  >
+                    {{ form.errors.variables }}
+                  </p>
+                </div>
+
+                <div
+                  v-if="attachedVariablePlaceholders.length"
+                  class="col-span-6 border-t border-border pt-4"
+                >
+                  <p class="text-sm font-medium text-foreground mb-2">
+                    {{ __("Use these placeholders in the commands below") }}
+                  </p>
+                  <ul class="space-y-1">
+                    <li
+                      v-for="variable in attachedVariablePlaceholders"
+                      :key="variable.id"
+                      class="text-sm text-muted-foreground flex items-center gap-2"
+                    >
+                      <code class="px-1.5 py-0.5 rounded bg-muted text-foreground text-xs font-mono select-all">{{ variable.placeholder }}</code>
+                      <span>{{ variable.name }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Commands Section -->
           <div class="shadow overflow-hidden rounded-lg mb-6">
             <div class="px-4 py-5 bg-card sm:p-6 border-b border-border">
@@ -617,7 +686,7 @@ function createPackage() {
                 {{ __("Commands") }}
               </h3>
               <p class="text-sm text-muted-foreground mb-4">
-                {{ __("Available placeholders: {PLAYER_USERNAME}, {PLAYER_UUID}, {QUANTITY}, {PACKAGE_NAME}, {ORDER_UUID}") }}
+                {{ __("Available placeholders: {PLAYER_USERNAME}, {PLAYER_UUID}, {QUANTITY}, {PACKAGE_NAME}, {ORDER_UUID}, plus {VARIABLE_*} for each variable attached above") }}
               </p>
 
               <div class="space-y-4">

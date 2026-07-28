@@ -47,6 +47,11 @@ return new class extends Migration
             $table->unsignedBigInteger('custom_price')->nullable();
             $table->char('custom_price_currency', 3)->nullable();
 
+            // What the buyer typed into the package's variables, keyed by identifier. Re-adding the
+            // package replaces this rather than making a second line: one configuration per package
+            // per cart is predictable, and two configurations have no meaningful merge.
+            $table->json('variable_values')->nullable();
+
             $table->timestamps();
 
             // One line per package, so adding the same package again bumps the quantity.

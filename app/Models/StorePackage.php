@@ -83,6 +83,20 @@ class StorePackage extends BaseModel implements HasMedia
     }
 
     /**
+     * Inputs the buyer fills in while ordering this package.
+     *
+     * Ordered on the relation itself so every eager load agrees, and the pivot's sort_order is what
+     * the admin arranged in the package form.
+     */
+    public function variables(): BelongsToMany
+    {
+        return $this->belongsToMany(StoreVariable::class, 'store_package_variable', 'store_package_id', 'store_variable_id')
+            ->withPivot('sort_order')
+            ->orderBy('store_package_variable.sort_order')
+            ->orderBy('store_variables.id');
+    }
+
+    /**
      * Packages the buyer has to own before this one can be purchased.
      */
     public function requiredPackages(): BelongsToMany

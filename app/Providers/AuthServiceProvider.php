@@ -28,6 +28,7 @@ use App\Models\StoreCurrency;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\StoreSale;
+use App\Models\StoreVariable;
 use App\Models\User;
 use App\Policies\BadgePolicy;
 use App\Policies\CommandQueuePolicy;
@@ -55,6 +56,7 @@ use App\Policies\StoreCurrencyPolicy;
 use App\Policies\StoreOrderPolicy;
 use App\Policies\StorePackagePolicy;
 use App\Policies\StoreSalePolicy;
+use App\Policies\StoreVariablePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -89,6 +91,7 @@ class AuthServiceProvider extends ServiceProvider
         PlayerPunishment::class => PlayerPunishmentPolicy::class,
         StoreCategory::class => StoreCategoryPolicy::class,
         StorePackage::class => StorePackagePolicy::class,
+        StoreVariable::class => StoreVariablePolicy::class,
         StoreCurrency::class => StoreCurrencyPolicy::class,
         StoreOrder::class => StoreOrderPolicy::class,
         StoreCoupon::class => StoreCouponPolicy::class,

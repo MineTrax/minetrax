@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
 use App\Services\StoreCurrencyService;
+use App\Services\StoreVariableService;
 use App\Settings\GeneralSettings;
 use App\Settings\StoreSettings;
 use App\Utils\Helpers\Helper;
@@ -19,6 +20,7 @@ class StoreController extends Controller
 {
     public function __construct(
         private StoreCurrencyService $currencies,
+        private StoreVariableService $variables,
         private StoreSettings $settings,
         private GeneralSettings $general,
     ) {}
@@ -94,7 +96,7 @@ class StoreController extends Controller
         // a disabled or out-of-window one is gone entirely.
         abort_unless($storePackage->is_available, 404);
 
-        $storePackage->load(['category:id,name,slug', 'prices', 'requiredPackages:id,name,slug']);
+        $storePackage->load(['category:id,name,slug', 'prices', 'requiredPackages:id,name,slug', 'variables']);
 
         $currency = $this->currencies->resolve();
 
@@ -106,6 +108,9 @@ class StoreController extends Controller
                 'required_packages' => $storePackage->requiredPackages
                     ->map->only(['id', 'name', 'slug'])->values(),
             ],
+            // FormKit field descriptors, built server-side from the package's variables. The same
+            // schema shape the custom forms use, so the page renders them with FormKitSchema.
+            'variableSchema' => $this->variables->schemaForPackage($storePackage),
             'currency' => $this->currencyPayload($currency),
         ]);
     }

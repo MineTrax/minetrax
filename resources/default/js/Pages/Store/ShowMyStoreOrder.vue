@@ -51,6 +51,13 @@ defineProps({
               <span class="block font-medium">{{ item.package_name }}</span>
               <span class="block text-xs text-muted-foreground">&times;{{ item.quantity }}</span>
               <span
+                v-for="variable in item.variables || []"
+                :key="variable.identifier"
+                class="block text-xs text-muted-foreground"
+              >
+                {{ variable.name }}: <span class="text-foreground">{{ variable.value }}</span>
+              </span>
+              <span
                 v-if="item.grant"
                 class="inline-flex items-center gap-1 mt-2 text-xs text-muted-foreground"
               >
