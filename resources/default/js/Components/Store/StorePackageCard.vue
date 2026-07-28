@@ -84,7 +84,7 @@ const discountPercent = computed(() => {
             v-if="discountPercent"
             class="inline-block px-2 py-1 text-xs font-medium bg-success/10 text-success rounded"
           >
-            {{ __("{percent}% off", { percent: discountPercent }) }}
+            {{ __(":percent% off", { percent: discountPercent }) }}
           </span>
 
           <!-- Out of Stock Badge -->
@@ -100,7 +100,7 @@ const discountPercent = computed(() => {
             v-if="storePackage.expiry_duration_days"
             class="inline-block px-2 py-1 text-xs font-medium bg-muted text-muted-foreground rounded"
           >
-            {{ __("{days} days", { days: storePackage.expiry_duration_days }) }}
+            {{ __(":days days", { days: storePackage.expiry_duration_days }) }}
           </span>
         </div>
 

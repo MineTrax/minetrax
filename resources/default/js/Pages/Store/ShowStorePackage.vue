@@ -278,7 +278,7 @@ const handleQuantityChange = (e) => {
                 v-if="discountPercent"
                 class="inline-block px-3 py-1 text-sm font-medium bg-success/10 text-success rounded-lg"
               >
-                {{ __("{percent}% off", { percent: discountPercent }) }}
+                {{ __(":percent% off", { percent: discountPercent }) }}
               </span>
 
               <span
@@ -299,7 +299,7 @@ const handleQuantityChange = (e) => {
                 v-if="storePackage.expiry_duration_days"
                 class="inline-block px-3 py-1 text-sm font-medium bg-muted text-muted-foreground rounded-lg"
               >
-                {{ __("{days} days", { days: storePackage.expiry_duration_days }) }}
+                {{ __(":days days", { days: storePackage.expiry_duration_days }) }}
               </span>
             </div>
           </div>

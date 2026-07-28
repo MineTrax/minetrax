@@ -279,8 +279,8 @@ function createPackage() {
                     v-model="form.price"
                     :label="form.is_pay_what_you_want ? __('Minimum Price') : __('Price')"
                     :help="form.is_pay_what_you_want
-                      ? __('The least a customer may pay, in {currency}.', { currency: baseCurrency.code })
-                      : __('Decimal amount in {currency}, e.g. 9.99', { currency: baseCurrency.code })"
+                      ? __('The least a customer may pay, in :currency.', { currency: baseCurrency.code })
+                      : __('Decimal amount in :currency, e.g. 9.99', { currency: baseCurrency.code })"
                     :error="form.errors.price"
                     type="number"
                     step="0.01"
@@ -378,7 +378,7 @@ function createPackage() {
                     id="gift_card_amount"
                     v-model="form.gift_card_amount"
                     :label="__('Create A Gift Card')"
-                    :help="__('Store credit sent to the customer after purchase, in {currency}.', { currency: baseCurrency.code })"
+                    :help="__('Store credit sent to the customer after purchase, in :currency.', { currency: baseCurrency.code })"
                     :error="form.errors.gift_card_amount"
                     type="number"
                     step="0.01"
@@ -388,7 +388,9 @@ function createPackage() {
                   />
                 </div>
 
-                <div class="col-span-6 sm:col-span-3 flex sm:items-end">
+                <!-- pt-9 lines the switch up with the middle of the h-9 input beside it, past that
+                     input's own label. items-end would sit it level with the help text instead. -->
+                <div class="col-span-6 sm:col-span-3 sm:pt-9">
                   <XSwitch
                     id="is_gift_card_amount_same_as_price"
                     v-model="form.is_gift_card_amount_same_as_price"
