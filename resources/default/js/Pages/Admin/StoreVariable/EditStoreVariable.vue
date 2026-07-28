@@ -77,6 +77,17 @@ const commandPlaceholder = computed(() => {
     return identifier ? `{VARIABLE_${identifier.toUpperCase()}}` : null;
 });
 
+// FormKit renders `help` as text, so the description's HTML is reduced to a single readable line —
+// the same thing the server does when it builds the storefront's schema.
+const plainDescription = computed(() => {
+    if (! form.description) {
+        return null;
+    }
+    const el = document.createElement("div");
+    el.innerHTML = form.description;
+    return (el.textContent || "").replace(/\s+/g, " ").trim() || null;
+});
+
 // The same schema builder the storefront and the custom forms use, so this preview is the input
 // the customer will really see rather than an approximation of it.
 const previewSchema = computed(() => useFormKit().generateSchemaFromFieldsArray([{
@@ -84,7 +95,7 @@ const previewSchema = computed(() => useFormKit().generateSchemaFromFieldsArray(
     label: form.name || __("Untitled variable"),
     name: "preview",
     placeholder: form.placeholder,
-    help: form.description ? form.description.replace(/<[^>]*>/g, "") : null,
+    help: plainDescription.value,
     options: hasOptions.value ? form.options : null,
 }]));
 
@@ -107,7 +118,10 @@ function updateVariable() {
       </div>
 
       <div class="mt-6">
-        <form @submit.prevent="updateVariable">
+        <form
+          id="store-variable-form"
+          @submit.prevent="updateVariable"
+        >
           <!-- Details -->
           <div class="shadow overflow-hidden rounded-lg mb-6">
             <div class="px-4 py-5 bg-card sm:p-6 border-b border-border">
@@ -285,42 +299,44 @@ function updateVariable() {
               </div>
             </div>
           </div>
-
-          <!-- Preview -->
-          <div class="shadow overflow-hidden rounded-lg mb-6">
-            <div class="px-4 py-5 bg-card sm:p-6 border-b border-border">
-              <h3 class="text-lg font-medium text-foreground mb-1">
-                {{ __("Preview") }}
-              </h3>
-              <p class="text-sm text-muted-foreground mb-4">
-                {{ __("Exactly what the customer sees on the package page.") }}
-              </p>
-              <FormKit
-                type="form"
-                :actions="false"
-              >
-                <FormKitSchema :schema="previewSchema" />
-              </FormKit>
-            </div>
-          </div>
-
-          <div class="px-4 py-3 bg-card border-t border-border sm:px-6 flex justify-end gap-2 rounded-b-lg">
-            <Button
-              variant="outline"
-              as-child
-            >
-              <Link :href="route('admin.store.variable.index')">
-                {{ __("Cancel") }}
-              </Link>
-            </Button>
-            <Button
-              type="submit"
-              :disabled="form.processing"
-            >
-              {{ __("Update Variable") }}
-            </Button>
-          </div>
         </form>
+
+        <!-- Preview. Outside the form on purpose: a FormKit form nested in this one would be
+             invalid HTML, and its inputs would submit the page. -->
+        <div class="shadow overflow-hidden rounded-lg mb-6">
+          <div class="px-4 py-5 bg-card sm:p-6 rounded-lg">
+            <h3 class="text-lg font-medium text-foreground mb-1">
+              {{ __("Preview") }}
+            </h3>
+            <p class="text-sm text-muted-foreground mb-4">
+              {{ __("Exactly what the customer sees on the package page.") }}
+            </p>
+            <!-- Keyed by type: FormKit tracks its input node by name, so without this the old
+                 input stays mounted when the type changes. -->
+            <FormKitSchema
+              :key="form.type"
+              :schema="previewSchema"
+            />
+          </div>
+        </div>
+
+        <div class="shadow rounded-lg px-4 py-3 bg-card sm:px-6 flex justify-end gap-2">
+          <Button
+            variant="outline"
+            as-child
+          >
+            <Link :href="route('admin.store.variable.index')">
+              {{ __("Cancel") }}
+            </Link>
+          </Button>
+          <Button
+            type="submit"
+            form="store-variable-form"
+            :disabled="form.processing"
+          >
+            {{ __("Update Variable") }}
+          </Button>
+        </div>
       </div>
     </div>
   </AdminLayout>

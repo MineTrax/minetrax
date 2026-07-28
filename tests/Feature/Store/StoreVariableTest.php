@@ -260,6 +260,33 @@ class StoreVariableTest extends TestCase
             });
     }
 
+    public function test_the_description_reaches_the_buyer_as_text_not_markup()
+    {
+        // It is authored in a rich text editor, but FormKit renders `help` as text, so the markup
+        // would otherwise appear literally under the input.
+        $variable = StoreVariable::factory()->create([
+            'identifier' => 'prefix_color',
+            'description' => '<p>Pick a <strong>colour</strong> &amp; go.</p>',
+        ]);
+        $package = $this->packageWithVariable($variable);
+
+        $this->get(route('store.package', $package->slug))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('variableSchema.0.help', 'Pick a colour & go.')
+            );
+    }
+
+    public function test_a_variable_with_no_description_carries_no_help_text()
+    {
+        $variable = StoreVariable::factory()->create(['identifier' => 'prefix_color', 'description' => null]);
+        $package = $this->packageWithVariable($variable);
+
+        $this->get(route('store.package', $package->slug))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->where('variableSchema.0.help', null));
+    }
+
     public function test_a_disabled_variable_is_not_asked_for()
     {
         $package = $this->packageWithVariable(StoreVariable::factory()->disabled()->create());

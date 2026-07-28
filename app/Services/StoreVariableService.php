@@ -48,7 +48,7 @@ class StoreVariableService
                 'label' => $variable->name,
                 'name' => $variable->identifier,
                 'placeholder' => $variable->placeholder,
-                'help' => $variable->description,
+                'help' => $this->helpTextFor($variable),
                 'validation' => $this->clientValidationFor($variable),
                 // The shared builder splits this on commas itself.
                 'options' => $variable->type->hasOptions() ? $variable->options : null,
@@ -273,6 +273,24 @@ class StoreVariableService
         }
 
         return $value;
+    }
+
+    /**
+     * The description as a single line of text.
+     *
+     * It is authored in a rich text editor but FormKit renders `help` as text, so the markup would
+     * otherwise appear literally under the input. Formatting is deliberately dropped: this is a
+     * one-line hint beside a field, not a document.
+     */
+    private function helpTextFor(StoreVariable $variable): ?string
+    {
+        if (! $variable->description) {
+            return null;
+        }
+
+        $text = html_entity_decode(strip_tags((string) $variable->description), ENT_QUOTES | ENT_HTML5);
+
+        return trim(preg_replace('/\s+/u', ' ', $text)) ?: null;
     }
 
     /**
