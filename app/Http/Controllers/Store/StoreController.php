@@ -78,12 +78,18 @@ class StoreController extends Controller
             ->where('store_category_id', $storeCategory->id)
             ->get();
 
+        $comparisonFields = $storeCategory->comparisonFields();
+
         return Inertia::render('Store/IndexStore', [
             'storeName' => $this->settings->store_name,
             'storeDescription' => $this->settings->store_description,
             'categories' => $this->categoryTree(),
-            'activeCategory' => $storeCategory->only(['id', 'name', 'slug', 'description']),
-            'packages' => $this->presentPackages($packages, $currency),
+            'activeCategory' => $storeCategory->only(['id', 'name', 'slug', 'description']) + [
+                'display_type' => Helper::enumKeyValue($storeCategory->display_type),
+                'is_cumulative' => $storeCategory->is_cumulative,
+                'comparison_fields' => $comparisonFields,
+            ],
+            'packages' => $this->presentPackages($packages, $currency, $comparisonFields),
             'currency' => $this->currencyPayload($currency),
         ]);
     }
@@ -125,6 +131,9 @@ class StoreController extends Controller
     {
         return StorePackage::query()
             ->with('prices')
+            // Counted, not loaded: the listings only need to know whether a package has to be
+            // configured on its own page before it can be added to the cart.
+            ->withCount('variables')
             ->available()
             ->where('is_visible', true)
             ->orderByDesc('is_featured')
@@ -158,9 +167,32 @@ class StoreController extends Controller
      * @param  Collection<int, StorePackage>  $packages
      * @return \Illuminate\Support\Collection<int, array<string, mixed>>
      */
-    private function presentPackages(Collection $packages, $currency): \Illuminate\Support\Collection
+    private function presentPackages(Collection $packages, $currency, array $comparisonFields = []): \Illuminate\Support\Collection
     {
-        return $packages->map(fn (StorePackage $package) => $this->presentPackage($package, $currency));
+        return $packages->map(fn (StorePackage $package) => $this->presentPackage($package, $currency)
+            + ($comparisonFields ? ['comparison_values' => $this->comparisonValuesFor($package, $comparisonFields)] : []));
+    }
+
+    /**
+     * This package's row of comparison cells, one per field the category defines.
+     *
+     * Driven by the category's field list rather than by whatever the package happens to have
+     * stored, so a field added after the package was saved renders as an empty cell instead of
+     * shifting the column out of line.
+     *
+     * @param  array<int, array{key: string, name: string, description: string|null, type: string}>  $comparisonFields
+     * @return array<string, mixed>
+     */
+    private function comparisonValuesFor(StorePackage $package, array $comparisonFields): array
+    {
+        $stored = $package->comparison_values ?? [];
+        $values = [];
+
+        foreach ($comparisonFields as $field) {
+            $values[$field['key']] = $stored[$field['key']] ?? null;
+        }
+
+        return $values;
     }
 
     /**
@@ -186,6 +218,10 @@ class StoreController extends Controller
             'is_giftable' => $package->is_giftable,
             'min_quantity' => $package->min_quantity,
             'max_quantity' => $package->max_quantity,
+            // Anything that has to be answered or named first cannot be added straight from a
+            // listing; those link through to the package page instead.
+            'needs_configuring' => (bool) $package->is_pay_what_you_want
+                || (int) ($package->variables_count ?? 0) > 0,
             'expiry_duration_days' => $package->expiry_duration_days,
             'available_until' => $package->available_until,
             'is_out_of_stock' => $this->isOutOfStock($package),

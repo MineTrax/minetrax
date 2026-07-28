@@ -99,6 +99,7 @@ const form = useForm({
     required_packages: [],
     required_packages_mode: "all",
     variables: [],
+    comparison_values: {},
     photo: null,
     commands: [
         {
@@ -139,6 +140,17 @@ const attachedVariablePlaceholders = computed(() =>
         placeholder: `{VARIABLE_${(variable.identifier || "").toUpperCase()}}`,
     }))
 );
+
+// The comparison rows belong to the chosen category, so this follows the dropdown rather than being
+// baked in at render. Categories not using the table layout report no fields, which hides the card.
+const comparisonFields = computed(() => {
+    const category = props.categories.find(item => item.id === form.store_category_id);
+
+    if (! category || (category.display_type?.value ?? category.display_type) !== "comparison") {
+        return [];
+    }
+    return category.comparison_fields ?? [];
+});
 
 function packagePayload(form) {
     return {
@@ -617,6 +629,47 @@ function createPackage() {
                     :help="__('With this off, a signed-in customer with a linked player may only buy it for themselves.')"
                     name="is_giftable"
                     :error="form.errors.is_giftable"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comparison Values Section -->
+          <div
+            v-if="comparisonFields.length"
+            class="shadow overflow-hidden rounded-lg mb-6"
+          >
+            <div class="px-4 py-5 bg-card sm:p-6 border-b border-border">
+              <h3 class="text-lg font-medium text-foreground mb-1">
+                {{ __("Comparison Values") }}
+              </h3>
+              <p class="text-sm text-muted-foreground mb-4">
+                {{ __("This package's column in its category's comparison table. Leave a cell empty to show a dash.") }}
+              </p>
+              <div class="grid grid-cols-6 gap-6">
+                <div
+                  v-for="field in comparisonFields"
+                  :key="field.key"
+                  class="col-span-6 sm:col-span-3"
+                >
+                  <XSwitch
+                    v-if="field.type === 'check'"
+                    :id="`comparison_${field.key}`"
+                    :model-value="!! form.comparison_values[field.key]"
+                    :label="field.name"
+                    :help="field.description"
+                    :name="`comparison_${field.key}`"
+                    @update:model-value="form.comparison_values[field.key] = $event"
+                  />
+                  <XInput
+                    v-else
+                    :id="`comparison_${field.key}`"
+                    v-model="form.comparison_values[field.key]"
+                    :label="field.name"
+                    :help="field.description"
+                    type="text"
+                    :name="`comparison_${field.key}`"
                   />
                 </div>
               </div>

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Store;
 
+use App\Enums\StoreCategoryDisplayType;
+use App\Enums\StoreComparisonFieldType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateStoreCategoryRequest;
 use App\Http\Requests\UpdateStoreCategoryRequest;
 use App\Models\StoreCategory;
 use App\Queries\Filters\FilterMultipleFields;
+use App\Utils\Helpers\Helper;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -29,6 +32,8 @@ class StoreCategoryController extends Controller
             'name',
             'slug',
             'description',
+            'display_type',
+            'is_cumulative',
             'sort_order',
             'is_visible',
             'is_enabled',
@@ -59,21 +64,15 @@ class StoreCategoryController extends Controller
     {
         $this->authorize('create', StoreCategory::class);
 
-        return Inertia::render('Admin/StoreCategory/CreateStoreCategory', [
+        return Inertia::render('Admin/StoreCategory/CreateStoreCategory', array_merge($this->formData(), [
             'parentCategories' => StoreCategory::select(['id', 'name'])->orderBy('name')->get(),
-        ]);
+        ]));
     }
 
     public function store(CreateStoreCategoryRequest $request)
     {
-        $category = StoreCategory::create([
-            'name' => $request->name,
+        $category = StoreCategory::create($this->attributesFrom($request) + [
             'slug' => $request->slug,
-            'description' => $request->description,
-            'parent_id' => $request->parent_id,
-            'sort_order' => $request->sort_order ?? 0,
-            'is_visible' => $request->is_visible,
-            'is_enabled' => $request->is_enabled,
             'created_by' => $request->user()->id,
         ]);
 
@@ -89,25 +88,19 @@ class StoreCategoryController extends Controller
     {
         $this->authorize('update', $storeCategory);
 
-        return Inertia::render('Admin/StoreCategory/EditStoreCategory', [
+        return Inertia::render('Admin/StoreCategory/EditStoreCategory', array_merge($this->formData(), [
             'category' => $storeCategory,
             'parentCategories' => StoreCategory::select(['id', 'name'])
                 ->whereKeyNot($storeCategory->id)
                 ->orderBy('name')
                 ->get(),
-        ]);
+        ]));
     }
 
     public function update(UpdateStoreCategoryRequest $request, StoreCategory $storeCategory)
     {
-        $storeCategory->update([
-            'name' => $request->name,
+        $storeCategory->update($this->attributesFrom($request) + [
             'slug' => $request->slug,
-            'description' => $request->description,
-            'parent_id' => $request->parent_id,
-            'sort_order' => $request->sort_order ?? 0,
-            'is_visible' => $request->is_visible,
-            'is_enabled' => $request->is_enabled,
             'updated_by' => $request->user()->id,
         ]);
 
@@ -117,6 +110,47 @@ class StoreCategoryController extends Controller
 
         return redirect()->route('admin.store.category.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Store category has been updated successfully')]]);
+    }
+
+    /**
+     * Shared props for the create and edit forms.
+     *
+     * @return array<string, mixed>
+     */
+    private function formData(): array
+    {
+        return [
+            'displayTypes' => collect(StoreCategoryDisplayType::cases())
+                ->map(fn (StoreCategoryDisplayType $type) => Helper::enumKeyValue($type) + [
+                    'uses_comparison_fields' => $type->usesComparisonFields(),
+                ])
+                ->values(),
+            'comparisonFieldTypes' => collect(StoreComparisonFieldType::cases())
+                ->map(fn (StoreComparisonFieldType $type) => Helper::enumKeyValue($type))
+                ->values(),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function attributesFrom(CreateStoreCategoryRequest $request): array
+    {
+        $displayType = StoreCategoryDisplayType::from($request->string('display_type')->value());
+
+        return [
+            'name' => $request->name,
+            'description' => $request->description,
+            'parent_id' => $request->parent_id,
+            'sort_order' => $request->sort_order ?? 0,
+            'is_visible' => $request->is_visible,
+            'is_enabled' => $request->is_enabled,
+            'display_type' => $displayType,
+            // Kept even when the layout changes, so switching to a table and back does not lose the
+            // rows an admin already filled in for every package.
+            'comparison_fields' => $request->input('comparison_fields') ?: null,
+            'is_cumulative' => $request->is_cumulative,
+        ];
     }
 
     public function destroy(StoreCategory $storeCategory)

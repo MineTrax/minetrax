@@ -27,6 +27,8 @@ class StoreCategoryAdminTest extends TestCase
             'sort_order' => 0,
             'is_visible' => true,
             'is_enabled' => true,
+            'display_type' => 'grid',
+            'is_cumulative' => false,
         ], $overrides);
     }
 

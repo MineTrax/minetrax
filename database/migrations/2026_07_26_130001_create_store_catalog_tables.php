@@ -21,6 +21,17 @@ return new class extends Migration
             $table->boolean('is_visible')->default(true); // hidden categories are reachable by direct link only
             $table->boolean('is_enabled')->default(true);
 
+            // How the storefront lays this category's packages out.
+            $table->string('display_type')->default('grid'); // grid, comparison, listing, stacked
+
+            // Rows of the comparison table, as [{key, name, description, type}]. `key` is generated
+            // once and never changes, so renaming a row keeps the per-package values attached to it.
+            $table->json('comparison_fields')->nullable();
+
+            // Upgrade pricing: owning a cheaper package in this category credits its price against
+            // a dearer one, so the buyer pays only the difference.
+            $table->boolean('is_cumulative')->default(false);
+
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
@@ -69,6 +80,9 @@ return new class extends Migration
             // Whether every listed requirement must be owned, or any one of them. See
             // store_package_requirement below.
             $table->string('required_packages_mode')->default('all'); // all, any
+
+            // This package's cells in its category's comparison table, keyed by field key.
+            $table->json('comparison_values')->nullable();
 
             $table->unsignedInteger('expiry_duration_days')->nullable(); // null = permanent
 

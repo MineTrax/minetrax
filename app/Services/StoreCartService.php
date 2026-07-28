@@ -165,7 +165,7 @@ class StoreCartService
      */
     public function quote(StoreCart $cart, ?Request $request = null): array
     {
-        $cart->loadMissing(['items.package.prices', 'items.package.variables']);
+        $cart->loadMissing(['items.package.prices', 'items.package.variables', 'items.package.category']);
 
         $lines = $cart->items
             ->filter(fn (StoreCartItem $item) => $item->package && $item->package->is_available)
@@ -185,6 +185,7 @@ class StoreCartService
             $cart->coupon,
             $cart->giftCard,
             $request?->user(),
+            $this->indicativePlayerUuid($request),
         );
 
         // Re-attach the cart item id so the UI can address each row.
@@ -216,6 +217,21 @@ class StoreCartService
     public function itemCount(?StoreCart $cart): int
     {
         return $cart ? (int) $cart->items()->sum('quantity') : 0;
+    }
+
+    /**
+     * Who the cart is probably for, so an upgrade credit can be shown before checkout.
+     *
+     * The delivery player is not decided until checkout, where the credit is computed again against
+     * whoever is actually named — that figure is the authoritative one. This only fills the gap for
+     * the common case of a signed-in buyer with a single linked player; with none, or several, the
+     * cart shows the undiscounted price rather than guessing which player to credit.
+     */
+    private function indicativePlayerUuid(?Request $request): ?string
+    {
+        $players = $request?->user()?->players;
+
+        return $players?->count() === 1 ? $players->first()->uuid : null;
     }
 
     private function clampQuantity(StorePackage $package, int $quantity): int

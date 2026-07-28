@@ -5,10 +5,14 @@ import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import StoreCurrencySwitcher from "@/Components/Store/StoreCurrencySwitcher.vue";
 import StorePackageCard from "@/Components/Store/StorePackageCard.vue";
+import StorePackageListing from "@/Components/Store/StorePackageListing.vue";
+import StorePackageComparison from "@/Components/Store/StorePackageComparison.vue";
+import StorePackageStacked from "@/Components/Store/StorePackageStacked.vue";
+import { computed } from "vue";
 
 const { __ } = useTranslations();
 
-defineProps({
+const props = defineProps({
     storeName: {
         type: String,
         required: true,
@@ -31,6 +35,18 @@ defineProps({
         type: Object,
         required: true,
     },
+});
+
+// The layout belongs to the category, so the store index — which has no category — is always a
+// grid. A comparison table with no fields configured would be a single blank column, so it falls
+// back to the grid rather than rendering nothing useful.
+const displayType = computed(() => {
+    const chosen = props.activeCategory?.display_type?.value ?? "grid";
+
+    if (chosen === "comparison" && !(props.activeCategory?.comparison_fields?.length)) {
+        return "grid";
+    }
+    return chosen;
 });
 </script>
 
@@ -122,21 +138,51 @@ defineProps({
             </p>
           </div>
 
-          <!-- Package Grid -->
-          <div
-            v-if="packages.length > 0"
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
-            <StorePackageCard
-              v-for="storePackage in packages"
-              :key="storePackage.id"
-              :store-package="storePackage"
+          <!-- Packages, laid out the way the category asked for -->
+          <template v-if="packages.length > 0">
+            <StorePackageComparison
+              v-if="displayType === 'comparison'"
+              :packages="packages"
+              :fields="activeCategory.comparison_fields"
             />
-          </div>
+
+            <div
+              v-else-if="displayType === 'listing'"
+              class="space-y-3"
+            >
+              <StorePackageListing
+                v-for="storePackage in packages"
+                :key="storePackage.id"
+                :store-package="storePackage"
+              />
+            </div>
+
+            <div
+              v-else-if="displayType === 'stacked'"
+              class="space-y-3"
+            >
+              <StorePackageStacked
+                v-for="storePackage in packages"
+                :key="storePackage.id"
+                :store-package="storePackage"
+              />
+            </div>
+
+            <div
+              v-else
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            >
+              <StorePackageCard
+                v-for="storePackage in packages"
+                :key="storePackage.id"
+                :store-package="storePackage"
+              />
+            </div>
+          </template>
 
           <!-- Empty State -->
           <div
-            v-else
+            v-if="packages.length === 0"
             class="bg-card text-card-foreground border border-border rounded-lg shadow p-12 text-center"
           >
             <svg

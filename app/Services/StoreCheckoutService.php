@@ -47,6 +47,7 @@ class StoreCheckoutService
             'items.package.prices',
             'items.package.requiredPackages',
             'items.package.variables',
+            'items.package.category',
         ]);
 
         if ($cart->items->isEmpty()) {
@@ -90,8 +91,17 @@ class StoreCheckoutService
             $this->assertRequirementsMet($lines, $resolvedPlayer['uuid']);
             $this->assertDeliveryTargetAllowed($lines, $user, $resolvedPlayer['uuid']);
 
-            // Re-quoted here, inside the transaction, from live prices.
-            $quote = $this->pricing->quote($lines, $currency, $cart->coupon, $cart->giftCard, $user);
+            // Re-quoted here, inside the transaction, from live prices — and against the player who
+            // was actually named, which is what makes the upgrade credit authoritative rather than
+            // the indicative figure the cart page showed.
+            $quote = $this->pricing->quote(
+                $lines,
+                $currency,
+                $cart->coupon,
+                $cart->giftCard,
+                $user,
+                $resolvedPlayer['uuid'],
+            );
 
             if ($quote['coupon_error']) {
                 throw ValidationException::withMessages(['code' => $quote['coupon_error']]);
@@ -134,6 +144,7 @@ class StoreCheckoutService
                     'quantity' => $item['quantity'],
                     'unit_price_original' => $item['unit_price_original'],
                     'unit_price' => $item['unit_price'],
+                    'upgrade_credit' => $item['upgrade_credit'],
                     'total' => $item['total'],
                     'sale_name' => $item['sale_name'],
                     'expiry_duration_days' => $package->expiry_duration_days,

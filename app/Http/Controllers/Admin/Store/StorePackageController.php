@@ -172,7 +172,11 @@ class StorePackageController extends Controller
         $base = app(StoreCurrencyService::class)->base();
 
         return [
-            'categories' => StoreCategory::select(['id', 'name'])->orderBy('name')->get(),
+            // display_type and comparison_fields come along so the form can show the right
+            // comparison cells the moment a category is picked, without another round trip.
+            'categories' => StoreCategory::select(['id', 'name', 'display_type', 'comparison_fields'])
+                ->orderBy('name')
+                ->get(),
             // Only servers that can actually receive a command are offerable as targets.
             'servers' => Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->get(),
             // Candidates for the "requires" picker. A package can gate on a disabled one, which is
@@ -235,7 +239,35 @@ class StorePackageController extends Controller
             'required_packages_mode' => StorePackageRequirementMode::from(
                 $request->string('required_packages_mode')->value()
             ),
+            'comparison_values' => $this->comparisonValuesFrom($request),
         ];
+    }
+
+    /**
+     * The package's comparison cells, narrowed to the fields its category actually defines.
+     *
+     * Filtering here rather than storing whatever arrived keeps a stale cell from a previous
+     * category out of the row, and stops a crafted payload parking arbitrary keys on the record.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function comparisonValuesFrom(CreateStorePackageRequest $request): ?array
+    {
+        $submitted = $request->input('comparison_values');
+
+        if (! is_array($submitted) || ! $request->store_category_id) {
+            return null;
+        }
+
+        $category = StoreCategory::find($request->store_category_id);
+        $keys = collect($category?->comparison_fields ?? [])->pluck('key')->filter()->all();
+
+        $values = collect($submitted)
+            ->only($keys)
+            ->reject(fn ($value) => $value === null || $value === '')
+            ->all();
+
+        return $values ?: null;
     }
 
     /**

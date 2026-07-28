@@ -44,6 +44,7 @@ class StorePackage extends BaseModel implements HasMedia
         'global_purchase_limit_period_days' => 'integer',
         'sold_count' => 'integer',
         'required_packages_mode' => StorePackageRequirementMode::class,
+        'comparison_values' => 'array',
         'expiry_duration_days' => 'integer',
         'available_from' => 'datetime',
         'available_until' => 'datetime',
@@ -80,6 +81,17 @@ class StorePackage extends BaseModel implements HasMedia
     public function prices(): HasMany
     {
         return $this->hasMany(StorePackagePrice::class, 'store_package_id');
+    }
+
+    /**
+     * Every grant ever issued for this package, across all players.
+     *
+     * Used to ask what a given player already holds — for prerequisites, and for the upgrade credit
+     * in a cumulative category.
+     */
+    public function grants(): HasMany
+    {
+        return $this->hasMany(StorePackageGrant::class, 'store_package_id');
     }
 
     /**

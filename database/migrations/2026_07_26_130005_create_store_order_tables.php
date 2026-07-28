@@ -77,6 +77,9 @@ return new class extends Migration
             $table->unsignedBigInteger('unit_price');          // after sale, before coupon
             $table->unsignedBigInteger('total');
             $table->string('sale_name')->nullable();
+            // What the buyer was credited for a cheaper package they already owned in a cumulative
+            // category. Recorded so a receipt can explain a total that is not quantity x price.
+            $table->unsignedBigInteger('upgrade_credit')->default(0);
             $table->unsignedInteger('expiry_duration_days')->nullable();
 
             // Snapshot of the variables the buyer filled in: [{identifier, name, value}]. Carries

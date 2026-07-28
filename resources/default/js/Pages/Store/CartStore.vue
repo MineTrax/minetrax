@@ -167,6 +167,14 @@ const handleClearCode = () => {
                       {{ item.package_name }}
                     </Link>
 
+                    <!-- What they already own in a cumulative category is knocked off here -->
+                    <p
+                      v-if="item.upgrade_credit > 0"
+                      class="mt-2 text-xs text-success"
+                    >
+                      {{ __("Upgrade credit") }}: -{{ item.formatted.upgrade_credit }}
+                    </p>
+
                     <!-- Variables the buyer filled in -->
                     <dl
                       v-if="item.variables?.length"
@@ -294,6 +302,15 @@ const handleClearCode = () => {
             >
               <span class="text-muted-foreground">{{ __("Sale Discount") }}</span>
               <span class="text-success font-semibold">-{{ quote.formatted.sale_discount }}</span>
+            </div>
+
+            <!-- Upgrade Credit -->
+            <div
+              v-if="quote.upgrade_credit > 0"
+              class="flex justify-between items-center pb-4 border-b border-border"
+            >
+              <span class="text-muted-foreground">{{ __("Upgrade Credit") }}</span>
+              <span class="text-success font-semibold">-{{ quote.formatted.upgrade_credit }}</span>
             </div>
 
             <!-- Coupon Discount -->

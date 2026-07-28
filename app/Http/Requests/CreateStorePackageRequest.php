@@ -92,6 +92,11 @@ class CreateStorePackageRequest extends FormRequest
             'variables' => 'nullable|array',
             'variables.*' => 'required|integer|distinct|exists:store_variables,id',
 
+            // Cells for the category's comparison table, keyed by field key. Narrowed to the
+            // category's own fields in the controller, so only the shape is checked here.
+            'comparison_values' => 'nullable|array',
+            'comparison_values.*' => 'nullable|string|max:2000',
+
             'photo' => 'nullable|image|max:5120',
 
             // Optional per-currency price overrides, in that currency's minor units. Absent

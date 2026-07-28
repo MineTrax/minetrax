@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\StoreDiscountType;
+use App\Enums\StorePackageGrantStatus;
 use App\Enums\StoreTaxMode;
 use App\Models\StoreCategory;
 use App\Models\StoreCoupon;
@@ -42,19 +43,23 @@ class StorePricingService
         ?StoreCoupon $coupon = null,
         ?StoreGiftCard $giftCard = null,
         ?User $user = null,
+        ?string $playerUuid = null,
     ): array {
         $currency = $currency ?? $this->currencies->resolve();
         $sales = $this->activeSales();
+        $ownedInCategory = $this->ownedPricesByCategory($lines, $playerUuid, $currency);
 
         $items = [];
         $subtotal = 0;
         $saleDiscount = 0;
+        $upgradeCredit = 0;
 
         foreach ($lines as $line) {
-            $item = $this->priceLine($line, $currency, $sales);
+            $item = $this->priceLine($line, $currency, $sales, $ownedInCategory);
             $items[] = $item;
             $subtotal += $item['total'];
             $saleDiscount += ($item['unit_price_original'] - $item['unit_price']) * $item['quantity'];
+            $upgradeCredit += $item['upgrade_credit'];
         }
 
         $couponResult = $this->applyCoupon($items, $subtotal, $coupon, $currency, $user);
@@ -77,6 +82,7 @@ class StorePricingService
             'items' => $items,
             'subtotal' => $subtotal,
             'sale_discount' => $saleDiscount,
+            'upgrade_credit' => $upgradeCredit,
             'coupon_discount' => $couponDiscount,
             'coupon_code' => $couponDiscount > 0 ? $coupon?->code : null,
             'coupon_error' => $couponResult['error'],
@@ -92,6 +98,7 @@ class StorePricingService
             'formatted' => [
                 'subtotal' => $this->currencies->format($subtotal, $currency),
                 'sale_discount' => $this->currencies->format($saleDiscount, $currency),
+                'upgrade_credit' => $this->currencies->format($upgradeCredit, $currency),
                 'coupon_discount' => $this->currencies->format($couponDiscount, $currency),
                 'tax_amount' => $this->currencies->format($tax['amount'], $currency),
                 'total' => $this->currencies->format($total, $currency),
@@ -107,7 +114,7 @@ class StorePricingService
      * @param  array{package: StorePackage, quantity: int, custom_price?: int|null, custom_price_currency?: string|null}  $line
      * @return array<string, mixed>
      */
-    private function priceLine(array $line, StoreCurrency $currency, Collection $sales): array
+    private function priceLine(array $line, StoreCurrency $currency, Collection $sales, array $ownedInCategory = []): array
     {
         /** @var StorePackage $package */
         $package = $line['package'];
@@ -130,22 +137,95 @@ class StorePricingService
             }
         }
 
+        // Credited once for the line, not per unit: the credit is for a package the buyer already
+        // holds, and they hold it once however many they are buying now.
+        $lineTotal = $unit * $quantity;
+        $credit = min($lineTotal, $this->upgradeCreditFor($package, $unit, $ownedInCategory));
+        $lineTotal -= $credit;
+
         return [
             'package_id' => $package->id,
             'package_name' => $package->name,
             'quantity' => $quantity,
             'unit_price_original' => $original,
             'unit_price' => $unit,
-            'total' => $unit * $quantity,
+            'upgrade_credit' => $credit,
+            'total' => $lineTotal,
             'sale_name' => $sale['name'] ?? null,
             'discount_bp' => $package->is_pay_what_you_want ? 0 : (int) $package->discount_bp,
             'is_pay_what_you_want' => (bool) $package->is_pay_what_you_want,
             'formatted' => [
                 'unit_price_original' => $this->currencies->format($original, $currency),
                 'unit_price' => $this->currencies->format($unit, $currency),
-                'total' => $this->currencies->format($unit * $quantity, $currency),
+                'upgrade_credit' => $this->currencies->format($credit, $currency),
+                'total' => $this->currencies->format($lineTotal, $currency),
             ],
         ];
+    }
+
+    /**
+     * What the buyer is credited for a cheaper package they already hold in the same category.
+     *
+     * Only a genuine upgrade earns a credit: if what they already hold costs the same or more this
+     * is a sidegrade or a downgrade, and crediting it would hand the package over for nothing.
+     *
+     * @param  array<int, int>  $ownedInCategory  category id => the dearest owned price, in this currency
+     */
+    private function upgradeCreditFor(StorePackage $package, int $unitPrice, array $ownedInCategory): int
+    {
+        $owned = $ownedInCategory[$package->store_category_id] ?? 0;
+
+        return $owned > 0 && $owned < $unitPrice ? $owned : 0;
+    }
+
+    /**
+     * For each cumulative category in the basket, the price of the dearest package the player
+     * already holds there.
+     *
+     * Read from active grants, so a refund that revoked the grant also withdraws the credit. Priced
+     * at today's price rather than what was paid: that is what "pay the difference" means when the
+     * price has since moved, and it is the same figure the storefront is showing.
+     *
+     * @param  array<int, array{package: StorePackage, quantity: int}>  $lines
+     * @return array<int, int>
+     */
+    private function ownedPricesByCategory(array $lines, ?string $playerUuid, StoreCurrency $currency): array
+    {
+        if (! $playerUuid) {
+            return [];
+        }
+
+        $categoryIds = collect($lines)
+            ->map(fn (array $line) => $line['package'])
+            ->filter(fn (StorePackage $package) => $package->store_category_id
+                && $package->category?->is_cumulative)
+            ->pluck('store_category_id')
+            ->unique()
+            ->values();
+
+        if ($categoryIds->isEmpty()) {
+            return [];
+        }
+
+        $owned = StorePackage::query()
+            ->whereIn('store_category_id', $categoryIds)
+            ->whereHas('grants', fn ($query) => $query
+                ->where('player_uuid', $playerUuid)
+                ->where('status', StorePackageGrantStatus::ACTIVE)
+            )
+            ->with('prices')
+            ->get();
+
+        $prices = [];
+
+        foreach ($owned as $package) {
+            $price = $this->currencies->priceForPackage($package, $currency);
+            $categoryId = (int) $package->store_category_id;
+
+            $prices[$categoryId] = max($prices[$categoryId] ?? 0, $price);
+        }
+
+        return $prices;
     }
 
     /**
