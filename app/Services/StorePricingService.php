@@ -33,7 +33,7 @@ class StorePricingService
     /**
      * Price a basket.
      *
-     * @param  array<int, array{package: StorePackage, quantity: int, choices?: Collection|array}>  $lines
+     * @param  array<int, array{package: StorePackage, quantity: int}>  $lines
      * @return array<string, mixed>
      */
     public function quote(
@@ -102,9 +102,9 @@ class StorePricingService
     }
 
     /**
-     * Price one basket line: package price plus validated option deltas, then the best sale.
+     * Price one basket line: the package price, then the best sale.
      *
-     * @param  array{package: StorePackage, quantity: int, choices?: Collection|array}  $line
+     * @param  array{package: StorePackage, quantity: int}  $line
      * @return array<string, mixed>
      */
     private function priceLine(array $line, StoreCurrency $currency, Collection $sales): array
@@ -113,27 +113,7 @@ class StorePricingService
         $package = $line['package'];
         $quantity = max(1, (int) $line['quantity']);
 
-        $unit = $this->currencies->priceForPackage($package, $currency);
-
-        $chosen = [];
-        foreach (collect($line['choices'] ?? []) as $choice) {
-            // Deltas live in base currency and are converted, so a per-currency package override
-            // does not silently re-denominate its options.
-            $delta = $this->currencies->convert($choice->price_delta, $this->currencies->base(), $currency);
-            $unit += $delta;
-
-            $chosen[] = [
-                'option_id' => $choice->store_package_option_id,
-                'choice_id' => $choice->id,
-                'placeholder' => $choice->option?->placeholder,
-                'name' => $choice->name,
-                'value' => $choice->value,
-                'price_delta' => $delta,
-            ];
-        }
-
-        // An option with a large negative delta must never make a package free or negative.
-        $unit = max(0, $unit);
+        $unit = max(0, $this->currencies->priceForPackage($package, $currency));
         $original = $unit;
 
         $sale = $this->bestSaleFor($package, $unit, $sales);
@@ -149,7 +129,6 @@ class StorePricingService
             'unit_price' => $unit,
             'total' => $unit * $quantity,
             'sale_name' => $sale['name'] ?? null,
-            'options' => $chosen,
             'formatted' => [
                 'unit_price_original' => $this->currencies->format($original, $currency),
                 'unit_price' => $this->currencies->format($unit, $currency),

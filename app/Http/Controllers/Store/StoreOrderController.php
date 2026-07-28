@@ -68,11 +68,6 @@ class StoreOrderController extends Controller
                     'package_name' => $item->package_name,
                     'quantity' => $item->quantity,
                     'total_formatted' => $this->currencies->format((int) $item->total, $order->currency),
-                    // The stored `value` feeds server commands; the buyer only needs the label.
-                    'options' => collect($item->options ?? [])->map(fn ($option) => [
-                        'name' => $option['name'] ?? null,
-                        'label' => $option['label'] ?? null,
-                    ]),
                     'grant' => $item->grant ? [
                         'status' => Helper::enumKeyValue($item->grant->status),
                         'expires_at' => $item->grant->expires_at,

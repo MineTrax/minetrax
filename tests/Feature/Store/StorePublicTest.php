@@ -115,28 +115,6 @@ class StorePublicTest extends TestCase
             ->assertInertia(fn ($page) => $page->where('packages.0.is_out_of_stock', true));
     }
 
-    public function test_the_package_page_exposes_option_choices_without_leaking_command_values()
-    {
-        $package = StorePackage::factory()->create();
-        $option = $package->options()->create([
-            'name' => 'Tier', 'placeholder' => 'TIER', 'type' => 'select', 'is_required' => true, 'sort_order' => 0,
-        ]);
-        $option->choices()->create(['name' => 'Gold', 'value' => 'secret-gold-node', 'price_delta' => 500, 'is_enabled' => true, 'sort_order' => 0]);
-        $option->choices()->create(['name' => 'Hidden', 'value' => 'nope', 'price_delta' => 0, 'is_enabled' => false, 'sort_order' => 1]);
-
-        $response = $this->get(route('store.package', $package->slug));
-
-        $response->assertStatus(200)
-            ->assertInertia(fn ($page) => $page
-                ->has('storePackage.options', 1)
-                ->has('storePackage.options.0.choices', 1) // the disabled choice is dropped
-                ->where('storePackage.options.0.choices.0.name', 'Gold')
-            );
-
-        // The raw value feeds a server command; the buyer never needs it.
-        $response->assertDontSee('secret-gold-node');
-    }
-
     public function test_every_public_store_route_is_gone_when_the_module_is_disabled()
     {
         config(['store.enabled' => false]);

@@ -163,19 +163,6 @@ class StoreDeliveryJobTest extends TestCase
         $this->assertStringNotContainsString('{', $parsed, 'No placeholder should survive substitution.');
     }
 
-    public function test_option_placeholders_are_substituted_from_the_order_item_snapshot()
-    {
-        [$order, $package] = $this->paidOrder();
-        $order->items->first()->update([
-            'options' => [['placeholder' => 'TIER', 'value' => 'diamond', 'name' => 'Diamond']],
-        ]);
-        $this->purchaseCommand($package, ['command' => 'kit give {PLAYER_USERNAME} {TIER}']);
-
-        $this->runJob($order->fresh());
-
-        $this->assertEquals('kit give Steve diamond', CommandQueue::where('tag', 'store')->first()->parsed_command);
-    }
-
     public function test_quantity_substitution_by_default()
     {
         [$order, $package] = $this->paidOrder([], 5);

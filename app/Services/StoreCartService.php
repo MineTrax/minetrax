@@ -5,10 +5,8 @@ namespace App\Services;
 use App\Models\StoreCart;
 use App\Models\StoreCartItem;
 use App\Models\StorePackage;
-use App\Models\StorePackageOptionChoice;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -49,18 +47,12 @@ class StoreCartService
     }
 
     /**
-     * Add a line, merging into an existing one when the same package is configured identically.
-     *
-     * @param  array<int, int>  $choiceIds
+     * Add a line, bumping the quantity when the package is already in the cart.
      */
-    public function add(StoreCart $cart, StorePackage $package, int $quantity, array $choiceIds = []): StoreCartItem
+    public function add(StoreCart $cart, StorePackage $package, int $quantity): StoreCartItem
     {
-        $choices = $this->validateChoices($package, $choiceIds);
-        $signature = $this->signature($choices->pluck('id')->all());
-
         $item = $cart->items()
             ->where('store_package_id', $package->id)
-            ->where('options_signature', $signature)
             ->first();
 
         $quantity = $this->clampQuantity($package, ($item->quantity ?? 0) + $quantity);
@@ -78,8 +70,6 @@ class StoreCartService
         return $cart->items()->create([
             'store_package_id' => $package->id,
             'quantity' => $quantity,
-            'selected_options' => $choices->pluck('id')->all(),
-            'options_signature' => $signature,
         ]);
     }
 
@@ -120,7 +110,6 @@ class StoreCartService
             foreach ($guestCart->items as $guestItem) {
                 $existing = $userCart->items()
                     ->where('store_package_id', $guestItem->store_package_id)
-                    ->where('options_signature', $guestItem->options_signature)
                     ->first();
 
                 if ($existing) {
@@ -131,9 +120,7 @@ class StoreCartService
                     continue;
                 }
 
-                $userCart->items()->create($guestItem->only([
-                    'store_package_id', 'quantity', 'selected_options', 'options_signature',
-                ]));
+                $userCart->items()->create($guestItem->only(['store_package_id', 'quantity']));
             }
 
             $guestCart->delete();
@@ -156,7 +143,6 @@ class StoreCartService
                 'cart_item_id' => $item->id,
                 'package' => $item->package,
                 'quantity' => $item->quantity,
-                'choices' => $this->choicesFor($item),
             ])
             ->values();
 
@@ -191,78 +177,6 @@ class StoreCartService
     public function itemCount(?StoreCart $cart): int
     {
         return $cart ? (int) $cart->items()->sum('quantity') : 0;
-    }
-
-    /**
-     * Resolve stored choice ids back to models, dropping any that have since been disabled or
-     * deleted so a stale cart cannot resurrect a withdrawn option.
-     *
-     * @return Collection<int, StorePackageOptionChoice>
-     */
-    public function choicesFor(StoreCartItem $item): Collection
-    {
-        $ids = $item->selected_options ?? [];
-
-        if (empty($ids)) {
-            return collect();
-        }
-
-        return StorePackageOptionChoice::with('option')
-            ->whereIn('id', $ids)
-            ->where('is_enabled', true)
-            ->whereHas('option', fn ($q) => $q->where('store_package_id', $item->store_package_id))
-            ->get();
-    }
-
-    /**
-     * Every submitted choice must belong to this package and be enabled, and every required
-     * option must be answered exactly once.
-     *
-     * @param  array<int, int>  $choiceIds
-     * @return Collection<int, StorePackageOptionChoice>
-     */
-    private function validateChoices(StorePackage $package, array $choiceIds): Collection
-    {
-        $package->loadMissing('options.choices');
-
-        $choices = StorePackageOptionChoice::with('option')
-            ->whereIn('id', $choiceIds)
-            ->where('is_enabled', true)
-            ->whereHas('option', fn ($q) => $q->where('store_package_id', $package->id))
-            ->get();
-
-        if (count($choiceIds) !== $choices->count()) {
-            abort(422, __('One of the selected options is no longer available.'));
-        }
-
-        $perOption = $choices->groupBy('store_package_option_id');
-
-        foreach ($perOption as $optionChoices) {
-            if ($optionChoices->count() > 1) {
-                abort(422, __('Only one choice per option is allowed.'));
-            }
-        }
-
-        foreach ($package->options->where('is_required', true) as $required) {
-            if (! $perOption->has($required->id)) {
-                abort(422, __('Please choose a :option.', ['option' => $required->name]));
-            }
-        }
-
-        return $choices;
-    }
-
-    /**
-     * Identical option selections must collapse onto one cart line, so the signature is order
-     * independent.
-     *
-     * @param  array<int, int>  $choiceIds
-     */
-    private function signature(array $choiceIds): string
-    {
-        sort($choiceIds);
-
-        return md5(implode(',', $choiceIds));
     }
 
     private function clampQuantity(StorePackage $package, int $quantity): int

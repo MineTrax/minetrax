@@ -270,13 +270,6 @@ class StoreCommandDispatchService
             'currency' => $order->currency,
         ];
 
-        // Option selections, exposed under the placeholder the admin defined, e.g. {TIER}.
-        foreach ($item->options ?? [] as $option) {
-            if (! empty($option['placeholder'])) {
-                $params[$option['placeholder']] = $option['value'] ?? '';
-            }
-        }
-
         return $params;
     }
 }

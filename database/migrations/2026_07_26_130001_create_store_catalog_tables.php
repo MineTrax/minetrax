@@ -61,31 +61,6 @@ return new class extends Migration
             $table->index(['is_enabled', 'is_visible']);
         });
 
-        Schema::create('store_package_options', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('store_package_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->string('placeholder'); // UPPER_SNAKE, substituted into commands as {PLACEHOLDER}
-            $table->string('type')->default('select'); // select (text, number reserved for later)
-            $table->text('description')->nullable();
-            $table->boolean('is_required')->default(true);
-            $table->integer('sort_order')->default(0);
-            $table->timestamps();
-
-            $table->unique(['store_package_id', 'placeholder']);
-        });
-
-        Schema::create('store_package_option_choices', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('store_package_option_id')->constrained()->cascadeOnDelete();
-            $table->string('name');  // shown to the buyer
-            $table->string('value'); // substituted into the command
-            $table->bigInteger('price_delta')->default(0); // signed minor units, in base currency
-            $table->boolean('is_enabled')->default(true);
-            $table->integer('sort_order')->default(0);
-            $table->timestamps();
-        });
-
         Schema::create('store_package_commands', function (Blueprint $table) {
             $table->id();
             $table->foreignId('store_package_id')->constrained()->cascadeOnDelete();
@@ -122,8 +97,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('store_package_command_server');
         Schema::dropIfExists('store_package_commands');
-        Schema::dropIfExists('store_package_option_choices');
-        Schema::dropIfExists('store_package_options');
         Schema::dropIfExists('store_packages');
         Schema::dropIfExists('store_categories');
     }

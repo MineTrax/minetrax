@@ -51,13 +51,6 @@ class StoreOrderUserTest extends TestCase
             'unit_price_original' => 750,
             'unit_price' => 750,
             'total' => 1500,
-            'options' => [[
-                'name' => 'Tier',
-                'label' => 'Gold',
-                // Feeds a server command; must never reach the buyer's browser.
-                'value' => 'internal_gold_node',
-                'placeholder' => 'TIER',
-            ]],
         ]);
 
         return $order->fresh('items');
@@ -118,31 +111,6 @@ class StoreOrderUserTest extends TestCase
                 ->has('order.items', 1)
                 ->has('order.money.total')
             );
-    }
-
-    /**
-     * Option values are substituted into server commands. Leaking them would tell a buyer exactly
-     * what the console is about to run on their behalf.
-     */
-    public function test_the_internal_option_value_is_never_sent_to_the_buyer()
-    {
-        $user = User::factory()->create();
-        $order = $this->orderWithItem(['user_id' => $user->id]);
-
-        $response = $this->actingAs($user)->get(route('store.my-order.show', $order->uuid));
-
-        $response->assertOk();
-        $response->assertDontSee('internal_gold_node');
-
-        // Asserted on the payload rather than the rendered HTML: the shared translation bundle
-        // legitimately contains the word TIER as a validation example, so a text search would
-        // false-positive. What matters is that the option object carries no value or placeholder.
-        $response->assertInertia(function ($page) {
-            $option = $page->toArray()['props']['order']['items'][0]['options'][0];
-
-            $this->assertEquals(['name', 'label'], array_keys($option));
-            $this->assertEquals('Gold', $option['label']);
-        });
     }
 
     public function test_the_history_is_hidden_when_the_store_is_disabled()

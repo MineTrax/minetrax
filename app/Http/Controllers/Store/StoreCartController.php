@@ -54,8 +54,6 @@ class StoreCartController extends Controller
         $validated = $request->validate([
             'package_id' => 'required|integer|exists:store_packages,id',
             'quantity' => 'required|integer|min:1|max:9999',
-            'choices' => 'nullable|array',
-            'choices.*' => 'integer|exists:store_package_option_choices,id',
         ]);
 
         $package = StorePackage::where('is_enabled', true)->findOrFail($validated['package_id']);
@@ -71,7 +69,7 @@ class StoreCartController extends Controller
         }
 
         $cart = $this->carts->current($request);
-        $this->carts->add($cart, $package, $validated['quantity'], $validated['choices'] ?? []);
+        $this->carts->add($cart, $package, $validated['quantity']);
         $this->rememberCart($cart->session_token);
 
         return redirect()->route('store.cart.show')

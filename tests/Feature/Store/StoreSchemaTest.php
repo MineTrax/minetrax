@@ -31,8 +31,7 @@ class StoreSchemaTest extends TestCase
     public function test_every_store_table_exists()
     {
         $tables = [
-            'store_categories', 'store_packages', 'store_package_command_server', 'store_package_options',
-            'store_package_option_choices', 'store_package_commands',
+            'store_categories', 'store_packages', 'store_package_command_server', 'store_package_commands',
             'store_currencies', 'store_package_prices',
             'store_carts', 'store_cart_items',
             'store_coupons', 'store_couponables', 'store_sales', 'store_saleables', 'store_gift_cards',
@@ -220,7 +219,6 @@ class StoreSchemaTest extends TestCase
         // Carts are always priced live; a stored price is a tampering and staleness vector.
         $this->assertFalse(Schema::hasColumn('store_cart_items', 'price'));
         $this->assertFalse(Schema::hasColumn('store_cart_items', 'unit_price'));
-        $this->assertTrue(Schema::hasColumn('store_cart_items', 'options_signature'));
     }
 
     public function test_ban_factory_and_active_scope()

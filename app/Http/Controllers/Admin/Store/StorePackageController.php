@@ -88,7 +88,6 @@ class StorePackageController extends Controller
             ]);
 
             $this->syncCommands($package, $request->input('commands', []));
-            $this->syncOptions($package, $request->input('options', []));
             $this->syncPrices($package, $request->input('prices', []));
 
             return $package;
@@ -106,7 +105,7 @@ class StorePackageController extends Controller
     {
         $this->authorize('update', $storePackage);
 
-        $storePackage->load(['commands.servers:id,name,hostname', 'options.choices']);
+        $storePackage->load(['commands.servers:id,name,hostname']);
 
         return Inertia::render('Admin/StorePackage/EditStorePackage', array_merge($this->formData(), [
             // Named storePackage, not package: `package` is a reserved word in the strict-mode
@@ -124,7 +123,6 @@ class StorePackageController extends Controller
             ]);
 
             $this->syncCommands($storePackage, $request->input('commands', []));
-            $this->syncOptions($storePackage, $request->input('options', []));
             $this->syncPrices($storePackage, $request->input('prices', []));
         });
 
@@ -140,7 +138,7 @@ class StorePackageController extends Controller
     {
         $this->authorize('delete', $storePackage);
 
-        // Soft delete. Order items snapshot the name, price and options, so past orders stay
+        // Soft delete. Order items snapshot the name and price, so past orders stay
         // readable, and expiry commands can still resolve for grants already issued.
         $storePackage->delete();
 
@@ -261,63 +259,5 @@ class StorePackageController extends Controller
         }
 
         $package->commands()->whereKeyNot($keptIds)->delete();
-    }
-
-    /**
-     * Reconcile options and their choices. Choices are reconciled per option so that renaming a
-     * choice does not orphan the selections already snapshotted on past order items.
-     *
-     * @param  array<int, array<string, mixed>>  $options
-     */
-    private function syncOptions(StorePackage $package, array $options): void
-    {
-        $keptOptionIds = [];
-
-        foreach ($options as $index => $option) {
-            $attributes = [
-                'name' => $option['name'],
-                'placeholder' => $option['placeholder'],
-                'type' => $option['type'],
-                'description' => $option['description'] ?? null,
-                'is_required' => $option['is_required'],
-                'sort_order' => $option['sort_order'] ?? $index,
-            ];
-
-            $model = null;
-            if (! empty($option['id'])) {
-                $model = $package->options()->whereKey($option['id'])->first();
-                $model?->update($attributes);
-            }
-
-            $model ??= $package->options()->create($attributes);
-            $keptOptionIds[] = $model->id;
-
-            $keptChoiceIds = [];
-            foreach ($option['choices'] ?? [] as $choiceIndex => $choice) {
-                $choiceAttributes = [
-                    'name' => $choice['name'],
-                    'value' => $choice['value'],
-                    'price_delta' => $choice['price_delta'],
-                    'is_enabled' => $choice['is_enabled'],
-                    'sort_order' => $choice['sort_order'] ?? $choiceIndex,
-                ];
-
-                if (! empty($choice['id'])) {
-                    $existingChoice = $model->choices()->whereKey($choice['id'])->first();
-                    if ($existingChoice) {
-                        $existingChoice->update($choiceAttributes);
-                        $keptChoiceIds[] = $existingChoice->id;
-
-                        continue;
-                    }
-                }
-
-                $keptChoiceIds[] = $model->choices()->create($choiceAttributes)->id;
-            }
-
-            $model->choices()->whereKeyNot($keptChoiceIds)->delete();
-        }
-
-        $package->options()->whereKeyNot($keptOptionIds)->delete();
     }
 }

@@ -70,7 +70,6 @@ class StoreCheckoutService
                 $lines[] = [
                     'package' => $package,
                     'quantity' => $item->quantity,
-                    'choices' => $this->carts->choicesFor($item),
                 ];
             }
 
@@ -120,7 +119,6 @@ class StoreCheckoutService
                     'unit_price' => $item['unit_price'],
                     'total' => $item['total'],
                     'sale_name' => $item['sale_name'],
-                    'options' => $item['options'],
                     'expiry_duration_days' => $package->expiry_duration_days,
                 ]);
             }

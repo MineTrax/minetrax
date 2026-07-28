@@ -11,7 +11,6 @@ class StoreCartItem extends BaseModel
 
     protected $casts = [
         'quantity' => 'integer',
-        'selected_options' => 'array',
     ];
 
     public function cart(): BelongsTo

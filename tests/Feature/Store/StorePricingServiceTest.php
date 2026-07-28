@@ -30,9 +30,9 @@ class StorePricingServiceTest extends TestCase
         $this->pricing = app(StorePricingService::class);
     }
 
-    private function line(StorePackage $package, int $quantity = 1, array $choices = []): array
+    private function line(StorePackage $package, int $quantity = 1): array
     {
-        return ['package' => $package, 'quantity' => $quantity, 'choices' => collect($choices)];
+        return ['package' => $package, 'quantity' => $quantity];
     }
 
     private function setTax(string $mode, int $rateBp): void
@@ -74,38 +74,6 @@ class StorePricingServiceTest extends TestCase
             $quote['gift_card_amount'] + $quote['amount_due'],
             'total must equal gift card coverage plus amount due'
         );
-    }
-
-    public function test_option_deltas_are_added_to_the_unit_price()
-    {
-        $package = StorePackage::factory()->create(['price' => 1000]);
-        $option = $package->options()->create([
-            'name' => 'Tier', 'placeholder' => 'TIER', 'type' => 'select', 'is_required' => true, 'sort_order' => 0,
-        ]);
-        $choice = $option->choices()->create([
-            'name' => 'Diamond', 'value' => 'diamond', 'price_delta' => 500, 'is_enabled' => true, 'sort_order' => 0,
-        ]);
-
-        $quote = $this->pricing->quote([$this->line($package, 2, [$choice])]);
-
-        $this->assertEquals(1500, $quote['items'][0]['unit_price']);
-        $this->assertEquals(3000, $quote['subtotal']);
-    }
-
-    public function test_a_negative_option_delta_cannot_drive_a_price_below_zero()
-    {
-        $package = StorePackage::factory()->create(['price' => 500]);
-        $option = $package->options()->create([
-            'name' => 'Discount', 'placeholder' => 'DISC', 'type' => 'select', 'is_required' => false, 'sort_order' => 0,
-        ]);
-        $choice = $option->choices()->create([
-            'name' => 'Absurd', 'value' => 'x', 'price_delta' => -99999, 'is_enabled' => true, 'sort_order' => 0,
-        ]);
-
-        $quote = $this->pricing->quote([$this->line($package, 1, [$choice])]);
-
-        $this->assertSame(0, $quote['items'][0]['unit_price']);
-        $this->assertSame(0, $quote['total']);
     }
 
     public function test_a_percentage_sale_is_applied_with_basis_point_precision()

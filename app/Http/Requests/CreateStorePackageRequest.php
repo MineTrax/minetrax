@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Enums\StorePackageCommandTrigger;
-use App\Enums\StorePackageOptionType;
 use App\Models\StorePackage;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
@@ -78,31 +77,12 @@ class CreateStorePackageRequest extends FormRequest
             'commands.*.is_repeat_per_quantity' => 'required|boolean',
             'commands.*.sort_order' => 'nullable|integer|min:0',
 
-            'options' => 'nullable|array',
-            'options.*.id' => 'nullable|integer|exists:store_package_options,id',
-            'options.*.name' => 'required|string|max:255',
-            // Substituted into commands as {PLACEHOLDER}, so it must be a safe token.
-            'options.*.placeholder' => 'required|string|max:64|regex:/^[A-Z][A-Z0-9_]*$/',
-            'options.*.type' => ['required', Rule::enum(StorePackageOptionType::class)],
-            'options.*.description' => 'nullable|string|max:1000',
-            'options.*.is_required' => 'required|boolean',
-            'options.*.sort_order' => 'nullable|integer|min:0',
-
-            'options.*.choices' => 'required|array|min:1',
-            'options.*.choices.*.id' => 'nullable|integer|exists:store_package_option_choices,id',
-            'options.*.choices.*.name' => 'required|string|max:255',
-            'options.*.choices.*.value' => 'required|string|max:255',
-            'options.*.choices.*.price_delta' => 'required|integer',
-            'options.*.choices.*.is_enabled' => 'required|boolean',
-            'options.*.choices.*.sort_order' => 'nullable|integer|min:0',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'options.*.placeholder.regex' => __('Placeholder must be UPPER_SNAKE_CASE, e.g. TIER.'),
-            'options.*.choices.required' => __('Each option needs at least one choice.'),
         ];
     }
 }

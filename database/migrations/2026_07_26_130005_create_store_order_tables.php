@@ -77,7 +77,6 @@ return new class extends Migration
             $table->unsignedBigInteger('unit_price');          // after sale, before coupon
             $table->unsignedBigInteger('total');
             $table->string('sale_name')->nullable();
-            $table->json('options')->nullable(); // includes resolved placeholders
             $table->unsignedInteger('expiry_duration_days')->nullable();
 
             $table->timestamps();

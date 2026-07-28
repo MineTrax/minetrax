@@ -36,7 +36,6 @@ class StoreOrderItemFactory extends Factory
             'unit_price_original' => $price,
             'unit_price' => $price,
             'total' => $price,
-            'options' => null,
         ];
     }
 }

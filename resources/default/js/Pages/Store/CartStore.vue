@@ -167,17 +167,6 @@ const handleClearCode = () => {
                       {{ item.package_name }}
                     </Link>
 
-                    <!-- Options -->
-                    <div v-if="item.options.length > 0" class="mt-2 flex flex-wrap gap-2">
-                      <span
-                        v-for="(option, idx) in item.options"
-                        :key="idx"
-                        class="inline-block px-2 py-1 bg-muted text-muted-foreground text-xs rounded"
-                      >
-                        {{ option.name }}
-                      </span>
-                    </div>
-
                     <!-- Sale Badge -->
                     <div v-if="item.sale_name" class="mt-2">
                       <span class="inline-block px-2 py-1 bg-success/10 text-success text-xs font-semibold rounded">

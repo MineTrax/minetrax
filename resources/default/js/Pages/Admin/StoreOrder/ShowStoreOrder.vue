@@ -239,13 +239,6 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
                       {{ item.sale_name }}
                     </div>
                     <div
-                      v-for="option in item.options ?? []"
-                      :key="option.name"
-                      class="text-xs text-muted-foreground"
-                    >
-                      {{ option.name }}: {{ option.label ?? option.value }}
-                    </div>
-                    <div
                       v-if="item.grant"
                       class="text-xs text-muted-foreground mt-1"
                     >

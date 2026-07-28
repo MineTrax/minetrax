@@ -3,7 +3,6 @@
 namespace Tests\Feature\Store;
 
 use App\Enums\StorePackageCommandTrigger;
-use App\Enums\StorePackageOptionType;
 use App\Models\Server;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
@@ -34,16 +33,13 @@ class StorePackageAdminTest extends TestCase
             'is_visible' => true,
             'is_enabled' => true,
             'requires_login' => false,
-            'is_run_on_all_servers' => false,
             'min_quantity' => 1,
             'max_quantity' => null,
             'stock_limit' => null,
             'player_purchase_limit' => null,
             'purchase_limit_period_days' => null,
             'expiry_duration_days' => null,
-            'servers' => [],
             'commands' => [],
-            'options' => [],
         ], $overrides);
     }
 
@@ -57,22 +53,6 @@ class StorePackageAdminTest extends TestCase
             'servers' => [],
             'is_repeat_per_quantity' => false,
             'sort_order' => 0,
-        ], $overrides);
-    }
-
-    private function optionPayload(array $overrides = []): array
-    {
-        return array_merge([
-            'name' => 'Tier',
-            'placeholder' => 'TIER',
-            'type' => StorePackageOptionType::SELECT->value,
-            'description' => null,
-            'is_required' => true,
-            'sort_order' => 0,
-            'choices' => [
-                ['name' => 'Gold', 'value' => 'gold', 'price_delta' => 0, 'is_enabled' => true, 'sort_order' => 0],
-                ['name' => 'Diamond', 'value' => 'diamond', 'price_delta' => 500, 'is_enabled' => true, 'sort_order' => 1],
-            ],
         ], $overrides);
     }
 
@@ -251,38 +231,6 @@ class StorePackageAdminTest extends TestCase
         ]))->assertSessionHasErrors(['commands.0.trigger']);
     }
 
-    public function test_admin_can_create_a_package_with_options_and_choices()
-    {
-        $this->actingAs(User::whereId(1)->first());
-
-        $this->post(route('admin.store.package.store'), $this->validPayload([
-            'options' => [$this->optionPayload()],
-        ]))->assertSessionHasNoErrors();
-
-        $option = StorePackage::first()->options->first();
-        $this->assertEquals('TIER', $option->placeholder);
-        $this->assertCount(2, $option->choices);
-        $this->assertEquals(500, $option->choices->firstWhere('value', 'diamond')->price_delta);
-    }
-
-    public function test_option_placeholder_must_be_upper_snake_case()
-    {
-        $this->actingAs(User::whereId(1)->first());
-
-        $this->post(route('admin.store.package.store'), $this->validPayload([
-            'options' => [$this->optionPayload(['placeholder' => 'my tier'])],
-        ]))->assertSessionHasErrors(['options.0.placeholder']);
-    }
-
-    public function test_an_option_must_have_at_least_one_choice()
-    {
-        $this->actingAs(User::whereId(1)->first());
-
-        $this->post(route('admin.store.package.store'), $this->validPayload([
-            'options' => [$this->optionPayload(['choices' => []])],
-        ]))->assertSessionHasErrors(['options.0.choices']);
-    }
-
     public function test_updating_commands_updates_existing_rows_rather_than_recreating_them()
     {
         $this->actingAs(User::whereId(1)->first());
@@ -330,35 +278,6 @@ class StorePackageAdminTest extends TestCase
         ]))->assertSessionHasNoErrors();
 
         $this->assertCount(0, $package->fresh()->commands);
-    }
-
-    public function test_removing_a_choice_from_an_option_deletes_only_that_choice()
-    {
-        $this->actingAs(User::whereId(1)->first());
-        $package = StorePackage::factory()->create();
-
-        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
-            'name' => $package->name,
-            'options' => [$this->optionPayload()],
-        ]));
-
-        $option = $package->fresh()->options->first();
-        $goldId = $option->choices->firstWhere('value', 'gold')->id;
-        $diamondId = $option->choices->firstWhere('value', 'diamond')->id;
-
-        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
-            'name' => $package->name,
-            'options' => [$this->optionPayload([
-                'id' => $option->id,
-                'choices' => [
-                    ['id' => $goldId, 'name' => 'Gold', 'value' => 'gold', 'price_delta' => 0, 'is_enabled' => true, 'sort_order' => 0],
-                ],
-            ])],
-        ]))->assertSessionHasNoErrors();
-
-        $this->assertDatabaseHas('store_package_option_choices', ['id' => $goldId]);
-        $this->assertDatabaseMissing('store_package_option_choices', ['id' => $diamondId]);
-        $this->assertEquals($option->id, $package->fresh()->options->first()->id);
     }
 
     public function test_a_failed_update_rolls_back_the_command_reconcile()

@@ -58,11 +58,6 @@ class StorePackage extends BaseModel implements HasMedia
         return $this->belongsTo(StoreCategory::class, 'store_category_id');
     }
 
-    public function options(): HasMany
-    {
-        return $this->hasMany(StorePackageOption::class, 'store_package_id')->orderBy('sort_order');
-    }
-
     public function commands(): HasMany
     {
         return $this->hasMany(StorePackageCommand::class, 'store_package_id');

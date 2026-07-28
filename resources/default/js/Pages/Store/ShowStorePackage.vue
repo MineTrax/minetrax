@@ -25,7 +25,6 @@ const props = defineProps({
 });
 
 const page = usePage();
-const selectedOptions = ref({});
 const quantity = ref(props.storePackage.min_quantity || 1);
 
 const currentUser = computed(() => page.props.auth?.user || null);
@@ -70,11 +69,9 @@ const finalBreadcrumbs = computed(() => {
 const isOutOfStock = computed(() => props.storePackage.is_out_of_stock);
 
 const handleAddToCart = () => {
-    const choices = Object.values(selectedOptions.value).filter(Boolean);
     router.post(route("store.cart.store"), {
         package_id: props.storePackage.id,
         quantity: quantity.value,
-        choices: choices,
     }, {
         preserveScroll: true,
     });
@@ -132,59 +129,6 @@ const handleQuantityChange = (e) => {
                   />
                 </svg>
               </div>
-            </div>
-          </div>
-
-          <!-- Options -->
-          <div
-            v-if="storePackage.options.length > 0"
-            class="bg-card text-card-foreground border border-border rounded-lg shadow p-4 md:p-6 mb-6 space-y-4"
-          >
-            <h3 class="text-lg font-semibold text-foreground">
-              {{ __("Options") }}
-            </h3>
-
-            <div
-              v-for="option in storePackage.options"
-              :key="option.id"
-              class="space-y-2"
-            >
-              <label class="block text-sm font-medium text-foreground">
-                {{ option.name }}
-                <span
-                  v-if="option.is_required"
-                  class="text-destructive ml-1"
-                >
-                  *
-                </span>
-              </label>
-
-              <select
-                v-model="selectedOptions[option.id]"
-                class="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                :required="option.is_required"
-              >
-                <option value="">
-                  {{ option.placeholder || __("Select an option") }}
-                </option>
-                <option
-                  v-for="choice in option.choices"
-                  :key="choice.id"
-                  :value="choice.id"
-                >
-                  <span>{{ choice.name }}</span>
-                  <span v-if="choice.price_delta !== 0">
-                    {{ choice.price_delta_formatted }}
-                  </span>
-                </option>
-              </select>
-
-              <p
-                v-if="option.description"
-                class="text-xs text-muted-foreground"
-              >
-                {{ option.description }}
-              </p>
             </div>
           </div>
 

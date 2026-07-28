@@ -93,7 +93,7 @@ class StoreController extends Controller
         // a disabled one is gone entirely.
         abort_unless($storePackage->is_enabled, 404);
 
-        $storePackage->load(['category:id,name,slug', 'options.choices', 'prices']);
+        $storePackage->load(['category:id,name,slug', 'prices']);
 
         $currency = $this->currencies->resolve();
 
@@ -101,23 +101,6 @@ class StoreController extends Controller
             'storePackage' => $this->presentPackage($storePackage, $currency) + [
                 'description' => $storePackage->description,
                 'category' => $storePackage->category?->only(['id', 'name', 'slug']),
-                'options' => $storePackage->options->map(fn ($option) => [
-                    'id' => $option->id,
-                    'name' => $option->name,
-                    'placeholder' => $option->placeholder,
-                    'description' => $option->description,
-                    'is_required' => $option->is_required,
-                    'choices' => $option->choices->where('is_enabled', true)->values()->map(fn ($choice) => [
-                        'id' => $choice->id,
-                        'name' => $choice->name,
-                        // The raw command value is deliberately not exposed to the buyer.
-                        'price_delta' => $this->currencies->convert($choice->price_delta, $this->currencies->base(), $currency),
-                        'price_delta_formatted' => $this->currencies->format(
-                            $this->currencies->convert($choice->price_delta, $this->currencies->base(), $currency),
-                            $currency
-                        ),
-                    ]),
-                ]),
             ],
             'currency' => $this->currencyPayload($currency),
         ]);

@@ -28,18 +28,6 @@ class StoreCartTest extends TestCase
         $this->withCookie(StoreCartService::COOKIE, 'guest-cart-token');
     }
 
-    private function packageWithOption(): array
-    {
-        $package = StorePackage::factory()->create(['price' => 1000]);
-        $option = $package->options()->create([
-            'name' => 'Tier', 'placeholder' => 'TIER', 'type' => 'select', 'is_required' => true, 'sort_order' => 0,
-        ]);
-        $gold = $option->choices()->create(['name' => 'Gold', 'value' => 'gold', 'price_delta' => 0, 'is_enabled' => true, 'sort_order' => 0]);
-        $diamond = $option->choices()->create(['name' => 'Diamond', 'value' => 'diamond', 'price_delta' => 500, 'is_enabled' => true, 'sort_order' => 1]);
-
-        return [$package, $gold, $diamond];
-    }
-
     public function test_a_guest_can_add_a_package_to_a_cart()
     {
         $package = StorePackage::factory()->create(['price' => 999]);
@@ -74,53 +62,15 @@ class StoreCartTest extends TestCase
         $this->assertEquals($user->id, StoreCart::first()->user_id);
     }
 
-    public function test_adding_the_same_package_with_the_same_options_merges_into_one_line()
+    public function test_adding_the_same_package_twice_merges_into_one_line()
     {
-        [$package, $gold] = $this->packageWithOption();
+        $package = StorePackage::factory()->create(['price' => 1000]);
 
-        $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1, 'choices' => [$gold->id]]);
-        $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 2, 'choices' => [$gold->id]]);
+        $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+        $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 2]);
 
         $this->assertDatabaseCount('store_cart_items', 1);
         $this->assertDatabaseHas('store_cart_items', ['quantity' => 3]);
-    }
-
-    public function test_the_same_package_with_different_options_makes_separate_lines()
-    {
-        [$package, $gold, $diamond] = $this->packageWithOption();
-
-        $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1, 'choices' => [$gold->id]]);
-        $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1, 'choices' => [$diamond->id]]);
-
-        $this->assertDatabaseCount('store_cart_items', 2);
-    }
-
-    public function test_a_required_option_must_be_answered()
-    {
-        [$package] = $this->packageWithOption();
-
-        $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1])
-            ->assertStatus(422);
-    }
-
-    public function test_a_choice_from_a_different_package_is_rejected()
-    {
-        [$package] = $this->packageWithOption();
-        [, $foreignChoice] = $this->packageWithOption();
-
-        $this->post(route('store.cart.store'), [
-            'package_id' => $package->id, 'quantity' => 1, 'choices' => [$foreignChoice->id],
-        ])->assertStatus(422);
-    }
-
-    public function test_a_disabled_choice_is_rejected()
-    {
-        [$package, $gold] = $this->packageWithOption();
-        $gold->update(['is_enabled' => false]);
-
-        $this->post(route('store.cart.store'), [
-            'package_id' => $package->id, 'quantity' => 1, 'choices' => [$gold->id],
-        ])->assertStatus(422);
     }
 
     public function test_quantity_is_clamped_to_the_package_limits()
@@ -205,7 +155,7 @@ class StoreCartTest extends TestCase
         $package = StorePackage::factory()->create();
         $otherCart = StoreCart::create(['session_token' => 'someone-elses-token']);
         $otherItem = $otherCart->items()->create([
-            'store_package_id' => $package->id, 'quantity' => 1, 'options_signature' => md5(''),
+            'store_package_id' => $package->id, 'quantity' => 1,
         ]);
 
         $this->actingAs(User::factory()->create())
@@ -281,57 +231,20 @@ class StoreCartTest extends TestCase
         // The user already has something in their account cart.
         $userCart = StoreCart::create(['user_id' => $user->id]);
         $userCart->items()->create([
-            'store_package_id' => $package->id, 'quantity' => 1, 'options_signature' => md5(''),
+            'store_package_id' => $package->id, 'quantity' => 1,
         ]);
 
         $guestCart = StoreCart::create(['session_token' => 'guest-token']);
         $guestCart->items()->create([
-            'store_package_id' => $package->id, 'quantity' => 2, 'options_signature' => md5(''),
+            'store_package_id' => $package->id, 'quantity' => 2,
         ]);
 
         app(StoreCartService::class)->mergeGuestCartInto($user, 'guest-token');
 
-        // Same package and options, so the quantities sum onto one line.
+        // Same package, so the quantities sum onto one line.
         $this->assertDatabaseCount('store_cart_items', 1);
         $this->assertDatabaseHas('store_cart_items', ['store_cart_id' => $userCart->id, 'quantity' => 3]);
         $this->assertDatabaseMissing('store_carts', ['id' => $guestCart->id]);
-    }
-
-    public function test_merging_keeps_distinct_configurations_as_separate_lines()
-    {
-        [$package, $gold, $diamond] = $this->packageWithOption();
-        $user = User::factory()->create();
-
-        $userCart = StoreCart::create(['user_id' => $user->id]);
-        $userCart->items()->create([
-            'store_package_id' => $package->id, 'quantity' => 1,
-            'selected_options' => [$gold->id], 'options_signature' => md5((string) $gold->id),
-        ]);
-
-        $guestCart = StoreCart::create(['session_token' => 'guest-token']);
-        $guestCart->items()->create([
-            'store_package_id' => $package->id, 'quantity' => 1,
-            'selected_options' => [$diamond->id], 'options_signature' => md5((string) $diamond->id),
-        ]);
-
-        app(StoreCartService::class)->mergeGuestCartInto($user, 'guest-token');
-
-        $this->assertDatabaseCount('store_cart_items', 2);
-    }
-
-    public function test_a_stale_choice_that_was_since_disabled_is_dropped_from_pricing()
-    {
-        [$package, $gold, $diamond] = $this->packageWithOption();
-        $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1, 'choices' => [$diamond->id]]);
-
-        $this->get(route('store.cart.show'))
-            ->assertInertia(fn ($page) => $page->where('quote.total', 1500));
-
-        // The admin withdraws the choice; the cart must fall back rather than keep charging for it.
-        $diamond->update(['is_enabled' => false]);
-
-        $this->get(route('store.cart.show'))
-            ->assertInertia(fn ($page) => $page->where('quote.total', 1000));
     }
 
     public function test_the_cart_is_unavailable_when_the_module_is_disabled()

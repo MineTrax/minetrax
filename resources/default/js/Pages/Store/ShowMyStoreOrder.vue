@@ -51,11 +51,6 @@ defineProps({
               <span class="block font-medium">{{ item.package_name }}</span>
               <span class="block text-xs text-muted-foreground">&times;{{ item.quantity }}</span>
               <span
-                v-for="option in item.options"
-                :key="option.name"
-                class="block text-xs text-muted-foreground"
-              >{{ option.name }}: {{ option.label }}</span>
-              <span
                 v-if="item.grant"
                 class="inline-flex items-center gap-1 mt-2 text-xs text-muted-foreground"
               >

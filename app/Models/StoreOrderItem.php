@@ -16,7 +16,6 @@ class StoreOrderItem extends BaseModel
         'unit_price_original' => 'integer',
         'unit_price' => 'integer',
         'total' => 'integer',
-        'options' => 'array',
         'expiry_duration_days' => 'integer',
     ];
 

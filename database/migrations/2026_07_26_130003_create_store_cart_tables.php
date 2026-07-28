@@ -37,16 +37,13 @@ return new class extends Migration
             $table->foreignId('store_cart_id')->constrained()->cascadeOnDelete();
             $table->foreignId('store_package_id')->constrained()->cascadeOnDelete();
             $table->unsignedSmallInteger('quantity')->default(1);
-            $table->json('selected_options')->nullable();
 
-            // md5 of the normalised option selection, so identical configurations merge into one
-            // line instead of stacking. Deliberately no price columns: carts are always priced
-            // live, which is what stops a stale or tampered price reaching checkout.
-            $table->string('options_signature', 32);
-
+            // Deliberately no price columns: carts are always priced live, which is what stops a
+            // stale or tampered price reaching checkout.
             $table->timestamps();
 
-            $table->unique(['store_cart_id', 'store_package_id', 'options_signature'], 'store_cart_items_unique_line');
+            // One line per package, so adding the same package again bumps the quantity.
+            $table->unique(['store_cart_id', 'store_package_id'], 'store_cart_items_unique_line');
         });
     }
 
