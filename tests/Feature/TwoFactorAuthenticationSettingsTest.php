@@ -36,7 +36,7 @@ test('two factor authentication can be disabled', function () {
 
     $this->post('/user/two-factor-authentication');
 
-    $this->assertNotNull($user->fresh()->two_factor_secret);
+    expect($user->fresh()->two_factor_secret)->not->toBeNull();
 
     $this->delete('/user/two-factor-authentication');
 

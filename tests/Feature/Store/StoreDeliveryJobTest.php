@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Feature\Store;
-
 use App\Enums\CommandQueueStatus;
 use App\Enums\StoreDeliveryStatus;
 use App\Enums\StoreOrderStatus;
@@ -21,393 +19,358 @@ use App\Services\StoreGiftCardService;
 use App\Services\StoreOrderService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use Tests\TestCase;
 
-class StoreDeliveryJobTest extends TestCase
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    config(['store.enabled' => true]);
+    $this->baseCurrency();
+    Queue::fake([RunCommandQueueJob::class]);
+});
+
+/**
+ * @return array{0: StoreOrder, 1: StorePackage, 2: Server}
+ */
+function deliveryJobPaidOrder(array $packageAttributes = [], int $quantity = 1): array
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        config(['store.enabled' => true]);
-        $this->baseCurrency();
-        Queue::fake([RunCommandQueueJob::class]);
-    }
-
-    /**
-     * @return array{0: StoreOrder, 1: StorePackage, 2: Server}
-     */
-    private function paidOrder(array $packageAttributes = [], int $quantity = 1): array
-    {
-        $server = Server::factory()->create();
-        $package = StorePackage::factory()->create(array_merge(['price' => 1000], $packageAttributes));
-
-        $order = StoreOrder::factory()->paid()->create([
-            'player_username' => 'Steve',
-            'player_uuid' => '069a79f4-44e9-4726-a5be-fca90e38aaf5',
-        ]);
-        $order->items()->create([
-            'store_package_id' => $package->id,
-            'package_name' => $package->name,
-            'quantity' => $quantity,
-            'unit_price_original' => 1000,
-            'unit_price' => 1000,
-            'total' => 1000 * $quantity,
-            'expiry_duration_days' => $package->expiry_duration_days,
-        ]);
-
-        return [$order->fresh(), $package, $server];
-    }
-
-    /**
-     * A purchase command pinned to specific servers. Passing none leaves it on "all servers",
-     * which is the default an admin gets by leaving the picker empty.
-     *
-     * @param  array<int, Server>|null  $servers
-     */
-    private function purchaseCommand(StorePackage $package, array $attributes = [], ?array $servers = null): StorePackageCommand
-    {
-        $command = StorePackageCommand::factory()->create(array_merge([
-            'store_package_id' => $package->id,
-            'trigger' => StorePackageCommandTrigger::PURCHASE,
-            'command' => 'lp user {PLAYER_USERNAME} parent add vip',
-            'is_run_on_all_servers' => $servers === null,
-        ], $attributes));
-
-        if ($servers !== null) {
-            $command->servers()->sync(collect($servers)->pluck('id')->all());
-        }
-
-        return $command->fresh('servers');
-    }
-
-    private function runJob(StoreOrder $order): void
-    {
-        (new ProcessStoreOrderPurchaseJob($order))->handle(
-            app(StoreCommandDispatchService::class),
-            app(StoreOrderService::class),
-            app(StoreGiftCardService::class),
-        );
-    }
-
-    public function test_a_paid_order_queues_its_purchase_commands()
-    {
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package);
-
-        $this->runJob($order);
-
-        $queue = CommandQueue::where('tag', 'store')->first();
-        $this->assertNotNull($queue);
-        $this->assertEquals('lp user Steve parent add vip', $queue->parsed_command);
-        $this->assertEquals(CommandQueueStatus::PENDING, $queue->status);
-        Queue::assertPushed(RunCommandQueueJob::class);
-    }
-
-    public function test_the_queue_row_always_carries_the_online_flag_in_config()
-    {
-        // RunCommandQueueJob reads config[is_player_online_required] directly; a row without it
-        // used to throw.
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package, ['is_player_online_required' => true]);
-
-        $this->runJob($order);
-
-        $config = CommandQueue::where('tag', 'store')->first()->config;
-        $this->assertArrayHasKey('is_player_online_required', $config);
-        $this->assertTrue($config['is_player_online_required']);
-    }
-
-    public function test_max_attempts_allows_the_sweeper_to_retry()
-    {
-        // Every pre-existing caller uses 1, which means the sweeper never retries anything.
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package);
-
-        $this->runJob($order);
-
-        $this->assertGreaterThan(1, CommandQueue::where('tag', 'store')->first()->max_attempts);
-    }
-
-    /**
-     * Each command decides for itself, so two commands on the same package can disagree.
-     */
-    public function test_each_command_carries_its_own_online_requirement()
-    {
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package, ['command' => 'needs online', 'is_player_online_required' => true]);
-        $this->purchaseCommand($package, ['command' => 'runs anyway', 'is_player_online_required' => false]);
-
-        $this->runJob($order);
-
-        $byCommand = CommandQueue::where('tag', 'store')->get()->keyBy('parsed_command');
-
-        $this->assertTrue($byCommand['needs online']->config['is_player_online_required']);
-        $this->assertFalse($byCommand['runs anyway']->config['is_player_online_required']);
-    }
-
-    public function test_all_the_documented_placeholders_are_substituted()
-    {
-        [$order, $package] = $this->paidOrder([], 3);
-        $this->purchaseCommand($package, [
-            'command' => 'give {PLAYER_USERNAME} {PLAYER_UUID} {QUANTITY} {PACKAGE_NAME} {ORDER_UUID}',
-        ]);
-
-        $this->runJob($order);
-
-        $parsed = CommandQueue::where('tag', 'store')->first()->parsed_command;
-        $this->assertStringContainsString('Steve', $parsed);
-        $this->assertStringContainsString('069a79f4-44e9-4726-a5be-fca90e38aaf5', $parsed);
-        $this->assertStringContainsString('3', $parsed);
-        $this->assertStringContainsString($package->name, $parsed);
-        $this->assertStringContainsString($order->uuid, $parsed);
-        $this->assertStringNotContainsString('{', $parsed, 'No placeholder should survive substitution.');
-    }
-
-    public function test_quantity_substitution_by_default()
-    {
-        [$order, $package] = $this->paidOrder([], 5);
-        $this->purchaseCommand($package, [
-            'command' => 'give {PLAYER_USERNAME} diamond {QUANTITY}',
-            'is_repeat_per_quantity' => false,
-        ]);
-
-        $this->runJob($order);
-
-        $this->assertEquals(1, CommandQueue::where('tag', 'store')->count());
-        $this->assertEquals('give Steve diamond 5', CommandQueue::first()->parsed_command);
-    }
-
-    public function test_repeat_per_quantity_creates_one_row_per_unit()
-    {
-        // Crate keys and similar: the command has to run N times rather than take a count.
-        [$order, $package] = $this->paidOrder([], 3);
-        $this->purchaseCommand($package, [
-            'command' => 'crate give {PLAYER_USERNAME} vote {QUANTITY}',
-            'is_repeat_per_quantity' => true,
-        ]);
-
-        $this->runJob($order);
-
-        $queues = CommandQueue::where('tag', 'store')->get();
-        $this->assertCount(3, $queues);
-        // Each run is for a single unit, so QUANTITY is 1 rather than 3.
-        $this->assertEquals('crate give Steve vote 1', $queues->first()->parsed_command);
-    }
-
-    public function test_a_delayed_command_sets_execute_at_and_is_left_for_the_sweeper()
-    {
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package, ['delay_seconds' => 600]);
-
-        $this->runJob($order);
-
-        $queue = CommandQueue::where('tag', 'store')->first();
-        $this->assertNotNull($queue->execute_at);
-        $this->assertEquals(CommandQueueStatus::PENDING, $queue->status);
-        Queue::assertNotPushed(RunCommandQueueJob::class);
-    }
-
-    public function test_a_command_with_no_servers_picked_runs_on_every_server()
-    {
-        // Leaving the picker empty means all servers, so one added later is included too.
-        [$order, $package] = $this->paidOrder();
-        Server::factory()->count(2)->create();
-        $this->purchaseCommand($package);
-
-        $this->runJob($order);
-
-        $this->assertEquals(3, CommandQueue::where('tag', 'store')->count());
-    }
-
-    public function test_a_command_runs_only_on_the_servers_it_names()
-    {
-        [$order, $package, $server] = $this->paidOrder();
-        $other = Server::factory()->create();
-        $this->purchaseCommand($package, [], [$server]);
-
-        $this->runJob($order);
-
-        $queues = CommandQueue::where('tag', 'store')->get();
-        $this->assertCount(1, $queues);
-        $this->assertEquals($server->id, $queues->first()->server_id);
-        $this->assertNotEquals($other->id, $queues->first()->server_id);
-    }
-
-    /**
-     * Two commands on one package can target different servers — the whole point of moving the
-     * picker off the package.
-     */
-    public function test_two_commands_on_one_package_can_target_different_servers()
-    {
-        [$order, $package, $server] = $this->paidOrder();
-        $other = Server::factory()->create();
-
-        $this->purchaseCommand($package, ['command' => 'first'], [$server]);
-        $this->purchaseCommand($package, ['command' => 'second'], [$other]);
-
-        $this->runJob($order);
-
-        $byCommand = CommandQueue::where('tag', 'store')->get()->keyBy('parsed_command');
-
-        $this->assertEquals($server->id, $byCommand['first']->server_id);
-        $this->assertEquals($other->id, $byCommand['second']->server_id);
-    }
-
-    public function test_servers_without_a_webquery_port_are_excluded()
-    {
-        [$order, $package] = $this->paidOrder();
-        Server::factory()->create(['webquery_port' => null]);
-        $this->purchaseCommand($package);
-
-        $this->runJob($order);
-
-        // A server with no webquery port could never receive the command.
-        $this->assertEquals(1, CommandQueue::where('tag', 'store')->count());
-    }
-
-    public function test_only_the_matching_trigger_is_dispatched()
-    {
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package);
-        StorePackageCommand::factory()->expiry()->create(['store_package_id' => $package->id]);
-        StorePackageCommand::factory()->refund()->create(['store_package_id' => $package->id]);
-
-        $this->runJob($order);
-
-        $this->assertEquals(1, CommandQueue::where('tag', 'store')->count());
-    }
-
-    public function test_rerunning_the_job_does_not_deliver_twice()
-    {
-        // The whole reason store_order_deliveries carries a unique index: a webhook replay or an
-        // admin "retry all failed" must not hand out the purchase again.
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package);
-
-        $this->runJob($order);
-        $this->runJob($order->fresh());
-
-        $this->assertEquals(1, CommandQueue::where('tag', 'store')->count());
-        $this->assertEquals(1, StoreOrderDelivery::count());
-    }
-
-    public function test_a_delivery_row_records_what_was_queued()
-    {
-        [$order, $package, $server] = $this->paidOrder();
-        $command = $this->purchaseCommand($package);
-
-        $this->runJob($order);
-
-        $delivery = StoreOrderDelivery::first();
-        $this->assertEquals($order->id, $delivery->store_order_id);
-        $this->assertEquals($command->id, $delivery->store_package_command_id);
-        $this->assertEquals($server->id, $delivery->server_id);
-        $this->assertEquals(StorePackageCommandTrigger::PURCHASE, $delivery->trigger);
-        $this->assertEquals('lp user Steve parent add vip', $delivery->parsed_command);
-        $this->assertNotNull($delivery->commandQueue);
-    }
-
-    public function test_a_grant_is_issued_per_item()
-    {
-        [$order, $package] = $this->paidOrder(['expiry_duration_days' => 30]);
-        $this->purchaseCommand($package);
-
-        $this->runJob($order);
-
-        $grant = $order->items->first()->grant;
-        $this->assertEquals(StorePackageGrantStatus::ACTIVE, $grant->status);
-        $this->assertNotNull($grant->expires_at);
-        $this->assertEqualsWithDelta(30, now()->diffInDays($grant->expires_at), 1);
-    }
-
-    public function test_a_permanent_package_grant_has_no_expiry()
-    {
-        [$order, $package] = $this->paidOrder(['expiry_duration_days' => null]);
-        $this->purchaseCommand($package);
-
-        $this->runJob($order);
-
-        $this->assertNull($order->items->first()->grant->expires_at);
-    }
-
-    public function test_sold_count_is_incremented_only_once_when_paid()
-    {
-        [$order, $package] = $this->paidOrder([], 2);
-        $this->purchaseCommand($package);
-
-        $this->runJob($order);
-        $this->assertEquals(2, $package->fresh()->sold_count);
-
-        // A retry must not inflate stock consumption.
-        $this->runJob($order->fresh());
-        $this->assertEquals(2, $package->fresh()->sold_count);
-    }
-
-    public function test_the_order_is_completed_after_delivery_is_queued()
-    {
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package);
-
-        $this->runJob($order);
-
-        $order->refresh();
-        $this->assertEquals(StoreOrderStatus::COMPLETED, $order->status);
-        $this->assertEquals(StoreDeliveryStatus::PENDING, $order->delivery_status);
-    }
-
-    public function test_a_package_with_no_commands_still_completes_the_order()
-    {
-        [$order] = $this->paidOrder();
-
-        $this->runJob($order);
-
-        $order->refresh();
-        $this->assertEquals(StoreOrderStatus::COMPLETED, $order->status);
-        $this->assertEquals(StoreDeliveryStatus::DELIVERED, $order->delivery_status, 'Nothing to deliver counts as delivered.');
-    }
-
-    public function test_delivery_is_marked_failed_when_no_server_can_receive_it()
-    {
-        $package = StorePackage::factory()->create();
-        Server::factory()->create(['webquery_port' => null]);
-        $order = StoreOrder::factory()->paid()->create();
-        $order->items()->create([
-            'store_package_id' => $package->id, 'package_name' => $package->name, 'quantity' => 1,
-            'unit_price_original' => 1000, 'unit_price' => 1000, 'total' => 1000,
-        ]);
-        $this->purchaseCommand($package);
-
-        $this->runJob($order->fresh());
-
-        $this->assertEquals(StoreDeliveryStatus::FAILED, $order->fresh()->delivery_status);
-    }
-
-    public function test_a_refunded_order_is_not_delivered()
-    {
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package);
-        $order->update(['status' => StoreOrderStatus::REFUNDED]);
-
-        $this->runJob($order->fresh());
-
-        $this->assertEquals(0, CommandQueue::where('tag', 'store')->count());
-    }
-
-    public function test_paying_an_order_dispatches_the_fulfilment_job()
-    {
-        Queue::fake();
-        [$order, $package] = $this->paidOrder();
-        $this->purchaseCommand($package);
-
-        $pending = StoreOrder::factory()->create(['total' => 1000, 'amount_due' => 1000]);
-        $payment = StorePayment::factory()->create([
-            'store_order_id' => $pending->id, 'amount' => 1000, 'currency' => 'USD',
-        ]);
-
-        app(StoreOrderService::class)->markPaid($pending, $payment, 1000, 'USD');
-
-        Queue::assertPushed(ProcessStoreOrderPurchaseJob::class);
-    }
+    $server = Server::factory()->create();
+    $package = StorePackage::factory()->create(array_merge(['price' => 1000], $packageAttributes));
+
+    $order = StoreOrder::factory()->paid()->create([
+        'player_username' => 'Steve',
+        'player_uuid' => '069a79f4-44e9-4726-a5be-fca90e38aaf5',
+    ]);
+    $order->items()->create([
+        'store_package_id' => $package->id,
+        'package_name' => $package->name,
+        'quantity' => $quantity,
+        'unit_price_original' => 1000,
+        'unit_price' => 1000,
+        'total' => 1000 * $quantity,
+        'expiry_duration_days' => $package->expiry_duration_days,
+    ]);
+
+    return [$order->fresh(), $package, $server];
 }
+
+/**
+ * A purchase command pinned to specific servers. Passing none leaves it on "all servers",
+ * which is the default an admin gets by leaving the picker empty.
+ *
+ * @param  array<int, Server>|null  $servers
+ */
+function purchaseCommand(StorePackage $package, array $attributes = [], ?array $servers = null): StorePackageCommand
+{
+    $command = StorePackageCommand::factory()->create(array_merge([
+        'store_package_id' => $package->id,
+        'trigger' => StorePackageCommandTrigger::PURCHASE,
+        'command' => 'lp user {PLAYER_USERNAME} parent add vip',
+        'is_run_on_all_servers' => $servers === null,
+    ], $attributes));
+
+    if ($servers !== null) {
+        $command->servers()->sync(collect($servers)->pluck('id')->all());
+    }
+
+    return $command->fresh('servers');
+}
+
+function deliveryJobRunJob(StoreOrder $order): void
+{
+    (new ProcessStoreOrderPurchaseJob($order))->handle(
+        app(StoreCommandDispatchService::class),
+        app(StoreOrderService::class),
+        app(StoreGiftCardService::class),
+    );
+}
+
+test('a paid order queues its purchase commands', function () {
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+
+    $queue = CommandQueue::where('tag', 'store')->first();
+    expect($queue)->not->toBeNull();
+    expect($queue->parsed_command)->toEqual('lp user Steve parent add vip');
+    expect($queue->status)->toEqual(CommandQueueStatus::PENDING);
+    Queue::assertPushed(RunCommandQueueJob::class);
+});
+
+test('the queue row always carries the online flag in config', function () {
+    // RunCommandQueueJob reads config[is_player_online_required] directly; a row without it
+    // used to throw.
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package, ['is_player_online_required' => true]);
+
+    deliveryJobRunJob($order);
+
+    $config = CommandQueue::where('tag', 'store')->first()->config;
+    expect($config)->toHaveKey('is_player_online_required');
+    expect($config['is_player_online_required'])->toBeTrue();
+});
+
+test('max attempts allows the sweeper to retry', function () {
+    // Every pre-existing caller uses 1, which means the sweeper never retries anything.
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+
+    expect(CommandQueue::where('tag', 'store')->first()->max_attempts)->toBeGreaterThan(1);
+});
+
+test('each command carries its own online requirement', function () {
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package, ['command' => 'needs online', 'is_player_online_required' => true]);
+    purchaseCommand($package, ['command' => 'runs anyway', 'is_player_online_required' => false]);
+
+    deliveryJobRunJob($order);
+
+    $byCommand = CommandQueue::where('tag', 'store')->get()->keyBy('parsed_command');
+
+    expect($byCommand['needs online']->config['is_player_online_required'])->toBeTrue();
+    expect($byCommand['runs anyway']->config['is_player_online_required'])->toBeFalse();
+});
+
+test('all the documented placeholders are substituted', function () {
+    [$order, $package] = deliveryJobPaidOrder([], 3);
+    purchaseCommand($package, [
+        'command' => 'give {PLAYER_USERNAME} {PLAYER_UUID} {QUANTITY} {PACKAGE_NAME} {ORDER_UUID}',
+    ]);
+
+    deliveryJobRunJob($order);
+
+    $parsed = CommandQueue::where('tag', 'store')->first()->parsed_command;
+    $this->assertStringContainsString('Steve', $parsed);
+    $this->assertStringContainsString('069a79f4-44e9-4726-a5be-fca90e38aaf5', $parsed);
+    $this->assertStringContainsString('3', $parsed);
+    $this->assertStringContainsString($package->name, $parsed);
+    $this->assertStringContainsString($order->uuid, $parsed);
+    $this->assertStringNotContainsString('{', $parsed, 'No placeholder should survive substitution.');
+});
+
+test('quantity substitution by default', function () {
+    [$order, $package] = deliveryJobPaidOrder([], 5);
+    purchaseCommand($package, [
+        'command' => 'give {PLAYER_USERNAME} diamond {QUANTITY}',
+        'is_repeat_per_quantity' => false,
+    ]);
+
+    deliveryJobRunJob($order);
+
+    expect(CommandQueue::where('tag', 'store')->count())->toEqual(1);
+    expect(CommandQueue::first()->parsed_command)->toEqual('give Steve diamond 5');
+});
+
+test('repeat per quantity creates one row per unit', function () {
+    // Crate keys and similar: the command has to run N times rather than take a count.
+    [$order, $package] = deliveryJobPaidOrder([], 3);
+    purchaseCommand($package, [
+        'command' => 'crate give {PLAYER_USERNAME} vote {QUANTITY}',
+        'is_repeat_per_quantity' => true,
+    ]);
+
+    deliveryJobRunJob($order);
+
+    $queues = CommandQueue::where('tag', 'store')->get();
+    expect($queues)->toHaveCount(3);
+
+    // Each run is for a single unit, so QUANTITY is 1 rather than 3.
+    expect($queues->first()->parsed_command)->toEqual('crate give Steve vote 1');
+});
+
+test('a delayed command sets execute at and is left for the sweeper', function () {
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package, ['delay_seconds' => 600]);
+
+    deliveryJobRunJob($order);
+
+    $queue = CommandQueue::where('tag', 'store')->first();
+    expect($queue->execute_at)->not->toBeNull();
+    expect($queue->status)->toEqual(CommandQueueStatus::PENDING);
+    Queue::assertNotPushed(RunCommandQueueJob::class);
+});
+
+test('a command with no servers picked runs on every server', function () {
+    // Leaving the picker empty means all servers, so one added later is included too.
+    [$order, $package] = deliveryJobPaidOrder();
+    Server::factory()->count(2)->create();
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+
+    expect(CommandQueue::where('tag', 'store')->count())->toEqual(3);
+});
+
+test('a command runs only on the servers it names', function () {
+    [$order, $package, $server] = deliveryJobPaidOrder();
+    $other = Server::factory()->create();
+    purchaseCommand($package, [], [$server]);
+
+    deliveryJobRunJob($order);
+
+    $queues = CommandQueue::where('tag', 'store')->get();
+    expect($queues)->toHaveCount(1);
+    expect($queues->first()->server_id)->toEqual($server->id);
+    $this->assertNotEquals($other->id, $queues->first()->server_id);
+});
+
+test('two commands on one package can target different servers', function () {
+    [$order, $package, $server] = deliveryJobPaidOrder();
+    $other = Server::factory()->create();
+
+    purchaseCommand($package, ['command' => 'first'], [$server]);
+    purchaseCommand($package, ['command' => 'second'], [$other]);
+
+    deliveryJobRunJob($order);
+
+    $byCommand = CommandQueue::where('tag', 'store')->get()->keyBy('parsed_command');
+
+    expect($byCommand['first']->server_id)->toEqual($server->id);
+    expect($byCommand['second']->server_id)->toEqual($other->id);
+});
+
+test('servers without a webquery port are excluded', function () {
+    [$order, $package] = deliveryJobPaidOrder();
+    Server::factory()->create(['webquery_port' => null]);
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+
+    // A server with no webquery port could never receive the command.
+    expect(CommandQueue::where('tag', 'store')->count())->toEqual(1);
+});
+
+test('only the matching trigger is dispatched', function () {
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package);
+    StorePackageCommand::factory()->expiry()->create(['store_package_id' => $package->id]);
+    StorePackageCommand::factory()->refund()->create(['store_package_id' => $package->id]);
+
+    deliveryJobRunJob($order);
+
+    expect(CommandQueue::where('tag', 'store')->count())->toEqual(1);
+});
+
+test('rerunning the job does not deliver twice', function () {
+    // The whole reason store_order_deliveries carries a unique index: a webhook replay or an
+    // admin "retry all failed" must not hand out the purchase again.
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+    deliveryJobRunJob($order->fresh());
+
+    expect(CommandQueue::where('tag', 'store')->count())->toEqual(1);
+    expect(StoreOrderDelivery::count())->toEqual(1);
+});
+
+test('a delivery row records what was queued', function () {
+    [$order, $package, $server] = deliveryJobPaidOrder();
+    $command = purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+
+    $delivery = StoreOrderDelivery::first();
+    expect($delivery->store_order_id)->toEqual($order->id);
+    expect($delivery->store_package_command_id)->toEqual($command->id);
+    expect($delivery->server_id)->toEqual($server->id);
+    expect($delivery->trigger)->toEqual(StorePackageCommandTrigger::PURCHASE);
+    expect($delivery->parsed_command)->toEqual('lp user Steve parent add vip');
+    expect($delivery->commandQueue)->not->toBeNull();
+});
+
+test('a grant is issued per item', function () {
+    [$order, $package] = deliveryJobPaidOrder(['expiry_duration_days' => 30]);
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+
+    $grant = $order->items->first()->grant;
+    expect($grant->status)->toEqual(StorePackageGrantStatus::ACTIVE);
+    expect($grant->expires_at)->not->toBeNull();
+    expect(now()->diffInDays($grant->expires_at))->toEqualWithDelta(30, 1);
+});
+
+test('a permanent package grant has no expiry', function () {
+    [$order, $package] = deliveryJobPaidOrder(['expiry_duration_days' => null]);
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+
+    expect($order->items->first()->grant->expires_at)->toBeNull();
+});
+
+test('sold count is incremented only once when paid', function () {
+    [$order, $package] = deliveryJobPaidOrder([], 2);
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+    expect($package->fresh()->sold_count)->toEqual(2);
+
+    // A retry must not inflate stock consumption.
+    deliveryJobRunJob($order->fresh());
+    expect($package->fresh()->sold_count)->toEqual(2);
+});
+
+test('the order is completed after delivery is queued', function () {
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order);
+
+    $order->refresh();
+    expect($order->status)->toEqual(StoreOrderStatus::COMPLETED);
+    expect($order->delivery_status)->toEqual(StoreDeliveryStatus::PENDING);
+});
+
+test('a package with no commands still completes the order', function () {
+    [$order] = deliveryJobPaidOrder();
+
+    deliveryJobRunJob($order);
+
+    $order->refresh();
+    expect($order->status)->toEqual(StoreOrderStatus::COMPLETED);
+    expect($order->delivery_status)->toEqual(StoreDeliveryStatus::DELIVERED, 'Nothing to deliver counts as delivered.');
+});
+
+test('delivery is marked failed when no server can receive it', function () {
+    $package = StorePackage::factory()->create();
+    Server::factory()->create(['webquery_port' => null]);
+    $order = StoreOrder::factory()->paid()->create();
+    $order->items()->create([
+        'store_package_id' => $package->id, 'package_name' => $package->name, 'quantity' => 1,
+        'unit_price_original' => 1000, 'unit_price' => 1000, 'total' => 1000,
+    ]);
+    purchaseCommand($package);
+
+    deliveryJobRunJob($order->fresh());
+
+    expect($order->fresh()->delivery_status)->toEqual(StoreDeliveryStatus::FAILED);
+});
+
+test('a refunded order is not delivered', function () {
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package);
+    $order->update(['status' => StoreOrderStatus::REFUNDED]);
+
+    deliveryJobRunJob($order->fresh());
+
+    expect(CommandQueue::where('tag', 'store')->count())->toEqual(0);
+});
+
+test('paying an order dispatches the fulfilment job', function () {
+    Queue::fake();
+    [$order, $package] = deliveryJobPaidOrder();
+    purchaseCommand($package);
+
+    $pending = StoreOrder::factory()->create(['total' => 1000, 'amount_due' => 1000]);
+    $payment = StorePayment::factory()->create([
+        'store_order_id' => $pending->id, 'amount' => 1000, 'currency' => 'USD',
+    ]);
+
+    app(StoreOrderService::class)->markPaid($pending, $payment, 1000, 'USD');
+
+    Queue::assertPushed(ProcessStoreOrderPurchaseJob::class);
+});

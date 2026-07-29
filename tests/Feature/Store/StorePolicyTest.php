@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Feature\Store;
-
 use App\Models\StoreBan;
 use App\Models\StoreCategory;
 use App\Models\StoreCoupon;
@@ -12,99 +10,83 @@ use App\Models\StoreSale;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
-use Tests\TestCase;
 
-/**
- * Covers the store policies: the module-disabled gate, permission mapping, and order ownership.
- */
-class StorePolicyTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        config(['store.enabled' => true]);
+beforeEach(function () {
+    config(['store.enabled' => true]);
+});
+
+test('all store policies are registered', function () {
+    $models = [
+        StoreCategory::class, StorePackage::class, StoreCurrency::class,
+        StoreOrder::class, StoreCoupon::class, StoreSale::class, StoreBan::class,
+    ];
+
+    foreach ($models as $model) {
+        expect(Gate::getPolicyFor($model))->not->toBeNull("No policy registered for [{$model}].");
     }
+});
 
-    public function test_all_store_policies_are_registered()
-    {
-        $models = [
-            StoreCategory::class, StorePackage::class, StoreCurrency::class,
-            StoreOrder::class, StoreCoupon::class, StoreSale::class, StoreBan::class,
-        ];
+test('a user without permission is denied', function () {
+    $user = User::factory()->create();
 
-        foreach ($models as $model) {
-            $this->assertNotNull(Gate::getPolicyFor($model), "No policy registered for [{$model}].");
-        }
-    }
+    expect($user->can('viewAny', StorePackage::class))->toBeFalse();
+    expect($user->can('create', StorePackage::class))->toBeFalse();
+    expect($user->can('viewAny', StoreOrder::class))->toBeFalse();
+});
 
-    public function test_a_user_without_permission_is_denied()
-    {
-        $user = User::factory()->create();
+test('a user with the permission is allowed', function () {
+    $user = User::factory()->create();
+    $user->givePermissionTo(['read store_packages', 'create store_packages']);
 
-        $this->assertFalse($user->can('viewAny', StorePackage::class));
-        $this->assertFalse($user->can('create', StorePackage::class));
-        $this->assertFalse($user->can('viewAny', StoreOrder::class));
-    }
+    expect($user->can('viewAny', StorePackage::class))->toBeTrue();
+    expect($user->can('create', StorePackage::class))->toBeTrue();
+    expect($user->can('delete', StorePackage::factory()->create()))->toBeFalse();
+});
 
-    public function test_a_user_with_the_permission_is_allowed()
-    {
-        $user = User::factory()->create();
-        $user->givePermissionTo(['read store_packages', 'create store_packages']);
+test('disabling the module denies everyone except superadmin', function () {
+    config(['store.enabled' => false]);
 
-        $this->assertTrue($user->can('viewAny', StorePackage::class));
-        $this->assertTrue($user->can('create', StorePackage::class));
-        $this->assertFalse($user->can('delete', StorePackage::factory()->create()));
-    }
+    $user = User::factory()->create();
+    $user->givePermissionTo(['read store_packages', 'create store_packages']);
 
-    public function test_disabling_the_module_denies_everyone_except_superadmin()
-    {
-        config(['store.enabled' => false]);
+    expect($user->can('viewAny', StorePackage::class))->toBeFalse('The before() gate must deny when the module is off.');
+    expect($user->can('create', StorePackage::class))->toBeFalse();
 
-        $user = User::factory()->create();
-        $user->givePermissionTo(['read store_packages', 'create store_packages']);
+    // Gate::before for superadmin runs ahead of the policy, matching BanWarden's behaviour.
+    // Routes and nav are hidden anyway when the module is disabled.
+    expect(User::whereId(1)->first()->can('viewAny', StorePackage::class))->toBeTrue();
+});
 
-        $this->assertFalse($user->can('viewAny', StorePackage::class), 'The before() gate must deny when the module is off.');
-        $this->assertFalse($user->can('create', StorePackage::class));
+test('refund and resend are separate abilities from plain update', function () {
+    $user = User::factory()->create();
+    $user->givePermissionTo(['read store_orders', 'update store_orders']);
+    $order = StoreOrder::factory()->create();
 
-        // Gate::before for superadmin runs ahead of the policy, matching BanWarden's behaviour.
-        // Routes and nav are hidden anyway when the module is disabled.
-        $this->assertTrue(User::whereId(1)->first()->can('viewAny', StorePackage::class));
-    }
+    expect($user->can('update', $order))->toBeTrue();
+    expect($user->can('refund', $order))->toBeFalse('Refunding money must not come free with update.');
+    expect($user->can('resend', $order))->toBeFalse();
 
-    public function test_refund_and_resend_are_separate_abilities_from_plain_update()
-    {
-        $user = User::factory()->create();
-        $user->givePermissionTo(['read store_orders', 'update store_orders']);
-        $order = StoreOrder::factory()->create();
+    $user->givePermissionTo(['refund store_orders', 'resend store_orders']);
+    $user->forgetCachedPermissions();
 
-        $this->assertTrue($user->can('update', $order));
-        $this->assertFalse($user->can('refund', $order), 'Refunding money must not come free with update.');
-        $this->assertFalse($user->can('resend', $order));
+    expect($user->fresh()->can('refund', $order))->toBeTrue();
+    expect($user->fresh()->can('resend', $order))->toBeTrue();
+});
 
-        $user->givePermissionTo(['refund store_orders', 'resend store_orders']);
-        $user->forgetCachedPermissions();
+test('a buyer can view their own order without any permission', function () {
+    $buyer = User::factory()->create();
+    $ownOrder = StoreOrder::factory()->forUser($buyer)->create();
+    $otherOrder = StoreOrder::factory()->create();
 
-        $this->assertTrue($user->fresh()->can('refund', $order));
-        $this->assertTrue($user->fresh()->can('resend', $order));
-    }
+    expect($buyer->can('view', $ownOrder))->toBeTrue();
+    expect($buyer->can('view', $otherOrder))->toBeFalse('A buyer must not read another buyer order.');
+});
 
-    public function test_a_buyer_can_view_their_own_order_without_any_permission()
-    {
-        $buyer = User::factory()->create();
-        $ownOrder = StoreOrder::factory()->forUser($buyer)->create();
-        $otherOrder = StoreOrder::factory()->create();
+test('a guest order is not viewable by an arbitrary user', function () {
+    $user = User::factory()->create();
+    $guestOrder = StoreOrder::factory()->guest()->create();
 
-        $this->assertTrue($buyer->can('view', $ownOrder));
-        $this->assertFalse($buyer->can('view', $otherOrder), 'A buyer must not read another buyer order.');
-    }
-
-    public function test_a_guest_order_is_not_viewable_by_an_arbitrary_user()
-    {
-        $user = User::factory()->create();
-        $guestOrder = StoreOrder::factory()->guest()->create();
-
-        $this->assertFalse($user->can('view', $guestOrder));
-    }
-}
+    expect($user->can('view', $guestOrder))->toBeFalse();
+});

@@ -9,7 +9,7 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.3
+- php - 8.4
 - inertiajs/inertia-laravel (INERTIA_LARAVEL) - v3
 - laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13
@@ -25,8 +25,8 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - laravel/mcp (MCP) - v0
 - laravel/pail (PAIL) - v1
 - laravel/pint (PINT) - v1
-- pestphp/pest (PEST) - v4
-- phpunit/phpunit (PHPUNIT) - v12
+- pestphp/pest (PEST) - v5
+- phpunit/phpunit (PHPUNIT) - v13
 - rector/rector (RECTOR) - v2
 - @inertiajs/vue3 (INERTIA_VUE) - v3
 - eslint (ESLINT) - v10
@@ -198,3 +198,67 @@ Vue components must have a single root element.
 ## Frontend Bundling
 
 - Do not run `npm run build` or `npm run dev`. The dev server is already running and will pick up changes automatically.
+
+## Running Tests Fast
+
+The suite is 928 tests (924 pass, 4 skip) over 91 migrations. **Use `--tia`** — it is set up and verified here, and turns a whole-suite check into ~30s instead of ~6 minutes.
+
+```bash
+php -d memory_limit=3G vendor/bin/pest --compact --tia
+```
+
+- Never run two test processes at once. Every run shares the single `minetrax` test database (set in `phpunit.xml`), so a second run wipes the first one's data mid-flight. Wait for one to finish.
+- **Pass `-d memory_limit=3G` and invoke `vendor/bin/pest` directly.** `php artisan test` spawns a child process that does not inherit the limit, and the default 512M is exhausted whenever a run produces a lot of failures — Laravel Nightwatch's `ExceptionSensor` serialises source frames for every exception, so a broken run dies with an OOM instead of printing which tests failed.
+- All test files are Pest functional style (`it()` / `test()`). **Do not add a `class FooTest extends TestCase`** — a single PHPUnit-style class makes `--tia` abort with `Tia mode requires Pest tests`.
+
+## Tia Engine (Test Impact Analysis)
+
+`--tia` records which files each test touches, then replays cached results for tests no changed file can affect. It needs a coverage driver; PCOV 1.0.12 is installed for PHP 8.4 (thread-safe build, matching the ZTS runtime).
+
+Measured on this repo:
+
+| Situation | Result |
+|---|---|
+| First run (records baseline) | full cost |
+| No change | 928 replayed, **~31s** |
+| Comment/whitespace-only edit | 928 replayed, **~31s** (normalised, no invalidation) |
+| One service changed | 257 affected re-run, 671 replayed, ~104s — and it **caught all 6 real failures** |
+| Without `--tia` | 371s measured before the socket fix below; expect meaningfully less now, but it has not been re-measured |
+
+- A change re-runs the affected tests for real, so a green `--tia` run is trustworthy. It does not serve a stale pass.
+- Reverting a change counts as another change: the affected tests re-run once more, then the next run settles back to full replay.
+- Flags: `--tia --filtered` runs only affected files, `--tia --fresh` discards the graph and re-records, `--no-tia` forces a full run, `--baseline` prints the cache directory.
+- State lives outside the repo in `~/.pest/tia/<project-key>/`, keyed off the git remote, so nothing needs gitignoring. **If a run is killed midway it leaves a partial graph** — delete that directory and re-record rather than trusting a replay from it.
+- The graph auto-rebuilds when `composer.lock`, `phpunit.xml`, `vite.config.*`, a node lockfile, `tsconfig`/`jsconfig`, or the PHP version changes.
+- To enable permanently, add `pest()->tia()->always();` to `tests/Pest.php`, or set `PEST_TIA=1`.
+- Still narrow the run when you already know the target: `--filter=someTest` or a path is fine and needs no coverage driver.
+
+## Tests That Dispatch Store Commands
+
+`QUEUE_CONNECTION=sync` in tests, so `RunCommandQueueJob` executes inline and opens a **real TCP socket** to the `Server::factory()` host with a 10s connect timeout (`MinecraftWebQuery`). That is 10s of dead wait per dispatched command.
+
+Any test that creates a `Server` and dispatches package commands must fake the job:
+
+```php
+Queue::fake([RunCommandQueueJob::class]);
+```
+
+The `command_queues` and `store_order_deliveries` rows are written *before* dispatch, so assertions on them still hold. Only assert on the queue row's post-run `status`/`output` if you actually let the job run. Four files were costing ~180s between them before this was added.
+
+## Known Slow Spot
+
+`AskDbToolsTest > tables summary` takes ~39s on its own: `AskDbDatabase::getTables()` calls `Schema::getColumns()` and `Schema::getForeignKeys()` per table, which is ~180 `information_schema` queries across the 90-table schema. Pre-existing, not a test bug — do not "fix" it by weakening the assertion.
+
+## Verifying Behaviour With `--agent`
+
+`pest-plugin-agent` runs an arbitrary snippet inside a real Feature test — with `RefreshDatabase`, factories, and Laravel fakes all live. Use it instead of `php artisan tinker` when you need to prove a code path actually works, since tinker hits the real dev database and has no transaction rollback.
+
+```bash
+./vendor/bin/pest --agent='$u = \App\Models\User::factory()->create(); $this->actingAs($u)->get("/dashboard")->assertOk();'
+```
+
+- Single-quote the whole snippet; use double quotes for PHP strings inside it.
+- Use fully qualified class names (`\App\Models\User`) — no `use` imports are generated.
+- Directory-scoped `beforeEach()` hooks do not apply. Inline any setup you need.
+- Each `--agent` costs ~25s here, nearly all of it `RefreshDatabase` migrations. Batch related assertions into one snippet rather than running several probes.
+- This is a verification probe, not a substitute for a committed test. Per the testing rules above, still write a real test for the change.

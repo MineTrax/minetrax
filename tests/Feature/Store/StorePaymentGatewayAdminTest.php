@@ -1,262 +1,219 @@
 <?php
 
-namespace Tests\Feature\Store;
-
 use App\Models\StoreCurrency;
 use App\Models\User;
 use App\Settings\StoreSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+
+uses(RefreshDatabase::class);
+
+const GATEWAY_CREDENTIAL_MASK = '********';
+
+beforeEach(function () {
+    config(['store.enabled' => true]);
+    $this->baseCurrency();
+
+    $this->superadmin = User::whereId(1)->first();
+});
 
 /**
- * Admin → Store → Payment Gateways.
- *
- * The page is generated entirely from each driver's settingsSchema(), so these tests also cover
- * the promise that registering a new gateway needs no UI work.
+ * @return array<string, mixed>
  */
-class StorePaymentGatewayAdminTest extends TestCase
+function paymentGatewayAdminPayload(array $overrides = []): array
 {
-    use RefreshDatabase;
-
-    private const MASK = '********';
-
-    private User $superadmin;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        config(['store.enabled' => true]);
-        $this->baseCurrency();
-
-        $this->superadmin = User::whereId(1)->first();
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function payload(array $overrides = []): array
-    {
-        return array_merge([
-            'enabled_gateways' => ['manual'],
-            'gateway_credentials' => [],
-        ], $overrides);
-    }
-
-    private function stripeConfigured(): void
-    {
-        $settings = app(StoreSettings::class);
-        $settings->enabled_gateways = ['manual', 'stripe'];
-        $settings->gateway_credentials = [
-            'stripe' => ['secret_key' => 'sk_test_original', 'webhook_secret' => 'whsec_original'],
-        ];
-        $settings->save();
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function gatewayProp(string $key, $page): array
-    {
-        return collect($page->toArray()['props']['gateways'])->firstWhere('key', $key);
-    }
-
-    // --- Access ------------------------------------------------------------------------------
-
-    public function test_a_guest_is_redirected_to_login()
-    {
-        $this->get(route('admin.store.payment-gateway.index'))->assertRedirect(route('login'));
-    }
-
-    public function test_a_user_without_the_settings_permission_is_forbidden()
-    {
-        $this->actingAs(User::factory()->create())
-            ->get(route('admin.store.payment-gateway.index'))
-            ->assertForbidden();
-    }
-
-    public function test_a_superadmin_sees_every_registered_gateway()
-    {
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.store.payment-gateway.index'))
-            ->assertOk()
-            ->assertInertia(function ($page) {
-                $page->component('Admin/StorePaymentGateway/IndexStorePaymentGateway');
-
-                $keys = collect($page->toArray()['props']['gateways'])->pluck('key');
-
-                $this->assertEqualsCanonicalizing(array_keys(config('store.gateways')), $keys->all());
-            });
-    }
-
-    // --- Secrets never round-trip ---------------------------------------------------------------
-
-    public function test_a_stored_secret_is_masked_rather_than_sent()
-    {
-        $this->stripeConfigured();
-
-        $response = $this->actingAs($this->superadmin)->get(route('admin.store.payment-gateway.index'));
-
-        $response->assertOk();
-        $response->assertDontSee('sk_test_original');
-        $response->assertDontSee('whsec_original');
-
-        $response->assertInertia(function ($page) {
-            $stripe = $this->gatewayProp('stripe', $page);
-
-            $this->assertEquals(self::MASK, $stripe['credentials']['secret_key']);
-            $this->assertEquals(self::MASK, $stripe['credentials']['webhook_secret']);
-        });
-    }
-
-    public function test_an_unset_secret_is_sent_as_null_rather_than_a_mask()
-    {
-        // A masked empty field would read as "already configured" and be impossible to fill in.
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.store.payment-gateway.index'))
-            ->assertInertia(function ($page) {
-                $this->assertNull($this->gatewayProp('stripe', $page)['credentials']['secret_key']);
-            });
-    }
-
-    public function test_a_secret_submitted_unchanged_as_the_mask_is_kept()
-    {
-        $this->stripeConfigured();
-
-        $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), $this->payload([
-            'enabled_gateways' => ['manual', 'stripe'],
-            'gateway_credentials' => [
-                'stripe' => ['secret_key' => self::MASK, 'webhook_secret' => 'whsec_rotated'],
-            ],
-        ]))->assertRedirect();
-
-        $stored = app(StoreSettings::class)->refresh()->gateway_credentials;
-
-        $this->assertEquals('sk_test_original', $stored['stripe']['secret_key'], 'An untouched secret must survive the round trip.');
-        $this->assertEquals('whsec_rotated', $stored['stripe']['webhook_secret'], 'A changed secret must be written.');
-    }
-
-    public function test_only_fields_a_driver_declares_are_stored()
-    {
-        $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), $this->payload([
-            'enabled_gateways' => ['stripe'],
-            'gateway_credentials' => [
-                'stripe' => ['secret_key' => 'sk_test_1', 'webhook_secret' => 'whsec_1', 'evil' => 'payload'],
-            ],
-        ]))->assertRedirect();
-
-        $stored = app(StoreSettings::class)->refresh()->gateway_credentials;
-
-        $this->assertArrayNotHasKey('evil', $stored['stripe']);
-        $this->assertEquals('sk_test_1', $stored['stripe']['secret_key']);
-    }
-
-    public function test_a_credential_for_an_unregistered_gateway_is_discarded()
-    {
-        $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), $this->payload([
-            'gateway_credentials' => ['notagateway' => ['token' => 'x']],
-        ]))->assertRedirect();
-
-        $this->assertArrayNotHasKey('notagateway', app(StoreSettings::class)->refresh()->gateway_credentials);
-    }
-
-    // --- Enabling -------------------------------------------------------------------------------
-
-    public function test_enabling_stripe_with_both_credentials_makes_the_driver_ready()
-    {
-        $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), $this->payload([
-            'enabled_gateways' => ['manual', 'stripe'],
-            'gateway_credentials' => [
-                'stripe' => ['secret_key' => 'sk_test_1', 'webhook_secret' => 'whsec_1'],
-            ],
-        ]))->assertRedirect();
-
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.store.payment-gateway.index'))
-            ->assertInertia(function ($page) {
-                $stripe = $this->gatewayProp('stripe', $page);
-
-                $this->assertTrue($stripe['is_enabled']);
-                $this->assertTrue($stripe['is_configured']);
-            });
-    }
-
-    public function test_a_gateway_switched_on_without_credentials_is_not_reported_ready()
-    {
-        $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), $this->payload([
-            'enabled_gateways' => ['stripe'],
-            'gateway_credentials' => ['stripe' => ['secret_key' => 'sk_test_1']],
-        ]))->assertRedirect();
-
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.store.payment-gateway.index'))
-            ->assertInertia(function ($page) {
-                $stripe = $this->gatewayProp('stripe', $page);
-
-                $this->assertTrue($stripe['is_enabled'], 'The admin did switch it on…');
-                $this->assertFalse($stripe['is_configured'], '…but a half-configured gateway must never be offered.');
-            });
-    }
-
-    public function test_switching_a_gateway_off_leaves_its_credentials_in_place()
-    {
-        // Turning a gateway off is not the same as forgetting its keys.
-        $this->stripeConfigured();
-
-        $this->actingAs($this->superadmin)
-            ->post(route('admin.store.payment-gateway.update'), $this->payload(['enabled_gateways' => ['manual']]));
-
-        $settings = app(StoreSettings::class)->refresh();
-
-        $this->assertEquals(['manual'], $settings->enabled_gateways);
-        $this->assertEquals('sk_test_original', $settings->gateway_credentials['stripe']['secret_key']);
-    }
-
-    public function test_an_unknown_gateway_key_is_rejected()
-    {
-        $this->actingAs($this->superadmin)
-            ->post(route('admin.store.payment-gateway.update'), $this->payload(['enabled_gateways' => ['notagateway']]))
-            ->assertSessionHasErrors('enabled_gateways.0');
-    }
-
-    // --- Operator guidance ------------------------------------------------------------------------
-
-    public function test_each_gateway_carries_its_own_webhook_url()
-    {
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.store.payment-gateway.index'))
-            ->assertInertia(function ($page) {
-                foreach ($page->toArray()['props']['gateways'] as $gateway) {
-                    $this->assertEquals(
-                        route('api.store.webhook', ['gateway' => $gateway['key']]),
-                        $gateway['webhook_url']
-                    );
-                }
-            });
-    }
-
-    public function test_a_currency_a_gateway_cannot_charge_is_called_out()
-    {
-        // Nothing registered restricts its currencies today, so this asserts the shape rather than
-        // a specific driver: a driver that answers null to supportedCurrencies() flags nothing.
-        StoreCurrency::factory()->create(['code' => 'JPY', 'is_enabled' => true, 'is_base' => false]);
-
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.store.payment-gateway.index'))
-            ->assertInertia(function ($page) {
-                $stripe = $this->gatewayProp('stripe', $page);
-
-                $this->assertNull($stripe['supported_currencies']);
-                $this->assertSame([], $stripe['unsupported_currencies']);
-            });
-    }
-
-    public function test_the_page_warns_when_no_currency_is_enabled()
-    {
-        StoreCurrency::query()->update(['is_enabled' => false]);
-
-        $this->actingAs($this->superadmin)
-            ->get(route('admin.store.payment-gateway.index'))
-            ->assertInertia(fn ($page) => $page->has('enabledCurrencies', 0));
-    }
+    return array_merge([
+        'enabled_gateways' => ['manual'],
+        'gateway_credentials' => [],
+    ], $overrides);
 }
+
+function stripeConfigured(): void
+{
+    $settings = app(StoreSettings::class);
+    $settings->enabled_gateways = ['manual', 'stripe'];
+    $settings->gateway_credentials = [
+        'stripe' => ['secret_key' => 'sk_test_original', 'webhook_secret' => 'whsec_original'],
+    ];
+    $settings->save();
+}
+
+/**
+ * @return array<string, mixed>
+ */
+function gatewayProp(string $key, $page): array
+{
+    return collect($page->toArray()['props']['gateways'])->firstWhere('key', $key);
+}
+
+test('a guest is redirected to login', function () {
+    $this->get(route('admin.store.payment-gateway.index'))->assertRedirect(route('login'));
+});
+
+test('a user without the settings permission is forbidden', function () {
+    $this->actingAs(User::factory()->create())
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertForbidden();
+});
+
+test('a superadmin sees every registered gateway', function () {
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertOk()
+        ->assertInertia(function ($page) {
+            $page->component('Admin/StorePaymentGateway/IndexStorePaymentGateway');
+
+            $keys = collect($page->toArray()['props']['gateways'])->pluck('key');
+
+            expect($keys->all())->toEqualCanonicalizing(array_keys(config('store.gateways')));
+        });
+});
+
+test('a stored secret is masked rather than sent', function () {
+    stripeConfigured();
+
+    $response = $this->actingAs($this->superadmin)->get(route('admin.store.payment-gateway.index'));
+
+    $response->assertOk();
+    $response->assertDontSee('sk_test_original');
+    $response->assertDontSee('whsec_original');
+
+    $response->assertInertia(function ($page) {
+        $stripe = gatewayProp('stripe', $page);
+
+        expect($stripe['credentials']['secret_key'])->toEqual(GATEWAY_CREDENTIAL_MASK);
+        expect($stripe['credentials']['webhook_secret'])->toEqual(GATEWAY_CREDENTIAL_MASK);
+    });
+});
+
+test('an unset secret is sent as null rather than a mask', function () {
+    // A masked empty field would read as "already configured" and be impossible to fill in.
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertInertia(function ($page) {
+            expect(gatewayProp('stripe', $page)['credentials']['secret_key'])->toBeNull();
+        });
+});
+
+test('a secret submitted unchanged as the mask is kept', function () {
+    stripeConfigured();
+
+    $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload([
+        'enabled_gateways' => ['manual', 'stripe'],
+        'gateway_credentials' => [
+            'stripe' => ['secret_key' => GATEWAY_CREDENTIAL_MASK, 'webhook_secret' => 'whsec_rotated'],
+        ],
+    ]))->assertRedirect();
+
+    $stored = app(StoreSettings::class)->refresh()->gateway_credentials;
+
+    expect($stored['stripe']['secret_key'])->toEqual('sk_test_original', 'An untouched secret must survive the round trip.');
+    expect($stored['stripe']['webhook_secret'])->toEqual('whsec_rotated', 'A changed secret must be written.');
+});
+
+test('only fields a driver declares are stored', function () {
+    $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload([
+        'enabled_gateways' => ['stripe'],
+        'gateway_credentials' => [
+            'stripe' => ['secret_key' => 'sk_test_1', 'webhook_secret' => 'whsec_1', 'evil' => 'payload'],
+        ],
+    ]))->assertRedirect();
+
+    $stored = app(StoreSettings::class)->refresh()->gateway_credentials;
+
+    $this->assertArrayNotHasKey('evil', $stored['stripe']);
+    expect($stored['stripe']['secret_key'])->toEqual('sk_test_1');
+});
+
+test('a credential for an unregistered gateway is discarded', function () {
+    $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload([
+        'gateway_credentials' => ['notagateway' => ['token' => 'x']],
+    ]))->assertRedirect();
+
+    $this->assertArrayNotHasKey('notagateway', app(StoreSettings::class)->refresh()->gateway_credentials);
+});
+
+test('enabling stripe with both credentials makes the driver ready', function () {
+    $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload([
+        'enabled_gateways' => ['manual', 'stripe'],
+        'gateway_credentials' => [
+            'stripe' => ['secret_key' => 'sk_test_1', 'webhook_secret' => 'whsec_1'],
+        ],
+    ]))->assertRedirect();
+
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertInertia(function ($page) {
+            $stripe = gatewayProp('stripe', $page);
+
+            expect($stripe['is_enabled'])->toBeTrue();
+            expect($stripe['is_configured'])->toBeTrue();
+        });
+});
+
+test('a gateway switched on without credentials is not reported ready', function () {
+    $this->actingAs($this->superadmin)->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload([
+        'enabled_gateways' => ['stripe'],
+        'gateway_credentials' => ['stripe' => ['secret_key' => 'sk_test_1']],
+    ]))->assertRedirect();
+
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertInertia(function ($page) {
+            $stripe = gatewayProp('stripe', $page);
+
+            expect($stripe['is_enabled'])->toBeTrue('The admin did switch it on…');
+            expect($stripe['is_configured'])->toBeFalse('…but a half-configured gateway must never be offered.');
+        });
+});
+
+test('switching a gateway off leaves its credentials in place', function () {
+    // Turning a gateway off is not the same as forgetting its keys.
+    stripeConfigured();
+
+    $this->actingAs($this->superadmin)
+        ->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload(['enabled_gateways' => ['manual']]));
+
+    $settings = app(StoreSettings::class)->refresh();
+
+    expect($settings->enabled_gateways)->toEqual(['manual']);
+    expect($settings->gateway_credentials['stripe']['secret_key'])->toEqual('sk_test_original');
+});
+
+test('an unknown gateway key is rejected', function () {
+    $this->actingAs($this->superadmin)
+        ->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload(['enabled_gateways' => ['notagateway']]))
+        ->assertSessionHasErrors('enabled_gateways.0');
+});
+
+test('each gateway carries its own webhook url', function () {
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertInertia(function ($page) {
+            foreach ($page->toArray()['props']['gateways'] as $gateway) {
+                expect($gateway['webhook_url'])->toEqual(route('api.store.webhook', ['gateway' => $gateway['key']]));
+            }
+        });
+});
+
+test('a currency a gateway cannot charge is called out', function () {
+    // Nothing registered restricts its currencies today, so this asserts the shape rather than
+    // a specific driver: a driver that answers null to supportedCurrencies() flags nothing.
+    StoreCurrency::factory()->create(['code' => 'JPY', 'is_enabled' => true, 'is_base' => false]);
+
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertInertia(function ($page) {
+            $stripe = gatewayProp('stripe', $page);
+
+            expect($stripe['supported_currencies'])->toBeNull();
+            expect($stripe['unsupported_currencies'])->toBe([]);
+        });
+});
+
+test('the page warns when no currency is enabled', function () {
+    StoreCurrency::query()->update(['is_enabled' => false]);
+
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertInertia(fn ($page) => $page->has('enabledCurrencies', 0));
+});

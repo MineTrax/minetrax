@@ -26,8 +26,8 @@ test('profile information can be updated', function () {
         'locale' => null,
     ]);
 
-    $this->assertEquals('Test Name', $user->fresh()->name);
-    $this->assertEquals('f', $user->fresh()->gender);
-    $this->assertEquals('1995-12-21', $user->fresh()->dob->format('Y-m-d'));
-    $this->assertEquals('about me', $user->fresh()->about);
+    expect($user->fresh()->name)->toEqual('Test Name');
+    expect($user->fresh()->gender)->toEqual('f');
+    expect($user->fresh()->dob->format('Y-m-d'))->toEqual('1995-12-21');
+    expect($user->fresh()->about)->toEqual('about me');
 });
