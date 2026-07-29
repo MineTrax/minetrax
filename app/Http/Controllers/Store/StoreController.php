@@ -242,8 +242,14 @@ class StoreController extends Controller
             'price_formatted' => $this->currencies->format($price, $currency),
             'price_original' => $listPrice,
             'price_original_formatted' => $this->currencies->format($listPrice, $currency),
-            // Named so the card can say why the price is down, not just that it is.
+            // Named so the card can say why the price is down, not just that it is. The discount is
+            // reported as configured — basis points for a percentage sale, the formatted saving for
+            // a fixed one — because deriving a percentage from the rounded prices misstates it.
             'sale_name' => $priced['sale_name'],
+            'sale_discount_bp' => $priced['sale_discount_bp'],
+            'sale_amount_formatted' => $priced['sale_discount_bp'] === null && $priced['sale_saving'] > 0
+                ? $this->currencies->format($priced['sale_saving'], $currency)
+                : null,
             'pay_what_you_want_max' => $package->pay_what_you_want_max
                 ? $this->currencies->fromBase((int) $package->pay_what_you_want_max, $currency)
                 : null,

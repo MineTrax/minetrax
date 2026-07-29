@@ -119,7 +119,7 @@ class StorePricingService
      * Takes the whole set so the active sales are loaded once rather than per package.
      *
      * @param  iterable<StorePackage>  $packages
-     * @return array<int, array{price: int, price_original: int, sale_name: string|null}>
+     * @return array<int, array{price: int, price_original: int, sale_name: string|null, sale_discount_bp: int|null, sale_saving: int}>
      */
     public function listingPrices(iterable $packages, ?StoreCurrency $currency = null): array
     {
@@ -133,7 +133,13 @@ class StorePricingService
             // Pay what you want has no list price to discount: the figure shown is the floor, and
             // the buyer names the rest.
             if ($package->is_pay_what_you_want) {
-                $prices[$package->id] = ['price' => $list, 'price_original' => $list, 'sale_name' => null];
+                $prices[$package->id] = [
+                    'price' => $list,
+                    'price_original' => $list,
+                    'sale_name' => null,
+                    'sale_discount_bp' => null,
+                    'sale_saving' => 0,
+                ];
 
                 continue;
             }
@@ -146,6 +152,12 @@ class StorePricingService
                 // The undiscounted price, so the card can strike it through.
                 'price_original' => $list,
                 'sale_name' => $sale['name'] ?? null,
+                // Basis points for a percentage sale; a fixed-amount sale has no percentage to give,
+                // so the badge names the amount saved instead.
+                'sale_discount_bp' => ($sale['discount_type'] ?? null) === StoreDiscountType::PERCENT->value
+                    ? (int) $sale['discount_value']
+                    : null,
+                'sale_saving' => (int) ($sale['saving'] ?? 0),
             ];
         }
 
@@ -333,7 +345,16 @@ class StorePricingService
                 : min($unitPrice, $this->currencies->fromBase((int) $sale->discount_value, $currency));
 
             if ($saving > 0 && ($best === null || $saving > $best['saving'])) {
-                $best = ['name' => $sale->name, 'saving' => $saving];
+                $best = [
+                    'name' => $sale->name,
+                    'saving' => $saving,
+                    // Carried so a badge can state the sale as configured. Working the percentage
+                    // back out of the saving misreports it: the saving is rounded down to whole
+                    // minor units per package, so a flat 15% reads as 14.8% on one price and 14.9%
+                    // on another.
+                    'discount_type' => $sale->discount_type->value,
+                    'discount_value' => (int) $sale->discount_value,
+                ];
             }
         }
 

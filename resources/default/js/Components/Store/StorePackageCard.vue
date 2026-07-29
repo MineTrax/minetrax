@@ -1,6 +1,7 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
+import { discountLabel } from "@/Composables/useStoreDiscount";
 import { computed } from "vue";
 
 const { __ } = useTranslations();
@@ -12,20 +13,16 @@ const props = defineProps({
     },
 });
 
-// Basis points back to a percentage for display: 1250 reads as 12.5%.
-// Derived from the two prices rather than from discount_bp, which only knows about the package's own
-// discount — a store-wide sale moved the price but left this null, so neither the badge nor the
-// strike-through ever appeared for one.
-const discountPercent = computed(() => {
-    const original = Number(props.storePackage.price_original ?? 0);
-    const price = Number(props.storePackage.price ?? 0);
+// Stated as configured by the server, not inferred from the prices: a saving is rounded to whole
+// minor units, so a flat 15% sale read as "14.8% off" on one package and "14.9% off" on another.
+// A package discount and a sale both applying are listed as "10% + 15% off".
+const discountBadge = computed(() => discountLabel(props.storePackage));
 
-    if (! original || price >= original) {
-        return null;
-    }
-
-    return Math.round(((original - price) / original) * 1000) / 10;
-});
+// Whether to strike the old price through. Compared rather than taken from discount_bp, so it covers
+// a package discount, a sale, or both.
+const isDiscounted = computed(
+    () => Number(props.storePackage.price_original ?? 0) > Number(props.storePackage.price ?? 0)
+);
 </script>
 
 <template>
@@ -90,10 +87,10 @@ const discountPercent = computed(() => {
 
           <!-- Discount Badge -->
           <span
-            v-if="discountPercent"
+            v-if="discountBadge"
             class="inline-block px-2 py-1 text-xs font-medium bg-success/10 text-success rounded"
           >
-            {{ __(":percent% off", { percent: discountPercent }) }}
+            {{ discountBadge }}
           </span>
 
           <!-- Names the sale responsible, so a shopper can tell a permanent discount from a sale -->
@@ -133,7 +130,7 @@ const discountPercent = computed(() => {
             {{ storePackage.price_formatted }}
           </span>
           <span
-            v-if="discountPercent"
+            v-if="isDiscounted"
             class="text-sm text-muted-foreground line-through"
           >
             {{ storePackage.price_original_formatted }}

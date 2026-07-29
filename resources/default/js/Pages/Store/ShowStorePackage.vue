@@ -3,6 +3,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import AppHead from "@/Components/AppHead.vue";
 import { Link, usePage, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
+import { discountLabel } from "@/Composables/useStoreDiscount";
 import { useHelpers } from "@/Composables/useHelpers";
 import { useFormKit } from "@/Composables/useFormKit";
 import { FormKitSchema } from "@formkit/vue";
@@ -43,20 +44,16 @@ const customPrice = ref(
 const currentUser = computed(() => page.props.auth?.user || null);
 const isGuest = computed(() => !currentUser.value);
 
-// Basis points back to a percentage for display: 1250 reads as 12.5%.
-// Derived from the two prices rather than from discount_bp, which only knows about the package's own
-// discount — a store-wide sale moved the price but left this null, so neither the badge nor the
-// strike-through ever appeared for one.
-const discountPercent = computed(() => {
-    const original = Number(props.storePackage.price_original ?? 0);
-    const price = Number(props.storePackage.price ?? 0);
+// Stated as configured by the server, not inferred from the prices: a saving is rounded to whole
+// minor units, so a flat 15% sale read as "14.8% off" on one package and "14.9% off" on another.
+// A package discount and a sale both applying are listed as "10% + 15% off".
+const discountBadge = computed(() => discountLabel(props.storePackage));
 
-    if (! original || price >= original) {
-        return null;
-    }
-
-    return Math.round(((original - price) / original) * 1000) / 10;
-});
+// Whether to strike the old price through. Compared rather than taken from discount_bp, so it covers
+// a package discount, a sale, or both.
+const isDiscounted = computed(
+    () => Number(props.storePackage.price_original ?? 0) > Number(props.storePackage.price ?? 0)
+);
 
 const sellsGiftCard = computed(() => ["giftcard", "both"].includes(props.storePackage.type?.value));
 
@@ -315,7 +312,7 @@ const handleQuantityChange = (e) => {
                 {{ storePackage.price_formatted }}
               </span>
               <span
-                v-if="discountPercent"
+                v-if="isDiscounted"
                 class="text-xl text-muted-foreground line-through"
               >
                 {{ storePackage.price_original_formatted }}
@@ -332,10 +329,10 @@ const handleQuantityChange = (e) => {
               </span>
 
               <span
-                v-if="discountPercent"
+                v-if="discountBadge"
                 class="inline-block px-3 py-1 text-sm font-medium bg-success/10 text-success rounded-lg"
               >
-                {{ __(":percent% off", { percent: discountPercent }) }}
+                {{ discountBadge }}
               </span>
 
               <span

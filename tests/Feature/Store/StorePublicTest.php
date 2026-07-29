@@ -133,6 +133,55 @@ class StorePublicTest extends TestCase
             );
     }
 
+    public function test_the_sale_percentage_is_reported_as_configured_not_derived_from_the_price()
+    {
+        // 15% of 149 minor units is 22.35, saved as 22, so deriving the percentage back out of the
+        // prices reported 14.8% on this package and 14.9% on a $9.99 one. The badge states the sale.
+        $this->baseCurrency();
+        StorePackage::factory()->create(['price' => 149]);
+        StoreSale::factory()->create(['discount_value' => 1500]);
+
+        $this->get(route('store.index'))
+            ->assertInertia(fn ($page) => $page
+                ->where('packages.0.price', 127)
+                ->where('packages.0.sale_discount_bp', 1500)
+                ->where('packages.0.discount_bp', 0)
+                ->where('packages.0.sale_amount_formatted', null)
+            );
+    }
+
+    public function test_a_package_discount_and_a_sale_are_reported_separately()
+    {
+        // Both apply, the sale on top of the already reduced price, so they are listed rather than
+        // added into a single figure that matches neither.
+        $this->baseCurrency();
+        StorePackage::factory()->create(['price' => 1000, 'discount_bp' => 1000]); // 10% off
+        StoreSale::factory()->create(['discount_value' => 1500]);                  // then 15% off
+
+        $this->get(route('store.index'))
+            ->assertInertia(fn ($page) => $page
+                // 1000 less 10% is 900, less 15% of 900 is 765.
+                ->where('packages.0.price', 765)
+                ->where('packages.0.discount_bp', 1000)
+                ->where('packages.0.sale_discount_bp', 1500)
+            );
+    }
+
+    public function test_a_fixed_amount_sale_names_the_money_saved_instead_of_a_percentage()
+    {
+        $this->baseCurrency();
+        StorePackage::factory()->create(['price' => 2000]);
+        StoreSale::factory()->fixed(500)->create();
+
+        $this->get(route('store.index'))
+            ->assertInertia(fn ($page) => $page
+                ->where('packages.0.price', 1500)
+                // No percentage exists for a fixed sale, so none is invented.
+                ->where('packages.0.sale_discount_bp', null)
+                ->where('packages.0.sale_amount_formatted', '$5.00')
+            );
+    }
+
     public function test_a_sale_scoped_elsewhere_does_not_touch_a_package()
     {
         $this->baseCurrency();
