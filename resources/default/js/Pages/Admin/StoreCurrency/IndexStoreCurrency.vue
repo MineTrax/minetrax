@@ -151,7 +151,16 @@ function makeBaseCurrency(currency) {
               v-if="item.is_base"
               class="text-muted-foreground"
             >—</span>
-            <span v-else>{{ item.rate_to_base }}</span>
+            <template v-else>
+              <span>{{ item.rate_to_base }}</span>
+              <!-- Freshness matters: a currency the automatic feed does not carry keeps whatever
+                   rate was set by hand, and only this date says so. -->
+              <div class="text-xs text-muted-foreground">
+                {{ item.rate_updated_at
+                  ? __("Updated :date", { date: new Date(item.rate_updated_at).toLocaleDateString() })
+                  : __("Set manually") }}
+              </div>
+            </template>
           </DtRowItem>
 
           <td class="px-4 text-center">

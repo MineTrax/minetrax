@@ -14,6 +14,7 @@ use App\Jobs\CalculatePlayersJob;
 use App\Jobs\RunAwaitingCommandQueuesJob;
 use App\Jobs\Store\ExpireStalePendingStoreOrdersJob;
 use App\Jobs\Store\ExpireStorePackageGrantsJob;
+use App\Jobs\Store\RefreshStoreCurrencyRatesJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -48,6 +49,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Takes back timed purchases whose time is up, and runs the package's expiry commands.
         // withoutOverlapping so a slow sweep over a long backlog cannot be lapped by the next one.
         $schedule->job(new ExpireStorePackageGrantsJob)->everyFiveMinutes()->withoutOverlapping();
+
+        // Only does anything when the admin has chosen automatic rates. The ECB publishes once a
+        // working day, so more often than daily would just be more requests for the same numbers.
+        $schedule->job(new RefreshStoreCurrencyRatesJob)->daily()->at('02:00');
 
         $schedule->command('telescope:prune')->daily();
         $schedule->command('queue:prune-batches --hours=48 --unfinished=72')->daily();

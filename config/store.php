@@ -1,5 +1,6 @@
 <?php
 
+use App\Utils\ExchangeRates\FrankfurterExchangeRateProvider;
 use App\Utils\Payments\ManualPaymentGateway;
 use App\Utils\Payments\StripePaymentGateway;
 
@@ -38,6 +39,25 @@ return [
         'manual' => ManualPaymentGateway::class,
         'stripe' => StripePaymentGateway::class,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Exchange rate providers, keyed by their provider key.
+    |
+    | Adding a feed is a new class implementing
+    | App\Contracts\StoreExchangeRateProviderContract plus one line here, so
+    | swapping to a paid feed never touches the refresh job or the currencies.
+    |
+    | Whether rates refresh at all is a runtime setting
+    | (StoreSettings::$currency_rate_source); which feed does it is deploy-time,
+    | because a paid one needs its credential in the environment.
+    |--------------------------------------------------------------------------
+    */
+    'rate_providers' => [
+        'frankfurter' => FrankfurterExchangeRateProvider::class,
+    ],
+
+    'rate_provider' => env('STORE_RATE_PROVIDER', 'frankfurter'),
 
     /*
     |--------------------------------------------------------------------------
