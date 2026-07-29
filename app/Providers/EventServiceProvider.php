@@ -10,7 +10,9 @@ use App\Events\RecruitmentSubmissionCommentCreated;
 use App\Events\RecruitmentSubmissionCreated;
 use App\Events\RecruitmentSubmissionStatusChanged;
 use App\Events\StoreOrderPaid;
+use App\Events\StoreOrderRefunded;
 use App\Listeners\DispatchStoreOrderDeliveryOnPaid;
+use App\Listeners\DispatchStoreOrderRevocationOnRefund;
 use App\Listeners\MergeGuestStoreCartOnLogin;
 use App\Listeners\NotifyStaffOnCustomFormSubmission;
 use App\Listeners\NotifyStaffOnNewsComment;
@@ -46,6 +48,9 @@ class EventServiceProvider extends ServiceProvider
             DispatchStoreOrderDeliveryOnPaid::class,
             SendStoreOrderReceipt::class,
             NotifyStaffOnStoreOrderPaid::class,
+        ],
+        StoreOrderRefunded::class => [
+            DispatchStoreOrderRevocationOnRefund::class,
         ],
         SocialiteWasCalled::class => [
             DiscordExtendSocialite::class,
