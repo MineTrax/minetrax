@@ -7,6 +7,8 @@ use App\Models\StoreOrder;
 use App\Models\StorePayment;
 use App\Models\User;
 use App\Notifications\StoreChargebackStaffNotification;
+use App\Notifications\StoreOrderPaidNotification;
+use App\Notifications\StoreOrderPlacedStaffNotification;
 use App\Notifications\StoreOrderRefundedNotification;
 use App\Notifications\StorePaymentFailedNotification;
 use App\Services\StoreOrderService;
@@ -47,6 +49,37 @@ function setAutoBan(bool $enabled): void
     $settings->auto_ban_on_chargeback = $enabled;
     $settings->save();
 }
+
+test('every store notification carries what the bell needs to render it', function () {
+    // The notification dropdown builds its title, body and link from the database payload. A missing
+    // key silently reverts the entry to "You have a notification" with a link to nowhere, which is
+    // exactly how these looked before the dropdown learned about them.
+    $user = User::whereId(1)->first();
+    $order = refundNoticePaidOrder(['user_id' => $user->id]);
+
+    $payloads = [
+        'paid' => (new StoreOrderPaidNotification($order))->toArray($user),
+        'refunded' => (new StoreOrderRefundedNotification($order, 500))->toArray($user),
+        'payment_failed' => (new StorePaymentFailedNotification($order))->toArray($user),
+        'placed_staff' => (new StoreOrderPlacedStaffNotification($order))->toArray($user),
+        'chargeback_staff' => (new StoreChargebackStaffNotification($order, true))->toArray($user),
+    ];
+
+    foreach ($payloads as $name => $payload) {
+        // uuid builds the link, number is the human-readable order reference in every title.
+        expect($payload)->toHaveKeys(['uuid', 'number'], $name);
+    }
+
+    expect($payloads['paid'])->toHaveKeys(['player_username', 'total_formatted']);
+    expect($payloads['refunded'])->toHaveKey('amount_formatted');
+    expect($payloads['placed_staff'])->toHaveKeys(['player_username', 'total_formatted']);
+    expect($payloads['chargeback_staff'])->toHaveKeys(['player_username', 'total_formatted', 'was_banned']);
+
+    // Amounts arrive formatted in the order's currency, never as raw minor units for the frontend
+    // to divide.
+    expect($payloads['refunded']['amount_formatted'])->toBe('$5.00');
+    expect($payloads['paid']['total_formatted'])->toBe('$20.00');
+});
 
 test('a refund notifies the buyer with the amount refunded', function () {
     $user = User::factory()->create();

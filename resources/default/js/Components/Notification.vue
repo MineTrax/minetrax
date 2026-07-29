@@ -141,6 +141,11 @@ const getNotificationBorderColor = () => {
         "App\\Notifications\\RecruitmentSubmissionCreatedNotification":"border-yellow-500",
         "App\\Notifications\\RecruitmentSubmissionStatusChangedNotification":"border-indigo-500",
         "App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification":"border-info",
+        "App\\Notifications\\StoreOrderPaidNotification":"border-success",
+        "App\\Notifications\\StoreOrderRefundedNotification":"border-orange-500",
+        "App\\Notifications\\StorePaymentFailedNotification":"border-destructive",
+        "App\\Notifications\\StoreOrderPlacedStaffNotification":"border-success",
+        "App\\Notifications\\StoreChargebackStaffNotification":"border-destructive",
     };
     return priorities[type] ||"border-border";
 };
@@ -157,6 +162,11 @@ const getNotificationDotColor = () => {
         "App\\Notifications\\RecruitmentSubmissionCreatedNotification":"bg-yellow-500",
         "App\\Notifications\\RecruitmentSubmissionStatusChangedNotification":"bg-indigo-500",
         "App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification":"bg-info",
+        "App\\Notifications\\StoreOrderPaidNotification":"bg-success",
+        "App\\Notifications\\StoreOrderRefundedNotification":"bg-orange-500",
+        "App\\Notifications\\StorePaymentFailedNotification":"bg-destructive",
+        "App\\Notifications\\StoreOrderPlacedStaffNotification":"bg-success",
+        "App\\Notifications\\StoreChargebackStaffNotification":"bg-destructive",
     };
     return priorities[type] ||"bg-muted-foreground";
 };
@@ -191,6 +201,16 @@ const getNotificationTitle = () => {
     }
     case"App\\Notifications\\RecruitmentSubmissionCommentCreatedNotification":
         return data.for_staff ? __("New message on application") : __("Message received on your application");
+    case"App\\Notifications\\StoreOrderPaidNotification":
+        return __("Order :number confirmed", { number: data.number });
+    case"App\\Notifications\\StoreOrderRefundedNotification":
+        return __("Order :number refunded", { number: data.number });
+    case"App\\Notifications\\StorePaymentFailedNotification":
+        return __("Payment for order :number was declined", { number: data.number });
+    case"App\\Notifications\\StoreOrderPlacedStaffNotification":
+        return __("New store order :number", { number: data.number });
+    case"App\\Notifications\\StoreChargebackStaffNotification":
+        return __("Chargeback on order :number", { number: data.number });
     default:
         return __("You have a notification");
     }
@@ -230,6 +250,34 @@ const getNotificationDescription = () => {
         return data.for_staff
             ? __("A new message has been received on an application. Click to view and respond.")
             : __(":user sent you a message regarding your application. Click to read and respond.", { user: data.causer.name });
+    // Every amount below is a string the server already formatted in the order's own currency, so
+    // nothing here divides money or guesses at a symbol.
+    case"App\\Notifications\\StoreOrderPaidNotification":
+        return __("Your payment of :amount was received. Items are on their way to :player in game.", {
+            amount: data.total_formatted,
+            player: data.player_username,
+        });
+    case"App\\Notifications\\StoreOrderRefundedNotification":
+        return __(":amount has been refunded. It can take a few days to appear on your statement.", {
+            amount: data.amount_formatted,
+        });
+    case"App\\Notifications\\StorePaymentFailedNotification":
+        return __("Nothing was charged. The order is still waiting and can be paid with another method.");
+    case"App\\Notifications\\StoreOrderPlacedStaffNotification":
+        return __(":player purchased :amount worth of packages. Click to view the order.", {
+            player: data.player_username,
+            amount: data.total_formatted,
+        });
+    case"App\\Notifications\\StoreChargebackStaffNotification":
+        return data.was_banned
+            ? __(":player disputed :amount and has been banned automatically. Click to review.", {
+                player: data.player_username,
+                amount: data.total_formatted,
+            })
+            : __(":player disputed :amount and the funds have been reversed. Click to review.", {
+                player: data.player_username,
+                amount: data.total_formatted,
+            });
     default:
         return __("You have received a new notification. Click to view more details.");
     }
@@ -266,6 +314,15 @@ const getNotificationUrl = () => {
                 recruitment: data.recruitment.slug,
                 submission: data.submission_id,
             });
+    // The buyer goes to the public result page, which works signed in or not; staff go to the
+    // admin order, which is where the actions are.
+    case"App\\Notifications\\StoreOrderPaidNotification":
+    case"App\\Notifications\\StoreOrderRefundedNotification":
+    case"App\\Notifications\\StorePaymentFailedNotification":
+        return route("store.order.result", data.uuid);
+    case"App\\Notifications\\StoreOrderPlacedStaffNotification":
+    case"App\\Notifications\\StoreChargebackStaffNotification":
+        return route("admin.store.order.show", data.uuid);
     default:
         return route("notification.index");
     }
