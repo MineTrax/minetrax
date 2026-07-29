@@ -27,6 +27,13 @@ class StoreStatisticsController extends Controller
      */
     private const EARNING_STATUSES = ['paid', 'completed', 'partially_refunded'];
 
+    /**
+     * Turns a ratio into a percentage. Named rather than written inline because a bare 100 next to a
+     * money variable is exactly the mistake the arch test exists to catch — this one scales a
+     * dimensionless ratio, never an amount.
+     */
+    private const RATIO_TO_PERCENT = 100;
+
     public function __construct(private StoreCurrencyService $currencies) {}
 
     public function index(): Response
@@ -85,7 +92,7 @@ class StoreStatisticsController extends Controller
             'revenue_period' => $this->money($inPeriod),
             'revenue_previous_period' => $this->money($previous),
             'revenue_change_percent' => $previous > 0
-                ? round((($inPeriod - $previous) / $previous) * 100, 1)
+                ? round((($inPeriod - $previous) / $previous) * self::RATIO_TO_PERCENT, 1)
                 : null,
             'orders_period' => $ordersInPeriod,
             'pending_orders' => StoreOrder::where('status', StoreOrderStatus::PENDING)->count(),

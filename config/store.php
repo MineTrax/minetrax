@@ -2,6 +2,7 @@
 
 use App\Utils\ExchangeRates\FrankfurterExchangeRateProvider;
 use App\Utils\Payments\ManualPaymentGateway;
+use App\Utils\Payments\PayPalPaymentGateway;
 use App\Utils\Payments\StripePaymentGateway;
 
 return [
@@ -38,6 +39,7 @@ return [
     'gateways' => [
         'manual' => ManualPaymentGateway::class,
         'stripe' => StripePaymentGateway::class,
+        'paypal' => PayPalPaymentGateway::class,
     ],
 
     /*

@@ -6,6 +6,7 @@ import AlertCard from "@/Components/AlertCard.vue";
 import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
 import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import XTextarea from "@/Components/Form/XTextarea.vue";
 import { useForm } from "@inertiajs/vue3";
@@ -132,8 +133,18 @@ const save = () => form.post(route("admin.store.payment-gateway.update"), { pres
                 v-for="field in gateway.schema"
                 :key="field.key"
               >
+                <XSelect
+                  v-if="field.type === 'select'"
+                  :id="`${gateway.key}_${field.key}`"
+                  v-model="form.gateway_credentials[gateway.key][field.key]"
+                  :label="field.label"
+                  :help="field.help"
+                  :select-list="field.options ?? {}"
+                  :disable-null="true"
+                  :name="`${gateway.key}_${field.key}`"
+                />
                 <XTextarea
-                  v-if="field.type === 'textarea'"
+                  v-else-if="field.type === 'textarea'"
                   :id="`${gateway.key}_${field.key}`"
                   v-model="form.gateway_credentials[gateway.key][field.key]"
                   :label="field.label"
