@@ -46,9 +46,14 @@ class StripePaymentGateway extends AbstractStorePaymentGateway
         return StorePaymentGateway::STRIPE;
     }
 
+    /**
+     * Names the processor as well as the payment method. The same label is what the admin gateway
+     * screen puts above the credentials, where "Credit / Debit Card" alone left no clue which
+     * provider was being configured.
+     */
     public function label(): string
     {
-        return __('Credit / Debit Card');
+        return __('Stripe (Credit / Debit Card)');
     }
 
     public function description(): ?string

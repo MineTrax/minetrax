@@ -1942,6 +1942,7 @@
     "Store sale has been updated successfully": "Store sale has been updated successfully",
     "Store these recovery codes in a secure password manager. They can be used to recover access to your account if your two factor authentication device is lost.": "Store these recovery codes in a secure password manager. They can be used to recover access to your account if your two factor authentication device is lost.",
     "Storefront": "Storefront",
+    "Stripe (Credit / Debit Card)": "Stripe (Credit / Debit Card)",
     "Stripe Dashboard → Developers → API keys. Starts with sk_test_ or sk_live_.": "Stripe Dashboard → Developers → API keys. Starts with sk_test_ or sk_live_.",
     "Stripe requires :currency amounts to end in a zero. Adjust the price or the currency rounding rule.": "Stripe requires :currency amounts to end in a zero. Adjust the price or the currency rounding rule.",
     "Submission #": "Submission #",
