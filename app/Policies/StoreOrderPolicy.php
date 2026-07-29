@@ -74,4 +74,15 @@ class StoreOrderPolicy
     {
         return $user?->can('resend store_orders') ?? false;
     }
+
+    /**
+     * Determine whether the user can see store revenue.
+     *
+     * Its own permission rather than `read store_orders`: seeing an order because support needs to
+     * is not the same as seeing what the server earns.
+     */
+    public function viewStatistics(?User $user): bool
+    {
+        return $user?->can('view store_statistics') ?? false;
+    }
 }

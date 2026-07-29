@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\Store\StoreOrderController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
 use App\Http\Controllers\Admin\Store\StorePaymentGatewayController;
 use App\Http\Controllers\Admin\Store\StoreSaleController;
+use App\Http\Controllers\Admin\Store\StoreStatisticsController;
 use App\Http\Controllers\Admin\Store\StoreVariableController;
 use App\Http\Controllers\BanWardenController;
 use App\Http\Controllers\CustomFormController;
@@ -416,6 +417,8 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
         Route::get('sale/{storeSale}/edit', [StoreSaleController::class, 'edit'])->name('sale.edit');
         Route::put('sale/{storeSale}', [StoreSaleController::class, 'update'])->name('sale.update');
         Route::delete('sale/{storeSale}', [StoreSaleController::class, 'destroy'])->name('sale.delete');
+
+        Route::get('statistics', [StoreStatisticsController::class, 'index'])->name('statistics.index');
 
         Route::get('grant', [StoreGrantController::class, 'index'])->name('grant.index');
         Route::post('grant/{grant}/revoke', [StoreGrantController::class, 'revoke'])->name('grant.revoke');

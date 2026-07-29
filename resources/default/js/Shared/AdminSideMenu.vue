@@ -198,6 +198,14 @@ const navItems = [
         active: route().current("admin.store.*"),
         children: [
             {
+                label: "Statistics",
+                href: route("admin.store.statistics.index"),
+                active: route().current("admin.store.statistics.*"),
+                children: [],
+                icon: null,
+                visible: can("view store_statistics"),
+            },
+            {
                 label: "Categories",
                 href: route("admin.store.category.index"),
                 active: route().current("admin.store.category.*"),
