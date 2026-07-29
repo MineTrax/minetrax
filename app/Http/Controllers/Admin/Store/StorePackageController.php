@@ -58,6 +58,9 @@ class StorePackageController extends Controller
             ->withCount('commands')
             ->allowedFilters(...[
                 ...$fields,
+                // Filtering by the category's name rather than its id, so the column filter reads
+                // the way the column does.
+                'category.name',
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'name', 'slug', 'short_description'])),
             ])
             ->allowedSorts(...$fields)

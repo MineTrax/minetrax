@@ -89,6 +89,60 @@ class StorePackageAdminTest extends TestCase
             ->assertInertia(fn ($page) => $page->component('Admin/StorePackage/IndexStorePackage', false));
     }
 
+    public function test_the_listing_carries_each_packages_category()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $category = StoreCategory::factory()->create(['name' => 'Ranks']);
+        StorePackage::factory()->create(['store_category_id' => $category->id]);
+        StorePackage::factory()->create(['store_category_id' => null]);
+
+        $this->get(route('admin.store.package.index'))
+            ->assertOk()
+            ->assertInertia(function ($page) use ($category) {
+                $rows = collect($page->toArray()['props']['packages']['data'])->keyBy('store_category_id');
+
+                $this->assertSame('Ranks', $rows[$category->id]['category']['name']);
+                $this->assertNull($rows['']['category'] ?? null, 'An uncategorised package still lists.');
+            });
+    }
+
+    public function test_the_listing_can_be_filtered_by_category_name()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $ranks = StoreCategory::factory()->create(['name' => 'Ranks']);
+        $coins = StoreCategory::factory()->create(['name' => 'Coins']);
+        StorePackage::factory()->create(['store_category_id' => $ranks->id]);
+        StorePackage::factory()->count(2)->create(['store_category_id' => $coins->id]);
+
+        $this->get(route('admin.store.package.index', ['filter' => ['category.name' => 'Coins']]))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->has('packages.data', 2));
+    }
+
+    /**
+     * The edit form has to arrive with the category already chosen, which means the value it binds
+     * must match one of the select's own options.
+     */
+    public function test_the_edit_form_preselects_the_current_category()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $category = StoreCategory::factory()->create();
+        $package = StorePackage::factory()->create(['store_category_id' => $category->id]);
+
+        $this->get(route('admin.store.package.edit', $package->id))
+            ->assertOk()
+            ->assertInertia(function ($page) use ($category) {
+                $props = $page->toArray()['props'];
+
+                $this->assertEquals($category->id, $props['storePackage']['store_category_id']);
+                $this->assertContains(
+                    $category->id,
+                    collect($props['categories'])->pluck('id')->all(),
+                    'The current category has to be among the options, or nothing can be selected.'
+                );
+            });
+    }
+
     public function test_create_form_only_offers_servers_that_can_receive_commands()
     {
         $this->actingAs(User::whereId(1)->first());

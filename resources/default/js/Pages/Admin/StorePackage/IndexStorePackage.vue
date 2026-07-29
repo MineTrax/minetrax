@@ -66,6 +66,15 @@ const headerRow = [
         label: __("Slug"),
     },
     {
+        key: "store_category_id",
+        sortable: true,
+        label: __("Category"),
+        filterable: {
+            key: "category.name",
+            type: "text",
+        },
+    },
+    {
         key: "price",
         sortable: true,
         label: __("Price"),
@@ -148,13 +157,27 @@ const headerRow = [
                 </span>
               </div>
               <div class="text-xs text-muted-foreground">
-                {{ item.category?.name || "—" }} &middot; {{ item.type?.value ? typeLabels[item.type.value] : "—" }}
+                {{ item.type?.value ? typeLabels[item.type.value] : "—" }}
               </div>
             </div>
           </DtRowItem>
 
           <DtRowItem>
             {{ item.slug }}
+          </DtRowItem>
+
+          <DtRowItem>
+            <Link
+              v-if="item.category"
+              :href="route('admin.store.category.edit', item.store_category_id)"
+              class="text-primary hover:underline"
+            >
+              {{ item.category.name }}
+            </Link>
+            <span
+              v-else
+              class="text-muted-foreground"
+            >&mdash;</span>
           </DtRowItem>
 
           <DtRowItem>

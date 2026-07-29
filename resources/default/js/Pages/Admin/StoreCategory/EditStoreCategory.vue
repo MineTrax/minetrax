@@ -48,11 +48,17 @@ const parentCategoriesMap = props.parentCategories.reduce((acc, cat) => {
     return acc;
 }, {});
 
+// XSelect builds its options from object keys, which JavaScript always makes strings, so a numeric
+// id from the server never matches an option and the select falls back to its placeholder.
+function selectValue(value) {
+    return value === null || value === undefined ? null : String(value);
+}
+
 const form = useForm({
     _method: "PUT",
     name: props.category.name,
     description: props.category.description,
-    parent_id: props.category.parent_id,
+    parent_id: selectValue(props.category.parent_id),
     sort_order: props.category.sort_order,
     is_visible: props.category.is_visible,
     is_enabled: props.category.is_enabled,

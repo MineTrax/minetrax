@@ -144,7 +144,9 @@ const attachedVariablePlaceholders = computed(() =>
 // The comparison rows belong to the chosen category, so this follows the dropdown rather than being
 // baked in at render. Categories not using the table layout report no fields, which hides the card.
 const comparisonFields = computed(() => {
-    const category = props.categories.find(item => item.id === form.store_category_id);
+    // Compared as strings: XSelect hands back an object key, which is always a string, while the
+    // id is a number.
+    const category = props.categories.find(item => String(item.id) === String(form.store_category_id));
 
     if (! category || (category.display_type?.value ?? category.display_type) !== "comparison") {
         return [];
