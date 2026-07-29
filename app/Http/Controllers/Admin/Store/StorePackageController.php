@@ -64,7 +64,11 @@ class StorePackageController extends Controller
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'name', 'slug', 'short_description'])),
             ])
             ->allowedSorts(...$fields)
-            ->defaultSort('sort_order')
+            // Grouped by category first, so a category's packages sit together rather than being
+            // interleaved. Within a category it follows sort_order — the order the admin arranged,
+            // and the order the storefront lists them in — with id as the tiebreaker. Uncategorised
+            // packages lead, since a null category sorts first.
+            ->defaultSort('store_category_id', 'sort_order', 'id')
             ->paginate($perPage)
             ->withQueryString();
 

@@ -137,6 +137,60 @@ class StorePackageAdminTest extends TestCase
             ->assertInertia(fn ($page) => $page->has('packages.data', 3));
     }
 
+    public function test_the_listing_groups_packages_by_category_then_by_sort_order()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $ranks = StoreCategory::factory()->create(['name' => 'Ranks']);
+        $coins = StoreCategory::factory()->create(['name' => 'Coins']);
+
+        // Created interleaved, so the grouping cannot pass by accident on insertion order.
+        $rankLast = StorePackage::factory()->create(['store_category_id' => $ranks->id, 'sort_order' => 9]);
+        $coinLast = StorePackage::factory()->create(['store_category_id' => $coins->id, 'sort_order' => 1]);
+        $rankFirst = StorePackage::factory()->create(['store_category_id' => $ranks->id, 'sort_order' => 5]);
+        $coinFirst = StorePackage::factory()->create(['store_category_id' => $coins->id, 'sort_order' => 0]);
+
+        $this->get(route('admin.store.package.index'))
+            ->assertOk()
+            ->assertInertia(function ($page) use ($rankFirst, $rankLast, $coinFirst, $coinLast) {
+                $ids = collect($page->toArray()['props']['packages']['data'])->pluck('id')->all();
+
+                // Ranks together then Coins together, each in the admin's own sort_order.
+                $this->assertSame([$rankFirst->id, $rankLast->id, $coinFirst->id, $coinLast->id], $ids);
+            });
+    }
+
+    public function test_two_packages_sharing_a_sort_order_fall_back_to_id()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $category = StoreCategory::factory()->create();
+        $earlier = StorePackage::factory()->create(['store_category_id' => $category->id, 'sort_order' => 0]);
+        $later = StorePackage::factory()->create(['store_category_id' => $category->id, 'sort_order' => 0]);
+
+        $this->get(route('admin.store.package.index'))
+            ->assertOk()
+            ->assertInertia(function ($page) use ($earlier, $later) {
+                $ids = collect($page->toArray()['props']['packages']['data'])->pluck('id')->all();
+
+                $this->assertSame([$earlier->id, $later->id], $ids, 'Otherwise the order is whatever MySQL feels like.');
+            });
+    }
+
+    public function test_an_uncategorised_package_leads_the_listing()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $category = StoreCategory::factory()->create();
+        $categorised = StorePackage::factory()->create(['store_category_id' => $category->id]);
+        $loose = StorePackage::factory()->create(['store_category_id' => null]);
+
+        $this->get(route('admin.store.package.index'))
+            ->assertOk()
+            ->assertInertia(function ($page) use ($categorised, $loose) {
+                $ids = collect($page->toArray()['props']['packages']['data'])->pluck('id')->all();
+
+                $this->assertSame([$loose->id, $categorised->id], $ids, 'A null category sorts first.');
+            });
+    }
+
     public function test_the_listing_offers_every_category_as_a_filter_option()
     {
         $this->actingAs(User::whereId(1)->first());
