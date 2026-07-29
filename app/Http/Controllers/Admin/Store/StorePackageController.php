@@ -79,6 +79,8 @@ class StorePackageController extends Controller
 
         return Inertia::render('Admin/StorePackage/IndexStorePackage', [
             'packages' => $packages,
+            // Names rather than ids, because the column filters on category.name.
+            'categoryNames' => StoreCategory::orderBy('name')->pluck('name'),
             'filters' => request()->all(['perPage', 'sort', 'filter']),
         ]);
     }

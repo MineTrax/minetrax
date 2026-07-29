@@ -120,6 +120,36 @@ class StorePackageAdminTest extends TestCase
     }
 
     /**
+     * The dropdown is a multiselect, so what actually arrives is an array of names.
+     */
+    public function test_the_category_filter_accepts_several_categories_at_once()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $ranks = StoreCategory::factory()->create(['name' => 'Ranks']);
+        $coins = StoreCategory::factory()->create(['name' => 'Coins']);
+        $keys = StoreCategory::factory()->create(['name' => 'Keys']);
+        StorePackage::factory()->create(['store_category_id' => $ranks->id]);
+        StorePackage::factory()->count(2)->create(['store_category_id' => $coins->id]);
+        StorePackage::factory()->count(4)->create(['store_category_id' => $keys->id]);
+
+        $this->get(route('admin.store.package.index', ['filter' => ['category.name' => ['Ranks', 'Coins']]]))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->has('packages.data', 3));
+    }
+
+    public function test_the_listing_offers_every_category_as_a_filter_option()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        StoreCategory::factory()->create(['name' => 'Ranks']);
+        StoreCategory::factory()->create(['name' => 'Coins']);
+
+        $this->get(route('admin.store.package.index'))
+            ->assertOk()
+            // Alphabetical, and names rather than ids, because the filter is on category.name.
+            ->assertInertia(fn ($page) => $page->where('categoryNames', ['Coins', 'Ranks']));
+    }
+
+    /**
      * The edit form has to arrive with the category already chosen, which means the value it binds
      * must match one of the select's own options.
      */

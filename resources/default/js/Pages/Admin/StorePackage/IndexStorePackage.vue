@@ -14,8 +14,9 @@ import Icon from "@/Components/Icon.vue";
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
 
-defineProps({
+const props = defineProps({
     packages: Object,
+    categoryNames: Array,
     filters: Object,
 });
 
@@ -71,7 +72,12 @@ const headerRow = [
         label: __("Category"),
         filterable: {
             key: "category.name",
-            type: "text",
+            // Picking from the real list beats typing a name and guessing at the spelling. Multi,
+            // so several categories can be shown at once — the same shape as the command queue's
+            // status filter.
+            type: "multiselect",
+            options: props.categoryNames,
+            searchable: true,
         },
     },
     {
