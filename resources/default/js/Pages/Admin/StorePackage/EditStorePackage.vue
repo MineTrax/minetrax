@@ -147,7 +147,9 @@ const form = useForm({
     photo: null,
     commands: (props.storePackage.commands || []).map(cmd => ({
         id: cmd.id,
-        trigger: cmd.trigger,
+        // The trigger is a backed enum, and every store enum serialises as {key, value}. Handing
+        // XSelect the whole object leaves the dropdown blank, because no option key matches it.
+        trigger: cmd.trigger?.value ?? cmd.trigger,
         command: cmd.command,
         servers: cmd.servers || [],
         delay_seconds: cmd.delay_seconds,

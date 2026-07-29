@@ -322,7 +322,12 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
               v-if="!order.deliveries.length"
               class="px-6 py-4 text-sm text-muted-foreground"
             >
-              {{ __("No commands have been queued for this order.") }}
+              <!-- Three different situations used to read identically here, which is no help at all
+                   when an order looks unfulfilled: not paid yet, paid and waiting on the queue
+                   worker, or paid with genuinely nothing to run. -->
+              {{ isPaidState
+                ? __("Nothing queued yet. Delivery runs on the longtask queue — check a queue worker is running, or use Re-send once it is.")
+                : __("Nothing is delivered until the payment is confirmed.") }}
             </p>
 
             <div class="overflow-x-auto">

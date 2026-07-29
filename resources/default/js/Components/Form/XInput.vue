@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="cn('space-y-2', divClass)"
+    :class="cn('space-y-2', divClass, attrs.class)"
   >
     <!-- Label -->
     <Label
@@ -31,6 +31,7 @@
       :required="required"
       :disabled="disabled"
       :placeholder="placeholder"
+      v-bind="inputAttrs"
     />
 
     <!-- Help and Error Messages -->
@@ -59,11 +60,19 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, useAttrs } from "vue";
 import { useVModel } from "@vueuse/core";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { cn } from "@/lib/utils";
+
+// Anything not declared as a prop belongs on the input, not on the wrapper.
+//
+// Vue's default fallthrough puts leftover attributes on the root element, which here is the layout
+// div — so every step, min, max and maxlength written by a caller was landing on a div and doing
+// nothing. A price field with step="0.01" therefore behaved as step="1" and the browser rejected
+// 4.99 with "the two nearest valid values are 4 and 5".
+defineOptions({ inheritAttrs: false });
 
 const props = defineProps({
     modelValue: {
@@ -111,6 +120,16 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["update:modelValue"]);
+
+const attrs = useAttrs();
+
+// class and style stay on the wrapper, which is where the twelve callers that pass them expect
+// them — those position the field within a grid. Everything else is an input attribute.
+const inputAttrs = computed(() => {
+    return Object.fromEntries(
+        Object.entries(attrs).filter(([name]) => name !== "class" && name !== "style")
+    );
+});
 
 const inputRef = ref(null);
 

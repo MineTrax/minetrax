@@ -67,7 +67,9 @@ const form = useForm({
     exponent: props.currency.exponent,
     rate_to_base: props.currency.rate_to_base,
     is_enabled: props.currency.is_enabled,
-    price_rounding: props.currency.price_rounding,
+    // Enum-cast on the model, so it arrives as {key, value}; XSelect matches option keys, which are
+    // strings, and would show nothing for the object.
+    price_rounding: props.currency.price_rounding?.value ?? props.currency.price_rounding,
     country_codes: selectedCountries,
     sort_order: props.currency.sort_order,
     "_method": "PUT",
