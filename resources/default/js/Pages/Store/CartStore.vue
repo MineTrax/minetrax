@@ -389,16 +389,12 @@ const handleClearCode = () => {
             </div>
 
             <!-- Checkout Button -->
-            <button
-              disabled
-              class="w-full px-6 py-3 bg-primary/50 text-primary-foreground font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            <Link
+              :href="route('store.checkout.create')"
+              class="block w-full px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg text-center hover:bg-primary/90 transition-colors"
             >
               {{ __("Checkout") }}
-            </button>
-            <p class="text-xs text-muted-foreground text-center">
-              {{ __("Coming soon") }}
-            </p>
-            <!-- TODO: wire to checkout in slice 8 -->
+            </Link>
           </div>
         </div>
       </div>
