@@ -246,6 +246,14 @@ const navItems = [
                 visible: canWild("store_orders"),
             },
             {
+                label: "Package Grants",
+                href: route("admin.store.grant.index"),
+                active: route().current("admin.store.grant.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_orders"),
+            },
+            {
                 label: "Currencies",
                 href: route("admin.store.currency.index"),
                 active: route().current("admin.store.currency.*"),

@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\Settings\ThemeSettingController;
 use App\Http\Controllers\Admin\Store\StoreCategoryController;
 use App\Http\Controllers\Admin\Store\StoreCouponController;
 use App\Http\Controllers\Admin\Store\StoreCurrencyController as AdminStoreCurrencyController;
+use App\Http\Controllers\Admin\Store\StoreGrantController;
 use App\Http\Controllers\Admin\Store\StoreOrderController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
 use App\Http\Controllers\Admin\Store\StorePaymentGatewayController;
@@ -415,6 +416,10 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
         Route::get('sale/{storeSale}/edit', [StoreSaleController::class, 'edit'])->name('sale.edit');
         Route::put('sale/{storeSale}', [StoreSaleController::class, 'update'])->name('sale.update');
         Route::delete('sale/{storeSale}', [StoreSaleController::class, 'destroy'])->name('sale.delete');
+
+        Route::get('grant', [StoreGrantController::class, 'index'])->name('grant.index');
+        Route::post('grant/{grant}/revoke', [StoreGrantController::class, 'revoke'])->name('grant.revoke');
+        Route::post('grant/{grant}/extend', [StoreGrantController::class, 'extend'])->name('grant.extend');
 
         Route::get('order', [StoreOrderController::class, 'index'])->name('order.index');
         Route::get('order/{order:uuid}', [StoreOrderController::class, 'show'])->name('order.show');

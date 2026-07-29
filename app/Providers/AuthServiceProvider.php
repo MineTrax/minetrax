@@ -27,6 +27,7 @@ use App\Models\StoreCoupon;
 use App\Models\StoreCurrency;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
+use App\Models\StorePackageGrant;
 use App\Models\StoreSale;
 use App\Models\StoreVariable;
 use App\Models\User;
@@ -54,6 +55,7 @@ use App\Policies\StoreCategoryPolicy;
 use App\Policies\StoreCouponPolicy;
 use App\Policies\StoreCurrencyPolicy;
 use App\Policies\StoreOrderPolicy;
+use App\Policies\StorePackageGrantPolicy;
 use App\Policies\StorePackagePolicy;
 use App\Policies\StoreSalePolicy;
 use App\Policies\StoreVariablePolicy;
@@ -97,6 +99,7 @@ class AuthServiceProvider extends ServiceProvider
         StoreCoupon::class => StoreCouponPolicy::class,
         StoreSale::class => StoreSalePolicy::class,
         StoreBan::class => StoreBanPolicy::class,
+        StorePackageGrant::class => StorePackageGrantPolicy::class,
     ];
 
     /**
