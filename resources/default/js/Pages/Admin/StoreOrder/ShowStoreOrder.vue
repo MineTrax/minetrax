@@ -18,6 +18,7 @@ const props = defineProps({
     stuckDeliveries: Array,
     canRefundAtGateway: Boolean,
     permissions: Object,
+    timeline: Array,
 });
 
 const breadcrumbItems = [
@@ -468,6 +469,42 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
                 <span v-if="refund.reason"> — {{ refund.reason }}</span>
               </div>
             </div>
+          </div>
+
+          <div class="bg-card rounded-lg shadow p-6">
+            <h3 class="text-sm font-medium mb-4">
+              {{ __("History") }}
+            </h3>
+
+            <ol class="relative border-l border-border ml-2 space-y-4">
+              <li
+                v-for="(entry, index) in timeline"
+                :key="index"
+                class="ml-4"
+              >
+                <span
+                  class="absolute w-2 h-2 rounded-full -left-1 mt-1.5"
+                  :class="entry.event === 'chargeback' || entry.event === 'payment_failed'
+                    ? 'bg-destructive'
+                    : (entry.event === 'paid' || entry.event === 'completed' ? 'bg-success' : 'bg-muted-foreground')"
+                />
+                <div class="text-sm font-medium">
+                  {{ entry.description }}
+                </div>
+                <div
+                  v-if="entry.detail"
+                  class="text-xs text-muted-foreground"
+                >
+                  {{ entry.detail }}
+                </div>
+                <div class="text-xs text-muted-foreground">
+                  <span>{{ new Date(entry.at).toLocaleString() }}</span>
+                  <!-- No causer means nobody did it: a gateway webhook, or a scheduled sweep. -->
+                  <span v-if="entry.causer"> · {{ entry.causer.username ?? entry.causer.name }}</span>
+                  <span v-else> · {{ __("system") }}</span>
+                </div>
+              </li>
+            </ol>
           </div>
 
           <div

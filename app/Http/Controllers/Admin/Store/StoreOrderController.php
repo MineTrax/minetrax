@@ -99,6 +99,7 @@ class StoreOrderController extends Controller
             'coupon:id,code',
             'deliveries.commandQueue:id,status,attempts,max_attempts,execute_at,output,updated_at',
             'deliveries.server:id,name',
+            'activities.causer:id,name,username',
         ]);
 
         $attentionCutoff = now()->subDays((int) config('store.deferred_attention_days', 3));
@@ -122,6 +123,7 @@ class StoreOrderController extends Controller
                 ->pluck('id')
                 ->values(),
             'canRefundAtGateway' => $this->canRefundAtGateway($order),
+            'timeline' => $this->timeline($order),
             'permissions' => [
                 'update' => request()->user()->can('update', $order),
                 'refund' => request()->user()->can('refund', $order),
@@ -252,12 +254,60 @@ class StoreOrderController extends Controller
 
         $count = $this->dispatcher->redispatchForOrder($order, (bool) ($validated['include_unfinished'] ?? false));
 
+        if ($count > 0) {
+            // Worth a line in the history: a buyer who says they were delivered twice, or not at
+            // all, is answered by who pressed this and when.
+            activity(StoreOrderService::ACTIVITY_LOG)
+                ->performedOn($order)
+                ->causedBy($request->user())
+                ->event('delivery_resent')
+                ->withProperties(['commands' => $count])
+                ->log(__('Delivery re-sent'));
+        }
+
         return back()->with(['toast' => [
             'type' => $count > 0 ? 'success' : 'info',
             'title' => $count > 0
                 ? __(':count command(s) re-queued', ['count' => $count])
                 : __('Nothing needed re-sending'),
         ]]);
+    }
+
+    /**
+     * The order's history, oldest first.
+     *
+     * "Placed" is derived from the order itself rather than logged, because the log only starts at
+     * the first transition and an order with no history at all should still show where it began.
+     * Money is formatted here, in the order's own currency, as everywhere else.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function timeline(StoreOrder $order): array
+    {
+        $entries = [[
+            'event' => 'placed',
+            'description' => __('Order placed'),
+            'causer' => $order->user?->only('id', 'name', 'username'),
+            'at' => $order->created_at?->toIso8601String(),
+            'detail' => null,
+        ]];
+
+        foreach ($order->activities as $activity) {
+            $properties = (array) $activity->properties->all();
+            $amount = $properties['amount'] ?? null;
+
+            $entries[] = [
+                'event' => (string) $activity->event,
+                'description' => (string) $activity->description,
+                'causer' => $activity->causer?->only('id', 'name', 'username'),
+                'at' => $activity->created_at?->toIso8601String(),
+                'detail' => $amount !== null
+                    ? $this->currencies->format((int) $amount, $properties['currency'] ?? $order->currency)
+                    : ($properties['reason'] ?? null),
+            ];
+        }
+
+        return $entries;
     }
 
     private function canRefundAtGateway(StoreOrder $order): bool

@@ -31,6 +31,12 @@ use Illuminate\Support\Facades\Log;
 class StoreOrderService
 {
     /**
+     * Store history goes in its own activity log, so a retention policy or a purge on the store's
+     * own audit trail never touches anybody else's.
+     */
+    public const ACTIVITY_LOG = 'store';
+
+    /**
      * PENDING -> PAID.
      *
      * The paid amount and currency are verified against amount_due first. A mismatch fails the
@@ -78,6 +84,13 @@ class StoreOrderService
 
             $this->redeemGiftCard($order);
 
+            $this->record($order, 'paid', __('Payment received'), [
+                'gateway' => $payment->gateway?->value,
+                'amount' => (int) $payment->amount,
+                'currency' => $payment->currency,
+                'transaction_id' => $payment->gateway_transaction_id,
+            ]);
+
             event(new StoreOrderPaid($order->fresh()));
 
             return true;
@@ -100,6 +113,10 @@ class StoreOrderService
                 'status' => StoreOrderStatus::COMPLETED,
                 'delivery_status' => $deliveryStatus,
                 'completed_at' => now(),
+            ]);
+
+            $this->record($order, 'completed', __('Delivery queued'), [
+                'delivery_status' => $deliveryStatus->value,
             ]);
 
             event(new StoreOrderCompleted($order->fresh()));
@@ -127,6 +144,10 @@ class StoreOrderService
                 'status' => StoreOrderStatus::CANCELLED,
                 'cancelled_at' => now(),
                 'notes' => $reason ? trim($order->notes."\n".$reason) : $order->notes,
+            ]);
+
+            $this->record($order, 'cancelled', __('Order cancelled'), [
+                'reason' => $reason,
             ]);
 
             event(new StoreOrderCancelled($order->fresh()));
@@ -164,6 +185,17 @@ class StoreOrderService
             if ($target->isRevoking()) {
                 $this->revokeGrants($order);
             }
+
+            $this->record(
+                $order,
+                $isChargeback ? 'chargeback' : ($isFull ? 'refunded' : 'partially_refunded'),
+                $isChargeback ? __('Payment disputed and reversed') : __('Refund issued'),
+                [
+                    'amount' => $amountMinor,
+                    'currency' => $order->currency,
+                    'grants_revoked' => $target->isRevoking(),
+                ]
+            );
 
             event(new StoreOrderRefunded($order->fresh(), $isChargeback, $amountMinor));
 
@@ -361,6 +393,38 @@ class StoreOrderService
             'failure_reason' => $reason,
         ]);
 
+        if ($payment->order) {
+            $this->record($payment->order, 'payment_failed', __('Payment attempt failed'), [
+                'gateway' => $payment->gateway?->value,
+                'reason' => $reason,
+            ]);
+        }
+
         event(new StorePaymentFailed($payment->fresh(), $reason));
+    }
+
+    /**
+     * Write one line of the order's history.
+     *
+     * The causer is whoever is signed in, which is the point of the whole thing: a dispute weeks
+     * later needs to say who marked an order paid or who refunded it. A null causer is not a gap —
+     * it is a webhook or a scheduled sweep, i.e. nobody, and that reads correctly in the timeline.
+     *
+     * Logged explicitly rather than through model events. Automatic attribute diffs would fill the
+     * timeline with `updated_at` noise and say nothing about what actually happened.
+     *
+     * @param  array<string, mixed>  $properties
+     */
+    private function record(StoreOrder $order, string $event, string $description, array $properties = []): void
+    {
+        activity(self::ACTIVITY_LOG)
+            ->performedOn($order)
+            ->causedBy(auth()->user())
+            ->event($event)
+            ->withProperties(array_filter(
+                $properties,
+                fn ($value) => $value !== null && $value !== ''
+            ))
+            ->log($description);
     }
 }

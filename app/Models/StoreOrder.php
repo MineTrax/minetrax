@@ -8,7 +8,9 @@ use App\Enums\StorePaymentGateway;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Models\Activity;
 
 class StoreOrder extends BaseModel
 {
@@ -90,5 +92,17 @@ class StoreOrder extends BaseModel
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * The order's history: paid, refunded, resent, and who did it.
+     *
+     * A plain morphMany rather than spatie's LogsActivity trait, because nothing here is logged
+     * automatically — StoreOrderService writes each line deliberately, so the trait's attribute
+     * diffing would only add noise.
+     */
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(Activity::class, 'subject')->oldest('id');
     }
 }

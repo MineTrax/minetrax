@@ -41,6 +41,7 @@
         "predis/predis": "^3.0",
         "pusher/pusher-php-server": "^7.2",
         "socialiteproviders/discord": "^4.2",
+        "spatie/laravel-activitylog": "^4.12",
         "spatie/laravel-backup": "^10.0",
         "spatie/laravel-data": "^4.23",
         "spatie/laravel-medialibrary": "^11.10",
