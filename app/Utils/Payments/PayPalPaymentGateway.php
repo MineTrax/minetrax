@@ -351,6 +351,7 @@ class PayPalPaymentGateway extends AbstractStorePaymentGateway
         // 422 covers both "already captured" and "not approved yet"; only the first has a capture to
         // find, so the order is fetched rather than the error message being parsed.
         $existing = $this->api()->get("/v2/checkout/orders/{$paypalOrderId}");
+        $orderStatus = $existing->successful() ? (string) $existing->json('status') : null;
 
         if ($existing->successful()) {
             $capture = (array) data_get($existing->json(), 'purchase_units.0.payments.captures.0');
@@ -360,11 +361,20 @@ class PayPalPaymentGateway extends AbstractStorePaymentGateway
             }
         }
 
-        Log::warning('PayPal capture did not complete.', [
+        // The buyer walking away from PayPal's page lands back on the result URL just like a buyer
+        // who paid, so this method runs for them too. An order still sitting at CREATED is that,
+        // not a fault, and does not deserve a warning in the log every time it happens.
+        $context = [
             'paypal_order_id' => $paypalOrderId,
-            'status' => $response->status(),
-            'body' => $response->json(),
-        ]);
+            'paypal_order_status' => $orderStatus,
+            'capture_status' => $response->status(),
+        ];
+
+        if ($orderStatus === 'CREATED') {
+            Log::info('PayPal order was never approved, so nothing was captured.', $context);
+        } else {
+            Log::warning('PayPal capture did not complete.', $context + ['body' => $response->json()]);
+        }
 
         return null;
     }
