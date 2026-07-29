@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Discord\DiscordMessage;
 
 /**
  * Tells the buyer their money is on its way back.
@@ -63,6 +64,24 @@ class StoreOrderRefundedNotification extends Notification implements ShouldQueue
             'amount' => $this->amountMinor,
             'amount_formatted' => $this->formattedAmount(),
         ];
+    }
+
+    /**
+     * Required, not optional: via() offers `discord` whenever the buyer has not narrowed their
+     * preferences, and the Discord channel calls this method without checking it exists.
+     */
+    public function toDiscord($notifiable)
+    {
+        return DiscordMessage::create()->embed([
+            'title' => __('Your order :number has been refunded', ['number' => $this->number()]),
+            'description' => __('We have refunded :amount for order :number.', [
+                'amount' => $this->formattedAmount(),
+                'number' => $this->number(),
+            ]),
+            'type' => 'rich',
+            'url' => route('store.order.result', $this->order->uuid),
+            'timestamp' => now()->toIso8601String(),
+        ]);
     }
 
     private function formattedAmount(): string

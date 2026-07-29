@@ -89,6 +89,24 @@ class StoreArchTest extends TestCase
         return $models;
     }
 
+    /**
+     * @return array<int, class-string>
+     */
+    private function storeNotifications(): array
+    {
+        $notifications = [];
+
+        foreach (glob(app_path('Notifications/Store*.php')) ?: [] as $path) {
+            $class = 'App\\Notifications\\'.basename($path, '.php');
+
+            if (class_exists($class)) {
+                $notifications[] = $class;
+            }
+        }
+
+        return $notifications;
+    }
+
     public function test_the_module_actually_has_the_files_these_rules_police()
     {
         // Guards against every assertion below passing vacuously because a glob stopped matching.
@@ -96,6 +114,39 @@ class StoreArchTest extends TestCase
         $this->assertGreaterThanOrEqual(15, count($this->storeModels()));
         $this->assertGreaterThanOrEqual(8, count($this->storeEnums()));
         $this->assertGreaterThanOrEqual(10, count($this->storeSourceFiles()));
+        $this->assertGreaterThanOrEqual(5, count($this->storeNotifications()));
+    }
+
+    /**
+     * Every notification that offers a channel must be able to render for it.
+     *
+     * `notificationPreferencesFor()` returns database, mail *and* discord for anyone who has not
+     * narrowed their preferences, so that is the default for most users. The Discord channel then
+     * calls toDiscord() without checking it exists, and the job dies in the queue — silently, from
+     * the buyer's point of view, because the receipt simply never arrives.
+     */
+    public function test_every_store_notification_can_render_for_the_channels_it_offers()
+    {
+        $offenders = [];
+
+        foreach ($this->storeNotifications() as $class) {
+            $source = file_get_contents((new \ReflectionClass($class))->getFileName());
+
+            // Only the ones that read a user's preferences can end up on the discord channel; a
+            // notification with a hardcoded via() offers exactly what it implements.
+            if (! str_contains($source, 'notificationPreferencesFor')) {
+                continue;
+            }
+
+            if (! method_exists($class, 'toDiscord')) {
+                $offenders[] = class_basename($class);
+            }
+        }
+
+        $this->assertEmpty(
+            $offenders,
+            'These notifications offer the discord channel but cannot render for it: '.implode(', ', $offenders)
+        );
     }
 
     /**

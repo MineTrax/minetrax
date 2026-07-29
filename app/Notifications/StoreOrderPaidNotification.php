@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Discord\DiscordMessage;
 
 /**
  * The buyer's receipt.
@@ -71,6 +72,26 @@ class StoreOrderPaidNotification extends Notification implements ShouldQueue
             'total_formatted' => app(StoreCurrencyService::class)
                 ->format((int) $this->order->total, $this->order->currency),
         ];
+    }
+
+    /**
+     * Required, not optional: via() offers `discord` whenever the buyer has not narrowed their
+     * preferences, and the Discord channel calls this method without checking it exists. A
+     * notification that lists the channel and omits this dies in the queue.
+     */
+    public function toDiscord($notifiable)
+    {
+        return DiscordMessage::create()->embed([
+            'title' => __('Your order :number is confirmed', ['number' => $this->number()]),
+            'description' => __('Your payment of :amount has been received. Items are on their way to :player in game.', [
+                'amount' => app(StoreCurrencyService::class)
+                    ->format((int) $this->order->total, $this->order->currency),
+                'player' => $this->order->player_username,
+            ]),
+            'type' => 'rich',
+            'url' => route('store.order.result', $this->order->uuid),
+            'timestamp' => now()->toIso8601String(),
+        ]);
     }
 
     private function number(): string

@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Discord\DiscordMessage;
 
 /**
  * Tells the buyer a charge did not go through, and that the order is still theirs to pay.
@@ -57,6 +58,21 @@ class StorePaymentFailedNotification extends Notification implements ShouldQueue
             'currency' => $this->order->currency,
             'amount_due' => (int) $this->order->amount_due,
         ];
+    }
+
+    /**
+     * Required, not optional: via() offers `discord` whenever the buyer has not narrowed their
+     * preferences, and the Discord channel calls this method without checking it exists.
+     */
+    public function toDiscord($notifiable)
+    {
+        return DiscordMessage::create()->embed([
+            'title' => __('Payment for order :number did not go through', ['number' => $this->number()]),
+            'description' => __('Nothing has been charged. The order is still waiting for you and can be paid again with another method.'),
+            'type' => 'rich',
+            'url' => route('store.order.result', $this->order->uuid),
+            'timestamp' => now()->toIso8601String(),
+        ]);
     }
 
     private function number(): string
