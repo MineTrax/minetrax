@@ -11,9 +11,12 @@ use App\Events\RecruitmentSubmissionCreated;
 use App\Events\RecruitmentSubmissionStatusChanged;
 use App\Events\StoreOrderPaid;
 use App\Events\StoreOrderRefunded;
+use App\Events\StorePaymentFailed;
 use App\Listeners\DispatchStoreOrderDeliveryOnPaid;
 use App\Listeners\DispatchStoreOrderRevocationOnRefund;
+use App\Listeners\HandleStoreChargeback;
 use App\Listeners\MergeGuestStoreCartOnLogin;
+use App\Listeners\NotifyBuyerOnStorePaymentFailed;
 use App\Listeners\NotifyStaffOnCustomFormSubmission;
 use App\Listeners\NotifyStaffOnNewsComment;
 use App\Listeners\NotifyStaffOnRecruitmentSubmission;
@@ -21,6 +24,7 @@ use App\Listeners\NotifyStaffOnStoreOrderPaid;
 use App\Listeners\NotifyUsersOnRecruitmentSubmissionCommentCreated;
 use App\Listeners\NotifyUsersOnRecruitmentSubmissionStatusChanged;
 use App\Listeners\SendStoreOrderReceipt;
+use App\Listeners\SendStoreOrderRefundNotice;
 use App\Listeners\UpdateStatsOnMinecraftPlayerEvent;
 use App\Listeners\UpsertPlayerOnSessionStart;
 use Illuminate\Auth\Events\Login;
@@ -51,6 +55,11 @@ class EventServiceProvider extends ServiceProvider
         ],
         StoreOrderRefunded::class => [
             DispatchStoreOrderRevocationOnRefund::class,
+            SendStoreOrderRefundNotice::class,
+            HandleStoreChargeback::class,
+        ],
+        StorePaymentFailed::class => [
+            NotifyBuyerOnStorePaymentFailed::class,
         ],
         SocialiteWasCalled::class => [
             DiscordExtendSocialite::class,

@@ -57,6 +57,12 @@ class UserProfileController extends Controller
             'store_order_paid.*' => Rule::in($validNotificationType),
             'store_order_placed' => 'required|array',
             'store_order_placed.*' => Rule::in($validNotificationType),
+            'store_order_refunded' => 'required|array',
+            'store_order_refunded.*' => Rule::in($validNotificationType),
+            'store_payment_failed' => 'required|array',
+            'store_payment_failed.*' => Rule::in($validNotificationType),
+            'store_chargeback_received' => 'required|array',
+            'store_chargeback_received.*' => Rule::in($validNotificationType),
         ])->validateWithBag('updateNotificationPreference');
 
         $likeOnPost = $request->like_on_post ?: $validNotificationType;
@@ -70,6 +76,9 @@ class UserProfileController extends Controller
         $recruitmentSubmissionCreated = $request->recruitment_submission_created ?: $validNotificationType;
         $storeOrderPaid = $request->store_order_paid ?: $validNotificationType;
         $storeOrderPlaced = $request->store_order_placed ?: $validNotificationType;
+        $storeOrderRefunded = $request->store_order_refunded ?: $validNotificationType;
+        $storePaymentFailed = $request->store_payment_failed ?: $validNotificationType;
+        $storeChargebackReceived = $request->store_chargeback_received ?: $validNotificationType;
 
         $notificationSettings = [
             'notifications' => [
@@ -84,6 +93,9 @@ class UserProfileController extends Controller
                 'recruitment_submission_created' => $recruitmentSubmissionCreated,
                 'store_order_paid' => $storeOrderPaid,
                 'store_order_placed' => $storeOrderPlaced,
+                'store_order_refunded' => $storeOrderRefunded,
+                'store_payment_failed' => $storePaymentFailed,
+                'store_chargeback_received' => $storeChargebackReceived,
             ],
         ];
 

@@ -12,6 +12,7 @@ use App\Events\StoreOrderCancelled;
 use App\Events\StoreOrderCompleted;
 use App\Events\StoreOrderPaid;
 use App\Events\StoreOrderRefunded;
+use App\Events\StorePaymentFailed;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePayment;
@@ -164,7 +165,7 @@ class StoreOrderService
                 $this->revokeGrants($order);
             }
 
-            event(new StoreOrderRefunded($order->fresh(), $isChargeback));
+            event(new StoreOrderRefunded($order->fresh(), $isChargeback, $amountMinor));
 
             return true;
         });
@@ -359,5 +360,7 @@ class StoreOrderService
             'status' => StorePaymentStatus::FAILED,
             'failure_reason' => $reason,
         ]);
+
+        event(new StorePaymentFailed($payment->fresh(), $reason));
     }
 }

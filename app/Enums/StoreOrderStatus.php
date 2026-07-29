@@ -25,7 +25,11 @@ enum StoreOrderStatus: string implements HasKeyValueSerialization
     {
         return match ($this) {
             self::PENDING => [self::PAID, self::CANCELLED],
-            self::PAID => [self::COMPLETED, self::CANCELLED, self::REFUNDED],
+            // A paid order accepts every way money can go back, not just a full refund. Delivery
+            // normally moves it to COMPLETED within seconds, but a stalled queue worker can leave it
+            // here for hours — and a dispute or a partial refund landing in that window must be
+            // recorded rather than rejected, or the gateway refunds money the site never books.
+            self::PAID => [self::COMPLETED, self::CANCELLED, self::REFUNDED, self::PARTIALLY_REFUNDED, self::CHARGEBACK],
             self::COMPLETED => [self::REFUNDED, self::PARTIALLY_REFUNDED, self::CHARGEBACK],
             // Stays on itself: several partial refunds against one order are legitimate, and only
             // the one that finally covers the full amount moves it to REFUNDED.

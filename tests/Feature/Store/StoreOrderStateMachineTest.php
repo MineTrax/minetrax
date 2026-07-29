@@ -181,6 +181,27 @@ class StoreOrderStateMachineTest extends TestCase
         $this->assertNotNull($fullGrant->fresh()->revoked_at);
     }
 
+    public function test_a_paid_order_accepts_a_partial_refund_before_delivery_completes()
+    {
+        // Delivery usually moves an order to COMPLETED within seconds, but a stalled queue worker
+        // leaves it PAID. Refusing the refund there would mean the gateway had returned money the
+        // site never recorded.
+        $order = StoreOrder::factory()->paid()->create(['total' => 1000, 'amount_due' => 1000]);
+
+        $this->assertTrue($this->orders->refund($order, 400));
+
+        $this->assertEquals(StoreOrderStatus::PARTIALLY_REFUNDED, $order->fresh()->status);
+    }
+
+    public function test_a_paid_order_accepts_a_chargeback_before_delivery_completes()
+    {
+        $order = StoreOrder::factory()->paid()->create(['total' => 1000, 'amount_due' => 1000]);
+
+        $this->assertTrue($this->orders->refund($order, 1000, isChargeback: true));
+
+        $this->assertEquals(StoreOrderStatus::CHARGEBACK, $order->fresh()->status);
+    }
+
     public function test_a_chargeback_always_revokes_even_for_a_small_amount()
     {
         $package = StorePackage::factory()->create();

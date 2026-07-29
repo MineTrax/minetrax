@@ -54,6 +54,7 @@ class StoreSettingController extends Controller
             'show_recent_purchases' => ['required', 'boolean'],
             'hide_buyer_identity' => ['required', 'boolean'],
             'notify_staff_on_purchase' => ['required', 'boolean'],
+            'auto_ban_on_chargeback' => ['required', 'boolean'],
         ]);
 
         // The base currency is what every historical order's base_total was computed against, so

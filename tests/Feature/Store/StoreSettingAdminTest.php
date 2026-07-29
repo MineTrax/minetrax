@@ -49,6 +49,7 @@ class StoreSettingAdminTest extends TestCase
             'show_recent_purchases' => true,
             'hide_buyer_identity' => false,
             'notify_staff_on_purchase' => true,
+            'auto_ban_on_chargeback' => false,
         ], $overrides);
     }
 

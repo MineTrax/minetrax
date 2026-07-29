@@ -55,6 +55,13 @@ class StoreSettings extends Settings
 
     public bool $notify_staff_on_purchase;
 
+    /**
+     * Raise a store ban automatically when a chargeback lands, on the buyer's account, player uuid,
+     * email and IP. Off by default: a chargeback is sometimes the buyer's bank rather than the
+     * buyer, and an IP is shared more often than people expect.
+     */
+    public bool $auto_ban_on_chargeback;
+
     public static function group(): string
     {
         return 'store';

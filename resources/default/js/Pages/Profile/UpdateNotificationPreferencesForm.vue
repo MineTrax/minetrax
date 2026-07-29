@@ -253,6 +253,74 @@
                   </div>
                 </div>
               </div>
+              <!-- Store order refunded -->
+              <div class="p-3 sm:p-4 hover:bg-muted/5 transition-colors">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1 min-w-0">
+                    <h5 class="font-medium text-foreground mb-1">
+                      {{ __("Store order refunded") }}
+                    </h5>
+                    <p class="text-sm text-muted-foreground hidden sm:block">
+                      {{ __("Get notified when money is returned for one of your purchases") }}
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
+                    <div class="flex items-center gap-2">
+                      <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_order_refunded', 'mail')"
+                        name="store_order_refunded_mail"
+                        @update:model-value="toggleNotification('store_order_refunded', 'mail')"
+                      />
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <Icon
+                        name="discord"
+                        class="w-5 h-5 fill-current text-muted-foreground"
+                      />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_order_refunded', 'discord')"
+                        name="store_order_refunded_discord"
+                        @update:model-value="toggleNotification('store_order_refunded', 'discord')"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Store payment failed -->
+              <div class="p-3 sm:p-4 hover:bg-muted/5 transition-colors">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1 min-w-0">
+                    <h5 class="font-medium text-foreground mb-1">
+                      {{ __("Store payment declined") }}
+                    </h5>
+                    <p class="text-sm text-muted-foreground hidden sm:block">
+                      {{ __("Get notified when a payment of yours does not go through, so you can try again") }}
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
+                    <div class="flex items-center gap-2">
+                      <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_payment_failed', 'mail')"
+                        name="store_payment_failed_mail"
+                        @update:model-value="toggleNotification('store_payment_failed', 'mail')"
+                      />
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <Icon
+                        name="discord"
+                        class="w-5 h-5 fill-current text-muted-foreground"
+                      />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_payment_failed', 'discord')"
+                        name="store_payment_failed_discord"
+                        @update:model-value="toggleNotification('store_payment_failed', 'discord')"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -335,6 +403,40 @@
                         :model-value="isNotificationEnabled('store_order_placed', 'discord')"
                         name="store_order_placed_discord"
                         @update:model-value="toggleNotification('store_order_placed', 'discord')"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Store chargeback -->
+              <div class="p-3 sm:p-4 hover:bg-muted/5 transition-colors">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1 min-w-0">
+                    <h5 class="font-medium text-foreground mb-1">
+                      {{ __("Store chargeback received") }}
+                    </h5>
+                    <p class="text-sm text-muted-foreground hidden sm:block">
+                      {{ __("Get notified when a buyer disputes a payment and the funds are reversed") }}
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2 sm:gap-4 ml-2 sm:ml-4 shrink-0">
+                    <div class="flex items-center gap-2">
+                      <EnvelopeIcon class="w-5 h-5 text-muted-foreground" />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_chargeback_received', 'mail')"
+                        name="store_chargeback_received_mail"
+                        @update:model-value="toggleNotification('store_chargeback_received', 'mail')"
+                      />
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <Icon
+                        name="discord"
+                        class="w-5 h-5 fill-current text-muted-foreground"
+                      />
+                      <Switch
+                        :model-value="isNotificationEnabled('store_chargeback_received', 'discord')"
+                        name="store_chargeback_received_discord"
+                        @update:model-value="toggleNotification('store_chargeback_received', 'discord')"
                       />
                     </div>
                   </div>
@@ -469,7 +571,10 @@ const form = useForm({
     news_commented_by_user: notificationValueOrDefault("news_commented_by_user"),
     recruitment_submission_created: notificationValueOrDefault("recruitment_submission_created"),
     store_order_paid: notificationValueOrDefault("store_order_paid"),
+    store_order_refunded: notificationValueOrDefault("store_order_refunded"),
+    store_payment_failed: notificationValueOrDefault("store_payment_failed"),
     store_order_placed: notificationValueOrDefault("store_order_placed"),
+    store_chargeback_received: notificationValueOrDefault("store_chargeback_received"),
 });
 
 // Helper methods to handle switch state

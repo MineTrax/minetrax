@@ -43,6 +43,7 @@ const form = useForm({
     show_recent_purchases: props.settings.show_recent_purchases,
     hide_buyer_identity: props.settings.hide_buyer_identity,
     notify_staff_on_purchase: props.settings.notify_staff_on_purchase,
+    auto_ban_on_chargeback: props.settings.auto_ban_on_chargeback,
 });
 
 const currencyList = computed(() =>
@@ -261,6 +262,13 @@ const saveSetting = () => {
                   v-model="form.notify_staff_on_purchase"
                   :label="__('Notify staff on every purchase')"
                   name="notify_staff_on_purchase"
+                />
+                <XSwitch
+                  id="auto_ban_on_chargeback"
+                  v-model="form.auto_ban_on_chargeback"
+                  :label="__('Ban the buyer automatically when a chargeback lands')"
+                  :help="__('Blocks their account, player, email and IP address from checking out again. Leave off if you would rather review each dispute — an IP is shared more often than people expect.')"
+                  name="auto_ban_on_chargeback"
                 />
               </div>
             </fieldset>
