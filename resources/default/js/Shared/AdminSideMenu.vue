@@ -230,6 +230,14 @@ const navItems = [
                 visible: canWild("store_coupons"),
             },
             {
+                label: "Sales",
+                href: route("admin.store.sale.index"),
+                active: route().current("admin.store.sale.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_sales"),
+            },
+            {
                 label: "Orders",
                 href: route("admin.store.order.index"),
                 active: route().current("admin.store.order.*"),

@@ -131,7 +131,7 @@ class StorePricingService
             $original = $list;
             $unit = max(0, $list - $package->discountFor($list));
 
-            $sale = $this->bestSaleFor($package, $unit, $sales);
+            $sale = $this->bestSaleFor($package, $unit, $sales, $currency);
             if ($sale) {
                 $unit = max(0, $unit - $sale['saving']);
             }
@@ -272,7 +272,7 @@ class StorePricingService
      *
      * @return array{name: string, saving: int}|null
      */
-    private function bestSaleFor(StorePackage $package, int $unitPrice, Collection $sales): ?array
+    private function bestSaleFor(StorePackage $package, int $unitPrice, Collection $sales, StoreCurrency $currency): ?array
     {
         $best = null;
 
@@ -281,9 +281,12 @@ class StorePricingService
                 continue;
             }
 
+            // A fixed sale amount is held in the base currency — the sale has no currency of its
+            // own — so it converts before being compared against a price in the quoted currency.
+            // Without this, "$5 off" would take ¥5 off a JPY price.
             $saving = $sale->discount_type === StoreDiscountType::PERCENT
                 ? intdiv($unitPrice * (int) $sale->discount_value, 10000)
-                : min($unitPrice, (int) $sale->discount_value);
+                : min($unitPrice, $this->currencies->fromBase((int) $sale->discount_value, $currency));
 
             if ($saving > 0 && ($best === null || $saving > $best['saving'])) {
                 $best = ['name' => $sale->name, 'saving' => $saving];

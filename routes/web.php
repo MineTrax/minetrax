@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\Store\StoreCurrencyController as AdminStoreCurren
 use App\Http\Controllers\Admin\Store\StoreOrderController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
 use App\Http\Controllers\Admin\Store\StorePaymentGatewayController;
+use App\Http\Controllers\Admin\Store\StoreSaleController;
 use App\Http\Controllers\Admin\Store\StoreVariableController;
 use App\Http\Controllers\BanWardenController;
 use App\Http\Controllers\CustomFormController;
@@ -407,6 +408,13 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
         Route::get('coupon/{storeCoupon}/edit', [StoreCouponController::class, 'edit'])->name('coupon.edit');
         Route::put('coupon/{storeCoupon}', [StoreCouponController::class, 'update'])->name('coupon.update');
         Route::delete('coupon/{storeCoupon}', [StoreCouponController::class, 'destroy'])->name('coupon.delete');
+
+        Route::get('sale', [StoreSaleController::class, 'index'])->name('sale.index');
+        Route::get('sale/create', [StoreSaleController::class, 'create'])->name('sale.create');
+        Route::post('sale', [StoreSaleController::class, 'store'])->name('sale.store');
+        Route::get('sale/{storeSale}/edit', [StoreSaleController::class, 'edit'])->name('sale.edit');
+        Route::put('sale/{storeSale}', [StoreSaleController::class, 'update'])->name('sale.update');
+        Route::delete('sale/{storeSale}', [StoreSaleController::class, 'destroy'])->name('sale.delete');
 
         Route::get('order', [StoreOrderController::class, 'index'])->name('order.index');
         Route::get('order/{order:uuid}', [StoreOrderController::class, 'show'])->name('order.show');
