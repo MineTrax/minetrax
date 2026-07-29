@@ -13,9 +13,17 @@ class UpdateStorePackageRequest extends CreateStorePackageRequest
         return Gate::allows('update', $this->route('storePackage'));
     }
 
-    protected function prepareForValidation(): void
+    /**
+     * A blank slug keeps the one the package already has rather than rebuilding it from the name.
+     *
+     * The slug is the package's public URL, so re-deriving it on every save meant renaming a
+     * package silently broke every link anybody had ever posted to it.
+     */
+    protected function resolvedSlug(): string
     {
-        $this->merge(['slug' => Str::slug((string) $this->input('name'))]);
+        $submitted = Str::slug((string) $this->input('slug'));
+
+        return $submitted !== '' ? $submitted : (string) $this->route('storePackage')->slug;
     }
 
     public function rules(): array
@@ -23,10 +31,9 @@ class UpdateStorePackageRequest extends CreateStorePackageRequest
         $id = $this->route('storePackage')->id;
 
         return array_merge($this->baseRules(), [
-            'slug' => [
-                'required', 'string', 'max:255',
+            'slug' => array_merge($this->slugRules(), [
                 Rule::unique('store_packages', 'slug')->ignore($id),
-            ],
+            ]),
             // A package that requires itself could never be bought.
             'required_packages.*' => [
                 'required', 'integer', 'distinct', 'exists:store_packages,id', Rule::notIn([$id]),

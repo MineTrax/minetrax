@@ -7,6 +7,7 @@ use App\Enums\StorePackageRequirementMode;
 use App\Enums\StorePackageType;
 use App\Models\Server;
 use App\Models\StoreCategory;
+use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\StorePackageCommand;
 use App\Models\User;
@@ -457,5 +458,177 @@ class StorePackageAdminTest extends TestCase
         $this->delete(route('admin.store.package.delete', $package->id));
 
         $this->assertSoftDeleted('store_packages', ['id' => $package->id]);
+    }
+
+    // --- Slugs ------------------------------------------------------------------------------
+
+    public function test_the_slug_is_built_from_the_name_when_none_is_given()
+    {
+        $this->actingAs(User::whereId(1)->first());
+
+        $this->post(route('admin.store.package.store'), $this->validPayload(['name' => 'Diamond Rank']))
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('store_packages', ['name' => 'Diamond Rank', 'slug' => 'diamond-rank']);
+    }
+
+    public function test_an_admin_can_choose_the_slug()
+    {
+        $this->actingAs(User::whereId(1)->first());
+
+        $this->post(route('admin.store.package.store'), $this->validPayload([
+            'name' => 'Diamond Rank',
+            'slug' => 'diamond',
+        ]))->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('store_packages', ['name' => 'Diamond Rank', 'slug' => 'diamond']);
+    }
+
+    public function test_a_typed_slug_is_normalised_rather_than_rejected()
+    {
+        $this->actingAs(User::whereId(1)->first());
+
+        $this->post(route('admin.store.package.store'), $this->validPayload([
+            'slug' => '  Diamond RANK!! ',
+        ]))->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('store_packages', ['slug' => 'diamond-rank']);
+    }
+
+    public function test_a_name_that_slugs_to_nothing_still_produces_a_usable_slug()
+    {
+        // Str::slug strips a name with no latin characters down to an empty string. Failing
+        // `required` there would leave the admin with a form that will not submit.
+        $this->actingAs(User::whereId(1)->first());
+
+        $this->post(route('admin.store.package.store'), $this->validPayload(['name' => '日本語パック']))
+            ->assertSessionHasNoErrors();
+
+        $package = StorePackage::firstWhere('name', '日本語パック');
+
+        $this->assertNotNull($package);
+        $this->assertMatchesRegularExpression('/^package-[a-z0-9]{8}$/', $package->slug);
+    }
+
+    public function test_a_slug_already_used_by_a_live_package_is_refused_on_the_slug_field()
+    {
+        // On `slug`, because that is now a field the admin can see and fix.
+        $this->actingAs(User::whereId(1)->first());
+        StorePackage::factory()->create(['slug' => 'diamond-rank']);
+
+        $this->post(route('admin.store.package.store'), $this->validPayload(['slug' => 'diamond-rank']))
+            ->assertSessionHasErrors(['slug']);
+    }
+
+    public function test_deleting_a_package_releases_its_slug()
+    {
+        // The whole point: the slug is unique across trashed rows too, so a deleted package would
+        // otherwise sit on the name forever.
+        $this->actingAs(User::whereId(1)->first());
+        $package = StorePackage::factory()->create(['name' => 'VIP Rank', 'slug' => 'vip-rank']);
+
+        $this->delete(route('admin.store.package.delete', $package->id));
+
+        $trashed = StorePackage::withTrashed()->find($package->id);
+
+        $this->assertStringStartsWith('deleted-', $trashed->slug);
+        // The name is untouched, so the trashed row is still recognisable in the database.
+        $this->assertSame('VIP Rank', $trashed->name);
+    }
+
+    public function test_a_package_can_be_recreated_under_the_name_of_a_deleted_one()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $old = StorePackage::factory()->create(['name' => 'VIP Rank', 'slug' => 'vip-rank']);
+
+        $this->delete(route('admin.store.package.delete', $old->id));
+
+        $this->post(route('admin.store.package.store'), $this->validPayload(['name' => 'VIP Rank']))
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('store_packages', [
+            'name' => 'VIP Rank',
+            'slug' => 'vip-rank',
+            'deleted_at' => null,
+        ]);
+    }
+
+    public function test_renaming_a_package_leaves_its_address_alone()
+    {
+        // Re-deriving the slug on every save meant a rename silently broke every link anybody had
+        // posted to the package.
+        $this->actingAs(User::whereId(1)->first());
+        $package = StorePackage::factory()->create(['name' => 'VIP Rank', 'slug' => 'vip-rank']);
+
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
+            'name' => 'Renamed Rank',
+            'slug' => null,
+        ]))->assertSessionHasNoErrors();
+
+        $package->refresh();
+
+        $this->assertSame('Renamed Rank', $package->name);
+        $this->assertSame('vip-rank', $package->slug);
+    }
+
+    public function test_an_admin_can_change_the_slug_on_an_existing_package()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $package = StorePackage::factory()->create(['slug' => 'vip-rank']);
+
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
+            'name' => $package->name,
+            'slug' => 'vip',
+        ]))->assertSessionHasNoErrors();
+
+        $this->assertSame('vip', $package->fresh()->slug);
+    }
+
+    public function test_keeping_its_own_slug_on_update_is_not_a_duplicate()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        $package = StorePackage::factory()->create(['slug' => 'vip-rank']);
+
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
+            'name' => $package->name,
+            'slug' => 'vip-rank',
+        ]))->assertSessionHasNoErrors();
+    }
+
+    public function test_a_slug_belonging_to_another_live_package_is_refused_on_update()
+    {
+        $this->actingAs(User::whereId(1)->first());
+        StorePackage::factory()->create(['slug' => 'taken']);
+        $package = StorePackage::factory()->create(['slug' => 'vip-rank']);
+
+        $this->put(route('admin.store.package.update', $package->id), $this->validPayload([
+            'name' => $package->name,
+            'slug' => 'taken',
+        ]))->assertSessionHasErrors(['slug']);
+
+        $this->assertSame('vip-rank', $package->fresh()->slug);
+    }
+
+    public function test_a_deleted_packages_orders_stay_readable()
+    {
+        // Freeing the slug must not cost the audit trail: order items snapshot the name, so nothing
+        // about a past purchase depends on the slug.
+        $this->actingAs(User::whereId(1)->first());
+        $package = StorePackage::factory()->create(['name' => 'VIP Rank', 'slug' => 'vip-rank']);
+        $order = StoreOrder::factory()->completed()->create();
+        $item = $order->items()->create([
+            'store_package_id' => $package->id,
+            'package_name' => $package->name,
+            'quantity' => 1,
+            'unit_price_original' => 999,
+            'unit_price' => 999,
+            'total' => 999,
+        ]);
+
+        $this->delete(route('admin.store.package.delete', $package->id));
+
+        $item->refresh();
+        $this->assertSame('VIP Rank', $item->package_name);
+        $this->assertSame($package->id, $item->store_package_id);
     }
 }

@@ -15,6 +15,7 @@ use App\Queries\Filters\FilterMultipleFields;
 use App\Services\StoreCurrencyService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -165,6 +166,13 @@ class StorePackageController extends Controller
 
         // Soft delete. Order items snapshot the name and price, so past orders stay
         // readable, and expiry commands can still resolve for grants already issued.
+        //
+        // The slug goes with it, though: it is unique across the table including trashed rows, so a
+        // deleted package would otherwise sit on `diamond-rank` forever and the admin could never
+        // create another one by that name. Nothing depends on it — the row keeps its `name`, orders
+        // snapshot `package_name`, and route binding cannot resolve a trashed package anyway.
+        $storePackage->update(['slug' => 'deleted-'.Str::uuid()]);
+
         $storePackage->delete();
 
         return redirect()->route('admin.store.package.index')

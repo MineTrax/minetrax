@@ -70,6 +70,8 @@ const categoriesOptions = props.categories.reduce((acc, cat) => {
 
 const form = useForm({
     name: null,
+    // Left blank the server builds it from the name, which is what most packages want.
+    slug: null,
     store_category_id: null,
     short_description: null,
     description: "",
@@ -140,6 +142,17 @@ const attachedVariablePlaceholders = computed(() =>
         placeholder: `{VARIABLE_${(variable.identifier || "").toUpperCase()}}`,
     }))
 );
+
+// Only a placeholder, showing what leaving the field empty will produce. The server does the real
+// normalising, so this deliberately does not try to match every rule it applies.
+const slugPreview = computed(() => {
+    const derived = (form.name ?? "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+    return derived || __("built from the name");
+});
 
 // The comparison rows belong to the chosen category, so this follows the dropdown rather than being
 // baked in at render. Categories not using the table layout report no fields, which hides the card.
@@ -225,6 +238,19 @@ function createPackage() {
                     type="text"
                     name="name"
                     required
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <XInput
+                    id="slug"
+                    v-model="form.slug"
+                    :label="__('URL Slug')"
+                    :help="__('The package\'s address on the store. Leave empty to build it from the name.')"
+                    :error="form.errors.slug"
+                    type="text"
+                    name="slug"
+                    :placeholder="slugPreview"
                   />
                 </div>
 

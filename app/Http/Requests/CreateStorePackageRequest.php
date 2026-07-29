@@ -20,14 +20,53 @@ class CreateStorePackageRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->merge(['slug' => Str::slug((string) $this->input('name'))]);
+        $this->merge(['slug' => $this->resolvedSlug()]);
     }
 
     public function rules(): array
     {
         return array_merge($this->baseRules(), [
-            'slug' => 'required|string|max:255|unique:store_packages,slug',
+            'slug' => array_merge($this->slugRules(), [
+                Rule::unique('store_packages', 'slug'),
+            ]),
         ]);
+    }
+
+    /**
+     * The slug as it will be stored: whatever the admin typed, or the name if they left it blank.
+     *
+     * Normalised rather than merely validated, so what lands in the column is always something that
+     * can appear in a URL. A name with no latin characters at all slugs to an empty string, which
+     * would fail `required` and — the slug being derived rather than typed — leave the admin staring
+     * at a form that will not submit and no field to fix. A random token is a worse URL than
+     * `diamond-rank` and a better outcome than a dead button; they can edit it afterwards.
+     */
+    protected function resolvedSlug(): string
+    {
+        $submitted = Str::slug((string) $this->input('slug'));
+
+        if ($submitted !== '') {
+            return $submitted;
+        }
+
+        $fromName = Str::slug((string) $this->input('name'));
+
+        return $fromName !== '' ? $fromName : 'package-'.Str::lower(Str::random(8));
+    }
+
+    /**
+     * Shared with UpdateStorePackageRequest so the two cannot drift apart.
+     *
+     * @return array<int, mixed>
+     */
+    protected function slugRules(): array
+    {
+        return [
+            'required', 'string', 'max:255',
+            // Normalised in prepareForValidation, so this only catches what Str::slug could not
+            // make usable at all.
+            'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+        ];
     }
 
     /**
@@ -134,6 +173,8 @@ class CreateStorePackageRequest extends FormRequest
             'gift_card_amount.required' => __('Enter the gift card amount, or tick "same as package price".'),
             'pay_what_you_want_max.gte' => __('The maximum cannot be below the minimum price.'),
             'available_until.after' => __('The removal date must be after the publish date.'),
+            'slug.unique' => __('Another package already uses this URL. Pick a different one, or leave it blank to build it from the name.'),
+            'slug.regex' => __('A URL slug may only use lowercase letters, numbers and hyphens.'),
         ];
     }
 }

@@ -114,6 +114,7 @@ function selectValue(value) {
 
 const form = useForm({
     name: props.storePackage.name,
+    slug: props.storePackage.slug,
     store_category_id: selectValue(props.storePackage.store_category_id),
     short_description: props.storePackage.short_description,
     description: props.storePackage.description || "",
@@ -253,6 +254,18 @@ function updatePackage() {
                     type="text"
                     name="name"
                     required
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <XInput
+                    id="slug"
+                    v-model="form.slug"
+                    :label="__('URL Slug')"
+                    :help="__('Changing this changes the package\'s address, so any link already shared will stop working. Leave empty to keep the current one.')"
+                    :error="form.errors.slug"
+                    type="text"
+                    name="slug"
                   />
                 </div>
 
