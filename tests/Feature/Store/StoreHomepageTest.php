@@ -114,6 +114,69 @@ class StoreHomepageTest extends TestCase
             ->assertInertia(fn ($page) => $page->where('store.isHomepage', false));
     }
 
+    // --- Default navbar -------------------------------------------------------------------------
+
+    /**
+     * The navbar is JSON-encoded into window._customnav by a Blade component rather than shipped as
+     * an Inertia prop, so it is read off the rendered page.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function defaultNavbarLeft(): array
+    {
+        $html = $this->get(route('home'))->assertOk()->getContent();
+
+        preg_match('/window\._customnav = (.*?);\s*\n/', $html, $matches);
+
+        $this->assertNotEmpty($matches, 'The navbar payload was not found on the page.');
+
+        return json_decode(html_entity_decode($matches[1], ENT_QUOTES), true)['data']['left'];
+    }
+
+    public function test_store_is_the_first_navbar_item_after_the_logo()
+    {
+        $left = $this->defaultNavbarLeft();
+
+        $this->assertSame('App Logo', $left[0]['name']);
+        $this->assertSame('Store', $left[1]['name'], 'Store leads the navbar.');
+        $this->assertSame('Statistics', $left[2]['name'], 'Statistics follows it.');
+    }
+
+    public function test_the_navbar_store_item_points_at_the_storefront()
+    {
+        $this->assertSame('store.index', $this->defaultNavbarLeft()[1]['route']);
+    }
+
+    public function test_the_navbar_store_item_points_at_the_root_when_the_store_owns_it()
+    {
+        // store.index only 301s to `/` in this case, so linking there directly saves the hop.
+        $this->setHomepage('store');
+
+        $this->assertSame('home', $this->defaultNavbarLeft()[1]['route']);
+    }
+
+    public function test_a_dashboard_item_appears_only_when_the_store_owns_the_root()
+    {
+        $this->assertNotContains('Dashboard', collect($this->defaultNavbarLeft())->pluck('name')->all());
+
+        $this->setHomepage('store');
+
+        $left = $this->defaultNavbarLeft();
+
+        $this->assertSame('Dashboard', $left[2]['name'], 'Otherwise nothing points at the community homepage.');
+        $this->assertSame('home.dashboard', $left[2]['route']);
+    }
+
+    public function test_the_navbar_has_no_store_item_when_the_module_is_disabled()
+    {
+        config(['store.enabled' => false]);
+
+        $names = collect($this->defaultNavbarLeft())->pluck('name')->all();
+
+        $this->assertNotContains('Store', $names);
+        $this->assertSame('Statistics', $names[1]);
+    }
+
     // --- Admin setting ------------------------------------------------------------------------
 
     public function test_an_admin_can_switch_the_homepage_to_the_store()

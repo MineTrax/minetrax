@@ -3,8 +3,9 @@
 namespace App\View\Components;
 
 use App\Models\CustomPage;
-use App\Settings\NavigationSettings;
 use App\Settings\GeneralSettings;
+use App\Settings\NavigationSettings;
+use App\Settings\SeoSettings;
 use Illuminate\View\Component;
 
 class PhpVarsToJsTransformer extends Component
@@ -92,7 +93,7 @@ class PhpVarsToJsTransformer extends Component
     public function render()
     {
         $useWebsockets = config('broadcasting.default') == 'pusher' || config('broadcasting.default') == 'ably';
-        $useWebsockets = $useWebsockets && config('broadcasting.connections.' . config('broadcasting.default') . '.key');
+        $useWebsockets = $useWebsockets && config('broadcasting.connections.'.config('broadcasting.default').'.key');
 
         $pusher = [
             'USE_WEBSOCKETS' => $useWebsockets,
@@ -108,7 +109,7 @@ class PhpVarsToJsTransformer extends Component
         $navbar = $this->generateCustomNavbarData($navbarSettings, $generalSettings);
         $footer = $navbarSettings->enable_custom_footer ? $navbarSettings->custom_footer_data : null;
 
-        $seoSettings = app(\App\Settings\SeoSettings::class);
+        $seoSettings = app(SeoSettings::class);
         $seo = [
             'titleHome' => $seoSettings->title_home,
             'titleSuffix' => $seoSettings->title_suffix,
@@ -128,10 +129,45 @@ class PhpVarsToJsTransformer extends Component
         $enablePosts = $generalSettings->enable_status_feed;
 
         // If custom navbar is disabled, generate default navbar
-        if (!$customNavbarEnabled) {
+        if (! $customNavbarEnabled) {
             $customPagesInNavbar = CustomPage::visible()->navbar()->select(['id', 'title', 'path', 'is_in_navbar', 'is_visible', 'is_open_in_new_tab'])->get();
 
             $leftNavbar = self::DEFAULT_NAV_LEFT;
+
+            // Store leads the navbar, ahead of Statistics — spliced in at 1 rather than appended so
+            // it lands after the logo rather than at the end.
+            if (config('store.enabled')) {
+                $isStoreTheHomepage = $generalSettings->homepage_route === 'store';
+
+                $storeItems = [
+                    [
+                        'type' => 'route',
+                        'name' => 'Store',
+                        'title' => 'Store',
+                        // With the store on `/`, store.index only 301s there, so link at the
+                        // canonical URL directly.
+                        'route' => $isStoreTheHomepage ? 'home' : 'store.index',
+                        'key' => 'route-store-01',
+                        'authenticated' => false,
+                    ],
+                ];
+
+                // The community homepage moves to /dashboard when the store takes `/`, and without
+                // this there would be nothing in the navbar pointing at it.
+                if ($isStoreTheHomepage) {
+                    $storeItems[] = [
+                        'type' => 'route',
+                        'name' => 'Dashboard',
+                        'title' => 'Dashboard',
+                        'route' => 'home.dashboard',
+                        'key' => 'route-dashboard-01',
+                        'authenticated' => false,
+                    ];
+                }
+
+                array_splice($leftNavbar, 1, 0, $storeItems);
+            }
+
             // Add BanWarden to navbar if enabled
             if (config('minetrax.banwarden.enabled') && config('minetrax.banwarden.show_public')) {
                 $leftNavbar[] = [
@@ -174,7 +210,7 @@ class PhpVarsToJsTransformer extends Component
                             'route' => 'post.index',
                             'key' => 'route-posts-01',
                             'authenticated' => false,
-                        ]
+                        ],
                     ] : []),
                     [
                         'type' => 'route',
@@ -223,7 +259,7 @@ class PhpVarsToJsTransformer extends Component
                         'path' => $page->path,
                     ],
                     'is_open_in_new_tab' => $page->is_open_in_new_tab,
-                    'key' => 'custom-page-' . $page->id . '-01',
+                    'key' => 'custom-page-'.$page->id.'-01',
                 ];
             }
             $leftNavbar[] = $dropdownList;
