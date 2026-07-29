@@ -326,7 +326,7 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
                    when an order looks unfulfilled: not paid yet, paid and waiting on the queue
                    worker, or paid with genuinely nothing to run. -->
               {{ isPaidState
-                ? __("Nothing queued yet. Delivery runs on the longtask queue — check a queue worker is running, or use Re-send once it is.")
+                ? __("Nothing queued yet. Check that a queue worker is running, then use Re-send.")
                 : __("Nothing is delivered until the payment is confirmed.") }}
             </p>
 

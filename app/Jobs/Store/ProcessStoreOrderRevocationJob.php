@@ -18,8 +18,9 @@ use Illuminate\Queue\SerializesModels;
  * the other half: without it a refunded rank stays on the player in game, and the store has given
  * the money back and kept nothing.
  *
- * On the longtask queue for the same reason the purchase job is: a large order fans out across every
- * server, and a slow socket must not hold up the request that triggered it.
+ * On the default queue for the same reason the purchase job is: it writes rows and hands the socket
+ * work to RunCommandQueueJob, so it is short, and taking a perk back off a refunded player should not
+ * wait behind a multi-minute sweep.
  */
 class ProcessStoreOrderRevocationJob implements ShouldQueue
 {
@@ -28,9 +29,7 @@ class ProcessStoreOrderRevocationJob implements ShouldQueue
     public function __construct(
         private StoreOrder $order,
         private StorePackageCommandTrigger $trigger,
-    ) {
-        $this->onQueue('longtask');
-    }
+    ) {}
 
     public function handle(StoreCommandDispatchService $dispatcher): void
     {

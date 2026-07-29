@@ -17,17 +17,18 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Fulfils a paid order: issue the grants, queue the purchase commands, complete the order.
  *
- * Runs on the longtask queue because a large order can fan out to many servers, and a slow
- * webquery socket must never hold up the request that triggered it.
+ * Deliberately on the default queue, not longtask. Nothing here touches a socket — it writes grants,
+ * gift cards, command_queues and delivery rows, then hands each row to RunCommandQueueJob, which is
+ * where the webquery round trip actually happens and which also runs on default. This job is short
+ * database work, and the buyer is watching the result page while it runs, so it must not queue behind
+ * the multi-minute sweeps that longtask exists for — a player recalculation over a few hundred
+ * thousand rows would leave them staring at a spinner.
  */
 class ProcessStoreOrderPurchaseJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(private StoreOrder $order)
-    {
-        $this->onQueue('longtask');
-    }
+    public function __construct(private StoreOrder $order) {}
 
     public function handle(
         StoreCommandDispatchService $dispatcher,
