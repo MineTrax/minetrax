@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\Settings\SeoSettingController;
 use App\Http\Controllers\Admin\Settings\StoreSettingController;
 use App\Http\Controllers\Admin\Settings\ThemeSettingController;
 use App\Http\Controllers\Admin\Store\StoreCategoryController;
+use App\Http\Controllers\Admin\Store\StoreCouponController;
 use App\Http\Controllers\Admin\Store\StoreCurrencyController as AdminStoreCurrencyController;
 use App\Http\Controllers\Admin\Store\StoreOrderController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
@@ -399,6 +400,13 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
         Route::get('variable/{storeVariable}/edit', [StoreVariableController::class, 'edit'])->name('variable.edit');
         Route::put('variable/{storeVariable}', [StoreVariableController::class, 'update'])->name('variable.update');
         Route::delete('variable/{storeVariable}', [StoreVariableController::class, 'destroy'])->name('variable.delete');
+
+        Route::get('coupon', [StoreCouponController::class, 'index'])->name('coupon.index');
+        Route::get('coupon/create', [StoreCouponController::class, 'create'])->name('coupon.create');
+        Route::post('coupon', [StoreCouponController::class, 'store'])->name('coupon.store');
+        Route::get('coupon/{storeCoupon}/edit', [StoreCouponController::class, 'edit'])->name('coupon.edit');
+        Route::put('coupon/{storeCoupon}', [StoreCouponController::class, 'update'])->name('coupon.update');
+        Route::delete('coupon/{storeCoupon}', [StoreCouponController::class, 'destroy'])->name('coupon.delete');
 
         Route::get('order', [StoreOrderController::class, 'index'])->name('order.index');
         Route::get('order/{order:uuid}', [StoreOrderController::class, 'show'])->name('order.show');
