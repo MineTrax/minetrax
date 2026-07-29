@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
 use App\Services\StoreCurrencyService;
+use App\Services\StorePricingService;
 use App\Services\StoreVariableService;
 use App\Settings\GeneralSettings;
 use App\Settings\StoreSettings;
@@ -21,6 +22,7 @@ class StoreController extends Controller
     public function __construct(
         private StoreCurrencyService $currencies,
         private StoreVariableService $variables,
+        private StorePricingService $pricing,
         private StoreSettings $settings,
         private GeneralSettings $general,
     ) {}
@@ -169,7 +171,11 @@ class StoreController extends Controller
      */
     private function presentPackages(Collection $packages, $currency, array $comparisonFields = []): \Illuminate\Support\Collection
     {
-        return $packages->map(fn (StorePackage $package) => $this->presentPackage($package, $currency)
+        // Priced in one pass so the active sales are loaded once for the whole listing rather than
+        // once per card.
+        $prices = $this->pricing->listingPrices($packages, $currency);
+
+        return $packages->map(fn (StorePackage $package) => $this->presentPackage($package, $currency, $prices[$package->id] ?? null)
             + ($comparisonFields ? ['comparison_values' => $this->comparisonValuesFor($package, $comparisonFields)] : []));
     }
 
@@ -201,10 +207,14 @@ class StoreController extends Controller
      *
      * @return array<string, mixed>
      */
-    private function presentPackage(StorePackage $package, $currency): array
+    private function presentPackage(StorePackage $package, $currency, ?array $priced = null): array
     {
-        $listPrice = $this->currencies->priceForPackage($package, $currency);
-        $price = max(0, $listPrice - $package->discountFor($listPrice));
+        // Through the pricing service, which is the only thing that knows about sales. Working the
+        // price out here meant a store-wide sale never reached a single card.
+        $priced ??= $this->pricing->listingPrices([$package], $currency)[$package->id];
+
+        $listPrice = $priced['price_original'];
+        $price = $priced['price'];
 
         return [
             'id' => $package->id,
@@ -232,6 +242,8 @@ class StoreController extends Controller
             'price_formatted' => $this->currencies->format($price, $currency),
             'price_original' => $listPrice,
             'price_original_formatted' => $this->currencies->format($listPrice, $currency),
+            // Named so the card can say why the price is down, not just that it is.
+            'sale_name' => $priced['sale_name'],
             'pay_what_you_want_max' => $package->pay_what_you_want_max
                 ? $this->currencies->fromBase((int) $package->pay_what_you_want_max, $currency)
                 : null,

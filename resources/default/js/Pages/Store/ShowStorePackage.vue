@@ -44,9 +44,18 @@ const currentUser = computed(() => page.props.auth?.user || null);
 const isGuest = computed(() => !currentUser.value);
 
 // Basis points back to a percentage for display: 1250 reads as 12.5%.
+// Derived from the two prices rather than from discount_bp, which only knows about the package's own
+// discount — a store-wide sale moved the price but left this null, so neither the badge nor the
+// strike-through ever appeared for one.
 const discountPercent = computed(() => {
-    const bp = props.storePackage.discount_bp ?? 0;
-    return bp > 0 ? Math.round(bp / 10) / 10 : null;
+    const original = Number(props.storePackage.price_original ?? 0);
+    const price = Number(props.storePackage.price ?? 0);
+
+    if (! original || price >= original) {
+        return null;
+    }
+
+    return Math.round(((original - price) / original) * 1000) / 10;
 });
 
 const sellsGiftCard = computed(() => ["giftcard", "both"].includes(props.storePackage.type?.value));
@@ -327,6 +336,13 @@ const handleQuantityChange = (e) => {
                 class="inline-block px-3 py-1 text-sm font-medium bg-success/10 text-success rounded-lg"
               >
                 {{ __(":percent% off", { percent: discountPercent }) }}
+              </span>
+
+              <span
+                v-if="storePackage.sale_name"
+                class="inline-block px-3 py-1 text-sm font-medium bg-success/10 text-success rounded-lg"
+              >
+                {{ storePackage.sale_name }}
               </span>
 
               <span

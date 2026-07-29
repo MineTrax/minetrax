@@ -13,9 +13,18 @@ const props = defineProps({
 });
 
 // Basis points back to a percentage for display: 1250 reads as 12.5%.
+// Derived from the two prices rather than from discount_bp, which only knows about the package's own
+// discount — a store-wide sale moved the price but left this null, so neither the badge nor the
+// strike-through ever appeared for one.
 const discountPercent = computed(() => {
-    const bp = props.storePackage.discount_bp ?? 0;
-    return bp > 0 ? Math.round(bp / 10) / 10 : null;
+    const original = Number(props.storePackage.price_original ?? 0);
+    const price = Number(props.storePackage.price ?? 0);
+
+    if (! original || price >= original) {
+        return null;
+    }
+
+    return Math.round(((original - price) / original) * 1000) / 10;
 });
 </script>
 
@@ -85,6 +94,14 @@ const discountPercent = computed(() => {
             class="inline-block px-2 py-1 text-xs font-medium bg-success/10 text-success rounded"
           >
             {{ __(":percent% off", { percent: discountPercent }) }}
+          </span>
+
+          <!-- Names the sale responsible, so a shopper can tell a permanent discount from a sale -->
+          <span
+            v-if="storePackage.sale_name"
+            class="inline-block px-2 py-1 text-xs font-medium bg-success/10 text-success rounded"
+          >
+            {{ storePackage.sale_name }}
           </span>
 
           <!-- Out of Stock Badge -->

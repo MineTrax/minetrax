@@ -122,7 +122,7 @@ const isChecked = (value) => {
                 {{ storePackage.price_formatted }}
               </span>
               <span
-                v-if="storePackage.discount_bp > 0"
+                v-if="storePackage.price_original > storePackage.price"
                 class="text-sm text-muted-foreground line-through"
               >
                 {{ storePackage.price_original_formatted }}

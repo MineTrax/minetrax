@@ -109,6 +109,50 @@ class StorePricingService
     }
 
     /**
+     * Shop-window prices for many packages at once.
+     *
+     * The storefront used to work its own price out — list price minus the package's own discount —
+     * which silently left sales out of every listing and package page. A buyer saw the undiscounted
+     * price, added to cart, and watched it drop, because the cart quotes through this service and
+     * the storefront did not.
+     *
+     * Takes the whole set so the active sales are loaded once rather than per package.
+     *
+     * @param  iterable<StorePackage>  $packages
+     * @return array<int, array{price: int, price_original: int, sale_name: string|null}>
+     */
+    public function listingPrices(iterable $packages, ?StoreCurrency $currency = null): array
+    {
+        $currency ??= $this->currencies->resolve();
+        $sales = $this->activeSales();
+        $prices = [];
+
+        foreach ($packages as $package) {
+            $list = max(0, $this->currencies->priceForPackage($package, $currency));
+
+            // Pay what you want has no list price to discount: the figure shown is the floor, and
+            // the buyer names the rest.
+            if ($package->is_pay_what_you_want) {
+                $prices[$package->id] = ['price' => $list, 'price_original' => $list, 'sale_name' => null];
+
+                continue;
+            }
+
+            $unit = max(0, $list - $package->discountFor($list));
+            $sale = $this->bestSaleFor($package, $unit, $sales, $currency);
+
+            $prices[$package->id] = [
+                'price' => $sale ? max(0, $unit - $sale['saving']) : $unit,
+                // The undiscounted price, so the card can strike it through.
+                'price_original' => $list,
+                'sale_name' => $sale['name'] ?? null,
+            ];
+        }
+
+        return $prices;
+    }
+
+    /**
      * Price one basket line: the list price, then the package's own discount, then the best sale.
      *
      * @param  array{package: StorePackage, quantity: int, custom_price?: int|null, custom_price_currency?: string|null}  $line
