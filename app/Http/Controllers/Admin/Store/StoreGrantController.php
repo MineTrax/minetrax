@@ -67,7 +67,9 @@ class StoreGrantController extends Controller
             'grants' => $grants,
             'statuses' => collect(StorePackageGrantStatus::cases())->map->value,
             'filters' => request()->all(['perPage', 'sort', 'filter']),
-            'permissions' => [
+            // Not `permissions`: that name is a globally shared array of the user's permission
+            // names, and a page prop of the same name replaces it, breaking useAuthorizable.
+            'grantPermissions' => [
                 // The permission the grant policy delegates to. Checked directly rather than
                 // against a row, because whether staff may revoke does not vary per grant.
                 'update' => request()->user()->can('update store_orders'),

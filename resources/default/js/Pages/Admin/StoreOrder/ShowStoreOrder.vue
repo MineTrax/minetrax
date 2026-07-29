@@ -17,7 +17,7 @@ const props = defineProps({
     money: Object,
     stuckDeliveries: Array,
     canRefundAtGateway: Boolean,
-    permissions: Object,
+    orderPermissions: Object,
     timeline: Array,
 });
 
@@ -123,27 +123,27 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
 
           <div class="flex flex-wrap gap-2">
             <Button
-              v-if="permissions.update && isPending"
+              v-if="orderPermissions.update && isPending"
               @click="markPaid"
             >
               {{ __("Mark as Paid") }}
             </Button>
             <Button
-              v-if="permissions.resend && isPaidState"
+              v-if="orderPermissions.resend && isPaidState"
               variant="outline"
               @click="resend(false)"
             >
               {{ __("Re-send Failed Commands") }}
             </Button>
             <Button
-              v-if="permissions.refund && isPaidState && refundableRemaining > 0"
+              v-if="orderPermissions.refund && isPaidState && refundableRemaining > 0"
               variant="outline"
               @click="openRefund"
             >
               {{ __("Refund") }}
             </Button>
             <Button
-              v-if="permissions.update && !isTerminal"
+              v-if="orderPermissions.update && !isTerminal"
               variant="outline"
               class="text-destructive hover:text-destructive"
               @click="cancelOrder"

@@ -124,7 +124,11 @@ class StoreOrderController extends Controller
                 ->values(),
             'canRefundAtGateway' => $this->canRefundAtGateway($order),
             'timeline' => $this->timeline($order),
-            'permissions' => [
+            // Deliberately not called `permissions`: HandleInertiaRequests shares a global
+            // `permissions` array of the signed-in user's permission names, and a page prop of the
+            // same name replaces it. useAuthorizable then calls .some() on this object and throws,
+            // taking the admin sidebar down with it on every render of this page.
+            'orderPermissions' => [
                 'update' => request()->user()->can('update', $order),
                 'refund' => request()->user()->can('refund', $order),
                 'resend' => request()->user()->can('resend', $order),

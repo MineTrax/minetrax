@@ -18,7 +18,7 @@ defineProps({
     grants: Object,
     filters: Object,
     statuses: Array,
-    permissions: Object,
+    grantPermissions: Object,
 });
 
 const breadcrumbItems = [
@@ -220,7 +220,7 @@ function submitExtend() {
                 </Link>
               </Button>
               <Button
-                v-if="permissions.update && item.status.value === 'active' && item.expires_at"
+                v-if="grantPermissions.update && item.status.value === 'active' && item.expires_at"
                 v-tippy
                 variant="outline"
                 size="icon"
@@ -230,7 +230,7 @@ function submitExtend() {
                 <ClockIcon />
               </Button>
               <Button
-                v-if="permissions.update && item.status.value === 'active'"
+                v-if="grantPermissions.update && item.status.value === 'active'"
                 v-tippy
                 v-confirm="{
                   message: __('Revoke this grant? The package\'s expiry commands run, so the perk is removed in game.'),
