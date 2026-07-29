@@ -170,7 +170,76 @@ class StoreOrderAdminTest extends TestCase
                 ->component('Admin/StoreOrder/ShowStoreOrder')
                 ->has('order')
                 ->has('money.total')
-                ->has('permissions')
+                // Not `permissions`: that name belongs to the globally shared array of the user's
+                // permission names, and a page prop of the same name replaces it and breaks
+                // useAuthorizable. Asserting the real name stops the rename silently reverting.
+                ->has('orderPermissions.refund')
+            );
+    }
+
+    public function test_item_amounts_are_formatted_rather_than_sent_as_minor_units()
+    {
+        // Rendered raw, a $1.49 crate key read "149 USD" on the page.
+        [$order] = $this->paidOrder(149);
+        $package = StorePackage::factory()->create();
+        $order->items()->create([
+            'store_package_id' => $package->id,
+            'package_name' => $package->name,
+            'quantity' => 1,
+            'unit_price_original' => 149,
+            'unit_price' => 149,
+            'total' => 149,
+        ]);
+
+        $this->actingAs($this->superadmin)
+            ->get(route('admin.store.order.show', $order->uuid))
+            ->assertInertia(fn ($page) => $page
+                ->where('order.items.0.total_formatted', '$1.49')
+                ->where('order.items.0.unit_price_formatted', '$1.49')
+                ->where('order.payments.0.amount_formatted', '$1.49')
+            );
+    }
+
+    public function test_a_zero_decimal_currency_is_not_divided_when_formatting_an_item()
+    {
+        // ¥1490 is 1490 minor units. Dividing by a hundred in the template would show ¥14.90 for an
+        // amount that has no minor unit at all.
+        StoreCurrency::factory()->zeroDecimal()->create();
+
+        $order = StoreOrder::factory()->completed()->create([
+            'total' => 1490, 'amount_due' => 1490, 'currency' => 'JPY', 'exchange_rate' => 150,
+        ]);
+        $package = StorePackage::factory()->create();
+        $order->items()->create([
+            'store_package_id' => $package->id,
+            'package_name' => $package->name,
+            'quantity' => 1,
+            'unit_price_original' => 1490,
+            'unit_price' => 1490,
+            'total' => 1490,
+        ]);
+
+        $this->actingAs($this->superadmin)
+            ->get(route('admin.store.order.show', $order->uuid))
+            ->assertInertia(fn ($page) => $page
+                ->where('order.items.0.total_formatted', '¥1,490')
+            );
+    }
+
+    public function test_refund_amounts_are_formatted_too()
+    {
+        [$order, $payment] = $this->paidOrder(2000);
+        $payment->refunds()->create([
+            'type' => StorePaymentRefundType::REFUND,
+            'amount' => 500,
+            'currency' => 'USD',
+            'reason' => 'Goodwill',
+        ]);
+
+        $this->actingAs($this->superadmin)
+            ->get(route('admin.store.order.show', $order->uuid))
+            ->assertInertia(fn ($page) => $page
+                ->where('order.payments.0.refunds.0.amount_formatted', '$5.00')
             );
     }
 

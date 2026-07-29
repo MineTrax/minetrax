@@ -81,6 +81,9 @@ const resend = (includeUnfinished = false) =>
 // The delivery row itself carries no status: health is always read from the joined command queue,
 // so there is one source of truth for whether a command actually ran.
 const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "unknown";
+
+// Timestamps arrive as ISO strings. Rendering them raw put "2026-07-29T18:29:32.000000Z" on the page.
+const formatDate = (value) => (value ? new Date(value).toLocaleString() : "—");
 </script>
 
 <template>
@@ -116,7 +119,7 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
               <CommonStatusBadge :status="order.delivery_status.value" />
             </div>
             <p class="text-sm text-muted-foreground">
-              {{ __("Placed") }} {{ order.created_at }}
+              {{ __("Placed") }} {{ formatDate(order.created_at) }}
               <span v-if="order.gateway"> · {{ order.gateway.value }}</span>
             </p>
           </div>
@@ -251,14 +254,26 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
                       class="text-xs text-muted-foreground mt-1"
                     >
                       {{ __("Grant") }}: <CommonStatusBadge :status="item.grant.status.value" />
-                      <span v-if="item.grant.expires_at"> · {{ __("expires") }} {{ item.grant.expires_at }}</span>
+                      <span v-if="item.grant.expires_at"> · {{ __("expires") }} {{ formatDate(item.grant.expires_at) }}</span>
                     </div>
                   </td>
                   <td class="px-6 py-4 text-center whitespace-nowrap">
                     &times;{{ item.quantity }}
                   </td>
                   <td class="px-6 py-4 text-right whitespace-nowrap">
-                    {{ item.total }} {{ order.currency }}
+                    <div>{{ item.total_formatted }}</div>
+                    <div
+                      v-if="item.quantity > 1"
+                      class="text-xs text-muted-foreground"
+                    >
+                      {{ item.unit_price_formatted }} {{ __("each") }}
+                    </div>
+                    <div
+                      v-if="item.upgrade_credit_formatted"
+                      class="text-xs text-success"
+                    >
+                      {{ __("Upgrade credit") }} -{{ item.upgrade_credit_formatted }}
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -450,7 +465,7 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
               class="text-sm border-b border-border last:border-0 py-2 first:pt-0"
             >
               <div class="flex justify-between items-center">
-                <span>{{ payment.gateway.value }}</span>
+                <span>{{ payment.gateway.value }} · {{ payment.amount_formatted }}</span>
                 <CommonStatusBadge :status="payment.status.value" />
               </div>
               <div
@@ -470,7 +485,7 @@ const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "u
                 :key="refund.id"
                 class="text-xs text-muted-foreground mt-1"
               >
-                {{ refund.type.value }}: {{ refund.amount }} {{ refund.currency }}
+                {{ refund.type.value }}: {{ refund.amount_formatted }}
                 <span v-if="refund.reason"> — {{ refund.reason }}</span>
               </div>
             </div>

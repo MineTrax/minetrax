@@ -104,6 +104,26 @@ class StoreOrderController extends Controller
 
         $attentionCutoff = now()->subDays((int) config('store.deferred_attention_days', 3));
 
+        // Every amount below is minor units in the order's currency. Formatted here, like the
+        // totals, because the exponent belongs to the currency: rendering the raw integer showed a
+        // $1.49 crate key as "149 USD", and dividing by 100 in the template would be wrong for JPY.
+        $order->items->each(function ($item) use ($order) {
+            $item->total_formatted = $this->currencies->format((int) $item->total, $order->currency);
+            $item->unit_price_formatted = $this->currencies->format((int) $item->unit_price, $order->currency);
+            $item->unit_price_original_formatted = $this->currencies->format((int) $item->unit_price_original, $order->currency);
+            $item->upgrade_credit_formatted = $item->upgrade_credit > 0
+                ? $this->currencies->format((int) $item->upgrade_credit, $order->currency)
+                : null;
+        });
+
+        $order->payments->each(function ($payment) {
+            $payment->amount_formatted = $this->currencies->format((int) $payment->amount, $payment->currency);
+
+            $payment->refunds->each(function ($refund) use ($payment) {
+                $refund->amount_formatted = $this->currencies->format((int) $refund->amount, $payment->currency);
+            });
+        });
+
         return Inertia::render('Admin/StoreOrder/ShowStoreOrder', [
             'order' => $order,
             'money' => [
