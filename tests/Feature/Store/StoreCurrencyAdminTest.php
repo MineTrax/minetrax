@@ -228,3 +228,44 @@ test('switching currency is unavailable when the module is disabled', function (
 
     $this->post(route('store.currency.switch'), ['code' => 'USD'])->assertStatus(404);
 });
+
+test('an update carrying countries is accepted', function () {
+    // The reported failure: saving an edit with a country selected. The form was posting whole
+    // Multiselect objects rather than iso codes, so validation refused every such save.
+    $this->actingAs(User::whereId(1)->first());
+    $currency = StoreCurrency::factory()->create(['code' => 'EUR', 'is_base' => false]);
+
+    $this->put(route('admin.store.currency.update', $currency->id), currencyAdminValidPayload([
+        'code' => 'EUR',
+        'country_codes' => ['DE', 'FR', 'BE'],
+    ]))->assertSessionHasNoErrors();
+
+    expect($currency->fresh()->country_codes)->toEqual(['DE', 'FR', 'BE']);
+});
+
+test('countries sent as objects are refused under an indexed error key', function () {
+    // Pins what the form has to cope with. Laravel reports a per-item array failure as
+    // `country_codes.0`, so a template reading `errors.country_codes` shows nothing and a rejected
+    // save looks like no save at all — which is how this shipped unnoticed.
+    $this->actingAs(User::whereId(1)->first());
+    $currency = StoreCurrency::factory()->create(['code' => 'EUR', 'is_base' => false]);
+
+    $this->put(route('admin.store.currency.update', $currency->id), currencyAdminValidPayload([
+        'code' => 'EUR',
+        'country_codes' => [['id' => 'DE', 'name' => 'Germany']],
+    ]))->assertSessionHasErrors(['country_codes.0']);
+
+    expect($currency->fresh()->country_codes)->not->toEqual([['id' => 'DE', 'name' => 'Germany']]);
+});
+
+test('the countries selection can be cleared', function () {
+    $this->actingAs(User::whereId(1)->first());
+    $currency = StoreCurrency::factory()->create(['code' => 'EUR', 'is_base' => false, 'country_codes' => ['DE']]);
+
+    $this->put(route('admin.store.currency.update', $currency->id), currencyAdminValidPayload([
+        'code' => 'EUR',
+        'country_codes' => [],
+    ]))->assertSessionHasNoErrors();
+
+    expect($currency->fresh()->country_codes)->toEqual([]);
+});

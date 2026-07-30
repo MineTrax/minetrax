@@ -8,6 +8,7 @@ import XInput from "@/Components/Form/XInput.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import Multiselect from "vue-multiselect";
+import { useFormErrors } from "@/Composables/useFormErrors";
 import TipTapEditor from "@/Components/TipTapEditor.vue";
 import ImageUpload from "@/Components/Form/ImageUpload.vue";
 import Draggable from "vuedraggable";
@@ -15,6 +16,9 @@ import { ArrowsUpDownIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { computed } from "vue";
 
 const { __ } = useTranslations();
+// Laravel keys a per-item array failure as `packages.0`, not `packages`, so reading the bare field
+// name renders nothing and a rejected save looks like a save that silently did nothing.
+const { fieldError } = useFormErrors();
 
 const props = defineProps({
     storePackage: Object,
@@ -111,6 +115,15 @@ function toLocalInput(timestamp) {
 function selectValue(value) {
     return value === null || value === undefined ? null : String(value);
 }
+
+// The step belongs to the currency the amount is typed in, never a hardcoded 0.01: JPY has no minor
+// unit and KWD has three, so a fixed step either invites an amount the server refuses or rejects a
+// legitimate one.
+function stepFor(exponent) {
+    return exponent === 0 ? "1" : (1 / (10 ** exponent)).toFixed(exponent);
+}
+
+const baseStep = computed(() => stepFor(props.baseCurrency?.exponent ?? 2));
 
 const form = useForm({
     name: props.storePackage.name,
@@ -354,7 +367,7 @@ function updatePackage() {
                       : __('Decimal amount in :currency, e.g. 9.99', { currency: baseCurrency.code })"
                     :error="form.errors.price"
                     type="number"
-                    step="0.01"
+                    :step="baseStep"
                     name="price"
                     min="0"
                     required
@@ -385,7 +398,7 @@ function updatePackage() {
                     :help="__('Optional cap on what a customer may pay.')"
                     :error="form.errors.pay_what_you_want_max"
                     type="number"
-                    step="0.01"
+                    :step="baseStep"
                     name="pay_what_you_want_max"
                     min="0"
                     :disabled="!form.is_pay_what_you_want"
@@ -452,7 +465,7 @@ function updatePackage() {
                     :help="__('Store credit sent to the customer after purchase, in :currency.', { currency: baseCurrency.code })"
                     :error="form.errors.gift_card_amount"
                     type="number"
-                    step="0.01"
+                    :step="baseStep"
                     name="gift_card_amount"
                     min="0"
                     :disabled="form.is_gift_card_amount_same_as_price"
@@ -502,10 +515,10 @@ function updatePackage() {
                     {{ __("Checked at checkout against the delivery player's active purchases. Buying a requirement in the same order counts.") }}
                   </p>
                   <p
-                    v-if="form.errors.required_packages"
+                    v-if="fieldError(form.errors, 'required_packages')"
                     class="text-xs text-destructive mt-1"
                   >
-                    {{ form.errors.required_packages }}
+                    {{ fieldError(form.errors, 'required_packages') }}
                   </p>
                 </div>
 
@@ -749,10 +762,10 @@ function updatePackage() {
                     :placeholder="__('Leave empty to ask the customer for nothing')+'...'"
                   />
                   <p
-                    v-if="form.errors.variables"
+                    v-if="fieldError(form.errors, 'variables')"
                     class="text-xs text-destructive mt-1"
                   >
-                    {{ form.errors.variables }}
+                    {{ fieldError(form.errors, 'variables') }}
                   </p>
                 </div>
 

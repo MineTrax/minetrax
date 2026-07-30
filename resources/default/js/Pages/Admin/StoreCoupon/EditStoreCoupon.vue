@@ -8,9 +8,13 @@ import XInput from "@/Components/Form/XInput.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import Multiselect from "vue-multiselect";
+import { useFormErrors } from "@/Composables/useFormErrors";
 import { computed } from "vue";
 
 const { __ } = useTranslations();
+// Laravel keys a per-item array failure as `packages.0`, not `packages`, so reading the bare field
+// name renders nothing and a rejected save looks like a save that silently did nothing.
+const { fieldError } = useFormErrors();
 
 const props = defineProps({
     storeCoupon: Object,
@@ -70,6 +74,17 @@ function toDecimal(minorAmount, exponent) {
 
 const discountType = props.storeCoupon.discount_type?.value ?? props.storeCoupon.discount_type;
 const storedCurrency = props.storeCoupon.currency_code ?? props.baseCurrency.code;
+
+// The step belongs to the currency the amount is typed in, never a hardcoded 0.01: JPY has no minor
+// unit and KWD has three, so a fixed step either invites an amount the server refuses or rejects a
+// legitimate one.
+function stepFor(exponent) {
+    return exponent === 0 ? "1" : (1 / (10 ** exponent)).toFixed(exponent);
+}
+
+const baseStep = computed(() => stepFor(props.baseCurrency?.exponent ?? 2));
+
+const amountStep = computed(() => stepFor(amountExponent.value));
 
 const form = useForm({
     code: props.storeCoupon.code,
@@ -222,7 +237,7 @@ function updateCoupon() {
                       :help="__('Decimal amount, e.g. 5.00')"
                       :error="form.errors.discount_value"
                       type="number"
-                      step="0.01"
+                      :step="amountStep"
                       name="discount_amount"
                       min="0"
                       required
@@ -261,7 +276,7 @@ function updateCoupon() {
                     :help="__('In :currency. Leave empty for no minimum.', { currency: baseCurrency.code })"
                     :error="form.errors.min_basket_amount"
                     type="number"
-                    step="0.01"
+                    :step="baseStep"
                     name="min_basket"
                     min="0"
                   />
@@ -360,10 +375,10 @@ function updateCoupon() {
                     :placeholder="__('Search packages')+'...'"
                   />
                   <p
-                    v-if="form.errors.packages"
+                    v-if="fieldError(form.errors, 'packages')"
                     class="text-xs text-destructive mt-2"
                   >
-                    {{ form.errors.packages }}
+                    {{ fieldError(form.errors, 'packages') }}
                   </p>
                 </div>
 
@@ -386,10 +401,10 @@ function updateCoupon() {
                     :placeholder="__('Search categories')+'...'"
                   />
                   <p
-                    v-if="form.errors.categories"
+                    v-if="fieldError(form.errors, 'categories')"
                     class="text-xs text-destructive mt-2"
                   >
-                    {{ form.errors.categories }}
+                    {{ fieldError(form.errors, 'categories') }}
                   </p>
                 </div>
               </div>

@@ -8,8 +8,11 @@ import XInput from "@/Components/Form/XInput.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import Multiselect from "vue-multiselect";
+import { computed } from "vue";
+import { useFormErrors } from "@/Composables/useFormErrors";
 
 const { __ } = useTranslations();
+const { fieldError } = useFormErrors();
 
 const props = defineProps({
     roundingOptions: Array,
@@ -55,13 +58,24 @@ const form = useForm({
     exponent: 2,
     rate_to_base: 1,
     is_enabled: true,
-    price_rounding: null,
+    // "none" rather than null: the enum already carries a no-rounding case, and the field is
+    // required server-side, so an unset select would only fail validation on submit.
+    price_rounding: "none",
     country_codes: [],
     sort_order: 0,
 });
 
+// Via fieldError, not form.errors.country_codes: Laravel keys a per-item failure `country_codes.0`,
+// so the bare name is undefined and the message renders nowhere — which is how a rejected save looked
+// like no save at all.
+const countryError = computed(() => fieldError(form.errors, "country_codes"));
+
 function createCurrency() {
-    form.post(route("admin.store.currency.store"), {});
+    // Multiselect hands back whole objects; the API takes iso codes.
+    form.transform(data => ({
+        ...data,
+        country_codes: (data.country_codes ?? []).map(country => country.id),
+    })).post(route("admin.store.currency.store"), {});
 }
 </script>
 
@@ -174,6 +188,8 @@ function createCurrency() {
                     :error="form.errors.price_rounding"
                     :select-list="roundingOptionsMap"
                     name="price_rounding"
+                    :required="true"
+                    :disable-null="true"
                   />
                 </div>
 
@@ -207,10 +223,10 @@ function createCurrency() {
                     :placeholder="__('Search countries')+'...'"
                   />
                   <p
-                    v-if="form.errors.country_codes"
+                    v-if="countryError"
                     class="text-xs text-destructive mt-2"
                   >
-                    {{ form.errors.country_codes }}
+                    {{ countryError }}
                   </p>
                 </div>
 

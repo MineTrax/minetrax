@@ -41,6 +41,15 @@ const customPrice = ref(
         : null
 );
 
+// The step belongs to the currency, never a hardcoded 0.01: JPY has no minor unit, so 0.01 would
+// invite ¥1000.50 — which the server refuses outright rather than rounding — and KWD has three
+// digits, where a 0.01 step rejects a legitimate 1.234.
+const priceStep = computed(() =>
+    props.currency.exponent === 0
+        ? "1"
+        : (1 / (10 ** props.currency.exponent)).toFixed(props.currency.exponent)
+);
+
 const currentUser = computed(() => page.props.auth?.user || null);
 const isGuest = computed(() => !currentUser.value);
 
@@ -190,7 +199,7 @@ const handleQuantityChange = (e) => {
                 id="custom_price"
                 v-model="customPrice"
                 type="number"
-                step="0.01"
+                :step="priceStep"
                 :min="storePackage.price / (10 ** currency.exponent)"
                 class="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                 :disabled="isOutOfStock"
