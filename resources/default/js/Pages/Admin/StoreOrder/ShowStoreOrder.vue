@@ -145,6 +145,16 @@ const formatDate = (value) => (value ? new Date(value).toLocaleString() : "—")
             >
               {{ __("Refund") }}
             </Button>
+            <!-- A plain anchor, not <Link>: the response is a PDF download, and Inertia would try
+                 to parse it as a page visit. -->
+            <Button
+              v-if="order.can_download_invoice"
+              variant="outline"
+              as="a"
+              :href="route('store.order.invoice', order.uuid)"
+            >
+              {{ __("Invoice") }}
+            </Button>
             <Button
               v-if="orderPermissions.update && !isTerminal"
               variant="outline"

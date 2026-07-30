@@ -160,6 +160,73 @@ class StorePackageController extends Controller
             ->with(['toast' => ['type' => 'success', 'title' => __('Updated Successfully'), 'body' => __('Store package has been updated successfully')]]);
     }
 
+    /**
+     * Copy a package, everything hanging off it included.
+     *
+     * A rank tier is nine-tenths the same as the tier below it — commands, variables, prerequisites,
+     * per-currency prices and comparison cells — so building the next one from scratch is where
+     * mistakes come from. The copy lands **disabled**: it is otherwise a second identical package on
+     * the storefront the instant it is saved.
+     */
+    public function duplicate(StorePackage $storePackage)
+    {
+        // Duplicating writes a package, so it is the create permission that governs it, not update.
+        $this->authorize('create', StorePackage::class);
+
+        $storePackage->load(['commands.servers:id', 'prices', 'requiredPackages:id', 'variables:id']);
+
+        $copy = DB::transaction(function () use ($storePackage) {
+            // replicate() rather than create(getAttributes()): the raw attributes hold
+            // comparison_values as a JSON string, and handing that back to a column cast to array
+            // would encode it a second time.
+            $copy = $storePackage->replicate(['sold_count', 'deleted_at', 'updated_by']);
+            $copy->name = $storePackage->name.' '.__('(Copy)');
+            $copy->slug = $this->availableSlugFrom($storePackage->slug);
+            // Nothing has been sold of a package that did not exist a moment ago, and copying the
+            // count would show the storefront a sold-out badge and consume purchase limits.
+            $copy->sold_count = 0;
+            $copy->is_enabled = false;
+            $copy->created_by = request()->user()->id;
+            $copy->save();
+
+            foreach ($storePackage->commands as $command) {
+                $copiedCommand = $command->replicate();
+                $copiedCommand->store_package_id = $copy->id;
+                $copiedCommand->save();
+
+                // The pivot too: a command targeting three servers is not copied by copying its row.
+                $copiedCommand->servers()->sync($command->servers->pluck('id')->all());
+            }
+
+            foreach ($storePackage->prices as $price) {
+                $copy->prices()->create([
+                    'currency_code' => $price->currency_code,
+                    'price' => $price->price,
+                ]);
+            }
+
+            $copy->requiredPackages()->sync($storePackage->requiredPackages->pluck('id')->all());
+
+            $copy->variables()->sync(
+                $storePackage->variables->mapWithKeys(fn ($variable) => [
+                    $variable->id => ['sort_order' => $variable->pivot->sort_order],
+                ])->all()
+            );
+
+            return $copy;
+        });
+
+        // Outside the transaction: the file copy touches the disk, and a rollback could not undo it.
+        if ($media = $storePackage->getFirstMedia('store-package')) {
+            $media->copy($copy, 'store-package', config('store.module_disk'));
+        }
+
+        // Straight to the copy's own form, which is where the admin was heading anyway — the whole
+        // point is to change the few things that differ.
+        return redirect()->route('admin.store.package.edit', $copy->id)
+            ->with(['toast' => ['type' => 'success', 'title' => __('Duplicated Successfully'), 'body' => __('The copy is disabled until you enable it, so it is not on the storefront yet.')]]);
+    }
+
     public function destroy(StorePackage $storePackage)
     {
         $this->authorize('delete', $storePackage);
@@ -177,6 +244,25 @@ class StorePackageController extends Controller
 
         return redirect()->route('admin.store.package.index')
             ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Store package has been deleted')]]);
+    }
+
+    /**
+     * A slug near the original's that nothing else holds.
+     *
+     * Checked against trashed rows too, because the unique index covers them — a retired package
+     * squatting on `gold-rank-copy` would otherwise fail the insert.
+     */
+    private function availableSlugFrom(string $slug): string
+    {
+        $candidate = Str::limit($slug, 200, '').'-copy';
+        $suffix = 1;
+
+        while (StorePackage::withTrashed()->where('slug', $candidate)->exists()) {
+            $suffix++;
+            $candidate = Str::limit($slug, 200, '').'-copy-'.$suffix;
+        }
+
+        return $candidate;
     }
 
     /**

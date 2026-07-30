@@ -200,6 +200,8 @@ class StoreCheckoutController extends Controller
             // the same {key, value} shape the rest of the frontend expects.
             'status' => Helper::enumKeyValue($order->status),
             'delivery_status' => Helper::enumKeyValue($order->delivery_status),
+            // For a guest this page is the only route to their invoice, so the button has to be here.
+            'can_download_invoice' => $order->status->isInvoiceable(),
             'player_username' => $order->player_username,
             'currency' => $order->currency,
             'total_formatted' => $this->currencies->format((int) $order->total, $order->currency),

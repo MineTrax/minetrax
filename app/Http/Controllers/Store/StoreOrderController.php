@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Services\StoreCurrencyService;
+use App\Services\StoreInvoiceService;
 use App\Utils\Helpers\Helper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * A buyer's own purchase history.
@@ -45,6 +47,29 @@ class StoreOrderController extends Controller
         ]);
     }
 
+    /**
+     * The order's invoice, as a PDF.
+     *
+     * Streamed rather than redirected to a file URL: the invoice disk is private, and a signed URL
+     * would be a second way in to guard. `downloadInvoice` on the order policy is the one gate —
+     * staff with `read store_orders`, the buyer themselves, or anyone holding a guest order's uuid.
+     */
+    public function invoice(StoreOrder $order, StoreInvoiceService $invoices): StreamedResponse
+    {
+        $this->authorize('browse', StorePackage::class);
+        $this->authorize('downloadInvoice', $order);
+
+        // A pending order is a basket and a cancelled one is nothing at all, so neither has an
+        // invoice to issue. A refunded one does: it still needs its paper trail.
+        abort_unless($order->status->isInvoiceable(), 404);
+
+        return response()->streamDownload(
+            fn () => print $invoices->pdfFor($order),
+            $invoices->filenameFor($order),
+            ['Content-Type' => 'application/pdf'],
+        );
+    }
+
     public function show(Request $request, StoreOrder $order): Response
     {
         $this->authorize('browse', StorePackage::class);
@@ -59,6 +84,9 @@ class StoreOrderController extends Controller
                 'number' => strtoupper(substr($order->uuid, 0, 8)),
                 'status' => Helper::enumKeyValue($order->status),
                 'delivery_status' => Helper::enumKeyValue($order->delivery_status),
+                // Decided by the enum rather than by the template listing statuses of its own, so the
+                // button and the route agree about what has an invoice.
+                'can_download_invoice' => $order->status->isInvoiceable(),
                 'player_username' => $order->player_username,
                 'currency' => $order->currency,
                 'created_at' => $order->created_at,

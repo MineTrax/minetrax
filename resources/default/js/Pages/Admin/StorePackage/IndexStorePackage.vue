@@ -8,7 +8,7 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { ButtonGroup } from "@/Components/ui/button-group";
 import { Link } from "@inertiajs/vue3";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { DocumentDuplicateIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import Icon from "@/Components/Icon.vue";
 
 const { can } = useAuthorizable();
@@ -251,6 +251,25 @@ const headerRow = [
                   :title="__('Edit Package')"
                 >
                   <PencilSquareIcon />
+                </Link>
+              </Button>
+              <Button
+                v-if="can('create store_packages')"
+                variant="outline"
+                size="icon"
+                as-child
+              >
+                <Link
+                  v-confirm="{
+                    message: __('Copy this package, with its commands, prices, variables and prerequisites? The copy is created disabled so it is not on the storefront until you enable it.'),
+                  }"
+                  v-tippy
+                  as="button"
+                  method="POST"
+                  :href="route('admin.store.package.duplicate', item.id)"
+                  :title="__('Duplicate Package')"
+                >
+                  <DocumentDuplicateIcon />
                 </Link>
               </Button>
               <Button

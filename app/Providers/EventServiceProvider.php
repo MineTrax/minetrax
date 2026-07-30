@@ -12,6 +12,7 @@ use App\Events\RecruitmentSubmissionStatusChanged;
 use App\Events\StoreOrderPaid;
 use App\Events\StoreOrderRefunded;
 use App\Events\StorePaymentFailed;
+use App\Listeners\AnnounceStorePurchaseOnDiscord;
 use App\Listeners\DispatchStoreOrderDeliveryOnPaid;
 use App\Listeners\DispatchStoreOrderRevocationOnRefund;
 use App\Listeners\HandleStoreChargeback;
@@ -52,6 +53,7 @@ class EventServiceProvider extends ServiceProvider
             DispatchStoreOrderDeliveryOnPaid::class,
             SendStoreOrderReceipt::class,
             NotifyStaffOnStoreOrderPaid::class,
+            AnnounceStorePurchaseOnDiscord::class,
         ],
         StoreOrderRefunded::class => [
             DispatchStoreOrderRevocationOnRefund::class,

@@ -24,6 +24,25 @@ const breadcrumbItems = [
     { text: __("Store Settings"), current: true },
 ];
 
+// How many digits the goal amount takes belongs to the base currency, never a constant: JPY has no
+// minor unit and KWD has three, so a hardcoded 100 would misstate the target in both.
+const baseExponent = props.currencies.find((c) => c.code === props.settings.base_currency)?.exponent ?? 2;
+const goalStep = baseExponent === 0 ? "1" : (1 / (10 ** baseExponent)).toFixed(baseExponent);
+
+function toDecimal(minorAmount) {
+    if (minorAmount === null || minorAmount === undefined) {
+        return null;
+    }
+    return (Number(minorAmount) / (10 ** baseExponent)).toFixed(baseExponent);
+}
+
+function toMinorUnits(decimalAmount) {
+    if (decimalAmount === null || decimalAmount === "" || isNaN(parseFloat(decimalAmount))) {
+        return 0;
+    }
+    return Math.round(parseFloat(decimalAmount) * (10 ** baseExponent));
+}
+
 const form = useForm({
     store_name: props.settings.store_name,
     store_description: props.settings.store_description,
@@ -41,8 +60,13 @@ const form = useForm({
     terms_text: props.settings.terms_text,
 
     show_recent_purchases: props.settings.show_recent_purchases,
+    show_purchase_goal: props.settings.show_purchase_goal,
+    show_top_donor: props.settings.show_top_donor,
+    // Typed as a human amount and converted on submit; the setting itself is minor units.
+    purchase_goal: toDecimal(props.settings.purchase_goal_amount),
     hide_buyer_identity: props.settings.hide_buyer_identity,
     notify_staff_on_purchase: props.settings.notify_staff_on_purchase,
+    discord_purchase_webhook_url: props.settings.discord_purchase_webhook_url,
     auto_ban_on_chargeback: props.settings.auto_ban_on_chargeback,
 });
 
@@ -62,7 +86,10 @@ const taxModeList = {
 };
 
 const saveSetting = () => {
-    form.post(route("admin.setting.store.update"), { preserveScroll: true });
+    form.transform((data) => ({
+        ...data,
+        purchase_goal_amount: toMinorUnits(data.purchase_goal),
+    })).post(route("admin.setting.store.update"), { preserveScroll: true });
 };
 </script>
 
@@ -145,6 +172,7 @@ const saveSetting = () => {
                     ? __('Locked: orders already exist and their revenue was recorded against this currency.')
                     : __('The currency all reporting is converted back to.')"
                   name="base_currency"
+                  :disable-null="true"
                 />
                 <XSelect
                   id="currency_rate_source"
@@ -153,6 +181,7 @@ const saveSetting = () => {
                   :select-list="rateSourceList"
                   :error="form.errors.currency_rate_source"
                   name="currency_rate_source"
+                  :disable-null="true"
                 />
               </div>
             </fieldset>
@@ -171,6 +200,7 @@ const saveSetting = () => {
                   :select-list="taxModeList"
                   :error="form.errors.tax_mode"
                   name="tax_mode"
+                  :disable-null="true"
                 />
                 <XInput
                   id="tax_rate_bp"
@@ -252,17 +282,59 @@ const saveSetting = () => {
                   name="show_recent_purchases"
                 />
                 <XSwitch
+                  id="show_top_donor"
+                  v-model="form.show_top_donor"
+                  :label="__('Show this month\'s top supporter')"
+                  :help="__('Whoever has spent the most this calendar month, counted per player rather than per account.')"
+                  name="show_top_donor"
+                />
+                <XSwitch
                   id="hide_buyer_identity"
                   v-model="form.hide_buyer_identity"
                   :label="__('Hide buyer names in public purchase lists')"
+                  :help="__('Replaces every public name with Anonymous, guests\' Minecraft usernames included.')"
                   name="hide_buyer_identity"
                 />
+                <XSwitch
+                  id="show_purchase_goal"
+                  v-model="form.show_purchase_goal"
+                  :label="__('Show a monthly goal bar')"
+                  name="show_purchase_goal"
+                />
+                <div
+                  v-if="form.show_purchase_goal"
+                  class="sm:w-1/2"
+                >
+                  <XInput
+                    id="purchase_goal"
+                    v-model="form.purchase_goal"
+                    :label="__('Monthly Goal')"
+                    :help="__('In :currency. Leave at zero and the bar stays hidden — there would be nothing to measure against.', { currency: settings.base_currency })"
+                    :error="form.errors.purchase_goal_amount"
+                    type="number"
+                    :step="goalStep"
+                    name="purchase_goal"
+                    min="0"
+                  />
+                </div>
                 <XSwitch
                   id="notify_staff_on_purchase"
                   v-model="form.notify_staff_on_purchase"
                   :label="__('Notify staff on every purchase')"
                   name="notify_staff_on_purchase"
                 />
+                <div>
+                  <XInput
+                    id="discord_purchase_webhook_url"
+                    v-model="form.discord_purchase_webhook_url"
+                    :label="__('Discord Purchase Announcements')"
+                    :help="__('An incoming webhook URL from the Discord channel you want sales posted in. Leave empty to announce nothing. Buyer names follow the setting above.')"
+                    :error="form.errors.discord_purchase_webhook_url"
+                    type="text"
+                    name="discord_purchase_webhook_url"
+                    placeholder="https://discord.com/api/webhooks/..."
+                  />
+                </div>
                 <XSwitch
                   id="auto_ban_on_chargeback"
                   v-model="form.auto_ban_on_chargeback"

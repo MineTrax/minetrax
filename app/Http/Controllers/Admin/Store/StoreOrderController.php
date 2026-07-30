@@ -124,6 +124,10 @@ class StoreOrderController extends Controller
             });
         });
 
+        // Decided by the enum rather than by the template listing statuses of its own, so the button
+        // and the invoice route agree about what has an invoice at all.
+        $order->can_download_invoice = $order->status->isInvoiceable();
+
         return Inertia::render('Admin/StoreOrder/ShowStoreOrder', [
             'order' => $order,
             'money' => [

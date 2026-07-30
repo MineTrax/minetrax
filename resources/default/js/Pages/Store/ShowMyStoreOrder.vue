@@ -34,9 +34,22 @@ defineProps({
             {{ order.created_at }} · {{ __("For") }} {{ order.player_username }}
           </p>
         </div>
-        <div class="flex gap-2">
-          <CommonStatusBadge :status="order.status.value" />
-          <CommonStatusBadge :status="order.delivery_status.value" />
+        <div class="flex flex-col items-end gap-2">
+          <div class="flex gap-2">
+            <CommonStatusBadge :status="order.status.value" />
+            <CommonStatusBadge :status="order.delivery_status.value" />
+          </div>
+          <!-- A plain anchor, not <Link>: the response is a PDF download, and Inertia would try to
+               parse it as a page visit. -->
+          <Button
+            v-if="order.can_download_invoice"
+            variant="outline"
+            size="sm"
+            as="a"
+            :href="route('store.order.invoice', order.uuid)"
+          >
+            {{ __("Download Invoice") }}
+          </Button>
         </div>
       </div>
 

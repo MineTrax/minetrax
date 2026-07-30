@@ -28,7 +28,9 @@ class StoreSettingController extends Controller
     {
         return Inertia::render('Admin/Setting/StoreSetting', [
             'settings' => $this->present($settings),
-            'currencies' => StoreCurrency::orderBy('code')->get(['code', 'name', 'is_base', 'is_enabled']),
+            // exponent comes along so the goal amount can be typed as a decimal and sent as minor
+            // units: JPY has no minor unit, KWD has three.
+            'currencies' => StoreCurrency::orderBy('code')->get(['code', 'name', 'exponent', 'is_base', 'is_enabled']),
             'hasOrders' => StoreOrder::exists(),
         ]);
     }
@@ -52,8 +54,16 @@ class StoreSettingController extends Controller
             'terms_text' => ['nullable', 'string', 'max:5000'],
 
             'show_recent_purchases' => ['required', 'boolean'],
+            'show_purchase_goal' => ['required', 'boolean'],
+            // Minor units of the base currency, built client-side from that currency's exponent.
+            // Zero means no goal, which is why min is 0 rather than 1.
+            'purchase_goal_amount' => ['required', 'integer', 'min:0'],
+            'show_top_donor' => ['required', 'boolean'],
             'hide_buyer_identity' => ['required', 'boolean'],
             'notify_staff_on_purchase' => ['required', 'boolean'],
+            // Restricted to Discord's own host: the URL is posted to server-side, so anything else
+            // here would make this form an outbound request to wherever an admin was told to paste.
+            'discord_purchase_webhook_url' => ['nullable', 'url', 'max:255', 'starts_with:https://discord.com/api/webhooks/,https://discordapp.com/api/webhooks/'],
             'auto_ban_on_chargeback' => ['required', 'boolean'],
         ]);
 

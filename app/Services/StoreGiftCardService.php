@@ -3,9 +3,12 @@
 namespace App\Services;
 
 use App\Enums\StoreGiftCardTransactionType;
+use App\Models\StoreCurrency;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StoreOrderItem;
+use App\Models\User;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -68,6 +71,96 @@ class StoreGiftCardService
             $item->update(['store_gift_card_id' => $card->id]);
 
             return $card;
+        });
+    }
+
+    /**
+     * Issue a card nobody bought — compensation, a giveaway prize, a goodwill gesture.
+     *
+     * The ledger row carries the causer, which is the whole reason this does not simply insert a
+     * row: a card that appeared with no buyer behind it needs to say who conjured it.
+     */
+    public function issueManually(
+        StoreCurrency|string $currency,
+        int $amountMinor,
+        ?User $issuedTo = null,
+        ?CarbonInterface $expiresAt = null,
+        ?string $note = null,
+        ?User $creator = null,
+    ): StoreGiftCard {
+        $code = $currency instanceof StoreCurrency ? $currency->code : $currency;
+
+        return DB::transaction(function () use ($code, $amountMinor, $issuedTo, $expiresAt, $note, $creator) {
+            $card = StoreGiftCard::create([
+                'code' => $this->generateCode(),
+                'currency_code' => $code,
+                'original_balance' => $amountMinor,
+                'balance' => $amountMinor,
+                'expires_at' => $expiresAt,
+                'is_enabled' => true,
+                'issued_to_user_id' => $issuedTo?->id,
+                'created_by' => $creator?->id,
+            ]);
+
+            $card->transactions()->create([
+                'type' => StoreGiftCardTransactionType::ISSUE,
+                'amount' => $amountMinor,
+                'balance_after' => $amountMinor,
+                'note' => $note ?: __('Issued by staff'),
+                'created_by' => $creator?->id,
+            ]);
+
+            return $card;
+        });
+    }
+
+    /**
+     * Move a card's balance by hand, up or down.
+     *
+     * The only sanctioned way to change a balance: the ledger is what the card's history is read
+     * from, so an edit that skipped it would leave the rows disagreeing with the total. Locked
+     * because a redemption can be settling against the same card at the same moment.
+     *
+     * @return bool false when the delta would take the balance below zero
+     */
+    public function adjustBalance(StoreGiftCard $card, int $deltaMinor, ?string $note = null, ?User $creator = null): bool
+    {
+        if ($deltaMinor === 0) {
+            return false;
+        }
+
+        return (bool) DB::transaction(function () use ($card, $deltaMinor, $note, $creator) {
+            /** @var StoreGiftCard|null $locked */
+            $locked = StoreGiftCard::lockForUpdate()->find($card->id);
+
+            if (! $locked) {
+                return false;
+            }
+
+            $balanceAfter = (int) $locked->balance + $deltaMinor;
+
+            if ($balanceAfter < 0) {
+                // Refused rather than clamped: an admin taking off more than is left has the wrong
+                // figure in mind, and silently zeroing it hides that.
+                return false;
+            }
+
+            $locked->update([
+                'balance' => $balanceAfter,
+                // A top-up raises what the card was ever worth; taking credit off does not lower it,
+                // because original_balance is what was issued, not what remains.
+                'original_balance' => max((int) $locked->original_balance, $balanceAfter),
+            ]);
+
+            $locked->transactions()->create([
+                'type' => StoreGiftCardTransactionType::ADJUSTMENT,
+                'amount' => $deltaMinor,
+                'balance_after' => $balanceAfter,
+                'note' => $note,
+                'created_by' => $creator?->id,
+            ]);
+
+            return true;
         });
     }
 

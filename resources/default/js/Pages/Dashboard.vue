@@ -15,10 +15,14 @@
             generalSettings.enable_voteforserverbox ||
             generalSettings.enable_didyouknowbox ||
             generalSettings.enable_discordbox ||
-            generalSettings.enable_donation_box
+            generalSettings.enable_donation_box ||
+            storeWidgets.goal ||
+            storeWidgets.topDonor
         "
         class="w-full order-2 md:order-none md:w-1/4 space-y-4 shrink-0"
       >
+        <StoreGoalBox :goal="storeWidgets.goal" />
+        <StoreTopDonorBox :donor="storeWidgets.topDonor" />
         <OnlinePlayersBox v-if="generalSettings.enable_mcserver_onlineplayersbox" />
         <VotingSitesBox
           :votingsites="generalSettings.voteforserverbox_content"
@@ -63,10 +67,12 @@
             newslist.length > 0 ||
             generalSettings.enable_onlineuserbox ||
             generalSettings.enable_newuserbox ||
-            generalSettings.enable_socialbox
+            generalSettings.enable_socialbox ||
+            storeWidgets.recentPurchases?.length
         "
         class="w-full order-3 md:order-none md:w-1/4 space-y-4 shrink-0"
       >
+        <StoreRecentPurchasesBox :purchases="storeWidgets.recentPurchases" />
         <ServerStatusBox />
         <ShoutBox />
         <NewsBox :newslist="newslist" />
@@ -122,11 +128,17 @@ import OnlineUsersBox from "@/Shared/OnlineUsersBox.vue";
 import TopPlayersListBox from "@/Shared/TopPlayersListBox.vue";
 import VerifyYourEmailBox from "@/Shared/VerifyYourEmailBox.vue";
 import HeroSection from "@/Shared/HeroSection.vue";
+import StoreGoalBox from "@/Shared/StoreGoalBox.vue";
+import StoreRecentPurchasesBox from "@/Shared/StoreRecentPurchasesBox.vue";
+import StoreTopDonorBox from "@/Shared/StoreTopDonorBox.vue";
 import {useAuthorizable} from "@/Composables/useAuthorizable";
 
 export default {
     components: {
         HeroSection,
+        StoreGoalBox,
+        StoreRecentPurchasesBox,
+        StoreTopDonorBox,
         VerifyYourEmailBox,
         TopPlayersListBox,
         OnlineUsersBox,
@@ -160,6 +172,11 @@ export default {
         chatServerList: Array,
         top10Players: Array,
         themeSettings: Object,
+        // Each key is null when its widget is off, or when the store module is disabled entirely.
+        storeWidgets: {
+            type: Object,
+            default: () => ({ goal: null, recentPurchases: null, topDonor: null }),
+        },
     },
     setup() {
         const {canWild, isStaff} = useAuthorizable();

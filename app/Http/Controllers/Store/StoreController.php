@@ -8,6 +8,7 @@ use App\Models\StorePackage;
 use App\Services\StoreCurrencyService;
 use App\Services\StorePricingService;
 use App\Services\StoreVariableService;
+use App\Services\StoreWidgetService;
 use App\Settings\GeneralSettings;
 use App\Settings\StoreSettings;
 use App\Utils\Helpers\Helper;
@@ -25,6 +26,7 @@ class StoreController extends Controller
         private StorePricingService $pricing,
         private StoreSettings $settings,
         private GeneralSettings $general,
+        private StoreWidgetService $widgets,
     ) {}
 
     /**
@@ -65,6 +67,9 @@ class StoreController extends Controller
             'categories' => $this->categoryTree(),
             'packages' => $this->presentPackages($this->visiblePackages()->get(), $currency),
             'currency' => $this->currencyPayload($currency),
+            // The storefront gets the same three boxes as the homepage, and needs them most when it
+            // *is* the homepage — the goal bar is what turns a catalogue into a campaign.
+            'storeWidgets' => $this->widgets->payload(),
         ]);
     }
 
@@ -93,6 +98,9 @@ class StoreController extends Controller
             ],
             'packages' => $this->presentPackages($packages, $currency, $comparisonFields),
             'currency' => $this->currencyPayload($currency),
+            // The same page component as the index, so it needs the same sidebar boxes or they
+            // would vanish the moment a visitor clicked a category.
+            'storeWidgets' => $this->widgets->payload(),
         ]);
     }
 

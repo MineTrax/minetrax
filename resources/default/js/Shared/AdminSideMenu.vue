@@ -262,6 +262,22 @@ const navItems = [
                 visible: canWild("store_orders"),
             },
             {
+                label: "Gift Cards",
+                href: route("admin.store.gift-card.index"),
+                active: route().current("admin.store.gift-card.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_gift_cards"),
+            },
+            {
+                label: "Store Bans",
+                href: route("admin.store.ban.index"),
+                active: route().current("admin.store.ban.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_bans"),
+            },
+            {
                 label: "Currencies",
                 href: route("admin.store.currency.index"),
                 active: route().current("admin.store.currency.*"),

@@ -8,6 +8,9 @@ import StorePackageCard from "@/Components/Store/StorePackageCard.vue";
 import StorePackageListing from "@/Components/Store/StorePackageListing.vue";
 import StorePackageComparison from "@/Components/Store/StorePackageComparison.vue";
 import StorePackageStacked from "@/Components/Store/StorePackageStacked.vue";
+import StoreGoalBox from "@/Shared/StoreGoalBox.vue";
+import StoreRecentPurchasesBox from "@/Shared/StoreRecentPurchasesBox.vue";
+import StoreTopDonorBox from "@/Shared/StoreTopDonorBox.vue";
 import { computed } from "vue";
 
 const { __ } = useTranslations();
@@ -34,6 +37,11 @@ const props = defineProps({
     currency: {
         type: Object,
         required: true,
+    },
+    // Each key is null when its widget is switched off in the store settings.
+    storeWidgets: {
+        type: Object,
+        default: () => ({ goal: null, recentPurchases: null, topDonor: null }),
     },
 });
 
@@ -117,6 +125,14 @@ const displayType = computed(() => {
                 </span>
               </Link>
             </div>
+          </div>
+
+          <!-- Community boxes. Under the categories rather than above them: the catalogue is what a
+               visitor came for, and the goal bar reads as encouragement on the way past. -->
+          <div class="mt-4 space-y-4">
+            <StoreGoalBox :goal="storeWidgets.goal" />
+            <StoreTopDonorBox :donor="storeWidgets.topDonor" />
+            <StoreRecentPurchasesBox :purchases="storeWidgets.recentPurchases" />
           </div>
         </div>
 

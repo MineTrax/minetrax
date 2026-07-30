@@ -76,6 +76,22 @@ class StoreOrderPolicy
     }
 
     /**
+     * Determine whether the user can download the model's invoice.
+     *
+     * A guest order has no account to authorise against, so knowledge of the order's uuid is the
+     * credential — the same rule the result page uses, and the route binds on the uuid. It is a v4
+     * uuid and never appears in a listing.
+     */
+    public function downloadInvoice(?User $user, StoreOrder $order): bool
+    {
+        if (! $order->user_id) {
+            return true;
+        }
+
+        return $this->view($user, $order);
+    }
+
+    /**
      * Determine whether the user can see store revenue.
      *
      * Its own permission rather than `read store_orders`: seeing an order because support needs to

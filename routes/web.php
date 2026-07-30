@@ -21,9 +21,11 @@ use App\Http\Controllers\Admin\Settings\PluginSettingController;
 use App\Http\Controllers\Admin\Settings\SeoSettingController;
 use App\Http\Controllers\Admin\Settings\StoreSettingController;
 use App\Http\Controllers\Admin\Settings\ThemeSettingController;
+use App\Http\Controllers\Admin\Store\StoreBanController;
 use App\Http\Controllers\Admin\Store\StoreCategoryController;
 use App\Http\Controllers\Admin\Store\StoreCouponController;
 use App\Http\Controllers\Admin\Store\StoreCurrencyController as AdminStoreCurrencyController;
+use App\Http\Controllers\Admin\Store\StoreGiftCardController;
 use App\Http\Controllers\Admin\Store\StoreGrantController;
 use App\Http\Controllers\Admin\Store\StoreOrderController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
@@ -162,6 +164,9 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::get('store/order/{order:uuid}', [StoreCheckoutController::class, 'result'])->name('store.order.result');
     Route::get('store/order/{order:uuid}/status', [StoreCheckoutController::class, 'status'])->name('store.order.status');
     Route::post('store/order/{order:uuid}/cancel', [StoreCheckoutController::class, 'cancel'])->name('store.order.cancel');
+    // Public rather than auth-only, for the same reason the result page is: a guest has no account
+    // to authorise against, so the order's uuid is the credential. The policy is the gate.
+    Route::get('store/order/{order:uuid}/invoice', [App\Http\Controllers\Store\StoreOrderController::class, 'invoice'])->name('store.order.invoice');
 });
 
 /**
@@ -395,6 +400,7 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
         Route::post('package', [StorePackageController::class, 'store'])->name('package.store');
         Route::get('package/{storePackage}/edit', [StorePackageController::class, 'edit'])->name('package.edit');
         Route::put('package/{storePackage}', [StorePackageController::class, 'update'])->name('package.update');
+        Route::post('package/{storePackage}/duplicate', [StorePackageController::class, 'duplicate'])->name('package.duplicate');
         Route::delete('package/{storePackage}', [StorePackageController::class, 'destroy'])->name('package.delete');
 
         Route::get('variable', [StoreVariableController::class, 'index'])->name('variable.index');
@@ -417,6 +423,23 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
         Route::get('sale/{storeSale}/edit', [StoreSaleController::class, 'edit'])->name('sale.edit');
         Route::put('sale/{storeSale}', [StoreSaleController::class, 'update'])->name('sale.update');
         Route::delete('sale/{storeSale}', [StoreSaleController::class, 'destroy'])->name('sale.delete');
+
+        // `create` is declared before `{storeGiftCard}` so the literal segment wins the match.
+        Route::get('gift-card', [StoreGiftCardController::class, 'index'])->name('gift-card.index');
+        Route::get('gift-card/create', [StoreGiftCardController::class, 'create'])->name('gift-card.create');
+        Route::post('gift-card', [StoreGiftCardController::class, 'store'])->name('gift-card.store');
+        Route::get('gift-card/{storeGiftCard}', [StoreGiftCardController::class, 'show'])->name('gift-card.show');
+        Route::get('gift-card/{storeGiftCard}/edit', [StoreGiftCardController::class, 'edit'])->name('gift-card.edit');
+        Route::put('gift-card/{storeGiftCard}', [StoreGiftCardController::class, 'update'])->name('gift-card.update');
+        Route::post('gift-card/{storeGiftCard}/adjust', [StoreGiftCardController::class, 'adjust'])->name('gift-card.adjust');
+        Route::delete('gift-card/{storeGiftCard}', [StoreGiftCardController::class, 'destroy'])->name('gift-card.delete');
+
+        Route::get('ban', [StoreBanController::class, 'index'])->name('ban.index');
+        Route::get('ban/create', [StoreBanController::class, 'create'])->name('ban.create');
+        Route::post('ban', [StoreBanController::class, 'store'])->name('ban.store');
+        Route::get('ban/{storeBan}/edit', [StoreBanController::class, 'edit'])->name('ban.edit');
+        Route::put('ban/{storeBan}', [StoreBanController::class, 'update'])->name('ban.update');
+        Route::delete('ban/{storeBan}', [StoreBanController::class, 'destroy'])->name('ban.delete');
 
         Route::get('statistics', [StoreStatisticsController::class, 'index'])->name('statistics.index');
 

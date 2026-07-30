@@ -33,6 +33,9 @@ function settingAdminPayload(array $overrides = []): array
         'mojang_username_verification' => true,
         'terms_text' => null,
         'show_recent_purchases' => true,
+        'show_purchase_goal' => false,
+        'purchase_goal_amount' => 0,
+        'show_top_donor' => false,
         'hide_buyer_identity' => false,
         'notify_staff_on_purchase' => true,
         'auto_ban_on_chargeback' => false,
@@ -145,4 +148,31 @@ test('the base currency can be changed before the first order', function () {
         ->assertSessionHasNoErrors();
 
     expect(app(StoreSettings::class)->refresh()->base_currency)->toEqual('EUR');
+});
+
+test('the monthly goal is saved as minor units', function () {
+    // $250.00 is 25000, and the form is what converts it — the setting itself never sees a decimal.
+    $this->actingAs($this->superadmin)
+        ->post(route('admin.setting.store.update'), settingAdminPayload([
+            'show_purchase_goal' => true,
+            'purchase_goal_amount' => 25000,
+        ]))
+        ->assertSessionHasNoErrors();
+
+    $settings = app(StoreSettings::class)->refresh();
+    expect($settings->show_purchase_goal)->toBeTrue();
+    expect($settings->purchase_goal_amount)->toBe(25000);
+});
+
+test('a negative goal is refused', function () {
+    $this->actingAs($this->superadmin)
+        ->post(route('admin.setting.store.update'), settingAdminPayload(['purchase_goal_amount' => -1]))
+        ->assertSessionHasErrors('purchase_goal_amount');
+});
+
+test('the settings screen carries each currencys exponent', function () {
+    // The goal field types a decimal and sends minor units, which needs the base exponent.
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.setting.store.show'))
+        ->assertInertia(fn ($page) => $page->has('currencies.0.exponent'));
 });

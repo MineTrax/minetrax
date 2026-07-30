@@ -200,6 +200,16 @@ onUnmounted(stopPolling);
             {{ __("Back to Store") }}
           </Link>
         </Button>
+        <!-- A plain anchor, not <Link>: the response is a PDF download, and Inertia would try to
+             parse it as a page visit. For a guest this page is the only route to their invoice. -->
+        <Button
+          v-if="order.can_download_invoice"
+          variant="outline"
+          as="a"
+          :href="route('store.order.invoice', order.uuid)"
+        >
+          {{ __("Download Invoice") }}
+        </Button>
         <Button
           v-if="isPending && !isCancelled"
           variant="outline"

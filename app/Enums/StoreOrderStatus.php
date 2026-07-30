@@ -71,4 +71,22 @@ enum StoreOrderStatus: string implements HasKeyValueSerialization
     {
         return in_array($this, [self::REFUNDED, self::CHARGEBACK], true);
     }
+
+    /**
+     * Whether money ever changed hands, and so whether there is anything to invoice.
+     *
+     * Broader than isPaidState(): a fully refunded or charged-back order is no longer an entitlement
+     * but it still needs its paper trail. A pending order is a basket and a cancelled one is nothing
+     * at all, so neither has an invoice to issue.
+     */
+    public function isInvoiceable(): bool
+    {
+        return in_array($this, [
+            self::PAID,
+            self::COMPLETED,
+            self::PARTIALLY_REFUNDED,
+            self::REFUNDED,
+            self::CHARGEBACK,
+        ], true);
+    }
 }

@@ -51,9 +51,40 @@ class StoreSettings extends Settings
 
     public bool $show_recent_purchases;
 
+    /**
+     * Show the progress bar towards this month's target on the homepage and the storefront.
+     */
+    public bool $show_purchase_goal;
+
+    /**
+     * The monthly target, in minor units of the base currency. Zero means there is no goal to show,
+     * whatever the toggle says — a bar against nothing would sit permanently at 100%.
+     */
+    public int $purchase_goal_amount;
+
+    /**
+     * Show whoever has spent the most this month. Off by default: some communities would rather not
+     * put a leaderboard on money.
+     */
+    public bool $show_top_donor;
+
+    /**
+     * Replaces buyer names with "Anonymous" everywhere the public can see them — the recent
+     * purchases list and the top spender. Applies to guests' Minecraft usernames too, since that is
+     * an identity as much as an account name is.
+     */
     public bool $hide_buyer_identity;
 
     public bool $notify_staff_on_purchase;
+
+    /**
+     * A Discord incoming-webhook URL to announce each sale in.
+     *
+     * Empty is the off switch — there is no separate toggle, because a webhook with nowhere to post
+     * is not a feature waiting to be enabled. Distinct from the per-user Discord notification
+     * channel: that direct-messages one member, this posts publicly to a server channel.
+     */
+    public ?string $discord_purchase_webhook_url;
 
     /**
      * Raise a store ban automatically when a chargeback lands, on the buyer's account, player uuid,
