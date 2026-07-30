@@ -40,6 +40,16 @@ class PhpVarsToJsTransformer extends Component
         ],
         [
             'type' => 'component',
+            'name' => 'Store Cart',
+            'title' => 'Store Cart',
+            'component' => 'StoreCartIndicator',
+            'key' => 'component-store-cart-01',
+            // Left of the bell, and shown to guests too since they can fill a cart before signing
+            // in. The component renders nothing while the store module is off.
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'component',
             'name' => 'Notification Bell',
             'title' => 'Notification Bell',
             'component' => 'NotificationDropdown',

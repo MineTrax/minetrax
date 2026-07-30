@@ -228,3 +228,44 @@ test('the cart is unavailable when the module is disabled', function () {
 
     $this->get(route('store.cart.show'))->assertStatus(403);
 });
+
+test('the navbar cart count is shared on every page', function () {
+    // The badge reads this rather than fetching, so it has to be present away from the store too.
+    $package = StorePackage::factory()->create(['price' => 999]);
+
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 2]);
+
+    $this->get(route('home'))
+        ->assertInertia(fn ($page) => $page->where('store.cartCount', 2));
+});
+
+test('the cart count sums quantities rather than counting lines', function () {
+    // Five crate keys should read as five, the way every other shop does it.
+    $first = StorePackage::factory()->create(['price' => 100]);
+    $second = StorePackage::factory()->create(['price' => 200]);
+
+    $this->post(route('store.cart.store'), ['package_id' => $first->id, 'quantity' => 5]);
+    $this->post(route('store.cart.store'), ['package_id' => $second->id, 'quantity' => 1]);
+
+    $this->get(route('home'))
+        ->assertInertia(fn ($page) => $page->where('store.cartCount', 6));
+});
+
+test('an empty cart reports zero and mints no cart row', function () {
+    // Every page shares this prop, so it must never create a cart for a visitor who is only
+    // browsing — that would leave a row for every bot that touches the site.
+    $this->get(route('home'))
+        ->assertInertia(fn ($page) => $page->where('store.cartCount', 0));
+
+    $this->assertDatabaseCount('store_carts', 0);
+});
+
+test('the cart count is absent while the module is off', function () {
+    config(['store.enabled' => false]);
+
+    $this->get(route('home'))
+        ->assertInertia(fn ($page) => $page
+            ->where('store.enabled', false)
+            ->missing('store.cartCount')
+        );
+});

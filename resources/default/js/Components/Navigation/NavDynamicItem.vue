@@ -80,6 +80,15 @@
       />
     </NavigationMenuItem>
 
+    <!--    Store Cart Component. Guests have carts too, so this is not gated on being signed in;
+            only on the module being switched on. -->
+    <div
+      v-if="item.type === 'component' && item.component === 'StoreCartIndicator' && $page.props.store?.enabled"
+      class="hidden md:flex items-center mx-2"
+    >
+      <StoreCartIndicator />
+    </div>
+
     <!--    Search Component -->
     <div
       v-if="item.type === 'component' && item.component === 'NavbarSearch'"
@@ -112,6 +121,7 @@ import LightDarkSelector from "@/Components/Navigation/LightDarkSelector.vue";
 import LocaleSelector from "@/Components/Navigation/LocaleSelector.vue";
 import NavDropdown from "@/Components/Navigation/NavDropdown.vue";
 import ProfileDropdown from "@/Components/Navigation/ProfileDropdown.vue";
+import StoreCartIndicator from "@/Components/Navigation/StoreCartIndicator.vue";
 import NavLink from "@/Jetstream/NavLink.vue";
 import NotificationDropdown from "@/Shared/NotificationDropdown.vue";
 import Search from "@/Shared/Search.vue";

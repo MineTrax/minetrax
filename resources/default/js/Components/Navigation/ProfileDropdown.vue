@@ -74,6 +74,14 @@
           {{ __("My Applications") }}
         </jet-dropdown-link>
 
+        <!-- Hidden with the module, since the route is gated by the store policy anyway. -->
+        <jet-dropdown-link
+          v-if="$page.props.store?.enabled"
+          :href="route('store.my-order.index')"
+        >
+          {{ __("My Purchases") }}
+        </jet-dropdown-link>
+
         <jet-dropdown-link :href="route('linked-player.list')">
           {{ __("Linked Players") }}
         </jet-dropdown-link>

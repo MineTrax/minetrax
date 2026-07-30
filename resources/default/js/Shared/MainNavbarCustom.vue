@@ -203,6 +203,23 @@ const logout = () => {
                     </jet-responsive-nav-link>
 
                     <jet-responsive-nav-link
+                      v-if="$page.props.store?.enabled"
+                      :href="route('store.my-order.index')"
+                      :active="route().current('store.my-order.*')"
+                    >
+                      {{ __("My Purchases") }}
+                    </jet-responsive-nav-link>
+
+                    <jet-responsive-nav-link
+                      v-if="$page.props.store?.enabled"
+                      :href="route('store.cart.show')"
+                      :active="route().current('store.cart.*')"
+                    >
+                      {{ __("Cart") }}
+                      <span v-if="$page.props.store?.cartCount">({{ $page.props.store.cartCount }})</span>
+                    </jet-responsive-nav-link>
+
+                    <jet-responsive-nav-link
                       v-if="
                         $page.props?.pluginSettings
                           ?.playerPasswordResetEnabled

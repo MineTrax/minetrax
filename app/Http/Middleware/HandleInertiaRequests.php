@@ -6,6 +6,7 @@ use App\Enums\ServerType;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Server;
+use App\Services\StoreCartService;
 use App\Settings\GeneralSettings;
 use App\Settings\PluginSettings;
 use App\Settings\StoreSettings;
@@ -111,7 +112,7 @@ class HandleInertiaRequests extends Middleware
                     'playerPasswordResetEnabled' => $pluginSettings->enable_player_password_reset,
                 ];
             },
-            'store' => function () {
+            'store' => function () use ($request) {
                 // Resolved inside the closure rather than injected, so a disabled store never
                 // pays for a settings load on every request.
                 if (! config('store.enabled')) {
@@ -127,6 +128,12 @@ class HandleInertiaRequests extends Middleware
                     // Lets the navbar send its Store link to `/` instead of `/store`, which
                     // would only redirect there anyway.
                     'isHomepage' => app(GeneralSettings::class)->homepage_route === 'store',
+                    // Drives the navbar cart badge. Quantities rather than lines, so five crate keys
+                    // read as five. `create: false` matters: looking at any page must never mint a
+                    // cart row for a visitor who has not added anything.
+                    'cartCount' => (int) (app(StoreCartService::class)
+                        ->current($request, create: false)
+                        ?->items()->sum('quantity') ?? 0),
                 ];
             },
         ]);

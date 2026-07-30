@@ -111,6 +111,16 @@ return [
         ],
         [
             'type' => 'component',
+            'name' => 'Store Cart',
+            'title' => 'Store Cart',
+            'component' => 'StoreCartIndicator',
+            'key' => 'component-store-cart',
+            // Guests build carts too, so this is not restricted to signed-in visitors. It hides
+            // itself when the store module is off.
+            'authenticated' => false,
+        ],
+        [
+            'type' => 'component',
             'name' => 'Theme Switcher',
             'title' => 'Theme Switcher',
             'component' => 'LightDarkSelector',
