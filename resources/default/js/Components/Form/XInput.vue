@@ -13,7 +13,7 @@
     >
       {{ label }}
       <span
-        v-if="required"
+        v-if="isRequired"
         class="text-destructive ml-1"
       >*</span>
     </Label>
@@ -28,7 +28,7 @@
       :class="inputClasses"
       :autocomplete="autocomplete"
       :autofocus="autofocus"
-      :required="required"
+      :required="isRequired"
       :disabled="disabled"
       :placeholder="placeholder"
       v-bind="inputAttrs"
@@ -130,6 +130,15 @@ const inputAttrs = computed(() => {
         Object.entries(attrs).filter(([name]) => name !== "class" && name !== "style")
     );
 });
+
+/**
+ * Whether `required` was set, in either spelling.
+ *
+ * A bare attribute — `required` rather than `:required="true"` — arrives as the empty string, which
+ * is falsy, so the asterisk was skipped on every field written that way even though the native input
+ * was already enforcing it.
+ */
+const isRequired = computed(() => props.required === "" || props.required === true || props.required === "true");
 
 const inputRef = ref(null);
 

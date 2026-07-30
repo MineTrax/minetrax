@@ -8,7 +8,7 @@
     >
       {{ label }}
       <span
-        v-if="required"
+        v-if="isRequired"
         class="text-destructive ml-1"
       >*</span>
     </Label>
@@ -19,7 +19,7 @@
       v-model="internalValue"
       :name="name"
       :disabled="disabled"
-      :required="required"
+      :required="isRequired"
       :autofocus="autofocus"
     >
       <SelectTrigger
@@ -142,10 +142,19 @@ const computedList = computed(() => {
     }, {});
 });
 
+/**
+ * Whether `required` was set, in either spelling.
+ *
+ * A bare attribute — `required` rather than `:required="true"` — arrives as the empty string, which
+ * is falsy. Both spellings have to mean the same thing here, or a mandatory field silently loses its
+ * asterisk and goes on offering a null option to clear it with.
+ */
+const isRequired = computed(() => props.required === "" || props.required === true || props.required === "true");
+
 // Whether to include a null/clear item
 const showNullItem = computed(() => {
     // Do not show if explicitly disabled or field is required
-    if (props.disableNull || props.required) return false;
+    if (props.disableNull || isRequired.value) return false;
     return true;
 });
 

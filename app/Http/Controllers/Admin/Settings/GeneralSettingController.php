@@ -78,7 +78,11 @@ class GeneralSettingController extends Controller
         // Optional, and re-checked rather than trusted: an older client may not send the field at
         // all, and the store could have been switched off between the form rendering and this
         // submit. Either way `/` must never end up pointing at a disabled module.
-        $requestedHomepage = $request->input('homepage_route', $settings->homepage_route);
+        //
+        // `?? $settings->…` rather than input()'s own default, which only applies when the key is
+        // *missing*: an explicit null passes straight through it, and would then fail the `=== 'store'`
+        // test and quietly reset the site's front page to the dashboard.
+        $requestedHomepage = $request->input('homepage_route') ?? $settings->homepage_route;
         $settings->homepage_route = $requestedHomepage === 'store' && config('store.enabled')
             ? 'store'
             : 'dashboard';

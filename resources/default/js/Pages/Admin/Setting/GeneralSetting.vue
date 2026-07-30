@@ -188,6 +188,8 @@ function saveSetting() {
                     :error="form.errors.homepage_route"
                     :help="__('What visitors see at the root of your site. The community dashboard stays reachable at /dashboard either way.')"
                     name="homepage_route"
+                    :required="true"
+                    :disable-null="true"
                   />
                 </div>
 

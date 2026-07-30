@@ -180,6 +180,20 @@ test('selecting the store while the module is disabled falls back', function () 
     expect(app(GeneralSettings::class)->refresh()->homepage_route)->toEqual('dashboard');
 });
 
+test('a null homepage keeps whatever was already set', function () {
+    // The select no longer offers a blank option, but the rule is `nullable` for the older-client
+    // case the controller guards. Null must not silently reset the site's front page.
+    $settings = app(GeneralSettings::class);
+    $settings->homepage_route = 'store';
+    $settings->save();
+
+    $this->actingAs(User::whereId(1)->first())
+        ->post(route('admin.setting.general.update'), generalPayload(['homepage_route' => null]))
+        ->assertSessionHasNoErrors();
+
+    expect(app(GeneralSettings::class)->refresh()->homepage_route)->toEqual('store');
+});
+
 test('an unknown homepage value is rejected', function () {
     $this->actingAs(User::whereId(1)->first())
         ->post(route('admin.setting.general.update'), generalPayload(['homepage_route' => 'somewhere-else']))
