@@ -184,6 +184,29 @@ test('a grant whose package was hard deleted is still marked expired', function 
     $this->assertDatabaseCount('command_queues', 0);
 });
 
+test('a grant whose package was retired still runs its expiry commands', function () {
+    // Retiring a package soft-deletes it, and timed grants sold before that keep running. Without
+    // withTrashed() on the relation the package reads as gone, the sweep marks the grant EXPIRED
+    // and sends nothing, and the buyer keeps the perk they stopped paying for.
+    $grant = expiryJobGrant();
+    $order = $grant->orderItem->order;
+    $grant->orderItem->package->delete();
+
+    runSweep();
+
+    expect($grant->fresh()->status)->toEqual(StorePackageGrantStatus::EXPIRED);
+    expect(CommandQueue::where('tag', 'store')->first()?->parsed_command)
+        ->toBe('lp user '.$order->player_username.' parent remove vip');
+});
+
+test('a retired package is still named on its grant', function () {
+    $grant = expiryJobGrant();
+    $name = $grant->orderItem->package->name;
+    $grant->orderItem->package->delete();
+
+    expect($grant->fresh()->package?->name)->toBe($name);
+});
+
 test('deleting an order item takes its grant with it', function () {
     // Documents why the sweep never has to cope with an orphaned grant: the foreign key
     // cascades, so there is no such row to find.

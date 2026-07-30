@@ -176,6 +176,21 @@ test('a chargeback runs the chargeback commands not the refund ones', function (
     expect(queuedCommands())->toBe(['lp user '.$order->player_username.' parent remove vip # chargeback']);
 });
 
+test('refunding a retired package still runs its refund commands and gives the stock back', function () {
+    // A package retired after the sale is soft-deleted, not gone. Without withTrashed() on the
+    // relation the refund set never runs — the buyer is refunded and keeps the rank — and the
+    // sold_count give-back is skipped, so the storefront keeps showing it sold out.
+    $order = revocationJobPaidOrder();
+    $package = $order->items->first()->package;
+    $package->update(['sold_count' => 1]);
+    $package->delete();
+
+    app(StoreOrderService::class)->refund($order, 1000);
+
+    expect(queuedCommands())->toBe(['lp user '.$order->player_username.' parent remove vip # refund']);
+    expect($package->fresh()->sold_count)->toBe(0);
+});
+
 test('the refund commands run end to end without faking the queue', function () {
     // The listener, the job and the dispatcher together — the path a real refund takes.
     $order = revocationJobPaidOrder();

@@ -26,9 +26,17 @@ class StoreOrderItem extends BaseModel
         return $this->belongsTo(StoreOrder::class, 'store_order_id');
     }
 
+    /**
+     * Packages soft-delete, and retiring one must not sever a sold order from it.
+     *
+     * The expiry, refund and chargeback command sets resolve live at trigger time, so without
+     * withTrashed() a retired package would silently stop removing its own perk: the sweep marks the
+     * grant EXPIRED and sends nothing, leaving the buyer with it forever. The sold_count give-back on
+     * a refund is skipped the same way.
+     */
     public function package(): BelongsTo
     {
-        return $this->belongsTo(StorePackage::class, 'store_package_id');
+        return $this->belongsTo(StorePackage::class, 'store_package_id')->withTrashed();
     }
 
     public function grant(): HasOne

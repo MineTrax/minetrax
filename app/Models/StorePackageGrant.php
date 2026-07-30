@@ -22,9 +22,14 @@ class StorePackageGrant extends BaseModel
         return $this->belongsTo(StoreOrderItem::class, 'store_order_item_id');
     }
 
+    /**
+     * Trashed packages included: a grant outlives the package being retired from the catalogue, and
+     * the admin grants screen and the expiry sweep both still need to name it. See
+     * {@see StoreOrderItem::package()}.
+     */
     public function package(): BelongsTo
     {
-        return $this->belongsTo(StorePackage::class, 'store_package_id');
+        return $this->belongsTo(StorePackage::class, 'store_package_id')->withTrashed();
     }
 
     public function scopeActive($query)
