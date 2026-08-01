@@ -6,7 +6,6 @@ use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\User;
 use App\Services\StoreCartService;
-use App\Settings\StoreSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
@@ -22,9 +21,7 @@ beforeEach(function () {
 
     $this->baseCurrency();
 
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['manual', 'stripe'];
-    $settings->save();
+    $this->enableStoreGateways(['manual', 'stripe']);
 
     $this->withCookie(StoreCartService::COOKIE, 'guest-resume-token');
 
@@ -184,9 +181,7 @@ test('only one pending payment survives a switch', function () {
 test('a gateway that is switched off is refused', function () {
     $order = pendingOrderPaidBy('stripe');
 
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['stripe'];
-    $settings->save();
+    $this->enableStoreGateways(['stripe']);
 
     $this->post(route('store.order.pay', $order->uuid), ['gateway' => 'manual'])
         ->assertSessionHasErrors(['gateway']);

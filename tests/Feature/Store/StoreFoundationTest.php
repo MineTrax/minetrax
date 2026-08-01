@@ -2,8 +2,10 @@
 
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\StorePaymentGateway;
 use App\Models\User;
 use App\Settings\StoreSettings;
+use Database\Seeders\StorePaymentGatewaySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -35,8 +37,33 @@ test('store settings resolve with defaults', function () {
     expect($settings->tax_rate_bp)->toEqual(0);
     expect($settings->enable_guest_checkout)->toBeTrue();
     expect($settings->mojang_username_verification)->toBeTrue();
-    expect($settings->enabled_gateways)->toEqual(['manual']);
-    expect($settings->gateway_credentials)->toEqual([]);
+});
+
+test('every configured gateway is seeded a row', function () {
+    // Driven by config, so adding a driver needs no edit to the seeder.
+    foreach (array_keys(config('store.gateways')) as $key) {
+        expect(StorePaymentGateway::where('key', $key)->exists())->toBeTrue("Missing a row for {$key}.");
+    }
+});
+
+test('only the manual gateway is on out of the box', function () {
+    // Everything else needs credentials before it can charge anything, so a fresh install has one
+    // working checkout rather than three broken ones.
+    expect(StorePaymentGateway::enabled()->pluck('key')->all())->toEqual(['manual']);
+});
+
+test('seeding again leaves a configured gateway exactly as it was', function () {
+    // The point of firstOrCreate: adding a fourth gateway later must not switch the other three
+    // off or forget their keys.
+    $stripe = StorePaymentGateway::firstWhere('key', 'stripe');
+    $stripe->update(['is_enabled' => true, 'credentials' => ['secret_key' => 'sk_test_keepme']]);
+
+    $this->seed(StorePaymentGatewaySeeder::class);
+
+    $fresh = StorePaymentGateway::firstWhere('key', 'stripe');
+    expect($fresh->is_enabled)->toBeTrue();
+    expect($fresh->credential('secret_key'))->toEqual('sk_test_keepme');
+    expect(StorePaymentGateway::where('key', 'stripe')->count())->toBe(1);
 });
 
 test('store settings persist changes', function () {
@@ -54,14 +81,22 @@ test('store settings persist changes', function () {
 });
 
 test('gateway credentials are stored encrypted', function () {
-    $settings = app(StoreSettings::class);
-    $settings->gateway_credentials = ['stripe' => ['secret_key' => 'sk_test_supersecret']];
-    $settings->save();
+    $stripe = StorePaymentGateway::firstWhere('key', 'stripe');
+    $stripe->update(['credentials' => ['secret_key' => 'sk_test_supersecret']]);
 
-    expect(app(StoreSettings::class)->gateway_credentials['stripe']['secret_key'])->toEqual('sk_test_supersecret');
+    expect(StorePaymentGateway::firstWhere('key', 'stripe')->credential('secret_key'))
+        ->toEqual('sk_test_supersecret');
 
-    $raw = DB::table('settings')->where('group', 'store')->where('name', 'gateway_credentials')->value('payload');
-    $this->assertStringNotContainsString('sk_test_supersecret', $raw, 'Gateway credentials must not be readable in the settings table.');
+    $raw = DB::table('store_payment_gateways')->where('key', 'stripe')->value('credentials');
+    $this->assertStringNotContainsString('sk_test_supersecret', $raw, 'Gateway credentials must not be readable in the database.');
+});
+
+test('credentials never ride along in a serialised gateway', function () {
+    // The model is hidden by default so a stray toArray() cannot leak keys into a response.
+    $stripe = StorePaymentGateway::firstWhere('key', 'stripe');
+    $stripe->update(['credentials' => ['secret_key' => 'sk_test_supersecret']]);
+
+    expect($stripe->fresh()->toArray())->not->toHaveKey('credentials');
 });
 
 test('store permissions are seeded', function () {

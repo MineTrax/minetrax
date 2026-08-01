@@ -3,11 +3,13 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import AppHead from "@/Components/AppHead.vue";
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 import { Button } from "@/Components/ui/button";
 import Pagination from "@/Components/Pagination.vue";
 
 const { __ } = useTranslations();
+const { formatToDayDateString } = useHelpers();
 
 defineProps({
     orders: { type: Object, required: true },
@@ -68,7 +70,7 @@ defineProps({
                 {{ order.items.map((item) => `${item.quantity} x ${item.package_name}`).join(", ") }}
               </p>
               <p class="text-xs text-muted-foreground mt-1">
-                {{ __("For") }} {{ order.player_username }} · {{ order.created_at }}
+                {{ __("For") }} {{ order.player_username }} · {{ formatToDayDateString(order.created_at) }}
               </p>
             </div>
             <span class="font-medium whitespace-nowrap">{{ order.total_formatted }}</span>

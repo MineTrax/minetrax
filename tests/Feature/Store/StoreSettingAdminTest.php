@@ -2,6 +2,7 @@
 
 use App\Models\StoreCurrency;
 use App\Models\StoreOrder;
+use App\Models\StorePaymentGateway;
 use App\Models\User;
 use App\Settings\StoreSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -65,10 +66,9 @@ test('a superadmin sees the page', function () {
 });
 
 test('the settings page carries no gateway data at all', function () {
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['manual', 'stripe'];
-    $settings->gateway_credentials = ['stripe' => ['secret_key' => 'sk_test_supersecret']];
-    $settings->save();
+    $this->enableStoreGateways(['manual', 'stripe'], [
+        'stripe' => ['secret_key' => 'sk_test_supersecret'],
+    ]);
 
     $response = $this->actingAs($this->superadmin)->get(route('admin.setting.store.show'));
 
@@ -83,20 +83,22 @@ test('the settings page carries no gateway data at all', function () {
 });
 
 test('saving the settings leaves the gateway configuration untouched', function () {
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['manual', 'stripe'];
-    $settings->gateway_credentials = ['stripe' => ['secret_key' => 'sk_test_keepme']];
-    $settings->save();
+    // They are separate rows now, so this is structural rather than a matter of remembering to
+    // strip keys — but it is the property that matters, so it stays asserted.
+    $this->enableStoreGateways(['manual', 'stripe'], [
+        'stripe' => ['secret_key' => 'sk_test_keepme'],
+    ]);
 
     $this->actingAs($this->superadmin)
         ->post(route('admin.setting.store.update'), settingAdminPayload(['store_name' => 'Renamed']))
         ->assertSessionHasNoErrors();
 
-    $fresh = app(StoreSettings::class)->refresh();
+    expect(app(StoreSettings::class)->refresh()->store_name)->toEqual('Renamed');
 
-    expect($fresh->store_name)->toEqual('Renamed');
-    expect($fresh->enabled_gateways)->toEqual(['manual', 'stripe']);
-    expect($fresh->gateway_credentials['stripe']['secret_key'])->toEqual('sk_test_keepme');
+    expect(StorePaymentGateway::enabled()->pluck('key')->sort()->values()->all())
+        ->toEqual(['manual', 'stripe']);
+    expect(StorePaymentGateway::firstWhere('key', 'stripe')->credential('secret_key'))
+        ->toEqual('sk_test_keepme');
 });
 
 test('the settings are saved', function () {

@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\StoreCurrency;
+use App\Models\StorePaymentGateway as GatewayRecord;
 use App\Models\User;
-use App\Settings\StoreSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -29,12 +29,19 @@ function paymentGatewayAdminPayload(array $overrides = []): array
 
 function stripeConfigured(): void
 {
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['manual', 'stripe'];
-    $settings->gateway_credentials = [
+    test()->enableStoreGateways(['manual', 'stripe'], [
         'stripe' => ['secret_key' => 'sk_test_original', 'webhook_secret' => 'whsec_original'],
-    ];
-    $settings->save();
+    ]);
+}
+
+/**
+ * One gateway's stored credentials.
+ *
+ * @return array<string, mixed>
+ */
+function storedCredentials(string $key): array
+{
+    return GatewayRecord::firstWhere('key', $key)?->credentials ?? [];
 }
 
 /**
@@ -104,10 +111,10 @@ test('a secret submitted unchanged as the mask is kept', function () {
         ],
     ]))->assertRedirect();
 
-    $stored = app(StoreSettings::class)->refresh()->gateway_credentials;
+    $stored = storedCredentials('stripe');
 
-    expect($stored['stripe']['secret_key'])->toEqual('sk_test_original', 'An untouched secret must survive the round trip.');
-    expect($stored['stripe']['webhook_secret'])->toEqual('whsec_rotated', 'A changed secret must be written.');
+    expect($stored['secret_key'])->toEqual('sk_test_original', 'An untouched secret must survive the round trip.');
+    expect($stored['webhook_secret'])->toEqual('whsec_rotated', 'A changed secret must be written.');
 });
 
 test('only fields a driver declares are stored', function () {
@@ -118,10 +125,10 @@ test('only fields a driver declares are stored', function () {
         ],
     ]))->assertRedirect();
 
-    $stored = app(StoreSettings::class)->refresh()->gateway_credentials;
+    $stored = storedCredentials('stripe');
 
-    $this->assertArrayNotHasKey('evil', $stored['stripe']);
-    expect($stored['stripe']['secret_key'])->toEqual('sk_test_1');
+    $this->assertArrayNotHasKey('evil', $stored);
+    expect($stored['secret_key'])->toEqual('sk_test_1');
 });
 
 test('a credential for an unregistered gateway is discarded', function () {
@@ -129,7 +136,8 @@ test('a credential for an unregistered gateway is discarded', function () {
         'gateway_credentials' => ['notagateway' => ['token' => 'x']],
     ]))->assertRedirect();
 
-    $this->assertArrayNotHasKey('notagateway', app(StoreSettings::class)->refresh()->gateway_credentials);
+    // No row is created for a key no driver claims, so nothing was stored at all.
+    expect(GatewayRecord::where('key', 'notagateway')->exists())->toBeFalse();
 });
 
 test('enabling stripe with both credentials makes the driver ready', function () {
@@ -173,10 +181,8 @@ test('switching a gateway off leaves its credentials in place', function () {
     $this->actingAs($this->superadmin)
         ->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload(['enabled_gateways' => ['manual']]));
 
-    $settings = app(StoreSettings::class)->refresh();
-
-    expect($settings->enabled_gateways)->toEqual(['manual']);
-    expect($settings->gateway_credentials['stripe']['secret_key'])->toEqual('sk_test_original');
+    expect(GatewayRecord::enabled()->pluck('key')->all())->toEqual(['manual']);
+    expect(storedCredentials('stripe')['secret_key'])->toEqual('sk_test_original');
 });
 
 test('an unknown gateway key is rejected', function () {

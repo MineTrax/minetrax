@@ -2,6 +2,7 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
@@ -13,6 +14,7 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
+const { formatToDayDateString, formatTimeAgoToNow } = useHelpers();
 
 defineProps({
     bans: Object,
@@ -112,7 +114,7 @@ function forceLabel(ban) {
         return __("Permanent");
     }
 
-    return __("Until :date", { date: new Date(ban.expires_at).toLocaleString() });
+    return __("Until :date", { date: formatToDayDateString(ban.expires_at) });
 }
 </script>
 
@@ -201,7 +203,11 @@ function forceLabel(ban) {
           </DtRowItem>
 
           <DtRowItem>
-            <span class="text-xs text-muted-foreground">{{ new Date(item.created_at).toLocaleString() }}</span>
+            <span
+              v-tippy
+              class="text-xs text-muted-foreground"
+              :title="formatToDayDateString(item.created_at)"
+            >{{ formatTimeAgoToNow(item.created_at) }}</span>
           </DtRowItem>
 
           <td

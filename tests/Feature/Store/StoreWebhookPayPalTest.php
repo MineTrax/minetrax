@@ -10,8 +10,8 @@ use App\Models\StoreCurrency;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\StorePayment;
+use App\Models\StorePaymentGateway as GatewayRecord;
 use App\Services\StoreCurrencyService;
-use App\Settings\StoreSettings;
 use App\Utils\Payments\PayPalPaymentGateway;
 use App\Utils\Payments\StorePaymentGatewayManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,17 +28,14 @@ beforeEach(function () {
 
     Queue::fake([ProcessStoreOrderPurchaseJob::class]);
 
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['manual', 'paypal'];
-    $settings->gateway_credentials = [
+    $this->enableStoreGateways(['manual', 'paypal'], [
         'paypal' => [
             'mode' => 'sandbox',
             'client_id' => 'test-client-id',
             'client_secret' => 'test-client-secret',
             'webhook_id' => 'WH-TEST-ID',
         ],
-    ];
-    $settings->save();
+    ]);
 
     // The webhook limiter goes through Redis, whose state outlives a database rollback.
     $this->withoutMiddleware([ThrottleRequests::class, ThrottleRequestsWithRedis::class]);
@@ -153,9 +150,9 @@ test('the driver is registered and reports itself configured', function () {
 });
 
 test('a missing credential leaves the driver disabled', function () {
-    $settings = app(StoreSettings::class);
-    $settings->gateway_credentials = ['paypal' => ['mode' => 'sandbox', 'client_id' => 'only-this']];
-    $settings->save();
+    // Replaced outright, not merged: the point is that the rest are missing.
+    GatewayRecord::firstWhere('key', 'paypal')
+        ->update(['credentials' => ['mode' => 'sandbox', 'client_id' => 'only-this']]);
 
     expect(app(StorePaymentGatewayManager::class)->driverOrFail('paypal')->isEnabled())->toBeFalse();
 });
@@ -561,9 +558,7 @@ test('the webhook endpoint is closed when the module is disabled', function () {
 });
 
 test('the webhook endpoint is closed when paypal is switched off', function () {
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['manual'];
-    $settings->save();
+    $this->enableStoreGateways(['manual']);
 
     fakePayPal();
     [$order, $payment] = webhookPayPalPendingOrder();

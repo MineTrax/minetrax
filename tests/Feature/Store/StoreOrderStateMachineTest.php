@@ -12,7 +12,6 @@ use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\StorePayment;
 use App\Services\StoreOrderService;
-use App\Settings\StoreSettings;
 use App\Utils\Payments\StorePaymentGatewayManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -261,9 +260,7 @@ test('every registered gateway satisfies the contract', function () {
 });
 
 test('a gateway the admin has not enabled is not offered', function () {
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = [];
-    $settings->save();
+    $this->enableStoreGateways([]);
 
     expect(app(StorePaymentGatewayManager::class)->enabled())->toHaveCount(0);
 });

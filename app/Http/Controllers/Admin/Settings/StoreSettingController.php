@@ -90,11 +90,8 @@ class StoreSettingController extends Controller
      */
     private function present(StoreSettings $settings): array
     {
-        $values = $settings->toArray();
-
-        // Credentials live on their own screen and must never reach this one.
-        unset($values['gateway_credentials'], $values['enabled_gateways']);
-
-        return $values;
+        // Gateways and their credentials are rows of their own, on their own screen. Nothing to
+        // strip here any more.
+        return $settings->toArray();
     }
 }

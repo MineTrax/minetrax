@@ -2,6 +2,7 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
@@ -15,6 +16,7 @@ import Icon from "@/Components/Icon.vue";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
+const { formatToDateString } = useHelpers();
 
 defineProps({
     currencies: Object,
@@ -169,7 +171,7 @@ function makeBaseCurrency(currency) {
                    rate was set by hand, and only this date says so. -->
               <div class="text-xs text-muted-foreground">
                 {{ item.rate_updated_at
-                  ? __("Updated :date", { date: new Date(item.rate_updated_at).toLocaleDateString() })
+                  ? __("Updated :date", { date: formatToDateString(item.rate_updated_at) })
                   : __("Set manually") }}
               </div>
             </template>

@@ -2,6 +2,7 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
@@ -13,6 +14,7 @@ import { EyeIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
+const { formatToDateString } = useHelpers();
 
 const props = defineProps({
     cards: Object,
@@ -114,8 +116,8 @@ function expiryLabel(card) {
     const date = new Date(card.expires_at);
 
     return date > new Date()
-        ? __("Expires :date", { date: date.toLocaleDateString() })
-        : __("Expired :date", { date: date.toLocaleDateString() });
+        ? __("Expires :date", { date: formatToDateString(card.expires_at) })
+        : __("Expired :date", { date: formatToDateString(card.expires_at) });
 }
 </script>
 

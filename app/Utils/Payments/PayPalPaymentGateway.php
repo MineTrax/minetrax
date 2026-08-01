@@ -7,7 +7,6 @@ use App\Models\StoreOrder;
 use App\Models\StorePayment;
 use App\Services\StoreCurrencyService;
 use App\Settings\GeneralSettings;
-use App\Settings\StoreSettings;
 use App\Utils\Payments\Data\StoreGatewayEventData;
 use App\Utils\Payments\Data\StorePaymentSessionData;
 use Illuminate\Http\Client\PendingRequest;
@@ -52,12 +51,9 @@ class PayPalPaymentGateway extends AbstractStorePaymentGateway
     private const NO_DECIMAL_CURRENCIES = ['HUF', 'JPY', 'TWD'];
 
     public function __construct(
-        StoreSettings $settings,
         private GeneralSettings $general,
         private StoreCurrencyService $currencies,
-    ) {
-        parent::__construct($settings);
-    }
+    ) {}
 
     public function gateway(): StorePaymentGateway
     {

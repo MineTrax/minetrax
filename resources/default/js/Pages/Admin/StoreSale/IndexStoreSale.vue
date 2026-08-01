@@ -2,6 +2,7 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
@@ -13,6 +14,7 @@ import Icon from "@/Components/Icon.vue";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
+const { formatToDateString } = useHelpers();
 
 defineProps({
     sales: Object,
@@ -91,8 +93,8 @@ function windowLabel(sale) {
     if (! sale.starts_at && ! sale.ends_at) {
         return __("Always");
     }
-    const from = sale.starts_at ? new Date(sale.starts_at).toLocaleDateString() : __("Now");
-    const to = sale.ends_at ? new Date(sale.ends_at).toLocaleDateString() : __("No end");
+    const from = sale.starts_at ? formatToDateString(sale.starts_at) : __("Now");
+    const to = sale.ends_at ? formatToDateString(sale.ends_at) : __("No end");
 
     return `${from} → ${to}`;
 }

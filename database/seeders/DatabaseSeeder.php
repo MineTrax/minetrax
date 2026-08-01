@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             RankSeeder::class,
             CustomPageSeeder::class,
             StoreCurrencySeeder::class,
+            StorePaymentGatewaySeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
     }

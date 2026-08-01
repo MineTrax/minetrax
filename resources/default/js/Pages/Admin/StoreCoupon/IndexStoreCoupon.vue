@@ -2,6 +2,7 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useAuthorizable } from "@/Composables/useAuthorizable";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
@@ -13,6 +14,7 @@ import Icon from "@/Components/Icon.vue";
 
 const { can } = useAuthorizable();
 const { __ } = useTranslations();
+const { formatToDateString } = useHelpers();
 
 defineProps({
     coupons: Object,
@@ -92,8 +94,8 @@ function windowLabel(coupon) {
     if (! coupon.starts_at && ! coupon.expires_at) {
         return __("Always");
     }
-    const from = coupon.starts_at ? new Date(coupon.starts_at).toLocaleDateString() : __("Now");
-    const to = coupon.expires_at ? new Date(coupon.expires_at).toLocaleDateString() : __("No end");
+    const from = coupon.starts_at ? formatToDateString(coupon.starts_at) : __("Now");
+    const to = coupon.expires_at ? formatToDateString(coupon.expires_at) : __("No end");
 
     return `${from} → ${to}`;
 }

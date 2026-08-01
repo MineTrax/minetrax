@@ -3,10 +3,12 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import AppHead from "@/Components/AppHead.vue";
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 import { Button } from "@/Components/ui/button";
 
 const { __ } = useTranslations();
+const { formatToDayDateString, formatToDateString } = useHelpers();
 
 defineProps({
     order: { type: Object, required: true },
@@ -31,7 +33,7 @@ defineProps({
             {{ order.number }}
           </h1>
           <p class="text-sm text-muted-foreground">
-            {{ order.created_at }} · {{ __("For") }} {{ order.player_username }}
+            {{ formatToDayDateString(order.created_at) }} · {{ __("For") }} {{ order.player_username }}
           </p>
         </div>
         <div class="flex flex-col items-end gap-2">
@@ -75,7 +77,7 @@ defineProps({
                 class="inline-flex items-center gap-1 mt-2 text-xs text-muted-foreground"
               >
                 <CommonStatusBadge :status="item.grant.status.value" />
-                <template v-if="item.grant.expires_at">{{ __("until") }} {{ item.grant.expires_at }}</template>
+                <template v-if="item.grant.expires_at">{{ __("until") }} {{ formatToDateString(item.grant.expires_at) }}</template>
                 <template v-else-if="item.grant.status.value === 'active'">{{ __("permanent") }}</template>
               </span>
               <span

@@ -1,6 +1,7 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 import { Button } from "@/Components/ui/button";
@@ -9,6 +10,7 @@ import { Link, useForm } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 
 const { __ } = useTranslations();
+const { formatToDayDateString } = useHelpers();
 
 const props = defineProps({
     card: Object,
@@ -167,7 +169,7 @@ function typeLabel(transaction) {
               v-else-if="card.expires_at"
               class="text-xs text-muted-foreground mt-1"
             >
-              {{ __("Expires :date", { date: new Date(card.expires_at).toLocaleString() }) }}
+              {{ __("Expires :date", { date: formatToDayDateString(card.expires_at) }) }}
             </p>
           </div>
 
@@ -332,7 +334,7 @@ function typeLabel(transaction) {
                   >—</span>
                 </td>
                 <td class="px-6 py-4 text-xs text-muted-foreground">
-                  {{ new Date(transaction.created_at).toLocaleString() }}
+                  {{ formatToDayDateString(transaction.created_at) }}
                 </td>
               </tr>
               <tr v-if="!card.transactions?.length">

@@ -10,8 +10,8 @@ use App\Models\StoreCurrency;
 use App\Models\StoreGatewayWebhook;
 use App\Models\StoreOrder;
 use App\Models\StorePayment;
+use App\Models\StorePaymentGateway as GatewayRecord;
 use App\Services\StoreOrderService;
-use App\Settings\StoreSettings;
 use App\Utils\Payments\Data\StoreGatewayEventData;
 use App\Utils\Payments\StorePaymentGatewayManager;
 use App\Utils\Payments\StripePaymentGateway;
@@ -32,15 +32,12 @@ beforeEach(function () {
     // Fulfilment has its own test file; here the concern is the transition the webhook causes.
     Queue::fake([ProcessStoreOrderPurchaseJob::class]);
 
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['manual', 'stripe'];
-    $settings->gateway_credentials = [
+    $this->enableStoreGateways(['manual', 'stripe'], [
         'stripe' => [
             'secret_key' => 'sk_test_notused',
             'webhook_secret' => STRIPE_WEBHOOK_SECRET,
         ],
-    ];
-    $settings->save();
+    ]);
 
     // The webhook limiter goes through Redis, whose state outlives a database rollback.
     $this->withoutMiddleware([ThrottleRequests::class, ThrottleRequestsWithRedis::class]);
@@ -441,9 +438,7 @@ test('the endpoint is hidden when the store is disabled', function () {
 });
 
 test('the endpoint is hidden when the gateway is switched off', function () {
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['manual'];
-    $settings->save();
+    $this->enableStoreGateways(['manual']);
 
     [$order, $payment] = webhookStripePendingOrder();
 
@@ -464,9 +459,8 @@ test('the driver is registered and reports itself correctly', function () {
 });
 
 test('the driver is not enabled until both credentials are present', function () {
-    $settings = app(StoreSettings::class);
-    $settings->gateway_credentials = ['stripe' => ['secret_key' => 'sk_test_x']];
-    $settings->save();
+    // Replaced outright, not merged: the point is that the webhook secret is missing.
+    GatewayRecord::firstWhere('key', 'stripe')->update(['credentials' => ['secret_key' => 'sk_test_x']]);
 
     // The manager caches resolved drivers, so a fresh instance is needed after a settings change.
     app()->forgetInstance(StorePaymentGatewayManager::class);

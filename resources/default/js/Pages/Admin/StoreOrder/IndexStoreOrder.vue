@@ -1,6 +1,7 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
@@ -10,6 +11,7 @@ import { Link } from "@inertiajs/vue3";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 
 const { __ } = useTranslations();
+const { formatToDayDateString, formatTimeAgoToNow } = useHelpers();
 
 defineProps({
     orders: Object,
@@ -139,7 +141,11 @@ const headerRow = [
           </DtRowItem>
 
           <DtRowItem>
-            <span class="text-xs text-muted-foreground">{{ item.created_at }}</span>
+            <span
+              v-tippy
+              class="text-xs text-muted-foreground"
+              :title="formatToDayDateString(item.created_at)"
+            >{{ formatTimeAgoToNow(item.created_at) }}</span>
           </DtRowItem>
 
           <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">

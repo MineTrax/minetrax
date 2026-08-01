@@ -91,6 +91,24 @@ export function useHelpers() {
         return formattedDate;
     }
 
+    /**
+     * The same format without the clock, for places where only the day matters — a coupon window,
+     * an expiry date, when a rate was last refreshed. Locale-aware like its sibling, rather than
+     * the browser's toLocaleDateString(), which ignores the site language entirely.
+     */
+    function formatToDateString(dateString) {
+        let formattedDate = null;
+        let myLocale = locale[page.props.locale] || locale["enUS"];
+        try {
+            formattedDate = format(new Date(dateString), "do MMM yyyy", {
+                locale: myLocale,
+            });
+        } catch {
+            console.log("[formatToDateString] Failed!");
+        }
+        return formattedDate;
+    }
+
     function generateRandomString(length) {
         const uppercase = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // Excludes I, O, and L
         const lowercase = "abcdefghijkmnpqrstuvwxyz"; // Excludes l
@@ -115,6 +133,7 @@ export function useHelpers() {
         purifyAndLinkifyText,
         formatTimeAgoToNow,
         formatToDayDateString,
+        formatToDateString,
         generateRandomString,
     };
 }

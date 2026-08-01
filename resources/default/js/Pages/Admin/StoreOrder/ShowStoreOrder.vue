@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 import AlertCard from "@/Components/AlertCard.vue";
@@ -11,6 +12,7 @@ import XSwitch from "@/Components/Form/XSwitch.vue";
 import { Link, useForm, router } from "@inertiajs/vue3";
 
 const { __ } = useTranslations();
+const { formatToDayDateString } = useHelpers();
 
 const props = defineProps({
     order: Object,
@@ -83,7 +85,7 @@ const resend = (includeUnfinished = false) =>
 const deliveryStatus = (delivery) => delivery.command_queue?.status?.value ?? "unknown";
 
 // Timestamps arrive as ISO strings. Rendering them raw put "2026-07-29T18:29:32.000000Z" on the page.
-const formatDate = (value) => (value ? new Date(value).toLocaleString() : "—");
+const formatDate = (value) => (value ? formatToDayDateString(value) : "—");
 </script>
 
 <template>
@@ -528,7 +530,7 @@ const formatDate = (value) => (value ? new Date(value).toLocaleString() : "—")
                   {{ entry.detail }}
                 </div>
                 <div class="text-xs text-muted-foreground">
-                  <span>{{ new Date(entry.at).toLocaleString() }}</span>
+                  <span>{{ formatToDayDateString(entry.at) }}</span>
                   <!-- No causer means nobody did it: a gateway webhook, or a scheduled sweep. -->
                   <span v-if="entry.causer"> · {{ entry.causer.username ?? entry.causer.name }}</span>
                   <span v-else> · {{ __("system") }}</span>

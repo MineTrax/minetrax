@@ -40,15 +40,6 @@ class StoreSettings extends Settings
 
     public ?string $terms_text;
 
-    /** Gateway keys the admin has switched on, e.g. ['manual', 'stripe']. */
-    public array $enabled_gateways;
-
-    /**
-     * Credentials keyed by gateway, e.g. ['stripe' => ['secret_key' => '...']]. Kept as one
-     * encrypted bag so adding a gateway never needs a settings migration.
-     */
-    public array $gateway_credentials;
-
     public bool $show_recent_purchases;
 
     /**
@@ -98,10 +89,12 @@ class StoreSettings extends Settings
         return 'store';
     }
 
+    /**
+     * Nothing here is secret any more: gateway credentials moved to store_payment_gateways, where
+     * the model encrypts them per row.
+     */
     public static function encrypted(): array
     {
-        return [
-            'gateway_credentials',
-        ];
+        return [];
     }
 }

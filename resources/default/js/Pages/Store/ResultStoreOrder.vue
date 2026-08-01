@@ -4,10 +4,12 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import AppHead from "@/Components/AppHead.vue";
 import { Link, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import { Button } from "@/Components/ui/button";
 import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 
 const { __ } = useTranslations();
+const { formatToDayDateString } = useHelpers();
 
 const props = defineProps({
     order: { type: Object, required: true },
@@ -223,7 +225,7 @@ onUnmounted(stopPolling);
           <h2 class="text-sm font-medium">
             {{ __("Order") }} <span class="font-mono">{{ order.uuid.substring(0, 8).toUpperCase() }}</span>
           </h2>
-          <span class="text-xs text-muted-foreground">{{ order.created_at }}</span>
+          <span class="text-xs text-muted-foreground">{{ formatToDayDateString(order.created_at) }}</span>
         </div>
 
         <ul class="divide-y divide-border">

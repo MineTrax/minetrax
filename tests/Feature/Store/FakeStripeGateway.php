@@ -46,12 +46,12 @@ class FakeStripeGateway extends AbstractStorePaymentGateway
     }
 
     /**
-     * No credentials to check, so the admin toggle alone decides. The real driver also requires a
-     * secret key, which a test has no way to supply.
+     * Declares no required credentials, so the inherited check passes on the toggle alone. The
+     * real driver needs a secret key, which a test has no way to supply.
      */
-    public function isEnabled(): bool
+    public function settingsSchema(): array
     {
-        return in_array($this->gateway()->value, $this->settings->enabled_gateways ?? [], true);
+        return [];
     }
 
     public function createPaymentSession(StoreOrder $order, StorePayment $payment): StorePaymentSessionData

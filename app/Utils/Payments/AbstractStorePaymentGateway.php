@@ -4,7 +4,7 @@ namespace App\Utils\Payments;
 
 use App\Contracts\StorePaymentGatewayContract;
 use App\Models\StorePayment;
-use App\Settings\StoreSettings;
+use App\Models\StorePaymentGateway as GatewayRecord;
 use App\Utils\Payments\Data\StoreGatewayEventData;
 use App\Utils\Payments\Data\StorePaymentSessionData;
 use Illuminate\Http\Request;
@@ -14,7 +14,15 @@ use Illuminate\Http\Request;
  */
 abstract class AbstractStorePaymentGateway implements StorePaymentGatewayContract
 {
-    public function __construct(protected StoreSettings $settings) {}
+    /**
+     * This gateway's row, loaded once per driver instance.
+     *
+     * The manager caches drivers for the request, so isEnabled() plus a handful of credential()
+     * calls cost one query rather than one each.
+     */
+    private ?GatewayRecord $record = null;
+
+    private bool $recordLoaded = false;
 
     public function description(): ?string
     {
@@ -37,7 +45,9 @@ abstract class AbstractStorePaymentGateway implements StorePaymentGatewayContrac
      */
     public function isEnabled(): bool
     {
-        if (! in_array($this->gateway()->value, $this->settings->enabled_gateways ?? [], true)) {
+        // No row means the seeder has not run for this driver yet, which is not the same as being
+        // switched off — but it cannot be charged against either, so it is not offered.
+        if (! $this->record()?->is_enabled) {
             return false;
         }
 
@@ -48,6 +58,19 @@ abstract class AbstractStorePaymentGateway implements StorePaymentGatewayContrac
         }
 
         return true;
+    }
+
+    /**
+     * This gateway's stored configuration, or null if it has no row.
+     */
+    protected function record(): ?GatewayRecord
+    {
+        if (! $this->recordLoaded) {
+            $this->record = GatewayRecord::firstWhere('key', $this->gateway()->value);
+            $this->recordLoaded = true;
+        }
+
+        return $this->record;
     }
 
     public function verifyWebhook(Request $request): bool
@@ -89,11 +112,11 @@ abstract class AbstractStorePaymentGateway implements StorePaymentGatewayContrac
     }
 
     /**
-     * Read one of this gateway's credentials out of the shared encrypted bag.
+     * Read one of this gateway's credentials off its row.
      */
     protected function credential(string $key, mixed $default = null): mixed
     {
-        return data_get($this->settings->gateway_credentials, $this->gateway()->value.'.'.$key, $default);
+        return $this->record()?->credential($key, $default) ?? $default;
     }
 
     public function supportsCurrency(string $code): bool

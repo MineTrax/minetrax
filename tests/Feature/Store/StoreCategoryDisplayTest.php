@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Services\StoreCartService;
 use App\Services\StoreCurrencyService;
 use App\Services\StorePricingService;
-use App\Settings\StoreSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
@@ -23,9 +22,7 @@ beforeEach(function () {
     config(['store.enabled' => true]);
     $this->baseCurrency();
 
-    $settings = app(StoreSettings::class);
-    $settings->enabled_gateways = ['manual'];
-    $settings->save();
+    $this->enableStoreGateways(['manual']);
 
     $this->withCookie(StoreCartService::COOKIE, 'guest-cart-token');
 

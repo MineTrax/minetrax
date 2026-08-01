@@ -22,8 +22,8 @@ return new class extends SettingsMigration
 
         $this->migrator->add('store.terms_text', null);
 
-        $this->migrator->add('store.enabled_gateways', ['manual']);
-        $this->migrator->addEncrypted('store.gateway_credentials', []);
+        // Gateways are rows in store_payment_gateways, not settings keys — see
+        // StorePaymentGatewaySeeder.
 
         $this->migrator->add('store.show_recent_purchases', true);
         $this->migrator->add('store.show_purchase_goal', false);

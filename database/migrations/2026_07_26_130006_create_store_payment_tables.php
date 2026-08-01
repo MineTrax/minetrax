@@ -11,6 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // One row per gateway the application ships a driver for. Rows rather than a settings key
+        // so a gateway is a first-class record: it can be listed, ordered, and audited, and adding
+        // a provider later is a seeder run that leaves every configured gateway untouched.
+        Schema::create('store_payment_gateways', function (Blueprint $table) {
+            $table->id();
+            // Matches the key in config('store.gateways') and the StorePaymentGateway enum.
+            $table->string('key')->unique();
+            $table->boolean('is_enabled')->default(false);
+            // Encrypted at rest by the model cast, as the settings bag was. Shape is per driver,
+            // defined by its settingsSchema().
+            $table->text('credentials')->nullable();
+            // The order the methods are offered in at checkout.
+            $table->unsignedInteger('sort_order')->default(0);
+            $table->timestamps();
+        });
+
         // One row per charge attempt, so a buyer who abandons Stripe and retries with PayPal
         // leaves two rows against one order.
         Schema::create('store_payments', function (Blueprint $table) {
@@ -74,5 +90,6 @@ return new class extends Migration
         Schema::dropIfExists('store_gateway_webhooks');
         Schema::dropIfExists('store_payment_refunds');
         Schema::dropIfExists('store_payments');
+        Schema::dropIfExists('store_payment_gateways');
     }
 };

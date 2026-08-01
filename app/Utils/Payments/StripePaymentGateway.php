@@ -7,7 +7,6 @@ use App\Models\StoreOrder;
 use App\Models\StorePayment;
 use App\Services\StoreCurrencyService;
 use App\Settings\GeneralSettings;
-use App\Settings\StoreSettings;
 use App\Utils\Payments\Data\StoreGatewayEventData;
 use App\Utils\Payments\Data\StorePaymentSessionData;
 use Illuminate\Http\Request;
@@ -34,12 +33,9 @@ class StripePaymentGateway extends AbstractStorePaymentGateway
     private ?StripeClient $client = null;
 
     public function __construct(
-        StoreSettings $settings,
         private GeneralSettings $general,
         private StoreCurrencyService $currencies,
-    ) {
-        parent::__construct($settings);
-    }
+    ) {}
 
     public function gateway(): StorePaymentGateway
     {

@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { useTranslations } from "@/Composables/useTranslations";
+import { useHelpers } from "@/Composables/useHelpers";
 import DataTable from "@/Components/DataTable/DataTable.vue";
 import DtRowItem from "@/Components/DataTable/DtRowItem.vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
@@ -13,6 +14,7 @@ import { Link, router, useForm } from "@inertiajs/vue3";
 import { EyeIcon, NoSymbolIcon, ClockIcon } from "@heroicons/vue/24/outline";
 
 const { __ } = useTranslations();
+const { formatToDayDateString, formatTimeAgoToNow } = useHelpers();
 
 defineProps({
     grants: Object,
@@ -79,7 +81,7 @@ function expiryLabel(grant) {
     if (! grant.expires_at) {
         return __("Never");
     }
-    return new Date(grant.expires_at).toLocaleString();
+    return formatToDayDateString(grant.expires_at);
 }
 
 function revoke(grant) {
@@ -207,7 +209,11 @@ function submitExtend() {
           </DtRowItem>
 
           <DtRowItem>
-            <span class="text-xs text-muted-foreground">{{ new Date(item.granted_at).toLocaleString() }}</span>
+            <span
+              v-tippy
+              class="text-xs text-muted-foreground"
+              :title="formatToDayDateString(item.granted_at)"
+            >{{ formatTimeAgoToNow(item.granted_at) }}</span>
           </DtRowItem>
 
           <DtRowItem>

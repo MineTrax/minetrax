@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin\Store;
 use App\Contracts\StorePaymentGatewayContract;
 use App\Http\Controllers\Controller;
 use App\Models\StoreCurrency;
-use App\Settings\StoreSettings;
+use App\Models\StorePaymentGateway as GatewayRecord;
 use App\Utils\Payments\StorePaymentGatewayManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -35,9 +37,10 @@ class StorePaymentGatewayController extends Controller
         $this->middleware(['can:update settings']);
     }
 
-    public function index(StoreSettings $settings): Response
+    public function index(): Response
     {
         $enabledCurrencies = StoreCurrency::enabled()->orderBy('code')->pluck('code');
+        $records = $this->records();
 
         return Inertia::render('Admin/StorePaymentGateway/IndexStorePaymentGateway', [
             'gateways' => $this->gateways->all()
@@ -45,10 +48,10 @@ class StorePaymentGatewayController extends Controller
                     'key' => $driver->gateway()->value,
                     'label' => $driver->label(),
                     'description' => $driver->description(),
-                    'is_enabled' => in_array($driver->gateway()->value, $settings->enabled_gateways ?? [], true),
+                    'is_enabled' => (bool) $records->get($driver->gateway()->value)?->is_enabled,
                     'is_configured' => $driver->isEnabled(),
                     'schema' => $driver->settingsSchema(),
-                    'credentials' => $this->maskedCredentials($driver, $settings),
+                    'credentials' => $this->maskedCredentials($driver, $records),
                     'webhook_url' => route('api.store.webhook', ['gateway' => $driver->gateway()->value]),
                     // Null means "any". Anything else is listed so an owner can see at a glance
                     // why a gateway is not being offered for one of their currencies.
@@ -59,7 +62,7 @@ class StorePaymentGatewayController extends Controller
         ]);
     }
 
-    public function update(Request $request, StoreSettings $settings): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'enabled_gateways' => ['present', 'array'],
@@ -67,20 +70,42 @@ class StorePaymentGatewayController extends Controller
             'gateway_credentials' => ['present', 'array'],
         ]);
 
-        $settings->enabled_gateways = $validated['enabled_gateways'];
-        $settings->gateway_credentials = $this->mergeCredentials($request->input('gateway_credentials', []), $settings);
-        $settings->save();
+        $records = $this->records();
+        $submitted = $request->input('gateway_credentials', []);
+
+        // One transaction: a half-applied save could leave a gateway switched on with the previous
+        // owner's keys, which is a worse state than either the old one or the new one.
+        DB::transaction(function () use ($validated, $submitted, $records) {
+            foreach ($this->gateways->all() as $key => $driver) {
+                $record = $records->get($key) ?? new GatewayRecord(['key' => $key, 'credentials' => []]);
+
+                $record->is_enabled = in_array($key, $validated['enabled_gateways'], true);
+                $record->credentials = $this->mergedCredentialsFor($driver, $submitted, $record);
+                $record->save();
+            }
+        });
 
         return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Payment Gateways Updated')]]);
     }
 
     /**
+     * Every gateway's stored row, keyed by gateway key.
+     *
+     * @return Collection<string, GatewayRecord>
+     */
+    private function records(): Collection
+    {
+        return GatewayRecord::orderBy('sort_order')->orderBy('id')->get()->keyBy('key');
+    }
+
+    /**
+     * @param  Collection<string, GatewayRecord>  $records
      * @return array<string, mixed>
      */
-    private function maskedCredentials(StorePaymentGatewayContract $driver, StoreSettings $settings): array
+    private function maskedCredentials(StorePaymentGatewayContract $driver, Collection $records): array
     {
-        $stored = data_get($settings->gateway_credentials, $driver->gateway()->value, []);
+        $stored = $records->get($driver->gateway()->value)?->credentials ?? [];
         $out = [];
 
         foreach ($driver->settingsSchema() as $field) {
@@ -95,48 +120,44 @@ class StorePaymentGatewayController extends Controller
     }
 
     /**
-     * Fold the submitted credentials back into the stored bag.
+     * Fold one gateway's submitted credentials into what it already had.
      *
      * A secret that comes back as the mask was never shown to the browser in the first place, so
      * it is kept rather than overwritten with asterisks. Only fields the driver declares are
-     * stored, so a crafted request cannot stuff arbitrary keys into the encrypted bag.
+     * stored, so a crafted request cannot stuff arbitrary keys into the encrypted column.
      *
-     * A gateway missing from the submission entirely is left exactly as it was. Switching a
-     * gateway off is not the same as forgetting its keys, and an owner who turns Stripe off for an
+     * A gateway missing from the submission entirely keeps exactly what it had. Switching a gateway
+     * off is not the same as forgetting its keys, and an owner who turns Stripe off for an
      * afternoon should not have to dig the credentials out again afterwards.
      *
-     * @param  array<string, mixed>  $submitted
+     * @param  array<string, mixed>  $submitted  Every gateway's fields, keyed by gateway
      * @return array<string, mixed>
      */
-    private function mergeCredentials(array $submitted, StoreSettings $settings): array
-    {
-        $merged = [];
+    private function mergedCredentialsFor(
+        StorePaymentGatewayContract $driver,
+        array $submitted,
+        GatewayRecord $record,
+    ): array {
+        $key = $driver->gateway()->value;
+        $stored = $record->credentials ?? [];
 
-        foreach ($this->gateways->all() as $key => $driver) {
-            $stored = data_get($settings->gateway_credentials, $key, []);
-
-            if (! array_key_exists($key, $submitted)) {
-                $merged[$key] = $stored;
-
-                continue;
-            }
-
-            $incoming = (array) $submitted[$key];
-            $bag = [];
-
-            foreach ($driver->settingsSchema() as $field) {
-                $name = $field['key'];
-                $value = $incoming[$name] ?? null;
-
-                $bag[$name] = ($field['secret'] ?? false) && $value === self::SECRET_MASK
-                    ? ($stored[$name] ?? null)
-                    : $value;
-            }
-
-            $merged[$key] = array_filter($bag, fn ($value) => $value !== null && $value !== '');
+        if (! array_key_exists($key, $submitted)) {
+            return $stored;
         }
 
-        return $merged;
+        $incoming = (array) $submitted[$key];
+        $bag = [];
+
+        foreach ($driver->settingsSchema() as $field) {
+            $name = $field['key'];
+            $value = $incoming[$name] ?? null;
+
+            $bag[$name] = ($field['secret'] ?? false) && $value === self::SECRET_MASK
+                ? ($stored[$name] ?? null)
+                : $value;
+        }
+
+        return array_filter($bag, fn ($value) => $value !== null && $value !== '');
     }
 
     /**
