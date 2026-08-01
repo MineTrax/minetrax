@@ -1,7 +1,8 @@
 <script setup>
-import { Link, router } from "@inertiajs/vue3";
+import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
-import { ref } from "vue";
+import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
+import { computed, ref } from "vue";
 
 const { __ } = useTranslations();
 
@@ -32,16 +33,17 @@ const onInput = (event) => {
     quantity.value = clamp(parseInt(event.target.value, 10));
 };
 
-// Bulk items are the point of this layout, so the whole purchase is one action. Anything that has
-// to be configured first links through to its own page instead.
-const addToCart = () => {
-    router.post(route("store.cart.store"), {
-        package_id: props.storePackage.id,
-        quantity: quantity.value,
-    }, {
-        preserveScroll: true,
-    });
-};
+// Bulk items are the point of this layout, so the quantity is chosen here rather than on the
+// package page. Anything that has to be configured first links through to its own page instead.
+const canAdd = computed(() => canAddToCart(props.storePackage));
+
+// The link's label doubles as the explanation for the missing add button: a package that has to be
+// answered for says "Configure", so a shopper is not left wondering why they cannot buy it here.
+const detailLabel = computed(
+    () => (props.storePackage.needs_configuring && !props.storePackage.is_out_of_stock
+        ? __("Configure")
+        : __("View"))
+);
 </script>
 
 <template>
@@ -74,11 +76,11 @@ const addToCart = () => {
     </div>
 
     <!-- Quantity tier -->
-    <div
-      v-if="!storePackage.needs_configuring && !storePackage.is_out_of_stock"
-      class="flex items-center gap-3"
-    >
-      <div class="flex items-center border border-border rounded-lg bg-card">
+    <div class="flex flex-wrap items-center gap-3">
+      <div
+        v-if="canAdd"
+        class="flex items-center border border-border rounded-lg bg-card"
+      >
         <button
           type="button"
           class="px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -105,28 +107,29 @@ const addToCart = () => {
         </button>
       </div>
 
+      <!-- View stays a link so it can be opened in a new tab; adding is a post, so it is a button.
+           Out of stock keeps the link, because the page is still worth reading. -->
+      <Link
+        :href="route('store.package', storePackage.slug)"
+        class="px-4 py-2 text-sm font-medium rounded-lg border border-border bg-card text-foreground hover:bg-muted transition-colors whitespace-nowrap"
+      >
+        {{ detailLabel }}
+      </Link>
+
       <button
+        v-if="canAdd"
         type="button"
         class="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap"
-        @click="addToCart"
+        @click="addToCart(storePackage, quantity)"
       >
         {{ __("Add to Cart") }}
       </button>
+      <span
+        v-else-if="storePackage.is_out_of_stock"
+        class="px-4 py-2 text-sm font-medium rounded-lg bg-destructive/10 text-destructive whitespace-nowrap"
+      >
+        {{ __("Out of Stock") }}
+      </span>
     </div>
-
-    <div
-      v-else-if="storePackage.is_out_of_stock"
-      class="px-4 py-2 text-sm font-medium rounded-lg bg-destructive/10 text-destructive whitespace-nowrap"
-    >
-      {{ __("Out of Stock") }}
-    </div>
-
-    <Link
-      v-else
-      :href="route('store.package', storePackage.slug)"
-      class="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap"
-    >
-      {{ __("Configure") }}
-    </Link>
   </div>
 </template>

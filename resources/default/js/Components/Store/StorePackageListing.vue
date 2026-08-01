@@ -2,6 +2,7 @@
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { discountLabel } from "@/Composables/useStoreDiscount";
+import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
 import { computed } from "vue";
 
 const { __ } = useTranslations();
@@ -22,6 +23,16 @@ const discountBadge = computed(() => discountLabel(props.storePackage));
 // a package discount, a sale, or both.
 const isDiscounted = computed(
     () => Number(props.storePackage.price_original ?? 0) > Number(props.storePackage.price ?? 0)
+);
+
+const canAdd = computed(() => canAddToCart(props.storePackage));
+
+// The link's label doubles as the explanation for the missing add button: a package that has to be
+// answered for says "Configure", so a shopper is not left wondering why they cannot buy it here.
+const detailLabel = computed(
+    () => (props.storePackage.needs_configuring && !props.storePackage.is_out_of_stock
+        ? __("Configure")
+        : __("View"))
 );
 </script>
 
@@ -99,7 +110,7 @@ const isDiscounted = computed(
     </div>
 
     <!-- Price and action -->
-    <div class="flex items-center gap-4 sm:flex-col sm:items-end sm:gap-2">
+    <div class="flex flex-wrap items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
       <div class="flex items-baseline gap-2">
         <span
           v-if="storePackage.is_pay_what_you_want"
@@ -118,12 +129,32 @@ const isDiscounted = computed(
         </span>
       </div>
 
-      <Link
-        :href="route('store.package', storePackage.slug)"
-        class="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap"
-      >
-        {{ __("View") }}
-      </Link>
+      <!-- View stays a link so it can be opened in a new tab; adding is a post, so it is a button.
+           A package that has to be configured gets one button rather than two links to the same
+           page, and an out of stock one is told so where the add button would have been. -->
+      <div class="flex items-center gap-2">
+        <Link
+          :href="route('store.package', storePackage.slug)"
+          class="px-4 py-2 text-sm font-medium rounded-lg border border-border bg-card text-foreground hover:bg-muted transition-colors whitespace-nowrap"
+        >
+          {{ detailLabel }}
+        </Link>
+
+        <button
+          v-if="canAdd"
+          type="button"
+          class="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap"
+          @click="addToCart(storePackage)"
+        >
+          {{ __("Add to Cart") }}
+        </button>
+        <span
+          v-else-if="storePackage.is_out_of_stock"
+          class="px-4 py-2 text-sm font-medium rounded-lg bg-destructive/10 text-destructive whitespace-nowrap"
+        >
+          {{ __("Out of Stock") }}
+        </span>
+      </div>
     </div>
   </div>
 </template>

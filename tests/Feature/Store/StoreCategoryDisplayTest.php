@@ -236,8 +236,8 @@ test('a grid category ships no comparison values', function () {
 });
 
 test('a package needing configuration is flagged for the listings', function () {
-    // The stacked layout adds to the cart in one click, which cannot work for a package that
-    // has to be priced or answered first.
+    // Every layout offers an add to cart button, which cannot work for a package that has to be
+    // priced or answered first — those get a link to their own page instead.
     $plain = StorePackage::factory()->create(['name' => 'Plain']);
     $pwyw = StorePackage::factory()->payWhatYouWant()->create(['name' => 'Donation']);
 
@@ -249,6 +249,32 @@ test('a package needing configuration is flagged for the listings', function () 
             expect($packages[$plain->id]['needs_configuring'])->toBeFalse();
             expect($packages[$pwyw->id]['needs_configuring'])->toBeTrue();
         });
+});
+
+test('the listings carry what an add to cart button has to decide with', function () {
+    // The four layouts all render the button from these three fields. Losing one of them from the
+    // payload would not break the page — it would quietly offer to sell an out of stock package.
+    StorePackage::factory()->create(['min_quantity' => 3]);
+
+    $this->get(route('store.index'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('packages.0.needs_configuring')
+            ->has('packages.0.is_out_of_stock')
+            ->where('packages.0.min_quantity', 3)
+        );
+});
+
+test('adding straight from a listing starts at the package minimum', function () {
+    // The listing button has no quantity picker, so it posts the package's own minimum rather
+    // than 1 and leaving the server to silently bump it.
+    $package = StorePackage::factory()->create(['min_quantity' => 5, 'max_quantity' => 10]);
+
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 5])
+        ->assertRedirect(route('store.cart.show'));
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page->where('quote.items.0.quantity', 5));
 });
 
 // --- Cumulative upgrade pricing -----------------------------------------------------------

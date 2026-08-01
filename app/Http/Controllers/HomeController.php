@@ -10,7 +10,6 @@ use App\Models\Poll;
 use App\Models\Server;
 use App\Models\Session;
 use App\Models\User;
-use App\Services\StoreWidgetService;
 use App\Settings\GeneralSettings;
 use App\Settings\ThemeSettings;
 use App\Utils\Helpers\Helper;
@@ -129,11 +128,6 @@ class HomeController extends Controller
             'chatDefaultServerId' => $chatDefaultServerId,
             'chatServerList' => $chatServerList,
             'top10Players' => $top10Players,
-            // Null throughout when the module is off, which is what hides all three boxes — the
-            // widgets are the one part of the store that renders outside the store's own pages.
-            'storeWidgets' => config('store.enabled')
-                ? app(StoreWidgetService::class)->payload()
-                : ['goal' => null, 'recentPurchases' => null, 'topDonor' => null],
             'themeSettings' => [
                 'enable_home_hero_section' => $themeSettings->enable_home_hero_section,
                 'home_hero_bg_image_path_dark' => $themeSettings->home_hero_bg_image_path_dark,

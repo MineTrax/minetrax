@@ -253,7 +253,9 @@ test('there is no top donor before anybody has bought anything', function () {
 
 // -- Wiring -----------------------------------------------------------------------------------
 
-test('the dashboard receives the widget payload', function () {
+test('the dashboard carries no widget payload', function () {
+    // The boxes live on the storefront only. The community homepage is not a shop window, and a
+    // goal bar on it read as the site asking every visitor for money.
     widgetSettings([
         'show_purchase_goal' => true,
         'purchase_goal_amount' => 10000,
@@ -267,9 +269,7 @@ test('the dashboard receives the widget payload', function () {
         ->assertStatus(200)
         ->assertInertia(fn ($page) => $page
             ->component('Dashboard')
-            ->where('storeWidgets.goal.percent', 25)
-            ->has('storeWidgets.recentPurchases', 1)
-            ->where('storeWidgets.topDonor.name', 'Notch')
+            ->missing('storeWidgets')
         );
 });
 
@@ -286,9 +286,9 @@ test('the storefront receives the widget payload', function () {
         );
 });
 
-test('the widgets are all off on the dashboard when the module is disabled', function () {
-    // They are the one part of the store that renders outside the store's own pages, so the module
-    // toggle has to reach them explicitly — there is no policy in the way.
+test('the storefront denies everything when the module is disabled', function () {
+    // The widgets now render only behind the store policy, so the module toggle reaches them by
+    // taking the whole page with it rather than by nulling three props.
     widgetSettings([
         'show_purchase_goal' => true,
         'purchase_goal_amount' => 10000,
@@ -299,12 +299,7 @@ test('the widgets are all off on the dashboard when the module is disabled', fun
 
     config(['store.enabled' => false]);
 
-    $this->get(route('home.dashboard'))
-        ->assertInertia(fn ($page) => $page
-            ->where('storeWidgets.goal', null)
-            ->where('storeWidgets.recentPurchases', null)
-            ->where('storeWidgets.topDonor', null)
-        );
+    $this->get(route('store.index'))->assertForbidden();
 });
 
 test('the widgets reach the homepage when the store owns it', function () {

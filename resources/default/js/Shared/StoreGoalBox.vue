@@ -42,25 +42,12 @@
         <span class="text-sm font-semibold text-card-foreground">{{ goal.raised_formatted }}</span>
         <span class="text-xs text-muted-foreground">{{ __("of :amount", { amount: goal.target_formatted }) }}</span>
       </div>
-
-      <Button
-        v-if="$page.props.store?.enabled"
-        class="w-full font-bold"
-        size="sm"
-        as-child
-      >
-        <Link :href="route('store.index')">
-          {{ __("Visit Store") }}
-        </Link>
-      </Button>
     </CardContent>
   </Card>
 </template>
 
 <script setup>
-import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
-import { Button } from "@/Components/ui/button";
 import {
     Card,
     CardContent,

@@ -33,6 +33,20 @@
   ::file-selector-button {
     border-color: var(--border);
   }
+
+  /*
+    Tailwind v4 also dropped `cursor: pointer` from Preflight, so a <button>
+    fell back to the browser's arrow while an <a> styled as a button kept the
+    hand — two buttons side by side behaving differently. This is the fix from
+    the v4 upgrade guide, restoring v3 behaviour in one place rather than
+    leaving every button to remember `cursor-pointer` for itself.
+
+    :not(:disabled) so a disabled button still reads as unavailable.
+  */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 /* =========================================================================

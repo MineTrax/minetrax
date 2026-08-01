@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\Cache;
 /**
  * The public-facing summaries: this month's goal, who bought what recently, and who has spent most.
  *
- * Everything here is read by anyone who can see the homepage, so three rules hold throughout.
+ * They render in the storefront sidebar only — not on the community dashboard, which is not a shop
+ * window. That also means they sit behind the store policy rather than needing the module toggle
+ * threaded through them by hand.
+ *
+ * Everything here is read by anyone who can see the storefront, so three rules hold throughout.
  *
  * Aggregates are summed from `base_total` — the order total converted at the rate in force when it
  * was placed — because summing today's rates would make last month's figure move whenever a rate did.

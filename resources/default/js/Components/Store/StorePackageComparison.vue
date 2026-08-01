@@ -2,6 +2,7 @@
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { useHelpers } from "@/Composables/useHelpers";
+import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
 import { CheckIcon, XMarkIcon } from "@heroicons/vue/24/solid";
 
 const { __ } = useTranslations();
@@ -28,6 +29,12 @@ const isChecked = (value) => {
     }
     return ["1", "true", "yes", "on"].includes(String(value ?? "").trim().toLowerCase());
 };
+
+// The link's label doubles as the explanation for the missing add button: a package that has to be
+// answered for says "Configure", so a shopper is not left wondering why they cannot buy it here.
+const detailLabel = (storePackage) => (storePackage.needs_configuring && !storePackage.is_out_of_stock
+    ? __("Configure")
+    : __("View"));
 </script>
 
 <template>
@@ -129,19 +136,31 @@ const isChecked = (value) => {
               </span>
             </div>
 
-            <Link
-              v-if="!storePackage.is_out_of_stock"
-              :href="route('store.package', storePackage.slug)"
-              class="inline-block px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              {{ __("View") }}
-            </Link>
-            <span
-              v-else
-              class="inline-block px-4 py-2 text-sm font-medium rounded-lg bg-destructive/10 text-destructive"
-            >
-              {{ __("Out of Stock") }}
-            </span>
+            <!-- Stacked rather than side by side: a comparison column is only 12rem wide, and two
+                 buttons on one line would wrap mid-label. -->
+            <div class="flex flex-col gap-2">
+              <Link
+                :href="route('store.package', storePackage.slug)"
+                class="block px-4 py-2 text-sm font-medium rounded-lg border border-border bg-card text-foreground hover:bg-muted transition-colors"
+              >
+                {{ detailLabel(storePackage) }}
+              </Link>
+
+              <button
+                v-if="canAddToCart(storePackage)"
+                type="button"
+                class="block px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                @click="addToCart(storePackage)"
+              >
+                {{ __("Add to Cart") }}
+              </button>
+              <span
+                v-else-if="storePackage.is_out_of_stock"
+                class="block px-4 py-2 text-sm font-medium rounded-lg bg-destructive/10 text-destructive"
+              >
+                {{ __("Out of Stock") }}
+              </span>
+            </div>
           </td>
         </tr>
       </tfoot>

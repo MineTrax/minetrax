@@ -9,27 +9,21 @@
           :class="[
             'w-5 h-5 transition-all duration-300',
             notifications && notifications.length > 0
-              ? 'text-destructive'
+              ? 'text-primary'
               : 'text-foreground hover:text-foreground'
           ]"
         />
         <span class="sr-only">{{ __("Notifications") }}</span>
 
-        <!-- Enhanced notification badge with glow and bounce -->
+        <!-- Deliberately identical to StoreCartIndicator's badge: two counters sitting next to each
+             other in the navbar should not look like two different kinds of thing. Destructive red
+             is the site's colour for something being wrong, which an unread notification is not. -->
         <div
           v-if="unreadCount > 0"
-          class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-destructive-foreground bg-destructive border-2 border-background rounded-full -top-2 -end-2 cursor-pointer animate-bounce shadow-lg"
-          style="animation-duration: 2s; box-shadow: 0 0 10px color-mix(in srgb, var(--destructive) 60%, transparent);"
+          class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-primary-foreground bg-primary border-2 border-background rounded-full -top-2 -end-2"
         >
-          {{ unreadCount }}
+          {{ unreadCount > 99 ? "99+" : unreadCount }}
         </div>
-
-        <!-- Pulsing ring effect for extra attention -->
-        <div
-          v-if="notifications && notifications.length > 0"
-          class="absolute -inset-1 bg-destructive rounded-full opacity-20 animate-ping"
-          style="animation-duration: 3s;"
-        />
       </button>
     </DropdownMenuTrigger>
 
