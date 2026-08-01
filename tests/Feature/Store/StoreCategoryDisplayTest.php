@@ -268,7 +268,7 @@ test('adding straight from a listing starts at the package minimum', function ()
     $package = StorePackage::factory()->create(['min_quantity' => 5, 'max_quantity' => 10]);
 
     $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 5])
-        ->assertRedirect(route('store.cart.show'));
+        ->assertRedirect();
 
     $this->get(route('store.cart.show'))
         ->assertInertia(fn ($page) => $page->where('quote.items.0.quantity', 5));

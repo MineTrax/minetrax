@@ -6,15 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
 use App\Services\StoreCurrencyService;
-use App\Services\StorePricingService;
+use App\Services\StorePackagePresenter;
 use App\Services\StoreVariableService;
 use App\Services\StoreWidgetService;
 use App\Settings\GeneralSettings;
 use App\Settings\StoreSettings;
 use App\Utils\Helpers\Helper;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,7 +24,7 @@ class StoreController extends Controller
     public function __construct(
         private StoreCurrencyService $currencies,
         private StoreVariableService $variables,
-        private StorePricingService $pricing,
+        private StorePackagePresenter $presenter,
         private StoreSettings $settings,
         private GeneralSettings $general,
         private StoreWidgetService $widgets,
@@ -42,30 +43,35 @@ class StoreController extends Controller
      * When the store owns `/`, this route redirects there so the storefront has one canonical
      * URL. Every existing route('store.index') link keeps working.
      */
-    public function index(): Response|RedirectResponse
+    public function index(Request $request): Response|RedirectResponse
     {
         if ($this->isStoreTheHomepage()) {
             return redirect()->route('home', status: 301);
         }
 
-        return $this->storefront();
+        return $this->storefront($request);
     }
 
     /**
      * Builds the storefront page. Split out from index() so HomeController can render it at `/`
      * without bouncing through the redirect above.
      */
-    public function storefront(): Response
+    public function storefront(Request $request): Response
     {
         $this->authorize('browse', StorePackage::class);
 
         $currency = $this->currencies->resolve();
+        $search = $this->searchTerm($request);
 
         return Inertia::render('Store/IndexStore', [
             'storeName' => $this->settings->store_name,
             'storeDescription' => $this->settings->store_description,
             'categories' => $this->categoryTree(),
-            'packages' => $this->presentPackages($this->visiblePackages()->get(), $currency),
+            'packages' => $this->presenter->collection(
+                $this->presenter->visibleQuery()->when($search, $this->applySearch(...))->get(),
+                $currency
+            ),
+            'search' => $search,
             'currency' => $this->currencyPayload($currency),
             // The storefront gets the same three boxes as the homepage, and needs them most when it
             // *is* the homepage — the goal bar is what turns a catalogue into a campaign.
@@ -73,16 +79,18 @@ class StoreController extends Controller
         ]);
     }
 
-    public function showCategory(StoreCategory $storeCategory): Response
+    public function showCategory(Request $request, StoreCategory $storeCategory): Response
     {
         $this->authorize('browse', StorePackage::class);
 
         abort_unless($storeCategory->is_enabled, 404);
 
         $currency = $this->currencies->resolve();
+        $search = $this->searchTerm($request);
 
-        $packages = $this->visiblePackages()
+        $packages = $this->presenter->visibleQuery()
             ->where('store_category_id', $storeCategory->id)
+            ->when($search, $this->applySearch(...))
             ->get();
 
         $comparisonFields = $storeCategory->comparisonFields();
@@ -96,12 +104,46 @@ class StoreController extends Controller
                 'is_cumulative' => $storeCategory->is_cumulative,
                 'comparison_fields' => $comparisonFields,
             ],
-            'packages' => $this->presentPackages($packages, $currency, $comparisonFields),
+            'packages' => $this->presenter->collection($packages, $currency, $comparisonFields),
+            'search' => $search,
             'currency' => $this->currencyPayload($currency),
             // The same page component as the index, so it needs the same sidebar boxes or they
             // would vanish the moment a visitor clicked a category.
             'storeWidgets' => $this->widgets->payload(),
         ]);
+    }
+
+    /**
+     * The visitor's search term, or null when they have not searched.
+     *
+     * Trimmed to null rather than kept as an empty string so `when()` below reads as "only if they
+     * actually typed something", and so an empty `?q=` never renders an active search chip.
+     */
+    private function searchTerm(Request $request): ?string
+    {
+        $term = trim((string) $request->query('q', ''));
+
+        return $term === '' ? null : mb_substr($term, 0, 100);
+    }
+
+    /**
+     * Match a term against the parts of a package a shopper would recognise it by.
+     *
+     * Takes the term as an argument rather than closing over it, so it can be handed straight to
+     * `when()` — building the closure at the call site evaluated it even when there was no term,
+     * and every unsearched page load died on the null.
+     *
+     * The long description is deliberately out: it is authored HTML, so a search for "gold" would
+     * match a stray hex colour in the markup.
+     */
+    private function applySearch(Builder $query, string $term): Builder
+    {
+        $like = '%'.str_replace(['%', '_'], ['\%', '\_'], $term).'%';
+
+        return $query->where(
+            fn (Builder $q) => $q->where('name', 'like', $like)
+                ->orWhere('short_description', 'like', $like)
+        );
     }
 
     public function showPackage(StorePackage $storePackage): Response
@@ -117,7 +159,7 @@ class StoreController extends Controller
         $currency = $this->currencies->resolve();
 
         return Inertia::render('Store/ShowStorePackage', [
-            'storePackage' => $this->presentPackage($storePackage, $currency) + [
+            'storePackage' => $this->presenter->one($storePackage, $currency) + [
                 'description' => $storePackage->description,
                 'category' => $storePackage->category?->only(['id', 'name', 'slug']),
                 'required_packages_mode' => Helper::enumKeyValue($storePackage->required_packages_mode),
@@ -127,34 +169,17 @@ class StoreController extends Controller
             // FormKit field descriptors, built server-side from the package's variables. The same
             // schema shape the custom forms use, so the page renders them with FormKitSchema.
             'variableSchema' => $this->variables->schemaForPackage($storePackage),
+            // A package page used to be a cul-de-sac: the only ways on were the back button and
+            // the breadcrumb.
+            'relatedPackages' => $this->presenter->relatedTo($storePackage, $currency),
             'currency' => $this->currencyPayload($currency),
         ]);
     }
 
     /**
-     * Packages a visitor is allowed to see in a listing.
-     *
-     * Featured packages come first, which is what "featured" means in a category that is otherwise
-     * ordered by the admin's own sort order.
+     * @return Collection<int, array<string, mixed>>
      */
-    private function visiblePackages(): Builder
-    {
-        return StorePackage::query()
-            ->with('prices')
-            // Counted, not loaded: the listings only need to know whether a package has to be
-            // configured on its own page before it can be added to the cart.
-            ->withCount('variables')
-            ->available()
-            ->where('is_visible', true)
-            ->orderByDesc('is_featured')
-            ->orderBy('sort_order')
-            ->orderBy('id');
-    }
-
-    /**
-     * @return \Illuminate\Support\Collection<int, array<string, mixed>>
-     */
-    private function categoryTree(): \Illuminate\Support\Collection
+    private function categoryTree(): Collection
     {
         return StoreCategory::query()
             ->where('is_enabled', true)
@@ -171,110 +196,6 @@ class StoreController extends Controller
                 'packages_count' => $category->packages_count,
                 'photo_url' => $category->photo_url,
             ]);
-    }
-
-    /**
-     * @param  Collection<int, StorePackage>  $packages
-     * @return \Illuminate\Support\Collection<int, array<string, mixed>>
-     */
-    private function presentPackages(Collection $packages, $currency, array $comparisonFields = []): \Illuminate\Support\Collection
-    {
-        // Priced in one pass so the active sales are loaded once for the whole listing rather than
-        // once per card.
-        $prices = $this->pricing->listingPrices($packages, $currency);
-
-        return $packages->map(fn (StorePackage $package) => $this->presentPackage($package, $currency, $prices[$package->id] ?? null)
-            + ($comparisonFields ? ['comparison_values' => $this->comparisonValuesFor($package, $comparisonFields)] : []));
-    }
-
-    /**
-     * This package's row of comparison cells, one per field the category defines.
-     *
-     * Driven by the category's field list rather than by whatever the package happens to have
-     * stored, so a field added after the package was saved renders as an empty cell instead of
-     * shifting the column out of line.
-     *
-     * @param  array<int, array{key: string, name: string, description: string|null, type: string}>  $comparisonFields
-     * @return array<string, mixed>
-     */
-    private function comparisonValuesFor(StorePackage $package, array $comparisonFields): array
-    {
-        $stored = $package->comparison_values ?? [];
-        $values = [];
-
-        foreach ($comparisonFields as $field) {
-            $values[$field['key']] = $stored[$field['key']] ?? null;
-        }
-
-        return $values;
-    }
-
-    /**
-     * Prices are resolved server-side and shipped both raw and formatted, so the frontend never
-     * performs money arithmetic and never sees a price it could tamper with meaningfully.
-     *
-     * @return array<string, mixed>
-     */
-    private function presentPackage(StorePackage $package, $currency, ?array $priced = null): array
-    {
-        // Through the pricing service, which is the only thing that knows about sales. Working the
-        // price out here meant a store-wide sale never reached a single card.
-        $priced ??= $this->pricing->listingPrices([$package], $currency)[$package->id];
-
-        $listPrice = $priced['price_original'];
-        $price = $priced['price'];
-
-        return [
-            'id' => $package->id,
-            'name' => $package->name,
-            'slug' => $package->slug,
-            'short_description' => $package->short_description,
-            'photo_url' => $package->photo_url,
-            'type' => Helper::enumKeyValue($package->type),
-            'requires_login' => $package->requires_login,
-            'is_featured' => $package->is_featured,
-            'is_giftable' => $package->is_giftable,
-            'min_quantity' => $package->min_quantity,
-            'max_quantity' => $package->max_quantity,
-            // Anything that has to be answered or named first cannot be added straight from a
-            // listing; those link through to the package page instead.
-            'needs_configuring' => (bool) $package->is_pay_what_you_want
-                || (int) ($package->variables_count ?? 0) > 0,
-            'expiry_duration_days' => $package->expiry_duration_days,
-            'available_until' => $package->available_until,
-            'is_out_of_stock' => $this->isOutOfStock($package),
-            'discount_bp' => (int) $package->discount_bp,
-            'is_pay_what_you_want' => $package->is_pay_what_you_want,
-            // For a pay-what-you-want package the price is the floor, not the amount charged.
-            'price' => $price,
-            'price_formatted' => $this->currencies->format($price, $currency),
-            'price_original' => $listPrice,
-            'price_original_formatted' => $this->currencies->format($listPrice, $currency),
-            // Named so the card can say why the price is down, not just that it is. The discount is
-            // reported as configured — basis points for a percentage sale, the formatted saving for
-            // a fixed one — because deriving a percentage from the rounded prices misstates it.
-            'sale_name' => $priced['sale_name'],
-            'sale_discount_bp' => $priced['sale_discount_bp'],
-            'sale_amount_formatted' => $priced['sale_discount_bp'] === null && $priced['sale_saving'] > 0
-                ? $this->currencies->format($priced['sale_saving'], $currency)
-                : null,
-            'pay_what_you_want_max' => $package->pay_what_you_want_max
-                ? $this->currencies->fromBase((int) $package->pay_what_you_want_max, $currency)
-                : null,
-        ];
-    }
-
-    /**
-     * Only a lifetime global limit reads as "out of stock".
-     *
-     * A limit with a reset period is a rate limit rather than an inventory, and answering it here
-     * would mean a count query per package in every listing. Checkout still enforces it.
-     */
-    private function isOutOfStock(StorePackage $package): bool
-    {
-        return $package->global_purchase_limit !== null
-            && $package->global_purchase_limit_period_days === null
-            && $package->sold_count >= $package->global_purchase_limit;
     }
 
     /**

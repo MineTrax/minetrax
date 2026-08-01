@@ -25,10 +25,46 @@ test('a guest can add a package to a cart', function () {
     $package = StorePackage::factory()->create(['price' => 999]);
 
     $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 2])
-        ->assertRedirect(route('store.cart.show'));
+        ->assertRedirect();
 
     $this->assertDatabaseCount('store_carts', 1);
     $this->assertDatabaseHas('store_cart_items', ['store_package_id' => $package->id, 'quantity' => 2]);
+});
+
+test('adding to the cart returns the shopper to the page they added from', function () {
+    $package = StorePackage::factory()->create(['price' => 999]);
+
+    $this->from(route('store.index'))
+        ->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1])
+        ->assertRedirect(route('store.index'));
+});
+
+test('the cart quote carries each package quantity bounds', function () {
+    $package = StorePackage::factory()->create([
+        'price' => 500,
+        'min_quantity' => 5,
+        'max_quantity' => 20,
+    ]);
+
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 5]);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page
+            ->where('quote.items.0.min_quantity', 5)
+            ->where('quote.items.0.max_quantity', 20)
+        );
+});
+
+test('the cart recommends packages that are not already in it', function () {
+    $inCart = StorePackage::factory()->create(['name' => 'Already Chosen']);
+    $other = StorePackage::factory()->create(['name' => 'Worth A Look']);
+
+    $this->post(route('store.cart.store'), ['package_id' => $inCart->id, 'quantity' => 1]);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page
+            ->where('recommended', fn ($recommended) => collect($recommended)->pluck('id')->all() === [$other->id])
+        );
 });
 
 test('a guest cart is keyed on a cookie token', function () {

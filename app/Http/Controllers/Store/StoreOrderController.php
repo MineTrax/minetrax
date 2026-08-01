@@ -38,6 +38,10 @@ class StoreOrderController extends Controller
                 'delivery_status' => Helper::enumKeyValue($order->delivery_status),
                 'player_username' => $order->player_username,
                 'total_formatted' => $this->currencies->format((int) $order->total, $order->currency),
+                // An order left unpaid is the most recoverable money the store has, so the list
+                // offers the way back to the gateway rather than only a status badge.
+                'is_resumable' => $order->isResumable(),
+                'amount_due_formatted' => $this->currencies->format((int) $order->amount_due, $order->currency),
                 'created_at' => $order->created_at,
                 'items' => $order->items->map->only(['package_name', 'quantity']),
             ]);
@@ -87,6 +91,7 @@ class StoreOrderController extends Controller
                 // Decided by the enum rather than by the template listing statuses of its own, so the
                 // button and the route agree about what has an invoice.
                 'can_download_invoice' => $order->status->isInvoiceable(),
+                'is_resumable' => $order->isResumable(),
                 'player_username' => $order->player_username,
                 'currency' => $order->currency,
                 'created_at' => $order->created_at,

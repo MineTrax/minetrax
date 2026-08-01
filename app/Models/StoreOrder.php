@@ -107,4 +107,26 @@ class StoreOrder extends BaseModel
     {
         return $this->morphMany(Activity::class, 'subject')->oldest('id');
     }
+
+    /**
+     * Whether ExpireStalePendingStoreOrdersJob would already consider this order abandoned.
+     *
+     * On the model rather than in a controller because two screens ask it — the payment page, which
+     * refuses to open a session past the window, and the purchase list, which must not offer a
+     * "finish paying" button the payment page will then turn away.
+     */
+    public function isPastPaymentWindow(): bool
+    {
+        return $this->created_at->lt(
+            now()->subHours((int) config('store.pending_order_ttl_hours', 24))
+        );
+    }
+
+    /**
+     * Whether the buyer can still take this order to a gateway and pay it.
+     */
+    public function isResumable(): bool
+    {
+        return $this->status === StoreOrderStatus::PENDING && ! $this->isPastPaymentWindow();
+    }
 }

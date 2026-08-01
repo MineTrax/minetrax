@@ -239,3 +239,105 @@ test('an authenticated user can browse too', function () {
         ->get(route('store.index'))
         ->assertStatus(200);
 });
+
+test('a search narrows the storefront to matching packages', function () {
+    StorePackage::factory()->create(['name' => 'Diamond Rank']);
+    StorePackage::factory()->create(['name' => 'Gold Rank']);
+    StorePackage::factory()->create(['name' => 'Crate Key', 'short_description' => 'Opens a diamond crate']);
+
+    $this->get(route('store.index', ['q' => 'diamond']))
+        ->assertInertia(fn ($page) => $page
+            ->where('search', 'diamond')
+            ->has('packages', 2)
+        );
+});
+
+test('a search inside a category stays inside that category', function () {
+    $category = StoreCategory::factory()->create();
+    StorePackage::factory()->create(['name' => 'Diamond Rank', 'store_category_id' => $category->id]);
+    StorePackage::factory()->create(['name' => 'Diamond Key']);
+
+    $this->get(route('store.category', [$category->slug, 'q' => 'diamond']))
+        ->assertInertia(fn ($page) => $page
+            ->has('packages', 1)
+            ->where('packages.0.name', 'Diamond Rank')
+        );
+});
+
+test('an empty search term is not treated as a search', function () {
+    StorePackage::factory()->count(2)->create();
+
+    $this->get(route('store.index', ['q' => '   ']))
+        ->assertInertia(fn ($page) => $page->where('search', null)->has('packages', 2));
+});
+
+test('a wildcard in a search term is matched literally', function () {
+    StorePackage::factory()->create(['name' => 'Gold Rank']);
+
+    $this->get(route('store.index', ['q' => '%']))
+        ->assertInertia(fn ($page) => $page->has('packages', 0));
+});
+
+test('remaining stock is reported only when the number is small enough to act on', function () {
+    StorePackage::factory()->create(['name' => 'Nearly Gone', 'global_purchase_limit' => 12, 'sold_count' => 9]);
+    StorePackage::factory()->create(['name' => 'Plenty Left', 'global_purchase_limit' => 500, 'sold_count' => 10]);
+    StorePackage::factory()->create(['name' => 'Unlimited']);
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page
+            ->where('packages.0.stock_remaining', 3)
+            ->where('packages.1.stock_remaining', null)
+            ->where('packages.2.stock_remaining', null)
+        );
+});
+
+test('a rate limited package reports no remaining stock', function () {
+    // A limit that resets is a rate limit, not an inventory, so there is no count to promise.
+    StorePackage::factory()->create([
+        'global_purchase_limit' => 3,
+        'global_purchase_limit_period_days' => 30,
+        'sold_count' => 1,
+    ]);
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page
+            ->where('packages.0.stock_remaining', null)
+            ->where('packages.0.is_out_of_stock', false)
+        );
+});
+
+test('a package page suggests others from the same category', function () {
+    $category = StoreCategory::factory()->create();
+    $package = StorePackage::factory()->create(['store_category_id' => $category->id]);
+    $sibling = StorePackage::factory()->create(['store_category_id' => $category->id]);
+    StorePackage::factory()->create();
+
+    $this->get(route('store.package', $package->slug))
+        ->assertInertia(fn ($page) => $page
+            ->has('relatedPackages', 1)
+            ->where('relatedPackages.0.id', $sibling->id)
+        );
+});
+
+test('a package with no category falls back to featured suggestions', function () {
+    $package = StorePackage::factory()->create(['store_category_id' => null]);
+    $featured = StorePackage::factory()->create(['store_category_id' => null, 'is_featured' => true]);
+    StorePackage::factory()->create(['store_category_id' => null]);
+
+    $this->get(route('store.package', $package->slug))
+        ->assertInertia(fn ($page) => $page
+            ->has('relatedPackages', 1)
+            ->where('relatedPackages.0.id', $featured->id)
+        );
+});
+
+test('the categories a storefront ships carry their parent so the sidebar can nest them', function () {
+    $parent = StoreCategory::factory()->create(['name' => 'Ranks']);
+    StoreCategory::factory()->create(['name' => 'Seasonal', 'parent_id' => $parent->id]);
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page
+            ->has('categories', 2)
+            ->where('categories.1.parent_id', $parent->id)
+        );
+});

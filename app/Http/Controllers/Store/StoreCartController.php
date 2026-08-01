@@ -10,6 +10,7 @@ use App\Models\StoreGiftCard;
 use App\Models\StorePackage;
 use App\Services\StoreCartService;
 use App\Services\StoreCurrencyService;
+use App\Services\StorePackagePresenter;
 use App\Services\StoreVariableService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class StoreCartController extends Controller
         private StoreCartService $carts,
         private StoreCurrencyService $currencies,
         private StoreVariableService $variables,
+        private StorePackagePresenter $presenter,
     ) {}
 
     public function show(Request $request): Response
@@ -43,6 +45,13 @@ class StoreCartController extends Controller
             'quote' => $cart
                 ? $this->carts->quote($cart, $request)
                 : $this->carts->emptyQuote(),
+            // The highest-intent screen in the store had nothing on it but what the shopper had
+            // already chosen. An empty cart gets the shelf too — it is the only thing on that page
+            // worth clicking.
+            'recommended' => $this->presenter->recommended(
+                $currency,
+                $cart ? $cart->items->pluck('store_package_id')->all() : [],
+            ),
             'currency' => [
                 'current' => $currency->code,
                 'symbol' => $currency->symbol,
@@ -73,7 +82,7 @@ class StoreCartController extends Controller
                 ->with(['toast' => ['type' => 'error', 'title' => __('Sign in required'), 'body' => __('This package can only be purchased by members.')]]);
         }
 
-        if ($this->isOutOfStock($package)) {
+        if ($this->presenter->isOutOfStock($package)) {
             return redirect()->back()
                 ->with(['toast' => ['type' => 'error', 'title' => __('Out of stock'), 'body' => __('This package is no longer available.')]]);
         }
@@ -89,7 +98,10 @@ class StoreCartController extends Controller
         $this->carts->add($cart, $package, $validated['quantity'], $customPrice, $currency->code, $variableValues);
         $this->rememberCart($cart->session_token);
 
-        return redirect()->route('store.cart.show')
+        // Back where they were, not off to the cart. Being ejected from the catalogue after every
+        // add is what keeps a basket at one item; the toast and the navbar badge are the receipt,
+        // and the storefront's own cart bar is the way on to checkout.
+        return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Added to cart'), 'body' => $package->name]]);
     }
 
@@ -188,16 +200,6 @@ class StoreCartController extends Controller
         }
 
         return $minor;
-    }
-
-    /**
-     * Mirrors StoreController: only a lifetime global limit reads as out of stock.
-     */
-    private function isOutOfStock(StorePackage $package): bool
-    {
-        return $package->global_purchase_limit !== null
-            && $package->global_purchase_limit_period_days === null
-            && $package->sold_count >= $package->global_purchase_limit;
     }
 
     /**

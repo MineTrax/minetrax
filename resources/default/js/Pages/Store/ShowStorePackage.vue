@@ -9,6 +9,9 @@ import { useFormKit } from "@/Composables/useFormKit";
 import { FormKitSchema } from "@formkit/vue";
 import { computed, ref } from "vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
+import StoreCurrencySwitcher from "@/Components/Store/StoreCurrencySwitcher.vue";
+import StorePackageCard from "@/Components/Store/StorePackageCard.vue";
+import StoreUrgencyBadges from "@/Components/Store/StoreUrgencyBadges.vue";
 import { truncate } from "lodash";
 
 const { __ } = useTranslations();
@@ -22,6 +25,10 @@ const props = defineProps({
         required: true,
     },
     variableSchema: {
+        type: Array,
+        default: () => [],
+    },
+    relatedPackages: {
         type: Array,
         default: () => [],
     },
@@ -40,6 +47,47 @@ const customPrice = ref(
         ? (props.storePackage.price / (10 ** props.currency.exponent)).toFixed(props.currency.exponent)
         : null
 );
+
+const minorFactor = computed(() => 10 ** props.currency.exponent);
+
+// The floor and the ceiling as decimals, so the input can enforce both. The cap was already sent
+// and already enforced server-side, but the field had no `max`: a buyer could type past it and
+// only learn on submit, which is the one moment in a pay-what-you-want flow you do not want to
+// interrupt.
+const minimumAmount = computed(() => props.storePackage.price / minorFactor.value);
+const maximumAmount = computed(() => (props.storePackage.pay_what_you_want_max
+    ? props.storePackage.pay_what_you_want_max / minorFactor.value
+    : null));
+
+/**
+ * A ladder of suggested amounts, so naming a price is one tap rather than a blank field.
+ *
+ * Built off the minimum rather than hardcoded, so it works whatever the currency and whatever the
+ * floor. Anything above the configured cap is dropped rather than clamped, which would show the
+ * same number twice.
+ */
+const suggestedAmounts = computed(() => {
+    if (!props.storePackage.is_pay_what_you_want) {
+        return [];
+    }
+
+    const minimum = minimumAmount.value;
+
+    if (minimum <= 0) {
+        return [];
+    }
+
+    return [1, 2, 5, 10]
+        .map((multiplier) => minimum * multiplier)
+        .filter((amount) => maximumAmount.value === null || amount <= maximumAmount.value)
+        .map((amount) => amount.toFixed(props.currency.exponent));
+});
+
+const chooseAmount = (amount) => {
+    customPrice.value = amount;
+};
+
+const isChosenAmount = (amount) => Number(customPrice.value) === Number(amount);
 
 // The step belongs to the currency, never a hardcoded 0.01: JPY has no minor unit, so 0.01 would
 // invite ¥1000.50 — which the server refuses outright rather than rounding — and KWD has three
@@ -127,19 +175,34 @@ const handleAddToCart = () => {
     });
 };
 
-const handleQuantityChange = (e) => {
-    let value = parseInt(e.target.value, 10);
+const clampQuantity = (value) => {
+    const min = props.storePackage.min_quantity || 1;
+    const max = props.storePackage.max_quantity || Infinity;
 
     if (isNaN(value)) {
-        value = props.storePackage.min_quantity || 1;
-    } else if (props.storePackage.min_quantity && value < props.storePackage.min_quantity) {
-        value = props.storePackage.min_quantity;
-    } else if (props.storePackage.max_quantity && value > props.storePackage.max_quantity) {
-        value = props.storePackage.max_quantity;
+        return min;
     }
-
-    quantity.value = value;
+    return Math.min(max, Math.max(min, value));
 };
+
+const handleQuantityChange = (e) => {
+    quantity.value = clampQuantity(parseInt(e.target.value, 10));
+};
+
+// Buttons as well as a bare number field, matching the cart and the stacked layout. Typing a
+// number is a poor way to change one on a phone, and this is the page the purchase happens on.
+const stepQuantity = (by) => {
+    quantity.value = clampQuantity(quantity.value + by);
+};
+
+const atMinQuantity = computed(() => quantity.value <= (props.storePackage.min_quantity || 1));
+const atMaxQuantity = computed(
+    () => !!props.storePackage.max_quantity && quantity.value >= props.storePackage.max_quantity
+);
+
+const isBlocked = computed(
+    () => isOutOfStock.value || (props.storePackage.requires_login && isGuest.value)
+);
 </script>
 
 <template>
@@ -200,11 +263,34 @@ const handleQuantityChange = (e) => {
                 v-model="customPrice"
                 type="number"
                 :step="priceStep"
-                :min="storePackage.price / (10 ** currency.exponent)"
+                :min="minimumAmount"
+                :max="maximumAmount ?? undefined"
                 class="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                 :disabled="isOutOfStock"
               >
             </div>
+
+            <!-- One tap instead of a blank field. Pay-what-you-want packages that offer no anchor
+                 get paid the minimum, because the minimum is the only number on the screen. -->
+            <div
+              v-if="suggestedAmounts.length > 1"
+              class="flex flex-wrap gap-2 pt-1"
+            >
+              <button
+                v-for="amount in suggestedAmounts"
+                :key="amount"
+                type="button"
+                class="px-3 py-1.5 text-sm rounded-lg border transition-colors cursor-pointer"
+                :class="isChosenAmount(amount)
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'border-border text-foreground hover:bg-muted'"
+                :disabled="isOutOfStock"
+                @click="chooseAmount(amount)"
+              >
+                {{ currency.symbol }}{{ amount }}
+              </button>
+            </div>
+
             <p class="text-xs text-muted-foreground">
               {{ __("Minimum:") }} {{ storePackage.price_formatted }}
             </p>
@@ -221,18 +307,42 @@ const handleQuantityChange = (e) => {
             v-else
             class="bg-card text-card-foreground border border-border rounded-lg shadow p-4 md:p-6 space-y-2"
           >
-            <label class="block text-sm font-medium text-foreground">
+            <label
+              for="quantity"
+              class="block text-sm font-medium text-foreground"
+            >
               {{ __("Quantity") }}
             </label>
-            <input
-              :value="quantity"
-              type="number"
-              :min="storePackage.min_quantity || 1"
-              :max="storePackage.max_quantity || undefined"
-              class="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-              :disabled="isOutOfStock"
-              @input="handleQuantityChange"
-            >
+            <div class="inline-flex items-center border border-border rounded-lg bg-card">
+              <button
+                type="button"
+                class="px-3 py-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                :aria-label="__('Decrease quantity')"
+                :disabled="isOutOfStock || atMinQuantity"
+                @click="stepQuantity(-1)"
+              >
+                &minus;
+              </button>
+              <input
+                id="quantity"
+                :value="quantity"
+                type="number"
+                :min="storePackage.min_quantity || 1"
+                :max="storePackage.max_quantity || undefined"
+                class="w-16 text-center bg-transparent text-foreground border-0 focus:outline-none focus:ring-0"
+                :disabled="isOutOfStock"
+                @input="handleQuantityChange"
+              >
+              <button
+                type="button"
+                class="px-3 py-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                :aria-label="__('Increase quantity')"
+                :disabled="isOutOfStock || atMaxQuantity"
+                @click="stepQuantity(1)"
+              >
+                &plus;
+              </button>
+            </div>
             <p class="text-xs text-muted-foreground">
               <span v-if="storePackage.min_quantity">
                 {{ __("Minimum:") }} {{ storePackage.min_quantity }}
@@ -306,9 +416,20 @@ const handleQuantityChange = (e) => {
         <div class="lg:w-1/2">
           <!-- Title & Price -->
           <div class="mb-6">
-            <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {{ storePackage.name }}
-            </h1>
+            <div class="flex justify-between items-start gap-4 mb-4">
+              <h1 class="text-3xl md:text-4xl font-bold text-foreground">
+                {{ storePackage.name }}
+              </h1>
+              <!-- The storefront and the cart both offer this; the page where the price is
+                   actually read did not, so a shopper in the wrong currency had to navigate away
+                   and come back to change it. -->
+              <div class="shrink-0">
+                <StoreCurrencySwitcher
+                  :currencies="currency.available"
+                  :current="currency.current"
+                />
+              </div>
+            </div>
 
             <div class="flex items-baseline gap-2 mb-4">
               <span
@@ -372,6 +493,11 @@ const handleQuantityChange = (e) => {
                 {{ __(":days days", { days: storePackage.expiry_duration_days }) }}
               </span>
             </div>
+
+            <StoreUrgencyBadges
+              :store-package="storePackage"
+              size="lg"
+            />
           </div>
 
           <!-- Description -->
@@ -388,7 +514,9 @@ const handleQuantityChange = (e) => {
             />
           </div>
 
-          <!-- Login Required Message -->
+          <!-- Login Required Message. The button below is disabled, so this block has to carry the
+               way forward — it used to state the rule and stop, leaving a guest on a dead page
+               with no sign-in link anywhere near the thing they were trying to buy. -->
           <div
             v-if="storePackage.requires_login && isGuest"
             class="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 text-yellow-900 dark:text-yellow-100 rounded-lg p-4 mb-6"
@@ -396,14 +524,28 @@ const handleQuantityChange = (e) => {
             <p class="font-medium mb-2">
               {{ __("Login Required") }}
             </p>
-            <p class="text-sm">
+            <p class="text-sm mb-3">
               {{ __("You must be logged in to purchase this package.") }}
             </p>
+            <div class="flex flex-wrap gap-2">
+              <Link
+                :href="route('login')"
+                class="px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                {{ __("Sign in") }}
+              </Link>
+              <Link
+                :href="route('register')"
+                class="px-4 py-2 text-sm font-semibold rounded-lg border border-yellow-300 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900 transition-colors"
+              >
+                {{ __("Create an account") }}
+              </Link>
+            </div>
           </div>
 
           <!-- Add to Cart Button -->
           <button
-            :disabled="isOutOfStock || (storePackage.requires_login && isGuest)"
+            :disabled="isBlocked"
             class="w-full px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90"
             @click="handleAddToCart"
           >
@@ -419,6 +561,50 @@ const handleQuantityChange = (e) => {
           </button>
         </div>
       </div>
+
+      <!-- More to buy, from the category the shopper is already reading. Without it the package
+           page is a cul-de-sac: the only ways on are the back button and the breadcrumb. -->
+      <section
+        v-if="relatedPackages.length"
+        class="mt-12"
+      >
+        <h2 class="text-xl font-bold text-foreground mb-4">
+          {{ __("You might also like") }}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StorePackageCard
+            v-for="related in relatedPackages"
+            :key="related.id"
+            :store-package="related"
+          />
+        </div>
+      </section>
     </div>
+
+    <!-- On a phone the buy button sits under an image, a price, a form and a description, so the
+         page's own call to action is a scroll away from wherever the shopper stopped reading. -->
+    <div
+      v-if="!isBlocked"
+      class="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur shadow-lg px-4 py-3 flex items-center justify-between gap-4"
+    >
+      <div class="min-w-0">
+        <p class="text-xs text-muted-foreground truncate">
+          {{ storePackage.name }}
+        </p>
+        <p class="font-bold text-foreground">
+          {{ storePackage.price_formatted }}
+        </p>
+      </div>
+      <button
+        class="shrink-0 px-6 py-2.5 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+        @click="handleAddToCart"
+      >
+        {{ __("Add to Cart") }}
+      </button>
+    </div>
+    <div
+      v-if="!isBlocked"
+      class="lg:hidden h-20"
+    />
   </AppLayout>
 </template>

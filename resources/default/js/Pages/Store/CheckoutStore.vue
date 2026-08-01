@@ -7,6 +7,7 @@ import { useTranslations } from "@/Composables/useTranslations";
 import { Button } from "@/Components/ui/button";
 import XInput from "@/Components/Form/XInput.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
+import { LockIcon } from "lucide-vue-next";
 
 const { __ } = useTranslations();
 
@@ -38,9 +39,34 @@ const submit = () => form.post(route("store.checkout.store"));
     <AppHead :title="__('Checkout')" />
 
     <div class="px-4 py-8 mx-auto max-w-5xl text-foreground">
-      <h1 class="text-2xl font-semibold mb-6">
+      <h1 class="text-2xl font-semibold mb-4">
         {{ __("Checkout") }}
       </h1>
+
+      <!-- Where they are and what is left. A single unlabelled form gives no sense of how long
+           this takes, and "how much more of this is there" is what closes a tab. -->
+      <ol class="flex items-center gap-2 text-xs mb-6">
+        <li class="flex items-center gap-2 text-muted-foreground">
+          <span class="w-5 h-5 rounded-full bg-muted flex items-center justify-center font-semibold">1</span>
+          {{ __("Cart") }}
+        </li>
+        <li
+          class="h-px w-6 bg-border"
+          aria-hidden="true"
+        />
+        <li class="flex items-center gap-2 font-semibold text-foreground">
+          <span class="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center">2</span>
+          {{ __("Details") }}
+        </li>
+        <li
+          class="h-px w-6 bg-border"
+          aria-hidden="true"
+        />
+        <li class="flex items-center gap-2 text-muted-foreground">
+          <span class="w-5 h-5 rounded-full bg-muted flex items-center justify-center font-semibold">3</span>
+          {{ __("Payment") }}
+        </li>
+      </ol>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <form
@@ -151,6 +177,16 @@ const submit = () => form.post(route("store.checkout.store"));
             >
               {{ form.errors.gateway }}
             </p>
+
+            <!-- Says what the button does before it does it. Being thrown to a third-party domain
+                 unannounced is the moment a first-time buyer decides the store is not legitimate. -->
+            <p
+              v-if="hasGateways"
+              class="flex items-center gap-1.5 text-xs text-muted-foreground mt-4"
+            >
+              <LockIcon class="w-3 h-3 shrink-0" />
+              {{ __("You will be taken to the payment provider to pay securely. We never see your card details.") }}
+            </p>
           </section>
 
           <!-- Terms -->
@@ -231,6 +267,24 @@ const submit = () => form.post(route("store.checkout.store"));
                 {{ __("Subtotal") }}
               </dt>
               <dd>{{ quote.formatted.subtotal }}</dd>
+            </div>
+            <!-- The cart itemises a sale and an upgrade credit; this summary did not, so a buyer
+                 who had both went from a cart whose figures added up to a checkout whose figures
+                 did not. Money that disappears between two screens is money a buyer stops to
+                 query. -->
+            <div
+              v-if="quote.sale_discount > 0"
+              class="flex justify-between text-success"
+            >
+              <dt>{{ __("Sale Discount") }}</dt>
+              <dd>-{{ quote.formatted.sale_discount }}</dd>
+            </div>
+            <div
+              v-if="quote.upgrade_credit > 0"
+              class="flex justify-between text-success"
+            >
+              <dt>{{ __("Upgrade Credit") }}</dt>
+              <dd>-{{ quote.formatted.upgrade_credit }}</dd>
             </div>
             <div
               v-if="quote.coupon_discount > 0"

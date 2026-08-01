@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { discountLabel } from "@/Composables/useStoreDiscount";
 import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
+import StoreUrgencyBadges from "@/Components/Store/StoreUrgencyBadges.vue";
 import { computed } from "vue";
 
 const { __ } = useTranslations();
@@ -107,6 +108,11 @@ const detailLabel = computed(
       >
         {{ storePackage.short_description }}
       </p>
+
+      <StoreUrgencyBadges
+        :store-package="storePackage"
+        class="mt-2"
+      />
     </div>
 
     <!-- Price and action -->

@@ -4,6 +4,7 @@ import AppHead from "@/Components/AppHead.vue";
 import { Link, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import StoreCurrencySwitcher from "@/Components/Store/StoreCurrencySwitcher.vue";
+import StorePackageCard from "@/Components/Store/StorePackageCard.vue";
 import { ref } from "vue";
 
 const { __ } = useTranslations();
@@ -12,6 +13,10 @@ defineProps({
     quote: {
         type: Object,
         required: true,
+    },
+    recommended: {
+        type: Array,
+        default: () => [],
     },
     currency: {
         type: Object,
@@ -28,9 +33,37 @@ const handleRemoveItem = (cartItemId) => {
     });
 };
 
-const handleQuantityChange = (cartItemId, newQuantity) => {
-    router.patch(route("store.cart.update", cartItemId), {
-        quantity: newQuantity,
+/**
+ * Clamp to the package's own bounds before asking the server to change anything.
+ *
+ * The stepper floored at 1 and had no ceiling, so a package sold in fives could be stepped down to
+ * one and a capped one stepped past its cap. The server clamps either back silently, which reads
+ * as the button being broken. Zero stays reachable: typing 0 is how a row is removed.
+ */
+const clampQuantity = (item, value) => {
+    const min = item.min_quantity || 1;
+    const max = item.max_quantity || Infinity;
+
+    if (isNaN(value) || value < 0) {
+        return min;
+    }
+    if (value === 0) {
+        return 0;
+    }
+    return Math.min(max, Math.max(min, value));
+};
+
+const handleQuantityChange = (item, newQuantity) => {
+    const quantity = clampQuantity(item, newQuantity);
+
+    // Nothing to ask the server for if the value has not actually moved — stepping at the bound
+    // would otherwise fire a request per click and flash the page for no change.
+    if (quantity === item.quantity) {
+        return;
+    }
+
+    router.patch(route("store.cart.update", item.cart_item_id), {
+        quantity,
     }, {
         preserveScroll: true,
     });
@@ -217,21 +250,26 @@ const handleClearCode = () => {
                     <!-- Quantity Input -->
                     <div class="flex items-center border border-border rounded-lg bg-card">
                       <button
-                        class="px-2 py-1 text-muted-foreground hover:text-foreground transition-colors"
-                        @click="handleQuantityChange(item.cart_item_id, Math.max(1, item.quantity - 1))"
+                        class="px-2 py-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        :aria-label="__('Decrease quantity')"
+                        :disabled="item.quantity <= (item.min_quantity || 1)"
+                        @click="handleQuantityChange(item, item.quantity - 1)"
                       >
                         −
                       </button>
                       <input
                         :value="item.quantity"
                         type="number"
-                        min="1"
+                        :min="item.min_quantity || 1"
+                        :max="item.max_quantity || undefined"
                         class="w-12 text-center border-none bg-transparent text-foreground focus:outline-none"
-                        @change="(e) => handleQuantityChange(item.cart_item_id, parseInt(e.target.value) || 1)"
+                        @change="(e) => handleQuantityChange(item, parseInt(e.target.value, 10))"
                       >
                       <button
-                        class="px-2 py-1 text-muted-foreground hover:text-foreground transition-colors"
-                        @click="handleQuantityChange(item.cart_item_id, item.quantity + 1)"
+                        class="px-2 py-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        :aria-label="__('Increase quantity')"
+                        :disabled="!!item.max_quantity && item.quantity >= item.max_quantity"
+                        @click="handleQuantityChange(item, item.quantity + 1)"
                       >
                         +
                       </button>
@@ -364,10 +402,14 @@ const handleClearCode = () => {
               </div>
 
               <div class="flex gap-2">
+                <!-- Enter submits. A code field that only responds to a button click is the most
+                     reliably mistyped control in a checkout. -->
                 <input
                   v-model="codeInput"
                   :placeholder="__('Enter coupon or gift card code')"
+                  :aria-label="__('Enter coupon or gift card code')"
                   class="flex-1 px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  @keyup.enter="codeInput.trim() && handleApplyCode()"
                 >
                 <button
                   :disabled="codeLoading || !codeInput.trim()"
@@ -395,9 +437,37 @@ const handleClearCode = () => {
             >
               {{ __("Checkout") }}
             </Link>
+
+            <!-- A cart is not a decision. Sending someone who wants one more thing back through
+                 the browser's history is how the second item never gets added. -->
+            <Link
+              :href="route('store.index')"
+              class="block w-full px-6 py-2 text-sm text-center text-muted-foreground hover:text-foreground transition-colors"
+            >
+              &larr; {{ __("Continue Shopping") }}
+            </Link>
           </div>
         </div>
       </div>
+
+      <!-- Outside the empty/filled branch, so it shows either way: to a shopper with a basket it
+           is the last chance to add something, and to one with an empty cart it is the only thing
+           on the page worth clicking. -->
+      <section
+        v-if="recommended.length"
+        class="mt-10"
+      >
+        <h2 class="text-xl font-bold text-foreground mb-4">
+          {{ quote.items.length ? __("Add one more thing") : __("Popular right now") }}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StorePackageCard
+            v-for="item in recommended"
+            :key="item.id"
+            :store-package="item"
+          />
+        </div>
+      </section>
     </div>
   </AppLayout>
 </template>

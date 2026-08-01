@@ -146,6 +146,13 @@ onUnmounted(stopPolling);
             {{ __("We have not received your payment yet. If you have just paid, this page will update by itself in a moment.") }}
           </p>
 
+          <!-- The figure was already on the wire and never rendered, so the screen asked for a
+               payment without naming its amount and the button said "Continue" against nothing. -->
+          <p class="mt-4 text-sm text-muted-foreground">
+            {{ __("Amount due") }}
+            <span class="ml-1 text-2xl font-bold text-foreground align-middle">{{ order.amount_due_formatted }}</span>
+          </p>
+
           <!-- The way back in. Without this the buyer's only options are to abandon the order or
                rebuild the whole basket, because the cart was emptied when the order was placed. -->
           <div
@@ -188,7 +195,9 @@ onUnmounted(stopPolling);
               :disabled="paying"
               @click="resumePayment"
             >
-              {{ isSwitching ? __("Pay with this method instead") : __("Continue payment") }}
+              {{ isSwitching
+                ? __("Pay :amount with this method instead", { amount: order.amount_due_formatted })
+                : __("Pay :amount now", { amount: order.amount_due_formatted }) }}
             </Button>
 
             <p class="text-xs text-muted-foreground mt-2 text-center">

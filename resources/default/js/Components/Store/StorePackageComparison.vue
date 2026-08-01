@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { useHelpers } from "@/Composables/useHelpers";
 import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
+import StoreUrgencyBadges from "@/Components/Store/StoreUrgencyBadges.vue";
 import { CheckIcon, XMarkIcon } from "@heroicons/vue/24/solid";
 
 const { __ } = useTranslations();
@@ -135,6 +136,11 @@ const detailLabel = (storePackage) => (storePackage.needs_configuring && !storeP
                 {{ storePackage.price_original_formatted }}
               </span>
             </div>
+
+            <StoreUrgencyBadges
+              :store-package="storePackage"
+              class="justify-center mb-3"
+            />
 
             <!-- Stacked rather than side by side: a comparison column is only 12rem wide, and two
                  buttons on one line would wrap mid-label. -->

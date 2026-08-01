@@ -53,29 +53,53 @@ defineProps({
         v-else
         class="space-y-3"
       >
-        <Link
+        <div
           v-for="order in orders.data"
           :key="order.uuid"
-          class="block bg-card rounded-lg shadow p-4 hover:bg-muted/40 transition-colors"
-          :href="route('store.my-order.show', order.uuid)"
+          class="bg-card rounded-lg shadow overflow-hidden"
         >
-          <div class="flex flex-wrap justify-between items-start gap-3">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="font-mono text-sm font-medium">{{ order.number }}</span>
-                <CommonStatusBadge :status="order.status.value" />
-                <CommonStatusBadge :status="order.delivery_status.value" />
+          <Link
+            class="block p-4 hover:bg-muted/40 transition-colors"
+            :href="route('store.my-order.show', order.uuid)"
+          >
+            <div class="flex flex-wrap justify-between items-start gap-3">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-mono text-sm font-medium">{{ order.number }}</span>
+                  <CommonStatusBadge :status="order.status.value" />
+                  <CommonStatusBadge :status="order.delivery_status.value" />
+                </div>
+                <p class="text-sm text-muted-foreground">
+                  {{ order.items.map((item) => `${item.quantity} x ${item.package_name}`).join(", ") }}
+                </p>
+                <p class="text-xs text-muted-foreground mt-1">
+                  {{ __("For") }} {{ order.player_username }} · {{ formatToDayDateString(order.created_at) }}
+                </p>
               </div>
-              <p class="text-sm text-muted-foreground">
-                {{ order.items.map((item) => `${item.quantity} x ${item.package_name}`).join(", ") }}
-              </p>
-              <p class="text-xs text-muted-foreground mt-1">
-                {{ __("For") }} {{ order.player_username }} · {{ formatToDayDateString(order.created_at) }}
-              </p>
+              <span class="font-medium whitespace-nowrap">{{ order.total_formatted }}</span>
             </div>
-            <span class="font-medium whitespace-nowrap">{{ order.total_formatted }}</span>
+          </Link>
+
+          <!-- An order that was placed and never paid is a buyer who already decided. Until now
+               the only route back to the gateway was the result page's url, which nothing here
+               linked to — the list showed a "pending" badge and left it there. -->
+          <div
+            v-if="order.is_resumable"
+            class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-t border-border bg-orange-500/5"
+          >
+            <p class="text-sm text-muted-foreground">
+              {{ __("This order is waiting for payment.") }}
+            </p>
+            <Button
+              size="sm"
+              as-child
+            >
+              <Link :href="route('store.order.result', order.uuid)">
+                {{ __("Pay :amount", { amount: order.amount_due_formatted }) }}
+              </Link>
+            </Button>
           </div>
-        </Link>
+        </div>
 
         <Pagination
           v-if="orders.last_page > 1"

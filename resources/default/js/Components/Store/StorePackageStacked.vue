@@ -2,6 +2,7 @@
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
+import StoreUrgencyBadges from "@/Components/Store/StoreUrgencyBadges.vue";
 import { computed, ref } from "vue";
 
 const { __ } = useTranslations();
@@ -73,6 +74,11 @@ const detailLabel = computed(
       <p class="text-xs text-muted-foreground mt-1">
         {{ __("Each") }}: {{ storePackage.price_formatted }}
       </p>
+
+      <StoreUrgencyBadges
+        :store-package="storePackage"
+        class="mt-2"
+      />
     </div>
 
     <!-- Quantity tier -->

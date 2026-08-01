@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\StoreOrderStatus;
 use App\Enums\StorePackageGrantStatus;
 use App\Enums\StorePaymentStatus;
 use App\Events\StoreOrderPaid;
@@ -275,4 +276,48 @@ test('the paid event carries the order', function () {
         StoreOrderPaid::class,
         fn (StoreOrderPaid $event) => $event->order->id === $order->id
     );
+});
+
+test('an unpaid order in the purchase list offers the way back to the gateway', function () {
+    $user = User::factory()->create();
+    orderWithItem(['user_id' => $user->id]);
+
+    $this->actingAs($user)
+        ->get(route('store.my-order.index'))
+        ->assertInertia(fn ($page) => $page
+            ->where('orders.data.0.is_resumable', true)
+            ->where('orders.data.0.amount_due_formatted', '$15.00')
+        );
+});
+
+test('a paid order offers no payment recovery', function () {
+    $user = User::factory()->create();
+    orderWithItem(['user_id' => $user->id, 'status' => StoreOrderStatus::PAID, 'amount_due' => 0]);
+
+    $this->actingAs($user)
+        ->get(route('store.my-order.index'))
+        ->assertInertia(fn ($page) => $page->where('orders.data.0.is_resumable', false));
+});
+
+test('an order past the payment window offers no payment recovery', function () {
+    // The sweeper is about to cancel it, and a capture landing against a cancelled order is money
+    // markPaid() cannot credit — so the list must not invite one.
+    $user = User::factory()->create();
+    $order = orderWithItem(['user_id' => $user->id]);
+    $order->forceFill(['created_at' => now()->subHours(config('store.pending_order_ttl_hours', 24) + 1)])->save();
+
+    $this->actingAs($user)
+        ->get(route('store.my-order.index'))
+        ->assertInertia(fn ($page) => $page->where('orders.data.0.is_resumable', false));
+
+    $this->actingAs($user)
+        ->get(route('store.my-order.show', $order->uuid))
+        ->assertInertia(fn ($page) => $page->where('order.is_resumable', false));
+});
+
+test('the pending order screen names the amount still owed', function () {
+    $order = orderWithItem(['user_id' => null]);
+
+    $this->get(route('store.order.result', $order->uuid))
+        ->assertInertia(fn ($page) => $page->where('order.amount_due_formatted', '$15.00'));
 });

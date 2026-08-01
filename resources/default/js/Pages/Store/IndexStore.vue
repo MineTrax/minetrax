@@ -4,6 +4,8 @@ import AppHead from "@/Components/AppHead.vue";
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import StoreCurrencySwitcher from "@/Components/Store/StoreCurrencySwitcher.vue";
+import StoreSearchBox from "@/Components/Store/StoreSearchBox.vue";
+import StoreCartBar from "@/Components/Store/StoreCartBar.vue";
 import StorePackageCard from "@/Components/Store/StorePackageCard.vue";
 import StorePackageListing from "@/Components/Store/StorePackageListing.vue";
 import StorePackageComparison from "@/Components/Store/StorePackageComparison.vue";
@@ -11,7 +13,8 @@ import StorePackageStacked from "@/Components/Store/StorePackageStacked.vue";
 import StoreGoalBox from "@/Shared/StoreGoalBox.vue";
 import StoreRecentPurchasesBox from "@/Shared/StoreRecentPurchasesBox.vue";
 import StoreTopDonorBox from "@/Shared/StoreTopDonorBox.vue";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { ChevronDownIcon } from "lucide-vue-next";
 
 const { __ } = useTranslations();
 
@@ -33,6 +36,12 @@ const props = defineProps({
     packages: {
         type: Array,
         required: true,
+    },
+    // Echoed back by the server so the box keeps the term across a back-navigation, and so the
+    // "no results" state can name what was searched for.
+    search: {
+        type: [String, null],
+        default: null,
     },
     currency: {
         type: Object,
@@ -56,6 +65,34 @@ const displayType = computed(() => {
     }
     return chosen;
 });
+
+// A search filters within the category the shopper is already in, so the box has to post back to
+// whichever route rendered this page.
+const searchRoute = computed(() => (props.activeCategory
+    ? { name: "store.category", params: props.activeCategory.slug }
+    : { name: "store.index", params: null }));
+
+// The sidebar shipped parent_id from the first version but rendered every category as a
+// top-level entry, so a store with sub-categories read as one long undifferentiated list.
+// Children are nested under whichever parent is also visible; one whose parent is hidden or
+// disabled is promoted rather than dropped, or it would be unreachable.
+const categoryTree = computed(() => {
+    const visibleIds = new Set(props.categories.map((category) => category.id));
+
+    return props.categories
+        .filter((category) => !category.parent_id || !visibleIds.has(category.parent_id))
+        .map((category) => ({
+            ...category,
+            children: props.categories.filter((child) => child.parent_id === category.id),
+        }));
+});
+
+const isActiveCategory = (category) => props.activeCategory?.slug === category.slug;
+
+// Collapsed on a phone, where the sidebar otherwise pushes the entire catalogue below the fold —
+// a visitor landing on the store saw a list of category names and no products at all. Open from
+// `lg` up, where it sits beside the grid and costs nothing.
+const showCategories = ref(false);
 </script>
 
 <template>
@@ -77,12 +114,23 @@ const displayType = computed(() => {
               {{ storeDescription }}
             </p>
           </div>
-          <div class="flex-shrink-0">
+          <div class="shrink-0">
             <StoreCurrencySwitcher
               :currencies="currency.available"
               :current="currency.current"
             />
           </div>
+        </div>
+
+        <!-- Full width under the title rather than tucked beside the currency switcher: on a
+             catalogue of any size, finding a named rank is the most common thing a returning
+             buyer does, and until now the only way was to read every card. -->
+        <div class="mt-4 max-w-xl">
+          <StoreSearchBox
+            :model-value="search"
+            :route-name="searchRoute.name"
+            :route-params="searchRoute.params"
+          />
         </div>
       </div>
     </div>
@@ -91,8 +139,25 @@ const displayType = computed(() => {
     <div class="px-2 py-6 md:px-10 max-w-screen-2xl mx-auto">
       <div class="flex flex-col lg:flex-row gap-6">
         <!-- Sidebar -->
-        <div class="lg:w-1/4 flex-shrink-0">
-          <div class="bg-card text-card-foreground border border-border rounded-lg shadow p-4 space-y-2">
+        <div class="lg:w-1/4 shrink-0">
+          <!-- The toggle exists only below `lg`; above it the list is always open. -->
+          <button
+            type="button"
+            class="lg:hidden w-full flex justify-between items-center px-4 py-3 mb-2 bg-card text-card-foreground border border-border rounded-lg shadow font-medium"
+            :aria-expanded="showCategories"
+            @click="showCategories = !showCategories"
+          >
+            <span>{{ activeCategory ? activeCategory.name : __("All Packages") }}</span>
+            <ChevronDownIcon
+              class="w-4 h-4 transition-transform"
+              :class="{ 'rotate-180': showCategories }"
+            />
+          </button>
+
+          <div
+            class="bg-card text-card-foreground border border-border rounded-lg shadow p-4 space-y-2"
+            :class="showCategories ? 'block' : 'hidden lg:block'"
+          >
             <!-- All Packages Link -->
             <Link
               :href="route('store.index')"
@@ -105,9 +170,9 @@ const displayType = computed(() => {
               {{ __("All Packages") }}
             </Link>
 
-            <!-- Categories -->
+            <!-- Categories, with any sub-categories nested beneath their parent -->
             <div
-              v-for="category in categories"
+              v-for="category in categoryTree"
               :key="category.id"
               class="border-t border-border pt-2 first:border-t-0 first:pt-0"
             >
@@ -115,8 +180,8 @@ const displayType = computed(() => {
                 :href="route('store.category', category.slug)"
                 class="flex justify-between items-center px-3 py-2 rounded-lg transition-colors"
                 :class="{
-                  'bg-muted text-foreground font-semibold': activeCategory?.slug === category.slug,
-                  'text-muted-foreground hover:bg-muted/50': activeCategory?.slug !== category.slug
+                  'bg-muted text-foreground font-semibold': isActiveCategory(category),
+                  'text-muted-foreground hover:bg-muted/50': !isActiveCategory(category)
                 }"
               >
                 <span>{{ category.name }}</span>
@@ -124,6 +189,27 @@ const displayType = computed(() => {
                   {{ category.packages_count }}
                 </span>
               </Link>
+
+              <div
+                v-if="category.children.length"
+                class="mt-1 ml-3 pl-2 border-l border-border space-y-1"
+              >
+                <Link
+                  v-for="child in category.children"
+                  :key="child.id"
+                  :href="route('store.category', child.slug)"
+                  class="flex justify-between items-center px-3 py-1.5 text-sm rounded-lg transition-colors"
+                  :class="{
+                    'bg-muted text-foreground font-semibold': isActiveCategory(child),
+                    'text-muted-foreground hover:bg-muted/50': !isActiveCategory(child)
+                  }"
+                >
+                  <span>{{ child.name }}</span>
+                  <span class="text-xs bg-muted/50 px-2 py-0.5 rounded text-muted-foreground">
+                    {{ child.packages_count }}
+                  </span>
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -214,15 +300,42 @@ const displayType = computed(() => {
                 d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
               />
             </svg>
-            <h3 class="text-lg font-semibold text-foreground mb-2">
-              {{ __("No Packages Available") }}
-            </h3>
-            <p class="text-muted-foreground">
-              {{ __("There are no packages available at the moment.") }}
-            </p>
+            <!-- A search that found nothing is a different problem from a store with nothing in
+                 it, and the way out of it is different too. -->
+            <template v-if="search">
+              <h3 class="text-lg font-semibold text-foreground mb-2">
+                {{ __("Nothing matched :term", { term: search }) }}
+              </h3>
+              <p class="text-muted-foreground mb-6">
+                {{ __("Try a shorter word, or browse the categories instead.") }}
+              </p>
+              <Link
+                :href="activeCategory ? route('store.category', activeCategory.slug) : route('store.index')"
+                class="inline-block px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg transition-colors hover:bg-primary/90"
+              >
+                {{ __("Clear search") }}
+              </Link>
+            </template>
+
+            <template v-else>
+              <h3 class="text-lg font-semibold text-foreground mb-2">
+                {{ __("No Packages Available") }}
+              </h3>
+              <p class="text-muted-foreground">
+                {{ __("There are no packages available at the moment.") }}
+              </p>
+            </template>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Clearance for the fixed cart bar, so the last row of cards is never trapped under it.
+         Conditional on the same count the bar is, or every empty-cart visit carries dead space. -->
+    <div
+      v-if="Number($page.props.store?.cartCount ?? 0) > 0"
+      class="h-16"
+    />
+    <StoreCartBar />
   </AppLayout>
 </template>

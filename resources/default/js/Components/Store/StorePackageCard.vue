@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { discountLabel } from "@/Composables/useStoreDiscount";
 import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
+import StoreUrgencyBadges from "@/Components/Store/StoreUrgencyBadges.vue";
 import { computed } from "vue";
 
 const { __ } = useTranslations();
@@ -135,6 +136,10 @@ const detailLabel = computed(
           {{ __(":days days", { days: storePackage.expiry_duration_days }) }}
         </span>
       </div>
+
+      <!-- Scarcity and deadline, kept out of the badge row above so they read as a warning rather
+           than as another attribute of the package. -->
+      <StoreUrgencyBadges :store-package="storePackage" />
 
       <!-- Price and actions -->
       <div class="mt-auto pt-3 border-t border-border space-y-3">

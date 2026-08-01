@@ -152,7 +152,7 @@ class StoreCheckoutController extends Controller
             'order' => $this->presentOrder($order),
             // Only while there is still something to pay. Listed against the order's own currency,
             // not the visitor's, because that is what will be charged.
-            'gateways' => $order->status === StoreOrderStatus::PENDING && ! $this->isPastPaymentWindow($order)
+            'gateways' => $order->isResumable()
                 ? $this->gateways->availableFor($order->currency)
                     ->map(fn ($driver) => [
                         'key' => $driver->gateway()->value,
@@ -201,7 +201,7 @@ class StoreCheckoutController extends Controller
 
         // Refused rather than allowed through: the sweeper cancels stale pending orders, and a
         // capture landing against an order it has just cancelled is money markPaid() cannot credit.
-        if ($this->isPastPaymentWindow($order)) {
+        if ($order->isPastPaymentWindow()) {
             return redirect()->route('store.order.result', $order->uuid)
                 ->with(['toast' => ['type' => 'error', 'title' => __('This order has expired'), 'body' => __('Please place it again.')]]);
         }
@@ -257,16 +257,6 @@ class StoreCheckoutController extends Controller
         // A gateway with no hosted page — the manual one — leaves the buyer here to follow whatever
         // instructions the admin configured.
         return redirect()->route('store.order.result', $order->uuid);
-    }
-
-    /**
-     * Whether ExpireStalePendingStoreOrdersJob would already consider this order abandoned.
-     */
-    private function isPastPaymentWindow(StoreOrder $order): bool
-    {
-        return $order->created_at->lt(
-            now()->subHours((int) config('store.pending_order_ttl_hours', 24))
-        );
     }
 
     public function cancel(Request $request, StoreOrder $order)

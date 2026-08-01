@@ -32,7 +32,7 @@ class HomeController extends Controller
     public function home(Request $request, GeneralSettings $generalSettings, ThemeSettings $themeSettings)
     {
         if ($generalSettings->homepage_route === 'store' && config('store.enabled')) {
-            return app(StoreController::class)->storefront();
+            return app(StoreController::class)->storefront($request);
         }
 
         return $this->dashboard($request, $generalSettings, $themeSettings);

@@ -137,6 +137,22 @@ defineProps({
         </dl>
       </div>
 
+      <!-- Ahead of the summary buttons, and styled as the primary action: an unpaid order has one
+           thing worth doing to it, and "View Delivery Status" does not read as it. -->
+      <div
+        v-if="order.is_resumable"
+        class="flex flex-wrap items-center justify-between gap-3 mt-6 p-4 rounded-lg border border-border bg-orange-500/5"
+      >
+        <p class="text-sm text-muted-foreground">
+          {{ __("This order is waiting for payment.") }}
+        </p>
+        <Button as-child>
+          <Link :href="route('store.order.result', order.uuid)">
+            {{ __("Pay :amount", { amount: order.money.amount_due }) }}
+          </Link>
+        </Button>
+      </div>
+
       <div class="mt-6">
         <Button
           variant="outline"

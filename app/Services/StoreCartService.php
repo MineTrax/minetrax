@@ -198,6 +198,11 @@ class StoreCartService
             $quote['items'][$index]['cart_item_id'] = $lines[$index]['cart_item_id'] ?? null;
             $quote['items'][$index]['photo_url'] = $package->photo_url ?? null;
             $quote['items'][$index]['slug'] = $package->slug ?? null;
+            // The cart's stepper used to floor at 1 and have no ceiling, so a package sold in
+            // fives could be edited down to one and a capped one bought past its cap — both only
+            // to be clamped, unexplained, by updateQuantity().
+            $quote['items'][$index]['min_quantity'] = $package?->min_quantity ?? 1;
+            $quote['items'][$index]['max_quantity'] = $package?->max_quantity;
             // Named rather than keyed by identifier: this is for a buyer to read.
             $quote['items'][$index]['variables'] = $package
                 ? $this->variables->snapshotFor($package, $lines[$index]['variable_values'] ?? null)
