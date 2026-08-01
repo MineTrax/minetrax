@@ -305,3 +305,86 @@ test('the cart count is absent while the module is off', function () {
             ->missing('store.cartCount')
         );
 });
+
+test('every page knows which packages are already in the cart', function () {
+    // Shared globally rather than per-page, so a listing can mark what the shopper already holds
+    // without a lookup of its own — the same mechanism the navbar badge rides on.
+    $inCart = StorePackage::factory()->create();
+    $notInCart = StorePackage::factory()->create();
+
+    $this->post(route('store.cart.store'), ['package_id' => $inCart->id, 'quantity' => 3]);
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page
+            ->where('store.cartCount', 3)
+            ->where("store.cartQuantities.{$inCart->id}", 3)
+            ->missing("store.cartQuantities.{$notInCart->id}")
+        );
+});
+
+test('adding the same package again raises the quantity the listing shows', function () {
+    // A unique index keeps a package to one cart line, so this must track the merged quantity
+    // rather than the last add.
+    $package = StorePackage::factory()->create();
+
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 3]);
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page->where("store.cartQuantities.{$package->id}", 4));
+});
+
+test('a visitor with no cart is given an empty quantity map', function () {
+    // An object, not a list: the frontend indexes it by package id.
+    StorePackage::factory()->create();
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page
+            ->where('store.cartCount', 0)
+            ->where('store.cartQuantities', [])
+        );
+
+    $this->assertDatabaseCount('store_carts', 0);
+});
+
+test('the storefront ships the basket total for its cart bar', function () {
+    // A real quote, not a hand-rolled sum: the bar must agree with the cart page once a sale, a
+    // coupon or tax is in play.
+    $package = StorePackage::factory()->create(['price' => 1250]);
+
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 2]);
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page->where('cartTotalFormatted', '$25.00'));
+});
+
+test('the storefront total matches what the cart page shows', function () {
+    $package = StorePackage::factory()->create(['price' => 999]);
+
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 3]);
+
+    $onCartPage = $this->get(route('store.cart.show'))
+        ->viewData('page')['props']['quote']['formatted']['total'];
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page->where('cartTotalFormatted', $onCartPage));
+});
+
+test('an empty cart ships no total, so the bar stays hidden', function () {
+    StorePackage::factory()->create();
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page->where('cartTotalFormatted', null));
+});
+
+test('quoting the basket is not charged to every page on the site', function () {
+    // The total is a prop of the two storefront routes rather than a globally shared one: putting
+    // it on HandleInertiaRequests would price the basket on the dashboard, a profile and every
+    // forum page for anyone carrying a cart.
+    $package = StorePackage::factory()->create(['price' => 500]);
+
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->get(route('store.index'))
+        ->assertInertia(fn ($page) => $page->missing('store.cartTotalFormatted'));
+});

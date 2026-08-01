@@ -43,6 +43,11 @@ const props = defineProps({
         type: [String, null],
         default: null,
     },
+    // Priced server-side for the cart bar. Null when the cart is empty.
+    cartTotalFormatted: {
+        type: [String, null],
+        default: null,
+    },
     currency: {
         type: Object,
         required: true,
@@ -336,6 +341,6 @@ const showCategories = ref(false);
       v-if="Number($page.props.store?.cartCount ?? 0) > 0"
       class="h-16"
     />
-    <StoreCartBar />
+    <StoreCartBar :total="cartTotalFormatted" />
   </AppLayout>
 </template>

@@ -11,7 +11,8 @@ import { computed, ref } from "vue";
 import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import StoreCurrencySwitcher from "@/Components/Store/StoreCurrencySwitcher.vue";
 import StorePackageCard from "@/Components/Store/StorePackageCard.vue";
-import StoreUrgencyBadges from "@/Components/Store/StoreUrgencyBadges.vue";
+import StoreUrgencyNote from "@/Components/Store/StoreUrgencyNote.vue";
+import { useCartMembership } from "@/Composables/useStoreCart";
 import { truncate } from "lodash";
 
 const { __ } = useTranslations();
@@ -203,6 +204,8 @@ const atMaxQuantity = computed(
 const isBlocked = computed(
     () => isOutOfStock.value || (props.storePackage.requires_login && isGuest.value)
 );
+
+const { quantityInCart, isInCart } = useCartMembership(() => props.storePackage);
 </script>
 
 <template>
@@ -449,7 +452,8 @@ const isBlocked = computed(
               </span>
             </div>
 
-            <!-- Status Badges -->
+            <!-- Status Badges. No "in cart" pill here either — the buy button below says it, and
+                 this row is long enough already. -->
             <div class="flex flex-wrap gap-2 mb-6">
               <span
                 v-if="storePackage.is_featured"
@@ -494,10 +498,7 @@ const isBlocked = computed(
               </span>
             </div>
 
-            <StoreUrgencyBadges
-              :store-package="storePackage"
-              size="lg"
-            />
+            <StoreUrgencyNote :store-package="storePackage" />
           </div>
 
           <!-- Description -->
@@ -555,10 +556,23 @@ const isBlocked = computed(
             <span v-else-if="storePackage.requires_login && isGuest">
               {{ __("Login Required") }}
             </span>
+            <span v-else-if="isInCart">
+              {{ __("Add another") }}
+            </span>
             <span v-else>
               {{ __("Add to Cart") }}
             </span>
           </button>
+
+          <!-- Only once it is in there. A permanent second button competing with the primary one
+               would cost more conversions than it saves. -->
+          <Link
+            v-if="isInCart"
+            :href="route('store.cart.show')"
+            class="block w-full mt-2 px-6 py-3 text-center font-semibold rounded-lg border border-success/50 text-success hover:bg-success/10 transition-colors"
+          >
+            {{ __("Go to cart") }}
+          </Link>
         </div>
       </div>
 
@@ -595,12 +609,21 @@ const isBlocked = computed(
           {{ storePackage.price_formatted }}
         </p>
       </div>
-      <button
-        class="shrink-0 px-6 py-2.5 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
-        @click="handleAddToCart"
-      >
-        {{ __("Add to Cart") }}
-      </button>
+      <div class="flex shrink-0 items-center gap-2">
+        <Link
+          v-if="isInCart"
+          :href="route('store.cart.show')"
+          class="px-4 py-2.5 text-sm font-semibold rounded-lg border border-success/50 text-success"
+        >
+          {{ __("Cart") }} · {{ quantityInCart }}
+        </Link>
+        <button
+          class="px-6 py-2.5 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+          @click="handleAddToCart"
+        >
+          {{ isInCart ? __("Add another") : __("Add to Cart") }}
+        </button>
+      </div>
     </div>
     <div
       v-if="!isBlocked"

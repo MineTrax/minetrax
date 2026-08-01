@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\Http\Controllers\Controller;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
+use App\Services\StoreCartService;
 use App\Services\StoreCurrencyService;
 use App\Services\StorePackagePresenter;
 use App\Services\StoreVariableService;
@@ -25,6 +26,7 @@ class StoreController extends Controller
         private StoreCurrencyService $currencies,
         private StoreVariableService $variables,
         private StorePackagePresenter $presenter,
+        private StoreCartService $carts,
         private StoreSettings $settings,
         private GeneralSettings $general,
         private StoreWidgetService $widgets,
@@ -72,6 +74,7 @@ class StoreController extends Controller
                 $currency
             ),
             'search' => $search,
+            'cartTotalFormatted' => $this->cartTotal($request),
             'currency' => $this->currencyPayload($currency),
             // The storefront gets the same three boxes as the homepage, and needs them most when it
             // *is* the homepage — the goal bar is what turns a catalogue into a campaign.
@@ -106,11 +109,35 @@ class StoreController extends Controller
             ],
             'packages' => $this->presenter->collection($packages, $currency, $comparisonFields),
             'search' => $search,
+            'cartTotalFormatted' => $this->cartTotal($request),
             'currency' => $this->currencyPayload($currency),
             // The same page component as the index, so it needs the same sidebar boxes or they
             // would vanish the moment a visitor clicked a category.
             'storeWidgets' => $this->widgets->payload(),
         ]);
+    }
+
+    /**
+     * What the basket currently comes to, for the storefront's cart bar.
+     *
+     * A real quote, so the figure on the bar is the one the cart page shows rather than a
+     * hand-rolled sum that would drift the moment a sale, a coupon or tax applied.
+     *
+     * Deliberately a prop of these two routes rather than a globally shared one: quoting means
+     * loading every package in the cart with its prices and the active sales, and putting that on
+     * `HandleInertiaRequests` would charge it to every page on the site — the forums, a profile,
+     * the dashboard — for anyone who happens to have something in their basket. Null when the cart
+     * is empty, which is also when the bar is hidden, so the common case costs one existence check.
+     */
+    private function cartTotal(Request $request): ?string
+    {
+        $cart = $this->carts->current($request, create: false);
+
+        if (! $cart || $cart->items->isEmpty()) {
+            return null;
+        }
+
+        return $this->carts->quote($cart, $request)['formatted']['total'];
     }
 
     /**

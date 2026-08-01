@@ -2,11 +2,12 @@
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { useHelpers } from "@/Composables/useHelpers";
-import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
-import StoreUrgencyBadges from "@/Components/Store/StoreUrgencyBadges.vue";
+import StoreBuyButton from "@/Components/Store/StoreBuyButton.vue";
+import StoreUrgencyNote from "@/Components/Store/StoreUrgencyNote.vue";
 import { CheckIcon, XMarkIcon } from "@heroicons/vue/24/solid";
 
 const { __ } = useTranslations();
+
 // Comparison cells are authored HTML, so they are sanitised before being injected — the same
 // treatment package descriptions get.
 const { purifyText } = useHelpers();
@@ -137,7 +138,7 @@ const detailLabel = (storePackage) => (storePackage.needs_configuring && !storeP
               </span>
             </div>
 
-            <StoreUrgencyBadges
+            <StoreUrgencyNote
               :store-package="storePackage"
               class="justify-center mb-3"
             />
@@ -152,20 +153,7 @@ const detailLabel = (storePackage) => (storePackage.needs_configuring && !storeP
                 {{ detailLabel(storePackage) }}
               </Link>
 
-              <button
-                v-if="canAddToCart(storePackage)"
-                type="button"
-                class="block px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                @click="addToCart(storePackage)"
-              >
-                {{ __("Add to Cart") }}
-              </button>
-              <span
-                v-else-if="storePackage.is_out_of_stock"
-                class="block px-4 py-2 text-sm font-medium rounded-lg bg-destructive/10 text-destructive"
-              >
-                {{ __("Out of Stock") }}
-              </span>
+              <StoreBuyButton :store-package="storePackage" />
             </div>
           </td>
         </tr>

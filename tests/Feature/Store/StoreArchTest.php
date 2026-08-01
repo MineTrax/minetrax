@@ -198,3 +198,30 @@ test('the webhook route is registered without the api key middleware', function 
     expect($route->gatherMiddleware())->not->toContain('auth.api-key');
     expect($route->gatherMiddleware())->toContain('throttle:store-webhook');
 });
+
+test('no store test drives checkout through the live mojang lookup', function () {
+    // StorePlayerResolver falls through to api.minecraftservices.com for a username it does not
+    // already know, and Mojang rate-limits that endpoint — so a test that checks out without
+    // either seeding the player, faking the HTTP call, or turning verification off passes until
+    // the suite has been run a few times in a row, then fails at random on an unrelated assertion.
+    $offenders = [];
+
+    foreach (glob(__DIR__.'/*.php') as $file) {
+        $source = file_get_contents($file);
+
+        if (! str_contains($source, "route('store.checkout.store')")) {
+            continue;
+        }
+
+        $isInsulated = str_contains($source, "Player::factory()->create(['username'")
+            || str_contains($source, 'Http::fake')
+            || str_contains($source, 'mojang_username_verification = false')
+            || str_contains($source, "'mojang_username_verification' => false");
+
+        if (! $isInsulated) {
+            $offenders[] = basename($file);
+        }
+    }
+
+    expect($offenders)->toBe([], 'These files check out without insulating the Mojang lookup: '.implode(', ', $offenders));
+});

@@ -121,6 +121,17 @@ class HandleInertiaRequests extends Middleware
 
                 $storeSettings = app(StoreSettings::class);
 
+                // One `select` of the two columns both figures need, rather than an aggregate for
+                // the badge and a second read for the listings. No grouping: the cart items table
+                // carries a unique index on (cart, package), so a package is one line or none.
+                // `create: false` matters: looking at any page must never mint a cart row for a
+                // visitor who has not added anything.
+                $cartQuantities = app(StoreCartService::class)
+                    ->current($request, create: false)
+                    ?->items()
+                    ->pluck('quantity', 'store_package_id')
+                    ->map(fn ($quantity) => (int) $quantity);
+
                 return [
                     'enabled' => true,
                     'name' => $storeSettings->store_name,
@@ -129,11 +140,12 @@ class HandleInertiaRequests extends Middleware
                     // would only redirect there anyway.
                     'isHomepage' => app(GeneralSettings::class)->homepage_route === 'store',
                     // Drives the navbar cart badge. Quantities rather than lines, so five crate keys
-                    // read as five. `create: false` matters: looking at any page must never mint a
-                    // cart row for a visitor who has not added anything.
-                    'cartCount' => (int) (app(StoreCartService::class)
-                        ->current($request, create: false)
-                        ?->items()->sum('quantity') ?? 0),
+                    // read as five.
+                    'cartCount' => (int) ($cartQuantities?->sum() ?? 0),
+                    // Keyed by package id so a listing can mark what is already in the basket
+                    // without a lookup of its own. Summed across lines, because the same package
+                    // can sit in the cart twice with different variable answers.
+                    'cartQuantities' => $cartQuantities ?? (object) [],
                 ];
             },
         ]);

@@ -1,9 +1,9 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
-import { discountLabel } from "@/Composables/useStoreDiscount";
-import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
-import StoreUrgencyBadges from "@/Components/Store/StoreUrgencyBadges.vue";
+import StoreBuyButton from "@/Components/Store/StoreBuyButton.vue";
+import StorePackageImageTags from "@/Components/Store/StorePackageImageTags.vue";
+import StoreUrgencyNote from "@/Components/Store/StoreUrgencyNote.vue";
 import { computed } from "vue";
 
 const { __ } = useTranslations();
@@ -15,18 +15,11 @@ const props = defineProps({
     },
 });
 
-// Stated as configured by the server, not inferred from the prices: a saving is rounded to whole
-// minor units, so a flat 15% sale read as "14.8% off" on one package and "14.9% off" on another.
-// A package discount and a sale both applying are listed as "10% + 15% off".
-const discountBadge = computed(() => discountLabel(props.storePackage));
-
 // Whether to strike the old price through. Compared rather than taken from discount_bp, so it covers
 // a package discount, a sale, or both.
 const isDiscounted = computed(
     () => Number(props.storePackage.price_original ?? 0) > Number(props.storePackage.price ?? 0)
 );
-
-const canAdd = computed(() => canAddToCart(props.storePackage));
 
 // The link's label doubles as the explanation for the missing add button: a package that has to be
 // answered for says "Configure", so a shopper is not left wondering why they cannot buy it here.
@@ -39,13 +32,14 @@ const detailLabel = computed(
 
 <template>
   <div class="bg-card text-card-foreground border border-border rounded-lg shadow hover:shadow-md transition-shadow p-4 flex flex-col sm:flex-row sm:items-center gap-4">
-    <!-- Thumbnail -->
-    <div class="w-full sm:w-24 h-24 shrink-0 rounded-lg bg-muted overflow-hidden">
+    <!-- Thumbnail, carrying the same corner tags the grid uses. -->
+    <div class="relative w-full sm:w-24 h-24 shrink-0 rounded-lg bg-muted overflow-hidden">
       <img
         v-if="storePackage.photo_url"
         :src="storePackage.photo_url"
         :alt="storePackage.name"
         class="w-full h-full object-cover"
+        :class="{ 'opacity-40': storePackage.is_out_of_stock }"
       >
       <div
         v-else
@@ -65,6 +59,8 @@ const detailLabel = computed(
           />
         </svg>
       </div>
+
+      <StorePackageImageTags :store-package="storePackage" />
     </div>
 
     <!-- Detail -->
@@ -76,29 +72,13 @@ const detailLabel = computed(
         >
           {{ storePackage.name }}
         </Link>
-        <span
-          v-if="storePackage.is_featured"
-          class="px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded"
-        >
-          {{ __("Featured") }}
-        </span>
-        <span
-          v-if="discountBadge"
-          class="px-2 py-0.5 text-xs font-medium bg-success/10 text-success rounded"
-        >
-          {{ discountBadge }}
-        </span>
+        <!-- The one pill left. A sale's name is free text of unknown length, so it cannot become
+             a corner tag, and it is worth keeping: it tells a permanent discount from a sale. -->
         <span
           v-if="storePackage.sale_name"
           class="px-2 py-0.5 text-xs font-medium bg-success/10 text-success rounded"
         >
           {{ storePackage.sale_name }}
-        </span>
-        <span
-          v-if="storePackage.is_out_of_stock"
-          class="px-2 py-0.5 text-xs font-medium bg-destructive/10 text-destructive rounded"
-        >
-          {{ __("Out of Stock") }}
         </span>
       </div>
 
@@ -109,9 +89,9 @@ const detailLabel = computed(
         {{ storePackage.short_description }}
       </p>
 
-      <StoreUrgencyBadges
+      <StoreUrgencyNote
         :store-package="storePackage"
-        class="mt-2"
+        class="mt-1.5"
       />
     </div>
 
@@ -133,33 +113,25 @@ const detailLabel = computed(
         >
           {{ storePackage.price_original_formatted }}
         </span>
+        <span
+          v-if="storePackage.expiry_duration_days"
+          class="text-xs text-muted-foreground whitespace-nowrap"
+        >
+          {{ __(":days days", { days: storePackage.expiry_duration_days }) }}
+        </span>
       </div>
 
-      <!-- View stays a link so it can be opened in a new tab; adding is a post, so it is a button.
-           A package that has to be configured gets one button rather than two links to the same
-           page, and an out of stock one is told so where the add button would have been. -->
-      <div class="flex items-center gap-2">
+      <!-- View stays a link so it can be opened in a new tab; adding is a post, so it is a button
+           — and once the package is in the cart that button becomes the way back to it. -->
+      <div class="flex items-center gap-2 whitespace-nowrap">
         <Link
           :href="route('store.package', storePackage.slug)"
-          class="px-4 py-2 text-sm font-medium rounded-lg border border-border bg-card text-foreground hover:bg-muted transition-colors whitespace-nowrap"
+          class="px-4 py-2 text-sm font-medium rounded-lg border border-border bg-card text-foreground hover:bg-muted transition-colors"
         >
           {{ detailLabel }}
         </Link>
 
-        <button
-          v-if="canAdd"
-          type="button"
-          class="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap"
-          @click="addToCart(storePackage)"
-        >
-          {{ __("Add to Cart") }}
-        </button>
-        <span
-          v-else-if="storePackage.is_out_of_stock"
-          class="px-4 py-2 text-sm font-medium rounded-lg bg-destructive/10 text-destructive whitespace-nowrap"
-        >
-          {{ __("Out of Stock") }}
-        </span>
+        <StoreBuyButton :store-package="storePackage" />
       </div>
     </div>
   </div>

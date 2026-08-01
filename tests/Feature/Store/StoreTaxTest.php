@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Country;
+use App\Models\Player;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\StoreTax;
@@ -23,6 +24,10 @@ beforeEach(function () {
 
     $this->withCookie(StoreCartService::COOKIE, 'guest-tax-token');
     $this->withoutMiddleware([ThrottleRequests::class, ThrottleRequestsWithRedis::class]);
+
+    // Keeps the checkout below off the live api.minecraftservices.com lookup: StorePlayerResolver
+    // short-circuits on a player it already knows, and Mojang rate-limits that endpoint.
+    Player::factory()->create(['username' => 'Steve']);
 });
 
 /**

@@ -1,8 +1,10 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
-import { addToCart, canAddToCart } from "@/Composables/useStoreCart";
-import StoreUrgencyBadges from "@/Components/Store/StoreUrgencyBadges.vue";
+import { canAddToCart, useCartMembership } from "@/Composables/useStoreCart";
+import StoreBuyButton from "@/Components/Store/StoreBuyButton.vue";
+import StoreUrgencyNote from "@/Components/Store/StoreUrgencyNote.vue";
+import { CheckIcon } from "lucide-vue-next";
 import { computed, ref } from "vue";
 
 const { __ } = useTranslations();
@@ -35,8 +37,14 @@ const onInput = (event) => {
 };
 
 // Bulk items are the point of this layout, so the quantity is chosen here rather than on the
-// package page. Anything that has to be configured first links through to its own page instead.
+// package page. Anything that has to be configured first links through to its own page instead —
+// and gets no quantity picker, since there is nothing here to add.
 const canAdd = computed(() => canAddToCart(props.storePackage));
+
+// The only layout that keeps a real add button once the package is in the cart: buying more of the
+// same thing is what a bulk row is for, so the state is a line of text beside the price rather
+// than taking the button over.
+const { quantityInCart, isInCart } = useCartMembership(() => props.storePackage);
 
 // The link's label doubles as the explanation for the missing add button: a package that has to be
 // answered for says "Configure", so a shopper is not left wondering why they cannot buy it here.
@@ -71,13 +79,22 @@ const detailLabel = computed(
       >
         {{ storePackage.short_description }}
       </p>
-      <p class="text-xs text-muted-foreground mt-1">
-        {{ __("Each") }}: {{ storePackage.price_formatted }}
+
+      <p class="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground mt-1">
+        <span>{{ __("Each") }}: {{ storePackage.price_formatted }}</span>
+        <Link
+          v-if="isInCart"
+          :href="route('store.cart.show')"
+          class="inline-flex items-center gap-1 font-semibold text-success hover:underline"
+        >
+          <CheckIcon class="w-3 h-3" />
+          {{ __(":count in cart", { count: quantityInCart }) }}
+        </Link>
       </p>
 
-      <StoreUrgencyBadges
+      <StoreUrgencyNote
         :store-package="storePackage"
-        class="mt-2"
+        class="mt-1.5"
       />
     </div>
 
@@ -122,20 +139,12 @@ const detailLabel = computed(
         {{ detailLabel }}
       </Link>
 
-      <button
-        v-if="canAdd"
-        type="button"
-        class="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap"
-        @click="addToCart(storePackage, quantity)"
-      >
-        {{ __("Add to Cart") }}
-      </button>
-      <span
-        v-else-if="storePackage.is_out_of_stock"
-        class="px-4 py-2 text-sm font-medium rounded-lg bg-destructive/10 text-destructive whitespace-nowrap"
-      >
-        {{ __("Out of Stock") }}
-      </span>
+      <StoreBuyButton
+        :store-package="storePackage"
+        :quantity="quantity"
+        keep-adding
+        class="whitespace-nowrap"
+      />
     </div>
   </div>
 </template>

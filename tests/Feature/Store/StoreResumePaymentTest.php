@@ -2,6 +2,7 @@
 
 use App\Enums\StoreOrderStatus;
 use App\Enums\StorePaymentStatus;
+use App\Models\Player;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\User;
@@ -24,6 +25,12 @@ beforeEach(function () {
     $this->enableStoreGateways(['manual', 'stripe']);
 
     $this->withCookie(StoreCartService::COOKIE, 'guest-resume-token');
+
+    // StorePlayerResolver short-circuits on a player it already knows. Without this, every
+    // checkout below reaches the live api.minecraftservices.com lookup for "Steve" — which
+    // Mojang rate-limits, so the suite failed at random once it had been run enough times in a
+    // row. The same reason StoreCheckoutTest seeds this player.
+    Player::factory()->create(['username' => 'Steve']);
 
     $this->withoutMiddleware([
         ThrottleRequests::class,

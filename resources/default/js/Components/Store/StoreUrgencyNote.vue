@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onUnmounted, ref } from "vue";
 import { useTranslations } from "@/Composables/useTranslations";
-import { AlarmClockIcon, FlameIcon } from "lucide-vue-next";
+import { FlameIcon } from "lucide-vue-next";
 
 const { __ } = useTranslations();
 
@@ -10,18 +10,18 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    // The package page has room for full-size badges; a card in a grid does not.
-    size: {
-        type: String,
-        default: "sm",
-    },
 });
 
 /**
+ * Scarcity and deadline, as one line of warning-coloured text.
+ *
  * Both facts were already on the wire and neither was ever shown: a package limited to twenty
  * lifetime sales looked identical to an unlimited one until the moment it flipped to "Out of
- * Stock", and one that stops selling on Sunday gave no hint of it. A deadline a shopper cannot
- * see cannot bring the decision forward.
+ * Stock", and one that stops selling on Sunday gave no hint of it.
+ *
+ * A line rather than chips. The card already carries a discount tag, a featured tag and a price;
+ * two more pills turn the warning into just another attribute, and a row of eight pills is read
+ * as decoration and skipped entirely.
  */
 const stockLeft = computed(() => props.storePackage.stock_remaining ?? null);
 
@@ -71,42 +71,39 @@ const countdownLabel = computed(() => {
     const days = Math.floor(hours / 24);
 
     if (days >= 1) {
-        return days === 1 ? __("Ends in 1 day") : __("Ends in :count days", { count: days });
+        return days === 1 ? __("ends in 1 day") : __("ends in :count days", { count: days });
     }
     if (hours >= 1) {
-        return hours === 1 ? __("Ends in 1 hour") : __("Ends in :count hours", { count: hours });
+        return hours === 1 ? __("ends in 1 hour") : __("ends in :count hours", { count: hours });
     }
-    return __("Ends in :count min", { count: Math.max(1, minutes) });
+    return __("ends in :count min", { count: Math.max(1, minutes) });
 });
 
-const badgeClass = computed(() => (props.size === "lg"
-    ? "inline-flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-lg"
-    : "inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded"));
+// Joined into one sentence rather than stacked, so a package that is both nearly gone and nearly
+// over still costs a single line.
+const parts = computed(() => {
+    const list = [];
 
-const iconClass = computed(() => (props.size === "lg" ? "w-4 h-4" : "w-3 h-3"));
+    if (stockLeft.value !== null) {
+        list.push(stockLeft.value === 1
+            ? __("only 1 left")
+            : __("only :count left", { count: stockLeft.value }));
+    }
 
-const hasAny = computed(() => stockLeft.value !== null || showCountdown.value);
+    if (showCountdown.value) {
+        list.push(countdownLabel.value);
+    }
+
+    return list;
+});
 </script>
 
 <template>
-  <div
-    v-if="hasAny"
-    class="flex flex-wrap gap-2"
+  <p
+    v-if="parts.length"
+    class="flex items-center gap-1.5 text-xs font-medium text-orange-600 dark:text-orange-400"
   >
-    <span
-      v-if="stockLeft !== null"
-      :class="[badgeClass, 'bg-orange-500/10 text-orange-600 dark:text-orange-400']"
-    >
-      <FlameIcon :class="iconClass" />
-      {{ stockLeft === 1 ? __("Only 1 left") : __("Only :count left", { count: stockLeft }) }}
-    </span>
-
-    <span
-      v-if="showCountdown"
-      :class="[badgeClass, 'bg-destructive/10 text-destructive']"
-    >
-      <AlarmClockIcon :class="iconClass" />
-      {{ countdownLabel }}
-    </span>
-  </div>
+    <FlameIcon class="w-3.5 h-3.5 shrink-0" />
+    <span class="first-letter:uppercase">{{ parts.join(" · ") }}</span>
+  </p>
 </template>
