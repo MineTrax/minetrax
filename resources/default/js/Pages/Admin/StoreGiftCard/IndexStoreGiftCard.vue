@@ -33,6 +33,14 @@ const breadcrumbItems = [
 
 const headerRow = [
     {
+        key: "id",
+        sortable: true,
+        // Not translated: "#" is a symbol, not a word.
+        label: "#",
+        // Shrinks to the digits so the id never steals width from the real columns.
+        class: "w-px",
+    },
+    {
         key: "code",
         sortable: true,
         label: __("Code"),
@@ -140,6 +148,10 @@ function expiryLabel(card) {
         :filters="filters"
       >
         <template #default="{ item }">
+          <DtRowItem class="text-muted-foreground tabular-nums">
+            {{ item.id }}
+          </DtRowItem>
+
           <DtRowItem>
             <code class="px-1.5 py-0.5 rounded bg-muted text-xs font-mono select-all">
               {{ item.code }}

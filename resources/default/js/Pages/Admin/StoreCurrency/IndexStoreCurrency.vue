@@ -31,6 +31,14 @@ const breadcrumbItems = [
 
 const headerRow = [
     {
+        key: "id",
+        sortable: true,
+        // Not translated: "#" is a symbol, not a word.
+        label: "#",
+        // Shrinks to the digits so the id never steals width from the real columns.
+        class: "w-px",
+    },
+    {
         key: "code",
         sortable: true,
         label: __("Code"),
@@ -115,6 +123,10 @@ function makeBaseCurrency(currency) {
         :filters="filters"
       >
         <template #default="{ item }">
+          <DtRowItem class="text-muted-foreground tabular-nums">
+            {{ item.id }}
+          </DtRowItem>
+
           <DtRowItem>
             <div class="flex items-center gap-2">
               <span class="font-medium text-foreground">{{ item.code }}</span>

@@ -28,6 +28,14 @@ const breadcrumbItems = [
 
 const headerRow = [
     {
+        key: "id",
+        sortable: true,
+        // Not translated: "#" is a symbol, not a word.
+        label: "#",
+        // Shrinks to the digits so the id never steals width from the real columns.
+        class: "w-px",
+    },
+    {
         key: "player_username",
         sortable: false,
         label: __("Player"),
@@ -169,6 +177,10 @@ function submitExtend() {
         :filters="filters"
       >
         <template #default="{ item }">
+          <DtRowItem class="text-muted-foreground tabular-nums">
+            {{ item.id }}
+          </DtRowItem>
+
           <DtRowItem>
             <div class="font-medium text-foreground">
               {{ item.order_item?.order?.player_username ?? "—" }}

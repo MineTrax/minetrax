@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\StoreCurrency;
 use App\Models\StoreOrder;
 use App\Settings\StoreSettings;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -168,10 +169,16 @@ class StoreWidgetService
     }
 
     /**
-     * Whoever has spent the most this month.
+     * Whoever has spent the most this month, or last month while this one is still empty.
      *
-     * Grouped by `player_uuid` rather than by account: a guest checkout has no account, and the same
-     * player buying once signed in and once as a guest is still the same person to the community.
+     * The fallback exists because a hard calendar reset emptied the board at midnight on the 1st and
+     * left a hole in the sidebar until somebody happened to buy something. Nobody is credited with a
+     * purchase they did not make: the card names the month it is reporting, so a fallback reads as
+     * "Top Supporter — July" rather than as a stale August.
+     *
+     * It reaches back one month and no further. A store that has sold nothing in two months has no
+     * current supporter to name, and "Top Supporter — March" on an August storefront is worse than
+     * an absent box.
      *
      * @return array<string, mixed>|null
      */
@@ -181,34 +188,60 @@ class StoreWidgetService
             return null;
         }
 
-        $top = Cache::remember('store:widget:top-donor:'.now()->format('Y-m'), self::CACHE_SECONDS, function () {
-            return StoreOrder::whereIn('status', self::EARNING_STATUSES)
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->whereNotNull('player_uuid')
-                ->selectRaw('player_uuid, MAX(player_username) as player_username, MAX(user_id) as user_id, SUM(base_total) as spent')
-                ->groupBy('player_uuid')
-                ->orderByDesc('spent')
-                ->limit(1)
-                ->first();
+        $cached = Cache::remember('store:widget:top-donor:'.now()->format('Y-m'), self::CACHE_SECONDS, function () {
+            $thisMonth = now()->startOfMonth();
+
+            if ($top = $this->topSpenderBetween($thisMonth, null)) {
+                return ['top' => $top, 'month' => $thisMonth->format('F Y')];
+            }
+
+            $lastMonth = now()->subMonth()->startOfMonth();
+
+            return [
+                'top' => $this->topSpenderBetween($lastMonth, $thisMonth),
+                'month' => $lastMonth->format('F Y'),
+            ];
         });
 
-        if (! $top) {
+        if (! $cached['top']) {
             return null;
         }
 
-        $spent = (int) $top->spent;
+        $spent = (int) $cached['top']->spent;
         $display = $this->currencies->resolve();
 
         return [
-            'name' => $this->settings->hide_buyer_identity ? __('Anonymous') : $top->player_username,
+            'name' => $this->settings->hide_buyer_identity ? __('Anonymous') : $cached['top']->player_username,
             // Base minor units, as the goal does; the formatted figure is what a visitor reads.
             'spent' => $spent,
             'currency' => $display->code,
             // Converted, not relabelled: this is a SUM of base_total across however many currencies
             // this player paid in, so it has no native currency of its own to show it in.
             'spent_formatted' => $this->currencies->format($this->toDisplay($spent, $display), $display),
-            'month' => now()->format('F Y'),
+            // Which month the figure covers, so the box is honest when it has fallen back.
+            'month' => $cached['month'],
         ];
+    }
+
+    /**
+     * The biggest spender in a window, or null if nobody bought anything in it.
+     *
+     * Grouped by `player_uuid` rather than by account: a guest checkout has no account, and the same
+     * player buying once signed in and once as a guest is still the same person to the community.
+     *
+     * @param  CarbonInterface|null  $until  Exclusive, so consecutive months cannot double-count.
+     */
+    private function topSpenderBetween(CarbonInterface $from, ?CarbonInterface $until): ?StoreOrder
+    {
+        return StoreOrder::whereIn('status', self::EARNING_STATUSES)
+            ->where('created_at', '>=', $from)
+            ->when($until, fn ($query) => $query->where('created_at', '<', $until))
+            ->whereNotNull('player_uuid')
+            ->selectRaw('player_uuid, MAX(player_username) as player_username, MAX(user_id) as user_id, SUM(base_total) as spent')
+            ->groupBy('player_uuid')
+            ->orderByDesc('spent')
+            ->limit(1)
+            ->first();
     }
 
     /**

@@ -251,6 +251,75 @@ test('there is no top donor before anybody has bought anything', function () {
     expect(widgets()->topDonor())->toBeNull();
 });
 
+test('the top donor falls back to last month while this month is empty', function () {
+    // The reported symptom: the box vanished from the storefront at midnight on the 1st and stayed
+    // gone until somebody bought something.
+    widgetSettings(['show_top_donor' => true, 'hide_buyer_identity' => false]);
+
+    StoreOrder::factory()->completed()->create([
+        'player_uuid' => '069a79f4-44e9-4726-a5be-fca90e38aaf5',
+        'player_username' => 'Notch',
+        'base_total' => 4000,
+        'created_at' => now()->subMonth()->startOfMonth()->addDays(3),
+    ]);
+
+    $donor = widgets()->topDonor();
+
+    expect($donor)->not->toBeNull();
+    expect($donor['name'])->toBe('Notch');
+    expect($donor['spent'])->toBe(4000);
+});
+
+test('a fallback names the month it is reporting', function () {
+    // The box prints this, so a July figure on an August storefront says July rather than passing
+    // itself off as the current month.
+    widgetSettings(['show_top_donor' => true, 'hide_buyer_identity' => false]);
+
+    StoreOrder::factory()->completed()->create([
+        'player_username' => 'Notch',
+        'base_total' => 4000,
+        'created_at' => now()->subMonth()->startOfMonth()->addDays(3),
+    ]);
+
+    expect(widgets()->topDonor()['month'])->toBe(now()->subMonth()->format('F Y'));
+});
+
+test('this months supporter outranks last months', function () {
+    // The fallback is only for an empty month. One sale this month ends it, however small.
+    widgetSettings(['show_top_donor' => true, 'hide_buyer_identity' => false]);
+
+    StoreOrder::factory()->completed()->create([
+        'player_uuid' => '069a79f4-44e9-4726-a5be-fca90e38aaf5',
+        'player_username' => 'Notch',
+        'base_total' => 90000,
+        'created_at' => now()->subMonth()->startOfMonth()->addDays(3),
+    ]);
+    StoreOrder::factory()->completed()->create([
+        'player_uuid' => 'c06f8906-4c8a-4911-9c29-ea1dbd1aab82',
+        'player_username' => 'Jeb',
+        'base_total' => 100,
+    ]);
+
+    $donor = widgets()->topDonor();
+
+    expect($donor['name'])->toBe('Jeb');
+    expect($donor['spent'])->toBe(100, 'Last month\'s total must not leak into this month\'s figure.');
+    expect($donor['month'])->toBe(now()->format('F Y'));
+});
+
+test('the fallback reaches back one month and no further', function () {
+    // "Top Supporter — March" on an August storefront is worse than an absent box.
+    widgetSettings(['show_top_donor' => true]);
+
+    StoreOrder::factory()->completed()->create([
+        'player_username' => 'Notch',
+        'base_total' => 4000,
+        'created_at' => now()->subMonths(2)->startOfMonth()->addDays(3),
+    ]);
+
+    expect(widgets()->topDonor())->toBeNull();
+});
+
 // -- Wiring -----------------------------------------------------------------------------------
 
 test('the dashboard carries no widget payload', function () {

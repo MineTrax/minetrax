@@ -54,6 +54,14 @@ function scheduleStatus(item) {
 
 const headerRow = [
     {
+        key: "id",
+        sortable: true,
+        // Not translated: "#" is a symbol, not a word.
+        label: "#",
+        // Shrinks to the digits so the id never steals width from the real columns.
+        class: "w-px",
+    },
+    {
         key: "name",
         sortable: true,
         label: __("Package"),
@@ -151,6 +159,10 @@ const headerRow = [
         :filters="filters"
       >
         <template #default="{ item }">
+          <DtRowItem class="text-muted-foreground tabular-nums">
+            {{ item.id }}
+          </DtRowItem>
+
           <DtRowItem>
             <div>
               <div class="font-medium text-foreground flex items-center gap-2">
