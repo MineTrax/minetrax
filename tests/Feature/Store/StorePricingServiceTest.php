@@ -8,10 +8,11 @@ use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\StoreSale;
+use App\Models\StoreTax;
 use App\Models\User;
 use App\Services\StorePricingService;
-use App\Settings\StoreSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 
 uses(RefreshDatabase::class);
 
@@ -26,12 +27,17 @@ function line(StorePackage $package, int $quantity = 1): array
     return ['package' => $package, 'quantity' => $quantity];
 }
 
+/**
+ * The global tax rule, which is what a store with one flat rate now has instead of a setting.
+ */
 function setTax(string $mode, int $rateBp): void
 {
-    $settings = app(StoreSettings::class);
-    $settings->tax_mode = $mode;
-    $settings->tax_rate_bp = $rateBp;
-    $settings->save();
+    Cache::flush();
+
+    StoreTax::updateOrCreate(
+        ['country_id' => null],
+        ['name' => 'Tax', 'rate_bp' => $rateBp, 'is_inclusive' => $mode === 'inclusive', 'is_enabled' => true],
+    );
 
     test()->pricing = app(StorePricingService::class);
 }
@@ -247,8 +253,8 @@ test('tax is charged after the coupon not before', function () {
     expect($quote['total'])->toEqual(1200);
 });
 
-test('no tax mode charges nothing', function () {
-    setTax('none', 2000);
+test('a store with no tax rule charges nothing', function () {
+    // There is no "none" mode any more: a store that owes no tax simply has no rule.
     $package = StorePackage::factory()->create(['price' => 1000]);
 
     expect($this->pricing->quote([line($package)])['tax_amount'])->toEqual(0);

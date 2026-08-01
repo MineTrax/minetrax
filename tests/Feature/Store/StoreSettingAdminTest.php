@@ -26,9 +26,6 @@ function settingAdminPayload(array $overrides = []): array
         'store_description' => null,
         'base_currency' => 'USD',
         'currency_rate_source' => 'manual',
-        'tax_mode' => 'none',
-        'tax_rate_bp' => 0,
-        'tax_label' => 'Tax',
         'enable_guest_checkout' => true,
         'require_email_on_guest_checkout' => true,
         'mojang_username_verification' => true,
@@ -104,8 +101,6 @@ test('saving the settings leaves the gateway configuration untouched', function 
 test('the settings are saved', function () {
     $this->actingAs($this->superadmin)->post(route('admin.setting.store.update'), settingAdminPayload([
         'store_name' => 'Diamond Shop',
-        'tax_mode' => 'exclusive',
-        'tax_rate_bp' => 2000,
         'enable_guest_checkout' => false,
         'mojang_username_verification' => false,
     ]))->assertRedirect();
@@ -113,22 +108,8 @@ test('the settings are saved', function () {
     $settings = app(StoreSettings::class)->refresh();
 
     expect($settings->store_name)->toEqual('Diamond Shop');
-    expect($settings->tax_mode)->toEqual('exclusive');
-    expect($settings->tax_rate_bp)->toEqual(2000);
     expect($settings->enable_guest_checkout)->toBeFalse();
     expect($settings->mojang_username_verification)->toBeFalse();
-});
-
-test('a tax rate above one hundred percent is rejected', function () {
-    $this->actingAs($this->superadmin)
-        ->post(route('admin.setting.store.update'), settingAdminPayload(['tax_rate_bp' => 10001]))
-        ->assertSessionHasErrors('tax_rate_bp');
-});
-
-test('an invalid tax mode is rejected', function () {
-    $this->actingAs($this->superadmin)
-        ->post(route('admin.setting.store.update'), settingAdminPayload(['tax_mode' => 'sometimes']))
-        ->assertSessionHasErrors('tax_mode');
 });
 
 test('the base currency is locked once orders exist', function () {

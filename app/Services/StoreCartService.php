@@ -186,6 +186,9 @@ class StoreCartService
             $cart->giftCard,
             $request?->user(),
             $this->indicativePlayerUuid($request),
+            // Indicative only, from the visitor's IP. Checkout re-quotes against the country
+            // recorded on the order, and that figure is the authoritative one.
+            $request ? app(GeolocationService::class)->getCountryIdFromIP($request->ip()) : null,
         );
 
         // Re-attach the cart item id so the UI can address each row.

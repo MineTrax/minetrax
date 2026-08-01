@@ -44,10 +44,6 @@ class StoreSettingController extends Controller
             'base_currency' => ['required', 'string', 'size:3'],
             'currency_rate_source' => ['required', 'string', 'in:manual,api'],
 
-            'tax_mode' => ['required', 'string', 'in:none,inclusive,exclusive'],
-            'tax_rate_bp' => ['required', 'integer', 'min:0', 'max:10000'],
-            'tax_label' => ['nullable', 'string', 'max:50'],
-
             'enable_guest_checkout' => ['required', 'boolean'],
             'require_email_on_guest_checkout' => ['required', 'boolean'],
             'mojang_username_verification' => ['required', 'boolean'],

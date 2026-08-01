@@ -37,6 +37,7 @@ class RoleSeeder extends Seeder
             'create store_categories', 'read store_categories', 'update store_categories', 'delete store_categories',
             'create store_packages', 'read store_packages', 'update store_packages', 'delete store_packages',
             'read store_currencies', 'update store_currencies',
+            'read store_taxes',
             'read store_orders', 'update store_orders', 'refund store_orders', 'resend store_orders',
             'read store_payments', 'view store_statistics',
             'create store_coupons', 'read store_coupons', 'update store_coupons', 'delete store_coupons',

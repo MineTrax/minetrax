@@ -329,7 +329,7 @@ const handleClearCode = () => {
 
             <!-- Tax -->
             <div
-              v-if="quote.tax_mode !== 'none' && quote.tax_amount > 0"
+              v-if="quote.tax_amount > 0"
               class="flex justify-between items-center pb-4 border-b border-border"
             >
               <span class="text-muted-foreground">{{ quote.tax_label }}</span>

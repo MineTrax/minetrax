@@ -101,6 +101,7 @@ class StoreCheckoutService
                 $cart->giftCard,
                 $user,
                 $resolvedPlayer['uuid'],
+                $input['country_id'] ?? null,
             );
 
             if ($quote['coupon_error']) {
@@ -120,6 +121,11 @@ class StoreCheckoutService
                 'sale_discount' => $quote['sale_discount'],
                 'coupon_discount' => $quote['coupon_discount'],
                 'tax_amount' => $quote['tax_amount'],
+                // Snapshotted with the order: the rule may be edited, disabled or deleted, and a
+                // receipt has to keep saying what was actually charged.
+                'tax_name' => $quote['tax_name'],
+                'tax_rate_bp' => $quote['tax_rate_bp'],
+                'tax_is_inclusive' => $quote['tax_is_inclusive'],
                 'total' => $quote['total'],
                 'gift_card_amount' => $quote['gift_card_amount'],
                 'amount_due' => $quote['amount_due'],

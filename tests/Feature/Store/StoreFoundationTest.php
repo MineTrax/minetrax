@@ -33,8 +33,6 @@ test('store settings resolve with defaults', function () {
 
     expect($settings->base_currency)->toEqual('USD');
     expect($settings->currency_rate_source)->toEqual('manual');
-    expect($settings->tax_mode)->toEqual('none');
-    expect($settings->tax_rate_bp)->toEqual(0);
     expect($settings->enable_guest_checkout)->toBeTrue();
     expect($settings->mojang_username_verification)->toBeTrue();
 });
@@ -69,15 +67,11 @@ test('seeding again leaves a configured gateway exactly as it was', function () 
 test('store settings persist changes', function () {
     $settings = app(StoreSettings::class);
     $settings->base_currency = 'EUR';
-    $settings->tax_mode = 'exclusive';
-    $settings->tax_rate_bp = 2000;
     $settings->save();
 
     $fresh = app(StoreSettings::class);
 
     expect($fresh->base_currency)->toEqual('EUR');
-    expect($fresh->tax_mode)->toEqual('exclusive');
-    expect($fresh->tax_rate_bp)->toEqual(2000);
 });
 
 test('gateway credentials are stored encrypted', function () {

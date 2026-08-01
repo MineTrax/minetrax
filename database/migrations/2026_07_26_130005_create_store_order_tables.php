@@ -34,6 +34,11 @@ return new class extends Migration
             $table->unsignedBigInteger('sale_discount')->default(0);
             $table->unsignedBigInteger('coupon_discount')->default(0);
             $table->unsignedBigInteger('tax_amount')->default(0);
+            // Which rule was applied, copied at purchase time. A rate that changes next year must
+            // not rewrite last year's receipt, and the rule itself may be edited or deleted.
+            $table->string('tax_name')->nullable();
+            $table->unsignedInteger('tax_rate_bp')->default(0);
+            $table->boolean('tax_is_inclusive')->default(false);
             $table->unsignedBigInteger('total')->default(0);
             $table->unsignedBigInteger('gift_card_amount')->default(0);
             $table->unsignedBigInteger('amount_due')->default(0); // what the gateway charges

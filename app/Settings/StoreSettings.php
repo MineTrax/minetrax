@@ -20,14 +20,6 @@ class StoreSettings extends Settings
     /** manual | api */
     public string $currency_rate_source;
 
-    /** none | inclusive | exclusive */
-    public string $tax_mode;
-
-    /** Basis points, so 2000 = 20%. Kept as an integer to avoid float rounding. */
-    public int $tax_rate_bp;
-
-    public ?string $tax_label;
-
     public bool $enable_guest_checkout;
 
     public bool $require_email_on_guest_checkout;

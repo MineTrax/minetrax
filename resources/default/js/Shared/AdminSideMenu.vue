@@ -286,6 +286,14 @@ const navItems = [
                 visible: canWild("store_currencies"),
             },
             {
+                label: "Taxes",
+                href: route("admin.store.tax.index"),
+                active: route().current("admin.store.tax.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_taxes"),
+            },
+            {
                 label: "Payment Gateways",
                 href: route("admin.store.payment-gateway.index"),
                 active: route().current("admin.store.payment-gateway.*"),

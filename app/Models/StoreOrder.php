@@ -25,6 +25,8 @@ class StoreOrder extends BaseModel
         'sale_discount' => 'integer',
         'coupon_discount' => 'integer',
         'tax_amount' => 'integer',
+        'tax_rate_bp' => 'integer',
+        'tax_is_inclusive' => 'boolean',
         'total' => 'integer',
         'gift_card_amount' => 'integer',
         'amount_due' => 'integer',

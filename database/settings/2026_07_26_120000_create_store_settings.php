@@ -12,9 +12,7 @@ return new class extends SettingsMigration
         $this->migrator->add('store.base_currency', 'USD');
         $this->migrator->add('store.currency_rate_source', 'manual');
 
-        $this->migrator->add('store.tax_mode', 'none');
-        $this->migrator->add('store.tax_rate_bp', 0);
-        $this->migrator->add('store.tax_label', 'Tax');
+        // Tax is rows in store_taxes, one rule per country - see StoreTaxService.
 
         $this->migrator->add('store.enable_guest_checkout', true);
         $this->migrator->add('store.require_email_on_guest_checkout', true);
@@ -45,10 +43,6 @@ return new class extends SettingsMigration
 
         $this->migrator->deleteIfExists('store.base_currency');
         $this->migrator->deleteIfExists('store.currency_rate_source');
-
-        $this->migrator->deleteIfExists('store.tax_mode');
-        $this->migrator->deleteIfExists('store.tax_rate_bp');
-        $this->migrator->deleteIfExists('store.tax_label');
 
         $this->migrator->deleteIfExists('store.enable_guest_checkout');
         $this->migrator->deleteIfExists('store.require_email_on_guest_checkout');

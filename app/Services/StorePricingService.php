@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Enums\StoreDiscountType;
 use App\Enums\StorePackageGrantStatus;
-use App\Enums\StoreTaxMode;
 use App\Models\StoreCategory;
 use App\Models\StoreCoupon;
 use App\Models\StoreCurrency;
@@ -29,6 +28,7 @@ class StorePricingService
     public function __construct(
         private StoreCurrencyService $currencies,
         private StoreSettings $settings,
+        private StoreTaxService $taxes,
     ) {}
 
     /**
@@ -44,6 +44,7 @@ class StorePricingService
         ?StoreGiftCard $giftCard = null,
         ?User $user = null,
         ?string $playerUuid = null,
+        ?int $countryId = null,
     ): array {
         $currency = $currency ?? $this->currencies->resolve();
         $sales = $this->activeSales();
@@ -66,13 +67,10 @@ class StorePricingService
         $couponDiscount = $couponResult['discount'];
 
         $taxable = max(0, $subtotal - $couponDiscount);
-        $tax = $this->calculateTax($taxable);
-
-        // With inclusive tax the advertised price already contains it, so the total is unchanged
-        // and the tax figure is only broken out for the receipt.
-        $total = $this->settings->tax_mode === StoreTaxMode::EXCLUSIVE->value
-            ? $taxable + $tax['amount']
-            : $taxable;
+        // Taxed on what the buyer actually pays, so a coupon reduces the tax with it. The rule is
+        // chosen by the buyer's country; an unknown country falls back to the country-less rule.
+        $tax = $this->taxes->calculate($taxable, $this->taxes->resolveFor($countryId));
+        $total = $tax['total'];
 
         $giftCardAmount = $this->giftCardCoverage($giftCard, $total, $currency);
         $amountDue = $total - $giftCardAmount;
@@ -87,8 +85,13 @@ class StorePricingService
             'coupon_code' => $couponDiscount > 0 ? $coupon?->code : null,
             'coupon_error' => $couponResult['error'],
             'tax_amount' => $tax['amount'],
-            'tax_mode' => $this->settings->tax_mode,
-            'tax_label' => $this->settings->tax_label,
+            // Kept for the receipt and for the order snapshot: a rate that changes next year must
+            // not rewrite an order placed under the old one.
+            'tax_name' => $tax['name'],
+            'tax_rate_bp' => $tax['rate_bp'],
+            'tax_is_inclusive' => $tax['is_inclusive'],
+            // The rule's own name is the label now — "Spain's VAT" rather than a store-wide word.
+            'tax_label' => $tax['name'],
             'total' => $total,
             'gift_card_amount' => $giftCardAmount,
             'amount_due' => $amountDue,
@@ -496,26 +499,6 @@ class StorePricingService
         }
 
         return $eligible;
-    }
-
-    /**
-     * @return array{amount: int}
-     */
-    private function calculateTax(int $taxable): array
-    {
-        $mode = $this->settings->tax_mode;
-        $rate = (int) $this->settings->tax_rate_bp;
-
-        if ($mode === StoreTaxMode::NONE->value || $rate <= 0) {
-            return ['amount' => 0];
-        }
-
-        if ($mode === StoreTaxMode::INCLUSIVE->value) {
-            // Extract the tax already contained in the price rather than adding to it.
-            return ['amount' => (int) round($taxable * $rate / (10000 + $rate))];
-        }
-
-        return ['amount' => intdiv($taxable * $rate, 10000)];
     }
 
     private function giftCardCoverage(?StoreGiftCard $giftCard, int $total, StoreCurrency $currency): int

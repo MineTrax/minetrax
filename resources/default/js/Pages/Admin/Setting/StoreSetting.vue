@@ -50,9 +50,6 @@ const form = useForm({
     base_currency: props.settings.base_currency,
     currency_rate_source: props.settings.currency_rate_source,
 
-    tax_mode: props.settings.tax_mode,
-    tax_rate_bp: props.settings.tax_rate_bp,
-    tax_label: props.settings.tax_label,
 
     enable_guest_checkout: props.settings.enable_guest_checkout,
     require_email_on_guest_checkout: props.settings.require_email_on_guest_checkout,
@@ -77,12 +74,6 @@ const currencyList = computed(() =>
 const rateSourceList = {
     manual: __("Manual — I will set rates myself"),
     api: __("Automatic — refresh daily from an exchange rate API"),
-};
-
-const taxModeList = {
-    none: __("No tax"),
-    inclusive: __("Inclusive — tax is already in the listed price"),
-    exclusive: __("Exclusive — tax is added at checkout"),
 };
 
 const saveSetting = () => {
@@ -187,41 +178,6 @@ const saveSetting = () => {
             </fieldset>
 
             <!-- Tax -->
-            <fieldset>
-              <legend class="text-sm font-medium text-foreground mb-4">
-                {{ __("Tax") }}
-              </legend>
-
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <XSelect
-                  id="tax_mode"
-                  v-model="form.tax_mode"
-                  :label="__('Tax Mode')"
-                  :select-list="taxModeList"
-                  :error="form.errors.tax_mode"
-                  name="tax_mode"
-                  :disable-null="true"
-                />
-                <XInput
-                  id="tax_rate_bp"
-                  v-model="form.tax_rate_bp"
-                  :label="__('Tax Rate (basis points)')"
-                  :error="form.errors.tax_rate_bp"
-                  :help="__('2000 = 20%. Basis points avoid rounding drift on percentages.')"
-                  type="number"
-                  name="tax_rate_bp"
-                />
-                <XInput
-                  id="tax_label"
-                  v-model="form.tax_label"
-                  :label="__('Tax Label')"
-                  :error="form.errors.tax_label"
-                  :placeholder="__('Eg: VAT, GST, Sales Tax')"
-                  type="text"
-                  name="tax_label"
-                />
-              </div>
-            </fieldset>
 
             <!-- Checkout -->
             <fieldset>

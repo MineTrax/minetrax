@@ -154,6 +154,13 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('update store_variables');
         Permission::findOrCreate('delete store_variables');
 
+        // Tax rules decide what every buyer is charged, so they are gated separately from the
+        // rest of the store rather than folded into 'update settings'.
+        Permission::findOrCreate('create store_taxes');
+        Permission::findOrCreate('read store_taxes');
+        Permission::findOrCreate('update store_taxes');
+        Permission::findOrCreate('delete store_taxes');
+
         Permission::findOrCreate('create store_currencies');
         Permission::findOrCreate('read store_currencies');
         Permission::findOrCreate('update store_currencies');

@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\Store\StorePackageController;
 use App\Http\Controllers\Admin\Store\StorePaymentGatewayController;
 use App\Http\Controllers\Admin\Store\StoreSaleController;
 use App\Http\Controllers\Admin\Store\StoreStatisticsController;
+use App\Http\Controllers\Admin\Store\StoreTaxController;
 use App\Http\Controllers\Admin\Store\StoreVariableController;
 use App\Http\Controllers\BanWardenController;
 use App\Http\Controllers\CustomFormController;
@@ -462,6 +463,13 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
         Route::put('currency/{storeCurrency}', [AdminStoreCurrencyController::class, 'update'])->name('currency.update');
         Route::delete('currency/{storeCurrency}', [AdminStoreCurrencyController::class, 'destroy'])->name('currency.delete');
         Route::post('currency/{storeCurrency}/make-base', [AdminStoreCurrencyController::class, 'makeBase'])->name('currency.make-base');
+
+        Route::get('tax', [StoreTaxController::class, 'index'])->name('tax.index');
+        Route::get('tax/create', [StoreTaxController::class, 'create'])->name('tax.create');
+        Route::post('tax', [StoreTaxController::class, 'store'])->name('tax.store');
+        Route::get('tax/{storeTax}/edit', [StoreTaxController::class, 'edit'])->name('tax.edit');
+        Route::put('tax/{storeTax}', [StoreTaxController::class, 'update'])->name('tax.update');
+        Route::delete('tax/{storeTax}', [StoreTaxController::class, 'destroy'])->name('tax.delete');
 
         Route::get('payment-gateway', [StorePaymentGatewayController::class, 'index'])->name('payment-gateway.index');
         Route::post('payment-gateway', [StorePaymentGatewayController::class, 'update'])->name('payment-gateway.update');

@@ -124,7 +124,7 @@ class StoreInvoiceService
                 'sale_discount' => (int) $order->sale_discount > 0 ? $format((int) $order->sale_discount) : null,
                 'coupon_discount' => (int) $order->coupon_discount > 0 ? $format((int) $order->coupon_discount) : null,
                 'tax_amount' => (int) $order->tax_amount > 0 ? $format((int) $order->tax_amount) : null,
-                'tax_label' => $this->settings->tax_label ?: __('Tax'),
+                'tax_label' => $order->tax_name ?: __('Tax'),
                 'total' => $format((int) $order->total),
                 'gift_card_amount' => (int) $order->gift_card_amount > 0 ? $format((int) $order->gift_card_amount) : null,
                 'amount_due' => $format((int) $order->amount_due),
