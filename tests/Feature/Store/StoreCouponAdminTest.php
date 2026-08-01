@@ -283,3 +283,22 @@ test('deleting a coupon leaves the orders that used it readable', function () {
     expect($order->coupon_code)->toBe('USEDONCE');
     expect((int) $order->coupon_discount)->toBe(500);
 });
+
+test('the coupon listing names who wrote each code', function () {
+    $author = User::factory()->create(['username' => 'promoted']);
+    $mine = StoreCoupon::factory()->create(['code' => 'AUTHORED', 'created_by' => $author->id]);
+    // Seeded, imported, or written before the column existed.
+    $orphan = StoreCoupon::factory()->create(['code' => 'ORPHAN', 'created_by' => null]);
+
+    $this->actingAs(User::whereId(1)->first())
+        ->get(route('admin.store.coupon.index'))
+        ->assertStatus(200)
+        ->assertInertia(function ($page) use ($mine, $orphan) {
+            $rows = collect($page->toArray()['props']['coupons']['data'])->keyBy('id');
+
+            expect($rows[$mine->id]['creator']['username'])->toBe('promoted');
+            // Null rather than absent: the column renders a dash off this, and a missing key
+            // would throw in the template instead.
+            expect($rows[$orphan->id]['creator'])->toBeNull();
+        });
+});

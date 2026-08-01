@@ -78,6 +78,11 @@ const headerRow = [
         label: __("Issued To"),
     },
     {
+        key: "created_by",
+        sortable: true,
+        label: __("Created By"),
+    },
+    {
         key: "orders_count",
         sortable: false,
         class: "text-center",
@@ -186,6 +191,19 @@ function expiryLabel(card) {
             >{{ __("Anyone holding the code") }}</span>
           </DtRowItem>
 
+          <!-- A card bought from the store has no creator, so a blank cell here would read as
+               missing data. It is the answer to "where did this card come from". -->
+          <DtRowItem>
+            <span
+              v-if="item.creator"
+              class="text-xs"
+            >{{ item.creator.username }}</span>
+            <span
+              v-else
+              class="px-2 py-0.5 text-xs font-medium bg-muted text-muted-foreground rounded"
+            >{{ __("Purchased") }}</span>
+          </DtRowItem>
+
           <DtRowItem class="text-center">
             {{ item.orders_count }}
           </DtRowItem>
@@ -222,7 +240,7 @@ function expiryLabel(card) {
                 </Link>
               </Button>
               <Button
-                v-if="can('update store_gift_cards')"
+                v-if="item.can_update"
                 variant="outline"
                 size="icon"
                 as-child

@@ -353,3 +353,29 @@ test('a manually issued card is redeemable at the cart like a bought one', funct
         'store_gift_card_id' => StoreGiftCard::firstOrFail()->id,
     ]);
 });
+
+test('the gift card listing separates staff issued cards from purchased ones', function () {
+    $staff = User::factory()->create(['username' => 'supportsam']);
+    $byHand = StoreGiftCard::factory()->create(['created_by' => $staff->id]);
+    // How a bought card looks: minted by the fulfilment job with nobody behind it.
+    $purchased = StoreGiftCard::factory()->create(['created_by' => null]);
+
+    $this->actingAs(User::whereId(1)->first())
+        ->get(route('admin.store.gift-card.index'))
+        ->assertStatus(200)
+        ->assertInertia(function ($page) use ($byHand, $purchased) {
+            $rows = collect($page->toArray()['props']['cards']['data'])->keyBy('id');
+
+            expect($rows[$byHand->id]['creator']['username'])->toBe('supportsam');
+            // The column renders "Purchased" off this null, so it has to be present and null.
+            expect($rows[$purchased->id]['creator'])->toBeNull();
+        });
+});
+
+test('the gift card listing can be sorted by creator', function () {
+    // The column is sortable, and spatie 400s on a sort it was not told to allow.
+    $this->actingAs(User::whereId(1)->first());
+
+    $this->get(route('admin.store.gift-card.index', ['sort' => 'created_by']))->assertStatus(200);
+    $this->get(route('admin.store.gift-card.index', ['sort' => '-created_by']))->assertStatus(200);
+});

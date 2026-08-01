@@ -2,13 +2,24 @@
 
 namespace App\Policies;
 
-use App\Models\StoreCoupon;
 use App\Models\User;
+use App\Traits\ScopesToCreatorTrait;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * Coupons record the staff member who created them, so visibility can be split two ways: staff
+ * granted only `read_own store_coupons` manage the codes they wrote and nothing else, while
+ * `read store_coupons` is unchanged and still means every coupon on the site.
+ *
+ * A coupon with no creator — seeded, imported, or made before the column existed — is nobody's own
+ * and shows only to the global permission.
+ *
+ * @see ScopesToCreatorTrait for how the two tiers combine.
+ */
 class StoreCouponPolicy
 {
     use HandlesAuthorization;
+    use ScopesToCreatorTrait;
 
     public function before(?User $user): ?bool
     {
@@ -19,43 +30,18 @@ class StoreCouponPolicy
         return null;
     }
 
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(?User $user): bool
+    protected function permissionSubject(): string
     {
-        return $user?->can('read store_coupons') ?? false;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(?User $user, StoreCoupon $storeCoupon): bool
-    {
-        return $user?->can('read store_coupons') ?? false;
+        return 'store_coupons';
     }
 
     /**
      * Determine whether the user can create models.
+     *
+     * Not creator-scoped: there is nothing to own yet.
      */
     public function create(?User $user): bool
     {
         return $user?->can('create store_coupons') ?? false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(?User $user, StoreCoupon $storeCoupon): bool
-    {
-        return $user?->can('update store_coupons') ?? false;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(?User $user, StoreCoupon $storeCoupon): bool
-    {
-        return $user?->can('delete store_coupons') ?? false;
     }
 }

@@ -169,8 +169,11 @@ class PermissionSeeder extends Seeder
 
         Permission::findOrCreate('create store_coupons');
         Permission::findOrCreate('read store_coupons');
+        Permission::findOrCreate('read_own store_coupons');
         Permission::findOrCreate('update store_coupons');
+        Permission::findOrCreate('update_own store_coupons');
         Permission::findOrCreate('delete store_coupons');
+        Permission::findOrCreate('delete_own store_coupons');
 
         Permission::findOrCreate('create store_sales');
         Permission::findOrCreate('read store_sales');
@@ -179,8 +182,11 @@ class PermissionSeeder extends Seeder
 
         Permission::findOrCreate('create store_gift_cards');
         Permission::findOrCreate('read store_gift_cards');
+        Permission::findOrCreate('read_own store_gift_cards');
         Permission::findOrCreate('update store_gift_cards');
+        Permission::findOrCreate('update_own store_gift_cards');
         Permission::findOrCreate('delete store_gift_cards');
+        Permission::findOrCreate('delete_own store_gift_cards');
 
         Permission::findOrCreate('create store_bans');
         Permission::findOrCreate('read store_bans');

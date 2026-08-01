@@ -44,13 +44,23 @@ class StoreCouponController extends Controller
             'starts_at',
             'expires_at',
             'is_enabled',
+            // Selected because the policy reads it per row, and because it is worth filtering on
+            // once more than one person is writing coupons.
+            'created_by',
             'created_at',
             'updated_at',
         ];
 
+        $user = request()->user();
+        $seesEveryCoupon = $user->can('viewAll', StoreCoupon::class);
+
         $coupons = QueryBuilder::for(StoreCoupon::class)
             ->select($fields)
+            ->with('creator:id,username')
             ->withCount('couponables')
+            // Staff holding only `read_own store_coupons` get their own codes. Applied to the query
+            // rather than filtered after paging, so the page counts are honest.
+            ->unless($seesEveryCoupon, fn ($query) => $query->where('created_by', $user->id))
             ->allowedFilters(...[
                 ...$fields,
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'code', 'description'])),
@@ -63,13 +73,18 @@ class StoreCouponController extends Controller
         // Only a fixed amount is money, and money is formatted here because `discount_value` is
         // minor units — dividing by 100 in the template would be wrong for JPY and KWD. A
         // percentage is basis points, which the frontend renders itself as it does elsewhere.
-        $coupons->getCollection()->transform(function (StoreCoupon $coupon) {
+        $coupons->getCollection()->transform(function (StoreCoupon $coupon) use ($user) {
             $coupon->discount_formatted = $coupon->discount_type === StoreDiscountType::FIXED
                 ? $this->currencies->format(
                     (int) $coupon->discount_value,
                     $this->currencies->find($coupon->currency_code) ?? $this->currencies->base()
                 )
                 : null;
+
+            // Per row, not per page: with the `_own` permissions a listing can hold rows this user
+            // may edit beside rows they may not, so one flag for the whole table would be wrong.
+            $coupon->can_update = $user->can('update', $coupon);
+            $coupon->can_delete = $user->can('delete', $coupon);
 
             return $coupon;
         });

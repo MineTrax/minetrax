@@ -42,11 +42,20 @@ class StoreGiftCardController extends Controller
             $perPage = 100;
         }
 
-        $sorts = ['id', 'code', 'currency_code', 'original_balance', 'balance', 'is_enabled', 'expires_at', 'created_at'];
+        // `created_by` sorts by user id rather than username, which is not alphabetical but does
+        // group one person's cards together — and puts every purchased card, which has no creator
+        // at all, at one end.
+        $sorts = ['id', 'code', 'currency_code', 'original_balance', 'balance', 'is_enabled', 'expires_at', 'created_by', 'created_at'];
+
+        $user = request()->user();
+        $seesEveryCard = $user->can('viewAll', StoreGiftCard::class);
 
         $cards = QueryBuilder::for(StoreGiftCard::class)
             ->with(['issuedToUser:id,username', 'creator:id,username'])
             ->withCount('orders')
+            // Staff holding only `read_own store_gift_cards` see the cards they issued. Purchased
+            // cards have no creator, so this hides every one of them — which is the point.
+            ->unless($seesEveryCard, fn ($query) => $query->where('created_by', $user->id))
             ->allowedFilters(...[
                 'is_enabled',
                 'currency_code',
@@ -67,9 +76,14 @@ class StoreGiftCardController extends Controller
 
         // Money is formatted server-side in each card's own currency, because a balance is minor
         // units and how many digits that is belongs to the currency, not to the template.
-        $cards->getCollection()->transform(function (StoreGiftCard $card) {
+        $cards->getCollection()->transform(function (StoreGiftCard $card) use ($user) {
             $card->balance_formatted = $this->currencies->format((int) $card->balance, $card->currency_code);
             $card->original_balance_formatted = $this->currencies->format((int) $card->original_balance, $card->currency_code);
+
+            // Per row, not per page: with the `_own` permissions a listing can hold cards this user
+            // may edit beside cards they may not, so one flag for the whole table would be wrong.
+            $card->can_update = $user->can('update', $card);
+            $card->can_delete = $user->can('delete', $card);
 
             return $card;
         });
@@ -138,9 +152,11 @@ class StoreGiftCardController extends Controller
             // The adjustment box types a decimal and sends minor units, and how many digits that is
             // belongs to this card's currency: JPY has none, KWD has three.
             'exponent' => $this->currencies->exponentFor($storeGiftCard->currency_code),
+            // Against this card rather than the bare permission: somebody holding only
+            // `update_own store_gift_cards` may edit a card they issued but not one they did not.
             'cardPermissions' => [
-                'update' => request()->user()->can('update store_gift_cards'),
-                'delete' => request()->user()->can('delete store_gift_cards'),
+                'update' => request()->user()->can('update', $storeGiftCard),
+                'delete' => request()->user()->can('delete', $storeGiftCard),
             ],
         ]);
     }

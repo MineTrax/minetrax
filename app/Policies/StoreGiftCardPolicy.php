@@ -2,13 +2,28 @@
 
 namespace App\Policies;
 
-use App\Models\StoreGiftCard;
 use App\Models\User;
+use App\Traits\ScopesToCreatorTrait;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * Gift cards come from two places, and only one of them has a creator: a card bought from the store
+ * is minted by the fulfilment job with `created_by` left null, while a card issued by hand records
+ * the staff member who conjured it.
+ *
+ * That makes the `_own` tier meaningful here — staff granted only `read_own store_gift_cards` see
+ * the cards they issued and nothing else, purchased cards included. Full visibility stays with
+ * `read store_gift_cards`.
+ *
+ * `update` covers both editing a card and adjusting its balance. Splitting them would let staff
+ * hand out credit they cannot then disable.
+ *
+ * @see ScopesToCreatorTrait for how the two tiers combine.
+ */
 class StoreGiftCardPolicy
 {
     use HandlesAuthorization;
+    use ScopesToCreatorTrait;
 
     public function before(?User $user): ?bool
     {
@@ -19,46 +34,18 @@ class StoreGiftCardPolicy
         return null;
     }
 
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(?User $user): bool
+    protected function permissionSubject(): string
     {
-        return $user?->can('read store_gift_cards') ?? false;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(?User $user, StoreGiftCard $storeGiftCard): bool
-    {
-        return $user?->can('read store_gift_cards') ?? false;
+        return 'store_gift_cards';
     }
 
     /**
      * Determine whether the user can create models.
+     *
+     * Not creator-scoped: there is nothing to own yet.
      */
     public function create(?User $user): bool
     {
         return $user?->can('create store_gift_cards') ?? false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     *
-     * Covers editing the card and adjusting its balance: both change what the holder can spend, and
-     * splitting them would let staff hand out credit they cannot disable.
-     */
-    public function update(?User $user, StoreGiftCard $storeGiftCard): bool
-    {
-        return $user?->can('update store_gift_cards') ?? false;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(?User $user, StoreGiftCard $storeGiftCard): bool
-    {
-        return $user?->can('delete store_gift_cards') ?? false;
     }
 }

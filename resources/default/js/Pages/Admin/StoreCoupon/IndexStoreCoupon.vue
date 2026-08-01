@@ -69,6 +69,11 @@ const headerRow = [
         label: __("Window"),
     },
     {
+        key: "created_by",
+        sortable: true,
+        label: __("Created By"),
+    },
+    {
         key: "is_enabled",
         label: __("Enabled"),
         sortable: true,
@@ -184,6 +189,19 @@ function scopeLabel(coupon) {
             <span class="text-xs">{{ windowLabel(item) }}</span>
           </DtRowItem>
 
+          <!-- Null for a coupon seeded, imported, or written before the column existed. Unlike a
+               gift card there is no second origin to name, so a dash is the honest answer. -->
+          <DtRowItem>
+            <span
+              v-if="item.creator"
+              class="text-xs"
+            >{{ item.creator.username }}</span>
+            <span
+              v-else
+              class="text-xs text-muted-foreground"
+            >&mdash;</span>
+          </DtRowItem>
+
           <td class="px-4">
             <Icon
               v-if="item.is_enabled"
@@ -202,7 +220,7 @@ function scopeLabel(coupon) {
           >
             <ButtonGroup>
               <Button
-                v-if="can('update store_coupons')"
+                v-if="item.can_update"
                 variant="outline"
                 size="icon"
                 as-child
@@ -218,7 +236,7 @@ function scopeLabel(coupon) {
                 </Link>
               </Button>
               <Button
-                v-if="can('delete store_coupons')"
+                v-if="item.can_delete"
                 variant="outline"
                 size="icon"
                 as-child
