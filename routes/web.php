@@ -163,6 +163,7 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     Route::post('store/checkout', [StoreCheckoutController::class, 'store'])->name('store.checkout.store')->middleware('throttle:store-checkout');
     Route::get('store/order/{order:uuid}', [StoreCheckoutController::class, 'result'])->name('store.order.result');
     Route::get('store/order/{order:uuid}/status', [StoreCheckoutController::class, 'status'])->name('store.order.status');
+    Route::post('store/order/{order:uuid}/pay', [StoreCheckoutController::class, 'pay'])->name('store.order.pay');
     Route::post('store/order/{order:uuid}/cancel', [StoreCheckoutController::class, 'cancel'])->name('store.order.cancel');
     // Public rather than auth-only, for the same reason the result page is: a guest has no account
     // to authorise against, so the order's uuid is the credential. The policy is the gate.

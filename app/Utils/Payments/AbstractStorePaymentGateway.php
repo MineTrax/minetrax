@@ -6,6 +6,7 @@ use App\Contracts\StorePaymentGatewayContract;
 use App\Models\StorePayment;
 use App\Settings\StoreSettings;
 use App\Utils\Payments\Data\StoreGatewayEventData;
+use App\Utils\Payments\Data\StorePaymentSessionData;
 use Illuminate\Http\Request;
 
 /**
@@ -62,6 +63,22 @@ abstract class AbstractStorePaymentGateway implements StorePaymentGatewayContrac
     public function confirmOnReturn(StorePayment $payment): ?StoreGatewayEventData
     {
         return null;
+    }
+
+    /**
+     * Nothing to reopen by default: a gateway with no hosted checkout has no session to return to.
+     */
+    public function resumePaymentSession(StorePayment $payment): ?StorePaymentSessionData
+    {
+        return null;
+    }
+
+    /**
+     * Nothing to close by default.
+     */
+    public function abandonPaymentSession(StorePayment $payment): void
+    {
+        //
     }
 
     public function refund(StorePayment $payment, int $amountMinor, ?string $reason = null): string

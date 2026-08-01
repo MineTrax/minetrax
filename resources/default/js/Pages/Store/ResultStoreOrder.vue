@@ -11,7 +11,27 @@ const { __ } = useTranslations();
 
 const props = defineProps({
     order: { type: Object, required: true },
+    // Empty once there is nothing left to pay, which is what hides the resume block.
+    gateways: { type: Array, default: () => [] },
 });
+
+// Preselected with whatever they chose at checkout, so continuing is one click and switching is a
+// deliberate act.
+const chosenGateway = ref(props.order.gateway);
+const paying = ref(false);
+
+const canResume = computed(() => props.gateways.length > 0);
+const isSwitching = computed(() => chosenGateway.value !== props.order.gateway);
+
+const resumePayment = () => {
+    paying.value = true;
+
+    router.post(route("store.order.pay", props.order.uuid), { gateway: chosenGateway.value }, {
+        onFinish: () => {
+            paying.value = false;
+        },
+    });
+};
 
 const status = ref(props.order.status.value);
 const deliveryStatus = ref(props.order.delivery_status.value);
@@ -123,6 +143,56 @@ onUnmounted(stopPolling);
           <p class="text-muted-foreground">
             {{ __("We have not received your payment yet. If you have just paid, this page will update by itself in a moment.") }}
           </p>
+
+          <!-- The way back in. Without this the buyer's only options are to abandon the order or
+               rebuild the whole basket, because the cart was emptied when the order was placed. -->
+          <div
+            v-if="canResume"
+            class="mt-6 pt-6 border-t border-border text-left"
+          >
+            <h2 class="text-sm font-medium text-center mb-3">
+              {{ __("Pay for this order") }}
+            </h2>
+
+            <div
+              v-if="gateways.length > 1"
+              class="space-y-2 mb-4"
+            >
+              <label
+                v-for="gateway in gateways"
+                :key="gateway.key"
+                class="flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors"
+                :class="chosenGateway === gateway.key ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted'"
+              >
+                <input
+                  v-model="chosenGateway"
+                  type="radio"
+                  name="resume_gateway"
+                  :value="gateway.key"
+                  class="mt-1"
+                >
+                <span>
+                  <span class="block text-sm font-medium">{{ gateway.label }}</span>
+                  <span
+                    v-if="gateway.description"
+                    class="block text-xs text-muted-foreground"
+                  >{{ gateway.description }}</span>
+                </span>
+              </label>
+            </div>
+
+            <Button
+              class="w-full"
+              :disabled="paying"
+              @click="resumePayment"
+            >
+              {{ isSwitching ? __("Pay with this method instead") : __("Continue payment") }}
+            </Button>
+
+            <p class="text-xs text-muted-foreground mt-2 text-center">
+              {{ __("You will be taken back to the same checkout you left. Nothing is charged twice.") }}
+            </p>
+          </div>
         </template>
 
         <!-- Cancelled or refunded -->

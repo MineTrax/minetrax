@@ -47,6 +47,25 @@ interface StorePaymentGatewayContract
     /** Begin a hosted checkout and return where to send the buyer. */
     public function createPaymentSession(StoreOrder $order, StorePayment $payment): StorePaymentSessionData;
 
+    /**
+     * Reopen the checkout a buyer walked away from, or null if it can no longer be used.
+     *
+     * Reusing rather than replacing is the whole point: a buyer clicking "continue payment" three
+     * times must not leave three live sessions against one order. Two of those could each be
+     * captured, and markPaid() would credit only the first — money taken with nothing to show for
+     * it. Returning null tells the caller the session is dead and a fresh one is safe to open.
+     */
+    public function resumePaymentSession(StorePayment $payment): ?StorePaymentSessionData;
+
+    /**
+     * Best-effort: close a session the buyer has abandoned, before opening one elsewhere.
+     *
+     * Called when somebody switches gateway mid-payment. Must never throw — failing to tidy up an
+     * unpaid session is not a reason to stop the buyer paying by another means. A gateway with no
+     * way to void an unapproved order simply lets it expire.
+     */
+    public function abandonPaymentSession(StorePayment $payment): void;
+
     /** Cryptographically verify an inbound webhook against the raw request body. */
     public function verifyWebhook(Request $request): bool;
 

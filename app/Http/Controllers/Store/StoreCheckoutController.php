@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\Enums\StoreOrderStatus;
+use App\Enums\StorePaymentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
@@ -149,6 +150,16 @@ class StoreCheckoutController extends Controller
 
         return Inertia::render('Store/ResultStoreOrder', [
             'order' => $this->presentOrder($order),
+            // Only while there is still something to pay. Listed against the order's own currency,
+            // not the visitor's, because that is what will be charged.
+            'gateways' => $order->status === StoreOrderStatus::PENDING && ! $this->isPastPaymentWindow($order)
+                ? $this->gateways->availableFor($order->currency)
+                    ->map(fn ($driver) => [
+                        'key' => $driver->gateway()->value,
+                        'label' => $driver->label(),
+                        'description' => $driver->description(),
+                    ])->values()
+                : collect(),
         ]);
     }
 
@@ -164,6 +175,98 @@ class StoreCheckoutController extends Controller
             'status' => $order->status->value,
             'delivery_status' => $order->delivery_status->value,
         ]);
+    }
+
+    /**
+     * Pick the payment back up, optionally by another route.
+     *
+     * A buyer who closes the gateway tab has no way back otherwise: the cart was emptied when the
+     * order was placed, so "start again" means rebuilding the basket by hand.
+     *
+     * The one rule this has to keep is that an order never has two live sessions against it. Two
+     * could each be captured, and markPaid() credits only the first — money taken with nothing to
+     * show for it. So the existing session is reopened whenever the gateway still considers it
+     * usable, and a new one is only opened once the old is dead or deliberately abandoned.
+     */
+    public function pay(Request $request, StoreOrder $order)
+    {
+        $this->authorizeOrderView($request, $order);
+
+        $validated = $request->validate(['gateway' => 'nullable|string']);
+
+        // Anything but PENDING has either been paid or been closed; neither wants another session.
+        if ($order->status !== StoreOrderStatus::PENDING) {
+            return redirect()->route('store.order.result', $order->uuid);
+        }
+
+        // Refused rather than allowed through: the sweeper cancels stale pending orders, and a
+        // capture landing against an order it has just cancelled is money markPaid() cannot credit.
+        if ($this->isPastPaymentWindow($order)) {
+            return redirect()->route('store.order.result', $order->uuid)
+                ->with(['toast' => ['type' => 'error', 'title' => __('This order has expired'), 'body' => __('Please place it again.')]]);
+        }
+
+        $payment = $order->payments()
+            ->where('status', StorePaymentStatus::PENDING)
+            ->latest('id')
+            ->first();
+
+        // The order's own currency, never the one the visitor happens to be browsing in — the
+        // amount was fixed when the order was placed.
+        $chosen = $validated['gateway'] ?? $payment?->gateway?->value ?? $order->gateway?->value;
+        $driver = $this->gateways->driver($chosen);
+
+        if (! $driver || ! $driver->isEnabled() || ! $this->gateways->availableFor($order->currency)->has($chosen)) {
+            throw ValidationException::withMessages(['gateway' => __('That payment method is not available.')]);
+        }
+
+        $isSwitching = $payment && $payment->gateway?->value !== $chosen;
+
+        if ($payment && ! $isSwitching) {
+            $session = $driver->resumePaymentSession($payment);
+
+            if ($session?->redirectUrl) {
+                return Inertia::location($session->redirectUrl);
+            }
+        }
+
+        if ($isSwitching) {
+            // Close the old one before opening another, so the two can never both be paid. Stripe
+            // can expire a session outright; PayPal cannot, and relies on markPaid()'s lock.
+            $this->gateways->driver($payment->gateway?->value)?->abandonPaymentSession($payment);
+            $this->orders->failPaymentAttempt($payment, __('Abandoned: the buyer chose a different payment method.'));
+            $payment = null;
+        }
+
+        $payment ??= $this->orders->startPaymentAttempt($order, $chosen);
+
+        // The buyer's current intent, so the pending screen names the method they are actually
+        // using. markPaid() sets this again from whichever payment settles.
+        $order->update(['gateway' => $chosen]);
+
+        $session = $driver->createPaymentSession($order, $payment);
+
+        if ($session->sessionId) {
+            $payment->update(['gateway_session_id' => $session->sessionId]);
+        }
+
+        if ($session->redirectUrl) {
+            return Inertia::location($session->redirectUrl);
+        }
+
+        // A gateway with no hosted page — the manual one — leaves the buyer here to follow whatever
+        // instructions the admin configured.
+        return redirect()->route('store.order.result', $order->uuid);
+    }
+
+    /**
+     * Whether ExpireStalePendingStoreOrdersJob would already consider this order abandoned.
+     */
+    private function isPastPaymentWindow(StoreOrder $order): bool
+    {
+        return $order->created_at->lt(
+            now()->subHours((int) config('store.pending_order_ttl_hours', 24))
+        );
     }
 
     public function cancel(Request $request, StoreOrder $order)
@@ -202,6 +305,8 @@ class StoreCheckoutController extends Controller
             'delivery_status' => Helper::enumKeyValue($order->delivery_status),
             // For a guest this page is the only route to their invoice, so the button has to be here.
             'can_download_invoice' => $order->status->isInvoiceable(),
+            // Preselects the picker on the pending screen with whatever they chose at checkout.
+            'gateway' => $order->gateway?->value,
             'player_username' => $order->player_username,
             'currency' => $order->currency,
             'total_formatted' => $this->currencies->format((int) $order->total, $order->currency),

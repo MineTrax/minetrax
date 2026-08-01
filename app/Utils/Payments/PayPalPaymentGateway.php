@@ -263,6 +263,60 @@ class PayPalPaymentGateway extends AbstractStorePaymentGateway
      * This is the ordinary path: PayPal holds an approved order until someone captures it, and doing
      * it here means the purchase is delivered while the buyer is still looking at the page.
      */
+    /**
+     * Send the buyer back to the PayPal order they abandoned.
+     *
+     * A PayPal order keeps its approval link while it is CREATED (never approved) or APPROVED
+     * (approved but not yet captured, which is where a buyer who bailed at the last screen sits).
+     * Anything further along — COMPLETED, VOIDED, or expired and gone — is null, and the caller
+     * opens a fresh order instead.
+     */
+    public function resumePaymentSession(StorePayment $payment): ?StorePaymentSessionData
+    {
+        if (! $payment->gateway_session_id) {
+            return null;
+        }
+
+        $response = $this->api()->get("/v2/checkout/orders/{$payment->gateway_session_id}");
+
+        if ($response->failed()) {
+            Log::warning('Could not reopen a PayPal order.', [
+                'payment_id' => $payment->id,
+                'status' => $response->status(),
+            ]);
+
+            return null;
+        }
+
+        if (! in_array((string) $response->json('status'), ['CREATED', 'APPROVED'], true)) {
+            return null;
+        }
+
+        $approval = $this->linkFor($response->json('links', []), 'approve');
+
+        if (! $approval) {
+            return null;
+        }
+
+        return new StorePaymentSessionData(
+            redirectUrl: $approval,
+            sessionId: $payment->gateway_session_id,
+            raw: ['status' => $response->json('status')],
+        );
+    }
+
+    /**
+     * PayPal has no way to void an order that was never captured, so there is nothing to call here.
+     *
+     * Unlike Stripe, an abandoned PayPal order stays payable until PayPal expires it on its own.
+     * The protection against a buyer paying it after settling elsewhere is therefore markPaid(),
+     * which locks the order and refuses a second transition — see StoreOrderService.
+     */
+    public function abandonPaymentSession(StorePayment $payment): void
+    {
+        //
+    }
+
     public function confirmOnReturn(StorePayment $payment): ?StoreGatewayEventData
     {
         if (! $payment->gateway_session_id) {

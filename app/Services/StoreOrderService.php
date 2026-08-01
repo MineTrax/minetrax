@@ -278,6 +278,22 @@ class StoreOrderService
     }
 
     /**
+     * A fresh payment row for another attempt at an order that is still pending.
+     *
+     * The amount is re-read from the order rather than copied off the previous attempt, so a figure
+     * that moved between attempts cannot be charged at yesterday's value.
+     */
+    public function startPaymentAttempt(StoreOrder $order, string $gateway): StorePayment
+    {
+        return $order->payments()->create([
+            'gateway' => $gateway,
+            'status' => StorePaymentStatus::PENDING,
+            'amount' => $order->amount_due,
+            'currency' => $order->currency,
+        ]);
+    }
+
+    /**
      * Coupon usage is reserved when the order is created, so cancelling must give it back.
      *
      * Refunds deliberately do NOT release it: the code was genuinely used, and releasing it would

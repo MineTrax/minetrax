@@ -147,6 +147,71 @@ class StripePaymentGateway extends AbstractStorePaymentGateway
     }
 
     /**
+     * Send the buyer back to the Checkout Session they abandoned.
+     *
+     * A Stripe session keeps its hosted URL for as long as it is `open`, so a buyer who closed the
+     * tab can walk straight back into the same one. Anything else — already paid, or expired past
+     * its `expires_at` — is null, and the caller opens a fresh session instead.
+     */
+    public function resumePaymentSession(StorePayment $payment): ?StorePaymentSessionData
+    {
+        if (! $payment->gateway_session_id) {
+            return null;
+        }
+
+        try {
+            $session = $this->client()->checkout->sessions->retrieve($payment->gateway_session_id);
+        } catch (\Throwable $e) {
+            Log::warning('Could not reopen a Stripe session.', [
+                'payment_id' => $payment->id,
+                'reason' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+
+        if (($session->status ?? null) !== 'open' || blank($session->url ?? null)) {
+            return null;
+        }
+
+        return new StorePaymentSessionData(
+            redirectUrl: $session->url,
+            sessionId: $session->id,
+            raw: ['expires_at' => $session->expires_at ?? null],
+        );
+    }
+
+    /**
+     * Expire the session at Stripe so it can never be paid.
+     *
+     * This is what makes switching gateway safe. Without it a buyer could pay the abandoned Stripe
+     * session after settling up elsewhere, and Stripe would capture money against an order that is
+     * already paid — which markPaid() refuses to credit.
+     */
+    public function abandonPaymentSession(StorePayment $payment): void
+    {
+        if (! $payment->gateway_session_id) {
+            return;
+        }
+
+        try {
+            $session = $this->client()->checkout->sessions->retrieve($payment->gateway_session_id);
+
+            // Only an open session can be expired; Stripe errors on any other status.
+            if (($session->status ?? null) === 'open') {
+                $this->client()->checkout->sessions->expire($payment->gateway_session_id);
+            }
+        } catch (\Throwable $e) {
+            // Never fatal: the session expires on its own, and blocking the buyer from paying by
+            // another means would be the worse outcome.
+            Log::warning('Could not expire an abandoned Stripe session.', [
+                'payment_id' => $payment->id,
+                'reason' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
      * Verify against the raw request body. Nothing may have parsed or re-encoded it first:
      * the signature covers the exact bytes Stripe sent, so `$request->all()` would not match.
      */
