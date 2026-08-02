@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { useHelpers } from "@/Composables/useHelpers";
 import StoreBuyButton from "@/Components/Store/StoreBuyButton.vue";
+import StoreSavingsNote from "@/Components/Store/StoreSavingsNote.vue";
 import StoreUrgencyNote from "@/Components/Store/StoreUrgencyNote.vue";
 import { CheckIcon, XMarkIcon } from "@heroicons/vue/24/solid";
 
@@ -120,7 +121,7 @@ const detailLabel = (storePackage) => (storePackage.needs_configuring && !storeP
             :key="storePackage.id"
             class="p-4 text-center"
           >
-            <div class="flex items-baseline justify-center gap-2 mb-3">
+            <div class="flex items-baseline justify-center gap-2">
               <span
                 v-if="storePackage.is_pay_what_you_want"
                 class="text-xs text-muted-foreground"
@@ -137,6 +138,14 @@ const detailLabel = (storePackage) => (storePackage.needs_configuring && !storeP
                 {{ storePackage.price_original_formatted }}
               </span>
             </div>
+
+            <!-- The column struck the old price through but never said what had reduced it, so a
+                 store-wide sale was invisible here. Its own line rather than a fourth item in the
+                 price row: a comparison column is 12rem wide and would wrap mid-label. -->
+            <StoreSavingsNote
+              :store-package="storePackage"
+              class="mt-1 mb-3"
+            />
 
             <StoreUrgencyNote
               :store-package="storePackage"

@@ -225,3 +225,39 @@ test('no store test drives checkout through the live mojang lookup', function ()
 
     expect($offenders)->toBe([], 'These files check out without insulating the Mojang lookup: '.implode(', ', $offenders));
 });
+
+test('every listing layout shows a reduced price and says what reduced it', function () {
+    // The props were always right; two of the four layouts simply never rendered them. The stacked
+    // rows showed the sale price with nothing to compare it against, and the comparison table
+    // struck the old price through without naming the sale — so a store-wide sale ran invisibly on
+    // both. Asserting Inertia props cannot catch that, because the props were never the problem.
+    $directory = base_path('resources/default/js/Components/Store');
+    $layouts = [
+        'StorePackageCard',
+        'StorePackageListing',
+        'StorePackageStacked',
+        'StorePackageComparison',
+    ];
+
+    foreach ($layouts as $layout) {
+        $source = file_get_contents("{$directory}/{$layout}.vue");
+
+        // Follow one level of imports: most layouts delegate the saving to a shared child, and the
+        // shared children are leaves.
+        preg_match_all('#@/Components/Store/(\w+)\.vue#', $source, $matches);
+
+        foreach (array_unique($matches[1]) as $child) {
+            $source .= file_get_contents("{$directory}/{$child}.vue");
+        }
+
+        // str_contains rather than toContain: Pest reads every extra argument to toContain as
+        // another needle, so a failure message passed there is silently asserted as one.
+        expect(str_contains($source, 'price_original_formatted'))->toBeTrue(
+            "[{$layout}] never shows the price a discount came down from."
+        );
+
+        expect(str_contains($source, 'sale_name') || str_contains($source, 'discountLabel'))->toBeTrue(
+            "[{$layout}] shows a reduced price without naming the sale or discount behind it."
+        );
+    }
+});

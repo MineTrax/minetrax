@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { canAddToCart, useCartMembership } from "@/Composables/useStoreCart";
 import StoreBuyButton from "@/Components/Store/StoreBuyButton.vue";
+import StoreSavingsNote from "@/Components/Store/StoreSavingsNote.vue";
 import StoreUrgencyNote from "@/Components/Store/StoreUrgencyNote.vue";
 import { CheckIcon } from "lucide-vue-next";
 import { computed, ref } from "vue";
@@ -40,6 +41,12 @@ const onInput = (event) => {
 // package page. Anything that has to be configured first links through to its own page instead —
 // and gets no quantity picker, since there is nothing here to add.
 const canAdd = computed(() => canAddToCart(props.storePackage));
+
+// Whether to strike the old price through. Compared rather than taken from discount_bp, so it
+// covers a package discount, a sale, or both.
+const isDiscounted = computed(
+    () => Number(props.storePackage.price_original ?? 0) > Number(props.storePackage.price ?? 0)
+);
 
 // The only layout that keeps a real add button once the package is in the cart: buying more of the
 // same thing is what a bulk row is for, so the state is a line of text beside the price rather
@@ -81,7 +88,18 @@ const detailLabel = computed(
       </p>
 
       <p class="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground mt-1">
-        <span>{{ __("Each") }}: {{ storePackage.price_formatted }}</span>
+        <span>
+          {{ __("Each") }}:
+          <span class="font-semibold text-foreground">{{ storePackage.price_formatted }}</span>
+          <!-- This row showed the reduced price with nothing to compare it against, so a sale
+               looked like the everyday price. -->
+          <span
+            v-if="isDiscounted"
+            class="ml-1 line-through"
+          >
+            {{ storePackage.price_original_formatted }}
+          </span>
+        </span>
         <Link
           v-if="isInCart"
           :href="route('store.cart.show')"
@@ -91,6 +109,11 @@ const detailLabel = computed(
           {{ __(":count in cart", { count: quantityInCart }) }}
         </Link>
       </p>
+
+      <StoreSavingsNote
+        :store-package="storePackage"
+        class="mt-1"
+      />
 
       <StoreUrgencyNote
         :store-package="storePackage"
