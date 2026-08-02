@@ -2,7 +2,10 @@
 
 namespace Tests;
 
+use App\Models\StoreCoupon;
 use App\Models\StoreCurrency;
+use App\Models\StoreOrder;
+use App\Models\StoreOrderCoupon;
 use App\Models\StorePaymentGateway;
 use App\Utils\Payments\StorePaymentGatewayManager;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -30,6 +33,26 @@ abstract class TestCase extends BaseTestCase
     {
         return StoreCurrency::firstWhere('is_base', true)
             ?? StoreCurrency::factory()->base()->create();
+    }
+
+    /**
+     * Record a coupon against an order the way checkout does.
+     *
+     * An order holds its coupons in store_order_coupons rather than in a column, because it may
+     * carry several, so a test that needs a redeemed coupon has to write the snapshot row too.
+     */
+    protected function recordOrderCoupon(StoreOrder $order, StoreCoupon $coupon, int $discountAmount = 0): StoreOrderCoupon
+    {
+        return $order->coupons()->create([
+            'store_coupon_id' => $coupon->id,
+            'code' => $coupon->code,
+            'discount_type' => $coupon->discount_type->value,
+            'discount_value' => $coupon->discount_value,
+            // Cast, because a coupon built with StoreCoupon::create() and never refreshed has no
+            // value in memory for a column the database defaulted.
+            'is_stackable' => (bool) $coupon->is_stackable,
+            'discount_amount' => $discountAmount,
+        ]);
     }
 
     /**

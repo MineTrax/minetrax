@@ -44,6 +44,9 @@ class StoreCouponController extends Controller
             'starts_at',
             'expires_at',
             'is_enabled',
+            // Listed, because "why did applying this one remove the last one" is otherwise a
+            // support question with no answer visible anywhere in the admin.
+            'is_stackable',
             // Selected because the policy reads it per row, and because it is worth filtering on
             // once more than one person is writing coupons.
             'created_by',
@@ -149,8 +152,9 @@ class StoreCouponController extends Controller
     {
         $this->authorize('delete', $storeCoupon);
 
-        // Orders keep `coupon_discount` and `coupon_code` as snapshots, so a redeemed coupon can be
-        // deleted without making a past order unreadable. The FK is nullOnDelete for the same reason.
+        // store_order_coupons keeps the code and the amount as snapshots, so a redeemed coupon can
+        // be deleted without making a past order unreadable. The FK is nullOnDelete for the same
+        // reason.
         $storeCoupon->delete();
 
         return redirect()->route('admin.store.coupon.index')
@@ -207,6 +211,7 @@ class StoreCouponController extends Controller
             'starts_at' => $request->starts_at,
             'expires_at' => $request->expires_at,
             'is_enabled' => $request->is_enabled,
+            'is_stackable' => $request->boolean('is_stackable'),
         ];
     }
 

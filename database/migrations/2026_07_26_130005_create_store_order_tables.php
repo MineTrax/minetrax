@@ -44,8 +44,8 @@ return new class extends Migration
             $table->unsignedBigInteger('amount_due')->default(0); // what the gateway charges
             $table->unsignedBigInteger('base_total')->default(0);
 
-            $table->foreignId('store_coupon_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('coupon_code')->nullable(); // snapshot
+            // `coupon_discount` above is the total taken off by every coupon on the order. Which
+            // coupons those were, and what each one took, is in store_order_coupons below.
             $table->foreignId('store_gift_card_id')->nullable()->constrained()->nullOnDelete();
 
             $table->string('status'); // pending, paid, completed, cancelled, refunded, partially_refunded, chargeback
@@ -84,6 +84,37 @@ return new class extends Migration
             $table->index(['status', 'created_at']);
             $table->index(['player_uuid', 'status']);
             $table->index('delivery_status');
+        });
+
+        // Which coupons priced this order, and what each one actually took off. A table rather than
+        // a column pair, because a basket may carry one exclusive coupon plus any number of
+        // stackable ones.
+        //
+        // Every descriptive column is a snapshot, for the same reason tax_name and referral_share_bp
+        // are: a coupon may be renamed, re-rated, disabled or deleted, and a receipt has to keep
+        // saying what was actually charged. `store_coupon_id` stays as the live link, and is what
+        // the reserve/release of `used_count` and the per-user limit are counted through.
+        Schema::create('store_order_coupons', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('store_order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('store_coupon_id')->nullable()->constrained()->nullOnDelete();
+
+            $table->string('code');
+            $table->string('discount_type'); // percent, fixed
+            $table->unsignedBigInteger('discount_value');
+            $table->boolean('is_stackable');
+
+            // What this coupon took off, in the order's currency. These sum to
+            // store_orders.coupon_discount exactly, including when the basket floor trimmed the
+            // last one — see StorePricingService::applyCoupons().
+            $table->unsignedBigInteger('discount_amount')->default(0);
+
+            $table->timestamps();
+
+            // One row per coupon per order, matching the cart's own guard.
+            $table->unique(['store_order_id', 'store_coupon_id'], 'store_order_coupons_unique');
+            // Drives the per-user usage limit, which counts a buyer's paid orders for a coupon.
+            $table->index('store_coupon_id');
         });
 
         Schema::create('store_order_items', function (Blueprint $table) {
@@ -182,6 +213,7 @@ return new class extends Migration
         Schema::dropIfExists('store_order_deliveries');
         Schema::dropIfExists('store_package_grants');
         Schema::dropIfExists('store_order_items');
+        Schema::dropIfExists('store_order_coupons');
         Schema::dropIfExists('store_orders');
     }
 };

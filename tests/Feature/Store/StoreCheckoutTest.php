@@ -357,6 +357,80 @@ test('cancelling an order releases the reserved coupon use', function () {
     expect($coupon->fresh()->used_count)->toEqual(0);
 });
 
+test('an order records every coupon that priced it', function () {
+    Player::factory()->create(['username' => 'Steve']);
+    StoreCoupon::factory()->create([
+        'code' => 'TEN', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 1000,
+    ]);
+    StoreCoupon::factory()->stackable()->create([
+        'code' => 'EXTRA5', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 500,
+    ]);
+
+    fillCart();
+    $this->post(route('store.cart.code'), ['code' => 'TEN']);
+    $this->post(route('store.cart.code'), ['code' => 'EXTRA5']);
+    $this->post(route('store.checkout.store'), checkoutPayload());
+
+    $order = StoreOrder::first();
+
+    expect($order->coupon_discount)->toEqual(150);
+    expect($order->total)->toEqual(850);
+
+    // Snapshotted per coupon, and the parts add up to the total the order was charged on.
+    $rows = $order->coupons->keyBy('code');
+    expect($rows)->toHaveCount(2);
+    expect($rows['TEN']->discount_amount)->toEqual(100);
+    expect($rows['EXTRA5']->discount_amount)->toEqual(50);
+    expect($rows['EXTRA5']->is_stackable)->toBeTrue();
+    expect($rows->sum('discount_amount'))->toEqual((int) $order->coupon_discount);
+});
+
+test('every coupon on an order is reserved, and all of them come back on cancel', function () {
+    Player::factory()->create(['username' => 'Steve']);
+    $exclusive = StoreCoupon::factory()->create([
+        'code' => 'TEN', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 1000,
+    ]);
+    $stackable = StoreCoupon::factory()->stackable()->create([
+        'code' => 'EXTRA5', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 500,
+    ]);
+
+    fillCart();
+    $this->post(route('store.cart.code'), ['code' => 'TEN']);
+    $this->post(route('store.cart.code'), ['code' => 'EXTRA5']);
+    $this->post(route('store.checkout.store'), checkoutPayload());
+
+    expect($exclusive->fresh()->used_count)->toEqual(1);
+    expect($stackable->fresh()->used_count)->toEqual(1);
+
+    $this->post(route('store.order.cancel', StoreOrder::first()->uuid));
+
+    expect($exclusive->fresh()->used_count)->toEqual(0);
+    expect($stackable->fresh()->used_count)->toEqual(0);
+});
+
+test('checkout reports every rejected code at once', function () {
+    // With several attached, naming only the first would have the buyer drop one, resubmit, and be
+    // turned away again by the next.
+    Player::factory()->create(['username' => 'Steve']);
+    StoreCoupon::factory()->create([
+        'code' => 'TOOBIG', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 1000,
+        'min_basket_amount' => 500000,
+    ]);
+    StoreCoupon::factory()->stackable()->expired()->create([
+        'code' => 'GONE', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 500,
+    ]);
+
+    fillCart();
+    $this->post(route('store.cart.code'), ['code' => 'TOOBIG']);
+    $this->post(route('store.cart.code'), ['code' => 'GONE']);
+
+    $this->post(route('store.checkout.store'), checkoutPayload())
+        ->assertSessionHasErrors('code');
+
+    expect(session('errors')->get('code'))->toHaveCount(2);
+    expect(StoreOrder::count())->toBe(0);
+});
+
 test('an order fully covered by a gift card skips the gateway', function () {
     Player::factory()->create(['username' => 'Steve']);
     StoreGiftCard::create([

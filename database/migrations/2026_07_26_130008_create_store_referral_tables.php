@@ -86,8 +86,9 @@ return new class extends Migration
         });
 
         Schema::table('store_orders', function (Blueprint $table) {
-            // nullOnDelete and a snapshot beside it, exactly like store_coupon_id / coupon_code:
-            // renaming or removing a code later must not rewrite what an order recorded at the time.
+            // nullOnDelete and a snapshot beside it, exactly like the coupon rows in
+            // store_order_coupons: renaming or removing a code later must not rewrite what an order
+            // recorded at the time.
             $table->foreignId('store_referral_id')->nullable()->after('store_gift_card_id')->constrained()->nullOnDelete();
             $table->string('referral_code')->nullable()->after('store_referral_id');
 

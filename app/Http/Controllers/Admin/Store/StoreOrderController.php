@@ -96,7 +96,7 @@ class StoreOrderController extends Controller
             'payments.refunds',
             'user:id,username,name',
             'country:id,name,iso_code',
-            'coupon:id,code',
+            'coupons',
             'deliveries.commandQueue:id,status,attempts,max_attempts,execute_at,output,updated_at',
             'deliveries.server:id,name',
             'activities.causer:id,name,username',
@@ -114,6 +114,15 @@ class StoreOrderController extends Controller
             $item->upgrade_credit_formatted = $item->upgrade_credit > 0
                 ? $this->currencies->format((int) $item->upgrade_credit, $order->currency)
                 : null;
+        });
+
+        // What each code took off. The order's `coupon_discount` is their sum, which on its own
+        // cannot say which of several codes was worth what.
+        $order->coupons->each(function ($coupon) use ($order) {
+            $coupon->discount_amount_formatted = $this->currencies->format(
+                (int) $coupon->discount_amount,
+                $order->currency
+            );
         });
 
         $order->payments->each(function ($payment) {

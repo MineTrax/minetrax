@@ -76,9 +76,16 @@ class StoreOrder extends BaseModel
         return $this->hasMany(StoreOrderDelivery::class, 'store_order_id');
     }
 
-    public function coupon(): BelongsTo
+    /**
+     * The coupons that priced this order, and what each one took off.
+     *
+     * hasMany to the snapshot rows rather than belongsToMany through to the coupons themselves: a
+     * deleted coupon nulls the pivot's id, and a receipt still has to name what was applied. The
+     * live coupon, when there is one, hangs off each row's own `coupon` relation.
+     */
+    public function coupons(): HasMany
     {
-        return $this->belongsTo(StoreCoupon::class, 'store_coupon_id');
+        return $this->hasMany(StoreOrderCoupon::class, 'store_order_id');
     }
 
     /**

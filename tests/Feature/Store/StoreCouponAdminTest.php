@@ -30,6 +30,7 @@ function couponAdminValidPayload(array $overrides = []): array
         'starts_at' => null,
         'expires_at' => null,
         'is_enabled' => true,
+        'is_stackable' => false,
         'packages' => [],
         'categories' => [],
     ], $overrides);
@@ -270,18 +271,17 @@ test('admin can delete a coupon', function () {
 test('deleting a coupon leaves the orders that used it readable', function () {
     $this->actingAs(User::whereId(1)->first());
     $coupon = StoreCoupon::factory()->create(['code' => 'USEDONCE']);
-    $order = StoreOrder::factory()->create([
-        'store_coupon_id' => $coupon->id,
-        'coupon_code' => 'USEDONCE',
-        'coupon_discount' => 500,
-    ]);
+    $order = StoreOrder::factory()->create(['coupon_discount' => 500]);
+    $this->recordOrderCoupon($order, $coupon, 500);
 
     $this->delete(route('admin.store.coupon.delete', $coupon->id));
 
-    $order->refresh();
-    expect($order->store_coupon_id)->toBeNull();
-    expect($order->coupon_code)->toBe('USEDONCE');
-    expect((int) $order->coupon_discount)->toBe(500);
+    // The link goes; the snapshot stays, which is what keeps the receipt readable.
+    $row = $order->fresh()->coupons->sole();
+    expect($row->store_coupon_id)->toBeNull();
+    expect($row->code)->toBe('USEDONCE');
+    expect($row->discount_amount)->toBe(500);
+    expect((int) $order->fresh()->coupon_discount)->toBe(500);
 });
 
 test('the coupon listing names who wrote each code', function () {

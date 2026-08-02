@@ -24,12 +24,27 @@ return new class extends Migration
             $table->string('player_username')->nullable();
 
             $table->char('currency_code', 3)->nullable(); // null = resolve at render time
-            $table->foreignId('store_coupon_id')->nullable();
             $table->foreignId('store_gift_card_id')->nullable();
 
             $table->timestamps();
 
             $table->index('updated_at'); // pruning abandoned carts
+        });
+
+        // Coupons the buyer has attached. A collection rather than a column on store_carts, because
+        // a basket may carry one exclusive coupon plus any number of stackable ones — see
+        // store_coupons.is_stackable. The one-exclusive rule is enforced in StoreCartService, not
+        // here: it is a property of the pair, and no unique index can state it.
+        Schema::create('store_cart_coupons', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('store_cart_id')->constrained()->cascadeOnDelete();
+            // Unconstrained, like store_gift_card_id above: store_coupons is created by a later
+            // migration, and a cart is disposable enough that a dangling id costs nothing.
+            $table->unsignedBigInteger('store_coupon_id');
+            $table->timestamps();
+
+            // Applying the same code twice is a no-op rather than a second discount.
+            $table->unique(['store_cart_id', 'store_coupon_id'], 'store_cart_coupons_unique');
         });
 
         Schema::create('store_cart_items', function (Blueprint $table) {
@@ -65,6 +80,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('store_cart_items');
+        Schema::dropIfExists('store_cart_coupons');
         Schema::dropIfExists('store_carts');
     }
 };

@@ -21,6 +21,16 @@ return new class extends Migration
             $table->unsignedBigInteger('discount_value');
             $table->char('currency_code', 3)->nullable(); // fixed only; null = base, converted
 
+            // How this coupon combines with others. A basket holds at most one exclusive coupon —
+            // applying a second replaces the first, which is what a plain "20% off" voucher should
+            // do — plus any number of stackable ones on top.
+            //
+            // Default false so a coupon has to be deliberately made stackable: a voucher that
+            // silently combined with every other voucher is the expensive way round to get this
+            // wrong. Referral perks are the motivating case, since a creator's thank-you discount
+            // must not cancel out a coupon the buyer already holds.
+            $table->boolean('is_stackable')->default(false);
+
             $table->unsignedBigInteger('min_basket_amount')->nullable(); // minor units, base currency
             $table->unsignedInteger('max_uses_total')->nullable();
             $table->unsignedInteger('max_uses_per_user')->nullable();

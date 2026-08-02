@@ -84,7 +84,7 @@ class StoreOrderController extends Controller
 
         abort_unless($order->user_id === $request->user()->id, 404);
 
-        $order->load(['items.grant', 'items.giftCard', 'payments:id,store_order_id,gateway,status,paid_at']);
+        $order->load(['coupons', 'items.grant', 'items.giftCard', 'payments:id,store_order_id,gateway,status,paid_at']);
 
         return Inertia::render('Store/ShowMyStoreOrder', [
             // Repeated here, not only on the result page: a buyer who closed that tab comes back
@@ -105,7 +105,15 @@ class StoreOrderController extends Controller
                 'currency' => $order->currency,
                 'created_at' => $order->created_at,
                 'paid_at' => $order->paid_at,
-                'coupon_code' => $order->coupon_code,
+                // What each code took off, not just which were used: with several on one order, a
+                // single combined figure leaves the buyer unable to tell what any of them did.
+                'coupons' => $order->coupons->map(fn ($coupon) => [
+                    'code' => $coupon->code,
+                    'discount_formatted' => $this->currencies->format(
+                        (int) $coupon->discount_amount,
+                        $order->currency
+                    ),
+                ]),
                 'items' => $order->items->map(fn ($item) => [
                     'package_name' => $item->package_name,
                     'quantity' => $item->quantity,

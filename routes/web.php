@@ -161,9 +161,11 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
     // the route 404s on a binding that was never going to resolve.
     Route::post('store/cart/referral', [StoreCartController::class, 'applyReferral'])->name('store.cart.referral.store')->middleware('throttle:store-code');
     Route::delete('store/cart/referral', [StoreCartController::class, 'clearReferral'])->name('store.cart.referral.delete');
+    Route::post('store/cart/code', [StoreCartController::class, 'applyCode'])->name('store.cart.code')->middleware('throttle:store-code');
+    Route::delete('store/cart/code/{coupon}', [StoreCartController::class, 'removeCoupon'])->name('store.cart.code.delete');
+    Route::delete('store/cart/gift-card', [StoreCartController::class, 'removeGiftCard'])->name('store.cart.giftcard.delete');
     Route::patch('store/cart/{cartItem}', [StoreCartController::class, 'update'])->name('store.cart.update');
     Route::delete('store/cart/{cartItem}', [StoreCartController::class, 'destroy'])->name('store.cart.delete');
-    Route::post('store/cart/code', [StoreCartController::class, 'applyCode'])->name('store.cart.code')->middleware('throttle:store-code');
 
     Route::get('store/checkout', [StoreCheckoutController::class, 'create'])->name('store.checkout.create');
     Route::post('store/checkout', [StoreCheckoutController::class, 'store'])->name('store.checkout.store')->middleware('throttle:store-checkout');

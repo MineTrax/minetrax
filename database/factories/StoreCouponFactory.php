@@ -38,7 +38,19 @@ class StoreCouponFactory extends Factory
             'starts_at' => null,
             'expires_at' => null,
             'is_enabled' => true,
+            // Matches the column default: a plain voucher replaces whatever else is attached.
+            'is_stackable' => false,
         ];
+    }
+
+    /**
+     * A coupon that rides on top of the others rather than replacing them.
+     */
+    public function stackable(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_stackable' => true,
+        ]);
     }
 
     /**

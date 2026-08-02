@@ -111,6 +111,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Maximum number of coupons that may be attached to a single cart.
+    |
+    | At most one of them is exclusive; the rest are stackable. Counted against
+    | the coupons the buyer attached — a referral's own perk rides along on top
+    | and is not the buyer's to spend against this budget.
+    |--------------------------------------------------------------------------
+    */
+    'cart_max_coupons' => env('STORE_CART_MAX_COUPONS', 5),
+
+    /*
+    |--------------------------------------------------------------------------
     | Attempts allowed for a store delivery command before it stays failed.
     | Retries are picked up by the existing every-minute command queue sweeper,
     | which only retries rows where attempts < max_attempts.

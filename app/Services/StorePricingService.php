@@ -37,12 +37,13 @@ class StorePricingService
      * Price a basket.
      *
      * @param  array<int, array{package: StorePackage, quantity: int, custom_price?: int|null, custom_price_currency?: string|null}>  $lines
+     * @param  Collection<int, StoreCoupon>|null  $coupons  at most one exclusive, plus any stackable ones
      * @return array<string, mixed>
      */
     public function quote(
         array $lines,
         ?StoreCurrency $currency = null,
-        ?StoreCoupon $coupon = null,
+        ?Collection $coupons = null,
         ?StoreGiftCard $giftCard = null,
         ?User $user = null,
         ?string $playerUuid = null,
@@ -71,8 +72,8 @@ class StorePricingService
             $upgradeCredit += $item['upgrade_credit'];
         }
 
-        $couponResult = $this->applyCoupon($items, $subtotal, $coupon, $currency, $user);
-        $couponDiscount = $couponResult['discount'];
+        $couponResult = $this->applyCoupons($items, $subtotal, $coupons ?? new Collection, $currency, $user);
+        $couponDiscount = $couponResult['total'];
 
         $taxable = max(0, $subtotal - $couponDiscount);
         // Taxed on what the buyer actually pays, so a coupon reduces the tax with it. The rule is
@@ -94,14 +95,23 @@ class StorePricingService
             'sale_discount' => $saleDiscount,
             'upgrade_credit' => $upgradeCredit,
             'coupon_discount' => $couponDiscount,
-            'coupon_code' => $couponDiscount > 0 ? $coupon?->code : null,
-            'coupon_error' => $couponResult['error'],
-            // Whatever code is attached, whether or not it took anything off. Distinct from
-            // `coupon_code` above, which only names a coupon that actually discounted something:
-            // one that is attached but rejected — below its minimum, say — still has to be
-            // nameable, or the buyer reads why it did not apply beside a field that looks empty
-            // and has no way to take it back off.
-            'applied_code' => $coupon?->code ?? $giftCard?->code,
+            // Every attached coupon, in the order it was applied, with what each one took off.
+            // Includes the ones that took nothing — a coupon that was rejected, or that arrived at
+            // an already-free basket, still has to be nameable, or the buyer reads a reason it did
+            // not apply beside a field that looks empty and has no way to take it back off.
+            'coupons' => array_map(
+                fn (array $row) => $this->presentCoupon($row, $currency),
+                $couponResult['applied'],
+            ),
+            // Keyed by code, so the chip that carries a rejected coupon carries its own reason.
+            'coupon_errors' => $couponResult['errors'],
+            // The gift card renders beside the coupons and comes off the same box, so the cart
+            // needs it in the same shape rather than as a bare amount.
+            'gift_card' => $giftCard ? [
+                'code' => $giftCard->code,
+                'amount' => $giftCardAmount,
+                'amount_formatted' => $this->currencies->format($giftCardAmount, $currency),
+            ] : null,
             'tax_amount' => $tax['amount'],
             // Kept for the receipt and for the order snapshot: a rate that changes next year must
             // not rewrite an order placed under the old one.
@@ -604,35 +614,112 @@ class StorePricingService
     }
 
     /**
+     * Take every attached coupon off the basket.
+     *
+     * Each one is measured against its own eligible lines and against the basket as it stood
+     * *before* any coupon — parallel rather than compounded. Two 10% coupons take 20%, not 19%, and
+     * the answer does not depend on which was typed first. Compounding would also make two coupons
+     * scoped to different packages eat into each other, which is not what scoping them meant.
+     *
+     * Every attached coupon comes back, rejected ones included. A coupon that took nothing off is
+     * still on the cart and still has to be nameable and removable — reporting only the ones that
+     * worked would leave the buyer reading a rejection beside a list that does not contain it.
+     *
      * @param  array<int, array<string, mixed>>  $items
-     * @return array{discount: int, error: string|null}
+     * @param  Collection<int, StoreCoupon>  $coupons
+     * @return array{total: int, applied: array<int, array{coupon: StoreCoupon, discount: int, error: string|null}>, errors: array<string, string>}
      */
-    private function applyCoupon(array $items, int $subtotal, ?StoreCoupon $coupon, StoreCurrency $currency, ?User $user): array
+    private function applyCoupons(array $items, int $subtotal, Collection $coupons, StoreCurrency $currency, ?User $user): array
     {
-        if (! $coupon) {
-            return ['discount' => 0, 'error' => null];
+        $applied = [];
+        $errors = [];
+        $total = 0;
+
+        foreach ($this->inApplicationOrder($coupons) as $coupon) {
+            // Measured against the undiscounted subtotal, so a minimum-spend condition is a
+            // property of the basket rather than of the order coupons happened to be applied in —
+            // the same fixed-point argument as the sale thresholds in quote().
+            $error = $this->couponError($coupon, $subtotal, $user);
+            $discount = 0;
+
+            // Scoped coupons only discount the lines they actually cover. Not measured at all for
+            // a coupon that is already rejected — it walks the basket looking each package up.
+            $eligible = $error ? 0 : $this->eligibleSubtotal($items, $coupon);
+
+            if (! $error && $eligible <= 0) {
+                $error = __('This code does not apply to anything in your cart.');
+            }
+
+            if (! $error) {
+                $discount = $coupon->discount_type === StoreDiscountType::PERCENT
+                    ? intdiv($eligible * (int) $coupon->discount_value, 10000)
+                    : $this->currencies->convert(
+                        (int) $coupon->discount_value,
+                        $coupon->currency_code ? ($this->currencies->find($coupon->currency_code) ?? $this->currencies->base()) : $this->currencies->base(),
+                        $currency
+                    );
+
+                // The basket floor. Trimming here rather than clamping the sum afterwards is what
+                // keeps the per-coupon figures adding up to the total exactly, which is what the
+                // order snapshot and the receipt both rely on. It is the one place application
+                // order shows, and it only bites once the basket is already free.
+                $discount = min($discount, $eligible, $subtotal - $total);
+                $total += $discount;
+            }
+
+            if ($error) {
+                $errors[$coupon->code] = $error;
+            }
+
+            $applied[] = ['coupon' => $coupon, 'discount' => $discount, 'error' => $error];
         }
 
-        if ($error = $this->couponError($coupon, $subtotal, $user)) {
-            return ['discount' => 0, 'error' => $error];
-        }
+        return ['total' => $total, 'applied' => $applied, 'errors' => $errors];
+    }
 
-        // Scoped coupons only discount the lines they actually cover.
-        $eligible = $this->eligibleSubtotal($items, $coupon);
+    /**
+     * The order coupons are taken off in: exclusive first, then stackable, by id within each.
+     *
+     * Deterministic on purpose. Anything else and the same basket could price one way on the cart
+     * page and another at checkout, which is the one disagreement a store cannot have. Exclusive
+     * goes first so that when the basket floor trims someone, it is a stackable extra that loses
+     * rather than the main voucher the buyer came in with.
+     *
+     * @param  Collection<int, StoreCoupon>  $coupons
+     * @return Collection<int, StoreCoupon>
+     */
+    private function inApplicationOrder(Collection $coupons): Collection
+    {
+        return $coupons
+            ->filter()
+            ->unique('id')
+            ->sortBy([['is_stackable', 'asc'], ['id', 'asc']])
+            ->values();
+    }
 
-        if ($eligible <= 0) {
-            return ['discount' => 0, 'error' => __('This code does not apply to anything in your cart.')];
-        }
-
-        $discount = $coupon->discount_type === StoreDiscountType::PERCENT
-            ? intdiv($eligible * (int) $coupon->discount_value, 10000)
-            : $this->currencies->convert(
-                (int) $coupon->discount_value,
-                $coupon->currency_code ? ($this->currencies->find($coupon->currency_code) ?? $this->currencies->base()) : $this->currencies->base(),
-                $currency
-            );
-
-        return ['discount' => min($eligible, $discount), 'error' => null];
+    /**
+     * One applied coupon, in the shape the cart and the receipt render.
+     *
+     * @param  array{coupon: StoreCoupon, discount: int}  $row
+     * @return array<string, mixed>
+     */
+    private function presentCoupon(array $row, StoreCurrency $currency): array
+    {
+        return [
+            'id' => $row['coupon']->id,
+            'code' => $row['coupon']->code,
+            'description' => $row['coupon']->description,
+            // Carried so checkout can snapshot the coupon onto the order without reading it back,
+            // and so an old order can still say "20% off" after the coupon has been re-rated.
+            'discount_type' => $row['coupon']->discount_type->value,
+            'discount_value' => (int) $row['coupon']->discount_value,
+            'is_stackable' => (bool) $row['coupon']->is_stackable,
+            'discount' => $row['discount'],
+            'discount_formatted' => $this->currencies->format($row['discount'], $currency),
+            // Null when the coupon applied cleanly. Carried per coupon rather than as one message
+            // for the basket, so the reason sits on the chip it belongs to.
+            'error' => $row['error'],
+        ];
     }
 
     private function couponError(StoreCoupon $coupon, int $subtotal, ?User $user): ?string

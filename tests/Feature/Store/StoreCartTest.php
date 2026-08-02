@@ -220,9 +220,9 @@ test('the cart says what is still needed to unlock a sale', function () {
         );
 });
 
-test('a coupon code can be applied and cleared', function () {
+test('a coupon code can be applied and removed', function () {
     $package = StorePackage::factory()->create(['price' => 2000]);
-    StoreCoupon::create([
+    $coupon = StoreCoupon::create([
         'code' => 'SAVE50', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000,
         'is_enabled' => true, 'used_count' => 0,
     ]);
@@ -232,37 +232,41 @@ test('a coupon code can be applied and cleared', function () {
     $this->get(route('store.cart.show'))
         ->assertInertia(fn ($page) => $page->where('quote.coupon_discount', 1000)->where('quote.total', 1000));
 
-    $this->post(route('store.cart.code'), ['code' => '']);
+    $this->delete(route('store.cart.code.delete', $coupon->id));
     $this->get(route('store.cart.show'))
         ->assertInertia(fn ($page) => $page->where('quote.coupon_discount', 0));
 });
 
-test('the cart names the code it is holding', function () {
-    // What the locked code field shows. Normalised, because coupons are stored uppercase and the
-    // buyer should see the code as it was actually recorded.
+test('the cart names the codes it is holding', function () {
+    // What the chips show. Normalised, because coupons are stored uppercase and the buyer should
+    // see the code as it was actually recorded.
     $package = StorePackage::factory()->create(['price' => 2000]);
-    StoreCoupon::create([
+    $coupon = StoreCoupon::create([
         'code' => 'SAVE50', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000,
         'is_enabled' => true, 'used_count' => 0,
     ]);
     $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
 
     $this->get(route('store.cart.show'))
-        ->assertInertia(fn ($page) => $page->where('quote.applied_code', null));
+        ->assertInertia(fn ($page) => $page->where('quote.coupons', []));
 
     $this->post(route('store.cart.code'), ['code' => 'save50']);
     $this->get(route('store.cart.show'))
-        ->assertInertia(fn ($page) => $page->where('quote.applied_code', 'SAVE50'));
+        ->assertInertia(fn ($page) => $page
+            ->where('quote.coupons.0.code', 'SAVE50')
+            ->where('quote.coupons.0.discount', 1000)
+            ->where('quote.coupons.0.error', null)
+            ->etc()
+        );
 
-    $this->post(route('store.cart.code'), ['code' => '']);
+    $this->delete(route('store.cart.code.delete', $coupon->id));
     $this->get(route('store.cart.show'))
-        ->assertInertia(fn ($page) => $page->where('quote.applied_code', null));
+        ->assertInertia(fn ($page) => $page->where('quote.coupons', []));
 });
 
 test('a rejected coupon is still named so it can be removed', function () {
-    // coupon_code only names a coupon that actually discounted something, so a coupon held but
-    // refused used to leave the buyer reading why it failed beside an apparently empty field with
-    // no way to take it off.
+    // A coupon that discounted nothing is still attached, so it stays in the list carrying its own
+    // reason. Dropping it would leave the buyer reading why it failed with nothing to click.
     $package = StorePackage::factory()->create(['price' => 1000]);
     StoreCoupon::create([
         'code' => 'BIGSPEND', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000,
@@ -275,9 +279,11 @@ test('a rejected coupon is still named so it can be removed', function () {
     $this->get(route('store.cart.show'))
         ->assertInertia(fn ($page) => $page
             ->where('quote.coupon_discount', 0)
-            ->where('quote.coupon_code', null)
-            ->where('quote.applied_code', 'BIGSPEND')
-            ->whereNot('quote.coupon_error', null)
+            ->where('quote.coupons.0.code', 'BIGSPEND')
+            ->where('quote.coupons.0.discount', 0)
+            ->whereNot('quote.coupons.0.error', null)
+            ->whereNot('quote.coupon_errors.BIGSPEND', null)
+            ->etc()
         );
 });
 
@@ -291,7 +297,125 @@ test('the cart names an applied gift card too', function () {
     $this->post(route('store.cart.code'), ['code' => 'GIFT100']);
 
     $this->get(route('store.cart.show'))
-        ->assertInertia(fn ($page) => $page->where('quote.applied_code', 'GIFT100'));
+        ->assertInertia(fn ($page) => $page
+            ->where('quote.gift_card.code', 'GIFT100')
+            ->where('quote.gift_card.amount', 500)
+            ->etc()
+        );
+
+    $this->delete(route('store.cart.giftcard.delete'));
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page->where('quote.gift_card', null));
+});
+
+test('a stackable coupon rides on top of an exclusive one', function () {
+    $package = StorePackage::factory()->create(['price' => 2000]);
+    StoreCoupon::factory()->create([
+        'code' => 'TEN', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 1000,
+    ]);
+    StoreCoupon::factory()->stackable()->create([
+        'code' => 'EXTRA5', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 500,
+    ]);
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->post(route('store.cart.code'), ['code' => 'TEN']);
+    $this->post(route('store.cart.code'), ['code' => 'EXTRA5']);
+
+    // Both measured against the undiscounted 2000: 200 + 100. Parallel, not compounded, so the
+    // order they were typed in cannot change the total.
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page
+            ->where('quote.coupon_discount', 300)
+            ->where('quote.total', 1700)
+            ->count('quote.coupons', 2)
+            ->etc()
+        );
+});
+
+test('a second exclusive coupon replaces the first', function () {
+    $package = StorePackage::factory()->create(['price' => 2000]);
+    StoreCoupon::factory()->create([
+        'code' => 'TEN', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 1000,
+    ]);
+    StoreCoupon::factory()->create([
+        'code' => 'TWENTY', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 2000,
+    ]);
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->post(route('store.cart.code'), ['code' => 'TEN']);
+    $this->post(route('store.cart.code'), ['code' => 'TWENTY']);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page
+            ->count('quote.coupons', 1)
+            ->where('quote.coupons.0.code', 'TWENTY')
+            ->where('quote.coupon_discount', 400)
+            ->etc()
+        );
+});
+
+test('applying the same coupon twice does not discount it twice', function () {
+    $package = StorePackage::factory()->create(['price' => 2000]);
+    StoreCoupon::factory()->stackable()->create([
+        'code' => 'EXTRA5', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 500,
+    ]);
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->post(route('store.cart.code'), ['code' => 'EXTRA5']);
+    $this->post(route('store.cart.code'), ['code' => 'EXTRA5']);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page
+            ->count('quote.coupons', 1)
+            ->where('quote.coupon_discount', 100)
+            ->etc()
+        );
+});
+
+test('the cart refuses more stackable coupons than the cap allows', function () {
+    config(['store.cart_max_coupons' => 2]);
+
+    $package = StorePackage::factory()->create(['price' => 10000]);
+    foreach (['S1', 'S2', 'S3'] as $code) {
+        StoreCoupon::factory()->stackable()->create([
+            'code' => $code, 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 100,
+        ]);
+    }
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->post(route('store.cart.code'), ['code' => 'S1']);
+    $this->post(route('store.cart.code'), ['code' => 'S2']);
+    $this->post(route('store.cart.code'), ['code' => 'S3']);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page->count('quote.coupons', 2)->etc());
+});
+
+test('stacked coupons cannot take more off than the basket is worth', function () {
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreCoupon::factory()->create([
+        'code' => 'FULL', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 10000,
+    ]);
+    StoreCoupon::factory()->stackable()->create([
+        'code' => 'EXTRA5', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 500,
+    ]);
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->post(route('store.cart.code'), ['code' => 'FULL']);
+    $this->post(route('store.cart.code'), ['code' => 'EXTRA5']);
+
+    // The exclusive coupon is applied first and takes the lot; the stackable one is trimmed to
+    // nothing rather than pushing the total negative. The per-coupon figures still sum to the total.
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page
+            ->where('quote.coupon_discount', 1000)
+            ->where('quote.total', 0)
+            ->where('quote.coupons.0.code', 'FULL')
+            ->where('quote.coupons.0.discount', 1000)
+            ->where('quote.coupons.1.code', 'EXTRA5')
+            ->where('quote.coupons.1.discount', 0)
+            ->etc()
+        );
 });
 
 test('a gift card code can be applied', function () {

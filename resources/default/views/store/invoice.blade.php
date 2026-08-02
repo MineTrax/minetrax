@@ -116,7 +116,7 @@
                 @if ($money['coupon_discount'])
                     <tr>
                         <td class="muted">
-                            {{ __('Coupon') }}@if ($couponCode) <span class="muted">({{ $couponCode }})</span>@endif
+                            {{ __('Coupon') }}@if ($couponCodes) <span class="muted">({{ implode(', ', $couponCodes) }})</span>@endif
                         </td>
                         <td class="right">−{{ $money['coupon_discount'] }}</td>
                     </tr>

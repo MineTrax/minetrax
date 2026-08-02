@@ -12,6 +12,7 @@ use App\Models\StoreTax;
 use App\Models\User;
 use App\Services\StorePricingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 uses(RefreshDatabase::class);
@@ -25,6 +26,15 @@ beforeEach(function () {
 function line(StorePackage $package, int $quantity = 1): array
 {
     return ['package' => $package, 'quantity' => $quantity];
+}
+
+/**
+ * The pricing service takes a collection, because a basket may carry one exclusive coupon plus any
+ * number of stackable ones.
+ */
+function coupons(StoreCoupon ...$coupons): Collection
+{
+    return collect($coupons);
 }
 
 /**
@@ -255,11 +265,13 @@ test('a percentage coupon discounts the basket', function () {
         'code' => 'SAVE10', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 1000, 'is_enabled' => true, 'used_count' => 0,
     ]);
 
-    $quote = $this->pricing->quote([line($package)], null, $coupon);
+    $quote = $this->pricing->quote([line($package)], null, coupons($coupon));
 
     expect($quote['coupon_discount'])->toEqual(200);
     expect($quote['total'])->toEqual(1800);
-    expect($quote['coupon_code'])->toEqual('SAVE10');
+    expect($quote['coupons'])->toHaveCount(1);
+    expect($quote['coupons'][0]['code'])->toEqual('SAVE10');
+    expect($quote['coupons'][0]['discount'])->toEqual(200);
 });
 
 test('a fixed coupon cannot discount more than the basket', function () {
@@ -268,7 +280,7 @@ test('a fixed coupon cannot discount more than the basket', function () {
         'code' => 'BIG', 'discount_type' => StoreDiscountType::FIXED, 'discount_value' => 100000, 'is_enabled' => true, 'used_count' => 0,
     ]);
 
-    $quote = $this->pricing->quote([line($package)], null, $coupon);
+    $quote = $this->pricing->quote([line($package)], null, coupons($coupon));
 
     expect($quote['coupon_discount'])->toEqual(500);
     expect($quote['total'])->toEqual(0);
@@ -281,10 +293,10 @@ test('an expired coupon is rejected with a reason', function () {
         'is_enabled' => true, 'used_count' => 0, 'expires_at' => now()->subDay(),
     ]);
 
-    $quote = $this->pricing->quote([line($package)], null, $coupon);
+    $quote = $this->pricing->quote([line($package)], null, coupons($coupon));
 
     expect($quote['coupon_discount'])->toEqual(0);
-    expect($quote['coupon_error'])->not->toBeNull();
+    expect($quote['coupon_errors'])->toHaveKey('OLD');
     expect($quote['total'])->toEqual(1000);
 });
 
@@ -295,10 +307,10 @@ test('a fully redeemed coupon is rejected', function () {
         'is_enabled' => true, 'max_uses_total' => 5, 'used_count' => 5,
     ]);
 
-    $quote = $this->pricing->quote([line($package)], null, $coupon);
+    $quote = $this->pricing->quote([line($package)], null, coupons($coupon));
 
     expect($quote['coupon_discount'])->toEqual(0);
-    expect($quote['coupon_error'])->not->toBeNull();
+    expect($quote['coupon_errors'])->toHaveKey('GONE');
 });
 
 test('a minimum basket coupon is rejected below the threshold', function () {
@@ -308,7 +320,7 @@ test('a minimum basket coupon is rejected below the threshold', function () {
         'is_enabled' => true, 'used_count' => 0, 'min_basket_amount' => 2000,
     ]);
 
-    expect($this->pricing->quote([line($package)], null, $coupon)['coupon_discount'])->toEqual(0);
+    expect($this->pricing->quote([line($package)], null, coupons($coupon))['coupon_discount'])->toEqual(0);
 });
 
 test('a per user coupon counts only paid orders', function () {
@@ -320,11 +332,11 @@ test('a per user coupon counts only paid orders', function () {
     ]);
 
     // An abandoned order must not burn the user's allowance.
-    StoreOrder::factory()->create(['user_id' => $user->id, 'store_coupon_id' => $coupon->id]);
-    expect($this->pricing->quote([line($package)], null, $coupon, null, $user)['coupon_discount'])->toEqual(500);
+    $this->recordOrderCoupon(StoreOrder::factory()->create(['user_id' => $user->id]), $coupon, 500);
+    expect($this->pricing->quote([line($package)], null, coupons($coupon), null, $user)['coupon_discount'])->toEqual(500);
 
-    StoreOrder::factory()->paid()->create(['user_id' => $user->id, 'store_coupon_id' => $coupon->id]);
-    expect($this->pricing->quote([line($package)], null, $coupon->fresh(), null, $user)['coupon_discount'])->toEqual(0);
+    $this->recordOrderCoupon(StoreOrder::factory()->paid()->create(['user_id' => $user->id]), $coupon, 500);
+    expect($this->pricing->quote([line($package)], null, coupons($coupon->fresh()), null, $user)['coupon_discount'])->toEqual(0);
 });
 
 test('a scoped coupon only discounts its own packages', function () {
@@ -336,7 +348,7 @@ test('a scoped coupon only discounts its own packages', function () {
     ]);
     $coupon->couponables()->create(['couponable_type' => StorePackage::class, 'couponable_id' => $inScope->id]);
 
-    $quote = $this->pricing->quote([line($inScope), line($outOfScope)], null, $coupon->fresh());
+    $quote = $this->pricing->quote([line($inScope), line($outOfScope)], null, coupons($coupon->fresh()));
 
     // 50% of the 1000 in-scope line only.
     expect($quote['coupon_discount'])->toEqual(500);
@@ -351,10 +363,10 @@ test('a coupon matching nothing in the cart reports an error', function () {
     ]);
     $coupon->couponables()->create(['couponable_type' => StorePackage::class, 'couponable_id' => $other->id]);
 
-    $quote = $this->pricing->quote([line($package)], null, $coupon->fresh());
+    $quote = $this->pricing->quote([line($package)], null, coupons($coupon->fresh()));
 
     expect($quote['coupon_discount'])->toEqual(0);
-    expect($quote['coupon_error'])->not->toBeNull();
+    expect($quote['coupon_errors'])->toHaveKey('NOPE');
 });
 
 test('exclusive tax is added on top', function () {
@@ -385,7 +397,7 @@ test('tax is charged after the coupon not before', function () {
         'code' => 'HALF', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000, 'is_enabled' => true, 'used_count' => 0,
     ]);
 
-    $quote = $this->pricing->quote([line($package)], null, $coupon);
+    $quote = $this->pricing->quote([line($package)], null, coupons($coupon));
 
     expect($quote['tax_amount'])->toEqual(200, 'Tax applies to the discounted 1000, not the original 2000.');
     expect($quote['total'])->toEqual(1200);
@@ -458,7 +470,7 @@ test('the invariant still holds in a zero decimal currency with tax and a coupon
         'code' => 'TEN', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 1000, 'is_enabled' => true, 'used_count' => 0,
     ]);
 
-    $quote = $this->pricing->quote([line($package, 3)], $yen, $coupon);
+    $quote = $this->pricing->quote([line($package, 3)], $yen, coupons($coupon));
 
     expect($quote['total'])->toBe($quote['subtotal'] - $quote['coupon_discount'] + $quote['tax_amount']);
     expect($quote['gift_card_amount'] + $quote['amount_due'])->toBe($quote['total']);

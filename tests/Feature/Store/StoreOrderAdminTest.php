@@ -300,10 +300,10 @@ test('cancelling releases the coupon and the gift card', function () {
 
     $order = StoreOrder::factory()->create([
         'total' => 1000, 'amount_due' => 500, 'currency' => 'USD',
-        'store_coupon_id' => $coupon->id,
         'store_gift_card_id' => $card->id,
         'gift_card_amount' => 500,
     ]);
+    $this->recordOrderCoupon($order, $coupon, 500);
 
     $this->actingAs($this->superadmin)
         ->post(route('admin.store.order.cancel', $order->uuid), ['reason' => 'Buyer changed their mind'])
@@ -547,7 +547,8 @@ test('the sweep never touches a paid order', function () {
 
 test('the sweep releases the coupon a stale order was holding', function () {
     $coupon = StoreCoupon::factory()->create(['used_count' => 1, 'max_uses_total' => 1]);
-    $stale = StoreOrder::factory()->create(['store_coupon_id' => $coupon->id]);
+    $stale = StoreOrder::factory()->create();
+    $this->recordOrderCoupon($stale, $coupon, 100);
     $stale->forceFill(['created_at' => now()->subHours(48)])->save();
 
     (new ExpireStalePendingStoreOrdersJob)->handle(app(StoreOrderService::class));

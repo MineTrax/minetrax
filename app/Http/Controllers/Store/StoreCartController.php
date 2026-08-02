@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
+use App\Models\StoreCart;
 use App\Models\StoreCartItem;
 use App\Models\StoreCoupon;
 use App\Models\StoreCurrency;
@@ -133,32 +134,24 @@ class StoreCartController extends Controller
     }
 
     /**
-     * Apply or clear a coupon / gift card code.
+     * Apply a coupon or gift card code.
      *
-     * Referral codes have a field of their own — they are not a discount, they do not consume the
-     * coupon slot, and sharing one box would have made "Clear" ambiguous between two things a buyer
-     * may well want to keep independently.
+     * The box stays open once a code lands, because a basket may hold one exclusive coupon plus any
+     * number of stackable ones. Each applied code carries its own way back off, so there is nothing
+     * left for a shared "Clear" to be ambiguous about — which is also why referral codes keep a
+     * field of their own: they are attribution rather than a discount, and a buyer may well want to
+     * keep one while dropping the other.
      */
     public function applyCode(Request $request): RedirectResponse
     {
         $this->authorize('browse', StorePackage::class);
 
-        $validated = $request->validate(['code' => 'nullable|string|max:64']);
+        $validated = $request->validate(['code' => 'required|string|max:64']);
         $cart = $this->carts->current($request);
-        $code = trim((string) ($validated['code'] ?? ''));
-
-        if ($code === '') {
-            $cart->update(['store_coupon_id' => null, 'store_gift_card_id' => null]);
-
-            return redirect()->route('store.cart.show');
-        }
+        $code = trim($validated['code']);
 
         if ($coupon = StoreCoupon::where('code', strtoupper($code))->first()) {
-            $cart->update(['store_coupon_id' => $coupon->id]);
-
-            // Whether the coupon is actually valid for this basket is decided by the pricing
-            // service, which reports a reason the cart page can show.
-            return redirect()->route('store.cart.show');
+            return $this->attachCoupon($cart, $coupon);
         }
 
         if ($giftCard = StoreGiftCard::where('code', $code)->where('is_enabled', true)->first()) {
@@ -179,6 +172,82 @@ class StoreCartController extends Controller
 
         return redirect()->route('store.cart.show')
             ->with(['toast' => ['type' => 'error', 'title' => __('Invalid code'), 'body' => __('That code was not recognised.')]]);
+    }
+
+    /**
+     * Take one coupon back off the basket.
+     */
+    public function removeCoupon(Request $request, StoreCoupon $coupon): RedirectResponse
+    {
+        $this->authorize('browse', StorePackage::class);
+
+        if ($cart = $this->carts->current($request, create: false)) {
+            $this->carts->detachCoupon($cart, $coupon->id);
+        }
+
+        return redirect()->route('store.cart.show');
+    }
+
+    /**
+     * Take the gift card back off. Its own endpoint, because it is a single slot rather than one of
+     * a set, and it comes off the total in a different place.
+     */
+    public function removeGiftCard(Request $request): RedirectResponse
+    {
+        $this->authorize('browse', StorePackage::class);
+
+        $this->carts->current($request, create: false)?->update(['store_gift_card_id' => null]);
+
+        return redirect()->route('store.cart.show');
+    }
+
+    /**
+     * Attach a coupon, and say what happened when it was not simply added.
+     */
+    private function attachCoupon(StoreCart $cart, StoreCoupon $coupon): RedirectResponse
+    {
+        // A creator's perk is not a code to be typed. It rides in with the referral, and letting a
+        // buyer apply it directly would hand out the discount while the creator earned nothing —
+        // which is worse now that it stacks with everything else rather than displacing it.
+        if (StoreReferral::where('store_coupon_id', $coupon->id)->exists()) {
+            return redirect()->route('store.cart.show')->with(['toast' => [
+                'type' => 'error',
+                'title' => __('That is a referral reward'),
+                'body' => __('It applies on its own when you use the creator code it belongs to.'),
+            ]]);
+        }
+
+        $result = $this->carts->attachCoupon($cart, $coupon);
+
+        $toast = match ($result['status']) {
+            StoreCartService::COUPON_ALREADY_APPLIED => [
+                'type' => 'info',
+                'title' => __('Already applied'),
+                'body' => __(':code is already on your order.', ['code' => $coupon->code]),
+            ],
+            StoreCartService::COUPON_LIMIT_REACHED => [
+                'type' => 'error',
+                'title' => __('Too many codes'),
+                'body' => __('You cannot apply more than :count codes to one order.', [
+                    'count' => (int) config('store.cart_max_coupons', 5),
+                ]),
+            ],
+            // Told rather than left to be noticed: a voucher disappearing from the list without
+            // explanation reads as a bug.
+            StoreCartService::COUPON_REPLACED => [
+                'type' => 'success',
+                'title' => __('Code applied'),
+                'body' => __(':old was removed, because it cannot be combined with :new.', [
+                    'old' => $result['replaced']->code,
+                    'new' => $coupon->code,
+                ]),
+            ],
+            default => null,
+        };
+
+        // Whether the coupon is actually valid for this basket is decided by the pricing service,
+        // which reports a reason the cart page shows on that code's own chip.
+        return redirect()->route('store.cart.show')->with($toast ? ['toast' => $toast] : []);
     }
 
     /**

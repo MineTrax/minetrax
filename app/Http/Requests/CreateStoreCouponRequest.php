@@ -64,6 +64,9 @@ class CreateStoreCouponRequest extends FormRequest
             'starts_at' => 'nullable|date',
             'expires_at' => 'nullable|date|after:starts_at',
             'is_enabled' => 'required|boolean',
+            // Whether this rides on top of other coupons or replaces them. A basket takes one
+            // exclusive coupon plus any number of stackable ones.
+            'is_stackable' => 'required|boolean',
 
             // No scope rows at all means the coupon applies store-wide.
             'packages' => 'nullable|array',

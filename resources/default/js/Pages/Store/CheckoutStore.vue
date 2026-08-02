@@ -49,6 +49,16 @@ const showTerms = ref(false);
 
 const hasGateways = computed(() => props.gateways.length > 0);
 
+// Only the codes that actually took something off. One that is attached but rejected is named on
+// the cart page, where it can be removed; repeating it here beside a discount it did not contribute
+// to would just be confusing.
+const appliedCouponCodes = computed(
+    () => (props.quote.coupons ?? [])
+        .filter((coupon) => coupon.discount > 0)
+        .map((coupon) => coupon.code)
+        .join(", ")
+);
+
 const submit = () => form.post(route("store.checkout.store"));
 </script>
 
@@ -410,7 +420,12 @@ const submit = () => form.post(route("store.checkout.store"));
               v-if="quote.coupon_discount > 0"
               class="flex justify-between text-success"
             >
-              <dt>{{ __("Coupon") }} <span v-if="quote.coupon_code">({{ quote.coupon_code }})</span></dt>
+              <!-- Several codes can be on one basket, so they are named individually rather than
+                   folded into one bracket that could only ever show the first. -->
+              <dt>
+                {{ __("Coupon") }}
+                <span v-if="appliedCouponCodes">({{ appliedCouponCodes }})</span>
+              </dt>
               <dd>-{{ quote.formatted.coupon_discount }}</dd>
             </div>
             <div

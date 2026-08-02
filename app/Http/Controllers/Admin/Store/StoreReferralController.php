@@ -291,7 +291,13 @@ class StoreReferralController extends Controller
     private function formData(): array
     {
         return [
-            'coupons' => StoreCoupon::select(['id', 'code', 'discount_type', 'discount_value'])->orderBy('code')->get(),
+            // Stackable only, matching what CreateStoreReferralRequest will accept. An exclusive
+            // coupon as a referral reward would displace whatever voucher the buyer already held,
+            // so offering one here would only be offering a way to fail validation.
+            'coupons' => StoreCoupon::select(['id', 'code', 'discount_type', 'discount_value'])
+                ->where('is_stackable', true)
+                ->orderBy('code')
+                ->get(),
             'servers' => Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->orderBy('name')->get(),
             'attributionModes' => collect(StoreReferralAttributionMode::cases())
                 ->mapWithKeys(fn (StoreReferralAttributionMode $mode) => [$mode->value => $mode->name])

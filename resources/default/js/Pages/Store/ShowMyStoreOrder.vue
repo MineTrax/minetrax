@@ -123,7 +123,14 @@ defineProps({
             v-if="order.raw.coupon_discount > 0"
             class="flex justify-between text-success"
           >
-            <dt>{{ __("Coupon") }} <span v-if="order.coupon_code">({{ order.coupon_code }})</span></dt>
+            <!-- Each code with what it was worth, not one combined figure: an order can carry
+                 several, and the sum alone cannot say which of them did what. -->
+            <dt>
+              {{ __("Coupon") }}
+              <span v-if="order.coupons.length">
+                ({{ order.coupons.map((coupon) => coupon.code).join(", ") }})
+              </span>
+            </dt>
             <dd>-{{ order.money.coupon_discount }}</dd>
           </div>
           <div

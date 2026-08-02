@@ -97,7 +97,7 @@ class StoreInvoiceService
      */
     public function invoiceData(StoreOrder $order): array
     {
-        $order->loadMissing(['items', 'payments.refunds', 'user:id,username,email']);
+        $order->loadMissing(['coupons', 'items', 'payments.refunds', 'user:id,username,email']);
 
         $format = fn (?int $amount) => $this->currencies->format((int) $amount, $order->currency);
 
@@ -135,7 +135,9 @@ class StoreInvoiceService
                 // makes a buyer wonder whether they were refunded.
                 'refunded' => $refunded > 0 ? $format($refunded) : null,
             ],
-            'couponCode' => $order->coupon_code,
+            // Every code that priced the order, read off the snapshot rows so an invoice reprinted
+            // years later still names them after the coupons themselves have gone.
+            'couponCodes' => $order->coupons->pluck('code')->all(),
             'gateway' => $order->gateway?->value,
             'playerUsername' => $order->player_username,
         ];

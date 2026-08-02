@@ -158,12 +158,24 @@ test('a linked account is named by username, and an unknown one is rejected', fu
 
 test('an attached coupon is recorded', function () {
     $this->actingAs(User::whereId(1)->first());
-    $coupon = StoreCoupon::factory()->create();
+    $coupon = StoreCoupon::factory()->stackable()->create();
 
     $this->post(route('admin.store.referral.store'), referralPayload(['store_coupon_id' => $coupon->id]))
         ->assertSessionHasNoErrors();
 
     expect(StoreReferral::first()->coupon->is($coupon))->toBeTrue();
+});
+
+test('a referral reward has to be a stackable coupon', function () {
+    // An exclusive one would displace whatever voucher the buyer already held, so the reward for
+    // using a creator code would cost them their own — the opposite of an incentive.
+    $this->actingAs(User::whereId(1)->first());
+    $coupon = StoreCoupon::factory()->create();
+
+    $this->post(route('admin.store.referral.store'), referralPayload(['store_coupon_id' => $coupon->id]))
+        ->assertSessionHasErrors('store_coupon_id');
+
+    expect(StoreReferral::count())->toBe(0);
 });
 
 test('creating lands on the code page, where the tracking link is', function () {

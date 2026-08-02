@@ -80,6 +80,13 @@ const headerRow = [
         label: __("Enabled"),
         sortable: true,
     },
+    // Listed because "why did applying this one remove the last one" has no answer visible
+    // anywhere else in the admin.
+    {
+        key: "is_stackable",
+        label: __("Stackable"),
+        sortable: true,
+    },
     {
         key: "actions",
         label: __("Actions"),
@@ -215,6 +222,18 @@ function scopeLabel(coupon) {
               class="text-destructive"
               name="cross-circle"
             />
+          </td>
+
+          <td class="px-4">
+            <Icon
+              v-if="item.is_stackable"
+              class="text-success"
+              name="check-circle"
+            />
+            <span
+              v-else
+              class="text-xs text-muted-foreground"
+            >&mdash;</span>
           </td>
 
           <td

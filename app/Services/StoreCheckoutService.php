@@ -45,6 +45,7 @@ class StoreCheckoutService
     public function placeOrder(StoreCart $cart, array $input, ?User $user, array $resolvedPlayer): StoreOrder
     {
         $cart->loadMissing([
+            'coupons',
             'items.package.prices',
             'items.package.requiredPackages',
             'items.package.variables',
@@ -102,18 +103,20 @@ class StoreCheckoutService
             $quote = $this->pricing->quote(
                 $lines,
                 $currency,
-                // Same precedence the cart showed: a coupon the buyer typed beats the one a
-                // referral hands out. Re-derived here rather than passed in, so the price charged
-                // cannot disagree with the price quoted.
-                $cart->coupon ?? $referral?->coupon,
+                // The buyer's own coupons plus whatever perk the referral hands out. Re-derived
+                // here rather than passed in, so the price charged cannot disagree with the price
+                // quoted.
+                $this->carts->couponsFor($cart, $referral),
                 $cart->giftCard,
                 $user,
                 $resolvedPlayer['uuid'],
                 $input['country_id'] ?? null,
             );
 
-            if ($quote['coupon_error']) {
-                throw ValidationException::withMessages(['code' => $quote['coupon_error']]);
+            if ($quote['coupon_errors']) {
+                // Every reason at once. With several codes attached, reporting only the first would
+                // have the buyer drop one, resubmit, and be turned away again by the next.
+                throw ValidationException::withMessages(['code' => array_values($quote['coupon_errors'])]);
             }
 
             $order = StoreOrder::create([
@@ -138,14 +141,14 @@ class StoreCheckoutService
                 'gift_card_amount' => $quote['gift_card_amount'],
                 'amount_due' => $quote['amount_due'],
                 'base_total' => $quote['base_total'],
-                'store_coupon_id' => $quote['coupon_discount'] > 0 ? ($cart->store_coupon_id ?? $referral?->store_coupon_id) : null,
-                'coupon_code' => $quote['coupon_code'],
+                // Which coupons made up `coupon_discount` is recorded in store_order_coupons below.
                 'store_gift_card_id' => $quote['gift_card_amount'] > 0 ? $cart->store_gift_card_id : null,
                 // Attributed now, while the cookie is still in scope. What it *earns* is worked out
                 // at payment, because nothing is owed on an order nobody paid for.
                 //
-                // share_bp is snapshotted beside the id for the same reason coupon_code is:
-                // changing a referral's cut later must not re-price what it already earned.
+                // share_bp is snapshotted beside the id for the same reason the coupon rows below
+                // snapshot theirs: changing a referral's cut later must not re-price what it
+                // already earned.
                 'store_referral_id' => $referral?->id,
                 'referral_code' => $referral?->code,
                 'referral_share_bp' => $referral?->share_bp,
@@ -184,9 +187,31 @@ class StoreCheckoutService
                 ]);
             }
 
+            // Snapshotted per coupon, so a receipt can break the discount down and still read
+            // correctly after a coupon is re-rated or deleted.
+            //
+            // Only the ones that actually took something off. A coupon that was attached but
+            // reduced nothing — it arrived at a basket the others had already taken to zero — is
+            // not recorded, and so does not burn one of its uses. That is the rule the single-coupon
+            // version kept too, where the order only stored a coupon when it discounted something.
+            foreach ($quote['coupons'] as $applied) {
+                if ($applied['discount'] <= 0) {
+                    continue;
+                }
+
+                $order->coupons()->create([
+                    'store_coupon_id' => $applied['id'],
+                    'code' => $applied['code'],
+                    'discount_type' => $applied['discount_type'],
+                    'discount_value' => $applied['discount_value'],
+                    'is_stackable' => $applied['is_stackable'],
+                    'discount_amount' => $applied['discount'],
+                ]);
+            }
+
             // Reserved now, not at payment: two buyers racing for the last use of a
             // limited coupon must not both get it.
-            $this->reserveCoupon($order);
+            $this->reserveCoupons($order);
 
             $payment = $order->payments()->create([
                 'gateway' => $input['gateway'],
@@ -196,7 +221,8 @@ class StoreCheckoutService
             ]);
 
             $cart->items()->delete();
-            $cart->update(['store_coupon_id' => null, 'store_gift_card_id' => null]);
+            $cart->coupons()->detach();
+            $cart->update(['store_gift_card_id' => null]);
 
             $order->setRelation('pendingPayment', $payment);
 
@@ -359,24 +385,39 @@ class StoreCheckoutService
         }
     }
 
-    private function reserveCoupon(StoreOrder $order): void
+    /**
+     * Reserve one use of every coupon that priced this order.
+     *
+     * Taken in ascending id order. Two buyers checking out with the same pair of coupons could
+     * otherwise lock them in opposite orders and deadlock against each other.
+     *
+     * @throws ValidationException
+     */
+    private function reserveCoupons(StoreOrder $order): void
     {
-        if (! $order->store_coupon_id) {
-            return;
+        $couponIds = $order->coupons()
+            ->whereNotNull('store_coupon_id')
+            ->orderBy('store_coupon_id')
+            ->pluck('store_coupon_id');
+
+        foreach ($couponIds as $couponId) {
+            /** @var StoreCoupon|null $coupon */
+            $coupon = StoreCoupon::lockForUpdate()->find($couponId);
+
+            if (! $coupon) {
+                continue;
+            }
+
+            if ($coupon->max_uses_total !== null && $coupon->used_count >= $coupon->max_uses_total) {
+                // Named, because with several codes attached "this code" does not identify which
+                // one the buyer has to drop.
+                throw ValidationException::withMessages([
+                    'code' => __(':code has been fully redeemed.', ['code' => $coupon->code]),
+                ]);
+            }
+
+            $coupon->increment('used_count');
         }
-
-        /** @var StoreCoupon|null $coupon */
-        $coupon = StoreCoupon::lockForUpdate()->find($order->store_coupon_id);
-
-        if (! $coupon) {
-            return;
-        }
-
-        if ($coupon->max_uses_total !== null && $coupon->used_count >= $coupon->max_uses_total) {
-            throw ValidationException::withMessages(['code' => __('This code has been fully redeemed.')]);
-        }
-
-        $coupon->increment('used_count');
     }
 
     /**

@@ -31,19 +31,47 @@ const props = defineProps({
     },
 });
 
-// Whether a coupon or gift card is currently attached, however the server judged it. Read from
-// `applied_code` rather than from coupon_code or the discount, because a coupon that was rejected —
-// below its minimum, say — is still attached and still has to be removable.
-const hasAppliedCode = computed(() => Boolean(props.quote.applied_code));
-
-// Seeded from the server so the locked field shows what is actually on the cart, and re-synced
-// whenever that changes: applying and clearing are both full visits, and typing a code then
-// clearing it must not leave the old text sitting in a field that is editable again.
-const codeInput = ref(props.quote.applied_code ?? "");
+const codeInput = ref("");
 const codeLoading = ref(false);
 
-watch(() => props.quote.applied_code, (code) => {
-    codeInput.value = code ?? "";
+/**
+ * Every code currently on the basket, coupons and the gift card alike.
+ *
+ * One list because they share one input. Rejected coupons are in it too — a coupon below its
+ * minimum is still attached and still has to be removable, so it shows with its reason rather than
+ * vanishing and leaving the buyer nothing to click.
+ *
+ * Each entry carries how it comes back off, because the three are not the same: a coupon by id, the
+ * gift card by its own endpoint, and a referral's reward by giving up the referral — that last one
+ * was never the buyer's to spend, so its × points at the referral instead.
+ */
+const appliedCodes = computed(() => {
+    const entries = (props.quote.coupons ?? []).map((coupon) => ({
+        key: `coupon-${coupon.id}`,
+        id: coupon.id,
+        code: coupon.code,
+        amount: coupon.discount > 0 ? coupon.discount_formatted : null,
+        error: coupon.error,
+        isReward: coupon.id === props.quote.referral?.coupon_id,
+    }));
+
+    if (props.quote.gift_card) {
+        entries.push({
+            key: "gift-card",
+            code: props.quote.gift_card.code,
+            amount: props.quote.gift_card.amount > 0 ? props.quote.gift_card.amount_formatted : null,
+            error: null,
+            isGiftCard: true,
+        });
+    }
+
+    return entries;
+});
+
+// Emptied once the server actually took the code on, rather than on any response: one it did not
+// recognise stays in the box to be corrected instead of having to be typed out again.
+watch(() => appliedCodes.value.map((entry) => entry.key).join(","), () => {
+    codeInput.value = "";
 });
 
 const handleRemoveItem = (cartItemId) => {
@@ -138,19 +166,32 @@ const handleClearReferral = () => {
     });
 };
 
-const handleClearCode = () => {
+const handleRemoveCode = (entry) => {
+    // A referral's reward is not removable on its own — it belongs to the code, so giving up the
+    // code is what gives up the reward. Anything else would let a buyer keep the discount while
+    // dropping the creator who earned it.
+    if (entry.isReward) {
+        handleClearReferral();
+
+        return;
+    }
+
     codeLoading.value = true;
-    router.post(route("store.cart.code"), {
-        code: "",
-    }, {
+
+    const options = {
         preserveScroll: true,
-        // The field is not emptied here: the watch above follows `applied_code`, so whatever the
-        // server ends up holding is what the box shows. Clearing it by hand as well would fight
-        // that on any response where the code survived.
         onFinish: () => {
             codeLoading.value = false;
         },
-    });
+    };
+
+    if (entry.isGiftCard) {
+        router.delete(route("store.cart.giftcard.delete"), options);
+
+        return;
+    }
+
+    router.delete(route("store.cart.code.delete", entry.id), options);
 };
 </script>
 
@@ -427,12 +468,9 @@ const handleClearCode = () => {
               v-if="quote.coupon_discount > 0"
               class="flex justify-between items-center pb-4 border-b border-border"
             >
-              <span class="text-muted-foreground">
-                {{ __("Coupon Discount") }}
-                <span v-if="quote.coupon_code" class="text-xs font-semibold text-success ml-1">
-                  ({{ quote.coupon_code }})
-                </span>
-              </span>
+              <!-- The combined figure. Which codes made it up, and what each was worth, is on the
+                   chips below — naming them here as well would just be the same list twice. -->
+              <span class="text-muted-foreground">{{ __("Coupon Discount") }}</span>
               <span class="text-success font-semibold">-{{ quote.formatted.coupon_discount }}</span>
             </div>
 
@@ -468,42 +506,76 @@ const handleClearCode = () => {
 
             <!-- Code Form -->
             <div class="space-y-3 pb-4 border-b border-border">
-              <div v-if="quote.coupon_error" class="text-sm text-destructive bg-destructive/10 rounded p-2">
-                {{ quote.coupon_error }}
-              </div>
-
-              <!-- One row, one button. Clear used to sit full-width underneath, which read as
-                   "clear the cart" rather than "remove this code" — and the field stayed editable
-                   beside a code that was already applied, so it was never obvious which of the two
-                   was in force. While a code is on, the field shows it and is locked; clearing
-                   hands it back. -->
+              <!-- The field never locks. A basket takes one exclusive coupon plus any number of
+                   stackable ones, so there is always another code that might apply — and each one
+                   that landed carries its own ×, which is both clearer than a shared "Clear" that
+                   read as "clear the cart" and the only thing that can remove one of several. -->
               <div class="flex gap-2">
                 <!-- Enter submits. A code field that only responds to a button click is the most
                      reliably mistyped control in a checkout. -->
                 <input
                   v-model="codeInput"
-                  :disabled="hasAppliedCode"
                   :placeholder="__('Enter coupon or gift card code')"
                   :aria-label="__('Enter coupon or gift card code')"
-                  class="flex-1 min-w-0 px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-70 disabled:cursor-not-allowed"
-                  @keyup.enter="!hasAppliedCode && codeInput.trim() && handleApplyCode()"
+                  class="flex-1 min-w-0 px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  @keyup.enter="codeInput.trim() && handleApplyCode()"
                 >
                 <button
-                  v-if="hasAppliedCode"
-                  :disabled="codeLoading"
-                  class="shrink-0 px-4 py-2 border border-border text-muted-foreground font-semibold rounded-lg transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
-                  @click="handleClearCode"
-                >
-                  {{ __("Clear") }}
-                </button>
-                <button
-                  v-else
                   :disabled="codeLoading || !codeInput.trim()"
                   class="shrink-0 px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90"
                   @click="handleApplyCode"
                 >
                   {{ __("Apply") }}
                 </button>
+              </div>
+
+              <!-- One chip per code, each with what it took off and its own way back off. A
+                   rejected one keeps its place and states why, so the reason sits on the code it
+                   belongs to rather than floating above a list of several. -->
+              <div
+                v-if="appliedCodes.length"
+                class="space-y-2"
+              >
+                <div
+                  v-for="entry in appliedCodes"
+                  :key="entry.key"
+                  class="flex items-center justify-between gap-2 rounded-lg px-3 py-2"
+                  :class="entry.error ? 'bg-destructive/10' : 'bg-muted/60'"
+                >
+                  <span class="min-w-0">
+                    <span class="flex items-center gap-2">
+                      <span class="text-sm font-semibold text-foreground truncate">{{ entry.code }}</span>
+                      <span
+                        v-if="entry.amount"
+                        class="shrink-0 text-xs font-semibold text-success"
+                      >
+                        -{{ entry.amount }}
+                      </span>
+                    </span>
+                    <span
+                      v-if="entry.error"
+                      class="block mt-0.5 text-xs text-destructive"
+                    >
+                      {{ entry.error }}
+                    </span>
+                    <span
+                      v-else-if="entry.isReward"
+                      class="block mt-0.5 text-xs text-muted-foreground"
+                    >
+                      {{ __("Reward for supporting :name", { name: quote.referral.referrer_name }) }}
+                    </span>
+                  </span>
+                  <button
+                    v-tippy
+                    :disabled="codeLoading || (entry.isReward && referralLoading)"
+                    :title="__('Remove')"
+                    :aria-label="__('Remove')"
+                    class="shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-50"
+                    @click="handleRemoveCode(entry)"
+                  >
+                    <XMarkIcon class="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               <!-- Referral

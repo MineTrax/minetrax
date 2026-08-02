@@ -63,7 +63,13 @@ class CreateStoreReferralRequest extends FormRequest
             // Basis points, so the 100% ceiling is 10000. Zero is allowed: a code can be pure
             // attribution with a discount attached and nothing owed.
             'share_bp' => 'required|integer|min:0|max:10000',
-            'store_coupon_id' => 'nullable|integer|exists:store_coupons,id',
+            // Stackable coupons only. An exclusive one here would displace whatever the buyer
+            // already holds, so the reward for using a creator code would cost them their own
+            // voucher — which is the opposite of an incentive.
+            'store_coupon_id' => [
+                'nullable', 'integer',
+                Rule::exists('store_coupons', 'id')->where('is_stackable', true),
+            ],
 
             'is_url_tracking_enabled' => 'required|boolean',
             // Blank is a lifetime window, which is a choice rather than a missing value.
@@ -93,6 +99,7 @@ class CreateStoreReferralRequest extends FormRequest
         return [
             'code.regex' => __('A referral code may only contain letters, numbers, hyphens and underscores.'),
             'share_bp.max' => __('A referral cannot earn more than 100% of a sale.'),
+            'store_coupon_id.exists' => __('A referral reward must be a stackable coupon.'),
             'username.exists' => __('No account with that username exists.'),
         ];
     }

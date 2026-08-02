@@ -313,8 +313,18 @@ const formatDate = (value) => (value ? formatToDayDateString(value) : "—");
                 v-if="order.coupon_discount > 0"
                 class="flex justify-between text-success"
               >
-                <dt>{{ __("Coupon") }} <span v-if="order.coupon_code">({{ order.coupon_code }})</span></dt>
+                <dt>{{ __("Coupon") }}</dt>
                 <dd>-{{ money.coupon_discount }}</dd>
+              </div>
+              <!-- Broken out per code once there is more than one. The combined figure above is
+                   what was charged; this is the only place that says which code was worth what. -->
+              <div
+                v-for="coupon in order.coupons"
+                :key="coupon.id"
+                class="flex justify-between text-xs text-muted-foreground pl-3"
+              >
+                <dt>{{ coupon.code }}</dt>
+                <dd>-{{ coupon.discount_amount_formatted }}</dd>
               </div>
               <div
                 v-if="order.tax_amount > 0"

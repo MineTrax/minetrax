@@ -13,6 +13,7 @@ use App\Events\StoreOrderCompleted;
 use App\Events\StoreOrderPaid;
 use App\Events\StoreOrderRefunded;
 use App\Events\StorePaymentFailed;
+use App\Models\StoreCoupon;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePayment;
@@ -143,7 +144,7 @@ class StoreOrderService
                 return false;
             }
 
-            $this->releaseCoupon($order);
+            $this->releaseCoupons($order);
             $this->refundGiftCard($order, 'Order cancelled');
 
             $order->update([
@@ -306,12 +307,6 @@ class StoreOrderService
     }
 
     /**
-     * Coupon usage is reserved when the order is created, so cancelling must give it back.
-     *
-     * Refunds deliberately do NOT release it: the code was genuinely used, and releasing it would
-     * let a buyer farm a limited coupon by ordering and refunding.
-     */
-    /**
      * Work out what this order owes its referrer, and write it to the order.
      *
      * Always recomputed from the order's own snapshots rather than adjusted in place, so several
@@ -352,13 +347,26 @@ class StoreOrderService
         ]);
     }
 
-    private function releaseCoupon(StoreOrder $order): void
+    /**
+     * Hand back the use each of the order's coupons reserved at checkout.
+     *
+     * Usage is reserved when the order is created, so cancelling must give it back. Refunds
+     * deliberately do NOT release it: the code was genuinely used, and releasing it would let a
+     * buyer farm a limited coupon by ordering and refunding.
+     *
+     * Ascending id order, matching StoreCheckoutService::reserveCoupons() — a cancel racing a
+     * checkout over the same pair of coupons must take them the same way round or the two deadlock.
+     */
+    private function releaseCoupons(StoreOrder $order): void
     {
-        if (! $order->store_coupon_id) {
-            return;
-        }
+        $couponIds = $order->coupons()
+            ->whereNotNull('store_coupon_id')
+            ->orderBy('store_coupon_id')
+            ->pluck('store_coupon_id');
 
-        $order->coupon()->lockForUpdate()->first()?->decrement('used_count');
+        foreach ($couponIds as $couponId) {
+            StoreCoupon::lockForUpdate()->find($couponId)?->decrement('used_count');
+        }
     }
 
     /**

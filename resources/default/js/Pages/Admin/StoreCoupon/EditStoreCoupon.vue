@@ -103,6 +103,7 @@ const form = useForm({
     starts_at: toLocalInput(props.storeCoupon.starts_at),
     expires_at: toLocalInput(props.storeCoupon.expires_at),
     is_enabled: !! props.storeCoupon.is_enabled,
+    is_stackable: !! props.storeCoupon.is_stackable,
     packages: props.packages.filter(item => props.selectedPackages.includes(item.id)),
     categories: props.categories.filter(item => props.selectedCategories.includes(item.id)),
 });
@@ -340,6 +341,17 @@ function updateCoupon() {
                     :help="__('A disabled coupon is refused even inside its window.')"
                     name="is_enabled"
                     :error="form.errors.is_enabled"
+                  />
+                </div>
+
+                <div class="flex items-center col-span-6 sm:col-span-3">
+                  <XSwitch
+                    id="is_stackable"
+                    v-model="form.is_stackable"
+                    :label="__('Stackable')"
+                    :help="__('Applies on top of other coupons. Off, it replaces whichever other non-stackable coupon the buyer had.')"
+                    name="is_stackable"
+                    :error="form.errors.is_stackable"
                   />
                 </div>
               </div>

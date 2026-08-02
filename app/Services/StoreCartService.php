@@ -4,15 +4,26 @@ namespace App\Services;
 
 use App\Models\StoreCart;
 use App\Models\StoreCartItem;
+use App\Models\StoreCoupon;
 use App\Models\StorePackage;
+use App\Models\StoreReferral;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class StoreCartService
 {
     public const COOKIE = 'store_cart_token';
+
+    public const COUPON_ATTACHED = 'attached';
+
+    public const COUPON_ALREADY_APPLIED = 'already_applied';
+
+    public const COUPON_REPLACED = 'replaced';
+
+    public const COUPON_LIMIT_REACHED = 'limit_reached';
 
     public function __construct(
         private StorePricingService $pricing,
@@ -165,7 +176,7 @@ class StoreCartService
      */
     public function quote(StoreCart $cart, ?Request $request = null): array
     {
-        $cart->loadMissing(['items.package.prices', 'items.package.variables', 'items.package.category']);
+        $cart->loadMissing(['coupons', 'items.package.prices', 'items.package.variables', 'items.package.category']);
 
         $lines = $cart->items
             ->filter(fn (StoreCartItem $item) => $item->package && $item->package->is_available)
@@ -188,10 +199,7 @@ class StoreCartService
         $quote = $this->pricing->quote(
             $lines->all(),
             null,
-            // A coupon the buyer typed beats the one a referral hands out. They are not stackable
-            // — the pricing service takes one — and an explicit choice should outrank an implicit
-            // one, especially when the implicit one arrived through a link they may not remember.
-            $cart->coupon ?? $referral?->coupon,
+            $this->couponsFor($cart, $referral),
             $cart->giftCard,
             $request?->user(),
             $this->indicativePlayerUuid($request),
@@ -200,12 +208,16 @@ class StoreCartService
             $request ? app(GeolocationService::class)->getCountryIdFromIP($request->ip()) : null,
         );
 
-        // Presentational, beside the existing applied_code. The cart shows who a purchase would
+        // Presentational, beside the applied coupons. The cart shows who a purchase would
         // support, and offers a way out of it — a referral picked up from a link is invisible
         // otherwise.
         $quote['referral'] = $referral ? [
             'code' => $referral->code,
             'referrer_name' => $referral->referrer_name,
+            // Which of the coupons in the quote came from the referral rather than from the buyer.
+            // That chip carries no × of its own: the perk belongs to the code, and giving up the
+            // code is what gives up the perk.
+            'coupon_id' => $referral->store_coupon_id,
         ] : null;
 
         // Re-attach the cart item id so the UI can address each row.
@@ -227,6 +239,79 @@ class StoreCartService
         }
 
         return $quote;
+    }
+
+    /**
+     * Attach a coupon to the cart, enforcing the one-exclusive rule.
+     *
+     * A stackable coupon joins whatever is already there. An exclusive one displaces the exclusive
+     * coupon already attached, if any — a plain voucher has always behaved that way, and the caller
+     * is handed what it replaced so the buyer is told rather than watching a code silently vanish.
+     *
+     * @return array{status: string, replaced: StoreCoupon|null}
+     */
+    public function attachCoupon(StoreCart $cart, StoreCoupon $coupon): array
+    {
+        $attached = $cart->coupons()->get();
+
+        if ($attached->contains('id', $coupon->id)) {
+            return ['status' => self::COUPON_ALREADY_APPLIED, 'replaced' => null];
+        }
+
+        $replaced = $coupon->isStackable()
+            ? null
+            : $attached->first(fn (StoreCoupon $existing) => ! $existing->isStackable());
+
+        if ($replaced) {
+            $cart->coupons()->detach($replaced->id);
+        }
+
+        // A swap is never blocked by the cap: it leaves the count where it was. The cap counts what
+        // the buyer attached, so a referral's perk — which rides along without being attached —
+        // cannot use up their budget.
+        if (! $replaced && $attached->count() >= (int) config('store.cart_max_coupons', 5)) {
+            return ['status' => self::COUPON_LIMIT_REACHED, 'replaced' => null];
+        }
+
+        $cart->coupons()->attach($coupon->id);
+        // Attaching through a pivot leaves the cart's own timestamp alone, and `updated_at` is what
+        // the pruner reads: without this, a buyer who spent a while hunting for a code could have
+        // the basket swept out from under them.
+        $cart->touch();
+        $cart->load('coupons');
+
+        return [
+            'status' => $replaced ? self::COUPON_REPLACED : self::COUPON_ATTACHED,
+            'replaced' => $replaced,
+        ];
+    }
+
+    public function detachCoupon(StoreCart $cart, int $couponId): void
+    {
+        $cart->coupons()->detach($couponId);
+        $cart->touch();
+        $cart->load('coupons');
+    }
+
+    /**
+     * Every coupon that should price this basket.
+     *
+     * The buyer's own, plus the perk the referral hands out. The perk rides on top rather than
+     * competing for a slot — that is what makes it a stackable coupon — and is appended here rather
+     * than attached to the cart, because it is not the buyer's to keep: dropping the referral drops
+     * the perk with it.
+     *
+     * @return Collection<int, StoreCoupon>
+     */
+    public function couponsFor(StoreCart $cart, ?StoreReferral $referral): Collection
+    {
+        $coupons = $cart->coupons;
+
+        if ($perk = $referral?->coupon) {
+            $coupons = $coupons->merge([$perk]);
+        }
+
+        return $coupons->unique('id')->values();
     }
 
     /**

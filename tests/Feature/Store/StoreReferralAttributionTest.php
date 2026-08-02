@@ -177,7 +177,7 @@ test('a tracked referral applies its coupon without writing to the cart', functi
     // The visitor may have no cart row at all when the link is followed, and looking at a page must
     // never mint one. So the discount is resolved at quote time instead.
     $package = StorePackage::factory()->create(['price' => 1000]);
-    $coupon = StoreCoupon::factory()->create(['code' => 'CREATOR10', 'discount_value' => 1000]);
+    $coupon = StoreCoupon::factory()->stackable()->create(['code' => 'CREATOR10', 'discount_value' => 1000]);
     StoreReferral::factory()->withCoupon($coupon)->create(['code' => 'KAKAMORA']);
 
     $this->get(route('store.index', ['ref' => 'KAKAMORA']));
@@ -190,13 +190,15 @@ test('a tracked referral applies its coupon without writing to the cart', functi
         ->assertInertia(fn ($page) => $page->where('quote.coupon_discount', 100));
 
     // And the cart itself never had the coupon written onto it.
-    expect(StoreCart::first()->store_coupon_id)->toBeNull();
+    expect(StoreCart::first()->coupons()->count())->toBe(0);
 });
 
-test('a coupon the buyer typed beats the one a referral hands out', function () {
+test('a referral reward stacks with a coupon the buyer typed', function () {
+    // The whole point of making the reward stackable: using a creator's code must not cost the
+    // buyer the voucher they already had, or the incentive works backwards.
     $package = StorePackage::factory()->create(['price' => 1000]);
-    $referralCoupon = StoreCoupon::factory()->create(['code' => 'CREATOR10', 'discount_value' => 1000]);
-    $typedCoupon = StoreCoupon::factory()->create(['code' => 'BIGGER', 'discount_value' => 5000]);
+    $referralCoupon = StoreCoupon::factory()->stackable()->create(['code' => 'CREATOR10', 'discount_value' => 1000]);
+    StoreCoupon::factory()->create(['code' => 'BIGGER', 'discount_value' => 5000]);
     StoreReferral::factory()->withCoupon($referralCoupon)->create(['code' => 'KAKAMORA']);
 
     $cookies = refGuestCart(refCookie('KAKAMORA'), $package);
@@ -205,10 +207,34 @@ test('a coupon the buyer typed beats the one a referral hands out', function () 
     $this->withCookies($cookies)
         ->get(route('store.cart.show'))
         ->assertInertia(fn ($page) => $page
-            ->where('quote.coupon_discount', 500)
-            // Still credited, even though their discount lost.
+            // 50% of 1000 plus 10% of 1000, both measured off the undiscounted basket.
+            ->where('quote.coupon_discount', 600)
             ->where('quote.referral.code', 'KAKAMORA')
+            // Named so the cart can mark that chip as the referral's rather than the buyer's.
+            ->where('quote.referral.coupon_id', $referralCoupon->id)
+            ->count('quote.coupons', 2)
+            ->etc()
         );
+});
+
+test('a referral reward cannot be typed straight into the coupon box', function () {
+    // Otherwise a buyer who learns the code takes the discount and the creator earns nothing —
+    // worse now that it stacks on top of everything rather than displacing it.
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    $referralCoupon = StoreCoupon::factory()->stackable()->create(['code' => 'CREATOR10', 'discount_value' => 1000]);
+    StoreReferral::factory()->withCoupon($referralCoupon)->create(['code' => 'KAKAMORA']);
+
+    $cookies = refGuestCart([], $package);
+
+    $this->withCookies($cookies)
+        ->post(route('store.cart.code'), ['code' => 'CREATOR10'])
+        ->assertSessionHas('toast.title', 'That is a referral reward');
+
+    expect(StoreCart::first()->coupons()->count())->toBe(0);
+
+    $this->withCookies($cookies)
+        ->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page->where('quote.coupon_discount', 0));
 });
 
 test('typing a referral code into the cart credits the referrer', function () {
@@ -224,9 +250,10 @@ test('typing a referral code into the cart credits the referrer', function () {
         ->get(route('store.cart.show'))
         ->assertInertia(fn ($page) => $page
             ->where('quote.referral.referrer_name', 'Kakamora')
-            // The box stays free, because a referral does not occupy the coupon slot: the buyer can
-            // still add a coupon or a gift card on top.
-            ->where('quote.applied_code', null)
+            // No code attached, because a referral is attribution rather than a discount: the
+            // buyer can still add a coupon or a gift card on top.
+            ->where('quote.coupons', [])
+            ->where('quote.gift_card', null)
         );
 
     expect(StoreCart::first()->store_referral_id)->not->toBeNull();
@@ -262,20 +289,20 @@ test('a typed code beats a tracked one', function () {
         ->assertInertia(fn ($page) => $page->where('quote.referral.code', 'TYPED'));
 });
 
-test('clearing the coupon box leaves the referrer alone', function () {
-    // The two have separate fields, so clearing one must not silently take the other with it. This
+test('removing a coupon leaves the referrer alone', function () {
+    // The two have separate fields, so dropping one must not silently take the other with it. This
     // was the behaviour when they shared a box, and it is exactly what the split is for.
     $package = StorePackage::factory()->create(['price' => 1000]);
-    StoreCoupon::factory()->create(['code' => 'MINE', 'discount_value' => 1000]);
+    $coupon = StoreCoupon::factory()->create(['code' => 'MINE', 'discount_value' => 1000]);
     StoreReferral::factory()->create(['code' => 'KAKAMORA']);
 
     $cookies = refGuestCart(refCookie('KAKAMORA'), $package);
     $this->withCookies($cookies)->post(route('store.cart.code'), ['code' => 'MINE']);
 
-    $response = $this->withCookies($cookies)->post(route('store.cart.code'), ['code' => '']);
+    $response = $this->withCookies($cookies)->delete(route('store.cart.code.delete', $coupon->id));
 
     expect(refCookieValue($response))->toBeNull('The referral cookie must not be touched.');
-    expect(StoreCart::first()->store_coupon_id)->toBeNull();
+    expect(StoreCart::first()->coupons()->count())->toBe(0);
 
     $this->withCookies($cookies)
         ->get(route('store.cart.show'))
@@ -297,7 +324,7 @@ test('a referral code typed into the coupon box is redirected rather than refuse
         ->post(route('store.cart.code'), ['code' => 'KAKAMORA'])
         ->assertSessionHas('toast.title', 'That is a referral code');
 
-    expect(StoreCart::first()->store_coupon_id)->toBeNull();
+    expect(StoreCart::first()->coupons()->count())->toBe(0);
     expect(StoreCart::first()->store_referral_id)->toBeNull();
 });
 
@@ -342,7 +369,7 @@ test('removing the referral leaves a coupon the buyer typed in place', function 
     $response = $this->withCookies($cookies)->delete(route('store.cart.referral.delete'));
 
     expect(refCookieValue($response))->toBeNull();
-    expect(StoreCart::first()->store_coupon_id)->not->toBeNull();
+    expect(StoreCart::first()->coupons()->count())->toBe(1);
 
     // The browser has dropped the ref cookie. Overwritten rather than omitted, because
     // withCookies() merges into the jar the earlier calls filled — leaving it out would keep it.
