@@ -223,3 +223,37 @@ test('the page warns when no currency is enabled', function () {
         ->get(route('admin.store.payment-gateway.index'))
         ->assertInertia(fn ($page) => $page->has('enabledCurrencies', 0));
 });
+
+test('the manual instructions field is a rich text editor', function () {
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertInertia(function ($page) {
+            $field = collect(gatewayProp('manual', $page)['schema'])->firstWhere('key', 'instructions');
+
+            expect($field['type'])->toBe('richtext');
+            expect($field['required'])->toBeFalse();
+        });
+});
+
+test('manual instructions round trip as markup', function () {
+    $html = '<p>Send <strong>$10</strong> to <a href="https://example.test/pay">our bank</a>.</p><ul><li>Ref: ORDER-1</li></ul>';
+
+    $this->actingAs($this->superadmin)
+        ->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload([
+            'gateway_credentials' => ['manual' => ['instructions' => $html]],
+        ]))->assertSessionHasNoErrors();
+
+    expect(storedCredentials('manual')['instructions'])->toBe($html);
+
+    // Not a secret, so it comes back to the form to be edited rather than masked.
+    $this->actingAs($this->superadmin)
+        ->get(route('admin.store.payment-gateway.index'))
+        ->assertInertia(fn ($page) => expect(gatewayProp('manual', $page)['credentials']['instructions'])->toBe($html));
+});
+
+test('an overlong credential is rejected rather than failing at the database', function () {
+    $this->actingAs($this->superadmin)
+        ->post(route('admin.store.payment-gateway.update'), paymentGatewayAdminPayload([
+            'gateway_credentials' => ['manual' => ['instructions' => str_repeat('a', 20001)]],
+        ]))->assertSessionHasErrors(['gateway_credentials.manual.instructions']);
+});

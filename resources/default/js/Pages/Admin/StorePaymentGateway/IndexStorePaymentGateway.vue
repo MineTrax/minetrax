@@ -9,6 +9,7 @@ import XInput from "@/Components/Form/XInput.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import XTextarea from "@/Components/Form/XTextarea.vue";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const { __ } = useTranslations();
@@ -153,6 +154,28 @@ const save = () => form.post(route("admin.store.payment-gateway.update"), { pres
                   :rows="3"
                   :name="`${gateway.key}_${field.key}`"
                 />
+                <div v-else-if="field.type === 'richtext'">
+                  <label
+                    :for="`${gateway.key}_${field.key}`"
+                    class="block text-sm font-medium text-foreground mb-2"
+                  >{{ field.label }}</label>
+                  <TipTapEditor
+                    :id="`${gateway.key}_${field.key}`"
+                    v-model="form.gateway_credentials[gateway.key][field.key]"
+                  />
+                  <p
+                    v-if="field.help"
+                    class="text-xs text-muted-foreground mt-2"
+                  >
+                    {{ field.help }}
+                  </p>
+                  <p
+                    v-if="form.errors[`gateway_credentials.${gateway.key}.${field.key}`]"
+                    class="text-xs text-destructive mt-2"
+                  >
+                    {{ form.errors[`gateway_credentials.${gateway.key}.${field.key}`] }}
+                  </p>
+                </div>
                 <XInput
                   v-else
                   :id="`${gateway.key}_${field.key}`"

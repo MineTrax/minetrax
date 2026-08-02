@@ -27,7 +27,18 @@ interface StorePaymentGatewayContract
     public function description(): ?string;
 
     /**
+     * Rich text shown to the buyer while an order placed through this driver is still unpaid.
+     *
+     * Only an offline method has anything to say here — a hosted gateway takes the money on its own
+     * page — so this is null for everything but the manual driver. Sanitised at render, never
+     * trusted as markup on the way in.
+     */
+    public function paymentInstructions(): ?string;
+
+    /**
      * Self-describing credential fields, so the admin settings form needs no per-gateway markup.
+     *
+     * `type` is one of text, textarea, select or richtext.
      *
      * @return array<int, array{key: string, label: string, type: string, required?: bool, secret?: bool, help?: string}>
      */

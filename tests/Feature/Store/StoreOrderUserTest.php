@@ -321,3 +321,82 @@ test('the pending order screen names the amount still owed', function () {
     $this->get(route('store.order.result', $order->uuid))
         ->assertInertia(fn ($page) => $page->where('order.amount_due_formatted', '$15.00'));
 });
+
+test('a pending manual order tells the buyer how to pay', function () {
+    // The instructions an admin writes were being stored and then dropped on the floor: the driver
+    // handed them back on a session payload nothing read, so the field configured nothing.
+    $this->enableStoreGateways(['manual'], [
+        'manual' => ['instructions' => '<p>Send it to <strong>Acc 12345</strong>.</p>'],
+    ]);
+    $order = orderWithItem(['user_id' => null, 'status' => StoreOrderStatus::PENDING, 'gateway' => 'manual']);
+
+    $this->get(route('store.order.result', $order->uuid))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->where('paymentInstructions', '<p>Send it to <strong>Acc 12345</strong>.</p>')
+        );
+});
+
+test('a settled order stops showing payment instructions', function () {
+    // Worse than noise once the money has landed: it invites a second payment.
+    $this->enableStoreGateways(['manual'], [
+        'manual' => ['instructions' => '<p>Send it to Acc 12345.</p>'],
+    ]);
+    $order = orderWithItem(['user_id' => null, 'status' => StoreOrderStatus::COMPLETED, 'gateway' => 'manual']);
+
+    $this->get(route('store.order.result', $order->uuid))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->where('paymentInstructions', null));
+});
+
+test('a gateway with no instructions offers none', function () {
+    $this->enableStoreGateways(['manual']);
+    $order = orderWithItem(['user_id' => null, 'status' => StoreOrderStatus::PENDING, 'gateway' => 'manual']);
+
+    $this->get(route('store.order.result', $order->uuid))
+        ->assertInertia(fn ($page) => $page->where('paymentInstructions', null));
+});
+
+test('an editor cleared back to empty markup shows no instructions block', function () {
+    // TipTap leaves <p></p> behind rather than an empty string, which is filled() as far as
+    // storage is concerned — without the guard this renders a heading over nothing.
+    $this->enableStoreGateways(['manual'], ['manual' => ['instructions' => '<p></p>']]);
+    $order = orderWithItem(['user_id' => null, 'status' => StoreOrderStatus::PENDING, 'gateway' => 'manual']);
+
+    $this->get(route('store.order.result', $order->uuid))
+        ->assertInertia(fn ($page) => $page->where('paymentInstructions', null));
+});
+
+test('an image only instruction still counts as content', function () {
+    $this->enableStoreGateways(['manual'], ['manual' => ['instructions' => '<p><img src="/qr.png"></p>']]);
+    $order = orderWithItem(['user_id' => null, 'status' => StoreOrderStatus::PENDING, 'gateway' => 'manual']);
+
+    $this->get(route('store.order.result', $order->uuid))
+        ->assertInertia(fn ($page) => $page->where('paymentInstructions', '<p><img src="/qr.png"></p>'));
+});
+
+test('the purchase history page repeats how to pay for an unpaid order', function () {
+    // The buyer who closed the result tab comes back through here, and an offline order is
+    // unpayable without them.
+    $this->enableStoreGateways(['manual'], ['manual' => ['instructions' => '<p>Acc 12345</p>']]);
+    $user = User::factory()->create();
+    $order = orderWithItem(['user_id' => $user->id, 'status' => StoreOrderStatus::PENDING, 'gateway' => 'manual']);
+
+    $this->actingAs($user)
+        ->get(route('store.my-order.show', $order->uuid))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('Store/ShowMyStoreOrder')
+            ->where('paymentInstructions', '<p>Acc 12345</p>')
+        );
+});
+
+test('the purchase history page drops how to pay once settled', function () {
+    $this->enableStoreGateways(['manual'], ['manual' => ['instructions' => '<p>Acc 12345</p>']]);
+    $user = User::factory()->create();
+    $order = orderWithItem(['user_id' => $user->id, 'status' => StoreOrderStatus::COMPLETED, 'gateway' => 'manual']);
+
+    $this->actingAs($user)
+        ->get(route('store.my-order.show', $order->uuid))
+        ->assertInertia(fn ($page) => $page->where('paymentInstructions', null));
+});

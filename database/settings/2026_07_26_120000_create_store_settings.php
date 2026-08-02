@@ -14,7 +14,7 @@ return new class extends SettingsMigration
 
         // Tax is rows in store_taxes, one rule per country - see StoreTaxService.
 
-        $this->migrator->add('store.enable_guest_checkout', true);
+        $this->migrator->add('store.enable_guest_checkout', false);
         $this->migrator->add('store.require_email_on_guest_checkout', true);
         $this->migrator->add('store.mojang_username_verification', true);
 

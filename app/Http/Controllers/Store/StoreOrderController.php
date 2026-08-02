@@ -8,6 +8,7 @@ use App\Models\StorePackage;
 use App\Services\StoreCurrencyService;
 use App\Services\StoreInvoiceService;
 use App\Utils\Helpers\Helper;
+use App\Utils\Payments\StorePaymentGatewayManager;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,7 +22,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class StoreOrderController extends Controller
 {
-    public function __construct(private StoreCurrencyService $currencies) {}
+    public function __construct(
+        private StoreCurrencyService $currencies,
+        private StorePaymentGatewayManager $gateways,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -83,6 +87,11 @@ class StoreOrderController extends Controller
         $order->load(['items.grant', 'items.giftCard', 'payments:id,store_order_id,gateway,status,paid_at']);
 
         return Inertia::render('Store/ShowMyStoreOrder', [
+            // Repeated here, not only on the result page: a buyer who closed that tab comes back
+            // through their purchase history, and an offline order is unpayable without them.
+            'paymentInstructions' => $order->isResumable()
+                ? $this->gateways->driver($order->gateway?->value)?->paymentInstructions()
+                : null,
             'order' => [
                 'uuid' => $order->uuid,
                 'number' => strtoupper(substr($order->uuid, 0, 8)),

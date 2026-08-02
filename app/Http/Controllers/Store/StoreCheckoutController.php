@@ -150,6 +150,12 @@ class StoreCheckoutController extends Controller
 
         return Inertia::render('Store/ResultStoreOrder', [
             'order' => $this->presentOrder($order),
+            // Only while there is still something to pay: an offline gateway's "send us a bank
+            // transfer" is noise once the money has landed, and worse than noise if it tempts a
+            // buyer into paying twice.
+            'paymentInstructions' => $order->isResumable()
+                ? $this->gateways->driver($order->gateway?->value)?->paymentInstructions()
+                : null,
             // Only while there is still something to pay. Listed against the order's own currency,
             // not the visitor's, because that is what will be charged.
             'gateways' => $order->isResumable()

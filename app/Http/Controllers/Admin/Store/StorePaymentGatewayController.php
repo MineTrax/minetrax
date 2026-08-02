@@ -68,6 +68,12 @@ class StorePaymentGatewayController extends Controller
             'enabled_gateways' => ['present', 'array'],
             'enabled_gateways.*' => ['string', 'in:'.implode(',', array_keys(config('store.gateways', [])))],
             'gateway_credentials' => ['present', 'array'],
+            'gateway_credentials.*' => ['array'],
+            // Capped because one of these fields is now a rich text editor, so its value is markup
+            // rather than a key. The whole bag is JSON-encoded and encrypted into a single TEXT
+            // column, and encryption inflates it — an uncapped field would fail at the database
+            // rather than at the form.
+            'gateway_credentials.*.*' => ['nullable', 'string', 'max:20000'],
         ]);
 
         $records = $this->records();

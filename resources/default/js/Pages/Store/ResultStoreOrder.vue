@@ -9,12 +9,16 @@ import { Button } from "@/Components/ui/button";
 import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 
 const { __ } = useTranslations();
-const { formatToDayDateString } = useHelpers();
+const { formatToDayDateString, purifyText } = useHelpers();
 
 const props = defineProps({
     order: { type: Object, required: true },
     // Empty once there is nothing left to pay, which is what hides the resume block.
     gateways: { type: Array, default: () => [] },
+    // Admin-authored rich text for an offline gateway, and null for everything else. Sanitised
+    // before it is rendered: it reaches the page as markup, and an admin account is not a reason
+    // to hand the buyer's browser unfiltered HTML.
+    paymentInstructions: { type: String, default: null },
 });
 
 // Preselected with whatever they chose at checkout, so continuing is one click and switching is a
@@ -152,6 +156,22 @@ onUnmounted(stopPolling);
             {{ __("Amount due") }}
             <span class="ml-1 text-2xl font-bold text-foreground align-middle">{{ order.amount_due_formatted }}</span>
           </p>
+
+          <!-- How to actually pay, for a gateway that takes the money somewhere else. Left-aligned
+               against the centred column above it because this is the one block on the page a
+               buyer has to read carefully and copy from. -->
+          <div
+            v-if="paymentInstructions"
+            class="mt-6 pt-6 border-t border-border text-left"
+          >
+            <h2 class="text-sm font-medium mb-3">
+              {{ __("How to pay") }}
+            </h2>
+            <div
+              class="prose prose-sm dark:prose-invert max-w-none text-foreground/90 prose-headings:text-foreground prose-p:text-foreground/90 prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary/30 prose-blockquote:text-foreground/70 prose-code:text-primary prose-code:bg-muted prose-code:rounded prose-code:px-1 prose-pre:bg-muted prose-img:rounded-lg"
+              v-html="purifyText(paymentInstructions)"
+            />
+          </div>
 
           <!-- The way back in. Without this the buyer's only options are to abandon the order or
                rebuild the whole basket, because the cart was emptied when the order was placed. -->

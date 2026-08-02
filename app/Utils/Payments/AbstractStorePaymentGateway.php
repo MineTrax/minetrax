@@ -29,6 +29,15 @@ abstract class AbstractStorePaymentGateway implements StorePaymentGatewayContrac
         return null;
     }
 
+    /**
+     * A hosted gateway collects the money on its own page, so it has nothing to tell the buyer
+     * here. Only an offline method overrides this.
+     */
+    public function paymentInstructions(): ?string
+    {
+        return null;
+    }
+
     public function settingsSchema(): array
     {
         return [];

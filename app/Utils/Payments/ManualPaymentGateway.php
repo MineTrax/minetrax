@@ -41,20 +41,44 @@ class ManualPaymentGateway extends AbstractStorePaymentGateway
             [
                 'key' => 'instructions',
                 'label' => __('Payment Instructions'),
-                'type' => 'textarea',
+                // Rich text, because this field carries the whole offline payment flow — bank
+                // details, a reference to quote, who to contact — and a wall of unformatted text is
+                // the easiest possible way for a buyer to mis-transcribe an account number.
+                'type' => 'richtext',
                 'required' => false,
-                'help' => __('Shown to the buyer after they place an order.'),
+                'help' => __('Shown to the buyer while the order is awaiting payment. Bank details, a reference to quote, who to contact.'),
             ],
         ];
     }
 
+    /**
+     * The whole point of this driver: the money moves somewhere else, so the buyer has to be told
+     * where. Returned as stored and sanitised at render.
+     *
+     * An editor that has been typed into and then cleared leaves `<p></p>` behind rather than an
+     * empty string, which is filled() as far as the storage layer is concerned. Without the check
+     * below that renders as a "How to pay" heading over nothing at all.
+     */
+    public function paymentInstructions(): ?string
+    {
+        $instructions = $this->credential('instructions');
+
+        if (blank($instructions)) {
+            return null;
+        }
+
+        // <img> and <hr> are content in their own right; every other tag only counts for the text
+        // it wraps.
+        return filled(trim(strip_tags($instructions, '<img><hr>'))) ? $instructions : null;
+    }
+
     public function createPaymentSession(StoreOrder $order, StorePayment $payment): StorePaymentSessionData
     {
-        // Nowhere to send the buyer; they go straight to the order result page.
+        // Nowhere to send the buyer; they go straight to the order result page, which reads the
+        // instructions from paymentInstructions() rather than from anything carried here.
         return new StorePaymentSessionData(
             redirectUrl: null,
             sessionId: null,
-            raw: ['instructions' => $this->credential('instructions')],
         );
     }
 }

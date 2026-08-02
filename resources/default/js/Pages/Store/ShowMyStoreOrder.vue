@@ -8,10 +8,13 @@ import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 import { Button } from "@/Components/ui/button";
 
 const { __ } = useTranslations();
-const { formatToDayDateString, formatToDateString } = useHelpers();
+const { formatToDayDateString, formatToDateString, purifyText } = useHelpers();
 
 defineProps({
     order: { type: Object, required: true },
+    // Admin-authored rich text for an offline gateway, and null once there is nothing left to pay.
+    // Sanitised before rendering: it reaches the page as markup.
+    paymentInstructions: { type: String, default: null },
 });
 </script>
 
@@ -53,6 +56,22 @@ defineProps({
             {{ __("Download Invoice") }}
           </Button>
         </div>
+      </div>
+
+      <!-- How to pay an offline order. Above the line items rather than below them: a buyer who
+           opened this page from their purchase history came back to settle it, not to re-read
+           what they bought. -->
+      <div
+        v-if="paymentInstructions"
+        class="bg-card rounded-lg shadow p-6 mb-6"
+      >
+        <h2 class="text-sm font-medium mb-3">
+          {{ __("How to pay") }}
+        </h2>
+        <div
+          class="prose prose-sm dark:prose-invert max-w-none text-foreground/90 prose-headings:text-foreground prose-p:text-foreground/90 prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary/30 prose-blockquote:text-foreground/70 prose-code:text-primary prose-code:bg-muted prose-code:rounded prose-code:px-1 prose-pre:bg-muted prose-img:rounded-lg"
+          v-html="purifyText(paymentInstructions)"
+        />
       </div>
 
       <div class="bg-card rounded-lg shadow overflow-hidden">
