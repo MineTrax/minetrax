@@ -6,6 +6,7 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
 import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
 import { ClipboardDocumentIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { computed, ref } from "vue";
@@ -19,6 +20,7 @@ const props = defineProps({
     payouts: Object,
     trackingBaseUrl: String,
     canPayout: Boolean,
+    baseCurrency: Object,
 });
 
 const breadcrumbItems = [
@@ -46,20 +48,50 @@ function copy() {
     setTimeout(() => (copied.value = false), 2000);
 }
 
+// The exponent belongs to the currency, never a constant: JPY has no minor unit and KWD has three
+// digits, so dividing by 100 would misstate both.
+const exponent = computed(() => props.baseCurrency?.exponent ?? 2);
+
+// The smallest amount the currency can express, which is also the smallest payout worth recording.
+const amountStep = computed(() => (exponent.value > 0 ? (10 ** -exponent.value).toFixed(exponent.value) : "1"));
+
+function toDecimal(minorUnits, digits) {
+    if (minorUnits === null || minorUnits === undefined) {
+        return null;
+    }
+
+    return Number((minorUnits / (10 ** digits)).toFixed(digits));
+}
+
+function toMinorUnits(decimalAmount, digits) {
+    if (decimalAmount === null || decimalAmount === "" || isNaN(parseFloat(decimalAmount))) {
+        return null;
+    }
+
+    return Math.round(parseFloat(decimalAmount) * (10 ** digits));
+}
+
 // Pre-filled with everything outstanding: paying the whole balance is the common case and should
-// not need retyping. Clamped at zero, because a negative balance is not a payout to make.
+// not need retyping. Clamped at zero, because a negative balance is not a payout to make. Entered
+// in the base currency the balance is shown in — the conversion to minor units happens on submit,
+// never in the admin's head.
 const payoutForm = useForm({
-    amount: Math.max(0, props.referral.owed),
+    amount: toDecimal(Math.max(0, props.referral.owed), exponent.value),
     reference: "",
     note: "",
-    paid_at: "",
+    paid_at: null,
 });
 
 function recordPayout() {
-    payoutForm.post(route("admin.store.referral.payout", props.referral.id), {
-        preserveScroll: true,
-        onSuccess: () => payoutForm.reset("reference", "note", "paid_at"),
-    });
+    payoutForm
+        .transform(data => ({
+            ...data,
+            amount: toMinorUnits(data.amount, exponent.value),
+        }))
+        .post(route("admin.store.referral.payout", props.referral.id), {
+            preserveScroll: true,
+            onSuccess: () => payoutForm.reset("reference", "note", "paid_at"),
+        });
 }
 </script>
 
@@ -200,13 +232,14 @@ function recordPayout() {
           >
             <div class="col-span-6 sm:col-span-2">
               <XInput
-                v-model.number="payoutForm.amount"
-                :label="__('Amount (minor units)')"
+                v-model="payoutForm.amount"
+                :label="__('Amount (:code)', { code: baseCurrency.code })"
                 :help="__('Pre-filled with everything outstanding.')"
                 :error="payoutForm.errors.amount"
                 type="number"
                 name="amount"
-                min="1"
+                :step="amountStep"
+                :min="amountStep"
                 required
               />
             </div>
@@ -220,25 +253,24 @@ function recordPayout() {
                 name="reference"
               />
             </div>
-            <div class="col-span-6 sm:col-span-1">
-              <XInput
+            <!-- Two columns like the fields beside it, and carrying help text like them too.
+                 `items-end` lines cells up by their bottom edge, so a field with no help sat a
+                 whole line lower than its neighbours — and one column was too narrow to show a
+                 date and a time at once. -->
+            <div class="col-span-6 sm:col-span-2">
+              <XDatePicker
+                id="paid_at"
                 v-model="payoutForm.paid_at"
                 :label="__('Paid At')"
+                :help="__('Leave empty to record it as now.')"
+                :placeholder="__('Now')"
                 :error="payoutForm.errors.paid_at"
-                type="datetime-local"
-                name="paid_at"
+                type="datetime"
+                format="YYYY-MM-DD hh:mm:ss A"
+                value-type="date"
               />
             </div>
-            <div class="col-span-6 sm:col-span-1">
-              <Button
-                type="submit"
-                class="w-full"
-                :disabled="payoutForm.processing"
-              >
-                {{ __("Record") }}
-              </Button>
-            </div>
-            <div class="col-span-6">
+            <div class="col-span-6 sm:col-span-4">
               <XInput
                 v-model="payoutForm.note"
                 :label="__('Note')"
@@ -246,6 +278,17 @@ function recordPayout() {
                 type="text"
                 name="note"
               />
+            </div>
+            <!-- Beside the note rather than squeezed into the row of fields above, where it had a
+                 column of its own and still bottom-aligned against their help text. -->
+            <div class="col-span-6 sm:col-span-2">
+              <Button
+                type="submit"
+                class="w-full"
+                :disabled="payoutForm.processing"
+              >
+                {{ __("Record") }}
+              </Button>
             </div>
           </form>
         </div>

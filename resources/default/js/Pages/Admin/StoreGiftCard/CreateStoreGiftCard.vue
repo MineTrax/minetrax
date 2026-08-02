@@ -5,6 +5,7 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import { computed } from "vue";
 
@@ -122,13 +123,16 @@ function createGiftCard() {
                 </div>
 
                 <div class="col-span-6 sm:col-span-2">
-                  <XInput
+                  <XDatePicker
                     id="expires_at"
                     v-model="form.expires_at"
                     :label="__('Expires At')"
                     :help="__('Leave empty for no expiry.')"
                     :error="form.errors.expires_at"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="expires_at"
                   />
                 </div>

@@ -5,6 +5,7 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import Multiselect from "vue-multiselect";
@@ -252,25 +253,31 @@ function createSale() {
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="starts_at"
                     v-model="form.starts_at"
                     :label="__('Starts At')"
                     :help="__('Prices are untouched before this moment. Leave empty to start immediately.')"
                     :error="form.errors.starts_at"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="starts_at"
                   />
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="ends_at"
                     v-model="form.ends_at"
                     :label="__('Ends At')"
                     :help="__('Prices return to normal after this moment. Leave empty to run until disabled.')"
                     :error="form.errors.ends_at"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="ends_at"
                   />
                 </div>

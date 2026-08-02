@@ -118,12 +118,21 @@ class StoreReferralController extends Controller
         // reads on a page that is already doing several rather than an aggregate worth optimising.
         $this->withMoney($storeReferral);
 
+        $base = $this->currencies->base();
+
         return Inertia::render('Admin/StoreReferral/ShowStoreReferral', [
             'referral' => $storeReferral,
             'trackingBaseUrl' => $this->trackingBaseUrl(),
             'orders' => $this->earningsFor($storeReferral),
             'payouts' => $this->payoutsFor($storeReferral),
             'canPayout' => request()->user()->can('payout', StoreReferral::class),
+            // A payout is always booked in the base currency, and the form types an amount in it
+            // rather than in minor units, so it needs the exponent to convert on submit.
+            'baseCurrency' => [
+                'code' => $base->code,
+                'symbol' => $base->symbol,
+                'exponent' => (int) $base->exponent,
+            ],
         ]);
     }
 

@@ -5,6 +5,7 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
 
 const { __ } = useTranslations();
 
@@ -29,14 +30,9 @@ const breadcrumbItems = [
     }
 ];
 
-// A datetime-local input wants "YYYY-MM-DDTHH:MM"; the server sends an ISO timestamp.
-function toLocalInput(timestamp) {
-    if (! timestamp) {
-        return null;
-    }
-    const date = new Date(timestamp);
-    const pad = (value) => String(value).padStart(2, "0");
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+// The date picker works in Date objects; the server sends an ISO timestamp.
+function toDate(timestamp) {
+    return timestamp ? new Date(timestamp) : null;
 }
 
 const form = useForm({
@@ -45,7 +41,7 @@ const form = useForm({
     ip_address: props.storeBan.ip_address,
     email: props.storeBan.email,
     reason: props.storeBan.reason,
-    expires_at: toLocalInput(props.storeBan.expires_at),
+    expires_at: toDate(props.storeBan.expires_at),
 });
 
 function updateBan() {
@@ -161,13 +157,16 @@ function updateBan() {
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="expires_at"
                     v-model="form.expires_at"
                     :label="__('Expires At')"
                     :help="__('Leave empty for a permanent ban. After this moment the row stays as a record but stops blocking.')"
                     :error="form.errors.expires_at"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="expires_at"
                   />
                 </div>

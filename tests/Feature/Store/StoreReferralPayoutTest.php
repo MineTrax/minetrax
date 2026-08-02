@@ -75,6 +75,10 @@ test('the three figures agree on the listing and the detail page', function () {
             ->where('referral.owed', 300)
             ->has('orders.data', 2)
             ->has('payouts.data', 1)
+            // The payout form types an amount in the base currency and converts on submit, so it
+            // cannot render at all without the exponent to convert by.
+            ->where('baseCurrency.code', 'USD')
+            ->where('baseCurrency.exponent', 2)
         );
 });
 

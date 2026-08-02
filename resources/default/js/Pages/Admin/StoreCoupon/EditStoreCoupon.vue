@@ -5,6 +5,7 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import Multiselect from "vue-multiselect";
@@ -51,14 +52,9 @@ const currencyOptions = props.currencies.reduce((acc, currency) => {
     return { ...acc, [currency.code]: `${currency.code} (${currency.symbol})` };
 }, {});
 
-// A datetime-local input wants "YYYY-MM-DDTHH:MM"; the server sends an ISO timestamp.
-function toLocalInput(timestamp) {
-    if (! timestamp) {
-        return null;
-    }
-    const date = new Date(timestamp);
-    const pad = (value) => String(value).padStart(2, "0");
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+// The date picker works in Date objects; the server sends an ISO timestamp.
+function toDate(timestamp) {
+    return timestamp ? new Date(timestamp) : null;
 }
 
 function exponentFor(code) {
@@ -100,8 +96,8 @@ const form = useForm({
     min_basket: toDecimal(props.storeCoupon.min_basket_amount, props.baseCurrency.exponent),
     max_uses_total: props.storeCoupon.max_uses_total,
     max_uses_per_user: props.storeCoupon.max_uses_per_user,
-    starts_at: toLocalInput(props.storeCoupon.starts_at),
-    expires_at: toLocalInput(props.storeCoupon.expires_at),
+    starts_at: toDate(props.storeCoupon.starts_at),
+    expires_at: toDate(props.storeCoupon.expires_at),
     is_enabled: !! props.storeCoupon.is_enabled,
     is_stackable: !! props.storeCoupon.is_stackable,
     packages: props.packages.filter(item => props.selectedPackages.includes(item.id)),
@@ -310,25 +306,31 @@ function updateCoupon() {
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="starts_at"
                     v-model="form.starts_at"
                     :label="__('Valid From')"
                     :help="__('Rejected before this moment. Leave empty to start immediately.')"
                     :error="form.errors.starts_at"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="starts_at"
                   />
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="expires_at"
                     v-model="form.expires_at"
                     :label="__('Valid Until')"
                     :help="__('Rejected after this moment. Leave empty for no expiry.')"
                     :error="form.errors.expires_at"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="expires_at"
                   />
                 </div>

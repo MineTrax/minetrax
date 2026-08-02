@@ -5,6 +5,7 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import Multiselect from "vue-multiselect";
@@ -603,25 +604,31 @@ function createPackage() {
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="available_from"
                     v-model="form.available_from"
                     :label="__('Publish On Webstore At')"
                     :help="__('Hidden from the store until this moment. Leave empty to publish immediately')"
                     :error="form.errors.available_from"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="available_from"
                   />
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="available_until"
                     v-model="form.available_until"
                     :label="__('Remove From Webstore After')"
                     :help="__('Withdrawn from the store after this moment. Leave empty to keep it listed')"
                     :error="form.errors.available_until"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="available_until"
                   />
                 </div>

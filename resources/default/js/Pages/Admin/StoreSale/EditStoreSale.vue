@@ -5,6 +5,7 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import Multiselect from "vue-multiselect";
@@ -67,14 +68,9 @@ const serverLabel = (server) => `${server.name} (${server.hostname})`;
 // The factor is 10^exponent, never a literal 100: JPY has no minor unit and KWD has three digits.
 const minorUnitFactor = 10 ** (props.baseCurrency?.exponent ?? 2);
 
-// A datetime-local input wants "YYYY-MM-DDTHH:MM"; the server sends an ISO timestamp.
-function toLocalInput(timestamp) {
-    if (! timestamp) {
-        return null;
-    }
-    const date = new Date(timestamp);
-    const pad = (value) => String(value).padStart(2, "0");
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+// The date picker works in Date objects; the server sends an ISO timestamp.
+function toDate(timestamp) {
+    return timestamp ? new Date(timestamp) : null;
 }
 
 // Every store enum is serialised as {key, value}, so the raw value has to be unwrapped before it can
@@ -103,8 +99,8 @@ const form = useForm({
     min_basket: props.storeSale.min_basket_amount
         ? (Number(props.storeSale.min_basket_amount) / minorUnitFactor).toFixed(props.baseCurrency.exponent)
         : null,
-    starts_at: toLocalInput(props.storeSale.starts_at),
-    ends_at: toLocalInput(props.storeSale.ends_at),
+    starts_at: toDate(props.storeSale.starts_at),
+    ends_at: toDate(props.storeSale.ends_at),
     is_enabled: !! props.storeSale.is_enabled,
     scope_type: scopeType,
     packages: props.packages.filter(item => props.selectedPackages.includes(item.id)),
@@ -284,25 +280,31 @@ function updateSale() {
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="starts_at"
                     v-model="form.starts_at"
                     :label="__('Starts At')"
                     :help="__('Prices are untouched before this moment. Leave empty to start immediately.')"
                     :error="form.errors.starts_at"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="starts_at"
                   />
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="ends_at"
                     v-model="form.ends_at"
                     :label="__('Ends At')"
                     :help="__('Prices return to normal after this moment. Leave empty to run until disabled.')"
                     :error="form.errors.ends_at"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="ends_at"
                   />
                 </div>

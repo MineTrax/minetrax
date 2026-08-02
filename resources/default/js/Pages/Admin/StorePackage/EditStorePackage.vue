@@ -5,6 +5,7 @@ import AppBreadcrumb from "@/Shared/AppBreadcrumb.vue";
 import { Button } from "@/Components/ui/button";
 import { Link, useForm } from "@inertiajs/vue3";
 import XInput from "@/Components/Form/XInput.vue";
+import XDatePicker from "@/Components/Form/XDatePicker.vue";
 import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import Multiselect from "vue-multiselect";
@@ -99,14 +100,9 @@ function convertPercentToBasisPoints(percent) {
     return Math.round(parseFloat(percent) * 100);
 }
 
-// A datetime-local input wants "YYYY-MM-DDTHH:MM"; the server sends an ISO timestamp.
-function toLocalInput(timestamp) {
-    if (! timestamp) {
-        return null;
-    }
-    const date = new Date(timestamp);
-    const pad = (value) => String(value).padStart(2, "0");
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+// The date picker works in Date objects; the server sends an ISO timestamp.
+function toDate(timestamp) {
+    return timestamp ? new Date(timestamp) : null;
 }
 
 // XSelect builds its options from object keys, which JavaScript always makes strings, so a numeric
@@ -151,8 +147,8 @@ const form = useForm({
     global_purchase_limit: props.storePackage.global_purchase_limit,
     global_purchase_limit_period_days: props.storePackage.global_purchase_limit_period_days,
     expiry_duration_days: props.storePackage.expiry_duration_days,
-    available_from: toLocalInput(props.storePackage.available_from),
-    available_until: toLocalInput(props.storePackage.available_until),
+    available_from: toDate(props.storePackage.available_from),
+    available_until: toDate(props.storePackage.available_until),
     required_packages: props.storePackage.required_packages || [],
     variables: props.storePackage.variables || [],
     comparison_values: props.storePackage.comparison_values || {},
@@ -621,25 +617,31 @@ function updatePackage() {
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="available_from"
                     v-model="form.available_from"
                     :label="__('Publish On Webstore At')"
                     :help="__('Hidden from the store until this moment. Leave empty to publish immediately')"
                     :error="form.errors.available_from"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="available_from"
                   />
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                  <XInput
+                  <XDatePicker
                     id="available_until"
                     v-model="form.available_until"
                     :label="__('Remove From Webstore After')"
                     :help="__('Withdrawn from the store after this moment. Leave empty to keep it listed')"
                     :error="form.errors.available_until"
-                    type="datetime-local"
+                    type="datetime"
+                    format="YYYY-MM-DD hh:mm:ss A"
+                    value-type="date"
+                    :placeholder="__('Select date and time')"
                     name="available_until"
                   />
                 </div>
