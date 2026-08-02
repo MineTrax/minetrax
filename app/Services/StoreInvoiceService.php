@@ -112,6 +112,9 @@ class StoreInvoiceService
             'issuedAt' => ($order->paid_at ?? $order->created_at)->toDayDateTimeString(),
             'buyer' => $order->user?->username ?? $order->player_username ?? __('Guest'),
             'buyerEmail' => $order->user?->email ?? $order->email,
+            // Empty unless the store collects one. Read from the order's own snapshot rather than
+            // from any saved address, so reprinting an old invoice reproduces it exactly.
+            'billingAddress' => $this->billingAddressLines($order),
             'status' => __(ucfirst(str_replace('_', ' ', $order->status->value))),
             'items' => $order->items->map(fn ($item) => [
                 'name' => $item->package_name,
@@ -136,5 +139,29 @@ class StoreInvoiceService
             'gateway' => $order->gateway?->value,
             'playerUsername' => $order->player_username,
         ];
+    }
+
+    /**
+     * The billing address as lines to print, or an empty array when none was collected.
+     *
+     * Blank parts are dropped rather than printed empty: an optional flat number, or a country with
+     * no states, must not leave a hole in the middle of the block.
+     *
+     * @return array<int, string>
+     */
+    private function billingAddressLines(StoreOrder $order): array
+    {
+        $cityAndState = collect([$order->billing_city, $order->billing_state])
+            ->filter()
+            ->implode(', ');
+
+        return collect([
+            $order->billing_name,
+            $order->billing_address_line1,
+            $order->billing_address_line2,
+            $cityAndState,
+            $order->billing_postal_code,
+            $order->billing_country,
+        ])->filter()->values()->all();
     }
 }

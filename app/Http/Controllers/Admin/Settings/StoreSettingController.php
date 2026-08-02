@@ -47,6 +47,7 @@ class StoreSettingController extends Controller
             'enable_guest_checkout' => ['required', 'boolean'],
             'require_email_on_guest_checkout' => ['required', 'boolean'],
             'mojang_username_verification' => ['required', 'boolean'],
+            'collect_billing_address' => ['required', 'boolean'],
             'terms_text' => ['nullable', 'string', 'max:5000'],
 
             'show_recent_purchases' => ['required', 'boolean'],

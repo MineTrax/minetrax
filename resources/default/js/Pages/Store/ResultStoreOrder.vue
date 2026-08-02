@@ -29,6 +29,18 @@ const paying = ref(false);
 const canResume = computed(() => props.gateways.length > 0);
 const isSwitching = computed(() => chosenGateway.value !== props.order.gateway);
 
+// An offline method takes the money somewhere else, so resuming it would post the form, find no
+// hosted page to redirect to, and land the buyer back on this exact screen having paid nothing.
+// The instructions above are the call to action; the button only appears once they pick a method
+// that actually has somewhere to send them.
+const chosenIsOffline = computed(
+    () => props.gateways.find((gateway) => gateway.key === chosenGateway.value)?.is_offline ?? false
+);
+
+// Nothing to switch to means nothing to show: a lone offline method needs no picker and no button.
+const canPayOnline = computed(() => !chosenIsOffline.value);
+const showResumeBlock = computed(() => canResume.value && (canPayOnline.value || props.gateways.length > 1));
+
 const resumePayment = () => {
     paying.value = true;
 
@@ -176,11 +188,11 @@ onUnmounted(stopPolling);
           <!-- The way back in. Without this the buyer's only options are to abandon the order or
                rebuild the whole basket, because the cart was emptied when the order was placed. -->
           <div
-            v-if="canResume"
+            v-if="showResumeBlock"
             class="mt-6 pt-6 border-t border-border text-left"
           >
             <h2 class="text-sm font-medium text-center mb-3">
-              {{ __("Pay for this order") }}
+              {{ gateways.length > 1 ? __("Pay another way") : __("Pay for this order") }}
             </h2>
 
             <div
@@ -210,18 +222,29 @@ onUnmounted(stopPolling);
               </label>
             </div>
 
-            <Button
-              class="w-full"
-              :disabled="paying"
-              @click="resumePayment"
-            >
-              {{ isSwitching
-                ? __("Pay :amount with this method instead", { amount: order.amount_due_formatted })
-                : __("Pay :amount now", { amount: order.amount_due_formatted }) }}
-            </Button>
+            <template v-if="canPayOnline">
+              <Button
+                class="w-full"
+                :disabled="paying"
+                @click="resumePayment"
+              >
+                {{ isSwitching
+                  ? __("Pay :amount with this method instead", { amount: order.amount_due_formatted })
+                  : __("Pay :amount now", { amount: order.amount_due_formatted }) }}
+              </Button>
 
-            <p class="text-xs text-muted-foreground mt-2 text-center">
-              {{ __("You will be taken back to the same checkout you left. Nothing is charged twice.") }}
+              <p class="text-xs text-muted-foreground mt-2 text-center">
+                {{ __("You will be taken back to the same checkout you left. Nothing is charged twice.") }}
+              </p>
+            </template>
+
+            <!-- The offline branch. No button, because there is no page to send them to: the
+                 order simply waits for the transfer to arrive and for staff to confirm it. -->
+            <p
+              v-else
+              class="text-xs text-muted-foreground text-center"
+            >
+              {{ __("Follow the instructions above. Your order is held until a staff member confirms the payment.") }}
             </p>
           </div>
         </template>

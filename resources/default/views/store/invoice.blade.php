@@ -58,6 +58,10 @@
             @if ($buyerEmail)
                 <div class="muted">{{ $buyerEmail }}</div>
             @endif
+            {{-- Only when the store collected one; most never do. --}}
+            @foreach ($billingAddress as $line)
+                <div>{{ $line }}</div>
+            @endforeach
             @if ($playerUsername)
                 <div class="muted">{{ __('Delivered to :player in game', ['player' => $playerUsername]) }}</div>
             @endif

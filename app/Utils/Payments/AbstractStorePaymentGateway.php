@@ -30,6 +30,14 @@ abstract class AbstractStorePaymentGateway implements StorePaymentGatewayContrac
     }
 
     /**
+     * Gateways take the money on their own hosted page unless they say otherwise.
+     */
+    public function isOffline(): bool
+    {
+        return false;
+    }
+
+    /**
      * A hosted gateway collects the money on its own page, so it has nothing to tell the buyer
      * here. Only an offline method overrides this.
      */

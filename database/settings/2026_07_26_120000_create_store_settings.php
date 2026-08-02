@@ -14,9 +14,17 @@ return new class extends SettingsMigration
 
         // Tax is rows in store_taxes, one rule per country - see StoreTaxService.
 
-        $this->migrator->add('store.enable_guest_checkout', false);
+        // On by default. Most Minecraft buyers have no website account, so shipping with this off
+        // makes the entire guest path dead on a fresh install — and it contradicts
+        // require_email_on_guest_checkout below, which only means anything once guests can buy.
+        $this->migrator->add('store.enable_guest_checkout', true);
         $this->migrator->add('store.require_email_on_guest_checkout', true);
         $this->migrator->add('store.mojang_username_verification', true);
+
+        // Off by default: a Minecraft store has no goods to ship, so most owners never need one.
+        // Owners who do — for invoicing or tax records — get the full set of fields at checkout,
+        // for guests and signed-in buyers alike.
+        $this->migrator->add('store.collect_billing_address', false);
 
         $this->migrator->add('store.terms_text', null);
 
@@ -47,6 +55,7 @@ return new class extends SettingsMigration
         $this->migrator->deleteIfExists('store.enable_guest_checkout');
         $this->migrator->deleteIfExists('store.require_email_on_guest_checkout');
         $this->migrator->deleteIfExists('store.mojang_username_verification');
+        $this->migrator->deleteIfExists('store.collect_billing_address');
 
         $this->migrator->deleteIfExists('store.terms_text');
 

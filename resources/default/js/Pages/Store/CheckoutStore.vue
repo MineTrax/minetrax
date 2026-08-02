@@ -6,6 +6,7 @@ import { Link, useForm } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { Button } from "@/Components/ui/button";
 import XInput from "@/Components/Form/XInput.vue";
+import XSelect from "@/Components/Form/XSelect.vue";
 import XSwitch from "@/Components/Form/XSwitch.vue";
 import { LockIcon } from "lucide-vue-next";
 
@@ -18,6 +19,10 @@ const props = defineProps({
     requiresEmail: { type: Boolean, default: false },
     termsText: { type: String, default: null },
     mojangVerification: { type: Boolean, default: true },
+    requiresBillingAddress: { type: Boolean, default: false },
+    // Only sent when the address block will render, so a checkout that asks for no address is not
+    // carrying a couple of hundred rows it never uses.
+    countries: { type: Array, default: () => [] },
 });
 
 const form = useForm({
@@ -25,7 +30,20 @@ const form = useForm({
     email: "",
     gateway: props.gateways[0]?.key ?? "",
     accept_terms: false,
+    billing_name: "",
+    billing_address_line1: "",
+    billing_address_line2: "",
+    billing_city: "",
+    billing_state: "",
+    billing_postal_code: "",
+    billing_country_id: null,
 });
+
+// XSelect takes an object of value => label, and its keys arrive back as strings — the id is
+// stringified on submit anyway, and the server validates it as an integer.
+const countryOptions = computed(
+    () => Object.fromEntries(props.countries.map((country) => [country.id, country.name]))
+);
 
 const showTerms = ref(false);
 
@@ -132,6 +150,108 @@ const submit = () => form.post(route("store.checkout.store"));
               type="email"
               name="email"
             />
+          </section>
+
+          <!-- Billing address. Asked of guests and members alike: an account holds no address, so
+               being signed in is not a reason to skip it. -->
+          <section
+            v-if="requiresBillingAddress"
+            class="bg-card rounded-lg shadow p-6"
+          >
+            <h2 class="text-sm font-medium mb-4">
+              {{ __("Billing Address") }}
+            </h2>
+
+            <div class="grid grid-cols-6 gap-4">
+              <div class="col-span-6">
+                <XInput
+                  id="billing_name"
+                  v-model="form.billing_name"
+                  :label="__('Full Name')"
+                  :error="form.errors.billing_name"
+                  :required="true"
+                  type="text"
+                  name="billing_name"
+                  autocomplete="name"
+                />
+              </div>
+
+              <div class="col-span-6">
+                <XInput
+                  id="billing_address_line1"
+                  v-model="form.billing_address_line1"
+                  :label="__('Address Line 1')"
+                  :error="form.errors.billing_address_line1"
+                  :required="true"
+                  type="text"
+                  name="billing_address_line1"
+                  autocomplete="address-line1"
+                />
+              </div>
+
+              <div class="col-span-6">
+                <XInput
+                  id="billing_address_line2"
+                  v-model="form.billing_address_line2"
+                  :label="__('Address Line 2')"
+                  :help="__('Optional.')"
+                  :error="form.errors.billing_address_line2"
+                  type="text"
+                  name="billing_address_line2"
+                  autocomplete="address-line2"
+                />
+              </div>
+
+              <div class="col-span-6 sm:col-span-3">
+                <XInput
+                  id="billing_city"
+                  v-model="form.billing_city"
+                  :label="__('City')"
+                  :error="form.errors.billing_city"
+                  :required="true"
+                  type="text"
+                  name="billing_city"
+                  autocomplete="address-level2"
+                />
+              </div>
+
+              <div class="col-span-6 sm:col-span-3">
+                <XInput
+                  id="billing_state"
+                  v-model="form.billing_state"
+                  :label="__('State / Province')"
+                  :help="__('Optional.')"
+                  :error="form.errors.billing_state"
+                  type="text"
+                  name="billing_state"
+                  autocomplete="address-level1"
+                />
+              </div>
+
+              <div class="col-span-6 sm:col-span-3">
+                <XInput
+                  id="billing_postal_code"
+                  v-model="form.billing_postal_code"
+                  :label="__('Zip / Postal Code')"
+                  :error="form.errors.billing_postal_code"
+                  :required="true"
+                  type="text"
+                  name="billing_postal_code"
+                  autocomplete="postal-code"
+                />
+              </div>
+
+              <div class="col-span-6 sm:col-span-3">
+                <XSelect
+                  id="billing_country_id"
+                  v-model="form.billing_country_id"
+                  :label="__('Country')"
+                  :select-list="countryOptions"
+                  :error="form.errors.billing_country_id"
+                  name="billing_country_id"
+                />
+              </div>
+            </div>
           </section>
 
           <!-- Payment method -->

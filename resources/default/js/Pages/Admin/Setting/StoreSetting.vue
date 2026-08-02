@@ -54,6 +54,7 @@ const form = useForm({
     enable_guest_checkout: props.settings.enable_guest_checkout,
     require_email_on_guest_checkout: props.settings.require_email_on_guest_checkout,
     mojang_username_verification: props.settings.mojang_username_verification,
+    collect_billing_address: props.settings.collect_billing_address,
     terms_text: props.settings.terms_text,
 
     show_recent_purchases: props.settings.show_recent_purchases,
@@ -209,6 +210,14 @@ const saveSetting = () => {
                   :help="__('Turn this off for offline-mode (cracked) servers; the offline UUID is derived instead.')"
                   :error="form.errors.mojang_username_verification"
                   name="mojang_username_verification"
+                />
+                <XSwitch
+                  id="collect_billing_address"
+                  v-model="form.collect_billing_address"
+                  :label="__('Ask for a billing address at checkout')"
+                  :help="__('Full name, address, city, postal code and country, from guests and members alike. The country given also decides which tax rule applies, instead of a guess from the buyer\'s IP address.')"
+                  :error="form.errors.collect_billing_address"
+                  name="collect_billing_address"
                 />
 
                 <XTextarea

@@ -27,6 +27,15 @@ interface StorePaymentGatewayContract
     public function description(): ?string;
 
     /**
+     * Whether the money moves outside the site entirely.
+     *
+     * An offline driver has no hosted page to send the buyer to, so "resume payment" would put them
+     * back where they already are. The screens use this to offer instructions instead of a button
+     * that reloads the page and charges nothing.
+     */
+    public function isOffline(): bool;
+
+    /**
      * Rich text shown to the buyer while an order placed through this driver is still unpaid.
      *
      * Only an offline method has anything to say here — a hosted gateway takes the money on its own

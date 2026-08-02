@@ -11,13 +11,14 @@
           :key="purchase.id"
           class="flex items-center gap-3 border border-border rounded-lg p-3"
         >
-          <!-- Only a named buyer gets an avatar: a picture identifies somebody as surely as a
-               username does, so an anonymised list must not carry one. -->
+          <!-- An account's photo, or the buyer's Minecraft head when they checked out as a guest.
+               Only a named buyer gets one: a picture identifies somebody as surely as a username
+               does, so an anonymised list must not carry one. -->
           <img
-            v-if="purchase.buyer_user"
-            class="w-9 h-9 rounded-full shrink-0 ring-2 ring-border"
-            :src="purchase.buyer_user.profile_photo_url"
-            alt="Avatar"
+            v-if="purchase.buyer_avatar_url"
+            class="w-9 h-9 rounded-full shrink-0 ring-2 ring-border object-cover"
+            :src="purchase.buyer_avatar_url"
+            :alt="purchase.buyer"
           >
           <div
             v-else
@@ -29,8 +30,8 @@
           <div class="flex flex-col min-w-0 flex-1">
             <div class="text-sm text-card-foreground truncate">
               <Link
-                v-if="purchase.buyer_user"
-                :href="route('user.public.get', purchase.buyer_user.username)"
+                v-if="purchase.buyer_username"
+                :href="route('user.public.get', purchase.buyer_username)"
                 class="font-semibold hover:underline"
               >
                 {{ purchase.buyer }}

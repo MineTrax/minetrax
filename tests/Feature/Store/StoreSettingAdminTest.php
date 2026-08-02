@@ -29,6 +29,7 @@ function settingAdminPayload(array $overrides = []): array
         'enable_guest_checkout' => true,
         'require_email_on_guest_checkout' => true,
         'mojang_username_verification' => true,
+        'collect_billing_address' => false,
         'terms_text' => null,
         'show_recent_purchases' => true,
         'show_purchase_goal' => false,
@@ -158,4 +159,20 @@ test('the settings screen carries each currencys exponent', function () {
     $this->actingAs($this->superadmin)
         ->get(route('admin.setting.store.show'))
         ->assertInertia(fn ($page) => $page->has('currencies.0.exponent'));
+});
+
+test('the billing address toggle round trips', function () {
+    $this->actingAs($this->superadmin)
+        ->post(route('admin.setting.store.update'), settingAdminPayload([
+            'collect_billing_address' => true,
+        ]))->assertSessionHasNoErrors();
+
+    expect(app(StoreSettings::class)->collect_billing_address)->toBeTrue();
+});
+
+test('guest checkout is on by default', function () {
+    // Pinned because a fresh install with this off has a dead guest path, and
+    // require_email_on_guest_checkout only means anything once guests can buy.
+    expect(app(StoreSettings::class)->enable_guest_checkout)->toBeTrue();
+    expect(app(StoreSettings::class)->collect_billing_address)->toBeFalse();
 });

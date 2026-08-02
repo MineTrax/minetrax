@@ -3,6 +3,7 @@
 use App\Enums\StoreDiscountType;
 use App\Enums\StoreOrderStatus;
 use App\Enums\StorePaymentStatus;
+use App\Models\Country;
 use App\Models\Player;
 use App\Models\StoreBan;
 use App\Models\StoreCoupon;
@@ -10,6 +11,7 @@ use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\StoreSale;
+use App\Models\StoreTax;
 use App\Models\User;
 use App\Services\StoreCartService;
 use App\Services\StoreOrderService;
@@ -428,4 +430,168 @@ test('checkout is unavailable when the module is disabled', function () {
     config(['store.enabled' => false]);
 
     $this->get(route('store.checkout.create'))->assertStatus(403);
+});
+
+// -- Billing address ----------------------------------------------------------------------------
+
+function enableBillingAddress(bool $on = true): void
+{
+    $settings = app(StoreSettings::class);
+    $settings->collect_billing_address = $on;
+    $settings->save();
+}
+
+/**
+ * @return array<string, mixed>
+ */
+function billingPayload(array $overrides = []): array
+{
+    return array_merge([
+        'billing_name' => 'Steve Miner',
+        'billing_address_line1' => '1 Bedrock Lane',
+        'billing_address_line2' => 'Flat 2',
+        'billing_city' => 'Overworld',
+        'billing_state' => 'Plains',
+        'billing_postal_code' => 'OW1 2AB',
+        'billing_country_id' => Country::first()->id,
+    ], $overrides);
+}
+
+test('no address is asked for by default', function () {
+    fillCart();
+
+    $this->get(route('store.checkout.create'))
+        ->assertInertia(fn ($page) => $page
+            ->where('requiresBillingAddress', false)
+            // The full country list is a couple of hundred rows; a checkout with no address block
+            // has no use for it.
+            ->where('countries', [])
+        );
+});
+
+test('the checkout page asks for an address when the setting is on', function () {
+    enableBillingAddress();
+    fillCart();
+
+    $this->get(route('store.checkout.create'))
+        ->assertInertia(fn ($page) => $page
+            ->where('requiresBillingAddress', true)
+            ->has('countries')
+        );
+});
+
+test('the order records the billing address', function () {
+    enableBillingAddress();
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart();
+    $country = Country::first();
+
+    $this->post(route('store.checkout.store'), checkoutPayload(billingPayload()))
+        ->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('store_orders', [
+        'billing_name' => 'Steve Miner',
+        'billing_address_line1' => '1 Bedrock Lane',
+        'billing_address_line2' => 'Flat 2',
+        'billing_city' => 'Overworld',
+        'billing_state' => 'Plains',
+        'billing_postal_code' => 'OW1 2AB',
+        // Snapshotted beside country_id, so renaming or deleting the country cannot rewrite an
+        // invoice that was already issued.
+        'billing_country' => $country->name,
+        'country_id' => $country->id,
+    ]);
+});
+
+test('a signed in buyer is asked for an address too', function () {
+    // An account holds no address, so being logged in is not a reason to skip the question.
+    enableBillingAddress();
+    $user = User::factory()->create();
+    Player::factory()->create(['username' => 'Steve']);
+
+    $this->actingAs($user);
+    fillCart();
+
+    $this->post(route('store.checkout.store'), checkoutPayload(billingPayload()))
+        ->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('store_orders', ['user_id' => $user->id, 'billing_city' => 'Overworld']);
+});
+
+test('a missing address is rejected when the setting is on', function () {
+    enableBillingAddress();
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart();
+
+    $this->post(route('store.checkout.store'), checkoutPayload())
+        ->assertSessionHasErrors([
+            'billing_name',
+            'billing_address_line1',
+            'billing_city',
+            'billing_postal_code',
+            'billing_country_id',
+        ]);
+
+    $this->assertDatabaseCount('store_orders', 0);
+});
+
+test('the optional address parts stay optional', function () {
+    // Not every address has a second line, and not every country has states.
+    enableBillingAddress();
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart();
+
+    $this->post(route('store.checkout.store'), checkoutPayload(billingPayload([
+        'billing_address_line2' => null,
+        'billing_state' => null,
+    ])))->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('store_orders', [
+        'billing_address_line2' => null,
+        'billing_state' => null,
+        'billing_city' => 'Overworld',
+    ]);
+});
+
+test('an address is not required while the setting is off', function () {
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart();
+
+    $this->post(route('store.checkout.store'), checkoutPayload())->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('store_orders', ['billing_name' => null]);
+});
+
+test('an unknown country is rejected', function () {
+    enableBillingAddress();
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart();
+
+    $this->post(route('store.checkout.store'), checkoutPayload(billingPayload([
+        'billing_country_id' => 999999,
+    ])))->assertSessionHasErrors(['billing_country_id']);
+});
+
+test('the declared country decides the tax rather than the ip', function () {
+    // A billing address is better evidence than a geolocation guess, and charging against the
+    // weaker one while holding the stronger is not defensible on an invoice.
+    enableBillingAddress();
+    $country = Country::first();
+    StoreTax::create([
+        'name' => 'Overworld VAT',
+        'country_id' => $country->id,
+        'rate_bp' => 2000,
+        'is_inclusive' => false,
+        'is_enabled' => true,
+    ]);
+
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart();
+
+    $this->post(route('store.checkout.store'), checkoutPayload(billingPayload()))
+        ->assertSessionHasNoErrors();
+
+    $order = StoreOrder::first();
+    expect($order->tax_name)->toBe('Overworld VAT');
+    expect($order->tax_amount)->toBe(200);
 });

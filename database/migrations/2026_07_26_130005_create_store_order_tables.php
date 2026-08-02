@@ -54,7 +54,23 @@ return new class extends Migration
 
             $table->string('ip_address')->nullable();
             $table->string('user_agent')->nullable();
+            // Guessed from the buyer's IP, or taken from the billing address when the store
+            // collects one — a declared country is better evidence than a geolocation lookup, and
+            // it is what picks the tax rule.
             $table->foreignId('country_id')->nullable()->constrained()->nullOnDelete();
+
+            // Billing address, collected only when store.collect_billing_address is on. Every
+            // column is a snapshot: an address is a record of where the buyer was at purchase
+            // time, and editing a saved one later must not rewrite an old invoice.
+            $table->string('billing_name')->nullable();
+            $table->string('billing_address_line1')->nullable();
+            $table->string('billing_address_line2')->nullable();
+            $table->string('billing_city')->nullable();
+            $table->string('billing_state')->nullable();
+            $table->string('billing_postal_code')->nullable();
+            // The country's name as it read when the order was placed. country_id above is the
+            // live link; this survives the row being renamed or deleted.
+            $table->string('billing_country')->nullable();
             $table->text('notes')->nullable();
 
             $table->timestamp('paid_at')->nullable();

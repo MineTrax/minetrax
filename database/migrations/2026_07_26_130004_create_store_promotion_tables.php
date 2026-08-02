@@ -133,10 +133,12 @@ return new class extends Migration
 
         if (Schema::hasColumn('store_package_commands', 'store_sale_id')) {
             Schema::table('store_package_commands', function (Blueprint $table) {
+                // Strictly in this order. MySQL uses the index to enforce the foreign key, so
+                // dropping it first fails with "needed in a foreign key constraint"; and the column
+                // cannot go while either still references it.
+                $table->dropForeign(['store_sale_id']);
                 $table->dropIndex(['store_sale_id', 'trigger']);
-                // Drops the constraint and the column together; dropColumn on its own fails while
-                // the foreign key still references store_sales.
-                $table->dropConstrainedForeignId('store_sale_id');
+                $table->dropColumn('store_sale_id');
             });
         }
 

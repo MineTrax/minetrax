@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\Enums\StoreOrderStatus;
 use App\Enums\StorePaymentStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Services\GeolocationService;
@@ -61,6 +62,12 @@ class StoreCheckoutController extends Controller
             'requiresEmail' => ! $request->user() && $this->settings->require_email_on_guest_checkout,
             'termsText' => $this->settings->terms_text,
             'mojangVerification' => $this->settings->mojang_username_verification,
+            'requiresBillingAddress' => $this->settings->collect_billing_address,
+            // Only shipped when the form will actually render the picker: the full country list is
+            // a couple of hundred rows on every checkout that has no use for it.
+            'countries' => $this->settings->collect_billing_address
+                ? Country::orderBy('name')->get(['id', 'name'])
+                : [],
         ]);
     }
 
@@ -69,12 +76,26 @@ class StoreCheckoutController extends Controller
         $this->authorize('browse', StorePackage::class);
 
         $requiresEmail = ! $request->user() && $this->settings->require_email_on_guest_checkout;
+        // The same fields for a guest and a member: an account holds no address, so being signed in
+        // is not a reason to skip asking.
+        $requiresAddress = $this->settings->collect_billing_address;
+        $addressRule = $requiresAddress ? 'required' : 'nullable';
 
         $validated = $request->validate([
             'player_username' => 'required|string|max:16',
             'email' => ($requiresEmail ? 'required' : 'nullable').'|email|max:255',
             'gateway' => 'required|string',
             'accept_terms' => 'accepted',
+
+            'billing_name' => $addressRule.'|string|max:255',
+            'billing_address_line1' => $addressRule.'|string|max:255',
+            // Line two is the flat number, so it stays optional even when the rest is not.
+            'billing_address_line2' => 'nullable|string|max:255',
+            'billing_city' => $addressRule.'|string|max:255',
+            // Not every country has one, so this is never required.
+            'billing_state' => 'nullable|string|max:255',
+            'billing_postal_code' => $addressRule.'|string|max:32',
+            'billing_country_id' => [$addressRule, 'integer', 'exists:countries,id'],
         ]);
 
         if (! $this->settings->enable_guest_checkout && ! $request->user()) {
@@ -96,12 +117,30 @@ class StoreCheckoutController extends Controller
 
         $resolved = $this->players->resolve($validated['player_username'], $request->user());
 
+        $billingCountry = $requiresAddress
+            ? Country::find($validated['billing_country_id'])
+            : null;
+
         $order = $this->checkout->placeOrder($cart, [
             'email' => $validated['email'] ?? null,
             'gateway' => $validated['gateway'],
             'ip' => $request->ip(),
             'user_agent' => substr((string) $request->userAgent(), 0, 255),
-            'country_id' => app(GeolocationService::class)->getCountryIdFromIP($request->ip()),
+            // A country the buyer declared beats one guessed from their IP, and it is what the tax
+            // rule is chosen by. Falls back to geolocation when no address was asked for.
+            'country_id' => $billingCountry?->id
+                ?? app(GeolocationService::class)->getCountryIdFromIP($request->ip()),
+            'billing' => $requiresAddress ? [
+                'billing_name' => $validated['billing_name'],
+                'billing_address_line1' => $validated['billing_address_line1'],
+                'billing_address_line2' => $validated['billing_address_line2'] ?? null,
+                'billing_city' => $validated['billing_city'],
+                'billing_state' => $validated['billing_state'] ?? null,
+                'billing_postal_code' => $validated['billing_postal_code'],
+                // Snapshotted alongside country_id, so a renamed or deleted country cannot rewrite
+                // what an old invoice says.
+                'billing_country' => $billingCountry?->name,
+            ] : [],
         ], $request->user(), $resolved);
 
         $payment = $order->getRelation('pendingPayment');
@@ -164,6 +203,9 @@ class StoreCheckoutController extends Controller
                         'key' => $driver->gateway()->value,
                         'label' => $driver->label(),
                         'description' => $driver->description(),
+                        // An offline method has nowhere to send the buyer, so the page offers
+                        // instructions instead of a button that would reload it and charge nothing.
+                        'is_offline' => $driver->isOffline(),
                     ])->values()
                 : collect(),
         ]);

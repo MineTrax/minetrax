@@ -139,6 +139,10 @@ class StoreCheckoutService
                 'ip_address' => $input['ip'] ?? null,
                 'user_agent' => $input['user_agent'] ?? null,
                 'country_id' => $input['country_id'] ?? null,
+                // Empty unless the store collects one. Spread rather than listed field by field so
+                // the caller decides what an address is, and adding a line never means touching
+                // both ends.
+                ...($input['billing'] ?? []),
             ]);
 
             foreach ($quote['items'] as $index => $item) {

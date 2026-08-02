@@ -151,7 +151,10 @@ test('a members username is credited on their purchase', function () {
     $purchase = widgets()->recentPurchases()[0];
 
     expect($purchase['buyer'])->toBe('bigspender');
-    expect($purchase['buyer_user'])->not->toBeNull();
+    expect($purchase['buyer_username'])->toBe('bigspender');
+    // The account's own photo. It used to be built with only(), which returns raw attributes and
+    // therefore dropped the appended profile_photo_url — the list rendered a broken image.
+    expect($purchase['buyer_avatar_url'])->toBe($buyer->profile_photo_url);
 });
 
 test('a guest is credited by their minecraft username', function () {
@@ -160,6 +163,20 @@ test('a guest is credited by their minecraft username', function () {
     StoreOrder::factory()->completed()->create(['user_id' => null, 'player_username' => 'Notch']);
 
     expect(widgets()->recentPurchases()[0]['buyer'])->toBe('Notch');
+});
+
+test('a guest purchase shows the buyers minecraft head', function () {
+    // A guest has no account photo, and a shopping-bag glyph for every guest makes the list look
+    // like nobody bought anything.
+    widgetSettings(['show_recent_purchases' => true, 'hide_buyer_identity' => false]);
+
+    $order = StoreOrder::factory()->completed()->create(['user_id' => null, 'player_username' => 'Notch']);
+
+    $purchase = widgets()->recentPurchases()[0];
+
+    expect($purchase['buyer_avatar_url'])->toContain($order->player_uuid);
+    // No account, so nothing to link to.
+    expect($purchase['buyer_username'])->toBeNull();
 });
 
 test('hiding buyer identity anonymises the list', function () {
@@ -172,8 +189,18 @@ test('hiding buyer identity anonymises the list', function () {
 
     expect($purchase['buyer'])->toBe('Anonymous');
     expect($purchase['buyer'])->not->toBe('bigspender');
-    // An avatar identifies somebody as surely as a username does, so it goes too.
-    expect($purchase['buyer_user'])->toBeNull();
+    // An avatar identifies somebody as surely as a username does, so it goes too — and so does the
+    // profile link, which would name them in the URL.
+    expect($purchase['buyer_avatar_url'])->toBeNull();
+    expect($purchase['buyer_username'])->toBeNull();
+});
+
+test('hiding buyer identity withholds a guests minecraft head too', function () {
+    widgetSettings(['show_recent_purchases' => true, 'hide_buyer_identity' => true]);
+
+    StoreOrder::factory()->completed()->create(['user_id' => null, 'player_username' => 'Notch']);
+
+    expect(widgets()->recentPurchases()[0]['buyer_avatar_url'])->toBeNull();
 });
 
 test('hiding buyer identity also anonymises a guests minecraft username', function () {
@@ -237,12 +264,57 @@ test('the top donors purchases are added up across their orders', function () {
     expect(widgets()->topDonor()['spent'])->toBe(4500);
 });
 
+test('the top donor is credited by their site username when they have an account', function () {
+    // They are known to the community as their site username; naming them by their in-game handle
+    // instead reads as a different person entirely.
+    widgetSettings(['show_top_donor' => true, 'hide_buyer_identity' => false]);
+
+    $buyer = User::factory()->create(['username' => 'bigspender']);
+    StoreOrder::factory()->completed()->create([
+        'user_id' => $buyer->id,
+        'player_username' => 'Notch',
+        'base_total' => 4000,
+    ]);
+
+    $donor = widgets()->topDonor();
+
+    expect($donor['name'])->toBe('bigspender');
+    expect($donor['username'])->toBe('bigspender');
+    expect($donor['avatar_url'])->toBe($buyer->profile_photo_url);
+});
+
+test('the top donor falls back to their minecraft name as a guest', function () {
+    widgetSettings(['show_top_donor' => true, 'hide_buyer_identity' => false]);
+
+    $order = StoreOrder::factory()->completed()->create([
+        'user_id' => null,
+        'player_username' => 'Notch',
+        'base_total' => 4000,
+    ]);
+
+    $donor = widgets()->topDonor();
+
+    expect($donor['name'])->toBe('Notch');
+    // Their head stands in for a profile photo, and there is no profile to link to.
+    expect($donor['avatar_url'])->toContain($order->player_uuid);
+    expect($donor['username'])->toBeNull();
+});
+
 test('hiding buyer identity anonymises the top donor', function () {
     widgetSettings(['show_top_donor' => true, 'hide_buyer_identity' => true]);
 
-    StoreOrder::factory()->completed()->create(['player_username' => 'Notch', 'base_total' => 4000]);
+    $buyer = User::factory()->create(['username' => 'bigspender']);
+    StoreOrder::factory()->completed()->create([
+        'user_id' => $buyer->id,
+        'player_username' => 'Notch',
+        'base_total' => 4000,
+    ]);
 
-    expect(widgets()->topDonor()['name'])->toBe('Anonymous');
+    $donor = widgets()->topDonor();
+
+    expect($donor['name'])->toBe('Anonymous');
+    expect($donor['avatar_url'])->toBeNull();
+    expect($donor['username'])->toBeNull();
 });
 
 test('there is no top donor before anybody has bought anything', function () {

@@ -400,3 +400,25 @@ test('the purchase history page drops how to pay once settled', function () {
         ->get(route('store.my-order.show', $order->uuid))
         ->assertInertia(fn ($page) => $page->where('paymentInstructions', null));
 });
+
+test('the result page marks which gateways take payment offline', function () {
+    // The resume button posts, finds no hosted page to redirect to, and lands the buyer back on
+    // this exact screen. The page needs to know that so it can offer instructions instead.
+    $this->enableStoreGateways(['manual']);
+    $order = orderWithItem(['user_id' => null, 'status' => StoreOrderStatus::PENDING, 'gateway' => 'manual']);
+
+    $this->get(route('store.order.result', $order->uuid))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->where('gateways.0.is_offline', true));
+});
+
+test('a hosted gateway is not marked offline', function () {
+    $this->enableStoreGateways(['stripe'], [
+        'stripe' => ['secret_key' => 'sk_test_x', 'webhook_secret' => 'whsec_x'],
+    ]);
+    $order = orderWithItem(['user_id' => null, 'status' => StoreOrderStatus::PENDING, 'gateway' => 'stripe']);
+
+    $this->get(route('store.order.result', $order->uuid))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->where('gateways.0.is_offline', false));
+});

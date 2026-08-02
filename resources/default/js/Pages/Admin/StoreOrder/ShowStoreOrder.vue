@@ -29,6 +29,17 @@ const breadcrumbItems = [
     { text: props.order.uuid.substring(0, 8).toUpperCase(), current: true },
 ];
 
+// The address as the buyer gave it, one line per part and empties dropped — an optional flat
+// number or a country with no states must not leave a blank line in the middle of the block.
+const billingAddress = computed(() => [
+    props.order.billing_name,
+    props.order.billing_address_line1,
+    props.order.billing_address_line2,
+    [props.order.billing_city, props.order.billing_state].filter(Boolean).join(", "),
+    props.order.billing_postal_code,
+    props.order.billing_country,
+].filter(Boolean).join("\n"));
+
 const status = computed(() => props.order.status.value);
 const isPending = computed(() => status.value === "pending");
 const isPaidState = computed(() => ["paid", "completed", "partially_refunded"].includes(status.value));
@@ -455,6 +466,16 @@ const formatDate = (value) => (value ? formatToDayDateString(value) : "—");
                   {{ __("IP") }}
                 </dt>
                 <dd>{{ order.ip_address }} <span v-if="order.country">({{ order.country.name }})</span></dd>
+              </div>
+              <!-- Only when one was collected: the setting is off for most stores, and an empty
+                   heading reads as missing data rather than as a question never asked. -->
+              <div v-if="order.billing_address_line1">
+                <dt class="text-muted-foreground text-xs">
+                  {{ __("Billing Address") }}
+                </dt>
+                <dd class="whitespace-pre-line">
+                  {{ billingAddress }}
+                </dd>
               </div>
             </dl>
           </div>

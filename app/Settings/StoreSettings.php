@@ -30,6 +30,16 @@ class StoreSettings extends Settings
      */
     public bool $mojang_username_verification;
 
+    /**
+     * Ask every buyer for a billing address at checkout, guests included.
+     *
+     * Off by default: a Minecraft store ships nothing, so most owners have no use for one. When it
+     * is on the country the buyer names also decides their tax rule, in place of the guess made
+     * from their IP — a declared address is better evidence than a geolocation lookup, and holding
+     * both while charging against the weaker one is indefensible on an invoice.
+     */
+    public bool $collect_billing_address;
+
     public ?string $terms_text;
 
     public bool $show_recent_purchases;

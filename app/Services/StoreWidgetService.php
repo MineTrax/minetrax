@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Player;
 use App\Models\StoreCurrency;
 use App\Models\StoreOrder;
+use App\Models\User;
 use App\Settings\StoreSettings;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Cache;
@@ -143,7 +145,13 @@ class StoreWidgetService
 
         return Cache::remember('store:widget:recent-purchases:'.$limit, self::CACHE_SECONDS, function () use ($limit) {
             return StoreOrder::whereIn('status', self::EARNING_STATUSES)
-                ->with(['user:id,name,username,profile_photo_path,settings', 'items:id,store_order_id,package_name,quantity'])
+                ->with([
+                    'user:id,name,username,profile_photo_path,settings',
+                    // For a guest there is no account to take a picture from, so the buyer's
+                    // Minecraft head stands in. skin_texture_id is part of the avatar route.
+                    'player:id,uuid,username,skin_texture_id',
+                    'items:id,store_order_id,package_name,quantity',
+                ])
                 ->latest('paid_at')
                 ->latest('id')
                 ->limit($limit)
@@ -151,11 +159,9 @@ class StoreWidgetService
                 ->map(fn (StoreOrder $order) => [
                     'id' => $order->id,
                     'buyer' => $this->buyerName($order),
-                    // Only when the buyer is named: an avatar identifies somebody just as well as a
-                    // username does.
-                    'buyer_user' => $this->settings->hide_buyer_identity ? null : $order->user?->only([
-                        'id', 'name', 'username', 'profile_photo_path', 'settings',
-                    ]),
+                    'buyer_avatar_url' => $this->buyerAvatarUrl($order),
+                    // The profile to link to, and null for a guest, who has none.
+                    'buyer_username' => $this->settings->hide_buyer_identity ? null : $order->user?->username,
                     'items' => $order->items->map(fn ($item) => [
                         'package_name' => $item->package_name,
                         'quantity' => (int) $item->quantity,
@@ -209,9 +215,16 @@ class StoreWidgetService
 
         $spent = (int) $cached['top']->spent;
         $display = $this->currencies->resolve();
+        // Credit the person, not just the Minecraft account: someone signed in is known to the
+        // community by their site username, and naming them by their in-game handle instead reads
+        // as a different person. A guest has only the one name, which is the fallback.
+        $identity = $this->topDonorIdentity($cached['top']);
 
         return [
-            'name' => $this->settings->hide_buyer_identity ? __('Anonymous') : $cached['top']->player_username,
+            'name' => $identity['name'],
+            'avatar_url' => $identity['avatar_url'],
+            // Null for a guest, who has no profile to link to.
+            'username' => $identity['username'],
             // Base minor units, as the goal does; the formatted figure is what a visitor reads.
             'spent' => $spent,
             'currency' => $display->code,
@@ -220,6 +233,47 @@ class StoreWidgetService
             'spent_formatted' => $this->currencies->format($this->toDisplay($spent, $display), $display),
             // Which month the figure covers, so the box is honest when it has fallen back.
             'month' => $cached['month'],
+        ];
+    }
+
+    /**
+     * Who to put on the podium, given the aggregate row.
+     *
+     * The aggregate groups by player_uuid, so it carries no relations of its own — the account and
+     * the player are resolved here, once, off the back of the ids it selected.
+     *
+     * @return array{name: string, avatar_url: ?string, username: ?string}
+     */
+    private function topDonorIdentity(StoreOrder $top): array
+    {
+        if ($this->settings->hide_buyer_identity) {
+            return ['name' => __('Anonymous'), 'avatar_url' => null, 'username' => null];
+        }
+
+        $user = $top->user_id
+            ? User::select(['id', 'name', 'username', 'profile_photo_path', 'settings'])->find($top->user_id)
+            : null;
+
+        if ($user) {
+            return [
+                'name' => $user->username,
+                'avatar_url' => $user->profile_photo_url,
+                'username' => $user->username,
+            ];
+        }
+
+        $player = Player::select(['id', 'uuid', 'username', 'skin_texture_id'])
+            ->firstWhere('uuid', $top->player_uuid);
+
+        return [
+            'name' => $top->player_username ?? __('A guest'),
+            'avatar_url' => route('player.avatar.get', [
+                $top->player_uuid,
+                $top->player_username ?? $top->player_uuid,
+                $player?->skin_texture_id,
+                'size' => 100,
+            ]),
+            'username' => null,
         ];
     }
 
@@ -257,5 +311,38 @@ class StoreWidgetService
         }
 
         return $order->user?->username ?? $order->player_username ?? __('A guest');
+    }
+
+    /**
+     * The picture to put beside a buyer's name, or null when there is none to show.
+     *
+     * An account's own photo first, then the buyer's Minecraft head, which is the only likeness a
+     * guest has. Both are identities, so `hide_buyer_identity` withholds either — anonymising a
+     * name and then printing the face beside it would give the whole thing away.
+     *
+     * The head is built from the order's snapshotted uuid and username rather than from the Player
+     * row, so it still renders for someone who has never logged into the website. skin_texture_id
+     * only sharpens it: the route falls back to a default skin without one.
+     */
+    private function buyerAvatarUrl(StoreOrder $order): ?string
+    {
+        if ($this->settings->hide_buyer_identity) {
+            return null;
+        }
+
+        if ($order->user) {
+            return $order->user->profile_photo_url;
+        }
+
+        if (! $order->player_uuid) {
+            return null;
+        }
+
+        return route('player.avatar.get', [
+            $order->player_uuid,
+            $order->player_username ?? $order->player_uuid,
+            $order->player?->skin_texture_id,
+            'size' => 100,
+        ]);
     }
 }

@@ -32,6 +32,11 @@ class ManualPaymentGateway extends AbstractStorePaymentGateway
         return __('Your order will be held until a staff member confirms payment.');
     }
 
+    public function isOffline(): bool
+    {
+        return true;
+    }
+
     /**
      * No credentials, so isEnabled() reduces to "the admin switched it on".
      */
