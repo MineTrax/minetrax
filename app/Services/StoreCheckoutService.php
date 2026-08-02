@@ -152,6 +152,9 @@ class StoreCheckoutService
                     'unit_price' => $item['unit_price'],
                     'upgrade_credit' => $item['upgrade_credit'],
                     'total' => $item['total'],
+                    // The id as well as the name: the sale's commands resolve against this at
+                    // delivery, and again on a refund long after the sale has ended.
+                    'store_sale_id' => $item['sale_id'],
                     'sale_name' => $item['sale_name'],
                     'expiry_duration_days' => $package->expiry_duration_days,
                     // Snapshotted with names, so the order still reads correctly after a variable

@@ -102,13 +102,151 @@ test('a scoped sale only touches its own category', function () {
     $inScope = StorePackage::factory()->create(['price' => 1000, 'store_category_id' => $category->id]);
     $outOfScope = StorePackage::factory()->create(['price' => 1000]);
 
-    $sale = StoreSale::factory()->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000]);
+    $sale = StoreSale::factory()->forCategories()->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000]);
     $sale->saleables()->create(['saleable_type' => StoreCategory::class, 'saleable_id' => $category->id]);
 
     $quote = $this->pricing->quote([line($inScope), line($outOfScope)]);
 
     expect($quote['items'][0]['unit_price'])->toEqual(500);
     expect($quote['items'][1]['unit_price'])->toEqual(1000);
+});
+
+test('a scoped sale with nothing named discounts nothing', function () {
+    // The old behaviour read an empty scope as store-wide, so a package-scoped sale whose rows had
+    // been cleared quietly discounted the entire catalogue.
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreSale::factory()->forPackages()->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000]);
+
+    $quote = $this->pricing->quote([line($package)]);
+
+    expect($quote['items'][0]['unit_price'])->toEqual(1000);
+    expect($quote['items'][0]['sale_name'])->toBeNull();
+});
+
+test('a category scoped sale ignores stray package rows', function () {
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    $sale = StoreSale::factory()->forCategories()->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000]);
+    $sale->saleables()->create(['saleable_type' => StorePackage::class, 'saleable_id' => $package->id]);
+
+    expect($this->pricing->quote([line($package)])['items'][0]['unit_price'])->toEqual(1000);
+});
+
+test('the quote reports which sale won', function () {
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreSale::factory()->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 1000]);
+    $bigger = StoreSale::factory()->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000]);
+
+    $quote = $this->pricing->quote([line($package)]);
+
+    expect($quote['items'][0]['sale_id'])->toBe($bigger->id);
+});
+
+test('a pay what you want line reports no sale id', function () {
+    $package = StorePackage::factory()->create(['price' => 1000, 'is_pay_what_you_want' => true]);
+    StoreSale::factory()->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000]);
+
+    $quote = $this->pricing->quote([line($package)]);
+
+    expect($quote['items'][0]['sale_id'])->toBeNull();
+    expect($quote['items'][0]['unit_price'])->toEqual(1000);
+});
+
+test('a sale below its minimum does not apply', function () {
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreSale::factory()->withMinimum(2000)->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 2000]);
+
+    $quote = $this->pricing->quote([line($package)]);
+
+    expect($quote['items'][0]['unit_price'])->toEqual(1000);
+    expect($quote['items'][0]['sale_name'])->toBeNull();
+    expect($quote['sale_discount'])->toEqual(0);
+});
+
+test('a sale applies once the cart reaches its minimum', function () {
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreSale::factory()->withMinimum(2000)->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 2000]);
+
+    $quote = $this->pricing->quote([line($package, 2)]);
+
+    expect($quote['items'][0]['unit_price'])->toEqual(800);
+    expect($quote['sale_discount'])->toEqual(400);
+});
+
+test('the minimum is measured before the sale itself', function () {
+    // The whole design in one assertion. The cart qualifies at 2000, the sale halves it to 1000,
+    // and the sale still stands — measuring the threshold against the discounted subtotal would
+    // withdraw it, which would put the cart back over, which would reapply it, forever.
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreSale::factory()->withMinimum(2000)->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000]);
+
+    $quote = $this->pricing->quote([line($package, 2)]);
+
+    expect($quote['qualifying_subtotal'])->toEqual(2000);
+    expect($quote['subtotal'])->toEqual(1000);
+    expect($quote['items'][0]['sale_name'])->not->toBeNull();
+});
+
+test('the minimum reads the price after a package own discount', function () {
+    // A threshold is a spend commitment, so it is measured against what the buyer actually commits,
+    // not against a list price they were never going to pay.
+    $package = StorePackage::factory()->create(['price' => 1000, 'discount_bp' => 5000]);
+    StoreSale::factory()->withMinimum(1500)->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 2000]);
+
+    $quote = $this->pricing->quote([line($package, 2)]);
+
+    expect($quote['qualifying_subtotal'])->toEqual(1000);
+    expect($quote['items'][0]['sale_name'])->toBeNull();
+});
+
+test('a pay what you want line counts toward a sale minimum', function () {
+    $donation = StorePackage::factory()->create(['price' => 100, 'is_pay_what_you_want' => true]);
+    $rank = StorePackage::factory()->create(['price' => 1000]);
+    StoreSale::factory()->withMinimum(5000)->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 2000]);
+
+    $quote = $this->pricing->quote([
+        ['package' => $donation, 'quantity' => 1, 'custom_price' => 5000, 'custom_price_currency' => 'USD'],
+        line($rank),
+    ]);
+
+    expect($quote['qualifying_subtotal'])->toEqual(6000);
+    // The donation unlocks the sale but never receives it.
+    expect($quote['items'][0]['unit_price'])->toEqual(5000);
+    expect($quote['items'][1]['unit_price'])->toEqual(800);
+});
+
+test('a sale with no minimum is unaffected', function () {
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreSale::factory()->create(['discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 2000]);
+
+    expect($this->pricing->quote([line($package)])['items'][0]['unit_price'])->toEqual(800);
+});
+
+test('the quote reports what is still needed to unlock a sale', function () {
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreSale::factory()->withMinimum(2500)->create([
+        'name' => 'Big Spender',
+        'discount_type' => StoreDiscountType::PERCENT,
+        'discount_value' => 2000,
+    ]);
+
+    $quote = $this->pricing->quote([line($package)]);
+
+    expect($quote['unlockable_sales'])->toHaveCount(1);
+    expect($quote['unlockable_sales'][0]['name'])->toEqual('Big Spender');
+    expect($quote['unlockable_sales'][0]['remaining'])->toEqual(1500);
+
+    // Once met it stops being something to unlock.
+    expect($this->pricing->quote([line($package, 3)])['unlockable_sales'])->toBeEmpty();
+});
+
+test('a sale covering nothing in the cart is not offered as unlockable', function () {
+    $inCart = StorePackage::factory()->create(['price' => 1000]);
+    $elsewhere = StorePackage::factory()->create(['price' => 1000]);
+
+    $sale = StoreSale::factory()->forPackages()->withMinimum(9000)->create();
+    $sale->saleables()->create(['saleable_type' => StorePackage::class, 'saleable_id' => $elsewhere->id]);
+
+    expect($this->pricing->quote([line($inCart)])['unlockable_sales'])->toBeEmpty();
 });
 
 test('a percentage coupon discounts the basket', function () {

@@ -146,9 +146,18 @@ return new class extends Migration
             $table->unique(['store_package_id', 'required_store_package_id'], 'store_package_requirement_unique');
         });
 
+        // A command belongs to exactly one owner: a package, or a sale. A sale's commands are the
+        // extra a promotion hands out on top of its discount — "10% off, and 100 bonus coins" — and
+        // they live in this table on purpose rather than in one of their own. store_order_deliveries
+        // guards against double-delivery with a unique index over store_package_command_id, and
+        // MySQL treats a NULL inside a unique index as distinct: a second command table would force
+        // a nullable second column into that index and switch the guard off for every row that left
+        // it null. One table keeps the column non-null and the guard intact.
+        //
+        // store_sale_id is added by the promotions migration, because store_sales does not exist yet.
         Schema::create('store_package_commands', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('store_package_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('store_package_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('trigger'); // purchase, expiry, refund, chargeback
             $table->text('command');   // raw, with {PLACEHOLDER}s
             $table->boolean('is_player_online_required')->default(false);
@@ -158,6 +167,11 @@ return new class extends Migration
             // Mirrors the account-link command convention: picking no servers means all of them,
             // and this flag records that choice so a server added later is included automatically.
             $table->boolean('is_run_on_all_servers')->default(true);
+
+            // The same convention one level up, for a sale's commands: picking no packages means
+            // every package the sale discounted, so a package that joins the sale's scope later is
+            // covered too. Always true for a package's own commands, which have nothing to scope.
+            $table->boolean('is_run_on_all_packages')->default(true);
 
             $table->integer('sort_order')->default(0);
             $table->timestamps();

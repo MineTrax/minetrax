@@ -342,6 +342,18 @@ const handleClearCode = () => {
               <span class="text-success font-semibold">-{{ quote.formatted.sale_discount }}</span>
             </div>
 
+            <!-- A sale the cart qualifies for on price but has not reached the minimum for. Stated
+                 as what is still missing rather than as a discount, because it is not one yet. -->
+            <div
+              v-for="unlockable in (quote.unlockable_sales ?? [])"
+              :key="unlockable.name"
+              class="flex justify-between items-center gap-2 pb-4 border-b border-border"
+            >
+              <span class="text-xs text-muted-foreground">
+                {{ __("Spend :amount more to unlock :name", { amount: unlockable.remaining_formatted, name: unlockable.name }) }}
+              </span>
+            </div>
+
             <!-- Upgrade Credit -->
             <div
               v-if="quote.upgrade_credit > 0"

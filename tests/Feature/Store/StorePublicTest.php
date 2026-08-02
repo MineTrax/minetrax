@@ -173,7 +173,7 @@ test('a sale scoped elsewhere does not touch a package', function () {
     $other = StorePackage::factory()->create(['price' => 500]);
     StorePackage::factory()->create(['name' => 'Untouched', 'price' => 1000]);
 
-    $sale = StoreSale::factory()->create(['discount_value' => 5000]);
+    $sale = StoreSale::factory()->forPackages()->create(['discount_value' => 5000]);
     $sale->saleables()->create(['saleable_type' => StorePackage::class, 'saleable_id' => $other->id]);
 
     $this->get(route('store.index'))
@@ -183,6 +183,54 @@ test('a sale scoped elsewhere does not touch a package', function () {
             expect($byName['Untouched']['price'])->toBe(1000);
             expect($byName['Untouched']['sale_name'])->toBeNull();
         });
+});
+
+test('a conditional sale does not discount a listed price', function () {
+    // A listing has no cart to measure, so pricing a minimum-spend sale into a card would
+    // advertise a figure the cart then refuses to honour.
+    $this->baseCurrency();
+    StorePackage::factory()->create(['name' => 'Rank', 'price' => 1000]);
+    StoreSale::factory()->withMinimum(5000)->create(['name' => 'Big Spender', 'discount_value' => 2000]);
+
+    $this->get(route('store.index'))
+        ->assertInertia(function ($page) {
+            $byName = collect($page->toArray()['props']['packages'])->keyBy('name');
+
+            expect($byName['Rank']['price'])->toBe(1000);
+            expect($byName['Rank']['sale_name'])->toBeNull();
+        });
+});
+
+test('a listing says what a conditional sale would take and what it costs to unlock', function () {
+    $this->baseCurrency();
+    StorePackage::factory()->create(['name' => 'Rank', 'price' => 1000]);
+    StoreSale::factory()->withMinimum(5000)->create(['name' => 'Big Spender', 'discount_value' => 2000]);
+
+    $this->get(route('store.index'))
+        ->assertInertia(function ($page) {
+            $byName = collect($page->toArray()['props']['packages'])->keyBy('name');
+
+            expect($byName['Rank']['conditional_sale_name'])->toBe('Big Spender');
+            expect($byName['Rank']['conditional_sale_discount_bp'])->toBe(2000);
+            expect($byName['Rank']['conditional_sale_minimum_formatted'])->toBe('$50.00');
+        });
+});
+
+test('the storefront price still matches the cart when a conditional sale is unmet', function () {
+    // The guard against pricing conditional sales in optimistically: the card and the cart have to
+    // agree, and only the cart can measure the basket.
+    $this->baseCurrency();
+    $package = StorePackage::factory()->create(['price' => 1499]);
+    StoreSale::factory()->withMinimum(9000)->create(['discount_value' => 2000]);
+
+    $listed = null;
+    $this->get(route('store.index'))->assertInertia(function ($page) use (&$listed) {
+        $listed = collect($page->toArray()['props']['packages'])->first()['price'];
+    });
+
+    $quote = app(StorePricingService::class)->quote([['package' => $package->fresh(), 'quantity' => 1]]);
+
+    expect($listed)->toBe($quote['items'][0]['unit_price']);
 });
 
 test('the storefront price matches what the cart will charge', function () {

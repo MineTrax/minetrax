@@ -3,7 +3,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import AppHead from "@/Components/AppHead.vue";
 import { Link, usePage, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
-import { discountLabel } from "@/Composables/useStoreDiscount";
+import { discountLabel, unlockLabel } from "@/Composables/useStoreDiscount";
 import { useHelpers } from "@/Composables/useHelpers";
 import { useFormKit } from "@/Composables/useFormKit";
 import { FormKitSchema } from "@formkit/vue";
@@ -106,6 +106,10 @@ const isGuest = computed(() => !currentUser.value);
 // minor units, so a flat 15% sale read as "14.8% off" on one package and "14.9% off" on another.
 // A package discount and a sale both applying are listed as "10% + 15% off".
 const discountBadge = computed(() => discountLabel(props.storePackage));
+
+// A sale this package qualifies for that the shopper's cart has not reached yet. Stated as the
+// condition rather than priced in, because the page has no cart to measure against.
+const unlockNote = computed(() => unlockLabel(props.storePackage));
 
 // Whether to strike the old price through. Compared rather than taken from discount_bp, so it covers
 // a package discount, a sale, or both.
@@ -474,6 +478,13 @@ const { quantityInCart, isInCart } = useCartMembership(() => props.storePackage)
                 class="inline-block px-3 py-1 text-sm font-medium bg-success/10 text-success rounded-lg"
               >
                 {{ storePackage.sale_name }}
+              </span>
+
+              <span
+                v-if="unlockNote"
+                class="inline-block px-3 py-1 text-sm font-medium bg-muted text-muted-foreground rounded-lg"
+              >
+                {{ unlockNote }}
               </span>
 
               <span

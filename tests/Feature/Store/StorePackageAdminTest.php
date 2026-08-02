@@ -8,6 +8,7 @@ use App\Models\StoreCategory;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
 use App\Models\StorePackageCommand;
+use App\Models\StoreSale;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -573,4 +574,25 @@ test('a deleted packages orders stay readable', function () {
     $item->refresh();
     expect($item->package_name)->toBe('VIP Rank');
     expect($item->store_package_id)->toBe($package->id);
+});
+
+test('saving a package leaves every sale commands alone', function () {
+    // The two kinds share store_package_commands, so the package controller's trailing delete has
+    // to stay scoped to store_package_id.
+    $this->actingAs(User::whereId(1)->first());
+    $package = StorePackage::factory()->create();
+    $sale = StoreSale::factory()->create();
+    $saleCommand = StorePackageCommand::factory()->forSale($sale)->create();
+
+    $this->put(route('admin.store.package.update', $package->id), packageAdminValidPayload([
+        'name' => $package->name,
+        'slug' => $package->slug,
+        'commands' => [commandPayload()],
+    ]))->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('store_package_commands', [
+        'id' => $saleCommand->id,
+        'store_sale_id' => $sale->id,
+    ]);
+    expect($package->fresh()->commands()->count())->toBe(1);
 });

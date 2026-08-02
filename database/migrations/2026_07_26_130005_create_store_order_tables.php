@@ -81,7 +81,14 @@ return new class extends Migration
             $table->unsignedBigInteger('unit_price_original'); // before any sale
             $table->unsignedBigInteger('unit_price');          // after sale, before coupon
             $table->unsignedBigInteger('total');
-            $table->string('sale_name')->nullable();
+
+            // Which sale priced this line, not merely what it was called. The sale's commands
+            // resolve live at trigger time — a refund months later still has to claw back the bonus
+            // the sale handed out — so the id has to survive the sale ending, being switched off or
+            // being retired. nullOnDelete rather than cascade: deleting a sale must never delete
+            // order history. store_sales soft-deletes, so in practice this stays populated.
+            $table->foreignId('store_sale_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('sale_name')->nullable(); // snapshot, so a rename cannot rewrite a receipt
             // What the buyer was credited for a cheaper package they already owned in a cumulative
             // category. Recorded so a receipt can explain a total that is not quantity x price.
             $table->unsignedBigInteger('upgrade_credit')->default(0);

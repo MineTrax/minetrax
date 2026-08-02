@@ -11,8 +11,10 @@ use App\Models\StoreOrderItem;
 use App\Models\StorePackage;
 use App\Models\StorePackageCommand;
 use App\Models\StorePayment;
+use App\Models\StoreSale;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -21,6 +23,7 @@ uses(RefreshDatabase::class);
 test('every store table exists', function () {
     $tables = [
         'store_categories', 'store_packages', 'store_package_command_server', 'store_package_commands',
+        'store_package_command_package',
         'store_currencies', 'store_package_prices',
         'store_carts', 'store_cart_items',
         'store_coupons', 'store_couponables', 'store_sales', 'store_saleables', 'store_gift_cards',
@@ -197,6 +200,33 @@ test('cart items cache no package price', function () {
     expect(Schema::hasColumn('store_cart_items', 'unit_price'))->toBeFalse();
     expect(Schema::hasColumn('store_cart_items', 'custom_price'))->toBeTrue();
     expect(Schema::hasColumn('store_cart_items', 'custom_price_currency'))->toBeTrue();
+});
+
+test('the delivery guard still keys on a single non null command id', function () {
+    // The executable form of a load-bearing design decision. A sale's commands share
+    // store_package_commands with a package's precisely so this column is never null: MySQL treats
+    // a NULL inside a unique index as distinct, so a second nullable command column here would
+    // switch the double-delivery guard off for every row that left it empty.
+    expect(Schema::hasColumn('store_order_deliveries', 'store_package_command_id'))->toBeTrue();
+    expect(Schema::hasColumn('store_order_deliveries', 'store_sale_command_id'))->toBeFalse();
+    expect(Schema::hasColumn('store_order_deliveries', 'command_source'))->toBeFalse();
+
+    $definition = DB::selectOne('SHOW CREATE TABLE store_order_deliveries')->{'Create Table'};
+
+    expect($definition)->toContain('store_order_deliveries_unique_dispatch');
+    expect($definition)->toContain('`store_order_item_id`,`store_package_command_id`,`server_id`,`trigger`,`repeat_index`');
+});
+
+test('a store command belongs to exactly one owner', function () {
+    expect(Schema::hasColumn('store_package_commands', 'store_sale_id'))->toBeTrue();
+    expect(Schema::hasColumn('store_package_commands', 'is_run_on_all_packages'))->toBeTrue();
+    expect(Schema::hasColumn('store_order_items', 'store_sale_id'))->toBeTrue();
+
+    $package = StorePackage::factory()->create();
+    $sale = StoreSale::factory()->create();
+
+    expect(StorePackageCommand::factory()->forSale($sale)->create()->store_package_id)->toBeNull();
+    expect(StorePackageCommand::factory()->create(['store_package_id' => $package->id])->store_sale_id)->toBeNull();
 });
 
 test('ban factory and active scope', function () {

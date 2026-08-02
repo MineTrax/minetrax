@@ -46,3 +46,32 @@ export function discountLabel(storePackage) {
 
     return parts.length ? __(":discount off", { discount: parts.join(" + ") }) : null;
 }
+
+/**
+ * What a shopper would have to spend to put this package on sale, or null when nothing is waiting.
+ *
+ * A sale gated on a cart total cannot be priced into a card, because a listing has no cart to
+ * measure — the card would advertise a price the cart would then refuse to honour. So the price
+ * stays undiscounted and the offer is stated as the condition it actually is.
+ */
+export function unlockLabel(storePackage) {
+    if (! storePackage.conditional_sale_minimum_formatted) {
+        return null;
+    }
+
+    const bp = Number(storePackage.conditional_sale_discount_bp ?? 0);
+    // A fixed-amount sale has no percentage to name, so the money is the honest label — the same
+    // rule discountParts() follows.
+    const discount = bp > 0
+        ? percentFromBasisPoints(bp)
+        : storePackage.conditional_sale_amount_formatted;
+
+    if (! discount) {
+        return null;
+    }
+
+    return __("Spend :amount to get :discount off", {
+        amount: storePackage.conditional_sale_minimum_formatted,
+        discount,
+    });
+}

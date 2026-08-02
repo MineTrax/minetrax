@@ -119,6 +119,13 @@ class StorePackagePresenter
             'sale_amount_formatted' => $priced['sale_discount_bp'] === null && $priced['sale_saving'] > 0
                 ? $this->currencies->format($priced['sale_saving'], $currency)
                 : null,
+            // A sale gated on a basket total cannot be priced into a card — a listing has no basket
+            // — so the card advertises what it would take to unlock instead of showing a price the
+            // cart would refuse to honour.
+            'conditional_sale_name' => $priced['conditional_sale_name'],
+            'conditional_sale_discount_bp' => $priced['conditional_sale_discount_bp'],
+            'conditional_sale_amount_formatted' => $priced['conditional_sale_amount_formatted'],
+            'conditional_sale_minimum_formatted' => $priced['conditional_sale_minimum_formatted'],
             'pay_what_you_want_max' => $package->pay_what_you_want_max
                 ? $this->currencies->fromBase((int) $package->pay_what_you_want_max, $currency)
                 : null,

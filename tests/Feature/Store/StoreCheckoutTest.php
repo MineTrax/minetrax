@@ -9,6 +9,7 @@ use App\Models\StoreCoupon;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
+use App\Models\StoreSale;
 use App\Models\User;
 use App\Services\StoreCartService;
 use App\Services\StoreOrderService;
@@ -104,6 +105,56 @@ test('the order snapshots the line items', function () {
     $package->update(['name' => 'Renamed', 'price' => 5000]);
     expect($item->fresh()->package_name)->toEqual($originalName);
     expect($item->fresh()->unit_price)->toEqual(1000);
+});
+
+test('the order item records the sale that priced it', function () {
+    // The id as well as the name: the sale's commands resolve against it at delivery, and again on
+    // a refund long after the sale has ended.
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart();
+    $sale = StoreSale::factory()->create(['name' => 'Summer Sale', 'discount_value' => 2000]);
+
+    $this->post(route('store.checkout.store'), checkoutPayload());
+
+    $this->assertDatabaseHas('store_order_items', [
+        'store_sale_id' => $sale->id,
+        'sale_name' => 'Summer Sale',
+    ]);
+});
+
+test('an item with no sale records no sale id', function () {
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart();
+
+    $this->post(route('store.checkout.store'), checkoutPayload());
+
+    expect(StoreOrder::first()->items->first()->store_sale_id)->toBeNull();
+});
+
+test('a cart that meets a sale minimum is charged the sale price', function () {
+    // placeOrder() freezes amount_due and capture only verifies it, never recomputes — so the
+    // threshold has to evaluate the same way here as it does on the cart page.
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart(null, 3);
+    StoreSale::factory()->withMinimum(3000)->create(['name' => 'Big Spender', 'discount_value' => 2000]);
+
+    $this->post(route('store.checkout.store'), checkoutPayload());
+
+    $order = StoreOrder::first();
+    expect($order->sale_discount)->toEqual(600);
+    expect($order->items->first()->sale_name)->toEqual('Big Spender');
+});
+
+test('a cart below a sale minimum is charged the full price', function () {
+    Player::factory()->create(['username' => 'Steve']);
+    fillCart();
+    StoreSale::factory()->withMinimum(3000)->create(['discount_value' => 2000]);
+
+    $this->post(route('store.checkout.store'), checkoutPayload());
+
+    $order = StoreOrder::first();
+    expect($order->sale_discount)->toEqual(0);
+    expect($order->items->first()->sale_name)->toBeNull();
 });
 
 test('the order is priced from live data not from what the client sends', function () {

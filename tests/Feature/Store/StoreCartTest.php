@@ -5,6 +5,7 @@ use App\Models\StoreCart;
 use App\Models\StoreCoupon;
 use App\Models\StoreGiftCard;
 use App\Models\StorePackage;
+use App\Models\StoreSale;
 use App\Models\User;
 use App\Services\StoreCartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -194,6 +195,29 @@ test('the cart page prices live rather than from stored values', function () {
 
     $this->get(route('store.cart.show'))
         ->assertInertia(fn ($page) => $page->where('quote.total', 3000));
+});
+
+test('the cart says what is still needed to unlock a sale', function () {
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreSale::factory()->withMinimum(2500)->create(['name' => 'Big Spender', 'discount_value' => 2000]);
+
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page
+            ->where('quote.total', 1000)
+            ->where('quote.unlockable_sales.0.name', 'Big Spender')
+            ->where('quote.unlockable_sales.0.remaining', 1500)
+        );
+
+    // Reaching the threshold applies the sale and retires the prompt.
+    $this->patch(route('store.cart.update', StoreCart::first()->items->first()->id), ['quantity' => 3]);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page
+            ->where('quote.sale_discount', 600)
+            ->where('quote.unlockable_sales', [])
+        );
 });
 
 test('a coupon code can be applied and cleared', function () {

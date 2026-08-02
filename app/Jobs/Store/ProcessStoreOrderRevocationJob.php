@@ -33,7 +33,13 @@ class ProcessStoreOrderRevocationJob implements ShouldQueue
 
     public function handle(StoreCommandDispatchService $dispatcher): void
     {
-        $order = $this->order->fresh(['items.package.commands.servers']);
+        $order = $this->order->fresh([
+            'items.package.commands.servers',
+            // A sale's own refund and chargeback commands take back the bonus it granted, so they
+            // have to come along even though the sale itself is long over.
+            'items.sale.commands.servers',
+            'items.sale.commands.packages',
+        ]);
 
         if (! $order) {
             return;

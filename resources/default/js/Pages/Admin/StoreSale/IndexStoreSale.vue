@@ -99,10 +99,25 @@ function windowLabel(sale) {
     return `${from} → ${to}`;
 }
 
+// Read from the declared scope, not from whether any rows happen to exist: a packages-scoped sale
+// with nothing picked covers nothing, and reporting that as "Everything" would be the opposite of
+// the truth.
 function scopeLabel(sale) {
-    return sale.saleables_count === 0
-        ? __("Everything")
-        : __(":count selected", { count: sale.saleables_count });
+    const scope = sale.scope_type?.value ?? sale.scope_type;
+
+    if (scope === "all") {
+        return __("Whole store");
+    }
+
+    const noun = scope === "categories" ? __("categories") : __("packages");
+
+    return __(":count :noun", { count: sale.saleables_count, noun });
+}
+
+// What a shopper has to spend before the sale does anything. The server formats it, because
+// min_basket_amount is minor units.
+function minimumLabel(sale) {
+    return sale.min_basket_formatted ? __("min :amount", { amount: sale.min_basket_formatted }) : null;
 }
 </script>
 
@@ -155,6 +170,12 @@ function scopeLabel(sale) {
             <span class="text-xs text-muted-foreground ml-1">
               {{ __("off") }}
             </span>
+            <div
+              v-if="minimumLabel(item)"
+              class="text-xs text-muted-foreground"
+            >
+              {{ minimumLabel(item) }}
+            </div>
           </DtRowItem>
 
           <DtRowItem>

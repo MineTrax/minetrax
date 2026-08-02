@@ -5,6 +5,7 @@ import { canAddToCart, useCartMembership } from "@/Composables/useStoreCart";
 import StoreBuyButton from "@/Components/Store/StoreBuyButton.vue";
 import StoreSavingsNote from "@/Components/Store/StoreSavingsNote.vue";
 import StoreUrgencyNote from "@/Components/Store/StoreUrgencyNote.vue";
+import StoreUnlockNote from "@/Components/Store/StoreUnlockNote.vue";
 import { CheckIcon } from "lucide-vue-next";
 import { computed, ref } from "vue";
 
@@ -111,6 +112,11 @@ const detailLabel = computed(
       </p>
 
       <StoreSavingsNote
+        :store-package="storePackage"
+        class="mt-1"
+      />
+
+      <StoreUnlockNote
         :store-package="storePackage"
         class="mt-1"
       />

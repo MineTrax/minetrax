@@ -34,7 +34,12 @@ class StoreCommandDispatchService
      */
     public function dispatchForOrder(StoreOrder $order, StorePackageCommandTrigger $trigger): StoreDeliveryStatus
     {
-        $order->loadMissing('items.package.commands.servers');
+        $order->loadMissing([
+            'items.package.commands.servers',
+            // The sale each line was priced under, not whatever happens to be on sale today.
+            'items.sale.commands.servers',
+            'items.sale.commands.packages',
+        ]);
 
         $created = 0;
         $skipped = 0;
@@ -71,7 +76,16 @@ class StoreCommandDispatchService
             return ['created' => 0, 'skipped' => 0];
         }
 
-        $commands = $package->commands->where('trigger', $trigger);
+        // The package's own commands, plus whatever the sale this line was priced under adds on
+        // top. concat rather than merge: Eloquent collections key by primary key and merge() drops
+        // a collision silently, which is not a behaviour anyone wants near delivery.
+        //
+        // Package commands go first, so an admin reading a queue sees the purchase before its
+        // bonus. Ordering beyond that is what delay_seconds is for.
+        $commands = $package->commands
+            ->where('trigger', $trigger)
+            ->values()
+            ->concat($this->saleCommandsFor($item, $trigger));
 
         if ($commands->isEmpty()) {
             return ['created' => 0, 'skipped' => 0];
@@ -103,6 +117,35 @@ class StoreCommandDispatchService
         }
 
         return ['created' => $created, 'skipped' => $skipped];
+    }
+
+    /**
+     * The sale commands this line earned.
+     *
+     * Read from the order item's own store_sale_id, which is a snapshot taken when the line was
+     * priced. Nothing here re-checks the sale's window, its enabled flag or whether it has since
+     * been retired: those decide pricing, not what an order already placed under the sale is owed.
+     * A refund a year later still has to take the bonus back, which is why store_sales soft-deletes
+     * and StoreOrderItem::sale() is withTrashed().
+     *
+     * Two items in one order both matched by an all-packages command produce two deliveries, one
+     * each. That is correct — both lines earned the bonus. An admin who wants it once per order
+     * names a single package on the command.
+     *
+     * @return Collection<int, StorePackageCommand>
+     */
+    private function saleCommandsFor(StoreOrderItem $item, StorePackageCommandTrigger $trigger): Collection
+    {
+        $sale = $item->sale;
+
+        if (! $sale) {
+            return collect();
+        }
+
+        return $sale->commands
+            ->where('trigger', $trigger)
+            ->filter(fn (StorePackageCommand $command) => $command->appliesToPackage($item->store_package_id))
+            ->values();
     }
 
     /**
@@ -276,6 +319,10 @@ class StoreCommandDispatchService
             'order_id' => $order->id,
             'order_uuid' => $order->uuid,
             'currency' => $order->currency,
+            // Empty string rather than null: a package's own command may carry {SALE_NAME} on a
+            // line that got no sale, and str_ireplace() is deprecated for null in PHP 8.1+.
+            'sale_name' => $item->sale_name ?? '',
+            'sale_id' => $item->store_sale_id ?? '',
         ];
 
         // The buyer's own answers, from the order item's snapshot. Added last but keyed

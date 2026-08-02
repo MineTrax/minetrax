@@ -35,7 +35,7 @@ class ProcessStoreOrderPurchaseJob implements ShouldQueue
         StoreOrderService $orders,
         StoreGiftCardService $giftCards,
     ): void {
-        $order = $this->order->fresh(['items.package.commands']);
+        $order = $this->order->fresh(['items.package.commands', 'items.sale.commands']);
 
         if (! $order || ! $order->status->isPaidState()) {
             // Refunded or cancelled between payment and this job running.

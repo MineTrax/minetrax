@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Admin\Store;
 
 use App\Enums\StoreDiscountType;
+use App\Enums\StoreSaleScope;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateStoreSaleRequest;
 use App\Http\Requests\UpdateStoreSaleRequest;
+use App\Models\Server;
 use App\Models\StoreCategory;
 use App\Models\StorePackage;
 use App\Models\StoreSale;
 use App\Queries\Filters\FilterMultipleFields;
 use App\Services\StoreCurrencyService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -35,6 +38,8 @@ class StoreSaleController extends Controller
             'name',
             'discount_type',
             'discount_value',
+            'scope_type',
+            'min_basket_amount',
             'starts_at',
             'ends_at',
             'is_enabled',
@@ -44,7 +49,7 @@ class StoreSaleController extends Controller
 
         $sales = QueryBuilder::for(StoreSale::class)
             ->select($fields)
-            ->withCount('saleables')
+            ->withCount(['saleables', 'commands'])
             ->allowedFilters(...[
                 ...$fields,
                 AllowedFilter::custom('q', new FilterMultipleFields(['id', 'name'])),
@@ -59,6 +64,9 @@ class StoreSaleController extends Controller
         $sales->getCollection()->transform(function (StoreSale $sale) {
             $sale->discount_formatted = $sale->discount_type === StoreDiscountType::FIXED
                 ? $this->currencies->format((int) $sale->discount_value, $this->currencies->base())
+                : null;
+            $sale->min_basket_formatted = $sale->min_basket_amount !== null
+                ? $this->currencies->format((int) $sale->min_basket_amount, $this->currencies->base())
                 : null;
             // Whether the sale is discounting anything right now, which the dates alone do not say:
             // a sale can be inside its window and still switched off.
@@ -90,6 +98,7 @@ class StoreSaleController extends Controller
             ]);
 
             $this->syncScope($sale, $request->input('packages', []), $request->input('categories', []));
+            $this->syncCommands($sale, $request->input('commands', []));
         });
 
         return redirect()->route('admin.store.sale.index')
@@ -99,6 +108,10 @@ class StoreSaleController extends Controller
     public function edit(StoreSale $storeSale): Response
     {
         $this->authorize('update', $storeSale);
+
+        // deleted_at comes along so the picker can mark a retired package rather than dropping it
+        // and silently widening the command to every package on the next save.
+        $storeSale->load(['commands.servers:id,name,hostname', 'commands.packages:id,name,deleted_at']);
 
         return Inertia::render('Admin/StoreSale/EditStoreSale', array_merge($this->formData(), [
             'storeSale' => $storeSale,
@@ -117,6 +130,7 @@ class StoreSaleController extends Controller
             ]);
 
             $this->syncScope($storeSale, $request->input('packages', []), $request->input('categories', []));
+            $this->syncCommands($storeSale, $request->input('commands', []));
         });
 
         return redirect()->route('admin.store.sale.index')
@@ -127,12 +141,13 @@ class StoreSaleController extends Controller
     {
         $this->authorize('delete', $storeSale);
 
-        // Order items snapshot what they were charged, so deleting a finished sale cannot change
-        // what a past order says it paid.
+        // Soft, so a sale can be retired without breaking the orders it priced: their refund and
+        // expiry commands still resolve through it months later. It stops discounting anything the
+        // moment it is deleted, which is the only part an admin cares about.
         $storeSale->delete();
 
         return redirect()->route('admin.store.sale.index')
-            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Store sale has been deleted permanently')]]);
+            ->with(['toast' => ['type' => 'success', 'title' => __('Deleted Successfully'), 'body' => __('Store sale has been deleted')]]);
     }
 
     /**
@@ -147,6 +162,8 @@ class StoreSaleController extends Controller
         return [
             'packages' => StorePackage::select(['id', 'name'])->orderBy('name')->get(),
             'categories' => StoreCategory::select(['id', 'name'])->orderBy('name')->get(),
+            // Only servers that can actually receive a command are offerable as targets.
+            'servers' => Server::select(['id', 'name', 'hostname'])->whereNotNull('webquery_port')->orderBy('name')->get(),
             // A fixed sale amount is held in the base currency and converted when the buyer is
             // paying in another, so the form only ever needs the base exponent.
             'baseCurrency' => [
@@ -166,6 +183,8 @@ class StoreSaleController extends Controller
             'name' => $request->name,
             'discount_type' => StoreDiscountType::from($request->string('discount_type')->value()),
             'discount_value' => $request->integer('discount_value'),
+            'scope_type' => StoreSaleScope::from($request->string('scope_type')->value()),
+            'min_basket_amount' => $request->min_basket_amount,
             'starts_at' => $request->starts_at,
             'ends_at' => $request->ends_at,
             'is_enabled' => $request->is_enabled,
@@ -173,8 +192,11 @@ class StoreSaleController extends Controller
     }
 
     /**
-     * Replace the sale's scope. No rows at all means it runs store-wide, so an empty selection is a
-     * meaningful state rather than an incomplete one.
+     * Replace the sale's scope, writing rows only for the mode it declares.
+     *
+     * A store-wide sale keeps no rows, and switching a sale from packages to categories drops the
+     * package rows rather than leaving them behind to reappear if the mode is switched back — the
+     * form shows one picker, so a hidden second selection would be a scope nobody could see.
      *
      * @param  array<int, int|string>  $packageIds
      * @param  array<int, int|string>  $categoryIds
@@ -183,14 +205,69 @@ class StoreSaleController extends Controller
     {
         $sale->saleables()->delete();
 
-        foreach ([StorePackage::class => $packageIds, StoreCategory::class => $categoryIds] as $type => $ids) {
-            foreach (collect($ids)->map(fn ($id) => (int) $id)->unique() as $id) {
+        $ids = match ($sale->scope_type) {
+            StoreSaleScope::PACKAGES => [StorePackage::class => $packageIds],
+            StoreSaleScope::CATEGORIES => [StoreCategory::class => $categoryIds],
+            StoreSaleScope::ALL => [],
+        };
+
+        foreach ($ids as $type => $selected) {
+            foreach (collect($selected)->map(fn ($id) => (int) $id)->unique() as $id) {
                 $sale->saleables()->create([
                     'saleable_type' => $type,
                     'saleable_id' => $id,
                 ]);
             }
         }
+    }
+
+    /**
+     * Reconcile the sale's command set: update rows that carry an id, create those that do not,
+     * then delete whatever the form no longer references.
+     *
+     * Scoped through $sale->commands() throughout, so this can neither read, steal nor delete
+     * another sale's commands or any package's — they share a table.
+     *
+     * @param  array<int, array<string, mixed>>  $commands
+     */
+    private function syncCommands(StoreSale $sale, array $commands): void
+    {
+        $keptIds = [];
+
+        foreach ($commands as $index => $command) {
+            $attributes = [
+                'trigger' => $command['trigger'],
+                'command' => $command['command'],
+                'is_player_online_required' => (bool) ($command['is_player_online_required'] ?? false),
+                'delay_seconds' => $command['delay_seconds'] ?? 0,
+                'is_repeat_per_quantity' => (bool) ($command['is_repeat_per_quantity'] ?? false),
+                'sort_order' => $command['sort_order'] ?? $index,
+                // No servers picked means all of them, and no packages picked means every package
+                // the sale discounts. Recording both means something added later is included too.
+                'is_run_on_all_servers' => count($command['servers'] ?? []) === 0,
+                'is_run_on_all_packages' => count($command['packages'] ?? []) === 0,
+            ];
+
+            $serverIds = Arr::pluck($command['servers'] ?? [], 'id');
+            $packageIds = Arr::pluck($command['packages'] ?? [], 'id');
+
+            $existing = ! empty($command['id'])
+                ? $sale->commands()->whereKey($command['id'])->first()
+                : null;
+
+            if ($existing) {
+                $existing->update($attributes);
+                $row = $existing;
+            } else {
+                $row = $sale->commands()->create($attributes);
+            }
+
+            $row->servers()->sync($serverIds);
+            $row->packages()->sync($packageIds);
+            $keptIds[] = $row->id;
+        }
+
+        $sale->commands()->whereKeyNot($keptIds)->delete();
     }
 
     /**

@@ -39,6 +39,18 @@ class StoreOrderItem extends BaseModel
         return $this->belongsTo(StorePackage::class, 'store_package_id')->withTrashed();
     }
 
+    /**
+     * The sale this line was priced under.
+     *
+     * Sales soft-delete for the same reason packages do: the sale's refund, chargeback and expiry
+     * commands resolve live at trigger time, so without withTrashed() a retired sale would silently
+     * stop taking back the bonus it granted, and the buyer would keep it for nothing.
+     */
+    public function sale(): BelongsTo
+    {
+        return $this->belongsTo(StoreSale::class, 'store_sale_id')->withTrashed();
+    }
+
     public function grant(): HasOne
     {
         return $this->hasOne(StorePackageGrant::class, 'store_order_item_id');

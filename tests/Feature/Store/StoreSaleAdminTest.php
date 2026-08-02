@@ -1,9 +1,13 @@
 <?php
 
 use App\Enums\StoreDiscountType;
+use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreSaleScope;
+use App\Models\Server;
 use App\Models\StoreCategory;
 use App\Models\StoreCurrency;
 use App\Models\StorePackage;
+use App\Models\StorePackageCommand;
 use App\Models\StoreSale;
 use App\Models\User;
 use App\Services\StorePricingService;
@@ -25,8 +29,31 @@ function saleAdminValidPayload(array $overrides = []): array
         'starts_at' => null,
         'ends_at' => null,
         'is_enabled' => true,
+        'scope_type' => StoreSaleScope::ALL->value,
+        'min_basket_amount' => null,
         'packages' => [],
         'categories' => [],
+        'commands' => [],
+    ], $overrides);
+}
+
+/**
+ * One row of the sale's command repeater, in the shape the Vue form submits.
+ *
+ * @param  array<int, int>  $serverIds
+ * @param  array<int, int>  $packageIds
+ */
+function saleCommandPayload(array $overrides = [], array $serverIds = [], array $packageIds = []): array
+{
+    return array_merge([
+        'trigger' => StorePackageCommandTrigger::PURCHASE->value,
+        'command' => 'give {PLAYER_USERNAME} coins 100',
+        'is_player_online_required' => false,
+        'delay_seconds' => 0,
+        'is_repeat_per_quantity' => false,
+        'sort_order' => 0,
+        'servers' => array_map(fn (int $id) => ['id' => $id], $serverIds),
+        'packages' => array_map(fn (int $id) => ['id' => $id], $packageIds),
     ], $overrides);
 }
 
@@ -126,12 +153,15 @@ test('an end date before the start is rejected', function () {
     ]))->assertSessionHasErrors(['ends_at']);
 });
 
-test('scope rows are written for packages and categories', function () {
+test('scope rows are written for the chosen mode only', function () {
     $this->actingAs(User::whereId(1)->first());
     $package = StorePackage::factory()->create();
     $category = StoreCategory::factory()->create();
 
+    // A package-scoped sale ignores whatever the category picker was left holding: the form shows
+    // one picker at a time, so a hidden second selection would be a scope nobody could see.
     $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'scope_type' => StoreSaleScope::PACKAGES->value,
         'packages' => [$package->id],
         'categories' => [$category->id],
     ]))->assertSessionHasNoErrors();
@@ -143,17 +173,35 @@ test('scope rows are written for packages and categories', function () {
         'saleable_type' => StorePackage::class,
         'saleable_id' => $package->id,
     ]);
+    $this->assertDatabaseMissing('store_saleables', [
+        'store_sale_id' => $sale->id,
+        'saleable_type' => StoreCategory::class,
+    ]);
+});
+
+test('a category scoped sale writes only category rows', function () {
+    $this->actingAs(User::whereId(1)->first());
+    $category = StoreCategory::factory()->create();
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'scope_type' => StoreSaleScope::CATEGORIES->value,
+        'categories' => [$category->id],
+    ]))->assertSessionHasNoErrors();
+
+    $sale = StoreSale::firstWhere('name', 'Summer Sale');
+
     $this->assertDatabaseHas('store_saleables', [
         'store_sale_id' => $sale->id,
         'saleable_type' => StoreCategory::class,
         'saleable_id' => $category->id,
     ]);
+    expect($sale->saleables()->count())->toBe(1);
 });
 
-test('clearing the scope makes the sale store wide again', function () {
+test('switching a sale back to store wide drops its scope rows', function () {
     $this->actingAs(User::whereId(1)->first());
     $package = StorePackage::factory()->create();
-    $sale = StoreSale::factory()->create();
+    $sale = StoreSale::factory()->forPackages()->create();
     $sale->saleables()->create([
         'saleable_type' => StorePackage::class,
         'saleable_id' => $package->id,
@@ -161,11 +209,27 @@ test('clearing the scope makes the sale store wide again', function () {
 
     $this->put(route('admin.store.sale.update', $sale->id), saleAdminValidPayload([
         'name' => $sale->name,
-        'packages' => [],
-        'categories' => [],
+        'scope_type' => StoreSaleScope::ALL->value,
     ]))->assertSessionHasNoErrors();
 
     expect($sale->fresh()->saleables()->count())->toBe(0);
+    expect($sale->fresh()->scope_type)->toEqual(StoreSaleScope::ALL);
+});
+
+test('a scoped sale must name at least one target', function () {
+    // The old behaviour read an empty picker as store-wide, so emptying it quietly discounted the
+    // whole catalogue. Naming nothing is now a half-finished form, not a request.
+    $this->actingAs(User::whereId(1)->first());
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'scope_type' => StoreSaleScope::PACKAGES->value,
+        'packages' => [],
+    ]))->assertSessionHasErrors(['packages']);
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'scope_type' => StoreSaleScope::CATEGORIES->value,
+        'categories' => [],
+    ]))->assertSessionHasErrors(['categories']);
 });
 
 test('the edit page preselects the current scope', function () {
@@ -211,7 +275,24 @@ test('admin can delete a sale', function () {
     $this->delete(route('admin.store.sale.delete', $sale->id))
         ->assertRedirect(route('admin.store.sale.index'));
 
-    $this->assertDatabaseMissing('store_sales', ['id' => $sale->id]);
+    // Soft, so the orders it priced keep resolving their refund and expiry commands through it.
+    $this->assertSoftDeleted('store_sales', ['id' => $sale->id]);
+});
+
+test('a deleted sale discounts nothing and leaves the listing', function () {
+    $this->actingAs(User::whereId(1)->first());
+    $package = StorePackage::factory()->create(['price' => 2000]);
+    $sale = StoreSale::factory()->create();
+
+    $this->delete(route('admin.store.sale.delete', $sale->id));
+
+    $quote = app(StorePricingService::class)->quote([['package' => $package->fresh(), 'quantity' => 1]]);
+    expect($quote['items'][0]['unit_price'])->toEqual(2000);
+    expect($quote['items'][0]['sale_name'])->toBeNull();
+
+    $this->get(route('admin.store.sale.index'))
+        ->assertStatus(200)
+        ->assertInertia(fn ($page) => $page->where('sales.data', []));
 });
 
 test('a created sale discounts the storefront immediately', function () {
@@ -221,6 +302,7 @@ test('a created sale discounts the storefront immediately', function () {
     $package = StorePackage::factory()->create(['price' => 2000]);
 
     $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'scope_type' => StoreSaleScope::PACKAGES->value,
         'packages' => [$package->id],
     ]))->assertSessionHasNoErrors();
 
@@ -255,4 +337,189 @@ test('a fixed sale never takes a line below zero', function () {
 
     expect($quote['items'][0]['unit_price'])->toEqual(0);
     expect($quote['total'])->toEqual(0);
+});
+
+test('admin can set a minimum cart total', function () {
+    $this->actingAs(User::whereId(1)->first());
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'min_basket_amount' => 5000,
+    ]))->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('store_sales', [
+        'name' => 'Summer Sale',
+        'min_basket_amount' => 5000,
+    ]);
+});
+
+test('a zero minimum is rejected', function () {
+    // Indistinguishable from no minimum, and it would hang a "spend $0.00 to unlock" note on
+    // every card that qualifies.
+    $this->actingAs(User::whereId(1)->first());
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'min_basket_amount' => 0,
+    ]))->assertSessionHasErrors(['min_basket_amount']);
+});
+
+test('the edit page returns the stored minimum', function () {
+    $this->actingAs(User::whereId(1)->first());
+    $sale = StoreSale::factory()->withMinimum(5000)->create();
+
+    $this->get(route('admin.store.sale.edit', $sale->id))
+        ->assertStatus(200)
+        ->assertInertia(fn ($page) => $page->where('storeSale.min_basket_amount', 5000));
+});
+
+test('a sale with a minimum discounts nothing until the cart reaches it', function () {
+    $this->actingAs(User::whereId(1)->first());
+    $package = StorePackage::factory()->create(['price' => 2000]);
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'min_basket_amount' => 4000,
+    ]))->assertSessionHasNoErrors();
+
+    $pricing = app(StorePricingService::class);
+
+    $one = $pricing->quote([['package' => $package->fresh(), 'quantity' => 1]]);
+    expect($one['items'][0]['unit_price'])->toEqual(2000);
+    expect($one['items'][0]['sale_name'])->toBeNull();
+
+    $two = $pricing->quote([['package' => $package->fresh(), 'quantity' => 2]]);
+    expect($two['items'][0]['unit_price'])->toEqual(1500);
+    expect($two['items'][0]['sale_name'])->toEqual('Summer Sale');
+});
+
+test('admin can attach commands to a sale', function () {
+    $this->actingAs(User::whereId(1)->first());
+    $server = Server::factory()->create();
+    $package = StorePackage::factory()->create();
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'commands' => [
+            saleCommandPayload(['command' => 'give {PLAYER_USERNAME} coins 100'], [$server->id], [$package->id]),
+        ],
+    ]))->assertSessionHasNoErrors();
+
+    $sale = StoreSale::firstWhere('name', 'Summer Sale');
+    $command = $sale->commands()->first();
+
+    // Owned by the sale and by nothing else: the two owner columns share a table, and exactly one
+    // of them is ever set.
+    expect($command->store_package_id)->toBeNull();
+    expect($command->store_sale_id)->toBe($sale->id);
+    expect($command->command)->toEqual('give {PLAYER_USERNAME} coins 100');
+    expect($command->is_run_on_all_servers)->toBeFalse();
+    expect($command->is_run_on_all_packages)->toBeFalse();
+    expect($command->servers->pluck('id')->all())->toEqual([$server->id]);
+    expect($command->packages->pluck('id')->all())->toEqual([$package->id]);
+});
+
+test('leaving the command pickers empty records the run on all flags', function () {
+    $this->actingAs(User::whereId(1)->first());
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'commands' => [saleCommandPayload()],
+    ]))->assertSessionHasNoErrors();
+
+    $command = StoreSale::firstWhere('name', 'Summer Sale')->commands()->first();
+
+    expect($command->is_run_on_all_servers)->toBeTrue();
+    expect($command->is_run_on_all_packages)->toBeTrue();
+});
+
+test('editing removes commands the form no longer lists', function () {
+    $this->actingAs(User::whereId(1)->first());
+    $sale = StoreSale::factory()->create();
+    $kept = StorePackageCommand::factory()->forSale($sale)->create(['command' => 'keep me']);
+    $dropped = StorePackageCommand::factory()->forSale($sale)->create(['command' => 'drop me']);
+
+    $this->put(route('admin.store.sale.update', $sale->id), saleAdminValidPayload([
+        'name' => $sale->name,
+        'commands' => [saleCommandPayload(['id' => $kept->id, 'command' => 'keep me still'])],
+    ]))->assertSessionHasNoErrors();
+
+    expect($sale->fresh()->commands()->pluck('command')->all())->toEqual(['keep me still']);
+    $this->assertDatabaseMissing('store_package_commands', ['id' => $dropped->id]);
+});
+
+test('saving one sale never touches another sale or a package', function () {
+    // The two kinds share a table, so the scoping in syncCommands is what stops a save reaching
+    // across into commands it does not own.
+    $this->actingAs(User::whereId(1)->first());
+    $sale = StoreSale::factory()->create();
+    $otherSale = StoreSale::factory()->create();
+    $package = StorePackage::factory()->create();
+
+    $otherCommand = StorePackageCommand::factory()->forSale($otherSale)->create();
+    $packageCommand = StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
+
+    $this->put(route('admin.store.sale.update', $sale->id), saleAdminValidPayload([
+        'name' => $sale->name,
+        'commands' => [saleCommandPayload()],
+    ]))->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('store_package_commands', ['id' => $otherCommand->id]);
+    $this->assertDatabaseHas('store_package_commands', ['id' => $packageCommand->id]);
+    expect($sale->fresh()->commands()->count())->toBe(1);
+});
+
+test('a forged command id belonging to another sale is not stolen', function () {
+    $this->actingAs(User::whereId(1)->first());
+    $sale = StoreSale::factory()->create();
+    $otherSale = StoreSale::factory()->create();
+    $victim = StorePackageCommand::factory()->forSale($otherSale)->create(['command' => 'untouched']);
+
+    $this->put(route('admin.store.sale.update', $sale->id), saleAdminValidPayload([
+        'name' => $sale->name,
+        'commands' => [saleCommandPayload(['id' => $victim->id, 'command' => 'stolen'])],
+    ]))->assertSessionHasNoErrors();
+
+    expect($victim->fresh()->command)->toEqual('untouched');
+    expect($victim->fresh()->store_sale_id)->toBe($otherSale->id);
+    // Falls through to a create on the sale actually being edited.
+    expect($sale->fresh()->commands()->count())->toBe(1);
+});
+
+test('the edit page hands back commands with their servers and packages', function () {
+    $this->actingAs(User::whereId(1)->first());
+    $server = Server::factory()->create();
+    $package = StorePackage::factory()->create();
+    $sale = StoreSale::factory()->create();
+    $command = StorePackageCommand::factory()->forSale($sale)->create(['is_run_on_all_servers' => false]);
+    $command->servers()->sync([$server->id]);
+    $command->packages()->sync([$package->id]);
+
+    $this->get(route('admin.store.sale.edit', $sale->id))
+        ->assertStatus(200)
+        ->assertInertia(fn ($page) => $page
+            ->component('Admin/StoreSale/EditStoreSale')
+            ->where('storeSale.commands.0.id', $command->id)
+            ->where('storeSale.commands.0.servers.0.id', $server->id)
+            ->where('storeSale.commands.0.packages.0.id', $package->id)
+        );
+});
+
+test('an unknown command trigger is rejected', function () {
+    $this->actingAs(User::whereId(1)->first());
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'commands' => [saleCommandPayload(['trigger' => 'not-a-trigger'])],
+    ]))->assertSessionHasErrors(['commands.0.trigger']);
+});
+
+test('a command with no text is rejected', function () {
+    $this->actingAs(User::whereId(1)->first());
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'commands' => [saleCommandPayload(['command' => ''])],
+    ]))->assertSessionHasErrors(['commands.0.command']);
+});
+
+test('an unknown package on a command is rejected', function () {
+    $this->actingAs(User::whereId(1)->first());
+
+    $this->post(route('admin.store.sale.store'), saleAdminValidPayload([
+        'commands' => [saleCommandPayload([], [], [99999])],
+    ]))->assertSessionHasErrors(['commands.0.packages.0.id']);
 });

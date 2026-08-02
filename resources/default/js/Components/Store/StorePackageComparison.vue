@@ -5,6 +5,7 @@ import { useHelpers } from "@/Composables/useHelpers";
 import StoreBuyButton from "@/Components/Store/StoreBuyButton.vue";
 import StoreSavingsNote from "@/Components/Store/StoreSavingsNote.vue";
 import StoreUrgencyNote from "@/Components/Store/StoreUrgencyNote.vue";
+import StoreUnlockNote from "@/Components/Store/StoreUnlockNote.vue";
 import { CheckIcon, XMarkIcon } from "@heroicons/vue/24/solid";
 
 const { __ } = useTranslations();
@@ -143,6 +144,11 @@ const detailLabel = (storePackage) => (storePackage.needs_configuring && !storeP
                  store-wide sale was invisible here. Its own line rather than a fourth item in the
                  price row: a comparison column is 12rem wide and would wrap mid-label. -->
             <StoreSavingsNote
+              :store-package="storePackage"
+              class="mt-1 mb-3"
+            />
+
+            <StoreUnlockNote
               :store-package="storePackage"
               class="mt-1 mb-3"
             />

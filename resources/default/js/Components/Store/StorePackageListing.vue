@@ -4,6 +4,7 @@ import { useTranslations } from "@/Composables/useTranslations";
 import StoreBuyButton from "@/Components/Store/StoreBuyButton.vue";
 import StorePackageImageTags from "@/Components/Store/StorePackageImageTags.vue";
 import StoreUrgencyNote from "@/Components/Store/StoreUrgencyNote.vue";
+import StoreUnlockNote from "@/Components/Store/StoreUnlockNote.vue";
 import { computed } from "vue";
 
 const { __ } = useTranslations();
@@ -88,6 +89,11 @@ const detailLabel = computed(
       >
         {{ storePackage.short_description }}
       </p>
+
+      <StoreUnlockNote
+        :store-package="storePackage"
+        class="mt-1.5"
+      />
 
       <StoreUrgencyNote
         :store-package="storePackage"
