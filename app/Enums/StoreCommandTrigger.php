@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use App\Enums\Concerns\HasKeyValueSerialization;
 
-enum StorePackageCommandTrigger: string implements HasKeyValueSerialization
+enum StoreCommandTrigger: string implements HasKeyValueSerialization
 {
     case PURCHASE = 'purchase';
     case EXPIRY = 'expiry';

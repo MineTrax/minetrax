@@ -191,7 +191,9 @@ class StorePackageController extends Controller
 
             foreach ($storePackage->commands as $command) {
                 $copiedCommand = $command->replicate();
-                $copiedCommand->store_package_id = $copy->id;
+                // Only the id moves: the copy is still owned by a package, so commandable_type
+                // carries over from the original untouched.
+                $copiedCommand->commandable_id = $copy->id;
                 $copiedCommand->save();
 
                 // The pivot too: a command targeting three servers is not copied by copying its row.

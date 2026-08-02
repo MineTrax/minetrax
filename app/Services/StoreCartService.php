@@ -179,10 +179,19 @@ class StoreCartService
             ])
             ->values();
 
+        // Who is being credited, and what they hand the buyer for it. Resolved here rather than in
+        // the pricing service, which does money and must not learn about cookies.
+        $referral = $request
+            ? app(StoreReferralService::class)->resolveFor($request, $cart)['referral']
+            : null;
+
         $quote = $this->pricing->quote(
             $lines->all(),
             null,
-            $cart->coupon,
+            // A coupon the buyer typed beats the one a referral hands out. They are not stackable
+            // — the pricing service takes one — and an explicit choice should outrank an implicit
+            // one, especially when the implicit one arrived through a link they may not remember.
+            $cart->coupon ?? $referral?->coupon,
             $cart->giftCard,
             $request?->user(),
             $this->indicativePlayerUuid($request),
@@ -190,6 +199,14 @@ class StoreCartService
             // recorded on the order, and that figure is the authoritative one.
             $request ? app(GeolocationService::class)->getCountryIdFromIP($request->ip()) : null,
         );
+
+        // Presentational, beside the existing applied_code. The cart shows who a purchase would
+        // support, and offers a way out of it — a referral picked up from a link is invisible
+        // otherwise.
+        $quote['referral'] = $referral ? [
+            'code' => $referral->code,
+            'referrer_name' => $referral->referrer_name,
+        ] : null;
 
         // Re-attach the cart item id so the UI can address each row.
         foreach ($quote['items'] as $index => $item) {
@@ -219,7 +236,9 @@ class StoreCartService
      */
     public function emptyQuote(): array
     {
-        return $this->pricing->quote([]);
+        // The referral key is present but null, so the cart page reads the same shape whether or
+        // not a cart row exists.
+        return $this->pricing->quote([]) + ['referral' => null];
     }
 
     public function itemCount(?StoreCart $cart): int

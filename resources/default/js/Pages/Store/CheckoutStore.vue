@@ -440,6 +440,15 @@ const submit = () => form.post(route("store.checkout.store"));
               <dt>{{ __("Due Now") }}</dt>
               <dd>{{ quote.formatted.amount_due }}</dd>
             </div>
+
+            <!-- Said again here rather than only on the cart: this is the last page before money
+                 moves, and who it credits is part of what is being agreed to. -->
+            <div
+              v-if="quote.referral"
+              class="text-xs text-muted-foreground border-t border-border pt-2 mt-2"
+            >
+              {{ __("Supporting :name", { name: quote.referral.referrer_name }) }}
+            </div>
           </dl>
         </aside>
       </div>

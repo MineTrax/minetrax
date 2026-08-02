@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\Store\StoreGrantController;
 use App\Http\Controllers\Admin\Store\StoreOrderController;
 use App\Http\Controllers\Admin\Store\StorePackageController;
 use App\Http\Controllers\Admin\Store\StorePaymentGatewayController;
+use App\Http\Controllers\Admin\Store\StoreReferralController;
 use App\Http\Controllers\Admin\Store\StoreSaleController;
 use App\Http\Controllers\Admin\Store\StoreStatisticsController;
 use App\Http\Controllers\Admin\Store\StoreTaxController;
@@ -156,6 +157,10 @@ Route::middleware(['forbid-banned-user', 'redirect-uncompleted-user'])->group(fu
 
     Route::get('store/cart', [StoreCartController::class, 'show'])->name('store.cart.show');
     Route::post('store/cart', [StoreCartController::class, 'store'])->name('store.cart.store');
+    // Declared before store/cart/{cartItem}, or the literal segment is read as a cart item id and
+    // the route 404s on a binding that was never going to resolve.
+    Route::post('store/cart/referral', [StoreCartController::class, 'applyReferral'])->name('store.cart.referral.store')->middleware('throttle:store-code');
+    Route::delete('store/cart/referral', [StoreCartController::class, 'clearReferral'])->name('store.cart.referral.delete');
     Route::patch('store/cart/{cartItem}', [StoreCartController::class, 'update'])->name('store.cart.update');
     Route::delete('store/cart/{cartItem}', [StoreCartController::class, 'destroy'])->name('store.cart.delete');
     Route::post('store/cart/code', [StoreCartController::class, 'applyCode'])->name('store.cart.code')->middleware('throttle:store-code');
@@ -179,6 +184,9 @@ Route::middleware(['auth:sanctum', 'forbid-banned-user', 'redirect-uncompleted-u
     // where the order uuid itself is the credential.
     Route::get('store/my-orders', [App\Http\Controllers\Store\StoreOrderController::class, 'index'])->name('store.my-order.index');
     Route::get('store/my-orders/{order:uuid}', [App\Http\Controllers\Store\StoreOrderController::class, 'show'])->name('store.my-order.show');
+
+    // A referrer's own figures. 404s for a member with no code attached to them.
+    Route::get('store/my-referral', [App\Http\Controllers\Store\StoreReferralController::class, 'show'])->name('store.my-referral.show');
 
     // Shouts
     Route::get('shout', [ShoutController::class, 'index'])->name('shout.index')->withoutMiddleware(['auth:sanctum', 'verified-if-enabled']);
@@ -418,6 +426,17 @@ Route::middleware(['auth:sanctum', 'verified-if-enabled', 'forbid-banned-user', 
         Route::get('coupon/{storeCoupon}/edit', [StoreCouponController::class, 'edit'])->name('coupon.edit');
         Route::put('coupon/{storeCoupon}', [StoreCouponController::class, 'update'])->name('coupon.update');
         Route::delete('coupon/{storeCoupon}', [StoreCouponController::class, 'destroy'])->name('coupon.delete');
+
+        // `create` before `{storeReferral}`, so the literal segment wins the match.
+        Route::get('referral', [StoreReferralController::class, 'index'])->name('referral.index');
+        Route::get('referral/create', [StoreReferralController::class, 'create'])->name('referral.create');
+        Route::post('referral', [StoreReferralController::class, 'store'])->name('referral.store');
+        Route::get('referral/{storeReferral}', [StoreReferralController::class, 'show'])->name('referral.show');
+        Route::get('referral/{storeReferral}/edit', [StoreReferralController::class, 'edit'])->name('referral.edit');
+        Route::put('referral/{storeReferral}', [StoreReferralController::class, 'update'])->name('referral.update');
+        Route::delete('referral/{storeReferral}', [StoreReferralController::class, 'destroy'])->name('referral.delete');
+        Route::post('referral/{storeReferral}/payout', [StoreReferralController::class, 'payout'])->name('referral.payout');
+        Route::delete('referral/{storeReferral}/payout/{payout}', [StoreReferralController::class, 'payoutDestroy'])->name('referral.payout.delete');
 
         Route::get('sale', [StoreSaleController::class, 'index'])->name('sale.index');
         Route::get('sale/create', [StoreSaleController::class, 'create'])->name('sale.create');

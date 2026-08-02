@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Store;
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Models\StorePackageGrant;
 use App\Services\StoreCommandDispatchService;
@@ -65,7 +65,7 @@ class ExpireStorePackageGrantsJob implements ShouldQueue
 
         if ($order && $item) {
             try {
-                $dispatcher->dispatchForItem($order, $item, StorePackageCommandTrigger::EXPIRY);
+                $dispatcher->dispatchForItem($order, $item, StoreCommandTrigger::EXPIRY);
             } catch (\Throwable $exception) {
                 // Left ACTIVE on purpose: the next sweep tries again rather than silently letting
                 // the buyer keep something they have stopped paying for.

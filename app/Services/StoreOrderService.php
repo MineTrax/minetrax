@@ -84,6 +84,12 @@ class StoreOrderService
 
             $this->redeemGiftCard($order);
 
+            // Inside the same locked transaction as the transition, which is what makes it safe: a
+            // replayed webhook never reaches here, because canTransitionTo() has already turned it
+            // away above. A listener on StoreOrderPaid would be a second thing to keep idempotent
+            // for no gain.
+            $this->applyReferralEarning($order, refundedTotal: 0);
+
             $this->record($order, 'paid', __('Payment received'), [
                 'gateway' => $payment->gateway?->value,
                 'amount' => (int) $payment->amount,
@@ -185,6 +191,12 @@ class StoreOrderService
             if ($target->isRevoking()) {
                 $this->revokeGrants($order);
             }
+
+            // A chargeback takes the whole payment back however much was named on it, so it owes
+            // nothing regardless of the figure the gateway reported.
+            $this->applyReferralEarning($order, refundedTotal: $isChargeback
+                ? (int) $order->amount_due
+                : $alreadyRefunded + $amountMinor);
 
             $this->record(
                 $order,
@@ -299,6 +311,47 @@ class StoreOrderService
      * Refunds deliberately do NOT release it: the code was genuinely used, and releasing it would
      * let a buyer farm a limited coupon by ordering and refunding.
      */
+    /**
+     * Work out what this order owes its referrer, and write it to the order.
+     *
+     * Always recomputed from the order's own snapshots rather than adjusted in place, so several
+     * partial refunds cannot drift: each one recalculates from `referral_share_bp` and the totals
+     * that were frozen at checkout, and arrives at the same answer whatever order they land in.
+     *
+     * The share is taken on **net goods** — the total less tax. Tax is the government's money, not
+     * revenue, and paying commission on it would mean the store owed more than it kept.
+     *
+     * @param  int  $refundedTotal  cumulative refunded against amount_due, including the refund
+     *                              currently being recorded
+     */
+    private function applyReferralEarning(StoreOrder $order, int $refundedTotal): void
+    {
+        if (! $order->store_referral_id) {
+            return;
+        }
+
+        $netGoods = max(0, (int) $order->total - (int) $order->tax_amount);
+        $earning = intdiv($netGoods * (int) $order->referral_share_bp, 10000);
+
+        $due = (int) $order->amount_due;
+
+        if ($refundedTotal > 0 && $due > 0) {
+            // Scaled by what is left unrefunded. An order paid entirely by gift card has nothing
+            // refundable at the gateway, so there is no fraction to take and the sale stands.
+            $earning = intdiv($earning * max(0, $due - $refundedTotal), $due);
+        }
+
+        $order->update([
+            'referral_earning' => $earning,
+            // Converted through the order's own ratio rather than today's exchange rate. Exponent
+            // free, and it cannot rewrite history the way re-converting at report time would — the
+            // same idiom StoreStatisticsController uses to prorate a line's share of an order.
+            'referral_earning_base' => (int) $order->total > 0
+                ? intdiv($earning * (int) $order->base_total, (int) $order->total)
+                : 0,
+        ]);
+    }
+
     private function releaseCoupon(StoreOrder $order): void
     {
         if (! $order->store_coupon_id) {

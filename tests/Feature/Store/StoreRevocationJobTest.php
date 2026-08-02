@@ -1,16 +1,16 @@
 <?php
 
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StoreOrderStatus;
-use App\Enums\StorePackageCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Enums\StorePaymentStatus;
 use App\Jobs\RunCommandQueueJob;
 use App\Jobs\Store\ProcessStoreOrderRevocationJob;
 use App\Models\CommandQueue;
 use App\Models\Server;
+use App\Models\StoreCommand;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StorePayment;
 use App\Services\StoreCommandDispatchService;
 use App\Services\StoreOrderService;
@@ -38,9 +38,8 @@ function revocationJobPaidOrder(): StoreOrder
 {
     $package = StorePackage::factory()->create(['price' => 1000]);
 
-    foreach ([StorePackageCommandTrigger::REFUND, StorePackageCommandTrigger::CHARGEBACK] as $trigger) {
-        StorePackageCommand::factory()->create([
-            'store_package_id' => $package->id,
+    foreach ([StoreCommandTrigger::REFUND, StoreCommandTrigger::CHARGEBACK] as $trigger) {
+        StoreCommand::factory()->forOwner($package)->create([
             'trigger' => $trigger,
             'command' => 'lp user {PLAYER_USERNAME} parent remove vip # '.$trigger->value,
         ]);
@@ -83,7 +82,7 @@ function queuedCommands(): array
 test('the job queues the refund commands', function () {
     $order = revocationJobPaidOrder();
 
-    (new ProcessStoreOrderRevocationJob($order, StorePackageCommandTrigger::REFUND))
+    (new ProcessStoreOrderRevocationJob($order, StoreCommandTrigger::REFUND))
         ->handle(app(StoreCommandDispatchService::class));
 
     expect(queuedCommands())->toBe(['lp user '.$order->player_username.' parent remove vip # refund']);
@@ -93,7 +92,7 @@ test('the job queues the refund commands', function () {
 test('the job queues the chargeback commands', function () {
     $order = revocationJobPaidOrder();
 
-    (new ProcessStoreOrderRevocationJob($order, StorePackageCommandTrigger::CHARGEBACK))
+    (new ProcessStoreOrderRevocationJob($order, StoreCommandTrigger::CHARGEBACK))
         ->handle(app(StoreCommandDispatchService::class));
 
     expect(queuedCommands())->toBe(['lp user '.$order->player_username.' parent remove vip # chargeback']);
@@ -105,8 +104,8 @@ test('re running the job queues nothing further', function () {
     $order = revocationJobPaidOrder();
     $dispatcher = app(StoreCommandDispatchService::class);
 
-    (new ProcessStoreOrderRevocationJob($order, StorePackageCommandTrigger::REFUND))->handle($dispatcher);
-    (new ProcessStoreOrderRevocationJob($order, StorePackageCommandTrigger::REFUND))->handle($dispatcher);
+    (new ProcessStoreOrderRevocationJob($order, StoreCommandTrigger::REFUND))->handle($dispatcher);
+    (new ProcessStoreOrderRevocationJob($order, StoreCommandTrigger::REFUND))->handle($dispatcher);
 
     expect(queuedCommands())->toHaveCount(1);
 });
@@ -116,7 +115,7 @@ test('the job leaves the orders delivery status alone', function () {
     $order = revocationJobPaidOrder();
     $before = $order->delivery_status;
 
-    (new ProcessStoreOrderRevocationJob($order, StorePackageCommandTrigger::REFUND))
+    (new ProcessStoreOrderRevocationJob($order, StoreCommandTrigger::REFUND))
         ->handle(app(StoreCommandDispatchService::class));
 
     expect($order->fresh()->delivery_status)->toEqual($before);

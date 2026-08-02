@@ -86,27 +86,19 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Added here rather than in the catalog migration: store_package_commands is created before
-        // store_sales exists, so the constraint has nowhere to point until now.
-        Schema::table('store_package_commands', function (Blueprint $table) {
-            // cascadeOnDelete, matching store_package_id. nullOnDelete would leave a row owned by
-            // nothing — invisible to both $package->commands and $sale->commands, and unreachable
-            // from either admin form.
-            $table->foreignId('store_sale_id')->nullable()->constrained()->cascadeOnDelete();
-
-            $table->index(['store_sale_id', 'trigger']);
-        });
+        // A sale owns its commands through store_commands.commandable, so there is no store_sale_id
+        // column to add here — that is what the morph bought.
 
         // Which packages a sale's command applies to: a "Bonus Coins" sale giving 100 on one package
         // and 1000 on another is two commands, each naming its package. No rows means every package
-        // the sale discounted, which is what store_package_commands.is_run_on_all_packages records.
-        Schema::create('store_package_command_package', function (Blueprint $table) {
+        // the sale discounted, which is what store_commands.is_run_on_all_packages records.
+        Schema::create('store_command_package', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('store_package_command_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('store_command_id')->constrained()->cascadeOnDelete();
             $table->foreignId('store_package_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
 
-            $table->unique(['store_package_command_id', 'store_package_id'], 'store_package_command_package_unique');
+            $table->unique(['store_command_id', 'store_package_id'], 'store_command_package_unique');
         });
 
         Schema::create('store_gift_cards', function (Blueprint $table) {
@@ -129,19 +121,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('store_package_command_package');
-
-        if (Schema::hasColumn('store_package_commands', 'store_sale_id')) {
-            Schema::table('store_package_commands', function (Blueprint $table) {
-                // Strictly in this order. MySQL uses the index to enforce the foreign key, so
-                // dropping it first fails with "needed in a foreign key constraint"; and the column
-                // cannot go while either still references it.
-                $table->dropForeign(['store_sale_id']);
-                $table->dropIndex(['store_sale_id', 'trigger']);
-                $table->dropColumn('store_sale_id');
-            });
-        }
-
+        Schema::dropIfExists('store_command_package');
         Schema::dropIfExists('store_gift_cards');
         Schema::dropIfExists('store_saleables');
         Schema::dropIfExists('store_sales');

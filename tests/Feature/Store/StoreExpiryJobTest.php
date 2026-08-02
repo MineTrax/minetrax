@@ -1,15 +1,15 @@
 <?php
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Jobs\RunCommandQueueJob;
 use App\Jobs\Store\ExpireStorePackageGrantsJob;
 use App\Models\CommandQueue;
 use App\Models\Server;
+use App\Models\StoreCommand;
 use App\Models\StoreOrder;
 use App\Models\StoreOrderItem;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StorePackageGrant;
 use App\Services\StoreCommandDispatchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,9 +43,8 @@ function expiryJobGrant(array $grantAttributes = [], bool $withExpiryCommand = t
     $package = StorePackage::factory()->create(['price' => 1000]);
 
     if ($withExpiryCommand) {
-        StorePackageCommand::factory()->create([
-            'store_package_id' => $package->id,
-            'trigger' => StorePackageCommandTrigger::EXPIRY,
+        StoreCommand::factory()->forOwner($package)->create([
+            'trigger' => StoreCommandTrigger::EXPIRY,
             'command' => 'lp user {PLAYER_USERNAME} parent remove vip',
         ]);
     }

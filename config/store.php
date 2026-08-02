@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\StorePackage;
+use App\Models\StoreReferral;
+use App\Models\StoreSale;
 use App\Utils\ExchangeRates\FrankfurterExchangeRateProvider;
 use App\Utils\Payments\ManualPaymentGateway;
 use App\Utils\Payments\PayPalPaymentGateway;
@@ -114,6 +117,42 @@ return [
     |--------------------------------------------------------------------------
     */
     'command_max_attempts' => env('STORE_COMMAND_MAX_ATTEMPTS', 3),
+
+    /*
+    |--------------------------------------------------------------------------
+    | What may own a store command, keyed by model class.
+    |
+    | Commands all live in one table, `store_commands`, with a polymorphic owner
+    | — see the comment on that table for why a table per owner would break the
+    | double-delivery guard on store_order_deliveries.
+    |
+    | Adding an owner is: `use HasStoreCommandsTrait` on the model, one line
+    | here, and a commands section on its admin form. No migration, and no edit
+    | to StoreCommandDispatchService.
+    |
+    | `triggers` is the subset of StoreCommandTrigger that owner may use, so a
+    | referral offering only `purchase` is stated once here rather than being
+    | hardcoded into a form and a request that can disagree. The class key is
+    | written to store_commands.commandable_type, so it must not change once
+    | commands exist. StoreCommand::booted() refuses anything not listed.
+    |--------------------------------------------------------------------------
+    */
+    'command_owners' => [
+        StorePackage::class => [
+            'label' => 'Package',
+            'triggers' => ['purchase', 'expiry', 'refund', 'chargeback'],
+        ],
+        StoreSale::class => [
+            'label' => 'Sale',
+            'triggers' => ['purchase', 'expiry', 'refund', 'chargeback'],
+        ],
+        // Purchase only: a referral's commands are a thank-you for a sale that landed, and there is
+        // nothing to expire or take back when it unwinds — the money is clawed back instead.
+        StoreReferral::class => [
+            'label' => 'Referral',
+            'triggers' => ['purchase'],
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------

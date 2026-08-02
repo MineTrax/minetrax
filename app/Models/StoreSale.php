@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\StoreDiscountType;
 use App\Enums\StoreSaleScope;
+use App\Traits\HasStoreCommandsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StoreSale extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasStoreCommandsTrait, SoftDeletes;
 
     protected $casts = [
         'discount_type' => StoreDiscountType::class,
@@ -28,16 +29,8 @@ class StoreSale extends BaseModel
         return $this->hasMany(StoreSaleable::class, 'store_sale_id');
     }
 
-    /**
-     * The extra this sale hands out on top of its discount — "10% off, and 100 bonus coins".
-     *
-     * Shares a table with a package's own commands so that store_order_deliveries keeps a single
-     * non-null command id to guard idempotency with. See the store_package_commands migration.
-     */
-    public function commands(): HasMany
-    {
-        return $this->hasMany(StorePackageCommand::class, 'store_sale_id');
-    }
+    // The extra this sale hands out on top of its discount — "10% off, and 100 bonus coins" — comes
+    // from HasStoreCommandsTrait::commands(), shared with every other kind of command owner.
 
     public function creator(): BelongsTo
     {

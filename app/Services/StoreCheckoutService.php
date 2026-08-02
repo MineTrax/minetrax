@@ -13,6 +13,7 @@ use App\Models\StoreOrder;
 use App\Models\StoreOrderItem;
 use App\Models\StorePackage;
 use App\Models\StorePackageGrant;
+use App\Models\StoreReferral;
 use App\Models\User;
 use App\Settings\StoreSettings;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +38,7 @@ class StoreCheckoutService
     ) {}
 
     /**
-     * @param  array{player_username: string, email?: string|null, gateway: string, ip?: string|null, user_agent?: string|null, country_id?: int|null}  $input
+     * @param  array{player_username: string, email?: string|null, gateway: string, ip?: string|null, user_agent?: string|null, country_id?: int|null, referral?: StoreReferral|null, referral_source?: string|null}  $input
      *
      * @throws ValidationException
      */
@@ -94,10 +95,17 @@ class StoreCheckoutService
             // Re-quoted here, inside the transaction, from live prices — and against the player who
             // was actually named, which is what makes the upgrade credit authoritative rather than
             // the indicative figure the cart page showed.
+            // Resolved by the controller, which is the only place the cookie is in scope. Null when
+            // nobody is being credited, or when the buyer holds the code themselves.
+            $referral = $input['referral'] ?? null;
+
             $quote = $this->pricing->quote(
                 $lines,
                 $currency,
-                $cart->coupon,
+                // Same precedence the cart showed: a coupon the buyer typed beats the one a
+                // referral hands out. Re-derived here rather than passed in, so the price charged
+                // cannot disagree with the price quoted.
+                $cart->coupon ?? $referral?->coupon,
                 $cart->giftCard,
                 $user,
                 $resolvedPlayer['uuid'],
@@ -130,9 +138,18 @@ class StoreCheckoutService
                 'gift_card_amount' => $quote['gift_card_amount'],
                 'amount_due' => $quote['amount_due'],
                 'base_total' => $quote['base_total'],
-                'store_coupon_id' => $quote['coupon_discount'] > 0 ? $cart->store_coupon_id : null,
+                'store_coupon_id' => $quote['coupon_discount'] > 0 ? ($cart->store_coupon_id ?? $referral?->store_coupon_id) : null,
                 'coupon_code' => $quote['coupon_code'],
                 'store_gift_card_id' => $quote['gift_card_amount'] > 0 ? $cart->store_gift_card_id : null,
+                // Attributed now, while the cookie is still in scope. What it *earns* is worked out
+                // at payment, because nothing is owed on an order nobody paid for.
+                //
+                // share_bp is snapshotted beside the id for the same reason coupon_code is:
+                // changing a referral's cut later must not re-price what it already earned.
+                'store_referral_id' => $referral?->id,
+                'referral_code' => $referral?->code,
+                'referral_share_bp' => $referral?->share_bp,
+                'referral_source' => $referral ? ($input['referral_source'] ?? null) : null,
                 'status' => StoreOrderStatus::PENDING,
                 'delivery_status' => StoreDeliveryStatus::PENDING,
                 'gateway' => $input['gateway'],

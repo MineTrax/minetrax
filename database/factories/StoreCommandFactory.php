@@ -2,23 +2,24 @@
 
 namespace Database\Factories;
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
+use App\Models\StoreCommand;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StoreSale;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * @extends Factory<StorePackageCommand>
+ * @extends Factory<StoreCommand>
  */
-class StorePackageCommandFactory extends Factory
+class StoreCommandFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = StorePackageCommand::class;
+    protected $model = StoreCommand::class;
 
     /**
      * Define the model's default state.
@@ -28,9 +29,9 @@ class StorePackageCommandFactory extends Factory
     public function definition(): array
     {
         return [
-            'store_package_id' => StorePackage::factory(),
-            'store_sale_id' => null,
-            'trigger' => StorePackageCommandTrigger::PURCHASE,
+            'commandable_type' => StorePackage::class,
+            'commandable_id' => StorePackage::factory(),
+            'trigger' => StoreCommandTrigger::PURCHASE,
             'command' => 'give {PLAYER_USERNAME} diamond 1',
             'is_player_online_required' => false,
             'delay_seconds' => 0,
@@ -42,14 +43,27 @@ class StorePackageCommandFactory extends Factory
     }
 
     /**
-     * A command owned by a sale rather than a package. Exactly one owner is allowed, so this clears
-     * the package the default state would otherwise create.
+     * A command owned by anything registered in config('store.command_owners').
+     *
+     * Clears the package the default state would otherwise create — a morph holds one owner, and
+     * leaving the default in place would build a package nothing points at.
+     */
+    public function forOwner(Model $owner): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'commandable_type' => $owner->getMorphClass(),
+            'commandable_id' => $owner->getKey(),
+        ]);
+    }
+
+    /**
+     * A command owned by a sale rather than a package.
      */
     public function forSale(StoreSale|int $sale): static
     {
         return $this->state(fn (array $attributes) => [
-            'store_package_id' => null,
-            'store_sale_id' => $sale instanceof StoreSale ? $sale->id : $sale,
+            'commandable_type' => StoreSale::class,
+            'commandable_id' => $sale instanceof StoreSale ? $sale->id : $sale,
         ]);
     }
 
@@ -59,7 +73,7 @@ class StorePackageCommandFactory extends Factory
     public function expiry(): static
     {
         return $this->state(fn (array $attributes) => [
-            'trigger' => StorePackageCommandTrigger::EXPIRY,
+            'trigger' => StoreCommandTrigger::EXPIRY,
         ]);
     }
 
@@ -69,7 +83,7 @@ class StorePackageCommandFactory extends Factory
     public function refund(): static
     {
         return $this->state(fn (array $attributes) => [
-            'trigger' => StorePackageCommandTrigger::REFUND,
+            'trigger' => StoreCommandTrigger::REFUND,
         ]);
     }
 
@@ -79,7 +93,7 @@ class StorePackageCommandFactory extends Factory
     public function chargeback(): static
     {
         return $this->state(fn (array $attributes) => [
-            'trigger' => StorePackageCommandTrigger::CHARGEBACK,
+            'trigger' => StoreCommandTrigger::CHARGEBACK,
         ]);
     }
 

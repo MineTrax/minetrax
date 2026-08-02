@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Events\StoreOrderRefunded;
 use App\Jobs\Store\ProcessStoreOrderRevocationJob;
 
@@ -24,8 +24,8 @@ class DispatchStoreOrderRevocationOnRefund
         ProcessStoreOrderRevocationJob::dispatch(
             $event->order,
             $event->isChargeback
-                ? StorePackageCommandTrigger::CHARGEBACK
-                : StorePackageCommandTrigger::REFUND,
+                ? StoreCommandTrigger::CHARGEBACK
+                : StoreCommandTrigger::REFUND,
         );
     }
 }

@@ -1,18 +1,19 @@
 <?php
 
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StoreOrderStatus;
-use App\Enums\StorePackageCommandTrigger;
 use App\Enums\StorePackageType;
 use App\Jobs\RunCommandQueueJob;
 use App\Jobs\Store\ProcessStoreOrderPurchaseJob;
 use App\Jobs\Store\ProcessStoreOrderRevocationJob;
 use App\Models\CommandQueue;
 use App\Models\Server;
+use App\Models\StoreCommand;
 use App\Models\StoreOrder;
 use App\Models\StoreOrderDelivery;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StoreSale;
+use App\Models\User;
 use App\Services\StoreCommandDispatchService;
 use App\Services\StoreGiftCardService;
 use App\Services\StoreOrderService;
@@ -68,10 +69,10 @@ function saleCommandPaidOrder(array $packages, ?StoreSale $sale = null, int $qua
  * @param  array<int, StorePackage>|null  $packages
  * @param  array<int, Server>|null  $servers
  */
-function saleCommand(StoreSale $sale, array $attributes = [], ?array $packages = null, ?array $servers = null): StorePackageCommand
+function saleCommand(StoreSale $sale, array $attributes = [], ?array $packages = null, ?array $servers = null): StoreCommand
 {
-    $command = StorePackageCommand::factory()->forSale($sale)->create(array_merge([
-        'trigger' => StorePackageCommandTrigger::PURCHASE,
+    $command = StoreCommand::factory()->forSale($sale)->create(array_merge([
+        'trigger' => StoreCommandTrigger::PURCHASE,
         'command' => 'give {PLAYER_USERNAME} coins 100',
         'is_run_on_all_servers' => $servers === null,
         'is_run_on_all_packages' => $packages === null,
@@ -163,9 +164,8 @@ test('a package own commands and its sale commands both run', function () {
     $package = StorePackage::factory()->create(['price' => 1000]);
     $sale = StoreSale::factory()->create();
 
-    $own = StorePackageCommand::factory()->create([
-        'store_package_id' => $package->id,
-        'trigger' => StorePackageCommandTrigger::PURCHASE,
+    $own = StoreCommand::factory()->forOwner($package)->create([
+        'trigger' => StoreCommandTrigger::PURCHASE,
         'command' => 'lp user {PLAYER_USERNAME} parent add vip',
     ]);
     $bonus = saleCommand($sale, ['command' => 'give {PLAYER_USERNAME} coins 100']);
@@ -176,7 +176,7 @@ test('a package own commands and its sale commands both run', function () {
         'give Steve coins 100',
         'lp user Steve parent add vip',
     ]);
-    expect(StoreOrderDelivery::pluck('store_package_command_id')->sort()->values()->all())
+    expect(StoreOrderDelivery::pluck('store_command_id')->sort()->values()->all())
         ->toEqual(collect([$own->id, $bonus->id])->sort()->values()->all());
 });
 
@@ -194,7 +194,7 @@ test('rerunning the job does not deliver a sale command twice', function () {
 
     // A webhook replay, or an admin retrying a delivery, must not hand the bonus out again. The
     // unique index on store_order_deliveries is what stops it, and it can only do that because a
-    // sale command carries a real store_package_command_id rather than a null.
+    // sale command carries a real store_command_id rather than a null.
     saleCommandRunPurchase($order->fresh());
 
     expect(StoreOrderDelivery::count())->toBe($deliveries);
@@ -217,9 +217,8 @@ test('a sale placeholder on a line with no sale leaves no braces behind', functi
     Server::factory()->create();
     $package = StorePackage::factory()->create(['price' => 1000]);
 
-    StorePackageCommand::factory()->create([
-        'store_package_id' => $package->id,
-        'trigger' => StorePackageCommandTrigger::PURCHASE,
+    StoreCommand::factory()->forOwner($package)->create([
+        'trigger' => StoreCommandTrigger::PURCHASE,
         'command' => 'broadcast {PLAYER_USERNAME} {SALE_NAME}',
     ]);
 
@@ -233,12 +232,12 @@ test('a sale refund command still runs after the sale has ended', function () {
     $package = StorePackage::factory()->create(['price' => 1000]);
     $sale = StoreSale::factory()->expired()->create();
     saleCommand($sale, [
-        'trigger' => StorePackageCommandTrigger::REFUND,
+        'trigger' => StoreCommandTrigger::REFUND,
         'command' => 'take {PLAYER_USERNAME} coins 100',
     ]);
 
     $order = saleCommandPaidOrder([$package], $sale);
-    (new ProcessStoreOrderRevocationJob($order, StorePackageCommandTrigger::REFUND))
+    (new ProcessStoreOrderRevocationJob($order, StoreCommandTrigger::REFUND))
         ->handle(app(StoreCommandDispatchService::class));
 
     expect(CommandQueue::where('tag', 'store')->value('parsed_command'))->toEqual('take Steve coins 100');
@@ -249,12 +248,12 @@ test('a sale refund command still runs after the sale has been disabled', functi
     $package = StorePackage::factory()->create(['price' => 1000]);
     $sale = StoreSale::factory()->create(['is_enabled' => false]);
     saleCommand($sale, [
-        'trigger' => StorePackageCommandTrigger::REFUND,
+        'trigger' => StoreCommandTrigger::REFUND,
         'command' => 'take {PLAYER_USERNAME} coins 100',
     ]);
 
     $order = saleCommandPaidOrder([$package], $sale);
-    (new ProcessStoreOrderRevocationJob($order, StorePackageCommandTrigger::REFUND))
+    (new ProcessStoreOrderRevocationJob($order, StoreCommandTrigger::REFUND))
         ->handle(app(StoreCommandDispatchService::class));
 
     expect(CommandQueue::where('tag', 'store')->value('parsed_command'))->toEqual('take Steve coins 100');
@@ -265,7 +264,7 @@ test('a sale refund command still runs after the sale has been deleted', functio
     $package = StorePackage::factory()->create(['price' => 1000]);
     $sale = StoreSale::factory()->create();
     saleCommand($sale, [
-        'trigger' => StorePackageCommandTrigger::REFUND,
+        'trigger' => StoreCommandTrigger::REFUND,
         'command' => 'take {PLAYER_USERNAME} coins 100',
     ]);
 
@@ -275,7 +274,7 @@ test('a sale refund command still runs after the sale has been deleted', functio
     // it priced with a bonus that can never be taken back.
     $sale->delete();
 
-    (new ProcessStoreOrderRevocationJob($order->fresh(), StorePackageCommandTrigger::REFUND))
+    (new ProcessStoreOrderRevocationJob($order->fresh(), StoreCommandTrigger::REFUND))
         ->handle(app(StoreCommandDispatchService::class));
 
     expect(CommandQueue::where('tag', 'store')->value('parsed_command'))->toEqual('take Steve coins 100');
@@ -361,18 +360,19 @@ test('a sale command scoped to a package does not widen to every package', funct
     expect($command->fresh('packages')->appliesToPackage($named->id))->toBeFalse();
 });
 
-test('a store command must belong to exactly one owner', function () {
+test('a store command belongs to exactly one owner, and only a registered one', function () {
+    // The old pair of nullable owner columns needed an XOR check to keep a command from having two
+    // owners or none. A morph makes both states unrepresentable, so what is left to guard is the
+    // owner being a *kind* the dispatcher knows about.
     $package = StorePackage::factory()->create(['price' => 1000]);
     $sale = StoreSale::factory()->create();
 
-    expect(fn () => StorePackageCommand::factory()->create([
-        'store_package_id' => $package->id,
-        'store_sale_id' => $sale->id,
-    ]))->toThrow(LogicException::class);
+    expect(StoreCommand::factory()->forOwner($package)->create()->commandable->is($package))->toBeTrue();
+    expect(StoreCommand::factory()->forSale($sale)->create()->commandable->is($sale))->toBeTrue();
 
-    expect(fn () => StorePackageCommand::factory()->create([
-        'store_package_id' => null,
-        'store_sale_id' => null,
+    expect(fn () => StoreCommand::factory()->create([
+        'commandable_type' => User::class,
+        'commandable_id' => 1,
     ]))->toThrow(LogicException::class);
 });
 

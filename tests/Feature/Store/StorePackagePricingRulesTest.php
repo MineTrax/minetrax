@@ -7,11 +7,11 @@ use App\Enums\StorePackageType;
 use App\Jobs\Store\ProcessStoreOrderPurchaseJob;
 use App\Models\Player;
 use App\Models\Server;
+use App\Models\StoreCommand;
 use App\Models\StoreCurrency;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\User;
 use App\Services\StoreCartService;
 use App\Services\StoreOrderService;
@@ -548,7 +548,7 @@ test('an issued code can be redeemed against a later order', function () {
 
 test('a gift card only package runs no commands even if some are left on it', function () {
     $package = StorePackage::factory()->giftCard(1000)->create(['price' => 1000]);
-    StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
+    StoreCommand::factory()->forOwner($package)->create();
     Server::factory()->create();
 
     packagePricingRulesPayFor($package);
@@ -559,7 +559,7 @@ test('a gift card only package runs no commands even if some are left on it', fu
 
 test('a package and giftcard both delivers in game and issues credit', function () {
     $package = StorePackage::factory()->packageAndGiftCard(1000)->create(['price' => 4000]);
-    StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
+    StoreCommand::factory()->forOwner($package)->create();
     Server::factory()->create();
 
     $order = packagePricingRulesPayFor($package);

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -11,7 +11,7 @@ class StoreOrderDelivery extends BaseModel
     use HasFactory;
 
     protected $casts = [
-        'trigger' => StorePackageCommandTrigger::class,
+        'trigger' => StoreCommandTrigger::class,
         'repeat_index' => 'integer',
         'redispatch_count' => 'integer',
     ];
@@ -26,9 +26,9 @@ class StoreOrderDelivery extends BaseModel
         return $this->belongsTo(StoreOrderItem::class, 'store_order_item_id');
     }
 
-    public function packageCommand(): BelongsTo
+    public function command(): BelongsTo
     {
-        return $this->belongsTo(StorePackageCommand::class, 'store_package_command_id');
+        return $this->belongsTo(StoreCommand::class, 'store_command_id');
     }
 
     public function server(): BelongsTo

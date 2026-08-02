@@ -102,6 +102,8 @@ test('store permissions are seeded', function () {
         'read store_payments',
         'create store_coupons', 'read store_coupons', 'update store_coupons', 'delete store_coupons',
         'create store_sales', 'read store_sales', 'update store_sales', 'delete store_sales',
+        'create store_referrals', 'read store_referrals', 'update store_referrals', 'delete store_referrals',
+        'payout store_referrals',
         'create store_gift_cards', 'read store_gift_cards', 'update store_gift_cards', 'delete store_gift_cards',
         'create store_bans', 'read store_bans', 'update store_bans', 'delete store_bans',
         'view store_statistics',
@@ -126,9 +128,16 @@ test('admin role receives a curated store permission subset', function () {
     expect($admin->hasPermissionTo('refund store_orders'))->toBeTrue();
     expect($admin->hasPermissionTo('create store_packages'))->toBeTrue();
 
+    // Setting up creator codes is promotions work and comes with the rest.
+    expect($admin->hasPermissionTo('create store_referrals'))->toBeTrue();
+
     // Gift card issuance and currency deletion stay superadmin-only.
     expect($admin->hasPermissionTo('create store_gift_cards'))->toBeFalse();
     expect($admin->hasPermissionTo('delete store_currencies'))->toBeFalse();
+
+    // So does paying a referrer: that books money leaving the business, and it is a separate job
+    // from running the promotion.
+    expect($admin->hasPermissionTo('payout store_referrals'))->toBeFalse();
 });
 
 test('superadmin has every store permission', function () {

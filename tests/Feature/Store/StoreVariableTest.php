@@ -1,15 +1,15 @@
 <?php
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StoreVariableType;
 use App\Jobs\RunCommandQueueJob;
 use App\Models\CommandQueue;
 use App\Models\Player;
 use App\Models\Server;
 use App\Models\StoreCartItem;
+use App\Models\StoreCommand;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StoreVariable;
 use App\Models\User;
 use App\Services\StoreCartService;
@@ -469,9 +469,8 @@ test('a variable value is substituted into the command', function () {
     Server::factory()->create();
     $variable = StoreVariable::factory()->create(['identifier' => 'prefix_color']);
     $package = packageWithVariable($variable);
-    StorePackageCommand::factory()->create([
-        'store_package_id' => $package->id,
-        'trigger' => StorePackageCommandTrigger::PURCHASE,
+    StoreCommand::factory()->forOwner($package)->create([
+        'trigger' => StoreCommandTrigger::PURCHASE,
         'command' => 'lp user {PLAYER_USERNAME} meta setprefix {VARIABLE_PREFIX_COLOR}',
     ]);
 
@@ -490,8 +489,7 @@ test('a variable cannot overwrite a built in placeholder', function () {
     Server::factory()->create();
     $variable = StoreVariable::factory()->create(['identifier' => 'player_username']);
     $package = packageWithVariable($variable);
-    StorePackageCommand::factory()->create([
-        'store_package_id' => $package->id,
+    StoreCommand::factory()->forOwner($package)->create([
         'command' => 'say {PLAYER_USERNAME}',
     ]);
 
@@ -510,8 +508,7 @@ test('an unanswered optional variable leaves its placeholder in place', function
     Server::factory()->create();
     $variable = StoreVariable::factory()->optional()->create(['identifier' => 'nickname']);
     $package = packageWithVariable($variable);
-    StorePackageCommand::factory()->create([
-        'store_package_id' => $package->id,
+    StoreCommand::factory()->forOwner($package)->create([
         'command' => 'say hello {VARIABLE_NICKNAME}',
     ]);
 
@@ -526,8 +523,7 @@ test('a checkbox answer substitutes as true or false', function () {
     Server::factory()->create();
     $variable = StoreVariable::factory()->checkbox()->create(['identifier' => 'glow']);
     $package = packageWithVariable($variable);
-    StorePackageCommand::factory()->create([
-        'store_package_id' => $package->id,
+    StoreCommand::factory()->forOwner($package)->create([
         'command' => 'glow set {PLAYER_USERNAME} {VARIABLE_GLOW}',
     ]);
 

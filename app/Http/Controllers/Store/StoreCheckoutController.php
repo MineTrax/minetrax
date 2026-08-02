@@ -14,6 +14,7 @@ use App\Services\StoreCheckoutService;
 use App\Services\StoreCurrencyService;
 use App\Services\StoreOrderService;
 use App\Services\StorePlayerResolver;
+use App\Services\StoreReferralService;
 use App\Settings\StoreSettings;
 use App\Utils\Helpers\Helper;
 use App\Utils\Payments\Data\StoreGatewayEventData;
@@ -31,6 +32,7 @@ class StoreCheckoutController extends Controller
         private StorePlayerResolver $players,
         private StoreOrderService $orders,
         private StorePaymentGatewayManager $gateways,
+        private StoreReferralService $referrals,
         private StoreSettings $settings,
     ) {}
 
@@ -121,9 +123,15 @@ class StoreCheckoutController extends Controller
             ? Country::find($validated['billing_country_id'])
             : null;
 
+        // Resolved here because this is the last point the referral cookie is in scope: the order
+        // service and the delivery job both run long after the buyer's request is gone.
+        $attribution = $this->referrals->resolveFor($request, $cart);
+
         $order = $this->checkout->placeOrder($cart, [
             'email' => $validated['email'] ?? null,
             'gateway' => $validated['gateway'],
+            'referral' => $attribution['referral'],
+            'referral_source' => $attribution['source'],
             'ip' => $request->ip(),
             'user_agent' => substr((string) $request->userAgent(), 0, 255),
             // A country the buyer declared beats one guessed from their IP, and it is what the tax

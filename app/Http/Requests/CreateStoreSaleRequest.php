@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StoreDiscountType;
-use App\Enums\StorePackageCommandTrigger;
 use App\Enums\StoreSaleScope;
 use App\Models\StoreSale;
 use Gate;
@@ -62,8 +62,8 @@ class CreateStoreSaleRequest extends FormRequest
 
             // The extra a sale hands out on top of its discount: "10% off, and 100 bonus coins".
             'commands' => 'nullable|array',
-            'commands.*.id' => 'nullable|integer|exists:store_package_commands,id',
-            'commands.*.trigger' => ['required', Rule::enum(StorePackageCommandTrigger::class)],
+            'commands.*.id' => 'nullable|integer|exists:store_commands,id',
+            'commands.*.trigger' => ['required', Rule::enum(StoreCommandTrigger::class)],
             'commands.*.command' => 'required|string|max:2000',
             'commands.*.is_player_online_required' => 'required|boolean',
             'commands.*.delay_seconds' => 'nullable|integer|min:0|max:2592000',

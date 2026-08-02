@@ -100,6 +100,7 @@ class AuthServiceProvider extends ServiceProvider
         StoreOrder::class => StoreOrderPolicy::class,
         StoreCoupon::class => StoreCouponPolicy::class,
         StoreSale::class => StoreSalePolicy::class,
+        StoreReferral::class => StoreReferralPolicy::class,
         StoreBan::class => StoreBanPolicy::class,
         StoreGiftCard::class => StoreGiftCardPolicy::class,
         StorePackageGrant::class => StorePackageGrantPolicy::class,

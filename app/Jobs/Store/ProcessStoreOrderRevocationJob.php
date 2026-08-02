@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Store;
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Models\StoreOrder;
 use App\Services\StoreCommandDispatchService;
 use Illuminate\Bus\Queueable;
@@ -28,7 +28,7 @@ class ProcessStoreOrderRevocationJob implements ShouldQueue
 
     public function __construct(
         private StoreOrder $order,
-        private StorePackageCommandTrigger $trigger,
+        private StoreCommandTrigger $trigger,
     ) {}
 
     public function handle(StoreCommandDispatchService $dispatcher): void

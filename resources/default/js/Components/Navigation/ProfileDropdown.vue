@@ -82,6 +82,15 @@
           {{ __("My Purchases") }}
         </jet-dropdown-link>
 
+        <!-- Only for a member who actually holds a code: the route 404s for everyone else, so
+             offering it to them would be a dead link in the menu. -->
+        <jet-dropdown-link
+          v-if="$page.props.store?.hasReferral"
+          :href="route('store.my-referral.show')"
+        >
+          {{ __("My Referral") }}
+        </jet-dropdown-link>
+
         <jet-dropdown-link :href="route('linked-player.list')">
           {{ __("Linked Players") }}
         </jet-dropdown-link>

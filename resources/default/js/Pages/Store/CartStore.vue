@@ -5,7 +5,8 @@ import { Link, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import StoreCurrencySwitcher from "@/Components/Store/StoreCurrencySwitcher.vue";
 import StorePackageCard from "@/Components/Store/StorePackageCard.vue";
-import { computed, ref, watch } from "vue";
+import { HeartIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { computed, nextTick, ref, watch } from "vue";
 
 const { __ } = useTranslations();
 
@@ -21,6 +22,12 @@ const props = defineProps({
     currency: {
         type: Object,
         required: true,
+    },
+    // False for a store running no creator codes, which should not carry a permanently useless
+    // field through its highest-intent screen.
+    acceptsReferralCodes: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -89,6 +96,44 @@ const handleApplyCode = () => {
         preserveScroll: true,
         onFinish: () => {
             codeLoading.value = false;
+        },
+    });
+};
+
+const referralInput = ref("");
+const referralLoading = ref(false);
+const showReferralField = ref(false);
+const referralField = ref(null);
+
+// Opening it and then having to click into it is two actions for one intent.
+const revealReferralField = async () => {
+    showReferralField.value = true;
+    await nextTick();
+    referralField.value?.focus();
+};
+
+const handleApplyReferral = () => {
+    referralLoading.value = true;
+    router.post(route("store.cart.referral.store"), {
+        code: referralInput.value,
+    }, {
+        preserveScroll: true,
+        // Keeps the panel open and the typed code in place when the server rejects it. Without
+        // this a mistyped code is answered with a toast *and* a field that has closed and emptied
+        // itself, so the buyer has to start again to fix one character.
+        preserveState: true,
+        onFinish: () => {
+            referralLoading.value = false;
+        },
+    });
+};
+
+const handleClearReferral = () => {
+    referralLoading.value = true;
+    router.delete(route("store.cart.referral.delete"), {
+        preserveScroll: true,
+        onFinish: () => {
+            referralLoading.value = false;
         },
     });
 };
@@ -460,6 +505,68 @@ const handleClearCode = () => {
                   {{ __("Apply") }}
                 </button>
               </div>
+
+              <!-- Referral
+                   Its own control, because a referral is not a discount and does not consume the
+                   coupon slot — sharing the box above made "Clear" mean two things at once. But it
+                   is also the least-used field on the highest-intent screen, so it does not get a
+                   second identical row: unapplied it is one line of text, applied it is a chip. -->
+              <template v-if="acceptsReferralCodes || quote.referral">
+                <!-- Applied. Not a locked text input — a referral picked up from a link was never
+                     typed, so a disabled field showing it is a control that does nothing. -->
+                <div
+                  v-if="quote.referral"
+                  class="flex items-center justify-between gap-2 rounded-lg bg-muted/60 px-3 py-2"
+                >
+                  <span class="flex items-center gap-2 min-w-0 text-sm">
+                    <HeartIcon class="w-4 h-4 shrink-0 text-primary" />
+                    <span class="truncate text-muted-foreground">
+                      {{ __("Supporting") }}
+                      <span class="font-semibold text-foreground">{{ quote.referral.referrer_name }}</span>
+                    </span>
+                  </span>
+                  <button
+                    v-tippy
+                    :disabled="referralLoading"
+                    :title="__('Remove')"
+                    :aria-label="__('Remove')"
+                    class="shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-50"
+                    @click="handleClearReferral"
+                  >
+                    <XMarkIcon class="w-4 h-4" />
+                  </button>
+                </div>
+
+                <!-- Not applied. Most buyers have no code, so it stays a link until asked for. -->
+                <button
+                  v-else-if="!showReferralField"
+                  class="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                  @click="revealReferralField"
+                >
+                  {{ __("Have a referral code?") }}
+                </button>
+
+                <div
+                  v-else
+                  class="flex gap-2"
+                >
+                  <input
+                    ref="referralField"
+                    v-model="referralInput"
+                    :placeholder="__('Enter a creator referral code')"
+                    :aria-label="__('Enter a creator referral code')"
+                    class="flex-1 min-w-0 px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    @keyup.enter="referralInput.trim() && handleApplyReferral()"
+                  >
+                  <button
+                    :disabled="referralLoading || !referralInput.trim()"
+                    class="shrink-0 px-4 py-2 border border-border text-foreground font-semibold rounded-lg transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                    @click="handleApplyReferral"
+                  >
+                    {{ __("Apply") }}
+                  </button>
+                </div>
+              </template>
             </div>
 
             <!-- Checkout Button -->

@@ -6,6 +6,7 @@ use App\Enums\ServerType;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Server;
+use App\Models\StoreReferral;
 use App\Services\StoreCartService;
 use App\Settings\GeneralSettings;
 use App\Settings\PluginSettings;
@@ -146,6 +147,11 @@ class HandleInertiaRequests extends Middleware
                     // without a lookup of its own. Summed across lines, because the same package
                     // can sit in the cart twice with different variable answers.
                     'cartQuantities' => $cartQuantities ?? (object) [],
+                    // Whether to offer "My Referral" in the account menu. An indexed exists() for a
+                    // signed-in visitor only — a guest can have no code, so there is nothing to ask.
+                    'hasReferral' => $request->user()
+                        ? StoreReferral::where('user_id', $request->user()->id)->exists()
+                        : false,
                 ];
             },
         ]);

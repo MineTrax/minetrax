@@ -42,6 +42,10 @@ class RoleSeeder extends Seeder
             'read store_payments', 'view store_statistics',
             'create store_coupons', 'read store_coupons', 'update store_coupons', 'delete store_coupons',
             'create store_sales', 'read store_sales', 'update store_sales', 'delete store_sales',
+            // Managing creator codes is promotions work, like coupons. Recording a payout is not:
+            // that books money leaving the business, so `payout store_referrals` stays off this
+            // curated set and is granted deliberately through the Roles UI.
+            'create store_referrals', 'read store_referrals', 'update store_referrals', 'delete store_referrals',
             'create store_bans', 'read store_bans', 'update store_bans', 'delete store_bans']);
 
         $moderator = Role::create(['name' => 'moderator', 'display_name' => 'Moderator', 'is_staff' => true, 'weight' => 2]);

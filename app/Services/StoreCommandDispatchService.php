@@ -3,16 +3,17 @@
 namespace App\Services;
 
 use App\Enums\CommandQueueStatus;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StoreDeliveryStatus;
-use App\Enums\StorePackageCommandTrigger;
 use App\Jobs\RunCommandQueueJob;
 use App\Models\CommandQueue;
 use App\Models\Server;
+use App\Models\StoreCommand;
 use App\Models\StoreOrder;
 use App\Models\StoreOrderDelivery;
 use App\Models\StoreOrderItem;
-use App\Models\StorePackageCommand;
 use App\Utils\Helpers\Helper;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Collection;
 
@@ -32,13 +33,14 @@ class StoreCommandDispatchService
      *
      * @return StoreDeliveryStatus the resulting delivery health for the order
      */
-    public function dispatchForOrder(StoreOrder $order, StorePackageCommandTrigger $trigger): StoreDeliveryStatus
+    public function dispatchForOrder(StoreOrder $order, StoreCommandTrigger $trigger): StoreDeliveryStatus
     {
         $order->loadMissing([
             'items.package.commands.servers',
             // The sale each line was priced under, not whatever happens to be on sale today.
             'items.sale.commands.servers',
             'items.sale.commands.packages',
+            'referral.commands.servers',
         ]);
 
         $created = 0;
@@ -46,6 +48,12 @@ class StoreCommandDispatchService
 
         foreach ($order->items as $item) {
             $result = $this->dispatchForItem($order, $item, $trigger);
+            $created += $result['created'];
+            $skipped += $result['skipped'];
+        }
+
+        if ($order->referral?->is_command_execution_enabled) {
+            $result = $this->dispatchOrderLevelCommands($order, $order->referral, $trigger);
             $created += $result['created'];
             $skipped += $result['skipped'];
         }
@@ -61,7 +69,7 @@ class StoreCommandDispatchService
     /**
      * @return array{created: int, skipped: int}
      */
-    public function dispatchForItem(StoreOrder $order, StoreOrderItem $item, StorePackageCommandTrigger $trigger): array
+    public function dispatchForItem(StoreOrder $order, StoreOrderItem $item, StoreCommandTrigger $trigger): array
     {
         $package = $item->package;
 
@@ -120,6 +128,54 @@ class StoreCommandDispatchService
     }
 
     /**
+     * Dispatch an owner's commands once for the whole order rather than once per line.
+     *
+     * A referral is the first of these: its code was used on the order, not on any one item in it,
+     * so running its commands per line would hand out the same thank-you three times for a
+     * three-item basket.
+     *
+     * Anchored to the order's lowest-id item, which is what keeps the guard on
+     * store_order_deliveries working: that unique index needs a non-null order item, and picking a
+     * deterministic one makes a webhook replay or an admin resend a no-op with no schema change at
+     * all. The item is only an anchor — nothing about it reaches the command.
+     *
+     * @return array{created: int, skipped: int}
+     */
+    public function dispatchOrderLevelCommands(StoreOrder $order, Model $owner, StoreCommandTrigger $trigger): array
+    {
+        $anchor = $order->items->sortBy('id')->first();
+
+        if (! $anchor) {
+            return ['created' => 0, 'skipped' => 0];
+        }
+
+        $commands = $owner->commands->where('trigger', $trigger);
+
+        $created = 0;
+        $skipped = 0;
+
+        foreach ($commands as $command) {
+            $servers = $this->targetServers($command);
+
+            if ($servers->isEmpty()) {
+                $skipped++;
+
+                continue;
+            }
+
+            foreach ($servers as $server) {
+                // Never repeated per quantity: this fires once for the order, and quantity belongs
+                // to a line rather than to the order.
+                $delivery = $this->createDelivery($order, $anchor, $command, $server, $trigger, 0, false);
+
+                $delivery ? $created++ : $skipped++;
+            }
+        }
+
+        return ['created' => $created, 'skipped' => $skipped];
+    }
+
+    /**
      * The sale commands this line earned.
      *
      * Read from the order item's own store_sale_id, which is a snapshot taken when the line was
@@ -132,9 +188,9 @@ class StoreCommandDispatchService
      * each. That is correct — both lines earned the bonus. An admin who wants it once per order
      * names a single package on the command.
      *
-     * @return Collection<int, StorePackageCommand>
+     * @return Collection<int, StoreCommand>
      */
-    private function saleCommandsFor(StoreOrderItem $item, StorePackageCommandTrigger $trigger): Collection
+    private function saleCommandsFor(StoreOrderItem $item, StoreCommandTrigger $trigger): Collection
     {
         $sale = $item->sale;
 
@@ -144,7 +200,7 @@ class StoreCommandDispatchService
 
         return $sale->commands
             ->where('trigger', $trigger)
-            ->filter(fn (StorePackageCommand $command) => $command->appliesToPackage($item->store_package_id))
+            ->filter(fn (StoreCommand $command) => $command->appliesToPackage($item->store_package_id))
             ->values();
     }
 
@@ -212,9 +268,9 @@ class StoreCommandDispatchService
     private function createDelivery(
         StoreOrder $order,
         StoreOrderItem $item,
-        StorePackageCommand $command,
+        StoreCommand $command,
         Server $server,
-        StorePackageCommandTrigger $trigger,
+        StoreCommandTrigger $trigger,
         int $repeatIndex,
         bool $repeatPerQuantity,
     ): ?StoreOrderDelivery {
@@ -222,7 +278,7 @@ class StoreCommandDispatchService
         // common case out of the exception path; the constraint catches the racing case.
         $exists = StoreOrderDelivery::where([
             'store_order_item_id' => $item->id,
-            'store_package_command_id' => $command->id,
+            'store_command_id' => $command->id,
             'server_id' => $server->id,
             'trigger' => $trigger->value,
             'repeat_index' => $repeatIndex,
@@ -262,7 +318,7 @@ class StoreCommandDispatchService
             $delivery = StoreOrderDelivery::create([
                 'store_order_id' => $order->id,
                 'store_order_item_id' => $item->id,
-                'store_package_command_id' => $command->id,
+                'store_command_id' => $command->id,
                 'server_id' => $server->id,
                 'command_queue_id' => $queue->id,
                 'trigger' => $trigger,
@@ -290,7 +346,7 @@ class StoreCommandDispatchService
      *
      * @return Collection<int, Server>
      */
-    private function targetServers(StorePackageCommand $command): Collection
+    private function targetServers(StoreCommand $command): Collection
     {
         if ($command->is_run_on_all_servers || $command->servers->isEmpty()) {
             return Server::whereNotNull('webquery_port')->get();
@@ -323,6 +379,11 @@ class StoreCommandDispatchService
             // line that got no sale, and str_ireplace() is deprecated for null in PHP 8.1+.
             'sale_name' => $item->sale_name ?? '',
             'sale_id' => $item->store_sale_id ?? '',
+            // Read off the order, so a package's own command can carry {REFERRAL_CODE} too. Empty
+            // string on an unreferred order for the same reason as sale_name above — the
+            // alternative is the literal braces surviving into a live server console.
+            'referral_code' => $order->referral_code ?? '',
+            'referrer_name' => $order->referral?->referrer_name ?? '',
         ];
 
         // The buyer's own answers, from the order item's snapshot. Added last but keyed

@@ -1,13 +1,13 @@
 <?php
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Jobs\RunCommandQueueJob;
 use App\Models\CommandQueue;
 use App\Models\Server;
+use App\Models\StoreCommand;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StorePackageGrant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -35,9 +35,8 @@ function grantAdminGrant(array $grantAttributes = [], bool $withExpiryCommand = 
     $package = StorePackage::factory()->create(['price' => 1000]);
 
     if ($withExpiryCommand) {
-        StorePackageCommand::factory()->create([
-            'store_package_id' => $package->id,
-            'trigger' => StorePackageCommandTrigger::EXPIRY,
+        StoreCommand::factory()->forOwner($package)->create([
+            'trigger' => StoreCommandTrigger::EXPIRY,
             'command' => 'lp user {PLAYER_USERNAME} parent remove vip',
         ]);
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Store;
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Http\Controllers\Controller;
 use App\Models\StorePackageGrant;
@@ -99,7 +99,7 @@ class StoreGrantController extends Controller
             try {
                 // Idempotent through the unique index on store_order_deliveries, so a grant whose
                 // expiry commands already ran sends nothing a second time.
-                $this->dispatcher->dispatchForItem($order, $item, StorePackageCommandTrigger::EXPIRY);
+                $this->dispatcher->dispatchForItem($order, $item, StoreCommandTrigger::EXPIRY);
             } catch (\Throwable $exception) {
                 Log::error('Store grant revocation dispatch failed.', [
                     'grant_id' => $grant->id,

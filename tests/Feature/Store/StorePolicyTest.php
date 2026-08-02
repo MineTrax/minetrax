@@ -6,6 +6,7 @@ use App\Models\StoreCoupon;
 use App\Models\StoreCurrency;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
+use App\Models\StoreReferral;
 use App\Models\StoreSale;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,6 +22,7 @@ test('all store policies are registered', function () {
     $models = [
         StoreCategory::class, StorePackage::class, StoreCurrency::class,
         StoreOrder::class, StoreCoupon::class, StoreSale::class, StoreBan::class,
+        StoreReferral::class,
     ];
 
     foreach ($models as $model) {
@@ -89,4 +91,48 @@ test('a guest order is not viewable by an arbitrary user', function () {
     $guestOrder = StoreOrder::factory()->guest()->create();
 
     expect($user->can('view', $guestOrder))->toBeFalse();
+});
+
+test('paying a referrer is a separate ability from managing the code', function () {
+    // Setting up a creator code is promotions work; settling with them moves money out of the
+    // business. Someone trusted with the first is not automatically trusted with the second.
+    $user = User::factory()->create();
+    $user->givePermissionTo(['read store_referrals', 'update store_referrals', 'create store_referrals']);
+    $referral = StoreReferral::factory()->create();
+
+    expect($user->can('update', $referral))->toBeTrue();
+    expect($user->can('payout', StoreReferral::class))->toBeFalse();
+
+    $user->givePermissionTo('payout store_referrals');
+    $user->forgetCachedPermissions();
+
+    expect($user->fresh()->can('payout', StoreReferral::class))->toBeTrue();
+});
+
+test('a referrer sees their own figures and nobody else does', function () {
+    // Owning the code is the whole authorisation here — no staff permission is involved, and
+    // holding one does not open somebody else's earnings.
+    $referrer = User::factory()->create();
+    $stranger = User::factory()->create();
+    $staff = User::factory()->create();
+    $staff->givePermissionTo('read store_referrals');
+
+    $referral = StoreReferral::factory()->forUser($referrer)->create();
+    $unclaimed = StoreReferral::factory()->create();
+
+    expect($referrer->can('viewDashboard', $referral))->toBeTrue();
+    expect($stranger->can('viewDashboard', $referral))->toBeFalse();
+    expect($staff->can('viewDashboard', $referral))->toBeFalse('Reading every code is not the same as being one.');
+
+    // A code with no member attached belongs to nobody, so it is nobody's dashboard.
+    expect($referrer->can('viewDashboard', $unclaimed))->toBeFalse();
+});
+
+test('the module toggle closes the referrer dashboard too', function () {
+    config(['store.enabled' => false]);
+
+    $referrer = User::factory()->create();
+    $referral = StoreReferral::factory()->forUser($referrer)->create();
+
+    expect($referrer->can('viewDashboard', $referral))->toBeFalse();
 });

@@ -246,6 +246,14 @@ const navItems = [
                 visible: canWild("store_sales"),
             },
             {
+                label: "Referrals",
+                href: route("admin.store.referral.index"),
+                active: route().current("admin.store.referral.*"),
+                children: [],
+                icon: null,
+                visible: canWild("store_referrals"),
+            },
+            {
                 label: "Orders",
                 href: route("admin.store.order.index"),
                 active: route().current("admin.store.order.*"),

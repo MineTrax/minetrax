@@ -139,7 +139,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('store_order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('store_order_item_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('store_package_command_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('store_command_id')->nullable()->constrained()->nullOnDelete();
             $table->string('trigger'); // purchase, expiry, refund, chargeback
             $table->foreignId('server_id')->nullable()->constrained()->nullOnDelete();
 
@@ -155,7 +155,7 @@ return new class extends Migration
             // The idempotency guard. Without it a webhook replay or an admin "retry all failed"
             // would deliver the same purchase twice.
             $table->unique(
-                ['store_order_item_id', 'store_package_command_id', 'server_id', 'trigger', 'repeat_index'],
+                ['store_order_item_id', 'store_command_id', 'server_id', 'trigger', 'repeat_index'],
                 'store_order_deliveries_unique_dispatch'
             );
         });

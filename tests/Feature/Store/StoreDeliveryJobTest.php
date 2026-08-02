@@ -1,18 +1,18 @@
 <?php
 
 use App\Enums\CommandQueueStatus;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StoreDeliveryStatus;
 use App\Enums\StoreOrderStatus;
-use App\Enums\StorePackageCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Jobs\RunCommandQueueJob;
 use App\Jobs\Store\ProcessStoreOrderPurchaseJob;
 use App\Models\CommandQueue;
 use App\Models\Server;
+use App\Models\StoreCommand;
 use App\Models\StoreOrder;
 use App\Models\StoreOrderDelivery;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StorePayment;
 use App\Services\StoreCommandDispatchService;
 use App\Services\StoreGiftCardService;
@@ -59,11 +59,10 @@ function deliveryJobPaidOrder(array $packageAttributes = [], int $quantity = 1):
  *
  * @param  array<int, Server>|null  $servers
  */
-function purchaseCommand(StorePackage $package, array $attributes = [], ?array $servers = null): StorePackageCommand
+function purchaseCommand(StorePackage $package, array $attributes = [], ?array $servers = null): StoreCommand
 {
-    $command = StorePackageCommand::factory()->create(array_merge([
-        'store_package_id' => $package->id,
-        'trigger' => StorePackageCommandTrigger::PURCHASE,
+    $command = StoreCommand::factory()->forOwner($package)->create(array_merge([
+        'trigger' => StoreCommandTrigger::PURCHASE,
         'command' => 'lp user {PLAYER_USERNAME} parent add vip',
         'is_run_on_all_servers' => $servers === null,
     ], $attributes));
@@ -245,8 +244,8 @@ test('servers without a webquery port are excluded', function () {
 test('only the matching trigger is dispatched', function () {
     [$order, $package] = deliveryJobPaidOrder();
     purchaseCommand($package);
-    StorePackageCommand::factory()->expiry()->create(['store_package_id' => $package->id]);
-    StorePackageCommand::factory()->refund()->create(['store_package_id' => $package->id]);
+    StoreCommand::factory()->expiry()->forOwner($package)->create();
+    StoreCommand::factory()->refund()->forOwner($package)->create();
 
     deliveryJobRunJob($order);
 
@@ -274,9 +273,9 @@ test('a delivery row records what was queued', function () {
 
     $delivery = StoreOrderDelivery::first();
     expect($delivery->store_order_id)->toEqual($order->id);
-    expect($delivery->store_package_command_id)->toEqual($command->id);
+    expect($delivery->store_command_id)->toEqual($command->id);
     expect($delivery->server_id)->toEqual($server->id);
-    expect($delivery->trigger)->toEqual(StorePackageCommandTrigger::PURCHASE);
+    expect($delivery->trigger)->toEqual(StoreCommandTrigger::PURCHASE);
     expect($delivery->parsed_command)->toEqual('lp user Steve parent add vip');
     expect($delivery->commandQueue)->not->toBeNull();
 });

@@ -1,11 +1,11 @@
 <?php
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageRequirementMode;
 use App\Models\Server;
 use App\Models\StoreCategory;
+use App\Models\StoreCommand;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StoreVariable;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -41,9 +41,8 @@ function duplicableStorePackage(array $overrides = []): StorePackage
     ], $overrides));
 
     $server = Server::factory()->create();
-    $command = StorePackageCommand::factory()->create([
-        'store_package_id' => $package->id,
-        'trigger' => StorePackageCommandTrigger::PURCHASE,
+    $command = StoreCommand::factory()->forOwner($package)->create([
+        'trigger' => StoreCommandTrigger::PURCHASE,
         'command' => 'lp user {PLAYER_USERNAME} parent add gold',
         'delay_seconds' => 15,
         'is_repeat_per_quantity' => true,
@@ -145,7 +144,7 @@ test('the commands come along with their server targets', function () {
     expect($copy->commands)->toHaveCount(1);
     expect($copied->id)->not->toBe($originalCommand->id);
     expect($copied->command)->toBe('lp user {PLAYER_USERNAME} parent add gold');
-    expect($copied->trigger)->toEqual(StorePackageCommandTrigger::PURCHASE);
+    expect($copied->trigger)->toEqual(StoreCommandTrigger::PURCHASE);
     expect($copied->delay_seconds)->toBe(15);
     expect($copied->is_repeat_per_quantity)->toBeTrue();
     // The pivot is the point: copying the row alone would leave the copy firing nowhere.

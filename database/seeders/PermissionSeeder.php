@@ -187,6 +187,15 @@ class PermissionSeeder extends Seeder
         Permission::findOrCreate('update store_sales');
         Permission::findOrCreate('delete store_sales');
 
+        Permission::findOrCreate('create store_referrals');
+        Permission::findOrCreate('read store_referrals');
+        Permission::findOrCreate('read_own store_referrals');
+        Permission::findOrCreate('update store_referrals');
+        Permission::findOrCreate('update_own store_referrals');
+        Permission::findOrCreate('delete store_referrals');
+        Permission::findOrCreate('delete_own store_referrals');
+        Permission::findOrCreate('payout store_referrals');   // record money actually paid out
+
         Permission::findOrCreate('create store_gift_cards');
         Permission::findOrCreate('read store_gift_cards');
         Permission::findOrCreate('read_own store_gift_cards');

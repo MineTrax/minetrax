@@ -81,6 +81,17 @@ class StoreOrder extends BaseModel
         return $this->belongsTo(StoreCoupon::class, 'store_coupon_id');
     }
 
+    /**
+     * The creator code that brought this sale in.
+     *
+     * withTrashed(), so a retired code still resolves for an order that already credited it — the
+     * earnings and the payouts against it outlive the code itself.
+     */
+    public function referral(): BelongsTo
+    {
+        return $this->belongsTo(StoreReferral::class, 'store_referral_id')->withTrashed();
+    }
+
     public function giftCard(): BelongsTo
     {
         return $this->belongsTo(StoreGiftCard::class, 'store_gift_card_id');

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\StoreCategoryDisplayType;
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageRequirementMode;
 use App\Enums\StorePackageType;
 use App\Enums\StoreVariableType;
@@ -190,24 +190,24 @@ class StoreDemoSeeder extends Seeder
     {
         return [
             [
-                'trigger' => StorePackageCommandTrigger::PURCHASE,
+                'trigger' => StoreCommandTrigger::PURCHASE,
                 'command' => 'lp user {PLAYER_USERNAME} parent add '.$group,
             ],
             [
-                'trigger' => StorePackageCommandTrigger::PURCHASE,
+                'trigger' => StoreCommandTrigger::PURCHASE,
                 'command' => 'broadcast &e{PLAYER_USERNAME} &7just bought &6{PACKAGE_NAME}&7!',
                 'delay_seconds' => 5,
             ],
             [
-                'trigger' => StorePackageCommandTrigger::EXPIRY,
+                'trigger' => StoreCommandTrigger::EXPIRY,
                 'command' => 'lp user {PLAYER_USERNAME} parent remove '.$group,
             ],
             [
-                'trigger' => StorePackageCommandTrigger::REFUND,
+                'trigger' => StoreCommandTrigger::REFUND,
                 'command' => 'lp user {PLAYER_USERNAME} parent remove '.$group,
             ],
             [
-                'trigger' => StorePackageCommandTrigger::CHARGEBACK,
+                'trigger' => StoreCommandTrigger::CHARGEBACK,
                 'command' => 'lp user {PLAYER_USERNAME} parent remove '.$group,
             ],
         ];
@@ -249,7 +249,7 @@ class StoreDemoSeeder extends Seeder
                 ],
             ], [
                 [
-                    'trigger' => StorePackageCommandTrigger::PURCHASE,
+                    'trigger' => StoreCommandTrigger::PURCHASE,
                     'command' => 'eco give {PLAYER_USERNAME} '.$total,
                 ],
             ]);
@@ -276,7 +276,7 @@ class StoreDemoSeeder extends Seeder
             'sort_order' => 0,
         ], [
             [
-                'trigger' => StorePackageCommandTrigger::PURCHASE,
+                'trigger' => StoreCommandTrigger::PURCHASE,
                 'command' => 'nte set {PLAYER_USERNAME} nametag {VARIABLE_NAME_TAG_COLOR} {VARIABLE_NAME_TAG_VALUE}',
             ],
         ]);
@@ -308,13 +308,13 @@ class StoreDemoSeeder extends Seeder
             'sort_order' => 2,
         ], [
             [
-                'trigger' => StorePackageCommandTrigger::PURCHASE,
+                'trigger' => StoreCommandTrigger::PURCHASE,
                 'command' => 'lp user {PLAYER_USERNAME} permission set essentials.fly true',
                 // Queues and runs the moment they next join, rather than failing while offline.
                 'is_player_online_required' => true,
             ],
             [
-                'trigger' => StorePackageCommandTrigger::EXPIRY,
+                'trigger' => StoreCommandTrigger::EXPIRY,
                 'command' => 'lp user {PLAYER_USERNAME} permission unset essentials.fly',
             ],
         ]);
@@ -329,7 +329,7 @@ class StoreDemoSeeder extends Seeder
             'sort_order' => 3,
         ], [
             [
-                'trigger' => StorePackageCommandTrigger::PURCHASE,
+                'trigger' => StoreCommandTrigger::PURCHASE,
                 'command' => 'broadcast &7Thanks for the support, &e{PLAYER_USERNAME}&7!',
             ],
         ]);
@@ -343,7 +343,7 @@ class StoreDemoSeeder extends Seeder
             'sort_order' => 4,
         ], [
             [
-                'trigger' => StorePackageCommandTrigger::PURCHASE,
+                'trigger' => StoreCommandTrigger::PURCHASE,
                 'command' => 'pet give {PLAYER_USERNAME} ender_dragon',
             ],
         ]);
@@ -368,7 +368,7 @@ class StoreDemoSeeder extends Seeder
             'sort_order' => 0,
         ], [
             [
-                'trigger' => StorePackageCommandTrigger::PURCHASE,
+                'trigger' => StoreCommandTrigger::PURCHASE,
                 'command' => 'crates key give {PLAYER_USERNAME} vote 1',
                 'is_repeat_per_quantity' => true,
             ],
@@ -382,7 +382,7 @@ class StoreDemoSeeder extends Seeder
             'sort_order' => 1,
         ], [
             [
-                'trigger' => StorePackageCommandTrigger::PURCHASE,
+                'trigger' => StoreCommandTrigger::PURCHASE,
                 'command' => 'give {PLAYER_USERNAME} diamond 16',
                 'is_repeat_per_quantity' => true,
             ],
@@ -400,7 +400,7 @@ class StoreDemoSeeder extends Seeder
             'sort_order' => 2,
         ], [
             [
-                'trigger' => StorePackageCommandTrigger::PURCHASE,
+                'trigger' => StoreCommandTrigger::PURCHASE,
                 'command' => 'xp give {PLAYER_USERNAME} {QUANTITY}00',
             ],
         ]);

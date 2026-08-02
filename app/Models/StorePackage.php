@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageRequirementMode;
 use App\Enums\StorePackageType;
+use App\Traits\HasStoreCommandsTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -18,7 +20,7 @@ use Spatie\Searchable\SearchResult;
 
 class StorePackage extends BaseModel implements HasMedia, Searchable
 {
-    use HasFactory, InteractsWithMedia, SoftDeletes;
+    use HasFactory, HasStoreCommandsTrait, InteractsWithMedia, SoftDeletes;
 
     /**
      * The key this model's rows are grouped under in the navbar search.
@@ -94,10 +96,7 @@ class StorePackage extends BaseModel implements HasMedia, Searchable
         return $this->belongsTo(StoreCategory::class, 'store_category_id');
     }
 
-    public function commands(): HasMany
-    {
-        return $this->hasMany(StorePackageCommand::class, 'store_package_id');
-    }
+    // commands() comes from HasStoreCommandsTrait, shared with every other kind of command owner.
 
     public function prices(): HasMany
     {
@@ -152,7 +151,7 @@ class StorePackage extends BaseModel implements HasMedia, Searchable
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function commandsForTrigger(StorePackageCommandTrigger $trigger): HasMany
+    public function commandsForTrigger(StoreCommandTrigger $trigger): MorphMany
     {
         return $this->commands()->where('trigger', $trigger);
     }

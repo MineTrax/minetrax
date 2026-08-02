@@ -3,6 +3,8 @@
 use App\Models\Role;
 use App\Models\StoreCoupon;
 use App\Models\StoreGiftCard;
+use App\Models\StoreOrder;
+use App\Models\StoreReferral;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -194,4 +196,52 @@ test('the card page reports rights against that card not the bare permission', f
         ->get(route('admin.store.gift-card.show', $other->id))
         ->assertStatus(200)
         ->assertInertia(fn ($page) => $page->where('cardPermissions.update', false));
+});
+
+// -- Referrals ---------------------------------------------------------------------------------
+
+test('read_own shows a referral writer only their own codes', function () {
+    $mine = scopedStaff(['read_own store_referrals']);
+    $theirs = User::factory()->create();
+
+    StoreReferral::factory()->create(['code' => 'MINE', 'created_by' => $mine->id]);
+    StoreReferral::factory()->create(['code' => 'THEIRS', 'created_by' => $theirs->id]);
+    // Seeded, imported, or written before the column existed. Nobody's own.
+    StoreReferral::factory()->create(['code' => 'ORPHAN', 'created_by' => null]);
+
+    $this->actingAs($mine)
+        ->get(route('admin.store.referral.index'))
+        ->assertStatus(200)
+        ->assertInertia(function ($page) {
+            $codes = collect($page->toArray()['props']['referrals']['data'])->pluck('code');
+
+            expect($codes->all())->toEqual(['MINE']);
+        });
+});
+
+test('update_own refuses somebody elses referral by direct url', function () {
+    // A hidden row that is still editable by URL is a filtered view, not access control.
+    $staff = scopedStaff(['read_own store_referrals', 'update_own store_referrals']);
+    $other = StoreReferral::factory()->create(['created_by' => User::factory()->create()->id]);
+    $own = StoreReferral::factory()->create(['created_by' => $staff->id]);
+
+    $this->actingAs($staff)->get(route('admin.store.referral.edit', $other->id))->assertStatus(403);
+    $this->actingAs($staff)->get(route('admin.store.referral.edit', $own->id))->assertStatus(200);
+});
+
+test('recording a payout needs its own permission, whoever wrote the code', function () {
+    // Managing the promotion and settling up with the referrer are different jobs, so creating the
+    // code grants nothing towards paying for it.
+    $staff = scopedStaff(['read store_referrals', 'update store_referrals', 'create store_referrals']);
+    $referral = StoreReferral::factory()->create(['created_by' => $staff->id]);
+    StoreOrder::factory()->paid()->create([
+        'store_referral_id' => $referral->id,
+        'referral_earning_base' => 500,
+    ]);
+
+    $this->actingAs($staff)
+        ->post(route('admin.store.referral.payout', $referral->id), ['amount' => 100])
+        ->assertStatus(403);
+
+    expect($referral->fresh()->paidOut())->toBe(0);
 });

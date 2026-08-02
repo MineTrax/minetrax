@@ -1,9 +1,9 @@
 <?php
 
 use App\Enums\CommandQueueStatus;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StoreDeliveryStatus;
 use App\Enums\StoreOrderStatus;
-use App\Enums\StorePackageCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Enums\StorePaymentGateway;
 use App\Enums\StorePaymentRefundType;
@@ -237,10 +237,10 @@ test('a delivery deferred past the attention window is flagged', function () {
     $delivery = StoreOrderDelivery::create([
         'store_order_id' => $order->id,
         'store_order_item_id' => $item->id,
-        'store_package_command_id' => null,
+        'store_command_id' => null,
         'server_id' => $queue->server_id,
         'command_queue_id' => $queue->id,
-        'trigger' => StorePackageCommandTrigger::PURCHASE,
+        'trigger' => StoreCommandTrigger::PURCHASE,
         'parsed_command' => 'give Notch diamond 1',
         'repeat_index' => 0,
     ]);
@@ -441,10 +441,10 @@ function deliveryFor(StoreOrder $order, CommandQueueStatus $status): StoreOrderD
     return StoreOrderDelivery::create([
         'store_order_id' => $order->id,
         'store_order_item_id' => $item->id,
-        'store_package_command_id' => null,
+        'store_command_id' => null,
         'server_id' => $queue->server_id,
         'command_queue_id' => $queue->id,
-        'trigger' => StorePackageCommandTrigger::PURCHASE,
+        'trigger' => StoreCommandTrigger::PURCHASE,
         'parsed_command' => 'give Notch diamond 1',
         'repeat_index' => 0,
     ]);

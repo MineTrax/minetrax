@@ -1,13 +1,13 @@
 <?php
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageRequirementMode;
 use App\Enums\StorePackageType;
 use App\Models\Server;
 use App\Models\StoreCategory;
+use App\Models\StoreCommand;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StoreSale;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -56,7 +56,7 @@ function packageAdminValidPayload(array $overrides = []): array
 function commandPayload(array $overrides = []): array
 {
     return array_merge([
-        'trigger' => StorePackageCommandTrigger::PURCHASE->value,
+        'trigger' => StoreCommandTrigger::PURCHASE->value,
         'command' => 'lp user {PLAYER_USERNAME} parent add vip',
         'is_player_online_required' => false,
         'delay_seconds' => 0,
@@ -319,7 +319,7 @@ test('admin can create a package with commands', function () {
         'commands' => [
             commandPayload(),
             commandPayload([
-                'trigger' => StorePackageCommandTrigger::EXPIRY->value,
+                'trigger' => StoreCommandTrigger::EXPIRY->value,
                 'command' => 'lp user {PLAYER_USERNAME} parent remove vip',
             ]),
         ],
@@ -327,8 +327,8 @@ test('admin can create a package with commands', function () {
 
     $package = StorePackage::first();
     expect($package->commands)->toHaveCount(2);
-    expect($package->commandsForTrigger(StorePackageCommandTrigger::PURCHASE)->get())->toHaveCount(1);
-    expect($package->commandsForTrigger(StorePackageCommandTrigger::EXPIRY)->get())->toHaveCount(1);
+    expect($package->commandsForTrigger(StoreCommandTrigger::PURCHASE)->get())->toHaveCount(1);
+    expect($package->commandsForTrigger(StoreCommandTrigger::EXPIRY)->get())->toHaveCount(1);
 });
 
 test('command string is required', function () {
@@ -350,7 +350,7 @@ test('an unknown command trigger is rejected', function () {
 test('updating commands updates existing rows rather than recreating them', function () {
     $this->actingAs(User::whereId(1)->first());
     $package = StorePackage::factory()->create();
-    $command = StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
+    $command = StoreCommand::factory()->forOwner($package)->create();
 
     $this->put(route('admin.store.package.update', $package->id), packageAdminValidPayload([
         'name' => $package->name,
@@ -368,22 +368,22 @@ test('updating commands updates existing rows rather than recreating them', func
 test('commands removed from the form are deleted', function () {
     $this->actingAs(User::whereId(1)->first());
     $package = StorePackage::factory()->create();
-    $keep = StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
-    $drop = StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
+    $keep = StoreCommand::factory()->forOwner($package)->create();
+    $drop = StoreCommand::factory()->forOwner($package)->create();
 
     $this->put(route('admin.store.package.update', $package->id), packageAdminValidPayload([
         'name' => $package->name,
         'commands' => [commandPayload(['id' => $keep->id])],
     ]))->assertSessionHasNoErrors();
 
-    $this->assertDatabaseHas('store_package_commands', ['id' => $keep->id]);
-    $this->assertDatabaseMissing('store_package_commands', ['id' => $drop->id]);
+    $this->assertDatabaseHas('store_commands', ['id' => $keep->id]);
+    $this->assertDatabaseMissing('store_commands', ['id' => $drop->id]);
 });
 
 test('submitting no commands clears them all', function () {
     $this->actingAs(User::whereId(1)->first());
     $package = StorePackage::factory()->create();
-    StorePackageCommand::factory()->count(3)->create(['store_package_id' => $package->id]);
+    StoreCommand::factory()->count(3)->forOwner($package)->create();
 
     $this->put(route('admin.store.package.update', $package->id), packageAdminValidPayload([
         'name' => $package->name,
@@ -396,7 +396,7 @@ test('submitting no commands clears them all', function () {
 test('a failed update rolls back the command reconcile', function () {
     $this->actingAs(User::whereId(1)->first());
     $package = StorePackage::factory()->create();
-    $command = StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
+    $command = StoreCommand::factory()->forOwner($package)->create();
 
     // A command belonging to a different package must not be adoptable, and the surrounding
     // transaction must leave the original command set untouched.
@@ -405,7 +405,7 @@ test('a failed update rolls back the command reconcile', function () {
         'commands' => [commandPayload(['id' => 999999])],
     ]))->assertSessionHasErrors(['commands.0.id']);
 
-    $this->assertDatabaseHas('store_package_commands', ['id' => $command->id]);
+    $this->assertDatabaseHas('store_commands', ['id' => $command->id]);
 });
 
 test('deleting a package soft deletes it', function () {
@@ -577,12 +577,12 @@ test('a deleted packages orders stay readable', function () {
 });
 
 test('saving a package leaves every sale commands alone', function () {
-    // The two kinds share store_package_commands, so the package controller's trailing delete has
+    // The two kinds share store_commands, so the package controller's trailing delete has
     // to stay scoped to store_package_id.
     $this->actingAs(User::whereId(1)->first());
     $package = StorePackage::factory()->create();
     $sale = StoreSale::factory()->create();
-    $saleCommand = StorePackageCommand::factory()->forSale($sale)->create();
+    $saleCommand = StoreCommand::factory()->forSale($sale)->forSale($sale)->create();
 
     $this->put(route('admin.store.package.update', $package->id), packageAdminValidPayload([
         'name' => $package->name,
@@ -590,9 +590,8 @@ test('saving a package leaves every sale commands alone', function () {
         'commands' => [commandPayload()],
     ]))->assertSessionHasNoErrors();
 
-    $this->assertDatabaseHas('store_package_commands', [
+    $this->assertDatabaseHas('store_commands', [
         'id' => $saleCommand->id,
-        'store_sale_id' => $sale->id,
     ]);
     expect($package->fresh()->commands()->count())->toBe(1);
 });

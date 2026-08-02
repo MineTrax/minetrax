@@ -10,6 +10,7 @@ use App\Http\Middleware\ImpersonateSanctum;
 use App\Http\Middleware\RedirectUncompletedUser;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\StaffMember;
+use App\Http\Middleware\TrackStoreReferral;
 use App\Jobs\CalculatePlayersJob;
 use App\Jobs\RunAwaitingCommandQueuesJob;
 use App\Jobs\Store\ExpireStalePendingStoreOrdersJob;
@@ -76,6 +77,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Web middleware group
         $middleware->web(append: [
+            // Ahead of HandleInertiaRequests, so a ?ref= arrival is already in the request's cookie
+            // bag by the time shared props are built.
+            TrackStoreReferral::class,
             HandleInertiaRequests::class,
             SetLocale::class,
         ]);

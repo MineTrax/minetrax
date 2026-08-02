@@ -1,13 +1,13 @@
 <?php
 
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StoreDiscountType;
-use App\Enums\StorePackageCommandTrigger;
 use App\Enums\StoreSaleScope;
 use App\Models\Server;
 use App\Models\StoreCategory;
+use App\Models\StoreCommand;
 use App\Models\StoreCurrency;
 use App\Models\StorePackage;
-use App\Models\StorePackageCommand;
 use App\Models\StoreSale;
 use App\Models\User;
 use App\Services\StorePricingService;
@@ -46,7 +46,7 @@ function saleAdminValidPayload(array $overrides = []): array
 function saleCommandPayload(array $overrides = [], array $serverIds = [], array $packageIds = []): array
 {
     return array_merge([
-        'trigger' => StorePackageCommandTrigger::PURCHASE->value,
+        'trigger' => StoreCommandTrigger::PURCHASE->value,
         'command' => 'give {PLAYER_USERNAME} coins 100',
         'is_player_online_required' => false,
         'delay_seconds' => 0,
@@ -404,10 +404,10 @@ test('admin can attach commands to a sale', function () {
     $sale = StoreSale::firstWhere('name', 'Summer Sale');
     $command = $sale->commands()->first();
 
-    // Owned by the sale and by nothing else: the two owner columns share a table, and exactly one
-    // of them is ever set.
-    expect($command->store_package_id)->toBeNull();
-    expect($command->store_sale_id)->toBe($sale->id);
+    // Owned by the sale and by nothing else. Every owner shares one table, and the morph makes
+    // "exactly one owner" a property of the schema rather than something a check has to enforce.
+    expect($command->commandable_type)->toBe(StoreSale::class);
+    expect($command->commandable_id)->toBe($sale->id);
     expect($command->command)->toEqual('give {PLAYER_USERNAME} coins 100');
     expect($command->is_run_on_all_servers)->toBeFalse();
     expect($command->is_run_on_all_packages)->toBeFalse();
@@ -431,8 +431,8 @@ test('leaving the command pickers empty records the run on all flags', function 
 test('editing removes commands the form no longer lists', function () {
     $this->actingAs(User::whereId(1)->first());
     $sale = StoreSale::factory()->create();
-    $kept = StorePackageCommand::factory()->forSale($sale)->create(['command' => 'keep me']);
-    $dropped = StorePackageCommand::factory()->forSale($sale)->create(['command' => 'drop me']);
+    $kept = StoreCommand::factory()->forSale($sale)->create(['command' => 'keep me']);
+    $dropped = StoreCommand::factory()->forSale($sale)->create(['command' => 'drop me']);
 
     $this->put(route('admin.store.sale.update', $sale->id), saleAdminValidPayload([
         'name' => $sale->name,
@@ -440,7 +440,7 @@ test('editing removes commands the form no longer lists', function () {
     ]))->assertSessionHasNoErrors();
 
     expect($sale->fresh()->commands()->pluck('command')->all())->toEqual(['keep me still']);
-    $this->assertDatabaseMissing('store_package_commands', ['id' => $dropped->id]);
+    $this->assertDatabaseMissing('store_commands', ['id' => $dropped->id]);
 });
 
 test('saving one sale never touches another sale or a package', function () {
@@ -451,16 +451,16 @@ test('saving one sale never touches another sale or a package', function () {
     $otherSale = StoreSale::factory()->create();
     $package = StorePackage::factory()->create();
 
-    $otherCommand = StorePackageCommand::factory()->forSale($otherSale)->create();
-    $packageCommand = StorePackageCommand::factory()->create(['store_package_id' => $package->id]);
+    $otherCommand = StoreCommand::factory()->forSale($otherSale)->create();
+    $packageCommand = StoreCommand::factory()->forOwner($package)->create();
 
     $this->put(route('admin.store.sale.update', $sale->id), saleAdminValidPayload([
         'name' => $sale->name,
         'commands' => [saleCommandPayload()],
     ]))->assertSessionHasNoErrors();
 
-    $this->assertDatabaseHas('store_package_commands', ['id' => $otherCommand->id]);
-    $this->assertDatabaseHas('store_package_commands', ['id' => $packageCommand->id]);
+    $this->assertDatabaseHas('store_commands', ['id' => $otherCommand->id]);
+    $this->assertDatabaseHas('store_commands', ['id' => $packageCommand->id]);
     expect($sale->fresh()->commands()->count())->toBe(1);
 });
 
@@ -468,7 +468,7 @@ test('a forged command id belonging to another sale is not stolen', function () 
     $this->actingAs(User::whereId(1)->first());
     $sale = StoreSale::factory()->create();
     $otherSale = StoreSale::factory()->create();
-    $victim = StorePackageCommand::factory()->forSale($otherSale)->create(['command' => 'untouched']);
+    $victim = StoreCommand::factory()->forSale($otherSale)->create(['command' => 'untouched']);
 
     $this->put(route('admin.store.sale.update', $sale->id), saleAdminValidPayload([
         'name' => $sale->name,
@@ -476,7 +476,8 @@ test('a forged command id belonging to another sale is not stolen', function () 
     ]))->assertSessionHasNoErrors();
 
     expect($victim->fresh()->command)->toEqual('untouched');
-    expect($victim->fresh()->store_sale_id)->toBe($otherSale->id);
+    expect($victim->fresh()->commandable_id)->toBe($otherSale->id);
+    expect($victim->fresh()->commandable_type)->toBe(StoreSale::class);
     // Falls through to a create on the sale actually being edited.
     expect($sale->fresh()->commands()->count())->toBe(1);
 });
@@ -486,7 +487,7 @@ test('the edit page hands back commands with their servers and packages', functi
     $server = Server::factory()->create();
     $package = StorePackage::factory()->create();
     $sale = StoreSale::factory()->create();
-    $command = StorePackageCommand::factory()->forSale($sale)->create(['is_run_on_all_servers' => false]);
+    $command = StoreCommand::factory()->forSale($sale)->create(['is_run_on_all_servers' => false]);
     $command->servers()->sync([$server->id]);
     $command->packages()->sync([$package->id]);
 

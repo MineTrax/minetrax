@@ -8,9 +8,11 @@ use App\Models\StoreCoupon;
 use App\Models\StoreCurrency;
 use App\Models\StoreGiftCard;
 use App\Models\StorePackage;
+use App\Models\StoreReferral;
 use App\Services\StoreCartService;
 use App\Services\StoreCurrencyService;
 use App\Services\StorePackagePresenter;
+use App\Services\StoreReferralService;
 use App\Services\StoreVariableService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,6 +28,7 @@ class StoreCartController extends Controller
         private StoreCurrencyService $currencies,
         private StoreVariableService $variables,
         private StorePackagePresenter $presenter,
+        private StoreReferralService $referrals,
     ) {}
 
     public function show(Request $request): Response
@@ -57,6 +60,9 @@ class StoreCartController extends Controller
                 'symbol' => $currency->symbol,
                 'available' => $this->currencies->enabled()->map->only(['code', 'name', 'symbol'])->values(),
             ],
+            // Whether to offer the referral field at all. A store running no creator codes should
+            // not carry a permanently useless box through its highest-intent screen.
+            'acceptsReferralCodes' => StoreReferral::where('is_enabled', true)->exists(),
         ]);
     }
 
@@ -128,6 +134,10 @@ class StoreCartController extends Controller
 
     /**
      * Apply or clear a coupon / gift card code.
+     *
+     * Referral codes have a field of their own — they are not a discount, they do not consume the
+     * coupon slot, and sharing one box would have made "Clear" ambiguous between two things a buyer
+     * may well want to keep independently.
      */
     public function applyCode(Request $request): RedirectResponse
     {
@@ -157,8 +167,59 @@ class StoreCartController extends Controller
             return redirect()->route('store.cart.show');
         }
 
+        // Named so a buyer who puts a creator code in the wrong box is told where it goes, rather
+        // than being told it does not exist.
+        if ($this->referrals->findByCode($code)) {
+            return redirect()->route('store.cart.show')->with(['toast' => [
+                'type' => 'error',
+                'title' => __('That is a referral code'),
+                'body' => __('Enter it in the referral field instead.'),
+            ]]);
+        }
+
         return redirect()->route('store.cart.show')
             ->with(['toast' => ['type' => 'error', 'title' => __('Invalid code'), 'body' => __('That code was not recognised.')]]);
+    }
+
+    /**
+     * Credit a referrer, from a code the buyer typed.
+     */
+    public function applyReferral(Request $request): RedirectResponse
+    {
+        $this->authorize('browse', StorePackage::class);
+
+        $validated = $request->validate(['code' => 'required|string|max:64']);
+        $referral = $this->referrals->findByCode($validated['code']);
+
+        if (! $referral) {
+            return redirect()->route('store.cart.show')->with(['toast' => [
+                'type' => 'error',
+                'title' => __('Invalid referral code'),
+                'body' => __('That referral code was not recognised.'),
+            ]]);
+        }
+
+        // Written to the cart rather than the cookie: a code the buyer chose deliberately should
+        // outlive the attribution window of whatever link they happened to arrive through.
+        $this->carts->current($request)->update(['store_referral_id' => $referral->id]);
+
+        return redirect()->route('store.cart.show');
+    }
+
+    /**
+     * Stop crediting the referrer, leaving any coupon or gift card alone.
+     *
+     * Forgets the cookie too, not just the cart row — otherwise a buyer who removed a referrer they
+     * arrived through would find them credited again on the next page load.
+     */
+    public function clearReferral(Request $request): RedirectResponse
+    {
+        $this->authorize('browse', StorePackage::class);
+
+        $this->carts->current($request)->update(['store_referral_id' => null]);
+        $this->referrals->forget($request);
+
+        return redirect()->route('store.cart.show');
     }
 
     /**

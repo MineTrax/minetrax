@@ -146,18 +146,28 @@ return new class extends Migration
             $table->unique(['store_package_id', 'required_store_package_id'], 'store_package_requirement_unique');
         });
 
-        // A command belongs to exactly one owner: a package, or a sale. A sale's commands are the
-        // extra a promotion hands out on top of its discount — "10% off, and 100 bonus coins" — and
-        // they live in this table on purpose rather than in one of their own. store_order_deliveries
-        // guards against double-delivery with a unique index over store_package_command_id, and
-        // MySQL treats a NULL inside a unique index as distinct: a second command table would force
-        // a nullable second column into that index and switch the guard off for every row that left
-        // it null. One table keeps the column non-null and the guard intact.
+        // Every in-game command the store can run, whoever owns it: a package, a sale, a referral,
+        // or whatever is registered next. One table rather than one per owner, because
+        // store_order_deliveries guards against double-delivery with a unique index over
+        // store_command_id, and MySQL treats a NULL inside a unique index as distinct — a second
+        // command table would force a nullable second column into that index and switch the guard
+        // off for every row that left it null.
         //
-        // store_sale_id is added by the promotions migration, because store_sales does not exist yet.
-        Schema::create('store_package_commands', function (Blueprint $table) {
+        // The owner is a morph rather than a column per kind, so exactly one owner holds by
+        // construction and adding a fourth kind needs no migration. Which classes may own a command
+        // is config('store.command_owners'); StoreCommand::booted() refuses anything else, so a typo
+        // cannot write a row the dispatcher will never find.
+        //
+        // The fully-qualified class name is stored, not a morph alias: store_couponables and
+        // store_saleables already hold FQCNs, and Relation::enforceMorphMap() is global — turning it
+        // on here would start rejecting theirs.
+        Schema::create('store_commands', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('store_package_id')->nullable()->constrained()->cascadeOnDelete();
+            // Spelled out rather than $table->morphs(), which adds its own index on
+            // (type, id) — a strict prefix of the one below, so it would be written on every
+            // insert and read by nothing.
+            $table->string('commandable_type'); // StorePackage | StoreSale | StoreReferral | …
+            $table->unsignedBigInteger('commandable_id');
             $table->string('trigger'); // purchase, expiry, refund, chargeback
             $table->text('command');   // raw, with {PLACEHOLDER}s
             $table->boolean('is_player_online_required')->default(false);
@@ -168,24 +178,25 @@ return new class extends Migration
             // and this flag records that choice so a server added later is included automatically.
             $table->boolean('is_run_on_all_servers')->default(true);
 
-            // The same convention one level up, for a sale's commands: picking no packages means
-            // every package the sale discounted, so a package that joins the sale's scope later is
-            // covered too. Always true for a package's own commands, which have nothing to scope.
+            // The same convention one level up, for an owner whose commands are scoped to some of
+            // the packages in an order — a sale's, today. Picking no packages means every package
+            // the owner covered, so one that joins its scope later is included too. Always true for
+            // a package's own commands, which have nothing to scope.
             $table->boolean('is_run_on_all_packages')->default(true);
 
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
-            $table->index(['store_package_id', 'trigger']);
+            $table->index(['commandable_type', 'commandable_id', 'trigger'], 'store_commands_owner_trigger_index');
         });
 
-        Schema::create('store_package_command_server', function (Blueprint $table) {
+        Schema::create('store_command_server', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('store_package_command_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('store_command_id')->constrained()->cascadeOnDelete();
             $table->foreignId('server_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
 
-            $table->unique(['store_package_command_id', 'server_id'], 'store_package_command_server_unique');
+            $table->unique(['store_command_id', 'server_id'], 'store_command_server_unique');
         });
     }
 
@@ -194,8 +205,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('store_package_command_server');
-        Schema::dropIfExists('store_package_commands');
+        Schema::dropIfExists('store_command_server');
+        Schema::dropIfExists('store_commands');
         Schema::dropIfExists('store_package_requirement');
         Schema::dropIfExists('store_package_variable');
         Schema::dropIfExists('store_variables');

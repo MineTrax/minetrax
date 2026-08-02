@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Store;
 
-use App\Enums\StorePackageCommandTrigger;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Models\StoreOrder;
 use App\Services\StoreCommandDispatchService;
@@ -45,7 +45,7 @@ class ProcessStoreOrderPurchaseJob implements ShouldQueue
         $this->issueGrants($order);
         $this->issueGiftCards($order, $giftCards);
 
-        $deliveryStatus = $dispatcher->dispatchForOrder($order, StorePackageCommandTrigger::PURCHASE);
+        $deliveryStatus = $dispatcher->dispatchForOrder($order, StoreCommandTrigger::PURCHASE);
 
         $orders->markCompleted($order, $deliveryStatus);
     }
