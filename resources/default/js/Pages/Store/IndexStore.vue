@@ -4,7 +4,6 @@ import AppHead from "@/Components/AppHead.vue";
 import { Link } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import StoreCurrencySwitcher from "@/Components/Store/StoreCurrencySwitcher.vue";
-import StoreSearchBox from "@/Components/Store/StoreSearchBox.vue";
 import StoreCartBar from "@/Components/Store/StoreCartBar.vue";
 import StorePackageCard from "@/Components/Store/StorePackageCard.vue";
 import StorePackageListing from "@/Components/Store/StorePackageListing.vue";
@@ -37,12 +36,6 @@ const props = defineProps({
         type: Array,
         required: true,
     },
-    // Echoed back by the server so the box keeps the term across a back-navigation, and so the
-    // "no results" state can name what was searched for.
-    search: {
-        type: [String, null],
-        default: null,
-    },
     // Priced server-side for the cart bar. Null when the cart is empty.
     cartTotalFormatted: {
         type: [String, null],
@@ -70,12 +63,6 @@ const displayType = computed(() => {
     }
     return chosen;
 });
-
-// A search filters within the category the shopper is already in, so the box has to post back to
-// whichever route rendered this page.
-const searchRoute = computed(() => (props.activeCategory
-    ? { name: "store.category", params: props.activeCategory.slug }
-    : { name: "store.index", params: null }));
 
 // The sidebar shipped parent_id from the first version but rendered every category as a
 // top-level entry, so a store with sub-categories read as one long undifferentiated list.
@@ -125,17 +112,6 @@ const showCategories = ref(false);
               :current="currency.current"
             />
           </div>
-        </div>
-
-        <!-- Full width under the title rather than tucked beside the currency switcher: on a
-             catalogue of any size, finding a named rank is the most common thing a returning
-             buyer does, and until now the only way was to read every card. -->
-        <div class="mt-4 max-w-xl">
-          <StoreSearchBox
-            :model-value="search"
-            :route-name="searchRoute.name"
-            :route-params="searchRoute.params"
-          />
         </div>
       </div>
     </div>
@@ -305,31 +281,12 @@ const showCategories = ref(false);
                 d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
               />
             </svg>
-            <!-- A search that found nothing is a different problem from a store with nothing in
-                 it, and the way out of it is different too. -->
-            <template v-if="search">
-              <h3 class="text-lg font-semibold text-foreground mb-2">
-                {{ __("Nothing matched :term", { term: search }) }}
-              </h3>
-              <p class="text-muted-foreground mb-6">
-                {{ __("Try a shorter word, or browse the categories instead.") }}
-              </p>
-              <Link
-                :href="activeCategory ? route('store.category', activeCategory.slug) : route('store.index')"
-                class="inline-block px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg transition-colors hover:bg-primary/90"
-              >
-                {{ __("Clear search") }}
-              </Link>
-            </template>
-
-            <template v-else>
-              <h3 class="text-lg font-semibold text-foreground mb-2">
-                {{ __("No Packages Available") }}
-              </h3>
-              <p class="text-muted-foreground">
-                {{ __("There are no packages available at the moment.") }}
-              </p>
-            </template>
+            <h3 class="text-lg font-semibold text-foreground mb-2">
+              {{ __("No Packages Available") }}
+            </h3>
+            <p class="text-muted-foreground">
+              {{ __("There are no packages available at the moment.") }}
+            </p>
           </div>
         </div>
       </div>

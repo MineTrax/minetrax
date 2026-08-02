@@ -13,10 +13,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class StorePackage extends BaseModel implements HasMedia
+class StorePackage extends BaseModel implements HasMedia, Searchable
 {
     use HasFactory, InteractsWithMedia, SoftDeletes;
+
+    /**
+     * The key this model's rows are grouped under in the navbar search.
+     *
+     * Read by spatie's ModelSearchAspect, which otherwise falls back to the table name — the
+     * dropdown would then have a "store_packages" heading rather than a "Shop" one.
+     */
+    public string $searchableType = 'shop';
 
     protected $appends = ['photo_url', 'is_available'];
 
@@ -66,6 +76,17 @@ class StorePackage extends BaseModel implements HasMedia
         }
 
         return $photo_url;
+    }
+
+    /**
+     * How this package appears in the site-wide navbar search.
+     *
+     * Which packages are searchable at all is decided by SearchController, not here — this only
+     * describes one that has already qualified.
+     */
+    public function getSearchResult(): SearchResult
+    {
+        return new SearchResult($this, $this->name, route('store.package', $this->slug));
     }
 
     public function category(): BelongsTo

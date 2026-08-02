@@ -13,7 +13,6 @@ use App\Services\StoreWidgetService;
 use App\Settings\GeneralSettings;
 use App\Settings\StoreSettings;
 use App\Utils\Helpers\Helper;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -63,17 +62,15 @@ class StoreController extends Controller
         $this->authorize('browse', StorePackage::class);
 
         $currency = $this->currencies->resolve();
-        $search = $this->searchTerm($request);
 
         return Inertia::render('Store/IndexStore', [
             'storeName' => $this->settings->store_name,
             'storeDescription' => $this->settings->store_description,
             'categories' => $this->categoryTree(),
             'packages' => $this->presenter->collection(
-                $this->presenter->visibleQuery()->when($search, $this->applySearch(...))->get(),
+                $this->presenter->visibleQuery()->get(),
                 $currency
             ),
-            'search' => $search,
             'cartTotalFormatted' => $this->cartTotal($request),
             'currency' => $this->currencyPayload($currency),
             // The storefront gets the same three boxes as the homepage, and needs them most when it
@@ -89,11 +86,9 @@ class StoreController extends Controller
         abort_unless($storeCategory->is_enabled, 404);
 
         $currency = $this->currencies->resolve();
-        $search = $this->searchTerm($request);
 
         $packages = $this->presenter->visibleQuery()
             ->where('store_category_id', $storeCategory->id)
-            ->when($search, $this->applySearch(...))
             ->get();
 
         $comparisonFields = $storeCategory->comparisonFields();
@@ -108,7 +103,6 @@ class StoreController extends Controller
                 'comparison_fields' => $comparisonFields,
             ],
             'packages' => $this->presenter->collection($packages, $currency, $comparisonFields),
-            'search' => $search,
             'cartTotalFormatted' => $this->cartTotal($request),
             'currency' => $this->currencyPayload($currency),
             // The same page component as the index, so it needs the same sidebar boxes or they
@@ -138,39 +132,6 @@ class StoreController extends Controller
         }
 
         return $this->carts->quote($cart, $request)['formatted']['total'];
-    }
-
-    /**
-     * The visitor's search term, or null when they have not searched.
-     *
-     * Trimmed to null rather than kept as an empty string so `when()` below reads as "only if they
-     * actually typed something", and so an empty `?q=` never renders an active search chip.
-     */
-    private function searchTerm(Request $request): ?string
-    {
-        $term = trim((string) $request->query('q', ''));
-
-        return $term === '' ? null : mb_substr($term, 0, 100);
-    }
-
-    /**
-     * Match a term against the parts of a package a shopper would recognise it by.
-     *
-     * Takes the term as an argument rather than closing over it, so it can be handed straight to
-     * `when()` — building the closure at the call site evaluated it even when there was no term,
-     * and every unsearched page load died on the null.
-     *
-     * The long description is deliberately out: it is authored HTML, so a search for "gold" would
-     * match a stray hex colour in the markup.
-     */
-    private function applySearch(Builder $query, string $term): Builder
-    {
-        $like = '%'.str_replace(['%', '_'], ['\%', '\_'], $term).'%';
-
-        return $query->where(
-            fn (Builder $q) => $q->where('name', 'like', $like)
-                ->orWhere('short_description', 'like', $like)
-        );
     }
 
     public function showPackage(StorePackage $storePackage): Response

@@ -157,15 +157,70 @@
           {{ __("No players found.") }}
         </div>
       </div>
+
+      <!-- Last, and only when the store module is on: a community site's search is for people
+           first, and a permanently empty "Shop" heading on a site with no store is noise. -->
+      <div
+        v-if="!loading && storeEnabled"
+        id="shop"
+        class="mt-5 pb-4"
+      >
+        <span class="text-xs text-popover-foreground font-extrabold">{{ __("SHOP") }}</span>
+
+        <div class="flex flex-col">
+          <inertia-link
+            v-for="item in shopList"
+            id="shopitem"
+            :key="item.slug"
+            as="a"
+            :href="route('store.package', item.slug)"
+            class="flex justify-between items-center gap-3 px-2 py-1 hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+          >
+            <div class="flex items-center min-w-0">
+              <img
+                v-if="item.photo_url"
+                class="mr-3 w-10 h-10 rounded object-cover shrink-0"
+                :src="item.photo_url"
+                :alt="item.title"
+              >
+              <div
+                v-else
+                class="mr-3 w-10 h-10 rounded bg-muted flex items-center justify-center shrink-0"
+              >
+                <ShoppingBagIcon class="w-5 h-5 text-muted-foreground" />
+              </div>
+              <p class="text-sm text-popover-foreground font-bold truncate">
+                {{ item.title }}
+              </p>
+            </div>
+
+            <span
+              v-if="item.price_formatted"
+              class="text-sm font-semibold text-popover-foreground whitespace-nowrap"
+            >
+              {{ item.price_formatted }}
+            </span>
+          </inertia-link>
+        </div>
+
+        <div
+          v-if="!shopList || shopList.length <= 0"
+          id="emptyshop"
+          class="italic text-muted-foreground"
+        >
+          {{ __("No packages found.") }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import Icon from "@/Components/Icon.vue";
-import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
+import { MagnifyingGlassIcon, ShoppingBagIcon } from "@heroicons/vue/24/outline";
 import { debounce } from "lodash/function";
-import { nextTick, onMounted, onUnmounted, ref } from "vue";
+import { usePage } from "@inertiajs/vue3";
+import { computed, nextTick, onMounted, onUnmounted, ref } from "vue";
 
 // Props
 const props = defineProps({
@@ -185,7 +240,12 @@ const loading = ref(false);
 const searchString = ref("");
 const usersList = ref([]);
 const playersList = ref([]);
+const shopList = ref([]);
 const isFocused = ref(false);
+
+// The endpoint omits the shop aspect entirely when the module is off, so the section is hidden
+// rather than left showing a permanent "No packages found."
+const storeEnabled = computed(() => !!usePage().props.store?.enabled);
 
 // Debounced search function
 const performSearch = debounce(() => {
@@ -200,6 +260,7 @@ const performSearch = debounce(() => {
         .then(data => {
             usersList.value = data.data.users;
             playersList.value = data.data.players;
+            shopList.value = data.data.shop;
         })
         .finally(() => {
             loading.value = false;

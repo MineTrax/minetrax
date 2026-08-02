@@ -240,44 +240,6 @@ test('an authenticated user can browse too', function () {
         ->assertStatus(200);
 });
 
-test('a search narrows the storefront to matching packages', function () {
-    StorePackage::factory()->create(['name' => 'Diamond Rank']);
-    StorePackage::factory()->create(['name' => 'Gold Rank']);
-    StorePackage::factory()->create(['name' => 'Crate Key', 'short_description' => 'Opens a diamond crate']);
-
-    $this->get(route('store.index', ['q' => 'diamond']))
-        ->assertInertia(fn ($page) => $page
-            ->where('search', 'diamond')
-            ->has('packages', 2)
-        );
-});
-
-test('a search inside a category stays inside that category', function () {
-    $category = StoreCategory::factory()->create();
-    StorePackage::factory()->create(['name' => 'Diamond Rank', 'store_category_id' => $category->id]);
-    StorePackage::factory()->create(['name' => 'Diamond Key']);
-
-    $this->get(route('store.category', [$category->slug, 'q' => 'diamond']))
-        ->assertInertia(fn ($page) => $page
-            ->has('packages', 1)
-            ->where('packages.0.name', 'Diamond Rank')
-        );
-});
-
-test('an empty search term is not treated as a search', function () {
-    StorePackage::factory()->count(2)->create();
-
-    $this->get(route('store.index', ['q' => '   ']))
-        ->assertInertia(fn ($page) => $page->where('search', null)->has('packages', 2));
-});
-
-test('a wildcard in a search term is matched literally', function () {
-    StorePackage::factory()->create(['name' => 'Gold Rank']);
-
-    $this->get(route('store.index', ['q' => '%']))
-        ->assertInertia(fn ($page) => $page->has('packages', 0));
-});
-
 test('remaining stock is reported only when the number is small enough to act on', function () {
     StorePackage::factory()->create(['name' => 'Nearly Gone', 'global_purchase_limit' => 12, 'sold_count' => 9]);
     StorePackage::factory()->create(['name' => 'Plenty Left', 'global_purchase_limit' => 500, 'sold_count' => 10]);
