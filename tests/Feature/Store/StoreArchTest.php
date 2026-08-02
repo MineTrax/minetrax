@@ -261,3 +261,63 @@ test('every listing layout shows a reduced price and says what reduced it', func
         );
     }
 });
+
+test('no admin card clips a multiselect dropdown', function () {
+    // vue-multiselect is the one dropdown in this codebase that does not portal to the body — the
+    // shadcn Select, the Popover and the date picker all do. Its panel is absolutely positioned,
+    // so an `overflow-hidden` ancestor cuts it off after a row or two and no z-index can rescue
+    // it. `card-clip-safe` in app.css rounds the corners without clipping and is the replacement;
+    // several cards carried both classes, which meant the helper did nothing.
+    $offenders = [];
+
+    foreach (glob(base_path('resources/default/js/Pages/Admin/*/*.vue')) as $file) {
+        $lines = explode("\n", file_get_contents($file));
+
+        if (! str_contains(implode("\n", $lines), '<Multiselect')) {
+            continue;
+        }
+
+        foreach ($lines as $index => $line) {
+            if (! str_contains($line, '<Multiselect')) {
+                continue;
+            }
+
+            // Walk out through the enclosing tags, which are the ones indented less than this.
+            $depth = strlen($line) - strlen(ltrim($line));
+
+            for ($i = $index - 1; $i >= 0; $i--) {
+                $candidate = $lines[$i];
+                $trimmed = ltrim($candidate);
+
+                if (! str_starts_with($trimmed, '<') || str_starts_with($trimmed, '</')) {
+                    continue;
+                }
+
+                $candidateDepth = strlen($candidate) - strlen($trimmed);
+
+                if ($candidateDepth >= $depth) {
+                    continue;
+                }
+
+                $depth = $candidateDepth;
+
+                // The opening tag's attributes can wrap over several lines.
+                $tag = explode('>', implode("\n", array_slice($lines, $i, 12)))[0];
+
+                if (str_contains($tag, 'overflow-hidden')) {
+                    $offenders[] = basename(dirname($file)).'/'.basename($file).':'.($i + 1);
+                }
+
+                if ($candidateDepth === 0) {
+                    break;
+                }
+            }
+        }
+    }
+
+    expect(array_values(array_unique($offenders)))->toBe(
+        [],
+        'These cards clip their multiselect — swap overflow-hidden for card-clip-safe: '
+            .implode(', ', array_unique($offenders))
+    );
+});
