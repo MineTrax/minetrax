@@ -5,11 +5,11 @@ import { Link, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import StoreCurrencySwitcher from "@/Components/Store/StoreCurrencySwitcher.vue";
 import StorePackageCard from "@/Components/Store/StorePackageCard.vue";
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 const { __ } = useTranslations();
 
-defineProps({
+const props = defineProps({
     quote: {
         type: Object,
         required: true,
@@ -24,8 +24,20 @@ defineProps({
     },
 });
 
-const codeInput = ref("");
+// Whether a coupon or gift card is currently attached, however the server judged it. Read from
+// `applied_code` rather than from coupon_code or the discount, because a coupon that was rejected —
+// below its minimum, say — is still attached and still has to be removable.
+const hasAppliedCode = computed(() => Boolean(props.quote.applied_code));
+
+// Seeded from the server so the locked field shows what is actually on the cart, and re-synced
+// whenever that changes: applying and clearing are both full visits, and typing a code then
+// clearing it must not leave the old text sitting in a field that is editable again.
+const codeInput = ref(props.quote.applied_code ?? "");
 const codeLoading = ref(false);
+
+watch(() => props.quote.applied_code, (code) => {
+    codeInput.value = code ?? "";
+});
 
 const handleRemoveItem = (cartItemId) => {
     router.delete(route("store.cart.delete", cartItemId), {
@@ -87,9 +99,11 @@ const handleClearCode = () => {
         code: "",
     }, {
         preserveScroll: true,
+        // The field is not emptied here: the watch above follows `applied_code`, so whatever the
+        // server ends up holding is what the box shows. Clearing it by hand as well would fight
+        // that on any response where the code survived.
         onFinish: () => {
             codeLoading.value = false;
-            codeInput.value = "";
         },
     });
 };
@@ -413,33 +427,39 @@ const handleClearCode = () => {
                 {{ quote.coupon_error }}
               </div>
 
+              <!-- One row, one button. Clear used to sit full-width underneath, which read as
+                   "clear the cart" rather than "remove this code" — and the field stayed editable
+                   beside a code that was already applied, so it was never obvious which of the two
+                   was in force. While a code is on, the field shows it and is locked; clearing
+                   hands it back. -->
               <div class="flex gap-2">
                 <!-- Enter submits. A code field that only responds to a button click is the most
                      reliably mistyped control in a checkout. -->
                 <input
                   v-model="codeInput"
+                  :disabled="hasAppliedCode"
                   :placeholder="__('Enter coupon or gift card code')"
                   :aria-label="__('Enter coupon or gift card code')"
-                  class="flex-1 px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  @keyup.enter="codeInput.trim() && handleApplyCode()"
+                  class="flex-1 min-w-0 px-3 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-70 disabled:cursor-not-allowed"
+                  @keyup.enter="!hasAppliedCode && codeInput.trim() && handleApplyCode()"
                 >
                 <button
+                  v-if="hasAppliedCode"
+                  :disabled="codeLoading"
+                  class="shrink-0 px-4 py-2 border border-border text-muted-foreground font-semibold rounded-lg transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                  @click="handleClearCode"
+                >
+                  {{ __("Clear") }}
+                </button>
+                <button
+                  v-else
                   :disabled="codeLoading || !codeInput.trim()"
-                  class="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90"
+                  class="shrink-0 px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90"
                   @click="handleApplyCode"
                 >
                   {{ __("Apply") }}
                 </button>
               </div>
-
-              <button
-                v-if="quote.coupon_code || quote.gift_card_amount > 0"
-                :disabled="codeLoading"
-                class="w-full px-3 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors text-sm disabled:opacity-50"
-                @click="handleClearCode"
-              >
-                {{ __("Clear") }}
-              </button>
             </div>
 
             <!-- Checkout Button -->

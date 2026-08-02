@@ -96,6 +96,12 @@ class StorePricingService
             'coupon_discount' => $couponDiscount,
             'coupon_code' => $couponDiscount > 0 ? $coupon?->code : null,
             'coupon_error' => $couponResult['error'],
+            // Whatever code is attached, whether or not it took anything off. Distinct from
+            // `coupon_code` above, which only names a coupon that actually discounted something:
+            // one that is attached but rejected — below its minimum, say — still has to be
+            // nameable, or the buyer reads why it did not apply beside a field that looks empty
+            // and has no way to take it back off.
+            'applied_code' => $coupon?->code ?? $giftCard?->code,
             'tax_amount' => $tax['amount'],
             // Kept for the receipt and for the order snapshot: a rate that changes next year must
             // not rewrite an order placed under the old one.

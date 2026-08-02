@@ -237,6 +237,63 @@ test('a coupon code can be applied and cleared', function () {
         ->assertInertia(fn ($page) => $page->where('quote.coupon_discount', 0));
 });
 
+test('the cart names the code it is holding', function () {
+    // What the locked code field shows. Normalised, because coupons are stored uppercase and the
+    // buyer should see the code as it was actually recorded.
+    $package = StorePackage::factory()->create(['price' => 2000]);
+    StoreCoupon::create([
+        'code' => 'SAVE50', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000,
+        'is_enabled' => true, 'used_count' => 0,
+    ]);
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page->where('quote.applied_code', null));
+
+    $this->post(route('store.cart.code'), ['code' => 'save50']);
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page->where('quote.applied_code', 'SAVE50'));
+
+    $this->post(route('store.cart.code'), ['code' => '']);
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page->where('quote.applied_code', null));
+});
+
+test('a rejected coupon is still named so it can be removed', function () {
+    // coupon_code only names a coupon that actually discounted something, so a coupon held but
+    // refused used to leave the buyer reading why it failed beside an apparently empty field with
+    // no way to take it off.
+    $package = StorePackage::factory()->create(['price' => 1000]);
+    StoreCoupon::create([
+        'code' => 'BIGSPEND', 'discount_type' => StoreDiscountType::PERCENT, 'discount_value' => 5000,
+        'is_enabled' => true, 'used_count' => 0, 'min_basket_amount' => 500000,
+    ]);
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->post(route('store.cart.code'), ['code' => 'BIGSPEND']);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page
+            ->where('quote.coupon_discount', 0)
+            ->where('quote.coupon_code', null)
+            ->where('quote.applied_code', 'BIGSPEND')
+            ->whereNot('quote.coupon_error', null)
+        );
+});
+
+test('the cart names an applied gift card too', function () {
+    $package = StorePackage::factory()->create(['price' => 2000]);
+    StoreGiftCard::create([
+        'code' => 'GIFT100', 'currency_code' => 'USD', 'original_balance' => 500, 'balance' => 500, 'is_enabled' => true,
+    ]);
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+
+    $this->post(route('store.cart.code'), ['code' => 'GIFT100']);
+
+    $this->get(route('store.cart.show'))
+        ->assertInertia(fn ($page) => $page->where('quote.applied_code', 'GIFT100'));
+});
+
 test('a gift card code can be applied', function () {
     $package = StorePackage::factory()->create(['price' => 2000]);
     StoreGiftCard::create([
