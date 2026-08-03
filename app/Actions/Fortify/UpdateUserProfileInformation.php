@@ -50,7 +50,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->updateCoverImage($input['cover_image']);
         }
 
-        if (array_key_exists('email', $input) && $input['email'] !== $user->email &&
+        if (array_key_exists('email', $input) && !empty($input['email']) && $input['email'] !== $user->email &&
             $user instanceof MustVerifyEmail) {
             $this->updateVerifiedUser($user, $input);
         } else {
