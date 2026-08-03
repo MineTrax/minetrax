@@ -32,6 +32,25 @@
           />
         </div>
 
+        <div
+          v-if="$page.props.turnstileEnabled"
+          class="mt-4"
+        >
+          <TurnstileWidget
+            ref="turnstileRef"
+            :site-key="$page.props.turnstileSiteKey"
+            @verify="form.turnstile_response = $event"
+            @expire="form.turnstile_response = ''"
+            @error="form.turnstile_response = ''"
+          />
+          <div
+            v-if="form.errors.turnstile_response"
+            class="mt-2 text-xs text-destructive"
+          >
+            {{ form.errors.turnstile_response }}
+          </div>
+        </div>
+
         <div class="flex items-center justify-end mt-4">
           <loading-button
             :loading="form.processing"
@@ -49,6 +68,7 @@
 import JetAuthenticationCard from"@/Jetstream/AuthenticationCard.vue";
 import LoadingButton from"@/Components/LoadingButton.vue";
 import AppLayout from"@/Layouts/AppLayout.vue";
+import TurnstileWidget from"@/Components/TurnstileWidget.vue";
 import XInput from"@/Components/Form/XInput.vue";
 import { useForm } from"@inertiajs/vue3";
 
@@ -58,6 +78,7 @@ export default {
         AppLayout,
         LoadingButton,
         JetAuthenticationCard,
+        TurnstileWidget,
     },
 
     props: {
@@ -67,14 +88,20 @@ export default {
     data() {
         return {
             form: useForm({
-                email:""
+                email:"",
+                turnstile_response: "",
             })
         };
     },
 
     methods: {
         submit() {
-            this.form.post(this.route("password.email"));
+            this.form.post(this.route("password.email"), {
+                onError: () => {
+                    this.form.reset("turnstile_response");
+                    this.$refs.turnstileRef?.reset();
+                },
+            });
         }
     }
 };

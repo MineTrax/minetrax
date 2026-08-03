@@ -7,6 +7,8 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Http\Requests\Fortify\LoginRequest as CustomLoginRequest;
+use App\Http\Requests\Fortify\SendPasswordResetLinkRequest as CustomSendPasswordResetLinkRequest;
 use App\Models\User;
 use Hash;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -14,6 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Requests\LoginRequest;
+use Laravel\Fortify\Http\Requests\SendPasswordResetLinkRequest;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -24,7 +28,8 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(LoginRequest::class, CustomLoginRequest::class);
+        $this->app->bind(SendPasswordResetLinkRequest::class, CustomSendPasswordResetLinkRequest::class);
     }
 
     /**
@@ -54,7 +59,8 @@ class FortifyServiceProvider extends ServiceProvider
 
         RateLimiter::for('login', function (Request $request) {
             $identifier = strtolower($request->email);
-            return Limit::perMinute(5)->by($identifier . $request->ip());
+
+            return Limit::perMinute(5)->by($identifier.$request->ip());
         });
 
         RateLimiter::for('two-factor', function (Request $request) {

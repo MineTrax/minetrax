@@ -1765,5 +1765,7 @@
     "[Notification] You are Banned by :user": "[Notification] You are Banned by :user",
     "[Notification] You are Muted by :user": "[Notification] You are Muted by :user",
     "[Notification] Your application request has a new message.": "[Notification] Your application request has a new message.",
-    "[Notification] Your Application request status has changed.": "[Notification] Your Application request status has changed."
+    "[Notification] Your Application request status has changed.": "[Notification] Your Application request status has changed.",
+    "The captcha challenge failed. Please try again.": "The captcha challenge failed. Please try again.",
+    "Turnstile site key is not configured.": "Turnstile site key is not configured."
 }
