@@ -2,10 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Ai\Agents\PunishmentInsightsAgent;
+use App\Ai\AiConfig;
 use App\Models\MinecraftPlayerSession;
 use App\Models\Player;
 use App\Models\PlayerPunishment;
-use App\Services\AiService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,7 +28,7 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(AiService $aiService): void
+    public function handle(): void
     {
         // return if already generating or already generated...
         if ($this->punishment->insights && in_array($this->punishment->insights['status'], ['generating', 'generated'])) {
@@ -38,6 +39,9 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         if (!config('minetrax.banwarden.ai_insights_enabled')) {
             return;
         }
+
+        // fail before marking as generating if AI is not configured properly...
+        AiConfig::ensureConfigured();
 
         // mark as generating...
         $this->punishment->update([
@@ -124,13 +128,13 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
 
         // Possible Alts
         if (!$this->punishment->ip_address) {
-            $altPlayers = [];
+            $altPlayers = collect();
         } else {
-            $firstTwoOctets = explode('.', $this->punishment->ip_address);
-            $firstTwoOctets = $firstTwoOctets[0] . '.' . $firstTwoOctets[1] . '.%';
+            $firstThreeOctets = explode('.', $this->punishment->ip_address);
+            $firstThreeOctets = $firstThreeOctets[0] . '.' . $firstThreeOctets[1] . '.' . $firstThreeOctets[2] . '.%';
             $altUuids = MinecraftPlayerSession::distinct()->select('player_uuid')
                 ->where('player_uuid', '!=', $this->punishment->uuid)
-                ->where('player_ip_address', 'LIKE', $firstTwoOctets)
+                ->where('player_ip_address', 'LIKE', $firstThreeOctets)
                 ->pluck('player_uuid');
             $altPlayers = Player::select(['id', 'uuid', 'username', 'first_seen_at', 'last_seen_at', 'country_id', 'ip_address', 'play_time'])
                 ->whereIn('uuid', $altUuids)
@@ -147,9 +151,6 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         });
         $possibleAltsJsonString = json_encode($altPlayers);
 
-        $systemPrompt = view('gptprompts.punishment-insights', [
-            'locale' => config('app.locale'),
-        ]);
         $question = <<<QUESTION
         Punishment Details:
         $punishmentJsonString
@@ -164,18 +165,14 @@ class GeneratePunishmentInsightsJob implements ShouldQueue
         $possibleAltsJsonString
         QUESTION;
 
-        $response = $aiService->simplePrompt($systemPrompt, $question, null, 1000, [
-            'response_format' => [
-                'type' => 'json_object',
-            ]
-        ]);
-        $responseData = json_decode($response, true);
+        $response = PunishmentInsightsAgent::make()->prompt($question);
 
         // mark as generated...
         $this->punishment->update([
             'insights' => [
                 'status' => 'generated',
-                ...$responseData,
+                'score' => $response['score'],
+                'insights' => $response['insights'],
             ],
         ]);
     }

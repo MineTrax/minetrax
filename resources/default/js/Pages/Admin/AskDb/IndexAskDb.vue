@@ -7,7 +7,8 @@ import AlertCard from "@/Components/AlertCard.vue";
 import { computed, nextTick, onMounted, reactive, ref } from "vue";
 import Icon from "@/Components/Icon.vue";
 import { Link } from "@inertiajs/vue3";
-import { ExclamationTriangleIcon } from "@heroicons/vue/24/outline";
+import { ExclamationTriangleIcon, WrenchScrewdriverIcon } from "@heroicons/vue/24/outline";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/Components/ui/dialog";
 
 const { __ } = useTranslations();
 
@@ -62,6 +63,13 @@ function askDb() {
         type: "user",
         content: form.prompt,
     });
+    // Show a loading agent bubble immediately so the user knows a reply is coming.
+    const placeholder = reactive({
+        type: "assistant",
+        content: null,
+        loading: true,
+    });
+    results.push(placeholder);
     scrollToBottom();
 
     const prompt = form.prompt;
@@ -70,13 +78,24 @@ function askDb() {
     axios.post(route("admin.ask-db.query"), {
         prompt: prompt,
     }).then((response) => {
-        results.push(response.data.data);
+        // Replace the loading bubble with the real response.
+        const index = results.indexOf(placeholder);
+        if (index !== -1) {
+            results.splice(index, 1, response.data.data);
+        } else {
+            results.push(response.data.data);
+        }
     }).catch((error) => {
         form.error = error.response?.data?.message || error.message || __("Failed to Query Database! Try again after rephrasing your question.");
         if (props.appDebug) {
             form.verboseError = error.response?.data?.verbose || null;
         }
         form.prompt = prompt;
+        // Remove the loading bubble and the user echo.
+        const index = results.indexOf(placeholder);
+        if (index !== -1) {
+            results.splice(index, 1);
+        }
         results.pop();
     }).finally(() => {
         form.loading = false;
@@ -108,6 +127,31 @@ const examples = [
     "How many user have their email verified?",
     "How many post is created by superadmin?",
 ];
+
+const toolCallsInModal = ref(null);
+
+function openToolCallsModal(toolCalls) {
+    toolCallsInModal.value = toolCalls;
+}
+
+function formatToolArguments(toolArguments) {
+    // Show a lone SQL query argument as-is for readability, anything else as pretty JSON.
+    if (toolArguments && typeof toolArguments.query === "string" && Object.keys(toolArguments).length === 1) {
+        return toolArguments.query;
+    }
+    return JSON.stringify(toolArguments, null, 2);
+}
+
+function formatToolResult(result) {
+    if (typeof result !== "string") {
+        return JSON.stringify(result, null, 2);
+    }
+    try {
+        return JSON.stringify(JSON.parse(result), null, 2);
+    } catch {
+        return result;
+    }
+}
 
 const container = ref(null);
 onMounted(() => {
@@ -203,17 +247,18 @@ function scrollToBottom() {
           class="space-y-8 text-foreground"
         >
           <div
-            v-for="result in results"
-            :key="result.id"
+            v-for="(result, index) in results"
+            :key="index"
           >
             <div
               v-if="result.type == 'user'"
               class="flex justify-end w-full"
             >
               <div
-                class="px-4 py-2.5 bg-primary text-primary-foreground rounded-2xl"
-                v-html="result.content"
-              />
+                class="px-4 py-2.5 bg-primary text-primary-foreground rounded-2xl whitespace-pre-wrap break-words"
+              >
+                {{ result.content }}
+              </div>
             </div>
             <div
               v-else
@@ -227,18 +272,52 @@ function scrollToBottom() {
               </div>
               <div class="flex-1 min-w-0">
                 <div
+                  v-if="result.loading"
+                  class="flex items-center gap-1.5 py-2.5"
+                  aria-label="Loading"
+                >
+                  <span
+                    class="w-2 h-2 rounded-full bg-muted-foreground/60 animate-bounce"
+                    style="animation-delay: 0ms"
+                  />
+                  <span
+                    class="w-2 h-2 rounded-full bg-muted-foreground/60 animate-bounce"
+                    style="animation-delay: 150ms"
+                  />
+                  <span
+                    class="w-2 h-2 rounded-full bg-muted-foreground/60 animate-bounce"
+                    style="animation-delay: 300ms"
+                  />
+                </div>
+                <div
+                  v-else
                   class="prose max-w-none lg:max-w-[45vw] dark:prose-invert"
                   v-html="result.content"
                 />
-                <p
-                  v-if="result.usage"
-                  class="text-xs text-muted-foreground mt-1 italic"
+                <div
+                  v-if="result.usage || result.toolCalls?.length"
+                  class="flex items-center gap-2 mt-1"
                 >
-                  {{ __("Prompt: :prompt tokens, Completion: :completion tokens", {
-                    prompt: result.usage?.promptTokens,
-                    completion: result.usage?.completionTokens
-                  }) }}
-                </p>
+                  <p
+                    v-if="result.usage"
+                    class="text-xs text-muted-foreground italic"
+                  >
+                    {{ __("Prompt: :prompt tokens, Completion: :completion tokens", {
+                      prompt: result.usage?.promptTokens,
+                      completion: result.usage?.completionTokens
+                    }) }}
+                  </p>
+                  <button
+                    v-if="result.toolCalls?.length"
+                    type="button"
+                    :title="__('View tools used by AI to answer this question.')"
+                    class="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    @click="openToolCallsModal(result.toolCalls)"
+                  >
+                    <WrenchScrewdriverIcon class="w-3.5 h-3.5" />
+                    <span>{{ result.toolCalls.length }}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -344,6 +423,50 @@ function scrollToBottom() {
         </form>
       </div>
     </div>
+
+    <!-- Tools used modal -->
+    <Dialog
+      :open="!!toolCallsInModal"
+      @update:open="toolCallsInModal = $event ? toolCallsInModal : null"
+    >
+      <DialogContent class="sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{{ __("Tools Used") }}</DialogTitle>
+          <DialogDescription>
+            {{ __("Tools and queries used by AI to answer this question.") }}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+          <div
+            v-for="(toolCall, index) in toolCallsInModal"
+            :key="index"
+            class="p-3 border border-border rounded-lg space-y-2"
+          >
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-muted-foreground">#{{ index + 1 }}</span>
+              <span class="px-2 py-0.5 text-xs font-mono font-semibold bg-primary/10 text-primary rounded">
+                {{ toolCall.name }}
+              </span>
+            </div>
+
+            <div v-if="toolCall.arguments && Object.keys(toolCall.arguments).length">
+              <p class="mb-1 text-xs font-semibold text-muted-foreground uppercase">
+                {{ __("Arguments") }}
+              </p>
+              <pre class="p-2 text-xs bg-muted rounded overflow-x-auto whitespace-pre-wrap wrap-break-word">{{ formatToolArguments(toolCall.arguments) }}</pre>
+            </div>
+
+            <div v-if="toolCall.result">
+              <p class="mb-1 text-xs font-semibold text-muted-foreground uppercase">
+                {{ __("Result") }}
+              </p>
+              <pre class="p-2 text-xs bg-muted rounded max-h-48 overflow-auto">{{ formatToolResult(toolCall.result) }}</pre>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   </AdminLayout>
 </template>
 

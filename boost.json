@@ -3,6 +3,7 @@
         "cursor",
         "claude_code"
     ],
+    "cloud": false,
     "guidelines": true,
     "packages": [
         "spatie/laravel-medialibrary"
