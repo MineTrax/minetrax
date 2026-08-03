@@ -52,6 +52,11 @@ return [
             'root' => storage_path('app/private'),
         ],
 
+        'danger-backups' => [
+            'driver' => 'local',
+            'root' => storage_path('app/danger-backups'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
