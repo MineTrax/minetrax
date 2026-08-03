@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Rules\Turnstile;
 use App\Services\GeolocationService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -23,7 +24,7 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Validate and create a newly registered user.
      *
-     * @return \App\Models\User
+     * @return User
      */
     public function create(array $input)
     {
@@ -34,13 +35,19 @@ class CreateNewUser implements CreatesNewUsers
 
         $countryId = $this->geolocationService->getCountryIdFromIP(request()->ip());
 
-        Validator::make($input, [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'username' => ['required', 'string', 'max:30', 'alpha_dash', 'unique:users'],
             'password' => ['required', 'string', 'confirmed', Password::min(8)->uncompromised()],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
-        ])->validate();
+        ];
+
+        if (config('services.turnstile.enabled', false) && ! config('auth.disable_email_password_auth', false)) {
+            $rules['turnstile_response'] = ['required', 'string', new Turnstile];
+        }
+
+        Validator::make($input, $rules)->validate();
 
         $forceLowercaseUsername = config('auth.force_lowercase_username');
         $username = $forceLowercaseUsername ? strtolower($input['username']) : $input['username'];
