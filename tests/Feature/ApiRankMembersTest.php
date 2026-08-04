@@ -34,6 +34,45 @@ class ApiRankMembersTest extends TestCase
         $response->assertStatus(401);
     }
 
+    public function test_signature_is_required_when_signature_validation_enabled()
+    {
+        Rank::factory()->create(['shortname' => 'crazy']);
+
+        $response = $this->getJson('/api/v1/ranks/crazy/members', [
+            'X-API-KEY' => app(PluginSettings::class)->plugin_api_key,
+        ]);
+
+        $response->assertStatus(401)
+            ->assertJson(['type' => 'signature_missing']);
+    }
+
+    public function test_invalid_signature_is_rejected_when_signature_validation_enabled()
+    {
+        Rank::factory()->create(['shortname' => 'crazy']);
+
+        $response = $this->getJson('/api/v1/ranks/crazy/members', [
+            'X-API-KEY' => app(PluginSettings::class)->plugin_api_key,
+            'X-SIGNATURE' => 'some-invalid-signature',
+        ]);
+
+        $response->assertStatus(401)
+            ->assertJson(['type' => 'invalid_signature']);
+    }
+
+    public function test_api_key_alone_works_when_signature_validation_disabled()
+    {
+        config(['minetrax.api_signature_validation' => false]);
+
+        Rank::factory()->create(['shortname' => 'crazy']);
+
+        $response = $this->getJson('/api/v1/ranks/crazy/members', [
+            'X-API-KEY' => app(PluginSettings::class)->plugin_api_key,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson(['status' => 'success']);
+    }
+
     public function test_it_returns_users_of_given_rank_with_their_discord_id()
     {
         $rank = Rank::factory()->create(['shortname' => 'crazy']);

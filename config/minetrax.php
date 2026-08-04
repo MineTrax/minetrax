@@ -378,7 +378,6 @@ return [
     */
     'disable_player_unlinking' => env('DISABLE_PLAYER_UNLINKING', false),
 
-
     /*
     |--------------------------------------------------------------------------
     | Hide Next Rank of Player.
@@ -388,7 +387,6 @@ return [
     |
     */
     'hide_player_next_rank' => env('HIDE_PLAYER_NEXT_RANK', false),
-
 
     /*
     |--------------------------------------------------------------------------
@@ -472,4 +470,17 @@ return [
         */
         'evidence_max_size_kb' => env('BANWARDEN_EVIDENCE_MAX_SIZE_KB', 51200),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Request Signature Validation
+    |--------------------------------------------------------------------------
+    |
+    | Whether API requests (auth.api-key middleware) must include a valid
+    | X-SIGNATURE header (HMAC of the request signed with the API secret).
+    | When disabled, only the X-API-KEY header is required. Disable this if
+    | your API consumer cannot sign requests (eg: simple external services).
+    |
+    */
+    'api_signature_validation' => env('API_SIGNATURE_VALIDATION', true),
 ];

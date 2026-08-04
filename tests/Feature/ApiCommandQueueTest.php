@@ -35,6 +35,27 @@ class ApiCommandQueueTest extends TestCase
         $response->assertStatus(401);
     }
 
+    public function test_api_key_alone_works_when_signature_validation_disabled()
+    {
+        config(['minetrax.api_signature_validation' => false]);
+        Queue::fake();
+
+        $server = Server::factory()->create(['webquery_port' => 25575]);
+
+        $response = $this->postJson('/api/v1/command-queue', [
+            'scope' => 'global',
+            'command' => 'say Hello World',
+            'servers' => [['id' => $server->id]],
+        ], [
+            'X-API-KEY' => app(PluginSettings::class)->plugin_api_key,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson(['status' => 'success']);
+
+        Queue::assertPushed(RunCommandQueuesFromRequestJob::class);
+    }
+
     public function test_it_queues_command_for_player_scope()
     {
         Queue::fake();
