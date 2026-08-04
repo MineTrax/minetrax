@@ -1,5 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\ApiAccountLinkController;
+use App\Http\Controllers\Api\ApiBanWardenController;
+use App\Http\Controllers\Api\ApiCommandQueueController;
+use App\Http\Controllers\Api\ApiMinecraftPlayerIntelController;
+use App\Http\Controllers\Api\ApiMinecraftServerIntelController;
+use App\Http\Controllers\Api\ApiPlayerController;
+use App\Http\Controllers\Api\ApiRankController;
+use App\Http\Controllers\Api\ApiServerChatlogController;
+use App\Http\Controllers\Api\ApiServerConsolelogController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,30 +22,36 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
-//});
+// });
 
 Route::middleware(['auth.api-key'])->group(function () {
-    Route::post('v1/server/chat', [\App\Http\Controllers\Api\ApiServerChatlogController::class, 'store'])->name('api.server.chat');
-    Route::post('v1/server/console', [\App\Http\Controllers\Api\ApiServerConsolelogController::class, 'store'])->name('api.server.console');
+    Route::post('v1/server/chat', [ApiServerChatlogController::class, 'store'])->name('api.server.chat');
+    Route::post('v1/server/console', [ApiServerConsolelogController::class, 'store'])->name('api.server.console');
 
-    Route::post('v1/account-link/verify', [\App\Http\Controllers\Api\ApiAccountLinkController::class, 'verify'])->name('api.account-link.verify');
+    Route::post('v1/account-link/verify', [ApiAccountLinkController::class, 'verify'])->name('api.account-link.verify');
 
-    Route::post('v1/player/whois', [\App\Http\Controllers\Api\ApiPlayerController::class, 'postWhoisPlayer'])->name('api.player.whois');
-    Route::post('v1/player/data', [\App\Http\Controllers\Api\ApiPlayerController::class, 'postFetchPlayerData'])->name('api.player.data');
+    Route::post('v1/player/whois', [ApiPlayerController::class, 'postWhoisPlayer'])->name('api.player.whois');
+    Route::post('v1/player/data', [ApiPlayerController::class, 'postFetchPlayerData'])->name('api.player.data');
+
+    // Discord Rank Sync: list users which have a player of given rank linked, with their discord id.
+    Route::get('v1/ranks/{rank}/members', [ApiRankController::class, 'getRankMembers'])->name('api.ranks.members');
+
+    // Command Queue: queue a command for execution.
+    Route::post('v1/command-queue', [ApiCommandQueueController::class, 'store'])->name('api.command-queue.store');
 
     // Intel APIs: used by Server to Report Player/Server Intelligence Data.
-    Route::post('v1/intel/player/session-init', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postSessionInit'])->name('api.intel.player.session-init');
-    Route::post('v1/intel/player/report/event', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postReportEvent'])->name('api.intel.player.report.event');
-    Route::post('v1/intel/player/report/pvp-kill', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postReportPvpKill'])->name('api.intel.player.report.pvp');
-    Route::post('v1/intel/player/report/death', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postReportDeath'])->name('api.intel.player.report.death');
+    Route::post('v1/intel/player/session-init', [ApiMinecraftPlayerIntelController::class, 'postSessionInit'])->name('api.intel.player.session-init');
+    Route::post('v1/intel/player/report/event', [ApiMinecraftPlayerIntelController::class, 'postReportEvent'])->name('api.intel.player.report.event');
+    Route::post('v1/intel/player/report/pvp-kill', [ApiMinecraftPlayerIntelController::class, 'postReportPvpKill'])->name('api.intel.player.report.pvp');
+    Route::post('v1/intel/player/report/death', [ApiMinecraftPlayerIntelController::class, 'postReportDeath'])->name('api.intel.player.report.death');
     // Route::post('v1/intel/player/report/pve-kill', [\App\Http\Controllers\Api\ApiMinecraftPlayerIntelController::class, 'postReportPveKill'])->name('api.intel.player.report.pve');  POSTPONED because if a player do xp farming it will cause too much load and create too much data? we will see
 
     // BanWarden
-    Route::post('v1/banwarden/sync/punishment', [\App\Http\Controllers\Api\ApiBanWardenController::class, 'postSyncPunishments'])->name('api.banwarden.sync.punishment');
-    Route::post('v1/banwarden/report/punishment', [\App\Http\Controllers\Api\ApiBanWardenController::class, 'postReportPunishment'])->name('api.banwarden.report.punishment');
+    Route::post('v1/banwarden/sync/punishment', [ApiBanWardenController::class, 'postSyncPunishments'])->name('api.banwarden.sync.punishment');
+    Route::post('v1/banwarden/report/punishment', [ApiBanWardenController::class, 'postReportPunishment'])->name('api.banwarden.report.punishment');
 
-    Route::post('v1/intel/server/report', [\App\Http\Controllers\Api\ApiMinecraftServerIntelController::class, 'postReport'])->name('api.intel.server.report');
+    Route::post('v1/intel/server/report', [ApiMinecraftServerIntelController::class, 'postReport'])->name('api.intel.server.report');
     // Intel APIs ends
 });

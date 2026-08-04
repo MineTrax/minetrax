@@ -24,7 +24,7 @@ class RankFactory extends Factory
         return [
             'name' => $this->faker->name,
             'shortname' => $this->faker->userName,
-            'order' => $this->faker->randomNumber(2),
+            'weight' => $this->faker->randomNumber(2),
             'total_score_needed' => $this->faker->randomNumber(2),
             'total_play_time_needed' => $this->faker->randomNumber(2),
         ];

@@ -22,7 +22,7 @@ class RunCommandQueuesFromRequestJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(private Collection $request, private int $userId)
+    public function __construct(private Collection $request, private ?int $userId)
     {
         $this->onQueue('longtask');
     }
