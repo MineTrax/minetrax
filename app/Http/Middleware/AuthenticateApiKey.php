@@ -12,9 +12,11 @@ const REQUEST_MAX_AGE_THRESHOLD_SECONDS = 600; // servers can be out of sync aga
 class AuthenticateApiKey
 {
     private bool $VALIDATE_SIGNATURE;
+
     public function __construct(public PluginSettings $pluginSettings)
     {
-        $this->VALIDATE_SIGNATURE = app()->isLocal() && app()->hasDebugModeEnabled() ? false : true;
+        $isLocalDebug = app()->isLocal() && app()->hasDebugModeEnabled();
+        $this->VALIDATE_SIGNATURE = config('minetrax.api_signature_validation') && ! $isLocalDebug;
     }
 
     /**
@@ -45,41 +47,43 @@ class AuthenticateApiKey
             ], 401);
         }
 
-        if (! $requestSignature) {
-            return response()->json([
-                'status' => 'error',
-                'type' => 'signature_missing',
-                'message' => 'Request Signature is missing.',
-            ], 401);
-        }
-
-        // Validate Signature
-        if ($request->method() == 'GET') {
-            $signaturePayload = $request->getUri();
-        } else {
-            $signaturePayload = $request->getContent();
-        }
-        $signatureValid = CryptoUtils::validateHmacSignature($signaturePayload, $requestSignature, $this->pluginSettings->plugin_api_secret);
-        if (! $signatureValid && $this->VALIDATE_SIGNATURE) {
-            return response()->json([
-                'status' => 'error',
-                'type' => 'invalid_signature',
-                'message' => 'Invalid Request Signature.',
-            ], 401);
-        }
-
-        // Validate Request Age if provided
-        $timestampMs = $request->get('timestamp');
-        if ($timestampMs && $this->VALIDATE_SIGNATURE) {
-            $timestamp = $timestampMs / 1000;
-            $currentTimestamp = now()->timestamp;
-            $requestAge = abs($currentTimestamp - $timestamp);
-            if ($requestAge > REQUEST_MAX_AGE_THRESHOLD_SECONDS) {
+        // Validate Signature if enabled. When disabled only API key is required.
+        if ($this->VALIDATE_SIGNATURE) {
+            if (! $requestSignature) {
                 return response()->json([
                     'status' => 'error',
-                    'type' => 'request_expired',
-                    'message' => 'Request is too old.',
+                    'type' => 'signature_missing',
+                    'message' => 'Request Signature is missing.',
                 ], 401);
+            }
+
+            if ($request->method() == 'GET') {
+                $signaturePayload = $request->getUri();
+            } else {
+                $signaturePayload = $request->getContent();
+            }
+            $signatureValid = CryptoUtils::validateHmacSignature($signaturePayload, $requestSignature, $this->pluginSettings->plugin_api_secret);
+            if (! $signatureValid) {
+                return response()->json([
+                    'status' => 'error',
+                    'type' => 'invalid_signature',
+                    'message' => 'Invalid Request Signature.',
+                ], 401);
+            }
+
+            // Validate Request Age if provided
+            $timestampMs = $request->get('timestamp');
+            if ($timestampMs) {
+                $timestamp = $timestampMs / 1000;
+                $currentTimestamp = now()->timestamp;
+                $requestAge = abs($currentTimestamp - $timestamp);
+                if ($requestAge > REQUEST_MAX_AGE_THRESHOLD_SECONDS) {
+                    return response()->json([
+                        'status' => 'error',
+                        'type' => 'request_expired',
+                        'message' => 'Request is too old.',
+                    ], 401);
+                }
             }
         }
 

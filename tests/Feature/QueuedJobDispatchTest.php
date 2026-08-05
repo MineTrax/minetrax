@@ -115,6 +115,31 @@ class QueuedJobDispatchTest extends TestCase
         $this->assertEquals(CommandQueueStatus::COMPLETED, $commandQueue->status);
     }
 
+    public function test_run_command_queues_from_request_supports_null_user()
+    {
+        Queue::fake([RunCommandQueueJob::class]);
+
+        $server = Server::factory()->create(['webquery_port' => 25575]);
+
+        $request = collect([
+            'scope' => 'global',
+            'command' => 'say Hello World',
+            'execute_at' => null,
+            'servers' => [['id' => $server->id]],
+        ]);
+
+        $job = new RunCommandQueuesFromRequestJob($request, null);
+        $job->handle();
+
+        $this->assertDatabaseHas('command_queues', [
+            'server_id' => $server->id,
+            'parsed_command' => 'say Hello World',
+            'user_id' => null,
+        ]);
+
+        Queue::assertPushed(RunCommandQueueJob::class);
+    }
+
     public function test_run_command_queues_from_request_is_queued_to_longtask()
     {
         Queue::fake();
