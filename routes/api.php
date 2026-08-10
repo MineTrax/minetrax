@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ApiPlayerController;
 use App\Http\Controllers\Api\ApiRankController;
 use App\Http\Controllers\Api\ApiServerChatlogController;
 use App\Http\Controllers\Api\ApiServerConsolelogController;
+use App\Http\Controllers\Api\ApiUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,8 +39,12 @@ Route::middleware(['auth.api-key'])->group(function () {
     // Discord Rank Sync: list users which have a player of given rank linked, with their discord id.
     Route::get('v1/ranks/{rank}/members', [ApiRankController::class, 'getRankMembers'])->name('api.ranks.members');
 
+    // Discord integration: find a MineTrax user and their linked Minecraft users.
+    Route::get('v1/users/{discordId}', [ApiUserController::class, 'showByDiscordId'])->name('api.users.discord.show');
+
     // Command Queue: queue a command for execution.
     Route::post('v1/command-queue', [ApiCommandQueueController::class, 'store'])->name('api.command-queue.store');
+    Route::get('v1/command-queue/{requestId}', [ApiCommandQueueController::class, 'show'])->name('api.command-queue.show');
 
     // Intel APIs: used by Server to Report Player/Server Intelligence Data.
     Route::post('v1/intel/player/session-init', [ApiMinecraftPlayerIntelController::class, 'postSessionInit'])->name('api.intel.player.session-init');

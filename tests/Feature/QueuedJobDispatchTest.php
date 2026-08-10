@@ -22,6 +22,7 @@ class QueuedJobDispatchTest extends TestCase
         $server = Server::factory()->create(['webquery_port' => 25575]);
 
         $request = collect([
+            'request_id' => fake()->uuid(),
             'scope' => 'global',
             'command' => 'say Hello World',
             'execute_at' => null,
@@ -32,6 +33,7 @@ class QueuedJobDispatchTest extends TestCase
         $job->handle();
 
         $this->assertDatabaseHas('command_queues', [
+            'request_id' => $request->get('request_id'),
             'server_id' => $server->id,
             'parsed_command' => 'say Hello World',
             'status' => CommandQueueStatus::PENDING->value,
