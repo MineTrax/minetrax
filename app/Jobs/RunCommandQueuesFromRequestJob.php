@@ -102,6 +102,7 @@ class RunCommandQueuesFromRequestJob implements ShouldQueue
         }
         $parsedCommandString = Helper::replacePlaceholders($rawCommand, $params);
         $commandQueue = CommandQueue::create([
+            'request_id' => $this->request->get('request_id'),
             'server_id' => $serverId,
             'command_id' => null,
             'parsed_command' => $parsedCommandString,

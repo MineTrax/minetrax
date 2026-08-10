@@ -82,7 +82,8 @@ class ApiRankMembersTest extends TestCase
         $userWithoutDiscord = User::factory()->create(['discord_user_id' => null]);
         $userOfOtherRank = User::factory()->create(['discord_user_id' => '876543210987654321']);
 
-        $userWithDiscord->players()->attach(Player::factory()->create(['uuid' => fake()->uuid(), 'rank_id' => $rank->id]));
+        $rankedPlayer = Player::factory()->create(['uuid' => fake()->uuid(), 'username' => 'RankedPlayer', 'rank_id' => $rank->id]);
+        $userWithDiscord->players()->attach($rankedPlayer);
         $userWithoutDiscord->players()->attach(Player::factory()->create(['uuid' => fake()->uuid(), 'rank_id' => $rank->id]));
         $userOfOtherRank->players()->attach(Player::factory()->create(['uuid' => fake()->uuid(), 'rank_id' => $otherRank->id]));
 
@@ -94,6 +95,8 @@ class ApiRankMembersTest extends TestCase
                 'status' => 'success',
                 'data' => [
                     [
+                        'player_id' => $rankedPlayer->id,
+                        'player_username' => 'RankedPlayer',
                         'user_id' => $userWithDiscord->id,
                         'username' => $userWithDiscord->username,
                         'discord_id' => '123456789012345678',
@@ -122,17 +125,20 @@ class ApiRankMembersTest extends TestCase
             ->assertJsonPath('data.0.user_id', $user->id);
     }
 
-    public function test_user_with_multiple_players_of_same_rank_is_returned_only_once()
+    public function test_each_player_of_the_same_rank_is_returned_with_its_player_id()
     {
         $rank = Rank::factory()->create(['shortname' => 'crazy']);
 
         $user = User::factory()->create(['discord_user_id' => '123456789012345678']);
-        $user->players()->attach(Player::factory()->create(['uuid' => fake()->uuid(), 'rank_id' => $rank->id]));
-        $user->players()->attach(Player::factory()->create(['uuid' => fake()->uuid(), 'rank_id' => $rank->id]));
+        $firstPlayer = Player::factory()->create(['uuid' => fake()->uuid(), 'username' => 'FirstPlayer', 'rank_id' => $rank->id]);
+        $secondPlayer = Player::factory()->create(['uuid' => fake()->uuid(), 'username' => 'SecondPlayer', 'rank_id' => $rank->id]);
+        $user->players()->attach([$firstPlayer->id, $secondPlayer->id]);
 
         $this->getJsonWithApiCredentials('/api/v1/ranks/crazy/members')
             ->assertStatus(200)
-            ->assertJsonCount(1, 'data');
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.player_id', $firstPlayer->id)
+            ->assertJsonPath('data.1.player_id', $secondPlayer->id);
     }
 
     public function test_it_returns_empty_list_when_rank_has_no_members()

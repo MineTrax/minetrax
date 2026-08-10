@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\CommandQueueStatus;
 use App\Jobs\RunCommandQueuesFromRequestJob;
+use App\Models\CommandQueue;
 use App\Models\Server;
 use App\Settings\PluginSettings;
 use App\Utils\Helpers\CryptoUtils;
@@ -22,6 +24,16 @@ class ApiCommandQueueTest extends TestCase
         return $this->postJson($uri, $data, [
             'X-API-KEY' => $pluginSettings->plugin_api_key,
             'X-SIGNATURE' => CryptoUtils::generateHmacSignature(json_encode($data), $pluginSettings->plugin_api_secret),
+        ]);
+    }
+
+    private function getJsonWithApiCredentials(string $uri): TestResponse
+    {
+        $pluginSettings = app(PluginSettings::class);
+
+        return $this->getJson($uri, [
+            'X-API-KEY' => $pluginSettings->plugin_api_key,
+            'X-SIGNATURE' => CryptoUtils::generateHmacSignature(url($uri), $pluginSettings->plugin_api_secret),
         ]);
     }
 
@@ -51,7 +63,8 @@ class ApiCommandQueueTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-            ->assertJson(['status' => 'success']);
+            ->assertJson(['status' => 'success'])
+            ->assertJsonStructure(['data' => ['request_id']]);
 
         Queue::assertPushed(RunCommandQueuesFromRequestJob::class);
     }
@@ -78,7 +91,8 @@ class ApiCommandQueueTest extends TestCase
             ->assertJson([
                 'status' => 'success',
                 'message' => 'Command queued successfully.',
-            ]);
+            ])
+            ->assertJsonStructure(['data' => ['request_id']]);
 
         Queue::assertPushed(RunCommandQueuesFromRequestJob::class);
     }
@@ -100,7 +114,8 @@ class ApiCommandQueueTest extends TestCase
             ->assertJson([
                 'status' => 'success',
                 'message' => 'Command queued successfully.',
-            ]);
+            ])
+            ->assertJsonStructure(['data' => ['request_id']]);
 
         Queue::assertPushed(RunCommandQueuesFromRequestJob::class);
     }
@@ -162,5 +177,74 @@ class ApiCommandQueueTest extends TestCase
             ->assertJsonValidationErrors(['servers.0.id']);
 
         Queue::assertNotPushed(RunCommandQueuesFromRequestJob::class);
+    }
+
+    public function test_it_returns_command_queue_status_by_request_id()
+    {
+        $requestId = fake()->uuid();
+        $pendingCommand = CommandQueue::factory()->create([
+            'request_id' => $requestId,
+            'status' => CommandQueueStatus::PENDING,
+        ]);
+        $completedCommand = CommandQueue::factory()->completed()->create([
+            'request_id' => $requestId,
+        ]);
+
+        $this->getJsonWithApiCredentials("/api/v1/command-queue/{$requestId}")
+            ->assertOk()
+            ->assertJson([
+                'status' => 'success',
+                'data' => [
+                    'request_id' => $requestId,
+                    'status' => CommandQueueStatus::PENDING->value,
+                    'summary' => [
+                        CommandQueueStatus::PENDING->value => 1,
+                        CommandQueueStatus::COMPLETED->value => 1,
+                    ],
+                    'commands' => [
+                        ['id' => $pendingCommand->id],
+                        ['id' => $completedCommand->id],
+                    ],
+                ],
+            ]);
+    }
+
+    public function test_it_returns_pending_before_the_request_job_creates_command_queues()
+    {
+        Queue::fake();
+
+        $server = Server::factory()->create(['webquery_port' => 25575]);
+
+        $response = $this->postJsonWithApiCredentials('/api/v1/command-queue', [
+            'scope' => 'global',
+            'command' => 'say Hello World',
+            'servers' => [['id' => $server->id]],
+        ])->assertOk();
+
+        $requestId = $response->json('data.request_id');
+
+        $this->getJsonWithApiCredentials("/api/v1/command-queue/{$requestId}")
+            ->assertOk()
+            ->assertJson([
+                'status' => 'success',
+                'data' => [
+                    'request_id' => $requestId,
+                    'status' => CommandQueueStatus::PENDING->value,
+                    'summary' => [],
+                    'commands' => [],
+                ],
+            ]);
+    }
+
+    public function test_it_returns_not_found_for_an_unknown_request_id()
+    {
+        $requestId = fake()->uuid();
+
+        $this->getJsonWithApiCredentials("/api/v1/command-queue/{$requestId}")
+            ->assertNotFound()
+            ->assertJson([
+                'status' => 'error',
+                'type' => 'request_not_found',
+            ]);
     }
 }
