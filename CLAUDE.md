@@ -262,3 +262,17 @@ The `command_queues` and `store_order_deliveries` rows are written *before* disp
 - Directory-scoped `beforeEach()` hooks do not apply. Inline any setup you need.
 - Each `--agent` costs ~25s here, nearly all of it `RefreshDatabase` migrations. Batch related assertions into one snippet rather than running several probes.
 - This is a verification probe, not a substitute for a committed test. Per the testing rules above, still write a real test for the change.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues for `MineTrax/minetrax`, driven by the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical labels are used verbatim: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` at the repo root plus ADRs in `docs/adr/`. See `docs/agents/domain.md`.
