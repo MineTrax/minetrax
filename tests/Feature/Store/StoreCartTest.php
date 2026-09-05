@@ -159,6 +159,44 @@ test('a cart line can be updated and removed', function () {
     $this->assertDatabaseMissing('store_cart_items', ['id' => $item->id]);
 });
 
+test('removing a line returns the shopper to the page they removed it from', function () {
+    // The navbar dropdown removes lines from wherever the shopper happens to be. Sending them to
+    // the cart page for it would be the redirect the dropdown exists to avoid.
+    $package = StorePackage::factory()->create();
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);
+    $item = StoreCart::first()->items->first();
+
+    $this->from(route('store.index'))
+        ->delete(route('store.cart.delete', $item->id))
+        ->assertRedirect(route('store.index'));
+});
+
+test('the cart is served as json for the navbar dropdown', function () {
+    $package = StorePackage::factory()->create(['name' => 'Crate Key', 'price' => 1000]);
+    $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 2]);
+
+    // withCredentials: the test client drops cookies from JSON requests by default, but the
+    // browser's XHR carries the guest cart cookie like any other request.
+    $this->withCredentials()
+        ->getJson(route('store.cart.show'))
+        ->assertOk()
+        ->assertJsonPath('quote.items.0.package_name', 'Crate Key')
+        ->assertJsonPath('quote.items.0.quantity', 2)
+        ->assertJsonPath('quote.items.0.cart_item_id', StoreCart::first()->items->first()->id)
+        ->assertJsonPath('quote.total', 2000)
+        // Page-only props stay off the wire: the dropdown has no use for the shelf.
+        ->assertJsonMissingPath('recommended');
+});
+
+test('an empty cart is served as json without minting a cart row', function () {
+    $this->getJson(route('store.cart.show'))
+        ->assertOk()
+        ->assertJsonPath('quote.items', [])
+        ->assertJsonPath('quote.total', 0);
+
+    $this->assertDatabaseCount('store_carts', 0);
+});
+
 test('setting a quantity of zero removes the line', function () {
     $package = StorePackage::factory()->create();
     $this->post(route('store.cart.store'), ['package_id' => $package->id, 'quantity' => 1]);

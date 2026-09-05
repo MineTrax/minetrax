@@ -15,6 +15,7 @@ use App\Services\StoreCurrencyService;
 use App\Services\StorePackagePresenter;
 use App\Services\StoreReferralService;
 use App\Services\StoreVariableService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -32,7 +33,7 @@ class StoreCartController extends Controller
         private StoreReferralService $referrals,
     ) {}
 
-    public function show(Request $request): Response
+    public function show(Request $request): Response|JsonResponse
     {
         $this->authorize('browse', StorePackage::class);
 
@@ -45,10 +46,16 @@ class StoreCartController extends Controller
             $this->rememberCart($cart->session_token);
         }
 
+        $quote = $cart
+            ? $this->carts->quote($cart, $request)
+            : $this->carts->emptyQuote();
+
+        if ($request->wantsJson()) {
+            return response()->json(['quote' => $quote]);
+        }
+
         return Inertia::render('Store/CartStore', [
-            'quote' => $cart
-                ? $this->carts->quote($cart, $request)
-                : $this->carts->emptyQuote(),
+            'quote' => $quote,
             // The highest-intent screen in the store had nothing on it but what the shopper had
             // already chosen. An empty cart gets the shelf too — it is the only thing on that page
             // worth clicking.
@@ -129,7 +136,7 @@ class StoreCartController extends Controller
 
         $cartItem->delete();
 
-        return redirect()->route('store.cart.show')
+        return redirect()->back()
             ->with(['toast' => ['type' => 'success', 'title' => __('Removed from cart')]]);
     }
 
