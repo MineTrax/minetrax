@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\CommandQueueStatus;
+use App\Enums\StoreCommandTrigger;
 use App\Enums\StoreDeliveryStatus;
 use App\Enums\StoreGiftCardTransactionType;
 use App\Enums\StoreOrderStatus;
@@ -130,6 +132,110 @@ class StoreOrderService
 
             return true;
         });
+    }
+
+    /**
+     * Re-derive delivery_status from how the order's purchase commands actually fared.
+     *
+     * markCompleted() records that delivery was queued; this records whether it landed. Run each
+     * time RunCommandQueueJob settles one of the order's rows and after an admin re-send, so the
+     * buyer's result page and the admin list follow the queue instead of freezing on PENDING.
+     *
+     * Only purchase deliveries count. Refund and expiry commands write rows against the same
+     * order, and a revocation that fails must not make a delivered order look undelivered.
+     *
+     * Locked like every other transition: two rows of the same order can settle on two workers at
+     * once, and without the lock the slower one could overwrite DELIVERED with a stale PENDING.
+     */
+    public function syncDeliveryStatus(StoreOrder $order): StoreDeliveryStatus
+    {
+        return DB::transaction(function () use ($order) {
+            $order = StoreOrder::lockForUpdate()->find($order->id);
+
+            $summary = $this->deliverySummary($order);
+
+            if ($summary['total'] === 0) {
+                // Nothing was ever queued, so the queue has nothing to say about it.
+                return $order->delivery_status;
+            }
+
+            $status = match (true) {
+                $summary['in_progress'] > 0 => StoreDeliveryStatus::PENDING,
+                $summary['failed'] === 0 => StoreDeliveryStatus::DELIVERED,
+                $summary['completed'] > 0 => StoreDeliveryStatus::PARTIAL,
+                default => StoreDeliveryStatus::FAILED,
+            };
+
+            if ($status === $order->delivery_status) {
+                return $status;
+            }
+
+            $order->update(['delivery_status' => $status]);
+
+            // A line for each outcome, not for each command: three rows settling one after
+            // another is one "delivered" in the timeline, and a re-send that puts it back to
+            // PENDING is already recorded by whoever pressed the button.
+            if ($status !== StoreDeliveryStatus::PENDING) {
+                $this->record($order, 'delivery_'.$status->value, match ($status) {
+                    StoreDeliveryStatus::DELIVERED => __('Delivered to the server'),
+                    StoreDeliveryStatus::PARTIAL => __('Delivery partly failed'),
+                    StoreDeliveryStatus::FAILED => __('Delivery failed'),
+                }, [
+                    'completed' => $summary['completed'],
+                    'failed' => $summary['failed'],
+                    'total' => $summary['total'],
+                ]);
+            }
+
+            return $status;
+        });
+    }
+
+    /**
+     * How the order's purchase commands stand on the queue.
+     *
+     * A FAILED row with attempts left is still in progress: the every-minute sweeper will retry it,
+     * and telling the buyer it failed a minute before it succeeds helps nobody. DEFERRED is in
+     * progress too, but flagged, because "join the server" is something the buyer can act on and
+     * "delivering" is not.
+     *
+     * @return array{total: int, completed: int, in_progress: int, failed: int, waiting_for_player: bool}
+     */
+    public function deliverySummary(StoreOrder $order): array
+    {
+        $deliveries = $order->deliveries()
+            ->where('trigger', StoreCommandTrigger::PURCHASE)
+            ->with('commandQueue:id,status,attempts,max_attempts')
+            ->get();
+
+        $summary = [
+            'total' => $deliveries->count(),
+            'completed' => 0,
+            'in_progress' => 0,
+            'failed' => 0,
+            'waiting_for_player' => false,
+        ];
+
+        foreach ($deliveries as $delivery) {
+            $queue = $delivery->commandQueue;
+            $status = $queue?->status;
+
+            if ($status === CommandQueueStatus::COMPLETED) {
+                $summary['completed']++;
+            } elseif ($status === CommandQueueStatus::DEFERRED) {
+                $summary['in_progress']++;
+                $summary['waiting_for_player'] = true;
+            } elseif (in_array($status, [CommandQueueStatus::PENDING, CommandQueueStatus::RUNNING], true)) {
+                $summary['in_progress']++;
+            } elseif ($status === CommandQueueStatus::FAILED && (int) $queue->attempts < (int) $queue->max_attempts) {
+                $summary['in_progress']++;
+            } else {
+                // Out of attempts, cancelled for want of a webquery port, or the queue row is gone.
+                $summary['failed']++;
+            }
+        }
+
+        return $summary;
     }
 
     /**

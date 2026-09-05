@@ -6,10 +6,12 @@ use App\Enums\StorePaymentStatus;
 use App\Models\Country;
 use App\Models\Player;
 use App\Models\StoreBan;
+use App\Models\StoreCart;
 use App\Models\StoreCoupon;
 use App\Models\StoreGiftCard;
 use App\Models\StoreOrder;
 use App\Models\StorePackage;
+use App\Models\StoreReferral;
 use App\Models\StoreSale;
 use App\Models\StoreTax;
 use App\Models\User;
@@ -180,6 +182,36 @@ test('checkout empties the cart', function () {
     $this->post(route('store.checkout.store'), checkoutPayload());
 
     $this->assertDatabaseCount('store_cart_items', 0);
+});
+
+test('checkout leaves nothing on the cart for the next order to inherit', function () {
+    Player::factory()->create(['username' => 'Steve']);
+    $perk = StoreCoupon::factory()->create(['code' => 'KAKA', 'discount_value' => 500, 'is_stackable' => true]);
+    $referral = StoreReferral::factory()->withCoupon($perk)->create(['code' => 'KAKAMORA']);
+    StoreCoupon::factory()->create(['code' => 'SAVE10', 'discount_value' => 1000]);
+    fillCart();
+    $this->post(route('store.cart.code'), ['code' => 'SAVE10']);
+    $this->post(route('store.cart.referral.store'), ['code' => 'KAKAMORA']);
+
+    $this->post(route('store.checkout.store'), checkoutPayload())->assertSessionHasNoErrors();
+
+    $first = StoreOrder::first();
+    expect($first->store_referral_id)->toBe($referral->id);
+    expect($first->coupons()->pluck('code')->sort()->values()->all())->toBe(['KAKA', 'SAVE10']);
+
+    $cart = StoreCart::first();
+    expect($cart->store_referral_id)->toBeNull();
+    expect($cart->coupons()->count())->toBe(0);
+    expect($cart->store_gift_card_id)->toBeNull();
+
+    // The next basket, with nothing typed, credits nobody and discounts nothing.
+    fillCart();
+    $this->post(route('store.checkout.store'), checkoutPayload())->assertSessionHasNoErrors();
+
+    $second = StoreOrder::latest('id')->first();
+    expect($second->store_referral_id)->toBeNull();
+    expect($second->coupons()->count())->toBe(0);
+    expect($second->coupon_discount)->toEqual(0);
 });
 
 test('a pending payment row is created for the chosen gateway', function () {

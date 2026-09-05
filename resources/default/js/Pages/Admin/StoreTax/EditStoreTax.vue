@@ -44,7 +44,7 @@ const toPayload = (data) => ({
 
 const breadcrumbItems = [
     { text: __("Admin"), current: false },
-    { text: __("Store Taxes"), href: route("admin.store.tax.index"), current: false },
+    { text: __("Store Taxes"), url: route("admin.store.tax.index"), current: false },
     { text: "#" + props.storeTax.id, current: true },
 ];
 

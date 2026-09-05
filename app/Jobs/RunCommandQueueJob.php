@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Enums\CommandQueueStatus;
+use App\Events\CommandQueueRunFinished;
 use App\Models\CommandQueue;
 use App\Utils\MinecraftQuery\MinecraftWebQuery;
 use Illuminate\Bus\Queueable;
@@ -44,6 +45,16 @@ class RunCommandQueueJob implements ShouldQueue
             'status' => CommandQueueStatus::RUNNING,
         ]);
 
+        try {
+            $this->run();
+        } finally {
+            // Every exit below has written a settled status, so whoever tracks this row can react.
+            event(new CommandQueueRunFinished($this->commandQueue));
+        }
+    }
+
+    private function run(): void
+    {
         // load missing relations
         $this->commandQueue->loadMissing([
             'server',
@@ -81,7 +92,8 @@ class RunCommandQueueJob implements ShouldQueue
             $status = $webQuery->runCommand($this->commandQueue->parsed_command);
             $this->commandQueue->update([
                 'status' => CommandQueueStatus::COMPLETED,
-                'output' => $status,
+                // The plugin answers with a decoded array; output is a text column.
+                'output' => is_array($status) ? json_encode($status) : (string) $status,
                 'last_attempt_at' => now(),
                 'attempts' => $this->commandQueue->attempts + 1,
             ]);

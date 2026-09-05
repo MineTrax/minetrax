@@ -220,9 +220,10 @@ class StoreCheckoutService
                 'currency' => $order->currency,
             ]);
 
+            // Move all cart items and coupons to the order.
             $cart->items()->delete();
             $cart->coupons()->detach();
-            $cart->update(['store_gift_card_id' => null]);
+            $cart->update(['store_gift_card_id' => null, 'store_referral_id' => null]);
 
             $order->setRelation('pendingPayment', $payment);
 

@@ -1,12 +1,27 @@
 <script setup>
-import { computed, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import AppHead from "@/Components/AppHead.vue";
 import { Link, router } from "@inertiajs/vue3";
 import { useTranslations } from "@/Composables/useTranslations";
 import { useHelpers } from "@/Composables/useHelpers";
 import { Button } from "@/Components/ui/button";
-import CommonStatusBadge from "@/Shared/CommonStatusBadge.vue";
+import StatusChip from "@/Shared/StatusChip.vue";
+import {
+    BanIcon,
+    CheckIcon,
+    CircleCheckIcon,
+    CircleXIcon,
+    ClockIcon,
+    CopyIcon,
+    CreditCardIcon,
+    HourglassIcon,
+    LoaderCircleIcon,
+    LogInIcon,
+    PackageCheckIcon,
+    PartyPopperIcon,
+    TriangleAlertIcon,
+} from "lucide-vue-next";
 
 const { __ } = useTranslations();
 const { formatToDayDateString, purifyText } = useHelpers();
@@ -51,25 +66,197 @@ const resumePayment = () => {
     });
 };
 
+// --- Live state -----------------------------------------------------------------------------
+// Seeded from the props and then owned by the poll, so a change shows up without a page visit.
 const status = ref(props.order.status.value);
 const deliveryStatus = ref(props.order.delivery_status.value);
+const delivery = ref(props.order.delivery ?? { total: 0, completed: 0, in_progress: 0, failed: 0, waiting_for_player: false });
+
+const PAID_STATES = ["paid", "completed", "partially_refunded"];
 
 const isPending = computed(() => status.value === "pending");
-const isPaid = computed(() => ["paid", "completed", "partially_refunded"].includes(status.value));
+const isPaid = computed(() => PAID_STATES.includes(status.value));
 const isCancelled = computed(() => ["cancelled", "refunded", "chargeback"].includes(status.value));
 
-// Fulfilment runs on a queue, so the page watches for it rather than the response blocking on it.
-// Polling stops the moment the order reaches a state that will not change on its own.
-let timer = null;
+// One word for where delivery stands, resolved from the two statuses and the per-command summary.
+// "paid" without "completed" means the fulfilment job has not run yet, which is a different wait
+// from commands sitting on the queue, and a command deferred until the player logs in is a wait the
+// buyer can end themselves — so it gets its own state rather than a generic "delivering".
+const deliveryState = computed(() => {
+    if (!isPaid.value) {
+        return null;
+    }
 
-const stopPolling = () => {
-    if (timer) {
-        clearInterval(timer);
-        timer = null;
+    if (status.value === "paid") {
+        return "preparing";
+    }
+
+    if (deliveryStatus.value === "delivered") {
+        return "delivered";
+    }
+
+    if (deliveryStatus.value === "partial") {
+        return "partial";
+    }
+
+    if (deliveryStatus.value === "failed") {
+        return "failed";
+    }
+
+    return delivery.value.waiting_for_player ? "waiting_for_player" : "delivering";
+});
+
+const isDeliveryInProgress = computed(() => ["preparing", "delivering", "waiting_for_player"].includes(deliveryState.value));
+
+// Only worth saying when there is more than one thing to send.
+const progressText = computed(() => {
+    if (deliveryState.value !== "delivering" || delivery.value.total < 2) {
+        return null;
+    }
+
+    return __(":sent of :total sent", { sent: delivery.value.completed, total: delivery.value.total });
+});
+
+const paymentChip = computed(() => {
+    switch (status.value) {
+    case "paid":
+    case "completed":
+        return { tone: "success", icon: CircleCheckIcon, label: __("Paid") };
+    case "pending":
+        return { tone: "warning", icon: ClockIcon, label: __("Awaiting payment") };
+    case "partially_refunded":
+        return { tone: "warning", icon: CreditCardIcon, label: __("Partly refunded") };
+    case "refunded":
+        return { tone: "danger", icon: CreditCardIcon, label: __("Refunded") };
+    case "chargeback":
+        return { tone: "danger", icon: TriangleAlertIcon, label: __("Disputed") };
+    case "cancelled":
+        return { tone: "muted", icon: BanIcon, label: __("Cancelled") };
+    default:
+        return { tone: "muted", icon: null, label: status.value };
+    }
+});
+
+const deliveryChip = computed(() => {
+    switch (deliveryState.value) {
+    case "preparing":
+        return { tone: "info", loading: true, label: __("Preparing") };
+    case "delivering":
+        return { tone: "info", loading: true, label: __("Delivering") };
+    case "waiting_for_player":
+        return { tone: "warning", icon: LogInIcon, label: __("Waiting for you to join") };
+    case "delivered":
+        return { tone: "success", icon: PackageCheckIcon, label: __("Delivered") };
+    case "partial":
+        return { tone: "warning", icon: TriangleAlertIcon, label: __("Partly delivered") };
+    case "failed":
+        return { tone: "danger", icon: CircleXIcon, label: __("Delivery failed") };
+    default:
+        return null;
+    }
+});
+
+// The three things that happen to a paid order, in the order they happen. Each is done, active
+// (something is happening right now), waiting (on the buyer), a problem, or not yet reached.
+const steps = computed(() => {
+    const deliveryStepState = {
+        preparing: "upcoming",
+        delivering: "active",
+        waiting_for_player: "waiting",
+        delivered: "done",
+        partial: "warning",
+        failed: "error",
+    }[deliveryState.value] ?? "upcoming";
+
+    return [
+        { key: "paid", label: __("Payment received"), state: "done" },
+        { key: "preparing", label: __("Preparing"), state: deliveryState.value === "preparing" ? "active" : "done" },
+        { key: "delivery", label: __("Delivered"), state: deliveryStepState },
+    ];
+});
+
+const stepIcon = (state) => ({
+    done: CircleCheckIcon,
+    active: LoaderCircleIcon,
+    waiting: LogInIcon,
+    warning: TriangleAlertIcon,
+    error: CircleXIcon,
+    upcoming: null,
+}[state]);
+
+const stepClass = (state) => ({
+    done: "border-success bg-success/15 text-success",
+    active: "border-primary bg-primary/10 text-primary",
+    waiting: "border-amber-500 bg-amber-500/15 text-amber-700 dark:text-amber-300",
+    warning: "border-amber-500 bg-amber-500/15 text-amber-700 dark:text-amber-300",
+    error: "border-destructive bg-destructive/15 text-destructive",
+    upcoming: "border-border bg-card text-muted-foreground",
+}[state]);
+
+// --- Order number ---------------------------------------------------------------------------
+// The one thing a buyer pastes into a support ticket, so it is one click to copy.
+const copied = ref(false);
+let copiedTimer = null;
+
+const copyOrderNumber = async () => {
+    try {
+        await navigator.clipboard?.writeText(props.order.number);
+        copied.value = true;
+        clearTimeout(copiedTimer);
+        copiedTimer = setTimeout(() => {
+            copied.value = false;
+        }, 1500);
+    } catch {
+        // Clipboard access refused. The number is still on screen and selectable.
     }
 };
 
+// --- Polling --------------------------------------------------------------------------------
+// Fulfilment runs on a queue, so the page watches for it rather than the response blocking on it.
+// Quick at first, because most deliveries land within seconds, then backing off, and giving up
+// after a few minutes with an honest message rather than spinning forever against a stalled worker.
+// Paused while the tab is hidden: nobody is looking, and the first poll on return catches up.
+const POLL_DELAYS_MS = [3000, 3000, 5000, 5000, 8000, 10000, 15000];
+const POLL_BUDGET_MS = 5 * 60 * 1000;
+
+const stalled = ref(false);
+let timer = null;
+let pollCount = 0;
+let pollingSince = 0;
+
+const shouldKeepPolling = () => {
+    if (status.value === "pending" || status.value === "paid") {
+        return true;
+    }
+
+    return PAID_STATES.includes(status.value) && deliveryStatus.value === "pending";
+};
+
+const stopPolling = () => {
+    clearTimeout(timer);
+    timer = null;
+};
+
+const schedule = () => {
+    stopPolling();
+
+    if (!shouldKeepPolling() || document.hidden) {
+        return;
+    }
+
+    if (Date.now() - pollingSince > POLL_BUDGET_MS) {
+        stalled.value = true;
+
+        return;
+    }
+
+    const delay = POLL_DELAYS_MS[Math.min(pollCount, POLL_DELAYS_MS.length - 1)];
+    timer = setTimeout(poll, delay);
+};
+
 const poll = async () => {
+    pollCount++;
+
     try {
         const response = await fetch(route("store.order.status", props.order.uuid), {
             headers: { Accept: "application/json" },
@@ -82,41 +269,90 @@ const poll = async () => {
         }
 
         const data = await response.json();
-        const settled = status.value !== data.status || deliveryStatus.value !== data.delivery_status;
+        const paymentSettled = status.value !== data.status && !["pending", "paid"].includes(data.status);
 
         status.value = data.status;
         deliveryStatus.value = data.delivery_status;
+        delivery.value = data.delivery ?? delivery.value;
 
-        if (data.status !== "pending" && data.delivery_status !== "pending") {
-            stopPolling();
+        if (paymentSettled) {
+            // The invoice button, the receipt figures and the resume block all hang off the
+            // server-rendered props, so pull those once the money side has settled.
+            router.reload({ only: ["order", "gateways", "paymentInstructions"] });
         }
 
-        if (settled && data.status !== "pending") {
-            router.reload({ only: ["order"] });
-        }
+        schedule();
     } catch {
         stopPolling();
     }
 };
 
-if (props.order.status.value === "pending" || props.order.delivery_status.value === "pending") {
-    timer = setInterval(poll, 4000);
-}
+const startPolling = () => {
+    stalled.value = false;
+    pollCount = 0;
+    pollingSince = Date.now();
+    schedule();
+};
 
-onUnmounted(stopPolling);
+const onVisibilityChange = () => {
+    if (document.hidden) {
+        stopPolling();
+    } else if (!stalled.value && shouldKeepPolling()) {
+        // Catch up at once rather than after a full back-off delay.
+        pollCount = 0;
+        poll();
+    }
+};
+
+onMounted(() => {
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    if (shouldKeepPolling()) {
+        startPolling();
+    }
+});
+
+onUnmounted(() => {
+    stopPolling();
+    clearTimeout(copiedTimer);
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+});
 </script>
 
 <template>
   <AppLayout>
-    <AppHead :title="__('Order :number', { number: order.uuid.substring(0, 8).toUpperCase() })" />
+    <AppHead :title="__('Order :number', { number: order.number })" />
 
     <div class="px-4 py-12 mx-auto max-w-2xl text-foreground">
       <div class="bg-card rounded-lg shadow p-8 text-center">
         <!-- Paid -->
         <template v-if="isPaid">
-          <div class="text-5xl mb-4">
-            🎉
+          <div
+            class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full"
+            :class="{
+              'bg-success/15 text-success': deliveryState === 'delivered',
+              'bg-amber-500/15 text-amber-600 dark:text-amber-300': deliveryState === 'partial',
+              'bg-destructive/15 text-destructive': deliveryState === 'failed',
+              'bg-primary/10 text-primary': isDeliveryInProgress,
+            }"
+          >
+            <CircleCheckIcon
+              v-if="deliveryState === 'delivered'"
+              class="h-8 w-8"
+              aria-hidden="true"
+            />
+            <TriangleAlertIcon
+              v-else-if="deliveryState === 'partial' || deliveryState === 'failed'"
+              class="h-8 w-8"
+              aria-hidden="true"
+            />
+            <PartyPopperIcon
+              v-else
+              class="h-8 w-8"
+              aria-hidden="true"
+            />
           </div>
+
           <h1 class="text-2xl font-semibold mb-2">
             {{ __("Thank you!") }}
           </h1>
@@ -124,42 +360,136 @@ onUnmounted(stopPolling);
             {{ __("Your payment went through and your items are on their way to :player.", { player: order.player_username }) }}
           </p>
 
-          <p
-            v-if="deliveryStatus === 'pending'"
-            class="text-sm text-muted-foreground mt-4"
-          >
-            {{ __("Delivering now…") }}
-          </p>
-          <p
-            v-else-if="deliveryStatus === 'delivered'"
-            class="text-sm text-success mt-4"
-          >
-            {{ __("Everything has been sent to the server. If you were offline, it will arrive the moment you next join.") }}
-          </p>
-          <p
-            v-else-if="deliveryStatus === 'partial'"
-            class="text-sm text-orange-500 mt-4"
-          >
-            {{ __("Some items are still on their way. Nothing is lost — staff can see this order and will make sure it lands.") }}
-          </p>
-          <p
-            v-else
-            class="text-sm text-destructive mt-4"
-          >
-            {{ __("We could not reach the server to deliver this. Staff have been notified and will sort it out.") }}
-          </p>
+          <!-- Where delivery stands, as three steps rather than two unlabelled pills. -->
+          <ol class="mt-8 flex items-start justify-center">
+            <li
+              v-for="(step, index) in steps"
+              :key="step.key"
+              class="flex flex-1 max-w-40 flex-col items-center relative"
+            >
+              <!-- Connector to the previous step, coloured once that step is behind us. -->
+              <span
+                v-if="index > 0"
+                class="absolute top-4 right-1/2 h-0.5 w-full -translate-y-1/2"
+                :class="steps[index - 1].state === 'done' ? 'bg-success/60' : 'bg-border'"
+                aria-hidden="true"
+              />
+              <span
+                class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2"
+                :class="stepClass(step.state)"
+              >
+                <component
+                  :is="stepIcon(step.state)"
+                  v-if="stepIcon(step.state)"
+                  class="h-4 w-4"
+                  :class="{ 'animate-spin': step.state === 'active' }"
+                  aria-hidden="true"
+                />
+                <span
+                  v-else
+                  class="h-2 w-2 rounded-full bg-current opacity-50"
+                />
+              </span>
+              <span
+                class="mt-2 text-xs font-medium"
+                :class="step.state === 'upcoming' ? 'text-muted-foreground' : 'text-foreground'"
+              >
+                {{ step.label }}
+              </span>
+            </li>
+          </ol>
+
+          <!-- The sentence under the steps says what is happening now and, where there is one,
+               what the buyer can do about it. -->
+          <div class="mt-6 text-sm">
+            <p
+              v-if="deliveryState === 'preparing'"
+              class="text-muted-foreground inline-flex items-center gap-2"
+            >
+              <LoaderCircleIcon
+                class="h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
+              {{ __("Getting your items ready…") }}
+            </p>
+            <p
+              v-else-if="deliveryState === 'delivering'"
+              class="text-muted-foreground inline-flex items-center gap-2"
+            >
+              <LoaderCircleIcon
+                class="h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
+              {{ __("Delivering now…") }}
+              <span
+                v-if="progressText"
+                class="text-xs"
+              >{{ progressText }}</span>
+            </p>
+            <p
+              v-else-if="deliveryState === 'waiting_for_player'"
+              class="text-amber-700 dark:text-amber-300"
+            >
+              {{ __("Join the server as :player to receive your items. They will be handed over the moment you are online.", { player: order.player_username }) }}
+            </p>
+            <p
+              v-else-if="deliveryState === 'delivered'"
+              class="text-success"
+            >
+              {{ __("Everything has been sent to the server. If you were offline, it will arrive the moment you next join.") }}
+            </p>
+            <p
+              v-else-if="deliveryState === 'partial'"
+              class="text-amber-700 dark:text-amber-300"
+            >
+              {{ __("Some items are still on their way. Nothing is lost — staff can see this order and will make sure it lands.") }}
+            </p>
+            <p
+              v-else
+              class="text-destructive"
+            >
+              {{ __("We could not reach the server to deliver this. Staff have been notified and will sort it out.") }}
+            </p>
+
+            <!-- The poll has given up. Better to say so than to spin forever against a worker
+                 that may be down; the order is safe either way. -->
+            <p
+              v-if="stalled && isDeliveryInProgress"
+              class="mt-3 text-xs text-muted-foreground"
+            >
+              {{ __("This is taking longer than usual. You can safely leave this page: your items will arrive on their own, and you can check back here or in My Purchases at any time.") }}
+              <button
+                type="button"
+                class="ml-1 underline hover:text-foreground"
+                @click="startPolling"
+              >
+                {{ __("Check again") }}
+              </button>
+            </p>
+          </div>
         </template>
 
         <!-- Awaiting payment -->
         <template v-else-if="isPending">
-          <div class="text-5xl mb-4">
-            ⏳
+          <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-300">
+            <HourglassIcon
+              class="h-8 w-8"
+              aria-hidden="true"
+            />
           </div>
           <h1 class="text-2xl font-semibold mb-2">
             {{ __("Waiting for payment") }}
           </h1>
           <p class="text-muted-foreground">
             {{ __("We have not received your payment yet. If you have just paid, this page will update by itself in a moment.") }}
+            <button
+              v-if="stalled"
+              type="button"
+              class="underline hover:text-foreground"
+              @click="startPolling"
+            >
+              {{ __("Check again") }}
+            </button>
           </p>
 
           <!-- The figure was already on the wire and never rendered, so the screen asked for a
@@ -251,8 +581,11 @@ onUnmounted(stopPolling);
 
         <!-- Cancelled or refunded -->
         <template v-else>
-          <div class="text-5xl mb-4">
-            ⚠️
+          <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <CircleXIcon
+              class="h-8 w-8"
+              aria-hidden="true"
+            />
           </div>
           <h1 class="text-2xl font-semibold mb-2">
             {{ __("This order is no longer active") }}
@@ -262,20 +595,46 @@ onUnmounted(stopPolling);
           </p>
         </template>
 
-        <div class="flex items-center justify-center gap-2 mt-6">
-          <CommonStatusBadge :status="status" />
-          <CommonStatusBadge
-            v-if="isPaid"
-            :status="deliveryStatus"
+        <div class="flex flex-wrap items-center justify-center gap-2 mt-6">
+          <StatusChip
+            :tone="paymentChip.tone"
+            :icon="paymentChip.icon"
+            :label="paymentChip.label"
+          />
+          <StatusChip
+            v-if="deliveryChip"
+            :tone="deliveryChip.tone"
+            :icon="deliveryChip.icon"
+            :loading="deliveryChip.loading"
+            :label="deliveryChip.label"
           />
         </div>
       </div>
 
       <!-- Receipt -->
       <div class="bg-card rounded-lg shadow mt-6 overflow-hidden">
-        <div class="px-6 py-4 border-b border-border flex justify-between items-center">
-          <h2 class="text-sm font-medium">
-            {{ __("Order") }} <span class="font-mono">{{ order.uuid.substring(0, 8).toUpperCase() }}</span>
+        <div class="px-6 py-4 border-b border-border flex justify-between items-center gap-3">
+          <h2 class="text-sm font-medium inline-flex items-center gap-2">
+            {{ __("Order") }}
+            <span class="font-mono select-all">{{ order.number }}</span>
+            <button
+              type="button"
+              class="inline-flex items-center text-muted-foreground hover:text-foreground"
+              :title="__('Copy order number')"
+              :aria-label="__('Copy order number')"
+              @click="copyOrderNumber"
+            >
+              <CheckIcon
+                v-if="copied"
+                class="h-3.5 w-3.5 text-success"
+                aria-hidden="true"
+              />
+              <CopyIcon
+                v-else
+                class="h-3.5 w-3.5"
+                aria-hidden="true"
+              />
+            </button>
           </h2>
           <span class="text-xs text-muted-foreground">{{ formatToDayDateString(order.created_at) }}</span>
         </div>
@@ -309,13 +668,61 @@ onUnmounted(stopPolling);
           </li>
         </ul>
 
-        <div class="px-6 py-4 border-t border-border flex justify-between text-sm font-medium">
-          <span>{{ __("Total") }}</span>
-          <span>{{ order.total_formatted }}</span>
-        </div>
+        <!-- Every figure between the line totals and what was charged. Without these the receipt
+             showed items adding to one number and a total that was another, which reads as a bug. -->
+        <dl class="px-6 py-4 border-t border-border space-y-1 text-sm">
+          <div
+            v-if="order.raw && (order.raw.coupon_discount > 0 || order.raw.tax_amount > 0 || order.raw.gift_card_amount > 0)"
+            class="flex justify-between"
+          >
+            <dt class="text-muted-foreground">
+              {{ __("Subtotal") }}
+            </dt>
+            <dd>{{ order.money.subtotal }}</dd>
+          </div>
+          <div
+            v-if="order.raw?.coupon_discount > 0"
+            class="flex justify-between text-success"
+          >
+            <dt>
+              {{ __("Coupon") }}
+              <span v-if="order.coupons?.length">
+                ({{ order.coupons.map((coupon) => coupon.code).join(", ") }})
+              </span>
+            </dt>
+            <dd>-{{ order.money.coupon_discount }}</dd>
+          </div>
+          <div
+            v-if="order.raw?.tax_amount > 0"
+            class="flex justify-between"
+          >
+            <dt class="text-muted-foreground">
+              {{ order.tax_name || __("Tax") }}
+            </dt>
+            <dd>{{ order.money.tax_amount }}</dd>
+          </div>
+          <div class="flex justify-between font-medium">
+            <dt>{{ __("Total") }}</dt>
+            <dd>{{ order.total_formatted }}</dd>
+          </div>
+          <div
+            v-if="order.raw?.gift_card_amount > 0"
+            class="flex justify-between text-success"
+          >
+            <dt>{{ __("Gift Card") }}</dt>
+            <dd>-{{ order.money.gift_card_amount }}</dd>
+          </div>
+          <div
+            v-if="order.raw?.gift_card_amount > 0"
+            class="flex justify-between font-medium border-t border-border pt-2 mt-2"
+          >
+            <dt>{{ isPaid ? __("Paid") : __("Amount due") }}</dt>
+            <dd>{{ order.amount_due_formatted }}</dd>
+          </div>
+        </dl>
       </div>
 
-      <div class="flex justify-center gap-3 mt-6">
+      <div class="flex flex-wrap justify-center gap-3 mt-6">
         <Button
           variant="outline"
           as-child

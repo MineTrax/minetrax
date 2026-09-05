@@ -350,6 +350,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Fake WebQuery (local development only)
+    |--------------------------------------------------------------------------
+    |
+    | When `fake` is on, nothing that acts on a server is sent to it. Console commands, broadcasts,
+    | chat, skin changes, pardons and player-online checks are answered locally as if the plugin had
+    | succeeded, and written to the log instead. That lets the store, the command queue and the
+    | account-link flow be exercised end to end with no Minecraft server running.
+    |
+    | Status and ping queries are never faked: a server that is not there should still read as
+    | offline. The whole block is ignored when APP_ENV is production.
+    |
+    | `fake_player_online` is what a check-player-online query answers; set it to false to exercise
+    | the "waiting for the player to join" path. `fake_fail_rate` is the percentage of faked actions
+    | that throw instead, for exercising retries and the failed-delivery screens.
+    |
+    */
+    'webquery' => [
+        'fake' => env('WEBQUERY_FAKE', false),
+        'fake_player_online' => env('WEBQUERY_FAKE_PLAYER_ONLINE', true),
+        'fake_fail_rate' => env('WEBQUERY_FAKE_FAIL_RATE', 0),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Downloads Module Disk
     |--------------------------------------------------------------------------
     |

@@ -95,7 +95,11 @@ defineProps({
                 v-if="item.grant"
                 class="inline-flex items-center gap-1 mt-2 text-xs text-muted-foreground"
               >
-                <CommonStatusBadge :status="item.grant.status.value" />
+                <!-- An active grant is the good outcome here, not the red "active" a ban gets. -->
+                <CommonStatusBadge
+                  :status="item.grant.status.value"
+                  :tone="item.grant.status.value === 'active' ? 'success' : null"
+                />
                 <template v-if="item.grant.expires_at">{{ __("until") }} {{ formatToDateString(item.grant.expires_at) }}</template>
                 <template v-else-if="item.grant.status.value === 'active'">{{ __("permanent") }}</template>
               </span>

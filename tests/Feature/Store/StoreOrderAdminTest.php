@@ -471,6 +471,18 @@ test('resending re queues a failed delivery without creating a second one', func
     Queue::assertPushed(RunCommandQueueJob::class);
 });
 
+test('resending puts a failed order back to pending straight away', function () {
+    // Not when the re-queued row first settles: the order should stop reading FAILED the moment
+    // somebody has acted on it, or the admin presses the button and sees nothing change.
+    [$order] = orderAdminPaidOrder();
+    $order->update(['delivery_status' => StoreDeliveryStatus::FAILED]);
+    deliveryFor($order, CommandQueueStatus::FAILED);
+
+    $this->actingAs($this->superadmin)->post(route('admin.store.order.resend', $order->uuid));
+
+    expect($order->fresh()->delivery_status)->toEqual(StoreDeliveryStatus::PENDING);
+});
+
 test('resending leaves a completed delivery alone', function () {
     [$order] = orderAdminPaidOrder();
     $delivery = deliveryFor($order, CommandQueueStatus::COMPLETED);

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\CommandQueueRunFinished;
 use App\Events\CustomFormSubmissionCreated;
 use App\Events\MinecraftPlayerEventCreated;
 use App\Events\MinecraftPlayerSessionCreated;
@@ -26,6 +27,7 @@ use App\Listeners\NotifyUsersOnRecruitmentSubmissionCommentCreated;
 use App\Listeners\NotifyUsersOnRecruitmentSubmissionStatusChanged;
 use App\Listeners\SendStoreOrderReceipt;
 use App\Listeners\SendStoreOrderRefundNotice;
+use App\Listeners\SyncStoreOrderDeliveryOnCommandRun;
 use App\Listeners\UpdateStatsOnMinecraftPlayerEvent;
 use App\Listeners\UpsertPlayerOnSessionStart;
 use Illuminate\Auth\Events\Login;
@@ -62,6 +64,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         StorePaymentFailed::class => [
             NotifyBuyerOnStorePaymentFailed::class,
+        ],
+        CommandQueueRunFinished::class => [
+            SyncStoreOrderDeliveryOnCommandRun::class,
         ],
         SocialiteWasCalled::class => [
             DiscordExtendSocialite::class,

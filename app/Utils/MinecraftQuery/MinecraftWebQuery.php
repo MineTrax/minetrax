@@ -6,15 +6,30 @@ use App\Enums\PlayerPunishmentType;
 use App\Settings\PluginSettings;
 use App\Utils\Helpers\CryptoUtils;
 use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\Log;
+use Socket\Raw\Factory;
 use Str;
 
 class MinecraftWebQuery
 {
-    public function __construct(public $HOST, public $PORT)
-    {
-    }
+    /**
+     * Query types that act on the server, and so can be faked. Read-only ones are left out.
+     *
+     * @var list<string>
+     */
+    private const FAKEABLE_TYPES = [
+        'command',
+        'broadcast',
+        'user-say',
+        'banwarden-pardon',
+        'set-player-skin',
+        'account-link-success',
+        'check-player-online',
+    ];
 
-    public function banwardenPardon(PlayerPunishmentType $type, string $victim, string $reason = null, string $admin = null)
+    public function __construct(public $HOST, public $PORT) {}
+
+    public function banwardenPardon(PlayerPunishmentType $type, string $victim, ?string $reason = null, ?string $admin = null)
     {
         $payload = [
             'punishment_type' => $type->value,
@@ -30,8 +45,8 @@ class MinecraftWebQuery
     /**
      * Changes the player's skin.
      *
-     * @param  string  $changeCommandType - can be: 'url', 'username', 'upload', 'clear'
-     * @param  string  $value - the value can be: url -> 'https://minesk.in/7bd96e58ba7049e6abb4943425fe8766', username -> 'xinecraft', custom -> 'b64_encoded_skin_value:::b64_encoded_skin_signature'
+     * @param  string  $changeCommandType  - can be: 'url', 'username', 'upload', 'clear'
+     * @param  string  $value  - the value can be: url -> 'https://minesk.in/7bd96e58ba7049e6abb4943425fe8766', username -> 'xinecraft', custom -> 'b64_encoded_skin_value:::b64_encoded_skin_signature'
      */
     public function setPlayerSkin(string $playerUuid, string $changeCommandType, $value = null)
     {
@@ -84,7 +99,7 @@ class MinecraftWebQuery
     public function runCommand($command, $params = null)
     {
         $payload = [
-            'command' => $params ? $command . ' ' . $params : $command,
+            'command' => $params ? $command.' '.$params : $command,
         ];
         $status = $this->sendQuery('command', $payload);
 
@@ -107,7 +122,7 @@ class MinecraftWebQuery
 
     public function checkPlayerOnline($playerUuid): bool
     {
-        if (!Str::isUuid($playerUuid)) {
+        if (! Str::isUuid($playerUuid)) {
             throw new \Exception(__('Provided UUID is not valid.'));
         }
 
@@ -119,13 +134,17 @@ class MinecraftWebQuery
         return $status['data'];
     }
 
-    public function sendQuery($type, array $data = [])
+    public function sendQuery($type, array $data = []): array
     {
+        if ($this->shouldFake($type)) {
+            return $this->fakeQuery($type, $data);
+        }
+
         $encrypted = $this->makePayload($type, $data);
 
-        $factory = new \Socket\Raw\Factory();
+        $factory = new Factory;
         $socket = $factory->createClient("tcp://{$this->HOST}:{$this->PORT}", 10);
-        $text = $encrypted . "\n";
+        $text = $encrypted."\n";
         $socket->write($text);
         // Timeout after 10 seconds for webquery in case of no response
         socket_set_option($socket->getResource(), SOL_SOCKET, SO_RCVTIMEO, ['sec' => 10, 'usec' => 0]);
@@ -147,6 +166,56 @@ class MinecraftWebQuery
         $response['data'] = json_decode($this->decryptEncryptedString($response['data'], $apiKey), true);
 
         return $response;
+    }
+
+    /**
+     * Whether this query should be answered locally instead of sent to the server.
+     *
+     * Only actions are faked. `status` and `ping` always go over the wire, so a server that is not
+     * running still shows as offline rather than reporting invented players. Never in production,
+     * whatever the env says: a store that "delivers" to nobody is worse than one that is down.
+     */
+    private function shouldFake(string $type): bool
+    {
+        if (! config('minetrax.webquery.fake') || app()->isProduction()) {
+            return false;
+        }
+
+        return in_array($type, self::FAKEABLE_TYPES, true);
+    }
+
+    /**
+     * Answer as the plugin would on success, without opening a socket.
+     *
+     * Logged at info so a developer can see exactly what would have reached the console. The
+     * response keeps the real shape — status plus decoded data — so callers cannot tell the
+     * difference, and `faked` is added so a stored output makes it obvious in hindsight.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array{status: string, data: mixed, faked: bool}
+     */
+    private function fakeQuery(string $type, array $data): array
+    {
+        $failRate = (int) config('minetrax.webquery.fake_fail_rate', 0);
+
+        if ($failRate > 0 && random_int(1, 100) <= $failRate) {
+            Log::info("[FakeWebQuery] {$type} -> {$this->HOST}:{$this->PORT} failed on purpose (fake_fail_rate={$failRate})", $data);
+
+            throw new \Exception(__('WebQuery failed for unknown reasons. Please check minecraft server logs.').' (faked)');
+        }
+
+        Log::info("[FakeWebQuery] {$type} -> {$this->HOST}:{$this->PORT}", $data);
+
+        $payload = match ($type) {
+            'check-player-online' => (bool) config('minetrax.webquery.fake_player_online', true),
+            default => true,
+        };
+
+        return [
+            'status' => 'ok',
+            'data' => $payload,
+            'faked' => true,
+        ];
     }
 
     public function makePayload($type, array $data = [])

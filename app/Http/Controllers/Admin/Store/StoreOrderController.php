@@ -300,6 +300,10 @@ class StoreOrderController extends Controller
                 ->event('delivery_resent')
                 ->withProperties(['commands' => $count])
                 ->log(__('Delivery re-sent'));
+
+            // Back to PENDING now rather than when the first re-queued row settles, so the order
+            // stops reading FAILED the moment somebody has acted on it.
+            $this->orders->syncDeliveryStatus($order);
         }
 
         return back()->with(['toast' => [

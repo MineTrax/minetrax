@@ -25,7 +25,7 @@ const props = defineProps({
 
 const breadcrumbItems = [
     { text: __("Admin"), current: false },
-    { text: __("Store Orders"), href: route("admin.store.order.index"), current: false },
+    { text: __("Store Orders"), url: route("admin.store.order.index"), current: false },
     { text: props.order.uuid.substring(0, 8).toUpperCase(), current: true },
 ];
 
@@ -547,9 +547,11 @@ const formatDate = (value) => (value ? formatToDayDateString(value) : "—");
               >
                 <span
                   class="absolute w-2 h-2 rounded-full -left-1 mt-1.5"
-                  :class="entry.event === 'chargeback' || entry.event === 'payment_failed'
+                  :class="['chargeback', 'payment_failed', 'delivery_failed'].includes(entry.event)
                     ? 'bg-destructive'
-                    : (entry.event === 'paid' || entry.event === 'completed' ? 'bg-success' : 'bg-muted-foreground')"
+                    : (entry.event === 'delivery_partial'
+                      ? 'bg-amber-500'
+                      : (['paid', 'completed', 'delivery_delivered'].includes(entry.event) ? 'bg-success' : 'bg-muted-foreground'))"
                 />
                 <div class="text-sm font-medium">
                   {{ entry.description }}

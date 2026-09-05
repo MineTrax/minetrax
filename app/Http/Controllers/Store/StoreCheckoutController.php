@@ -181,7 +181,7 @@ class StoreCheckoutController extends Controller
     {
         $this->authorizeOrderView($request, $order);
 
-        $order->load('items.giftCard');
+        $order->load('items.giftCard', 'coupons');
 
         // Gateways that capture on return (rather than purely by webhook) get their chance here.
         $payment = $order->payments()->latest('id')->first();
@@ -230,6 +230,9 @@ class StoreCheckoutController extends Controller
         return response()->json([
             'status' => $order->status->value,
             'delivery_status' => $order->delivery_status->value,
+            // Per-command progress, so the page can say "2 of 3 sent" and, for a command waiting
+            // on the player, "join the server" — which is something the buyer can actually do.
+            'delivery' => $this->orders->deliverySummary($order),
         ]);
     }
 
@@ -345,10 +348,14 @@ class StoreCheckoutController extends Controller
     {
         return [
             'uuid' => $order->uuid,
+            'number' => strtoupper(substr($order->uuid, 0, 8)),
             // Hand-built arrays skip BaseModel::attributesToArray(), so enums are run through
             // the same {key, value} shape the rest of the frontend expects.
             'status' => Helper::enumKeyValue($order->status),
             'delivery_status' => Helper::enumKeyValue($order->delivery_status),
+            // The same shape the poll returns, so the first paint can already say "waiting for you
+            // to join" instead of a generic "delivering" that the first poll then corrects.
+            'delivery' => $this->orders->deliverySummary($order),
             // For a guest this page is the only route to their invoice, so the button has to be here.
             'can_download_invoice' => $order->status->isInvoiceable(),
             // Preselects the picker on the pending screen with whatever they chose at checkout.
@@ -358,6 +365,23 @@ class StoreCheckoutController extends Controller
             'total_formatted' => $this->currencies->format((int) $order->total, $order->currency),
             'amount_due_formatted' => $this->currencies->format((int) $order->amount_due, $order->currency),
             'created_at' => $order->created_at,
+            // The receipt used to show line totals and then a smaller grand total with nothing in
+            // between, which reads as a pricing bug. Each figure between the two gets its own row.
+            'money' => [
+                'subtotal' => $this->currencies->format((int) $order->subtotal, $order->currency),
+                'coupon_discount' => $this->currencies->format((int) $order->coupon_discount, $order->currency),
+                'tax_amount' => $this->currencies->format((int) $order->tax_amount, $order->currency),
+                'total' => $this->currencies->format((int) $order->total, $order->currency),
+                'gift_card_amount' => $this->currencies->format((int) $order->gift_card_amount, $order->currency),
+                'amount_due' => $this->currencies->format((int) $order->amount_due, $order->currency),
+            ],
+            'raw' => [
+                'coupon_discount' => (int) $order->coupon_discount,
+                'tax_amount' => (int) $order->tax_amount,
+                'gift_card_amount' => (int) $order->gift_card_amount,
+            ],
+            'tax_name' => $order->tax_name,
+            'coupons' => $order->coupons->map(fn ($coupon) => ['code' => $coupon->code])->values(),
             'items' => $order->items->map(fn ($item) => [
                 'package_name' => $item->package_name,
                 'quantity' => $item->quantity,
