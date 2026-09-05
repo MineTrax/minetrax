@@ -276,7 +276,11 @@ const formatDate = (value) => (value ? formatToDayDateString(value) : "—");
                       v-if="item.grant"
                       class="text-xs text-muted-foreground mt-1"
                     >
-                      {{ __("Grant") }}: <CommonStatusBadge :status="item.grant.status.value" />
+                      {{ __("Grant") }}:
+                      <CommonStatusBadge
+                        :status="item.grant.status.value"
+                        :tone="item.grant.status.value === 'active' ? 'success' : null"
+                      />
                       <span v-if="item.grant.expires_at"> · {{ __("expires") }} {{ formatDate(item.grant.expires_at) }}</span>
                     </div>
                   </td>

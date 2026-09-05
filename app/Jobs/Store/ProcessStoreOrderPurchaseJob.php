@@ -5,6 +5,7 @@ namespace App\Jobs\Store;
 use App\Enums\StoreCommandTrigger;
 use App\Enums\StorePackageGrantStatus;
 use App\Models\StoreOrder;
+use App\Services\StoreCheckoutService;
 use App\Services\StoreCommandDispatchService;
 use App\Services\StoreGiftCardService;
 use App\Services\StoreOrderService;
@@ -51,8 +52,10 @@ class ProcessStoreOrderPurchaseJob implements ShouldQueue
     }
 
     /**
-     * One grant per order item. Grants are what the expiry sweep and the purchase-limit check
-     * read, so a permanent package still gets one, just without an expiry.
+     * One grant per order item. Grants are what the expiry sweep, the prerequisite check and the
+     * cumulative-category upgrade credit read, so a permanent package still gets one, just without
+     * an expiry. Purchase limits are not counted from grants: they sum paid-state order items, see
+     * {@see StoreCheckoutService::assertPurchasable()}.
      *
      * sold_count is incremented here rather than in its own pass, tied to the grant actually
      * being created. That is what keeps stock consumption correct when this job is retried:

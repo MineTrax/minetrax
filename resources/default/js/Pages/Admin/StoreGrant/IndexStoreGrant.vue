@@ -205,7 +205,10 @@ function submitExtend() {
           </DtRowItem>
 
           <DtRowItem>
-            <CommonStatusBadge :status="item.status.value" />
+            <CommonStatusBadge
+              :status="item.status.value"
+              :tone="item.status.value === 'active' ? 'success' : null"
+            />
           </DtRowItem>
 
           <DtRowItem>

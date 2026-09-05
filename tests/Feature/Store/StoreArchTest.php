@@ -321,3 +321,16 @@ test('no admin card clips a multiselect dropdown', function () {
             .implode(', ', array_unique($offenders))
     );
 });
+
+test('active grants use the success tone without changing the active ban tone', function () {
+    $grantIndex = file_get_contents(base_path('resources/default/js/Pages/Admin/StoreGrant/IndexStoreGrant.vue'));
+    $adminOrder = file_get_contents(base_path('resources/default/js/Pages/Admin/StoreOrder/ShowStoreOrder.vue'));
+    $statusBadge = file_get_contents(base_path('resources/default/js/Shared/CommonStatusBadge.vue'));
+
+    expect($grantIndex)
+        ->toContain(':tone="item.status.value === \'active\' ? \'success\' : null"')
+        ->and($adminOrder)
+        ->toContain(':tone="item.grant.status.value === \'active\' ? \'success\' : null"')
+        ->and($statusBadge)
+        ->toContain('active: "danger"');
+});
