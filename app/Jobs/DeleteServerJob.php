@@ -8,7 +8,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class DeleteServerJob implements ShouldQueue
 {
@@ -38,5 +40,21 @@ class DeleteServerJob implements ShouldQueue
         ResyncPlayersTableJob::dispatchSync();
 
         $this->server->delete();
+    }
+
+    /**
+     * Clear the deleting flag so the server can be deleted again from the admin panel.
+     */
+    public function failed(?Throwable $exception = null): void
+    {
+        $server = $this->server->fresh();
+        if (! $server) {
+            return;
+        }
+
+        $server->settings = Arr::except($server->settings ?? [], 'is_deleting');
+        $server->save();
+
+        Log::error('[DeleteServerJob] Failed to delete server #'.$server->id.': '.$exception?->getMessage());
     }
 }
