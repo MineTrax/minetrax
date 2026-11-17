@@ -34,3 +34,5 @@ auth.json
 /resources/*
 !/resources/default/
 .claude/settings.local.json
+.agents
+*.local.json
